@@ -1,0 +1,19 @@
+{
+    "name": "yansongda/pay",
+    "description": "专注 Alipay 和 WeChat 的支付扩展包",
+    "authors": [
+        {
+            "name": "yansongda",
+            "email": "me@yansongda.cn"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yansongda\\pay\\": "src"
+        }
+    },
+    "license": "MIT"
+}
