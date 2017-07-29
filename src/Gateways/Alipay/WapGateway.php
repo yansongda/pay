@@ -1,31 +1,36 @@
 <?php 
 
-namespace Yansongda\Pay\Gateways;
+namespace Yansongda\Pay\Gateways\Alipay;
 
 /**
-*   
+* 
 */
-class AlipayGateway extends Gateway
+class WayGateway extends Gateway
 {
-    const METHOD = 'alipay.trade.page.pay';
+    
+    const METHOD = 'alipay.trade.wap.pay';
 
-    const FORMAT = 'JSON';
+    const PRODUCT_CODE = 'QUICK_WAP_WAY';
 
-    const CHARSET = 'utf-8';
-
-    const SIGN_TYPE = 'RSA2';
-
-    const TIMESTAMP = date('Y-m-d H:i:s');
-
-    const VERSION = '1.0';
+    /**
+     * 业务参数
+     * @var [type]
+     */
+    private $bizContent = [
+        'out_trade_no' => '',
+        'product_code' => self::PRODUCT_CODE,
+        'total_amount' => '0.01',
+        'subject' => 'test production subject',
+    ];
     
     /**
      * 支付
      * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-28
-     * @return  [type]     [description]
+     * @version 2017-07-29
+     * @param   array      $bizContent 业务参数：out_trade_no ， total_amount 和 subject 必填
+     * @return  [type]                 [description]
      */
-    public function pay()
+    public function pay(array $bizContent)
     {
         
     }

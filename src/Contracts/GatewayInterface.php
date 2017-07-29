@@ -21,4 +21,20 @@ interface GatewayInterface
      * @return  [type]     [description]
      */
     public function verify()
+
+    /**
+     * 退款
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-29
+     * @return  [type]     [description]
+     */
+    public function refund()
+
+    /**
+     * 关闭
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-29
+     * @return  [type]     [description]
+     */
+    public function close()
 }

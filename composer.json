@@ -8,11 +8,11 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9"
+        "php": ">=5.6"
     },
     "autoload": {
         "psr-4": {
-            "Yansongda\\pay\\": "src"
+            "Yansongda\\Pay\\": "src"
         }
     },
     "license": "MIT"

@@ -50,4 +50,30 @@ class Config implements ArrayAccess
         }
     }
 
+    /**
+     * set a config
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-29
+     * @param   string     $key   [description]
+     * @param   [type]     $value [description]
+     */
+    public function set(string $key, $value)
+    {
+        // 删除配置
+        if (is_null($value)) {
+            unset($this->config[$key]);
+
+        // 只支持二维
+        } else {
+            if (! strpos($key, '.')) {
+                $this->config[$key] = $value;
+            } else {
+                $segment = explode('.', $key);
+                $this->config[$segment[0]][$segment[1]] = $value;
+            }
+        }
+
+        return $this;
+    }
+
 }
