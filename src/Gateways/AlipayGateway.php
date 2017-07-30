@@ -1,13 +1,11 @@
 <?php 
-namespace Yansongda\Pay\Gateways\Alipay;
 
-use Yansongda\Pay\Support\Config;
-use Yansongda\Pay\Contracts\GatewayInterface;
+namespace Yansongda\Pay\Gateways;
 
 /**
 *   
 */
-abstract class Gateway implements GatewayInterface
+class AlipayGateway extends Gateway
 {
     /**
      * [$config description]
@@ -36,18 +34,43 @@ abstract class Gateway implements GatewayInterface
         'product_code' => '',
         'total_amount' => '',
         'subject' => '',
+        'disable_pay_channels' => '',
         'timeout_express' => '15m',
     ];
-    
+
     /**
-     * [__construct description]
+     * 对外接口-支付
      * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-28
-     * @param   array      $config [description]
+     * @version 2017-07-30
+     * @param   [type]     $biz_config [description]
+     * @param   [type]     $type       [description]
+     * @return  [type]                 [description]
      */
-    public function __construct(array $config = [])
+    public function pay($biz_config, $type)
     {
-        $this->config = new Config(array_merge($this->config, $config));
+        $this->biz_config = array_merge($this->biz_config, $biz_config);
+    }
+
+    /**
+     * 对外接口-退款
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-29
+     * @return  [type]     [description]
+     */
+    public function refund()
+    {
+
+    }
+
+    /**
+     * 对外接口-关闭
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-29
+     * @return  [type]     [description]
+     */
+    public function close()
+    {
+
     }
 
     /**
@@ -58,10 +81,10 @@ abstract class Gateway implements GatewayInterface
      */
     protected function getBizContent()
     {
-        # code...
+        return json_encode($this->biz_config);
     }
 
-    protected function getSign()
+    protected function sign()
     {
         # code...
     }

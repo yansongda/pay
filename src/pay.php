@@ -3,10 +3,29 @@
 namespace Yansongda\Pay;
 
 use Yansongda\Pay\Support\Config;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
 /**
-* 
-*/
+ * Pay class
+ * ==========================
+ * 配置选项：
+ * $config = [
+ *     'alipay' => [
+ *         'app_id' => '',
+ *         'notify' => '',
+ *         'return' => '',
+ *         'ali_public_key' => '',
+ *         'private_key' => '',
+ *     ],
+ *
+ *     'wechat' => [
+ *         'appid' => '',
+ *         'mch_id' => '',
+ *         'notify_url' => '',
+ *     ],
+ * ]
+ * @var [type]
+ */
 class Pay
 {
     /**
@@ -27,35 +46,49 @@ class Pay
     }
 
     /**
-     * 支付
+     * [driver description]
      * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-29
-     * @param   string     $type       支持支付宝、微信。格式为'alipay.web','alipay.wap' 和 'wechat.mp','wechat.h5','wechat.scan','wechat.pos','wechat.app'
-     * @param   [type]     $biz_config 业务参数:total_money,out_trade_no,subject
-     * @return  [type]                 [description]
+     * @version 2017-07-30
+     * @param   [type]     $driver [description]
+     * @return  [type]             [description]
      */
-    public function pay($type, $biz_config)
+    public function driver($driver)
     {
-        # code...
+        if (!isset($this->drivers[$driver])) {
+            $this->drivers[$driver] = $this->createDriver($driver);
+        }
+
+        return $this->drivers[$driver];
     }
 
-    public function verify($type, $biz_config)
+    /**
+     * [createDriver description]
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-30
+     * @param   [type]     $driver [description]
+     * @return  [type]             [description]
+     */
+    private function createDriver($driver)
     {
-        # code...
+        if (file_exists(__DIR__ . '/Gateways/' . ucfirst($driver) . 'Gateway.php')) {
+            $gateway = __NAMESPACE__ . '\\Gateways\\' . ucfirst($driver) . 'Gateway';
+
+            return $this->buildGateway($gateway, $this->config->get($driver));
+        }
+
+        throw new InvalidArgumentException("Driver [$driver] not supported.");
     }
 
-    public function query()
+    /**
+     * [buildGateway description]
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-30
+     * @param   [type]     $gateway [description]
+     * @param   [type]     $config  [description]
+     * @return  [type]              [description]
+     */
+    private function buildGateway($gateway, $config)
     {
-        # code...
-    }
-
-    public function refund()
-    {
-        # code...
-    }
-
-    public function close()
-    {
-        # code...
+        return new $gateway($config);
     }
 }

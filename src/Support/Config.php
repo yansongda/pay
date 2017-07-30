@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Support;
 
 use ArrayAccess;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
 /**
  * Class Config.
@@ -34,20 +35,24 @@ class Config implements ArrayAccess
      */
     public function get($key, $default = null)
     {
+        $config = $this->config;
+
         if (is_null($key)) {
-            return $this->config;
+            return $config;
         }
 
-        if (isset($this->config[$key])) {
-            return $this->config[$key];
+        if (isset($config[$key])) {
+            return $config[$key];
         }
 
         foreach (explode('.', $key) as $segment) {
-            if (! array_key_exists($segment, $this->config)) {
+            if (!is_array($config) || !array_key_exists($segment, $config)) {
                 return $default;
             }
-            return $this->config[$segment];
+            $config = $config[$segment];
         }
+
+        return $config;
     }
 
     /**
@@ -59,21 +64,78 @@ class Config implements ArrayAccess
      */
     public function set(string $key, $value)
     {
-        // 删除配置
-        if (is_null($value)) {
-            unset($this->config[$key]);
-
-        // 只支持二维
-        } else {
-            if (! strpos($key, '.')) {
-                $this->config[$key] = $value;
-            } else {
-                $segment = explode('.', $key);
-                $this->config[$segment[0]][$segment[1]] = $value;
-            }
+        if (is_null($key) || $key == '') {
+            throw new InvalidArgumentException('Invalid config key.');
         }
 
-        return $this;
+        // 只支持三维数组，多余无意义
+        $keys = explode('.', $key);
+        switch (count($keys)) {
+            case '1':
+                $this->config[$key] = $value;
+                break;
+            case '2':
+                $this->config[$keys[0]][$keys[1]] = $value;
+                break;
+            case '3':
+                $this->config[$keys[0]][$keys[1]][$keys[3]] = $value;
+                break;
+            
+            default:
+                throw new InvalidArgumentException('Invalid config key.');
+                break;
+        }
+
+        return $this->config;
+    }
+
+    /**
+     * [offsetExists description]
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-30
+     * @param   [type]     $offset [description]
+     * @return  [type]             [description]
+     */
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->config);
+    }
+
+    /**
+     * [offsetGet description]
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-30
+     * @param   [type]     $offset [description]
+     * @return  [type]             [description]
+     */
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    /**
+     * [offsetSet description]
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-30
+     * @param   [type]     $offset [description]
+     * @param   [type]     $value  [description]
+     * @return  [type]             [description]
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->set($offset, $value);
+    }
+
+    /**
+     * [offsetUnset description]
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-30
+     * @param   [type]     $offset [description]
+     * @return  [type]             [description]
+     */
+    public function offsetUnset($offset)
+    {
+        $this->set($offset, null);
     }
 
 }

@@ -12,15 +12,7 @@ interface GatewayInterface
      * @version 2017-07-28
      * @return  [type]     [description]
      */
-    public function pay()
-    
-    /**
-     * 验证
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-28
-     * @return  [type]     [description]
-     */
-    public function verify()
+    public function pay();
 
     /**
      * 退款
@@ -28,7 +20,7 @@ interface GatewayInterface
      * @version 2017-07-29
      * @return  [type]     [description]
      */
-    public function refund()
+    public function refund();
 
     /**
      * 关闭
@@ -36,5 +28,5 @@ interface GatewayInterface
      * @version 2017-07-29
      * @return  [type]     [description]
      */
-    public function close()
+    public function close();
 }
