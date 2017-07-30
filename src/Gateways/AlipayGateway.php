@@ -7,6 +7,14 @@ namespace Yansongda\Pay\Gateways;
 */
 class AlipayGateway extends Gateway
 {
+    const WEB_METHOD = 'alipay.trade.page.pay';
+
+    const WEB_PRODUCT_CODE = 'FAST_INSTANT_TRADE_PAY';
+
+    const WAP_METHOD = 'alipay.trade.wap.pay';
+
+    const WAP_PRODUCT_CODE = 'QUICK_WAP_WAY';
+
     /**
      * [$config description]
      * @var [type]
@@ -48,7 +56,9 @@ class AlipayGateway extends Gateway
      */
     public function pay($biz_config, $type)
     {
+        $
         $this->biz_config = array_merge($this->biz_config, $biz_config);
+
     }
 
     /**
