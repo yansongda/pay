@@ -8,11 +8,9 @@ namespace Yansongda\Pay\Gateways;
 class AlipayGateway extends Gateway
 {
     const WEB_METHOD = 'alipay.trade.page.pay';
-
     const WEB_PRODUCT_CODE = 'FAST_INSTANT_TRADE_PAY';
 
     const WAP_METHOD = 'alipay.trade.wap.pay';
-
     const WAP_PRODUCT_CODE = 'QUICK_WAP_WAY';
 
     /**
@@ -47,6 +45,19 @@ class AlipayGateway extends Gateway
     ];
 
     /**
+     * [__construct description]
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-05
+     * @param   [type]     $config [description]
+     */
+    public function __construct($config)
+    {
+        $this->public_config['app_id'] = $config['app_id'];
+        $this->public_config['notify'] = $config['notify'];
+        $this->public_config['return'] = $config['return'];
+    }
+
+    /**
      * 对外接口-支付
      * @author JasonYan <me@yansongda.cn>
      * @version 2017-07-30
@@ -54,9 +65,9 @@ class AlipayGateway extends Gateway
      * @param   [type]     $type       [description]
      * @return  [type]                 [description]
      */
-    public function pay($biz_config, $type)
+    public function pay($biz_config, $type = 'web')
     {
-        $
+
         $this->biz_config = array_merge($this->biz_config, $biz_config);
 
     }

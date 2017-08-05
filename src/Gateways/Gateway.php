@@ -21,17 +21,6 @@ abstract class Gateway implements GatewayInterface
      * @var [type]
      */
     abstract protected $biz_config;
-    
-    /**
-     * [__construct description]
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-28
-     * @param   array      $config [description]
-     */
-    public function __construct(array $config = [])
-    {
-        $this->public_config = new Config(array_merge($this->public_config, $config));
-    }
 
     abstract protected function getPayUrl();
 
@@ -41,10 +30,7 @@ abstract class Gateway implements GatewayInterface
      * @version 2017-07-28
      * @return  [type]     [description]
      */
-    public function pay($biz_config, $type = 'web')
-    {
-        
-    }
+    abstract function pay($biz_config, $type = 'web');
 
     /**
      * 退款

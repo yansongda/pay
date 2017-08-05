@@ -70,7 +70,8 @@ class Pay
      */
     private function createDriver($driver)
     {
-        if (file_exists(__DIR__ . '/Gateways/' . ucfirst($driver) . 'Gateway.php')) {
+        if (file_exists(__DIR__ . '/Gateways/' . ucfirst($driver) . 'Gateway.php') ||
+            ! is_null($this->config->get($driver))) {
             $gateway = __NAMESPACE__ . '\\Gateways\\' . ucfirst($driver) . 'Gateway';
 
             return $this->buildGateway($gateway, $this->config->get($driver));
