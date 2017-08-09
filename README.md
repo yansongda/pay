@@ -1,10 +1,10 @@
 <h1 style="text-align: center;">Pay</h1>
 
 ## 使用方法
-###1、通过 composer 加载
+### 1、通过 composer 加载
 ```composer required yansongda/Pay```
 
-###2、在代码中使用
+### 2、在代码中使用
 ```php
 use Yansongda\Pay\Pay;
 
