@@ -2,7 +2,7 @@
 
 ## 使用方法
 ### 1、通过 composer 加载
-```composer required yansongda/Pay```
+```composer required yansongda/pay```
 
 ### 2、在代码中使用
 ```php
