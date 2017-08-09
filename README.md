@@ -1,4 +1,4 @@
-<h1 style="text-align: center;">Pay</h1>
+<h1 align="center">Pay</h1>
 
 ## 使用方法
 ### 1、通过 composer 加载
