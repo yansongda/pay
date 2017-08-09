@@ -26,3 +26,6 @@ $biz = [
 $pay = new Pay($config);
 return $pay->dirver('alipay')->pay($biz, 'web');
 ```
+
+## LICENSE
+MIT
