@@ -33,7 +33,7 @@ class Config implements ArrayAccess
      * @param   [type]     $default [description]
      * @return  [type]              [description]
      */
-    public function get($key, $default = null)
+    public function get($key = null, $default = null)
     {
         $config = $this->config;
 

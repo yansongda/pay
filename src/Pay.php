@@ -6,25 +6,7 @@ use Yansongda\Pay\Support\Config;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
 /**
- * Pay class
- * ==========================
- * 配置选项：
- * $config = [
- *     'alipay' => [
- *         'app_id' => '',
- *         'notify' => '',
- *         'return' => '',
- *         'ali_public_key' => '',
- *         'private_key' => '',
- *     ],
- *
- *     'wechat' => [
- *         'appid' => '',
- *         'mch_id' => '',
- *         'notify_url' => '',
- *     ],
- * ]
- * @var [type]
+ * 
  */
 class Pay
 {
@@ -70,26 +52,27 @@ class Pay
      */
     private function createDriver($driver)
     {
-        if (file_exists(__DIR__ . '/Gateways/' . ucfirst($driver) . 'Gateway.php') ||
+        if (file_exists(__DIR__ . '/Gateways/' . ucfirst($driver) . '.php') ||
             ! is_null($this->config->get($driver))) {
-            $gateway = __NAMESPACE__ . '\\Gateways\\' . ucfirst($driver) . 'Gateway';
 
-            return $this->buildGateway($gateway, $this->config->get($driver));
+            return $this->buildDriver(
+                __NAMESPACE__ . '\\Gateways\\' . ucfirst($driver),
+                $this->config->get($driver));
         }
 
         throw new InvalidArgumentException("Driver [$driver] not supported.");
     }
 
     /**
-     * [buildGateway description]
+     * [buildDriver description]
      * @author JasonYan <me@yansongda.cn>
      * @version 2017-07-30
      * @param   [type]     $gateway [description]
      * @param   [type]     $config  [description]
      * @return  [type]              [description]
      */
-    private function buildGateway($gateway, $config)
+    private function buildDriver($driver, $config)
     {
-        return new $gateway($config);
+        return new $driver($config);
     }
 }

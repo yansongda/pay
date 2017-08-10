@@ -2,16 +2,22 @@
 
 namespace Yansongda\Pay\Gateways;
 
+use Yansongda\Pay\Support\Config;
+use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
+
 /**
 *   
 */
-class AlipayGateway extends Gateway
+class Alipay
 {
     const WEB_METHOD = 'alipay.trade.page.pay';
     const WEB_PRODUCT_CODE = 'FAST_INSTANT_TRADE_PAY';
 
     const WAP_METHOD = 'alipay.trade.wap.pay';
     const WAP_PRODUCT_CODE = 'QUICK_WAP_WAY';
+
+    protected $config;
 
     /**
      * [$config description]
@@ -24,7 +30,7 @@ class AlipayGateway extends Gateway
         'charset' => 'utf-8',
         'sign_type' => 'RSA2',
         'version' => '1.0',
-        'timestamp' => date('Y-m-d H:i:s'),
+        'timestamp' => '',
         'sign' => '',
         'notify' => '',
         'return' => '',
@@ -52,9 +58,14 @@ class AlipayGateway extends Gateway
      */
     public function __construct($config)
     {
-        $this->public_config['app_id'] = $config['app_id'];
-        $this->public_config['notify'] = $config['notify'];
-        $this->public_config['return'] = $config['return'];
+        $this->config = new Config($config);
+
+        foreach ($this->config->get() as $key => $value) {
+            if (array_key_exists($key, $this->public_config)) {
+                $this->public_config[$key] = $value;
+            }
+        }
+        $this->public_config['timestamp'] = date('Y-m-d H:i:s');
     }
 
     /**
@@ -67,8 +78,14 @@ class AlipayGateway extends Gateway
      */
     public function pay($biz_config, $type = 'web')
     {
+        $this->handleType($type);
 
         $this->biz_config = array_merge($this->biz_config, $biz_config);
+        $this->public_config['bizContent'] = $this->getBizContent();
+
+        $this->public_config['sign'] = $this->getSign();
+
+
 
     }
 
@@ -94,6 +111,27 @@ class AlipayGateway extends Gateway
 
     }
 
+    protected function handleType($type)
+    {
+        switch ($type) {
+            case 'web':
+                $this->public_config['method'] = self::WEB_METHOD;
+                $this->biz_config['product_code'] = self::WEB_PRODUCT_CODE;
+                break;
+            
+            case 'wap':
+                $this->public_config['method'] = self::WAP_METHOD;
+                $this->biz_config['product_code'] = self::WAP_PRODUCT_CODE;
+                break;
+
+            default:
+                throw new InvalidArgumentException('Invalid config key.');
+                break;
+        }
+
+        return true;
+    }
+
     /**
      * 获取业务参数
      * @author JasonYan <me@yansongda.cn>
@@ -105,7 +143,7 @@ class AlipayGateway extends Gateway
         return json_encode($this->biz_config);
     }
 
-    protected function sign()
+    protected function getSign()
     {
         # code...
     }
