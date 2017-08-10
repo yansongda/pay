@@ -9,11 +9,8 @@ use Yansongda\Pay\Exceptions\InvalidArgumentException;
 /**
 *   
 */
-class Alipay
+abstract class Alipay implements GatewayInterface
 {
-    const WEB_METHOD = 'alipay.trade.page.pay';
-    const WEB_PRODUCT_CODE = 'FAST_INSTANT_TRADE_PAY';
-
     const WAP_METHOD = 'alipay.trade.wap.pay';
     const WAP_PRODUCT_CODE = 'QUICK_WAP_WAY';
 
@@ -76,18 +73,7 @@ class Alipay
      * @param   [type]     $type       [description]
      * @return  [type]                 [description]
      */
-    public function pay($biz_config, $type = 'web')
-    {
-        $this->handleType($type);
-
-        $this->biz_config = array_merge($this->biz_config, $biz_config);
-        $this->public_config['bizContent'] = $this->getBizContent();
-
-        $this->public_config['sign'] = $this->getSign();
-
-
-
-    }
+    abstract public function pay($biz_config);
 
     /**
      * 对外接口-退款
@@ -95,10 +81,7 @@ class Alipay
      * @version 2017-07-29
      * @return  [type]     [description]
      */
-    public function refund()
-    {
-
-    }
+    abstract public function refund();
 
     /**
      * 对外接口-关闭
@@ -106,31 +89,7 @@ class Alipay
      * @version 2017-07-29
      * @return  [type]     [description]
      */
-    public function close()
-    {
-
-    }
-
-    protected function handleType($type)
-    {
-        switch ($type) {
-            case 'web':
-                $this->public_config['method'] = self::WEB_METHOD;
-                $this->biz_config['product_code'] = self::WEB_PRODUCT_CODE;
-                break;
-            
-            case 'wap':
-                $this->public_config['method'] = self::WAP_METHOD;
-                $this->biz_config['product_code'] = self::WAP_PRODUCT_CODE;
-                break;
-
-            default:
-                throw new InvalidArgumentException('Invalid config key.');
-                break;
-        }
-
-        return true;
-    }
+    public function close();
 
     /**
      * 获取业务参数

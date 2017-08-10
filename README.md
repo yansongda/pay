@@ -24,7 +24,7 @@ $biz = [
 ];
 
 $pay = new Pay($config);
-return $pay->dirver('alipay')->pay($biz, 'web');
+return $pay->dirver('alipay')->gateway('web')->pay($biz);
 ```
 
 ## LICENSE
