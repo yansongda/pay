@@ -1,6 +1,6 @@
 <?php 
 
-namespace Yansongda\Pay\Gateways;
+namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Support\Config;
 use Yansongda\Pay\Contracts\GatewayInterface;
