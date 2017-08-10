@@ -166,7 +166,7 @@ abstract class Alipay implements GatewayInterface
      * @param   [type]     $type       [description]
      * @return  [type]                 [description]
      */
-    public function pay($config_biz) {
+    public function pay($config_biz = []) {
         $this->getFinalConfig($config_biz);
     }
 
