@@ -48,7 +48,7 @@ class Pay
      */
     public function driver($driver)
     {
-        if (! is_null($this->config->get($driver)) {
+        if (is_null($this->config->get($driver)) {
             throw new InvalidArgumentException("Driver [$driver]'s Config is not defined.");
         }
 
