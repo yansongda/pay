@@ -17,6 +17,18 @@ class Pay
     private $config;
 
     /**
+     * [$dirvers description]
+     * @var [type]
+     */
+    private $dirvers;
+
+    /**
+     * [$gateways description]
+     * @var [type]
+     */
+    private $gateways;
+
+    /**
      * [__construct description]
      * @author JasonYan <me@yansongda.cn>
      * @version 2017-07-29
@@ -36,43 +48,63 @@ class Pay
      */
     public function driver($driver)
     {
-        if (!isset($this->drivers[$driver])) {
-            $this->drivers[$driver] = $this->createDriver($driver);
+        if (! is_null($this->config->get($driver)) {
+            throw new InvalidArgumentException("Driver [$driver]'s Config is not defined.");
         }
 
-        return $this->drivers[$driver];
+        $this->drivers = $driver;
+
+        return $this;
     }
 
     /**
-     * [createDriver description]
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-30
-     * @param   [type]     $driver [description]
-     * @return  [type]             [description]
+     * [gateway description]
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-10
+     * @param   string     $gateway [description]
+     * @return  [type]              [description]
      */
-    private function createDriver($driver)
+    public function gateway($gateway = 'web')
     {
-        if (file_exists(__DIR__ . '/Gateways/' . ucfirst($driver) . '.php') ||
-            ! is_null($this->config->get($driver))) {
-
-            return $this->buildDriver(
-                __NAMESPACE__ . '\\Gateways\\' . ucfirst($driver),
-                $this->config->get($driver));
+        if (! isset($this->gateways)) {
+            $this->gateways = $this->createGateway($gateway);
         }
 
-        throw new InvalidArgumentException("Driver [$driver] not supported.");
+        return $this->gateways;
+    }
+
+    /**
+     * [createGateway description]
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-10
+     * @param   [type]     $gateway [description]
+     * @return  [type]              [description]
+     */
+    private function createGateway($gateway)
+    {
+        if (! isset($this->drivers)) {
+            throw new InvalidArgumentException("Driver is not defined.");
+        }
+
+        if (! file_exists(__DIR__ . '/Gateways/' . ucfirst($this->driver) . '/' . ucfirst($gateway) . 'Gateway.php')) {
+            throw new InvalidArgumentException("Gateway [$gateway] is not supported.");
+        }
+
+        $gateway = __NAMESPACE__ . '\\Gateways\\' . ucfirst($this->driver) . '\\' . ucfirst($gateway) . 'Gateway';
+
+        return $this->build($gateway);
     }
 
     /**
      * [buildDriver description]
      * @author JasonYan <me@yansongda.cn>
      * @version 2017-07-30
-     * @param   [type]     $gateway [description]
+     * @param   [type]     $driver [description]
      * @param   [type]     $config  [description]
      * @return  [type]              [description]
      */
-    private function buildDriver($driver, $config)
+    private function build($gateway)
     {
-        return new $driver($config);
+        return new $gateway($this->config->get($this->drivers));
     }
 }
