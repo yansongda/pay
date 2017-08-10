@@ -86,11 +86,11 @@ class Pay
             throw new InvalidArgumentException("Driver is not defined.");
         }
 
-        if (! file_exists(__DIR__ . '/Gateways/' . ucfirst($this->driver) . '/' . ucfirst($gateway) . 'Gateway.php')) {
+        if (! file_exists(__DIR__ . '/Gateways/' . ucfirst($this->drivers) . '/' . ucfirst($gateway) . 'Gateway.php')) {
             throw new InvalidArgumentException("Gateway [$gateway] is not supported.");
         }
 
-        $gateway = __NAMESPACE__ . '\\Gateways\\' . ucfirst($this->driver) . '\\' . ucfirst($gateway) . 'Gateway';
+        $gateway = __NAMESPACE__ . '\\Gateways\\' . ucfirst($this->drivers) . '\\' . ucfirst($gateway) . 'Gateway';
 
         return $this->build($gateway);
     }
