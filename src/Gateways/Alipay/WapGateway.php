@@ -13,7 +13,7 @@ class WebGateway extends Alipay
      * @version 2017-08-10
      * @return  [type]     [description]
      */
-    private function getMethod() {
+    protected function getMethod() {
         return 'alipay.trade.wap.pay';
     }
 
@@ -23,7 +23,7 @@ class WebGateway extends Alipay
      * @version 2017-08-10
      * @return  [type]     [description]
      */
-    private function getProductCode() {
+    protected function getProductCode() {
         return 'QUICK_WAP_WAY';
     }
 }
