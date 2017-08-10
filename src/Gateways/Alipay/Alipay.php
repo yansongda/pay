@@ -32,7 +32,7 @@ abstract class Alipay implements GatewayInterface
         'sign' => '',
         'notify_url' => '',
         'return_url' => '',
-        'bizContent' => '',
+        'biz_content' => '',
     ];
 
     /**
@@ -79,6 +79,52 @@ abstract class Alipay implements GatewayInterface
         }
     }
 
+
+    /**
+     * 对外接口-支付
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-30
+     * @param   [type]     $config_biz [description]
+     * @param   [type]     $type       [description]
+     * @return  [type]                 [description]
+     */
+    public function pay($config_biz = []) {
+        $this->getFinalConfig($config_biz);
+        
+        $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$this->gateway."?charset=utf-8' method='POST'>";
+        while (list ($key, $val) = each ($this->config)) {
+                $val = str_replace("'","&apos;",$val);
+                $sHtml.= "<input type='hidden' name='".$key."' value='".$val."'/>";
+        }
+
+        //submit按钮控件请不要含有name属性
+        $sHtml = $sHtml."<input type='submit' value='ok' style='display:none;''></form>";
+        $sHtml = $sHtml."<script>document.forms['alipaysubmit'].submit();</script>";
+        
+        return $sHtml;
+    }
+    }
+
+    /**
+     * 对外接口-退款
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-29
+     * @return  [type]     [description]
+     */
+    public function refund() {
+
+    }
+
+    /**
+     * 对外接口-关闭
+     * @author JasonYan <me@yansongda.cn>
+     * @version 2017-07-29
+     * @return  [type]     [description]
+     */
+    public function close() {
+
+    }
+
     /**
      * [getMethod description]
      * @author yansongda <me@yansongda.cn>
@@ -115,7 +161,7 @@ abstract class Alipay implements GatewayInterface
 
         $this->config['method'] = $this->getMethod();
         $this->config['timestamp'] = date('Y-m-d H:i:s');
-        $this->config['bizContent'] = json_encode($this->config_biz);
+        $this->config['biz_content'] = json_encode($this->config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
     }
 
@@ -152,42 +198,10 @@ abstract class Alipay implements GatewayInterface
                 $stringToBeSigned .= $k . "=" . $v . "&";
             }
         }
-        substr($stringToBeSigned, 0, -1);
+        $stringToBeSigned = substr($stringToBeSigned, 0, -1);
         unset ($k, $v);
 
         return $stringToBeSigned;
-    }
-
-    /**
-     * 对外接口-支付
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-30
-     * @param   [type]     $config_biz [description]
-     * @param   [type]     $type       [description]
-     * @return  [type]                 [description]
-     */
-    public function pay($config_biz = []) {
-        $this->getFinalConfig($config_biz);
-    }
-
-    /**
-     * 对外接口-退款
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-29
-     * @return  [type]     [description]
-     */
-    public function refund() {
-
-    }
-
-    /**
-     * 对外接口-关闭
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-29
-     * @return  [type]     [description]
-     */
-    public function close() {
-
     }
 
 }
