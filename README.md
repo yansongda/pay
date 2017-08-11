@@ -17,7 +17,7 @@ $config = [
         'private_key' => '',
     ],
 ];
-$biz = [
+$config_biz = [
     'out_trade_no' => '',
     'total_amount' => '',
     'subject' => '',

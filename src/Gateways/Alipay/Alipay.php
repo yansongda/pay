@@ -95,7 +95,11 @@ abstract class Alipay implements GatewayInterface
         
         $data = json_decode($this->post($this->gateway, $this->config));
 
-        return $this->verify($data['alipay_trade_refund_response'], $data['sign']);
+        if ($data['alipay_trade_refund_response']['code'] === '10000') {
+            return $this->verify($data['alipay_trade_refund_response'], $data['sign']);
+        }
+
+        return $data;
     }
 
     /**
@@ -112,7 +116,11 @@ abstract class Alipay implements GatewayInterface
         
         $data = json_decode($this->post($this->gateway, $this->config));
 
-        return $this->verify($data['alipay_trade_close_response'], $data['sign']);
+        if ($data['alipay_trade_close_response']['code'] === '10000') {
+            return $this->verify($data['alipay_trade_close_response'], $data['sign']);
+        }
+
+        return $data;
     }
 
     /**
