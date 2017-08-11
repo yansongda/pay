@@ -99,7 +99,7 @@ abstract class Alipay implements GatewayInterface
             return $this->verify($data['alipay_trade_refund_response'], $data['sign'], true);
         }
 
-        return $data;
+        return $data['alipay_trade_refund_response'];
     }
 
     /**
@@ -120,7 +120,7 @@ abstract class Alipay implements GatewayInterface
             return $this->verify($data['alipay_trade_close_response'], $data['sign'], true);
         }
 
-        return $data;
+        return $data['alipay_trade_close_response'];
     }
 
     /**
