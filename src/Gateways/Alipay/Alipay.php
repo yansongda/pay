@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Support\Config;
-use Yansongda\Pay\Trait\HasHttpRequest;
+use Yansongda\Pay\Traits\HasHttpRequest;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
@@ -78,8 +78,7 @@ abstract class Alipay implements GatewayInterface
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
 
-        return $this->post($this->gateway, $this->config);
-        //return $this->buildPayHtml();
+        return $this->buildPayHtml();
     }
 
     /**
