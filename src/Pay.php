@@ -48,7 +48,7 @@ class Pay
      */
     public function driver($driver)
     {
-        if (! is_null($this->config->get($driver)) {
+        if (is_null($this->config->get($driver))) {
             throw new InvalidArgumentException("Driver [$driver]'s Config is not defined.");
         }
 
@@ -66,9 +66,11 @@ class Pay
      */
     public function gateway($gateway = 'web')
     {
-        if (! isset($this->gateways)) {
-            $this->gateways = $this->createGateway($gateway);
+        if (! isset($this->drivers)) {
+            throw new InvalidArgumentException("Driver is not defined.");
         }
+
+        $this->gateways = $this->createGateway($gateway);
 
         return $this->gateways;
     }
@@ -82,15 +84,11 @@ class Pay
      */
     private function createGateway($gateway)
     {
-        if (! isset($this->drivers)) {
-            throw new InvalidArgumentException("Driver is not defined.");
-        }
-
-        if (! file_exists(__DIR__ . '/Gateways/' . ucfirst($this->driver) . '/' . ucfirst($gateway) . 'Gateway.php')) {
+        if (! file_exists(__DIR__ . '/Gateways/' . ucfirst($this->drivers) . '/' . ucfirst($gateway) . 'Gateway.php')) {
             throw new InvalidArgumentException("Gateway [$gateway] is not supported.");
         }
 
-        $gateway = __NAMESPACE__ . '\\Gateways\\' . ucfirst($this->driver) . '\\' . ucfirst($gateway) . 'Gateway';
+        $gateway = __NAMESPACE__ . '\\Gateways\\' . ucfirst($this->drivers) . '\\' . ucfirst($gateway) . 'Gateway';
 
         return $this->build($gateway);
     }

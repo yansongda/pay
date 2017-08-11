@@ -14,7 +14,7 @@ class WebGateway extends Alipay
      * @return  [type]     [description]
      */
     protected function getPayMethod() {
-        return 'alipay.trade.page.pay';
+        return 'alipay.trade.wap.pay';
     }
 
     /**
@@ -24,6 +24,6 @@ class WebGateway extends Alipay
      * @return  [type]     [description]
      */
     protected function getPayProductCode() {
-        return 'FAST_INSTANT_TRADE_PAY';
+        return 'QUICK_WAP_WAY';
     }
 }

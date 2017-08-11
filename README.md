@@ -17,14 +17,14 @@ $config = [
         'private_key' => '',
     ],
 ];
-$biz = [
+$config_biz = [
     'out_trade_no' => '',
     'total_amount' => '',
     'subject' => '',
 ];
 
 $pay = new Pay($config);
-return $pay->dirver('alipay')->pay($biz, 'web');
+return $pay->dirver('alipay')->gateway('web')->pay($biz);
 ```
 
 ## LICENSE
