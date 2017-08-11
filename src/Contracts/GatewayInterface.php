@@ -29,4 +29,12 @@ interface GatewayInterface
      * @return  [type]     [description]
      */
     public function close();
+
+    /**
+     * 验证消息是否官方发出
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-11
+     * @return  [type]     [description]
+     */
+    public function verify();
 }

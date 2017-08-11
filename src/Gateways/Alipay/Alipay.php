@@ -21,43 +21,13 @@ abstract class Alipay implements GatewayInterface
      * 支付宝公共参数
      * @var [type]
      */
-    protected $config = [
-        'app_id' => '',
-        'method' => '',
-        'format' => 'JSON',
-        'charset' => 'utf-8',
-        'sign_type' => 'RSA2',
-        'version' => '1.0',
-        'timestamp' => '',
-        'sign' => '',
-        'notify_url' => '',
-        'return_url' => '',
-        'biz_content' => '',
-    ];
-
-    /**
-     * 业务参数
-     * @var [type]
-     */
-    protected $config_biz = [
-        'out_trade_no' => '',
-        'product_code' => '',
-        'total_amount' => '',
-        'subject' => '',
-        'timeout_express' => '15m',
-    ];
+    protected $config;
 
     /**
      * 用户的传参
      * @var [type]
      */
-    protected $user_config = [
-        'app_id' => '',
-        'notify_url' => '',
-        'return_url' => '',
-        'ali_public_key' => '',
-        'private_key' => '',
-    ];
+    protected $user_config;
 
     /**
      * [__construct description]
@@ -69,61 +39,84 @@ abstract class Alipay implements GatewayInterface
     {
         $this->user_config = new Config(array_merge($this->user_config, $config));
 
-        foreach ($this->user_config->get() as $key => $value) {
-            if ($value === '') {
-                throw new InvalidArgumentException("Config is incomplete. Missing [$key]");
-            }
-            if (array_key_exists($key, $this->config)) {
-                $this->config[$key] = $value;
-            }
-        }
+        $this->config = [
+            'app_id' => $this->user_config->get('app_id', ''),
+            'method' => '',
+            'format' => 'JSON',
+            'charset' => 'utf-8',
+            'sign_type' => 'RSA2',
+            'version' => '1.0',
+            'return_url' => $this->user_config->get('return_url', ''),
+            'notify_url' => $this->user_config->get('notify_url', ''),
+            'timestamp' => date('Y-m-d H:i:s'),
+            'sign' => '',
+            'biz_content' => '',
+        ];
     }
 
 
     /**
-     * 对外接口-支付
+     * 对外接口 - 支付
      * @author JasonYan <me@yansongda.cn>
      * @version 2017-07-30
      * @param   [type]     $config_biz [description]
      * @param   [type]     $type       [description]
      * @return  [type]                 [description]
      */
-    public function pay($config_biz = []) {
-        $this->getFinalConfig($config_biz);
-        
-        $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$this->gateway."?charset=utf-8' method='POST'>";
-        while (list ($key, $val) = each ($this->config)) {
-                $val = str_replace("'","&apos;",$val);
-                $sHtml.= "<input type='hidden' name='".$key."' value='".$val."'/>";
-        }
+    public function pay($config_biz = [])
+    {
+        $config_biz['product_code'] = $this->getPayProductCode();
 
-        //submit按钮控件请不要含有name属性
-        $sHtml = $sHtml."<input type='submit' value='ok' style='display:none;''></form>";
-        $sHtml = $sHtml."<script>document.forms['alipaysubmit'].submit();</script>";
-        
-        return $sHtml;
-    }
+        $this->config['method'] = $this->getPayMethod();
+        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
+        $this->config['sign'] = $this->getSign();
+
+        return $this->buildPayHtml();
     }
 
     /**
-     * 对外接口-退款
+     * 对外接口 - 退款
      * @author JasonYan <me@yansongda.cn>
      * @version 2017-07-29
      * @return  [type]     [description]
      */
-    public function refund() {
-
+    public function refund($config_biz = [])
+    {
+        $this->config['method'] = 'alipay.trade.refund';
+        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
+        $this->config['sign'] = $this->getSign();
+        
+        // TODO
+        return true;
     }
 
     /**
-     * 对外接口-关闭
+     * 对外接口 - 关闭
      * @author JasonYan <me@yansongda.cn>
      * @version 2017-07-29
      * @return  [type]     [description]
      */
-    public function close() {
-
+    public function close($config_biz = [])
+    {
+        $this->config['method'] = 'alipay.trade.close';
+        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
+        $this->config['sign'] = $this->getSign();
+        
+        // TODO
+        return true;
     }
+
+    /**
+     * 对外接口 - 验证
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-11
+     * @return  [type]     [description]
+     */
+    public function verify()
+    {
+        # code...
+    }
+
 
     /**
      * [getMethod description]
@@ -131,7 +124,7 @@ abstract class Alipay implements GatewayInterface
      * @version 2017-08-10
      * @return  [type]     [description]
      */
-    abstract protected function getMethod();
+    abstract protected function getPayMethod();
 
     /**
      * [getProductCode description]
@@ -139,30 +132,25 @@ abstract class Alipay implements GatewayInterface
      * @version 2017-08-10
      * @return  [type]     [description]
      */
-    abstract protected function getProductCode();
+    abstract protected function getPayProductCode();
 
     /**
-     * 获取最后的参数
+     * [buildHtmlPay description]
      * @author yansongda <me@yansongda.cn>
-     * @version 2017-08-10
-     * @param   [type]     $config_biz [description]
-     * @return  [type]                 [description]
+     * @version 2017-08-11
+     * @return  [type]     [description]
      */
-    protected function getFinalConfig($config_biz) {
-        $this->config_biz = array_merge($this->config_biz, $config_biz);
-
-        foreach ($this->config_biz as $key => $value) {
-            if ($value === '' && $key != 'product_code') {
-                throw new InvalidArgumentException("BizConfig is invalid. Missing [$key]");
-            }
+    protected function buildPayHtml()
+    {
+        $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$this->gateway."?charset=utf-8' method='POST'>";
+        while (list ($key, $val) = each ($this->config)) {
+            $val = str_replace("'","&apos;",$val);
+            $sHtml.= "<input type='hidden' name='".$key."' value='".$val."'/>";
         }
-
-        $this->config_biz['product_code'] = $this->getProductCode();
-
-        $this->config['method'] = $this->getMethod();
-        $this->config['timestamp'] = date('Y-m-d H:i:s');
-        $this->config['biz_content'] = json_encode($this->config_biz, JSON_UNESCAPED_UNICODE);
-        $this->config['sign'] = $this->getSign();
+        $sHtml = $sHtml."<input type='submit' value='ok' style='display:none;''></form>";
+        $sHtml = $sHtml."<script>document.forms['alipaysubmit'].submit();</script>";
+        
+        return $sHtml;
     }
 
     /**
@@ -194,7 +182,7 @@ abstract class Alipay implements GatewayInterface
 
         $stringToBeSigned = "";
         foreach ($this->config as $k => $v) {
-            if ($v !== '' && $k != 'sign' && "@" != substr($v, 0, 1)) {
+            if ($v !== '' && !is_null($v) && $k != 'sign' && "@" != substr($v, 0, 1)) {
                 $stringToBeSigned .= $k . "=" . $v . "&";
             }
         }
