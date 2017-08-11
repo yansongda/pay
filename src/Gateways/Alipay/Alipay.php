@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Support\Config;
+use Yansongda\Pay\Trait\HasHttpRequest;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
@@ -11,6 +12,8 @@ use Yansongda\Pay\Exceptions\InvalidArgumentException;
 */
 abstract class Alipay implements GatewayInterface
 {
+    use HasHttpRequest;
+
     /**
      * 支付宝支付网关
      * @var string
@@ -37,7 +40,7 @@ abstract class Alipay implements GatewayInterface
      */
     public function __construct($config)
     {
-        $this->user_config = new Config(array_merge($this->user_config, $config));
+        $this->user_config = new Config($config);
 
         $this->config = [
             'app_id' => $this->user_config->get('app_id', ''),
@@ -52,6 +55,10 @@ abstract class Alipay implements GatewayInterface
             'sign' => '',
             'biz_content' => '',
         ];
+
+        if ($this->config['app_id'] === '') {
+            throw new InvalidArgumentException("Missing Config -- [app_id]");
+        }
     }
 
 
@@ -71,7 +78,8 @@ abstract class Alipay implements GatewayInterface
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
 
-        return $this->buildPayHtml();
+        return $this->post($this->gateway, $this->config);
+        //return $this->buildPayHtml();
     }
 
     /**
@@ -86,8 +94,7 @@ abstract class Alipay implements GatewayInterface
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
         
-        // TODO
-        return true;
+        return $this->post($this->gateway, $this->config);
     }
 
     /**
@@ -102,8 +109,7 @@ abstract class Alipay implements GatewayInterface
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
         
-        // TODO
-        return true;
+        return $this->post($this->gateway, $this->config);
     }
 
     /**
@@ -161,6 +167,10 @@ abstract class Alipay implements GatewayInterface
      */
     protected function getSign()
     {
+        if (is_null($this->user_config->get('private_key'))) {
+            throw new InvalidArgumentException("Missing Config -- [private_key]");
+        }
+
         $res = "-----BEGIN RSA PRIVATE KEY-----\n" .
                 wordwrap($this->user_config->get('private_key'), 64, "\n", true) .
                 "\n-----END RSA PRIVATE KEY-----";
