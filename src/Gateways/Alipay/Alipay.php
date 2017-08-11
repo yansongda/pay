@@ -93,7 +93,7 @@ abstract class Alipay implements GatewayInterface
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
         
-        $data = json_decode($this->post($this->gateway, $this->config));
+        $data = json_decode($this->post($this->gateway, $this->config), true);
 
         if ($data['alipay_trade_refund_response']['code'] === '10000') {
             return $this->verify($data['alipay_trade_refund_response'], $data['sign']);
@@ -114,7 +114,7 @@ abstract class Alipay implements GatewayInterface
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
         
-        $data = json_decode($this->post($this->gateway, $this->config));
+        $data = json_decode($this->post($this->gateway, $this->config), true);
 
         if ($data['alipay_trade_close_response']['code'] === '10000') {
             return $this->verify($data['alipay_trade_close_response'], $data['sign']);
@@ -129,19 +129,27 @@ abstract class Alipay implements GatewayInterface
      * @version 2017-08-11
      * @param   array      $data 待签名数组
      * @param   string     $sign 签名字符串-支付宝服务器发送过来的原始串
+     * @param   bool       $sync 是否同步验证
      * @return  [type]           [description]
      */
-    public function verify(array $data, $sign)
+    public function verify(array $data, $sign, $sync = false)
     {
         if (is_null($this->user_config->get('ali_public_key'))) {
             throw new InvalidArgumentException("Missing Config -- [ali_public_key]");
         }
 
-        $res = "-----BEGIN RSA PRIVATE KEY-----\n" .
+        $res = "-----BEGIN PUBLIC KEY-----\n" .
                 wordwrap($this->user_config->get('ali_public_key'), 64, "\n", true) .
-                "\n-----END RSA PRIVATE KEY-----";
+                "\n-----END PUBLIC KEY-----";
 
-        if (openssl_verify($this->getSignContent($data), base64_decode($sign), $res, OPENSSL_ALGO_SHA256) === 1) {
+        if ($sync) {
+            $data = json_encode($data);
+        } else {
+            $data = $this->getSignContent($data, true);
+            $sign = base64_decode($sign);
+        }
+        
+        if (openssl_verify($data, $sign, $res, OPENSSL_ALGO_SHA256) === 1) {
             return true;
         }
 
@@ -210,15 +218,19 @@ abstract class Alipay implements GatewayInterface
      * @author yansongda <me@yansongda.cn>
      * @version 2017-08-11
      * @param   array      $toBeSigned [description]
+     * @param   boolean    $verify     是否异步同时验证签名
      * @return  [type]                 [description]
      */
-    protected function getSignContent(array $toBeSigned)
+    protected function getSignContent(array $toBeSigned, $verify = false)
     {
         ksort($toBeSigned);
 
         $stringToBeSigned = "";
         foreach ($toBeSigned as $k => $v) {
-            if ($v !== '' && !is_null($v) && $k != 'sign' && "@" != substr($v, 0, 1)) {
+            if ($verify && $k != 'sign' && $k != 'sign_type') {
+                $stringToBeSigned .= $k . "=" . $v . "&";
+            }
+            if (!$verify && $v !== '' && !is_null($v) && $k != 'sign' && "@" != substr($v, 0, 1)) {
                 $stringToBeSigned .= $k . "=" . $v . "&";
             }
         }
