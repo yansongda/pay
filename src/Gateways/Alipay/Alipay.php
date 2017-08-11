@@ -96,7 +96,7 @@ abstract class Alipay implements GatewayInterface
         $data = json_decode($this->post($this->gateway, $this->config), true);
 
         if ($data['alipay_trade_refund_response']['code'] === '10000') {
-            return $this->verify($data['alipay_trade_refund_response'], $data['sign']);
+            return $this->verify($data['alipay_trade_refund_response'], $data['sign'], true);
         }
 
         return $data;
@@ -117,7 +117,7 @@ abstract class Alipay implements GatewayInterface
         $data = json_decode($this->post($this->gateway, $this->config), true);
 
         if ($data['alipay_trade_close_response']['code'] === '10000') {
-            return $this->verify($data['alipay_trade_close_response'], $data['sign']);
+            return $this->verify($data['alipay_trade_close_response'], $data['sign'], true);
         }
 
         return $data;
@@ -143,13 +143,12 @@ abstract class Alipay implements GatewayInterface
                 "\n-----END PUBLIC KEY-----";
 
         if ($sync) {
-            $data = json_encode($data);
+            $data = json_encode($data, JSON_UNESCAPED_UNICODE);
         } else {
             $data = $this->getSignContent($data, true);
-            $sign = base64_decode($sign);
         }
         
-        if (openssl_verify($data, $sign, $res, OPENSSL_ALGO_SHA256) === 1) {
+        if (openssl_verify($data, base64_decode($sign), $res, OPENSSL_ALGO_SHA256) === 1) {
             return true;
         }
 
