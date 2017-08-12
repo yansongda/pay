@@ -7,6 +7,8 @@ namespace Yansongda\Pay\Exceptions;
 */
 class GatewayException extends Exception
 {
+    public $raw = [];
+
     /**
      * [__construct description]
      * @author JasonYan <me@yansongda.cn>
@@ -14,8 +16,10 @@ class GatewayException extends Exception
      * @param   [type]     $message [description]
      * @param   [type]     $code    [description]
      */
-    public function __construct($message, $code)
+    public function __construct($message, $code, $raw = [])
     {
         parent::__construct($message, intval($code));
+
+        $this->raw = $raw;
     }
 }

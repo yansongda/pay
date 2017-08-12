@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Gateways\Alipay;
 use Yansongda\Pay\Support\Config;
 use Yansongda\Pay\Traits\HasHttpRequest;
 use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
 /**
@@ -95,11 +96,14 @@ abstract class Alipay implements GatewayInterface
         
         $data = json_decode($this->post($this->gateway, $this->config), true);
 
-        if ($data['alipay_trade_refund_response']['code'] === '10000') {
-            return $this->verify($data['alipay_trade_refund_response'], $data['sign'], true);
+        if ($data['alipay_trade_refund_response']['code'] !== '10000') {
+            throw new GatewayException(
+                $data['alipay_trade_refund_response']['msg'] . $data['alipay_trade_refund_response']['sub_msg'],
+                $data['alipay_trade_refund_response']['code'],
+                $data['alipay_trade_refund_response']);
         }
 
-        return $data['alipay_trade_refund_response'];
+        return $this->verify($data['alipay_trade_refund_response'], $data['sign'], true);
     }
 
     /**
@@ -116,11 +120,12 @@ abstract class Alipay implements GatewayInterface
         
         $data = json_decode($this->post($this->gateway, $this->config), true);
 
-        if ($data['alipay_trade_close_response']['code'] === '10000') {
-            return $this->verify($data['alipay_trade_close_response'], $data['sign'], true);
+        if ($data['alipay_trade_close_response']['code'] !== '10000') {
+            throw new GatewayException(
+                $data['alipay_trade_close_response']['msg'] . $data['alipay_trade_close_response']['sub_msg'],
+                $data['alipay_trade_close_response']['code'],
+                $data['alipay_trade_close_response']);
         }
-
-        return $data['alipay_trade_close_response'];
     }
 
     /**
