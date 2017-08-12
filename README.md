@@ -11,8 +11,8 @@ use Yansongda\Pay\Pay;
 $config = [
     'alipay' => [
         'app_id' => '',
-        'notify' => '',
-        'return' => '',
+        'notify_url' => '',
+        'return_url' => '',
         'ali_public_key' => '',
         'private_key' => '',
     ],
