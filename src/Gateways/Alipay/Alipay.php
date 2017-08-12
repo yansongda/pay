@@ -93,17 +93,8 @@ abstract class Alipay implements GatewayInterface
         $this->config['method'] = 'alipay.trade.refund';
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
-        
-        $data = json_decode($this->post($this->gateway, $this->config), true);
 
-        if ($data['alipay_trade_refund_response']['code'] !== '10000') {
-            throw new GatewayException(
-                $data['alipay_trade_refund_response']['msg'] . $data['alipay_trade_refund_response']['sub_msg'],
-                $data['alipay_trade_refund_response']['code'],
-                $data['alipay_trade_refund_response']);
-        }
-
-        return $this->verify($data['alipay_trade_refund_response'], $data['sign'], true);
+        return $this->getResult('alipay_trade_refund_response');
     }
 
     /**
@@ -117,15 +108,8 @@ abstract class Alipay implements GatewayInterface
         $this->config['method'] = 'alipay.trade.close';
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
-        
-        $data = json_decode($this->post($this->gateway, $this->config), true);
 
-        if ($data['alipay_trade_close_response']['code'] !== '10000') {
-            throw new GatewayException(
-                $data['alipay_trade_close_response']['msg'] . $data['alipay_trade_close_response']['sub_msg'],
-                $data['alipay_trade_close_response']['code'],
-                $data['alipay_trade_close_response']);
-        }
+        return $this->getResult('alipay_trade_close_response');
     }
 
     /**
@@ -155,7 +139,6 @@ abstract class Alipay implements GatewayInterface
 
         return false;
     }
-
 
     /**
      * [getMethod description]
@@ -190,6 +173,27 @@ abstract class Alipay implements GatewayInterface
         $sHtml = $sHtml."<script>document.forms['alipaysubmit'].submit();</script>";
         
         return $sHtml;
+    }
+
+    /**
+     * get alipay api result
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-12
+     * @param   [type]     $method [description]
+     * @return  [type]             [description]
+     */
+    protected function getResult($method)
+    {
+        $data = json_decode($this->post($this->gateway, $this->config), true);
+
+        if ($data[$method]['code'] !== '10000') {
+            throw new GatewayException(
+                $data[$method]['msg'] . $data[$method]['sub_msg'],
+                $data[$method]['code'],
+                $data[$method]);
+        }
+
+        return $this->verify($data[$method], $data['sign'], true);
     }
 
     /**
