@@ -7,6 +7,10 @@ namespace Yansongda\Pay\Exceptions;
 */
 class GatewayException extends Exception
 {
+    /**
+     * error raw data
+     * @var array
+     */
     public $raw = [];
 
     /**
