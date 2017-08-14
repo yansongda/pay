@@ -5,7 +5,10 @@ namespace Yansongda\Pay\Gateways\Wechat;
 /**
 * 
 */
-class WebGateway extends Wechat
+class JsGateway extends Wechat
 {
-
+    public function getTradeType()
+    {
+        return 'JSAPI';
+    }
 }
