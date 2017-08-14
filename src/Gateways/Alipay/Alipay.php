@@ -36,10 +36,10 @@ abstract class Alipay implements GatewayInterface
     /**
      * [__construct description]
      * @author yansongda <me@yansongda.cn>
-     * @version 2017-08-05
-     * @param   [type]     $config [description]
+     * @version 2017-08-14
+     * @param   array      $config [description]
      */
-    public function __construct($config)
+    public function __construct(array $config)
     {
         if ($config['app_id'] === '') {
             throw new InvalidArgumentException("Missing Config -- [app_id]");

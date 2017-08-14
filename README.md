@@ -1,10 +1,10 @@
 <h1 align="center">Pay</h1>
 
-## 使用方法
-### 1、通过 composer 加载
+## 安装
 ```composer required yansongda/pay```
 
-### 2、在代码中使用
+## 使用方法
+### 1、支付宝
 ```php
 use Yansongda\Pay\Pay;
 
@@ -24,7 +24,29 @@ $config_biz = [
 ];
 
 $pay = new Pay($config);
-return $pay->dirver('alipay')->gateway('web')->pay($biz);
+return $pay->dirver('alipay')->gateway('web')->pay($config_biz);
+```
+
+### 2、微信
+```php
+use Yansongda\Pay\Pay;
+
+$config = [
+    'wechat' => [
+        'app_id' => '',
+        'mch_id' => '',
+        'notify_url' => '',
+    ],
+];
+$config_biz = [
+    'out_trade_no' => '',
+    'total_fee' => '',
+    'body' => '',
+    'spbill_create_ip' => '',
+];
+
+$pay = new Pay($config);
+return $pay->dirver('wechat')->gateway('js')->pay($config_biz);
 ```
 
 ## LICENSE
