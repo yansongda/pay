@@ -12,7 +12,7 @@ interface GatewayInterface
      * @version 2017-08-11
      * @return  [type]     [description]
      */
-    public function pay();
+    public function pay(array $config_biz);
 
     /**
      * 退款
@@ -20,7 +20,7 @@ interface GatewayInterface
      * @version 2017-08-11
      * @return  [type]     [description]
      */
-    public function refund();
+    public function refund(array $config_biz);
 
     /**
      * 关闭
@@ -28,7 +28,7 @@ interface GatewayInterface
      * @version 2017-08-11
      * @return  [type]     [description]
      */
-    public function close();
+    public function close(array $config_biz);
 
     /**
      * 验证消息是否官方发出

@@ -65,13 +65,12 @@ abstract class Alipay implements GatewayInterface
 
     /**
      * 对外接口 - 支付
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-30
-     * @param   [type]     $config_biz [description]
-     * @param   [type]     $type       [description]
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-15
+     * @param   array      $config_biz [description]
      * @return  [type]                 [description]
      */
-    public function pay($config_biz = [])
+    public function pay(array $config_biz = [])
     {
         $config_biz['product_code'] = $this->getPayProductCode();
 
@@ -84,11 +83,12 @@ abstract class Alipay implements GatewayInterface
 
     /**
      * 对外接口 - 退款
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-29
-     * @return  [type]     [description]
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-15
+     * @param   array      $config_biz [description]
+     * @return  [type]                 [description]
      */
-    public function refund($config_biz = [])
+    public function refund(array $config_biz = [])
     {
         $this->config['method'] = 'alipay.trade.refund';
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
@@ -99,11 +99,12 @@ abstract class Alipay implements GatewayInterface
 
     /**
      * 对外接口 - 关闭
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-29
-     * @return  [type]     [description]
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-15
+     * @param   array      $config_biz [description]
+     * @return  [type]                 [description]
      */
-    public function close($config_biz = [])
+    public function close(array $config_biz = [])
     {
         $this->config['method'] = 'alipay.trade.close';
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
@@ -188,7 +189,7 @@ abstract class Alipay implements GatewayInterface
 
         if ($data[$method]['code'] !== '10000') {
             throw new GatewayException(
-                $data[$method]['msg'] . $data[$method]['sub_msg'],
+                $data[$method]['msg'] . ' - ' . $data[$method]['sub_msg'],
                 $data[$method]['code'],
                 $data[$method]);
         }

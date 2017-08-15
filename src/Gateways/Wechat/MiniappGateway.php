@@ -3,9 +3,9 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 /**
-* 
+* 微信支付 - 扫码支付
 */
-class JsGateway extends Wechat
+class ScanGateway extends Wechat
 {
     public function getTradeType()
     {

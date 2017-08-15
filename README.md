@@ -36,6 +36,7 @@ $config = [
         'app_id' => '',
         'mch_id' => '',
         'notify_url' => '',
+        'key' => '',
     ],
 ];
 $config_biz = [
@@ -43,6 +44,7 @@ $config_biz = [
     'total_fee' => '',
     'body' => '',
     'spbill_create_ip' => '',
+    'openid' => '',
 ];
 
 $pay = new Pay($config);
