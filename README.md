@@ -10,19 +10,19 @@
 
 ## 支持的支付网关
 
-### 支付宝
+### 1、支付宝
 
 - 电脑支付
 - 手机网站支付
 
-SDK 中对应的 driver 和 gateway 如下表所示：
+SDK 中对应的 driver 和 gateway 如下表所示：  
 
 | driver | gateway |   描述       |
 | :----: | :-----: | :-------:   |
 | alipay | web     | 电脑支付     |
 | alipay | wap     | 手机网站支付  |
-
-### 微信
+  
+### 2、微信
 
 - 公众号支付
 - 小程序支付
@@ -139,6 +139,24 @@ $config_biz = [
 
 
 ### 支付宝 - 手机网站支付
+
+1、最小配置参数
+```php
+$config = [
+    'alipay' => [
+        'app_id' => '',             // 支付宝提供的 APP_ID
+        'ali_public_key' => '',     // 支付宝公钥，1行填写
+        'private_key' => '',        // 自己的私钥，1行填写
+    ],
+];
+$config_biz = [
+    'out_trade_no' => '12',                 // 订单号
+    'total_amount' => '13',                 // 订单金额，单位：元
+    'subject' => 'officeal test subject',   // 订单商品标题
+];
+```
+
+2、所有配置参数
 该网关大部分参数和 「电脑支付」 相同，具体请参考 [官方文档](https://docs.open.alipay.com/203/107090/ '支付宝手机网站支付文档')
 
 ### 微信 - 公众号支付

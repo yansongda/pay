@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Yansongda\Pay;
 
@@ -6,32 +6,38 @@ use Yansongda\Pay\Support\Config;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
 /**
- * 
+ * class Pay
  */
 class Pay
 {
     /**
      * [$config description]
+     * 
      * @var [type]
      */
     private $config;
 
     /**
      * [$dirvers description]
+     * 
      * @var [type]
      */
     private $dirvers;
 
     /**
      * [$gateways description]
+     * 
      * @var [type]
      */
     private $gateways;
 
     /**
      * [__construct description]
+     * 
      * @author JasonYan <me@yansongda.cn>
+     * 
      * @version 2017-07-29
+     * 
      * @param   array      $config [description]
      */
     public function __construct(array $config = [])
@@ -41,9 +47,13 @@ class Pay
 
     /**
      * [driver description]
+     * 
      * @author JasonYan <me@yansongda.cn>
+     * 
      * @version 2017-07-30
+     * 
      * @param   [type]     $driver [description]
+     * 
      * @return  [type]             [description]
      */
     public function driver($driver)
@@ -59,9 +69,13 @@ class Pay
 
     /**
      * [gateway description]
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-10
+     * 
      * @param   string     $gateway [description]
+     * 
      * @return  [type]              [description]
      */
     public function gateway($gateway = 'web')
@@ -77,9 +91,13 @@ class Pay
 
     /**
      * [createGateway description]
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-10
+     * 
      * @param   [type]     $gateway [description]
+     * 
      * @return  [type]              [description]
      */
     private function createGateway($gateway)
@@ -95,10 +113,14 @@ class Pay
 
     /**
      * [buildDriver description]
+     * 
      * @author JasonYan <me@yansongda.cn>
+     * 
      * @version 2017-07-30
-     * @param   [type]     $driver [description]
+     * 
+     * @param   [type]     $driver  [description]
      * @param   [type]     $config  [description]
+     * 
      * @return  [type]              [description]
      */
     private function build($gateway)

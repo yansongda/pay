@@ -1,16 +1,19 @@
-<?php 
+<?php
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
 /**
-* 微信 - 公众号支付
-*/
+ * 微信 - 公众号支付
+ */
 class AppGateway extends Wechat
 {
     /**
      * 交易类型
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @return  [type]     [description]
      */
     protected function getTradeType()
@@ -20,9 +23,13 @@ class AppGateway extends Wechat
 
     /**
      * 对外支付
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @param   array      $config_biz [description]
+     * 
      * @return  [type]                 [description]
      */
     public function pay(array $config_biz = [])

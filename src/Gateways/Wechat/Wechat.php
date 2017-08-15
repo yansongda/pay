@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
@@ -9,34 +9,40 @@ use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
 /**
-* 
-*/
+ * abstract class Wechat
+ */
 abstract class Wechat implements GatewayInterface
 {
     use HasHttpRequest;
 
     /**
      * [$preOrder_gateway description]
+     * 
      * @var string
      */
     protected $preOrder_gateway = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
     /**
      * [$config description]
+     * 
      * @var [type]
      */
     protected $config;
 
     /**
      * [$user_config description]
+     * 
      * @var [type]
      */
     protected $user_config;
 
     /**
      * [__construct description]
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-14
+     * 
      * @param   array      $config [description]
      */
     public function __construct(array $config)
@@ -55,17 +61,24 @@ abstract class Wechat implements GatewayInterface
 
     /**
      * 对外支付接口
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @param   array      $cofnig_biz [description]
+     * 
      * @return  [type]                 [description]
      */
     abstract public function pay(array $config_biz = []);
 
     /**
      * 对外接口 - 退款
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @return  [type]     [description]
      */
     public function refund(array $config_biz = [])
@@ -75,8 +88,11 @@ abstract class Wechat implements GatewayInterface
 
     /**
      * 对外接口 - 关闭订单
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @return  [type]     [description]
      */
     public function close(array $config_biz = [])
@@ -86,10 +102,15 @@ abstract class Wechat implements GatewayInterface
 
     /**
      * 验证签名
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @param   string     $data 待验证 xml 数据
      * @param   string     $sign 服务器返回的签名
+     * @param   bool       $sync is sync sign
+     * 
      * @return  bool             是否相符
      */
     public function verify($data, $sign = null, $sync = false)
@@ -103,8 +124,11 @@ abstract class Wechat implements GatewayInterface
 
     /**
      * 预下单
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @return  array       服务器返回结果数组
      */
     protected function preOrder()
@@ -130,9 +154,13 @@ abstract class Wechat implements GatewayInterface
 
     /**
      * 签名
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @param   array      $data 带签名数组
+     * 
      * @return  string           [description]
      */
     protected function getSign($data)
@@ -150,9 +178,13 @@ abstract class Wechat implements GatewayInterface
 
     /**
      * 将数组转换成 URL 格式
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @param   array      $data [description]
+     * 
      * @return  string           [description]
      */
     protected function getSignContent($data)
@@ -171,9 +203,13 @@ abstract class Wechat implements GatewayInterface
 
     /**
      * 生成随机字符串
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-14
+     * 
      * @param   integer    $length [description]
+     * 
      * @return  [type]             [description]
      */
     protected function createNonceStr($length = 16) {
@@ -188,9 +224,13 @@ abstract class Wechat implements GatewayInterface
 
     /**
      * 转化为 xml
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-14
+     * 
      * @param   array      $data 带转化数组
+     * 
      * @return  string           转化后的xml字符串
      */
     protected function toXml($data)
@@ -214,9 +254,13 @@ abstract class Wechat implements GatewayInterface
 
     /**
      * xml 转化为 array
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-14
+     * 
      * @param   string     $xml xml字符串
+     * 
      * @return  array           转化后的数组
      */
     protected function fromXml($xml)

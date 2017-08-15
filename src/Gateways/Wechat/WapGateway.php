@@ -1,16 +1,19 @@
-<?php 
+<?php
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
 /**
-* 微信支付 - H5 支付
-*/
+ * 微信支付 - H5 支付
+ */
 class WapGateway extends Wechat
 {
     /**
      * [getTradeType description]
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @return  [type]     [description]
      */
     public function getTradeType()
@@ -20,9 +23,13 @@ class WapGateway extends Wechat
 
     /**
      * 支付
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @param   array      $config_biz [description]
+     * 
      * @return  [type]                 [description]
      */
     public function pay(array $config_biz = [])
