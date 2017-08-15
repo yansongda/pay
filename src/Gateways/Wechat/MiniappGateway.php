@@ -1,16 +1,19 @@
-<?php 
+<?php
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
 /**
-* 微信支付 - 扫码支付
-*/
+ * 微信支付 - 扫码支付
+ */
 class ScanGateway extends Wechat
 {
     /**
      * [getTradeType description]
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @return  [type]     [description]
      */
     public function getTradeType()
@@ -20,9 +23,13 @@ class ScanGateway extends Wechat
 
     /**
      * 对外支付
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-15
+     * 
      * @param   array      $config_biz [description]
+     * 
      * @return  [type]                 [description]
      */
     public function pay(array $config_biz = [])

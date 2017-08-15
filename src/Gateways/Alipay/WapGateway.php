@@ -1,16 +1,19 @@
-<?php 
+<?php
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
 /**
-* 
-*/
+ * WapGateway
+ */
 class WapGateway extends Alipay
 {
     /**
      * [getMethod description]
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-10
+     * 
      * @return  [type]     [description]
      */
     protected function getPayMethod() {
@@ -19,8 +22,11 @@ class WapGateway extends Alipay
 
     /**
      * [getProductCode description]
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-10
+     * 
      * @return  [type]     [description]
      */
     protected function getPayProductCode() {
