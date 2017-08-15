@@ -128,7 +128,7 @@ abstract class Alipay implements GatewayInterface
             throw new InvalidArgumentException("Missing Config -- [ali_public_key]");
         }
 
-        $sign = $sign ?? $data['sign']
+        $sign = $sign ?? $data['sign'];
 
         $res = "-----BEGIN PUBLIC KEY-----\n" .
                 wordwrap($this->user_config->get('ali_public_key'), 64, "\n", true) .
