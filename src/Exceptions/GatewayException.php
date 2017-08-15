@@ -3,24 +3,24 @@
 namespace Yansongda\Pay\Exceptions;
 
 /**
- * GatewayException
+ * GatewayException.
  */
 class GatewayException extends Exception
 {
     /**
-     * error raw data
-     * 
+     * error raw data.
+     *
      * @var array
      */
     public $raw = [];
 
     /**
-     * [__construct description]
-     * 
+     * [__construct description].
+     *
      * @author JasonYan <me@yansongda.cn>
-     * 
+     *
      * @version 2017-07-28
-     * 
+     *
      * @param   [type]     $message [description]
      * @param   [type]     $code    [description]
      */

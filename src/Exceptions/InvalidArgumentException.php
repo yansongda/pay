@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Exceptions;
 
 /**
- * InvalidArgumentException
+ * InvalidArgumentException.
  */
 class InvalidArgumentException extends \InvalidArgumentException
 {

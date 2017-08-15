@@ -2,7 +2,7 @@
 namespace Yansongda\Pay\Contracts;
 
 /**
- * Interface GatewayInterface
+ * Interface GatewayInterface.
  */
 interface GatewayInterface
 {

@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Exceptions;
 
 /**
- * Exception
+ * Exception.
  */
 class Exception extends \Exception
 {
