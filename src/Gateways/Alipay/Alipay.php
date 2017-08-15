@@ -41,14 +41,14 @@ abstract class Alipay implements GatewayInterface
      */
     public function __construct(array $config)
     {
-        if ($config['app_id'] === '') {
+        $this->user_config = new Config($config);
+
+        if (is_null($this->user_config->get('app_id'))) {
             throw new InvalidArgumentException("Missing Config -- [app_id]");
         }
 
-        $this->user_config = new Config($config);
-
         $this->config = [
-            'app_id' => $this->user_config->get('app_id', ''),
+            'app_id' => ,
             'method' => '',
             'format' => 'JSON',
             'charset' => 'utf-8',
