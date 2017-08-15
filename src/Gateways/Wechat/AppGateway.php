@@ -5,7 +5,7 @@ namespace Yansongda\Pay\Gateways\Wechat;
 /**
 * 微信 - 公众号支付
 */
-class MpGateway extends Wechat
+class AppGateway extends Wechat
 {
     /**
      * 交易类型
@@ -15,7 +15,7 @@ class MpGateway extends Wechat
      */
     protected function getTradeType()
     {
-        return 'JSAPI';
+        return 'APP';
     }
 
     /**
@@ -28,16 +28,17 @@ class MpGateway extends Wechat
     public function pay(array $config_biz = [])
     {
         $this->config = array_merge($this->config, $config_biz);
+        $this->config['appid'] = $this->user_config->get('appid');
 
         $payRequest = [
-            "appId" => $this->user_config->get('app_id'),
-            "timeStamp" => time(),    
-            "nonceStr" => $this->createNonceStr(),   
-            "package" => "prepay_id=" . $this->preOrder()['prepay_id'],
-            "signType" => "MD5",    
-            //"paySign" ： "70EA570631E4BB79628FBCA90534C63FF7FADD89" //微信签名 
+            "appid" => $this->user_config->get('appid'),
+            'partnerid' => $this->user_config->get('partnerid'),
+            'prepayid' => $this->preOrder()['prepay_id'],
+            "timestamp" => time(),    
+            "noncestr" => $this->createNonceStr(),   
+            "package" => "Sign=WXPay", 
         ];
-        $payRequest['paySign'] = $this->getSign($payRequest);
+        $payRequest['sign'] = $this->getSign($payRequest);
 
         return $payRequest;
     }

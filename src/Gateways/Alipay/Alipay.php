@@ -122,11 +122,13 @@ abstract class Alipay implements GatewayInterface
      * @param   bool       $sync 是否同步验证
      * @return  [type]           [description]
      */
-    public function verify(array $data, $sign, $sync = false)
+    public function verify($data, $sign = null, $sync = false)
     {
         if (is_null($this->user_config->get('ali_public_key'))) {
             throw new InvalidArgumentException("Missing Config -- [ali_public_key]");
         }
+
+        $sign = $sign ?? $data['sign']
 
         $res = "-----BEGIN PUBLIC KEY-----\n" .
                 wordwrap($this->user_config->get('ali_public_key'), 64, "\n", true) .
@@ -187,11 +189,11 @@ abstract class Alipay implements GatewayInterface
     {
         $data = json_decode($this->post($this->gateway, $this->config), true);
 
-        if ($data[$method]['code'] !== '10000') {
+        if (! isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
             throw new GatewayException(
-                $data[$method]['msg'] . ' - ' . $data[$method]['sub_msg'],
+                'get result error:' . $data[$method]['msg'] . ' - ' . $data[$method]['sub_msg'],
                 $data[$method]['code'],
-                $data[$method]);
+                $data);
         }
 
         return $this->verify($data[$method], $data['sign'], true);

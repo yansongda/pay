@@ -35,7 +35,9 @@ $config = [
     'wechat' => [
         'app_id' => '',
         'mch_id' => '',
+        'appid' => '',
         'notify_url' => '',
+        'return_url' => '',
         'key' => '',
     ],
 ];

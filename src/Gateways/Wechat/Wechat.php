@@ -60,26 +60,43 @@ abstract class Wechat implements GatewayInterface
      * @param   array      $cofnig_biz [description]
      * @return  [type]                 [description]
      */
-    abstract public function pay(array $config_biz);
+    abstract public function pay(array $config_biz = []);
+
+    /**
+     * 验证签名
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-15
+     * @param   string     $data 待验证 xml 数据
+     * @param   string     $sign 服务器返回的签名
+     * @return  bool             是否相符
+     */
+    public function verify($data, $sign = null, $sync = false)
+    {
+        $data = $this->fromXml($data);
+
+        $sign = $sign ?? $data['sign'];
+
+        return $this->getSign($data) === $sign;
+    }
 
     /**
      * 预下单
      * @author yansongda <me@yansongda.cn>
      * @version 2017-08-15
-     * @return  [type]     [description]
+     * @return  array       服务器返回结果数组
      */
     protected function preOrder()
     {
         $data = $this->fromXml($this->get($this->preOrder_gateway, $this->config));
 
-        if ($data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
+        if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
             throw new GatewayException(
                 'preOrder error:' . $data['return_msg'] . ' - ' . $data['err_code_des'],
                 20000,
                 $data);
         }
 
-        if ($this->getSign($res) !== $data['sign']) {
+        if ($this->getSign($data) !== $data['sign']) {
             throw new GatewayException(
                 'preOrder error: return data sign error',
                 20000,
