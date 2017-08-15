@@ -26,12 +26,16 @@ class Config implements ArrayAccess
     }
 
     /**
-     * get a config
+     * get a config.
+     *
      * @author JasonYan <me@yansongda.cn>
+     *
      * @version 2017-07-28
-     * @param   [type]     $key     [description]
-     * @param   [type]     $default [description]
-     * @return  [type]              [description]
+     *
+     * @param [type] $key     [description]
+     * @param [type] $default [description]
+     *
+     * @return [type] [description]
      */
     public function get($key = null, $default = null)
     {
@@ -56,11 +60,14 @@ class Config implements ArrayAccess
     }
 
     /**
-     * set a config
+     * set a config.
+     *
      * @author JasonYan <me@yansongda.cn>
+     *
      * @version 2017-07-29
-     * @param   string     $key   [description]
-     * @param   [type]     $value [description]
+     *
+     * @param string $key   [description]
+     * @param [type] $value [description]
      */
     public function set(string $key, $value)
     {
@@ -80,7 +87,7 @@ class Config implements ArrayAccess
             case '3':
                 $this->config[$keys[0]][$keys[1]][$keys[3]] = $value;
                 break;
-            
+
             default:
                 throw new InvalidArgumentException('Invalid config key.');
                 break;
@@ -90,11 +97,15 @@ class Config implements ArrayAccess
     }
 
     /**
-     * [offsetExists description]
+     * [offsetExists description].
+     *
      * @author JasonYan <me@yansongda.cn>
+     *
      * @version 2017-07-30
-     * @param   [type]     $offset [description]
-     * @return  [type]             [description]
+     *
+     * @param [type] $offset [description]
+     *
+     * @return [type] [description]
      */
     public function offsetExists($offset)
     {
@@ -102,11 +113,15 @@ class Config implements ArrayAccess
     }
 
     /**
-     * [offsetGet description]
+     * [offsetGet description].
+     *
      * @author JasonYan <me@yansongda.cn>
+     *
      * @version 2017-07-30
-     * @param   [type]     $offset [description]
-     * @return  [type]             [description]
+     *
+     * @param [type] $offset [description]
+     *
+     * @return [type] [description]
      */
     public function offsetGet($offset)
     {
@@ -114,12 +129,16 @@ class Config implements ArrayAccess
     }
 
     /**
-     * [offsetSet description]
+     * [offsetSet description].
+     *
      * @author JasonYan <me@yansongda.cn>
+     *
      * @version 2017-07-30
-     * @param   [type]     $offset [description]
-     * @param   [type]     $value  [description]
-     * @return  [type]             [description]
+     *
+     * @param [type] $offset [description]
+     * @param [type] $value  [description]
+     *
+     * @return [type] [description]
      */
     public function offsetSet($offset, $value)
     {
@@ -127,15 +146,18 @@ class Config implements ArrayAccess
     }
 
     /**
-     * [offsetUnset description]
+     * [offsetUnset description].
+     *
      * @author JasonYan <me@yansongda.cn>
+     *
      * @version 2017-07-30
-     * @param   [type]     $offset [description]
-     * @return  [type]             [description]
+     *
+     * @param [type] $offset [description]
+     *
+     * @return [type] [description]
      */
     public function offsetUnset($offset)
     {
         $this->set($offset, null);
     }
-
 }
