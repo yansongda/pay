@@ -79,7 +79,7 @@ abstract class Wechat implements GatewayInterface
                 $data);
         }
 
-        if ($this->sign($res) !== $data['sign']) {
+        if ($this->getSign($res) !== $data['sign']) {
             throw new GatewayException(
                 'preOrder error: return data sign error',
                 20000,
@@ -96,7 +96,7 @@ abstract class Wechat implements GatewayInterface
      * @param   array      $data 带签名数组
      * @return  string           [description]
      */
-    protected function sign($data)
+    protected function getSign($data)
     {
         if (is_null($this->user_config->get('key'))) {
             throw new InvalidArgumentException("Missing Config -- [key]");
@@ -104,7 +104,7 @@ abstract class Wechat implements GatewayInterface
 
         ksort($data);
 
-        $string = md5($this->toUrlParams($data) . "&key=" . $this->user_config->get('key'));
+        $string = md5($this->getSignContent($data) . "&key=" . $this->user_config->get('key'));
 
         return strtoupper($string);
     }
@@ -116,7 +116,7 @@ abstract class Wechat implements GatewayInterface
      * @param   array      $data [description]
      * @return  string           [description]
      */
-    protected function toUrlParams($data)
+    protected function getSignContent($data)
     {
         $buff = "";
 

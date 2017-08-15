@@ -37,7 +37,7 @@ class MpGateway extends Wechat
             "signType" => "MD5",    
             //"paySign" ： "70EA570631E4BB79628FBCA90534C63FF7FADD89" //微信签名 
         ];
-        $payRequest['paySign'] = $this->sign($payRequest);
+        $payRequest['paySign'] = $this->getSign($payRequest);
 
         return $payRequest;
     }
