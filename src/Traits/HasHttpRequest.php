@@ -34,7 +34,7 @@ trait HasHttpRequest
     {
         return $this->request('get', $endpoint, [
             'headers' => $headers,
-            'query' => $query,
+            'query'   => $query,
         ]);
     }
 
@@ -50,7 +50,7 @@ trait HasHttpRequest
     protected function post($endpoint, $params = [], $headers = [])
     {
         return $this->request('post', $endpoint, [
-            'headers' => $headers,
+            'headers'     => $headers,
             'form_params' => $params,
         ]);
     }
@@ -78,7 +78,7 @@ trait HasHttpRequest
     {
         $options = [
             'base_uri' => method_exists($this, 'getBaseUri') ? $this->getBaseUri() : '',
-            'timeout' => property_exists($this, 'timeout') ? $this->timeout : 5.0,
+            'timeout'  => property_exists($this, 'timeout') ? $this->timeout : 5.0,
         ];
 
         return $options;
