@@ -63,6 +63,28 @@ abstract class Wechat implements GatewayInterface
     abstract public function pay(array $config_biz = []);
 
     /**
+     * 对外接口 - 退款
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-15
+     * @return  [type]     [description]
+     */
+    public function refund(array $config_biz = [])
+    {
+        # code...
+    }
+
+    /**
+     * 对外接口 - 关闭订单
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-15
+     * @return  [type]     [description]
+     */
+    public function close(array $config_biz = [])
+    {
+        # code...
+    }
+
+    /**
      * 验证签名
      * @author yansongda <me@yansongda.cn>
      * @version 2017-08-15
