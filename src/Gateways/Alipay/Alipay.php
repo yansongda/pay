@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Gateways\Alipay;
 use Yansongda\Pay\Support\Config;
 use Yansongda\Pay\Traits\HasHttpRequest;
 use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
 /**
@@ -35,19 +36,19 @@ abstract class Alipay implements GatewayInterface
     /**
      * [__construct description]
      * @author yansongda <me@yansongda.cn>
-     * @version 2017-08-05
-     * @param   [type]     $config [description]
+     * @version 2017-08-14
+     * @param   array      $config [description]
      */
-    public function __construct($config)
+    public function __construct(array $config)
     {
-        if ($config['app_id'] === '') {
+        $this->user_config = new Config($config);
+
+        if (is_null($this->user_config->get('app_id'))) {
             throw new InvalidArgumentException("Missing Config -- [app_id]");
         }
 
-        $this->user_config = new Config($config);
-
         $this->config = [
-            'app_id' => $this->user_config->get('app_id', ''),
+            'app_id' => $this->user_config->get('app_id'),
             'method' => '',
             'format' => 'JSON',
             'charset' => 'utf-8',
@@ -64,13 +65,12 @@ abstract class Alipay implements GatewayInterface
 
     /**
      * 对外接口 - 支付
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-30
-     * @param   [type]     $config_biz [description]
-     * @param   [type]     $type       [description]
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-15
+     * @param   array      $config_biz [description]
      * @return  [type]                 [description]
      */
-    public function pay($config_biz = [])
+    public function pay(array $config_biz = [])
     {
         $config_biz['product_code'] = $this->getPayProductCode();
 
@@ -83,44 +83,34 @@ abstract class Alipay implements GatewayInterface
 
     /**
      * 对外接口 - 退款
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-29
-     * @return  [type]     [description]
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-15
+     * @param   array      $config_biz [description]
+     * @return  [type]                 [description]
      */
-    public function refund($config_biz = [])
+    public function refund(array $config_biz = [])
     {
         $this->config['method'] = 'alipay.trade.refund';
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
-        
-        $data = json_decode($this->post($this->gateway, $this->config), true);
 
-        if ($data['alipay_trade_refund_response']['code'] === '10000') {
-            return $this->verify($data['alipay_trade_refund_response'], $data['sign'], true);
-        }
-
-        return $data['alipay_trade_refund_response'];
+        return $this->getResult('alipay_trade_refund_response');
     }
 
     /**
      * 对外接口 - 关闭
-     * @author JasonYan <me@yansongda.cn>
-     * @version 2017-07-29
-     * @return  [type]     [description]
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-15
+     * @param   array      $config_biz [description]
+     * @return  [type]                 [description]
      */
-    public function close($config_biz = [])
+    public function close(array $config_biz = [])
     {
         $this->config['method'] = 'alipay.trade.close';
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
-        
-        $data = json_decode($this->post($this->gateway, $this->config), true);
 
-        if ($data['alipay_trade_close_response']['code'] === '10000') {
-            return $this->verify($data['alipay_trade_close_response'], $data['sign'], true);
-        }
-
-        return $data['alipay_trade_close_response'];
+        return $this->getResult('alipay_trade_close_response');
     }
 
     /**
@@ -132,11 +122,13 @@ abstract class Alipay implements GatewayInterface
      * @param   bool       $sync 是否同步验证
      * @return  [type]           [description]
      */
-    public function verify(array $data, $sign, $sync = false)
+    public function verify($data, $sign = null, $sync = false)
     {
         if (is_null($this->user_config->get('ali_public_key'))) {
             throw new InvalidArgumentException("Missing Config -- [ali_public_key]");
         }
+
+        $sign = $sign ?? $data['sign'];
 
         $res = "-----BEGIN PUBLIC KEY-----\n" .
                 wordwrap($this->user_config->get('ali_public_key'), 64, "\n", true) .
@@ -150,7 +142,6 @@ abstract class Alipay implements GatewayInterface
 
         return false;
     }
-
 
     /**
      * [getMethod description]
@@ -185,6 +176,27 @@ abstract class Alipay implements GatewayInterface
         $sHtml = $sHtml."<script>document.forms['alipaysubmit'].submit();</script>";
         
         return $sHtml;
+    }
+
+    /**
+     * get alipay api result
+     * @author yansongda <me@yansongda.cn>
+     * @version 2017-08-12
+     * @param   [type]     $method [description]
+     * @return  [type]             [description]
+     */
+    protected function getResult($method)
+    {
+        $data = json_decode($this->post($this->gateway, $this->config), true);
+
+        if (! isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
+            throw new GatewayException(
+                'get result error:' . $data[$method]['msg'] . ' - ' . $data[$method]['sub_msg'],
+                $data[$method]['code'],
+                $data);
+        }
+
+        return $this->verify($data[$method], $data['sign'], true);
     }
 
     /**

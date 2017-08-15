@@ -5,7 +5,7 @@ namespace Yansongda\Pay\Gateways\Alipay;
 /**
 * 
 */
-class WebGateway extends Alipay
+class WapGateway extends Alipay
 {
     /**
      * [getMethod description]
