@@ -1,5 +1,10 @@
 <h1 align="center">Pay</h1>
 
+<p align="center">
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yansongda/pay/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yansongda/pay/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/yansongda/pay/badges/build.png?b=master)](https://scrutinizer-ci.com/g/yansongda/pay/build-status/master)
+</p>
+
 开发了多次支付宝与微信支付后，很自然产生一种反感，惰性又来了，想在网上找相关的轮子，可是一直没有找到一款自己觉得逞心如意的，要么使用起来太难理解，要么文件结构太杂乱，只有自己撸起袖子干了。
 
 欢迎 Star，欢迎 PR！
