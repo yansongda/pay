@@ -37,9 +37,13 @@ class AppGateway extends Alipay
 
     /**
      * [pay description].
+     * 
      * @author yansongda <me@yansongda.cn>
+     * 
      * @version 2017-08-16
-     * @param   array      $config_biz [description]
+     * 
+     * @param   array      $config_biz 业务参数
+     * 
      * @return  [type]                 [description]
      */
     public function pay(array $config_biz = [])
