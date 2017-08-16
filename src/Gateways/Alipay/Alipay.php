@@ -20,7 +20,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @var string
      */
-    protected $gateway = 'https://openapi.alipaydev.com/gateway.do';
+    protected $gateway = 'https://openapi.alipay.com/gateway.do';
 
     /**
      * 支付宝公共参数.
