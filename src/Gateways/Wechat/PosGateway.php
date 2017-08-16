@@ -20,4 +20,9 @@ class PosGateway extends Wechat
     {
         return 'JSAPI';
     }
+
+    public function pay(array $config_biz = [])
+    {
+        # code...
+    }
 }

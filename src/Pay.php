@@ -22,7 +22,7 @@ class Pay
      * 
      * @var [type]
      */
-    private $dirvers;
+    private $drivers;
 
     /**
      * [$gateways description]
@@ -118,8 +118,7 @@ class Pay
      * 
      * @version 2017-07-30
      * 
-     * @param   [type]     $driver  [description]
-     * @param   [type]     $config  [description]
+     * @param   [type]     $gateway [description]
      * 
      * @return  [type]              [description]
      */

@@ -105,8 +105,6 @@ abstract class Alipay implements GatewayInterface
     public function refund(array $config_biz = [])
     {
         $this->config['method'] = 'alipay.trade.refund';
-        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
-        $this->config['sign'] = $this->getSign();
 
         return $this->getResult('alipay_trade_refund_response');
     }
@@ -125,8 +123,6 @@ abstract class Alipay implements GatewayInterface
     public function close(array $config_biz = [])
     {
         $this->config['method'] = 'alipay.trade.close';
-        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
-        $this->config['sign'] = $this->getSign();
 
         return $this->getResult('alipay_trade_close_response');
     }
@@ -222,6 +218,9 @@ abstract class Alipay implements GatewayInterface
      */
     protected function getResult($method)
     {
+        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
+        $this->config['sign'] = $this->getSign();
+        
         $data = json_decode($this->post($this->gateway, $this->config), true);
 
         if (! isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
