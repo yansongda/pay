@@ -3,6 +3,10 @@
 <p align="center">
 <a href="https://scrutinizer-ci.com/g/yansongda/pay/?branch=master"><img src="https://scrutinizer-ci.com/g/yansongda/pay/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
 <a href="https://scrutinizer-ci.com/g/yansongda/pay/build-status/master"><img src="https://scrutinizer-ci.com/g/yansongda/pay/badges/build.png?b=master" alt="Build Status"></a>
+<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/v/stable" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/downloads" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/unstable" alt="Latest Unstable Version"></a>
+<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/license" alt="License"></a>
 </p>
 
 开发了多次支付宝与微信支付后，很自然产生一种反感，惰性又来了，想在网上找相关的轮子，可是一直没有找到一款自己觉得逞心如意的，要么使用起来太难理解，要么文件结构太杂乱，只有自己撸起袖子干了。
@@ -84,6 +88,8 @@ composer required yansongda/pay
 
 ### 0、一个完整的例子:
 ```php
+use Yansongda\Pay\Pay;
+
 $config = [
     'alipay' => [
         'app_id' => '2016082000295641',
@@ -117,7 +123,7 @@ $config = [
 $config_biz = [
     'out_trade_no' => '12',                 // 订单号
     'total_amount' => '13',                 // 订单金额，单位：元
-    'subject' => 'officeal test subject',   // 订单商品标题
+    'subject' => 'test subject',   // 订单商品标题
 ];
 ```
 
@@ -165,7 +171,7 @@ $config = [
 $config_biz = [
     'out_trade_no' => '12',                 // 订单号
     'total_amount' => '13',                 // 订单金额，单位：元
-    'subject' => 'officeal test subject',   // 订单商品标题
+    'subject' => 'test subject',   // 订单商品标题
 ];
 ```
 
@@ -248,7 +254,7 @@ $config = [
 $config_biz = [
     'out_trade_no' => '12',                 // 订单号
     'total_amount' => '13',                 // 订单金额，单位：元
-    'subject' => 'officeal test subject',   // 订单商品标题
+    'subject' => 'test subject',   // 订单商品标题
 ];
 ```
 
@@ -271,7 +277,7 @@ $config = [
 $config_biz = [
     'out_trade_no' => '12',                 // 订单号
     'total_amount' => '13',                 // 订单金额，单位：元
-    'subject' => 'officeal test subject',   // 订单商品标题
+    'subject' => 'test subject',   // 订单商品标题
 ];
 ```
 
