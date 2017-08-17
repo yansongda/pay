@@ -45,7 +45,7 @@ trait HasHttpRequest
      * @param string $body
      * @param array  $headers
      *
-     * @return array
+     * @return string
      */
     protected function post($endpoint, $params = [], $body = null, $headers = [])
     {
@@ -54,7 +54,7 @@ trait HasHttpRequest
             'form_params' => $params,
         ];
 
-        if (! is_null($body)) {
+        if (!is_null($body)) {
             $options = [
                 'headers' => $headers,
                 'body'    => $body,

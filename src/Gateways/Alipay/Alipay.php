@@ -78,7 +78,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @param   array      $config_biz [description]
      *
-     * @return  [type]                 [description]
+     * @return  string                 [description]
      */
     public function pay(array $config_biz = [])
     {
@@ -100,14 +100,11 @@ abstract class Alipay implements GatewayInterface
      *
      * @param   array      $config_biz [description]
      *
-     * @return  [type]                 [description]
+     * @return  boolean                [description]
      */
     public function refund(array $config_biz = [])
     {
-        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
-        $this->config['method'] = 'alipay.trade.refund';
-
-        return $this->getResult('alipay_trade_refund_response');
+        return $this->getResult($config_biz, 'alipay.trade.refund');
     }
 
     /**
@@ -119,14 +116,11 @@ abstract class Alipay implements GatewayInterface
      *
      * @param   array      $config_biz [description]
      *
-     * @return  [type]                 [description]
+     * @return  boolean                [description]
      */
     public function close(array $config_biz = [])
     {
-        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
-        $this->config['method'] = 'alipay.trade.close';
-
-        return $this->getResult('alipay_trade_close_response');
+        return $this->getResult($config_biz, 'alipay.trade.close');
     }
 
     /**
@@ -140,7 +134,7 @@ abstract class Alipay implements GatewayInterface
      * @param   string     $sign 签名字符串-支付宝服务器发送过来的原始串
      * @param   bool       $sync 是否同步验证
      *
-     * @return  [type]           [description]
+     * @return  boolean          [description]
      */
     public function verify($data, $sign = null, $sync = false)
     {
@@ -170,7 +164,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @version 2017-08-10
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     abstract protected function getPayMethod();
 
@@ -181,7 +175,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @version 2017-08-10
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     abstract protected function getPayProductCode();
 
@@ -192,17 +186,17 @@ abstract class Alipay implements GatewayInterface
      *
      * @version 2017-08-11
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     protected function buildPayHtml()
     {
-        $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$this->gateway."?charset=utf-8' method='POST'>";
+        $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='" . $this->gateway . "?charset=utf-8' method='POST'>";
         while (list ($key, $val) = each ($this->config)) {
             $val = str_replace("'","&apos;",$val);
-            $sHtml.= "<input type='hidden' name='".$key."' value='".$val."'/>";
+            $sHtml .= "<input type='hidden' name='" . $key . "' value='" . $val . "'/>";
         }
-        $sHtml = $sHtml."<input type='submit' value='ok' style='display:none;''></form>";
-        $sHtml = $sHtml."<script>document.forms['alipaysubmit'].submit();</script>";
+        $sHtml .= "<input type='submit' value='ok' style='display:none;''></form>";
+        $sHtml .= "<script>document.forms['alipaysubmit'].submit();</script>";
         
         return $sHtml;
     }
@@ -214,17 +208,22 @@ abstract class Alipay implements GatewayInterface
      *
      * @version 2017-08-12
      *
-     * @param   [type]     $method [description]
+     * @param   array      $config_biz [description]
+     * @param   string     $method     [description]
      *
-     * @return  [type]             [description]
+     * @return  boolean                [description]
      */
-    protected function getResult($method)
+    protected function getResult($config_biz, $method)
     {
+        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
+        $this->config['method'] = $method;
         $this->config['sign'] = $this->getSign();
+
+        $method = str_replace('.', '_', $method) . '_response';
         
         $data = json_decode($this->post($this->gateway, $this->config), true);
 
-        if (! isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
+        if (!isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
             throw new GatewayException(
                 'get result error:' . $data[$method]['msg'] . ' - ' . $data[$method]['sub_msg'],
                 $data[$method]['code'],
@@ -241,7 +240,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @version 2017-08-10
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     protected function getSign()
     {
@@ -268,7 +267,7 @@ abstract class Alipay implements GatewayInterface
      * @param   array      $toBeSigned [description]
      * @param   boolean    $verify     是否异步同时验证签名
      *
-     * @return  [type]                 [description]
+     * @return  string                 [description]
      */
     protected function getSignContent(array $toBeSigned, $verify = false)
     {

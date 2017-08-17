@@ -32,8 +32,8 @@ class Config implements ArrayAccess
      *
      * @version 2017-07-28
      *
-     * @param   [type]     $key     [description]
-     * @param   [type]     $default [description]
+     * @param   string     $key     [description]
+     * @param   string     $default [description]
      *
      * @return  [type]              [description]
      */
