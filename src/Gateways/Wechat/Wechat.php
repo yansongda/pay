@@ -123,6 +123,16 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
+     * 获取交易类型.
+     * @author yansongda <me@yansongda.cn>
+     * 
+     * @version 2017-08-17
+     * 
+     * @return  [type]     [description]
+     */
+    abstract protected function getTradeType();
+
+    /**
      * 预下单.
      *
      * @author yansongda <me@yansongda.cn>

@@ -35,6 +35,7 @@ class MpGateway extends Wechat
     public function pay(array $config_biz = [])
     {
         $this->config = array_merge($this->config, $config_biz);
+        $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
 
         $payRequest = [
             "appId" => $this->user_config->get('app_id'),
@@ -42,7 +43,6 @@ class MpGateway extends Wechat
             "nonceStr" => $this->createNonceStr(),   
             "package" => "prepay_id=" . $this->preOrder()['prepay_id'],
             "signType" => "MD5",    
-            //"paySign" ： "70EA570631E4BB79628FBCA90534C63FF7FADD89" //微信签名 
         ];
         $payRequest['paySign'] = $this->getSign($payRequest);
 
