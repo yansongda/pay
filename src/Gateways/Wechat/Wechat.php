@@ -148,6 +148,7 @@ abstract class Wechat implements GatewayInterface
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
             $error = 'preOrder error:' . $data['return_msg'];
             $error .= isset($data['err_code_des']) ? ' - ' .  $data['err_code_des'] : '';
+            
             throw new GatewayException(
                 $error,
                 20000,

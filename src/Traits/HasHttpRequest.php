@@ -1,7 +1,6 @@
 <?php
 
 /*
- * This file is part of the overtrue/easy-sms.
  *
  * (c) overtrue <i@overtrue.me>
  *
