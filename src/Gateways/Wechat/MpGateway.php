@@ -36,6 +36,7 @@ class MpGateway extends Wechat
     {
         $this->config = array_merge($this->config, $config_biz);
         $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
+        $this->config['sign'] = $this->getSign($this->config);
 
         $payRequest = [
             "appId" => $this->user_config->get('app_id'),
