@@ -35,14 +35,16 @@ class MiniappGateway extends Wechat
     public function pay(array $config_biz = [])
     {
         $this->config = array_merge($this->config, $config_biz);
+        $this->config['appid'] = $this->user_config->get('miniapp_id');
+        $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
+        $this->config['sign'] = $this->getSign($this->config);
 
         $payRequest = [
-            "appId" => $this->user_config->get('app_id'),
+            "appId" => $this->user_config->get('miniapp_id'),
             "timeStamp" => time(),    
             "nonceStr" => $this->createNonceStr(),   
             "package" => "prepay_id=" . $this->preOrder()['prepay_id'],
-            "signType" => "MD5",    
-            //"paySign" ： "70EA570631E4BB79628FBCA90534C63FF7FADD89" //微信签名 
+            "signType" => "MD5", 
         ];
         $payRequest['paySign'] = $this->getSign($payRequest);
 
