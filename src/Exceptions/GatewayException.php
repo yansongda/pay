@@ -21,8 +21,8 @@ class GatewayException extends Exception
      *
      * @version 2017-07-28
      *
-     * @param   [type]     $message [description]
-     * @param   [type]     $code    [description]
+     * @param   string     $message [description]
+     * @param   string|int $code    [description]
      */
     public function __construct($message, $code, $raw = [])
     {

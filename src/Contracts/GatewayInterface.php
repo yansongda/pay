@@ -15,7 +15,7 @@ interface GatewayInterface
      * 
      * @param   array      $config_biz [description]
      * 
-     * @return  [type]                 [description]
+     * @return  mixed                  [description]
      */
     public function pay(array $config_biz);
 
@@ -28,7 +28,7 @@ interface GatewayInterface
      * 
      * @param   array      $config_biz [description]
      * 
-     * @return  [type]                 [description]
+     * @return  boolean                [description]
      */
     public function refund(array $config_biz);
 
@@ -41,7 +41,7 @@ interface GatewayInterface
      * 
      * @param   array      $config_biz [description]
      * 
-     * @return  [type]                 [description]
+     * @return  boolean                [description]
      */
     public function close(array $config_biz);
 
@@ -56,7 +56,7 @@ interface GatewayInterface
      * @param   string     $sign 签名字符串-支付宝服务器发送过来的原始串
      * @param   bool       $sync 是否同步验证
      * 
-     * @return  [type]           [description]
+     * @return  boolean          [description]
      */
     public function verify($data, $sign = null, $sync = false);
 }

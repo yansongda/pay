@@ -80,7 +80,7 @@ class Pay
      */
     public function gateway($gateway = 'web')
     {
-        if (! isset($this->drivers)) {
+        if (!isset($this->drivers)) {
             throw new InvalidArgumentException("Driver is not defined.");
         }
 
@@ -96,13 +96,13 @@ class Pay
      * 
      * @version 2017-08-10
      * 
-     * @param   [type]     $gateway [description]
+     * @param   string     $gateway [description]
      * 
      * @return  [type]              [description]
      */
     private function createGateway($gateway)
     {
-        if (! file_exists(__DIR__ . '/Gateways/' . ucfirst($this->drivers) . '/' . ucfirst($gateway) . 'Gateway.php')) {
+        if (!file_exists(__DIR__ . '/Gateways/' . ucfirst($this->drivers) . '/' . ucfirst($gateway) . 'Gateway.php')) {
             throw new InvalidArgumentException("Gateway [$gateway] is not supported.");
         }
 
@@ -118,7 +118,7 @@ class Pay
      * 
      * @version 2017-07-30
      * 
-     * @param   [type]     $gateway [description]
+     * @param   string     $gateway [description]
      * 
      * @return  [type]              [description]
      */

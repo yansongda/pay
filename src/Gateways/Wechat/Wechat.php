@@ -66,7 +66,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @version 2017-08-15
      *
-     * @param   array      $cofnig_biz [description]
+     * @param   array      $config_biz [description]
      *
      * @return  [type]                 [description]
      */
@@ -147,7 +147,7 @@ abstract class Wechat implements GatewayInterface
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
             $error = 'preOrder error:' . $data['return_msg'];
-            $error .= isset($data['err_code_des']) ? ' - ' .  $data['err_code_des'] : '';
+            $error .= isset($data['err_code_des']) ? ' - ' . $data['err_code_des'] : '';
             
             throw new GatewayException(
                 $error,
@@ -206,7 +206,7 @@ abstract class Wechat implements GatewayInterface
 
         foreach ($data as $k => $v)
         {
-            if($k != "sign" && $v != "" && !is_array($v)){
+            if ($k != "sign" && $v != "" && !is_array($v)) {
                 $buff .= $k . "=" . $v . "&";
             }
         }
@@ -248,19 +248,19 @@ abstract class Wechat implements GatewayInterface
      */
     protected function toXml($data)
     {
-        if(!is_array($data) || count($data) <= 0){
+        if (!is_array($data) || count($data) <= 0) {
             throw new InvalidArgumentException("convert to xml error!invalid array!");
         }
         
         $xml = "<xml>";
-        foreach ($data as $key => $val){
-            if (is_numeric($val)){
-                $xml.="<".$key.">".$val."</".$key.">";
-            }else{
-                $xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
+        foreach ($data as $key => $val) {
+            if (is_numeric($val)) {
+                $xml .= "<" . $key . ">" . $val . "</" . $key . ">";
+            } else {
+                $xml .= "<" . $key . "><![CDATA[" . $val . "]]></" . $key . ">";
             }
         }
-        $xml.="</xml>";
+        $xml .= "</xml>";
 
         return $xml; 
     }
@@ -278,7 +278,7 @@ abstract class Wechat implements GatewayInterface
      */
     protected function fromXml($xml)
     {   
-        if(!$xml){
+        if (!$xml) {
             throw new InvalidArgumentException("convert to array error !invalid xml");
         }
 
