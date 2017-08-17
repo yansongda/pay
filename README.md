@@ -304,16 +304,16 @@ $config_biz = [
 该网关大部分参数和 「电脑支付」 相同，具体请参考 [官方文档](https://docs.open.alipay.com/204/105465/ '支付宝APP支付文档')
 
 #### 返回值
-- pay()
-类型：string
+- pay()  
+类型：string  
 说明：该接口返回用于客户端调用的 orderString 字符串，可直接供 APP 客户端调用，客户端调用方法不在此文档讨论范围内，[Android 用户请看这里](https://docs.open.alipay.com/204/105300/)，[Ios 用户请看这里](https://docs.open.alipay.com/204/105299/)。
 
-- refund()
-类型：bool
+- refund()  
+类型：bool  
 说明：退款成功，返回 true；
 
-- close()
-类型：bool
+- close()  
+类型：bool  
 说明：关闭成功，返回 true；
 
 ### 4、微信 - 公众号支付
@@ -392,8 +392,8 @@ $config_biz = [
 ```
 
 #### 返回值
-- pay()
-类型：array
+- pay()  
+类型：array  
 说明：返回用于 微信内H5调起支付 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6)。
 
 后续调用举例：
@@ -433,10 +433,10 @@ $config_biz = [
 </script>
 ```
 
-- refund()
+- refund()  
 TODO
 
-- close()
+- close()  
 TODO
 
 ### 5、微信 - 小程序支付
@@ -465,14 +465,14 @@ $config_biz = [
 由于「小程序支付」和「公众号支付」都使用的是 JSAPI，所以，除了 APPID 一个使用的是公众号的 APPID 一个使用的是 小程序的 APPID 以外，该网关所有参数和 「公众号支付」 相同，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1)。
 
 #### 返回值
-- pay()
-类型：array
+- pay()  
+类型：array  
 说明：返回用于 小程序调起支付API 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_7&index=3)。
 
-- refund()
-TODO
+- refund()  
+TODO  
 
-- close()
+- close()  
 TODO
 
 ### 6、微信 - H5 支付
