@@ -117,7 +117,7 @@ abstract class Wechat implements GatewayInterface
     {
         $data = $this->fromXml($data);
 
-        $sign = $sign ?? $data['sign'];
+        $sign = is_null($sign) ? $data['sign'] : $sign;
 
         return $this->getSign($data) === $sign;
     }

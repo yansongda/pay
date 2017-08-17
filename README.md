@@ -23,7 +23,7 @@
 - 方法使用更优雅，不必再去研究那些奇怪的的方法名或者类名是做啥用的
 
 ## 运行环境
-- PHP 7.0+
+- PHP 5.6+
 - composer
 
 ## 支持的支付网关
@@ -136,20 +136,13 @@ return $pay->dirver('alipay')->gateway('web')->pay($config_biz);
 
 ## 返回值
 
-##### pay (支付接口)
-返回 跳转到支付宝进行支付的 Html 代码。在正式项目中，直接 return 即可。
+详情请看「支付网关配置说明与返回值」一节。
 
-##### refund (退款接口)
-true/false
+## 错误
 
-##### close (关闭订单接口)
-true/false
+使用非跳转接口（如， `refund` 接口,`close` 接口）时，如果在调用相关支付网关 API 时有错误产生，会抛出 `GatewayException` 错误，可以通过 `$e->getMessage()` 查看，同时，也可通过 `$e->raw` 查看调用 API 后返回的原始数据，该值为数组格式。
 
-## 错误详情
-
-使用非跳转接口（如， `refund` 接口,`close` 接口）时，如果有错误产生，会抛出 `GatewayException` 错误。
-
-## 各个支付网关配置说明
+## 支付网关配置说明与返回值
 
 由于支付网关不同，每家参数参差不齐，为了方便，我们抽象定义了两个参数：`$config`,`$config_biz`，分别为全局参数，业务参数。但是，所有配置参数均为官方标准参数，无任何差别。
 
@@ -240,6 +233,19 @@ $config_biz = [
 ];
 ```
 
+#### 返回值
+- pay()
+类型：string
+说明：该接口返回跳转到支付宝支付的 Html 代码。
+
+- refund()
+类型：bool
+说明：退款成功，返回 true；
+
+- close()
+类型：bool
+说明：关闭成功，返回 true；
+
 ### 2、支付宝 - 手机网站支付
 
 #### 最小配置参数
@@ -262,6 +268,19 @@ $config_biz = [
 
 该网关大部分参数和 「电脑支付」 相同，具体请参考 [官方文档](https://docs.open.alipay.com/203/107090/ '支付宝手机网站支付文档')
 
+#### 返回值
+- pay()
+类型：string
+说明：该接口返回跳转到支付宝支付的 Html 代码。
+
+- refund()
+类型：bool
+说明：退款成功，返回 true；
+
+- close()
+类型：bool
+说明：关闭成功，返回 true；
+
 ### 3、支付宝 - APP 支付
 
 #### 最小配置参数
@@ -283,6 +302,19 @@ $config_biz = [
 
 #### 所有配置参数
 该网关大部分参数和 「电脑支付」 相同，具体请参考 [官方文档](https://docs.open.alipay.com/204/105465/ '支付宝APP支付文档')
+
+#### 返回值
+- pay()  
+类型：string  
+说明：该接口返回用于客户端调用的 orderString 字符串，可直接供 APP 客户端调用，客户端调用方法不在此文档讨论范围内，[Android 用户请看这里](https://docs.open.alipay.com/204/105300/)，[Ios 用户请看这里](https://docs.open.alipay.com/204/105299/)。
+
+- refund()  
+类型：bool  
+说明：退款成功，返回 true；
+
+- close()  
+类型：bool  
+说明：关闭成功，返回 true；
 
 ### 4、微信 - 公众号支付
 
@@ -359,8 +391,89 @@ $config_biz = [
 ];
 ```
 
+#### 返回值
+- pay()  
+类型：array  
+说明：返回用于 微信内H5调起支付 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6)。
+
+后续调用举例：
+
+```html
+<script type="text/javascript">
+        function onBridgeReady(){
+            WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', {
+                    "appId":"<?php echo $pay['appId']; ?>",     //公众号名称，由商户传入     
+                    "timeStamp":"<?php echo $pay['timeStamp']; ?>",         //时间戳，自1970年以来的秒数     
+                    "nonceStr":"<?php echo $pay['nonceStr']; ?>", //随机串     
+                    "package":"<?php echo $pay['package']; ?>",     
+                    "signType":"<?php echo $pay['signType']; ?>",         //微信签名方式：     
+                    "paySign":"<?php echo $pay['paySign']; ?>" //微信签名 
+                },
+                function(res){     
+                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {}     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
+                }
+            ); 
+        }
+
+        $(function(){
+            $('#pay').click(function(){
+                if (typeof WeixinJSBridge == "undefined"){
+                   if( document.addEventListener ){
+                       document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                   }else if (document.attachEvent){
+                       document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+                       document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                   }
+                }else{
+                   onBridgeReady();
+                }
+            })
+        });
+</script>
+```
+
+- refund()  
+TODO
+
+- close()  
+TODO
+
 ### 5、微信 - 小程序支付
-由于「小程序支付」和「公众号支付」都使用的是 JSAPI，所以，该网关大部分参数和 「公众号支付」 相同。
+
+#### 最小配置参数
+```php
+$config = [
+    'wechat' => [
+        'miniapp_id' => '',             // 小程序APPID
+        'mch_id' => '',             // 微信商户号
+        'notify_url' => '',
+        'key' => '',                // 微信支付签名秘钥
+    ],
+];
+
+$config_biz = [
+    'out_trade_no' => '',           // 订单号
+    'total_fee' => '',              // 订单金额，单位：元
+    'body' => '',                   // 订单描述
+    'spbill_create_ip' => '',       // 支付人的 IP
+    'openid' => '',                 // 支付人的 openID
+];
+```
+
+#### 所有配置参数
+由于「小程序支付」和「公众号支付」都使用的是 JSAPI，所以，除了 APPID 一个使用的是公众号的 APPID 一个使用的是 小程序的 APPID 以外，该网关所有参数和 「公众号支付」 相同，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1)。
+
+#### 返回值
+- pay()  
+类型：array  
+说明：返回用于 小程序调起支付API 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_7&index=3)。
+
+- refund()  
+TODO  
+
+- close()  
+TODO
 
 ### 6、微信 - H5 支付
 TODO
