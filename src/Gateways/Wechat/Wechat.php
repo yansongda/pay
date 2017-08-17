@@ -123,6 +123,16 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
+     * 获取交易类型.
+     * @author yansongda <me@yansongda.cn>
+     * 
+     * @version 2017-08-17
+     * 
+     * @return  [type]     [description]
+     */
+    abstract protected function getTradeType();
+
+    /**
      * 预下单.
      *
      * @author yansongda <me@yansongda.cn>
@@ -133,11 +143,14 @@ abstract class Wechat implements GatewayInterface
      */
     protected function preOrder()
     {
-        $data = $this->fromXml($this->get($this->preOrder_gateway, $this->config));
+        $data = $this->fromXml($this->post($this->preOrder_gateway, [], $this->toXml($this->config)));
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
+            $error = 'preOrder error:' . $data['return_msg'];
+            $error .= isset($data['err_code_des']) ? ' - ' .  $data['err_code_des'] : '';
+            
             throw new GatewayException(
-                'preOrder error:' . $data['return_msg'] . ' - ' . $data['err_code_des'],
+                $error,
                 20000,
                 $data);
         }
