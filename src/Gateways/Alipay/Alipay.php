@@ -191,8 +191,8 @@ abstract class Alipay implements GatewayInterface
     protected function buildPayHtml()
     {
         $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='" . $this->gateway . "?charset=utf-8' method='POST'>";
-        while (list ($key, $val) = each ($this->config)) {
-            $val = str_replace("'","&apos;",$val);
+        while (list ($key, $val) = each($this->config)) {
+            $val = str_replace("'", "&apos;", $val);
             $sHtml .= "<input type='hidden' name='" . $key . "' value='" . $val . "'/>";
         }
         $sHtml .= "<input type='submit' value='ok' style='display:none;''></form>";
