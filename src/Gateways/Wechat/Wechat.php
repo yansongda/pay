@@ -143,11 +143,11 @@ abstract class Wechat implements GatewayInterface
      */
     protected function preOrder()
     {
-        $data = $this->fromXml($this->get($this->preOrder_gateway, $this->config));
+        $data = $this->fromXml($this->post($this->preOrder_gateway, $this->config));
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
             throw new GatewayException(
-                'preOrder error:' . $data['return_msg'] . ' - ' . $data['err_code_des'],
+                'preOrder error:' . $data['return_msg'],
                 20000,
                 $data);
         }
