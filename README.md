@@ -476,6 +476,38 @@ TODO
 TODO
 
 ### 6、微信 - H5 支付
+#### 最小配置参数
+```php
+$config = [
+    'wechat' => [
+        'app_id' => '',             // 微信公众号 APPID
+        'mch_id' => '',             // 微信商户号
+        'return_url' => '',         // *此配置选项可选*
+        'notify_url' => '',
+        'key' => '',                // 微信支付签名秘钥
+    ],
+];
+
+$config_biz = [
+    'out_trade_no' => '',           // 订单号
+    'total_fee' => '',              // 订单金额，单位：元
+    'body' => '',                   // 订单描述
+    'spbill_create_ip' => '',       // 支付人的 IP
+];
+```
+
+#### 所有配置参数
+所有配置项和前面支付网关相差不大，请[点击这里查看](https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_20&index=1).
+
+#### 返回值
+- pay()  
+类型：string  
+说明：返回信支付中间页网址，可直接 302 跳转。
+
+- refund()  
+TODO  
+
+- close()  
 TODO
 
 ### 7、微信 - 扫码支付
