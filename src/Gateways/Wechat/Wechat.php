@@ -83,7 +83,7 @@ abstract class Wechat implements GatewayInterface
      */
     public function refund(array $config_biz = [])
     {
-        # code...
+        
     }
 
     /**

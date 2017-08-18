@@ -2,9 +2,8 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-/**
- * 微信支付 - 扫码支付.
- */
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
+
 class ScanGateway extends Wechat
 {
     /**

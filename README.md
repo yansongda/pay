@@ -136,7 +136,20 @@ return $pay->dirver('alipay')->gateway('web')->pay($config_biz);
 
 ## 返回值
 
+- pay(array $config_biz)  
 详情请看「支付网关配置说明与返回值」一节。
+
+- refund(array $config_biz)  
+类型：bool  
+说明：退款成功，返回 true；  
+
+- close(array $config_biz)  
+类型：bool  
+说明：关闭成功，返回 true；  
+
+- verify(mixed $data, $sign = null)  
+类型：mixed
+说明：验证成功，返回 服务器返回的数组；否则返回 false；
 
 ## 错误
 
@@ -237,14 +250,6 @@ $config_biz = [
 - pay()  
 类型：string  
 说明：该接口返回跳转到支付宝支付的 Html 代码。  
-
-- refund()  
-类型：bool  
-说明：退款成功，返回 true；  
-
-- close()  
-类型：bool  
-说明：关闭成功，返回 true；  
 
 ### 2、支付宝 - 手机网站支付
 
