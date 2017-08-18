@@ -14,9 +14,9 @@ class MiniappGateway extends Wechat
      *
      * @version 2017-08-15
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
-    public function getTradeType()
+    protected function getTradeType()
     {
         return 'JSAPI';
     }
@@ -30,20 +30,21 @@ class MiniappGateway extends Wechat
      *
      * @param   array      $config_biz [description]
      *
-     * @return  [type]                 [description]
+     * @return  array                  [description]
      */
     public function pay(array $config_biz = [])
     {
-        $this->config = array_merge($this->config, $config_biz);
+        if (is_null($this->user_config->get('miniapp_id'))) {
+            throw new InvalidArgumentException("Missing Config -- [miniapp_id]");
+        }
+
         $this->config['appid'] = $this->user_config->get('miniapp_id');
-        $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
-        $this->config['sign'] = $this->getSign($this->config);
 
         $payRequest = [
             "appId" => $this->user_config->get('miniapp_id'),
             "timeStamp" => time(),    
             "nonceStr" => $this->createNonceStr(),   
-            "package" => "prepay_id=" . $this->preOrder()['prepay_id'],
+            "package" => "prepay_id=" . $this->preOrder($config_biz)['prepay_id'],
             "signType" => "MD5", 
         ];
         $payRequest['paySign'] = $this->getSign($payRequest);

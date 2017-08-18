@@ -20,19 +20,19 @@ abstract class Wechat implements GatewayInterface
      *
      * @var string
      */
-    protected $preOrder_gateway = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
+    protected $gateway = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
     /**
      * [$config description].
      *
-     * @var [type]
+     * @var array
      */
     protected $config;
 
     /**
      * [$user_config description].
      *
-     * @var [type]
+     * @var Yansongda\Pay\Support\Config
      */
     protected $user_config;
 
@@ -50,11 +50,11 @@ abstract class Wechat implements GatewayInterface
         $this->user_config = new Config($config);
 
         $this->config = [
-            'appid' => $this->user_config->get('app_id'),
-            'mch_id' => $this->user_config->get('mch_id'),
+            'appid' => $this->user_config->get('app_id', ''),
+            'mch_id' => $this->user_config->get('mch_id', ''),
             'nonce_str' => $this->createNonceStr(),
             'sign_type' => 'MD5',
-            'notify_url' => $this->user_config->get('notify_url'),
+            'notify_url' => $this->user_config->get('notify_url', ''),
             'trade_type' => $this->getTradeType(),
         ];
     }
@@ -68,7 +68,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @param   array      $config_biz [description]
      *
-     * @return  [type]                 [description]
+     * @return  mixed                  [description]
      */
     abstract public function pay(array $config_biz = []);
 
@@ -128,7 +128,7 @@ abstract class Wechat implements GatewayInterface
      * 
      * @version 2017-08-17
      * 
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     abstract protected function getTradeType();
 
@@ -139,11 +139,17 @@ abstract class Wechat implements GatewayInterface
      *
      * @version 2017-08-15
      *
-     * @return  array       服务器返回结果数组
+     * @param   array  $config_biz  业务参数
+     *
+     * @return  array               服务器返回结果数组
      */
-    protected function preOrder()
+    protected function preOrder($config_biz = [])
     {
-        $data = $this->fromXml($this->post($this->preOrder_gateway, [], $this->toXml($this->config)));
+        $this->config = array_merge($this->config, $config_biz);
+        $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
+        $this->config['sign'] = $this->getSign($this->config);
+
+        $data = $this->fromXml($this->post($this->gateway, [], $this->toXml($this->config)));
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
             $error = 'preOrder error:' . $data['return_msg'];
@@ -223,7 +229,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @param   integer    $length [description]
      *
-     * @return  [type]             [description]
+     * @return  string             [description]
      */
     protected function createNonceStr($length = 16) {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -256,7 +262,7 @@ abstract class Wechat implements GatewayInterface
         foreach ($data as $key => $val) {
             if (is_numeric($val)) {
                 $xml .= "<" . $key . ">" . $val . "</" . $key . ">";
-            }else {
+            } else {
                 $xml .= "<" . $key . "><![CDATA[" . $val . "]]></" . $key . ">";
             }
         }

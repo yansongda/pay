@@ -234,17 +234,17 @@ $config_biz = [
 ```
 
 #### 返回值
-- pay()
-类型：string
-说明：该接口返回跳转到支付宝支付的 Html 代码。
+- pay()  
+类型：string  
+说明：该接口返回跳转到支付宝支付的 Html 代码。  
 
-- refund()
-类型：bool
-说明：退款成功，返回 true；
+- refund()  
+类型：bool  
+说明：退款成功，返回 true；  
 
-- close()
-类型：bool
-说明：关闭成功，返回 true；
+- close()  
+类型：bool  
+说明：关闭成功，返回 true；  
 
 ### 2、支付宝 - 手机网站支付
 
@@ -269,17 +269,17 @@ $config_biz = [
 该网关大部分参数和 「电脑支付」 相同，具体请参考 [官方文档](https://docs.open.alipay.com/203/107090/ '支付宝手机网站支付文档')
 
 #### 返回值
-- pay()
-类型：string
-说明：该接口返回跳转到支付宝支付的 Html 代码。
+- pay()  
+类型：string  
+说明：该接口返回跳转到支付宝支付的 Html 代码。  
 
-- refund()
-类型：bool
-说明：退款成功，返回 true；
+- refund()  
+类型：bool  
+说明：退款成功，返回 true；  
 
-- close()
-类型：bool
-说明：关闭成功，返回 true；
+- close()  
+类型：bool  
+说明：关闭成功，返回 true；  
 
 ### 3、支付宝 - APP 支付
 
@@ -357,7 +357,6 @@ $config_biz = [
     'spbill_create_ip' => '',       // 支付人的 IP
     'openid' => '',                 // 支付人的 openID
     
-    
     // 自定义参数，可以为终端设备号(门店号或收银设备ID)，PC网页或公众号内支付可以传"WEB"
     'device_info' => '',
     
@@ -373,8 +372,7 @@ $config_biz = [
     // 订单生成时间，格式为yyyyMMddHHmmss，如2009年12月25日9点10分10秒表示为20091225091010。其他详见时间规则
     'time_start' => '',
     
-    // 订单失效时间，格式为yyyyMMddHHmmss，如2009年12月27日9点10分10秒表示为20091227091010。其他详见时间规则
-注意：最短失效时间间隔必须大于5分钟
+    // 订单失效时间，格式为yyyyMMddHHmmss，如2009年12月27日9点10分10秒表示为20091227091010。其他详见时间规则注意：最短失效时间间隔必须大于5分钟
     'time_expire' => '',
     
     // 订单优惠标记，使用代金券或立减优惠功能时需要的参数，说明详见代金券或立减优惠
@@ -396,7 +394,7 @@ $config_biz = [
 类型：array  
 说明：返回用于 微信内H5调起支付 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6)。
 
-后续调用举例：
+后续调用举例：  
 
 ```html
 <script type="text/javascript">
@@ -477,12 +475,13 @@ TODO
 
 ### 6、微信 - H5 支付
 #### 最小配置参数
+
 ```php
 $config = [
     'wechat' => [
         'app_id' => '',             // 微信公众号 APPID
         'mch_id' => '',             // 微信商户号
-        'return_url' => '',         // *此配置选项可选*
+        'return_url' => '',         // *此配置选项可选*，注意，该跳转 URL 只有跳转之意，没有同步通知功能
         'notify_url' => '',
         'key' => '',                // 微信支付签名秘钥
     ],
@@ -502,7 +501,7 @@ $config_biz = [
 #### 返回值
 - pay()  
 类型：string  
-说明：返回信支付中间页网址，可直接 302 跳转。
+说明：返回微信支付中间页网址，可直接 302 跳转。
 
 - refund()  
 TODO  
@@ -511,9 +510,111 @@ TODO
 TODO
 
 ### 7、微信 - 扫码支付
+这里使用「模式二」进行扫码支付，具体请[参考这里](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=6_5)
+
+#### 最小配置参数
+
+```php
+$config = [
+    'wechat' => [
+        'app_id' => '',             // 微信公众号 APPID
+        'mch_id' => '',             // 微信商户号
+        'notify_url' => '',
+        'key' => '',                // 微信支付签名秘钥
+    ],
+];
+
+$config_biz = [
+    'out_trade_no' => '',           // 订单号
+    'total_fee' => '',              // 订单金额，单位：元
+    'body' => '',                   // 订单描述
+    'spbill_create_ip' => '',       // 调用 API 服务器的 IP
+    'product_id' => '',             // 订单商品 ID
+];
+```
+
+#### 所有配置参数
+所有配置项和前面支付网关相差不大，请[点击这里查看](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1)
+
+#### 返回值
+- pay()  
+类型：string  
+说明：返回微信支付二维码 URL 地址，可直接将此 url 生成二维码，展示给用户进行扫码支付。
+
+- refund()  
+TODO  
+
+- close()  
 TODO
 
 ### 8、微信 - 刷卡支付
+
+#### 最小配置参数
+```php
+$config = [
+    'wechat' => [
+        'app_id' => '',             // 公众号 APPID
+        'mch_id' => '',             // 微信商户号
+        'key' => '',                // 微信支付签名秘钥
+    ],
+];
+
+$config_biz = [
+    'out_trade_no' => '',           // 订单号
+    'total_fee' => '',              // 订单金额，单位：元
+    'body' => '',                   // 订单描述
+    'spbill_create_ip' => '',       // 支付人的 IP
+    'auth_code' => '',              // 授权码
+];
+```
+
+#### 所有配置参数
+该网关所有参数和其它支付网关基本相同，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1)。
+
+#### 返回值
+- pay()  
+类型：array  
+说明：返回用于服务器返回的数组。返回参数请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1)。
+
+- refund()  
+TODO  
+
+- close()  
+TODO
+
+### 9、微信 - APP 支付
+
+#### 最小配置参数
+```php
+$config = [
+    'wechat' => [
+        'appid' => '',              // APPID
+        'mch_id' => '',             // 微信商户号
+        'notify_url' => '',
+        'key' => '',                // 微信支付签名秘钥
+    ],
+];
+
+$config_biz = [
+    'out_trade_no' => '',           // 订单号
+    'total_fee' => '',              // 订单金额，单位：元
+    'body' => '',                   // 订单描述
+    'spbill_create_ip' => '',       // 支付人的 IP
+];
+```
+
+#### 所有配置参数
+该网关所有参数和其它支付网关相同相同，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1)。
+
+#### 返回值
+- pay()  
+类型：array  
+说明：返回用于 小程序调起支付API 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=8_5)。
+
+- refund()  
+TODO  
+
+- close()  
 TODO
 
 ## 代码贡献
