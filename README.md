@@ -551,6 +551,37 @@ TODO
 
 
 ### 9、微信 - APP 支付
+#### 最小配置参数
+```php
+$config = [
+    'wechat' => [
+        'appid' => '',              // APPID
+        'mch_id' => '',             // 微信商户号
+        'notify_url' => '',
+        'key' => '',                // 微信支付签名秘钥
+    ],
+];
+
+$config_biz = [
+    'out_trade_no' => '',           // 订单号
+    'total_fee' => '',              // 订单金额，单位：元
+    'body' => '',                   // 订单描述
+    'spbill_create_ip' => '',       // 支付人的 IP
+];
+```
+
+#### 所有配置参数
+该网关所有参数和其它支付网关相同相同，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1)。
+
+#### 返回值
+- pay()  
+类型：array  
+说明：返回用于 小程序调起支付API 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=8_5)。
+
+- refund()  
+TODO  
+
+- close()  
 TODO
 
 ## 代码贡献

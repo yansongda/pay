@@ -36,8 +36,6 @@ class ScanGateway extends Wechat
     {
         $this->config = array_merge($this->config, $config_biz);
 
-        $data = $this->preOrder();
-
-        return $data['code_url'];
+        return $this->preOrder()['code_url'];
     }
 }

@@ -39,7 +39,7 @@ class AppGateway extends Wechat
 
         $payRequest = [
             "appid" => $this->user_config->get('appid'),
-            'partnerid' => $this->user_config->get('partnerid'),
+            'partnerid' => $this->user_config->get('mch_id'),
             'prepayid' => $this->preOrder()['prepay_id'],
             "timestamp" => time(),    
             "noncestr" => $this->createNonceStr(),   
