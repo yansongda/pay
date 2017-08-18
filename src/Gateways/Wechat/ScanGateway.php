@@ -16,7 +16,7 @@ class ScanGateway extends Wechat
      *
      * @return  string     [description]
      */
-    public function getTradeType()
+    protected function getTradeType()
     {
         return 'NATIVE ';
     }

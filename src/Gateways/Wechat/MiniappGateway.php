@@ -36,7 +36,6 @@ class MiniappGateway extends Wechat
     {
         $this->config = array_merge($this->config, $config_biz);
         $this->config['appid'] = $this->user_config->get('miniapp_id');
-        $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
 
         $payRequest = [
             "appId" => $this->user_config->get('miniapp_id'),
