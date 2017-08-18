@@ -20,19 +20,19 @@ abstract class Wechat implements GatewayInterface
      *
      * @var string
      */
-    protected $preOrder_gateway = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
+    protected $gateway = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
     /**
      * [$config description].
      *
-     * @var [type]
+     * @var array
      */
     protected $config;
 
     /**
      * [$user_config description].
      *
-     * @var [type]
+     * @var Yansongda\Pay\Support\Config
      */
     protected $user_config;
 
@@ -68,7 +68,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @param   array      $config_biz [description]
      *
-     * @return  [type]                 [description]
+     * @return  mixed                  [description]
      */
     abstract public function pay(array $config_biz = []);
 
@@ -128,7 +128,7 @@ abstract class Wechat implements GatewayInterface
      * 
      * @version 2017-08-17
      * 
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     abstract protected function getTradeType();
 
@@ -145,8 +145,8 @@ abstract class Wechat implements GatewayInterface
     {
         $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
         $this->config['sign'] = $this->getSign($this->config);
-        
-        $data = $this->fromXml($this->post($this->preOrder_gateway, [], $this->toXml($this->config)));
+
+        $data = $this->fromXml($this->post($this->gateway, [], $this->toXml($this->config)));
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
             $error = 'preOrder error:' . $data['return_msg'];
@@ -226,7 +226,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @param   integer    $length [description]
      *
-     * @return  [type]             [description]
+     * @return  string             [description]
      */
     protected function createNonceStr($length = 16) {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

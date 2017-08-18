@@ -8,6 +8,13 @@ namespace Yansongda\Pay\Gateways\Wechat;
 class PosGateway extends Wechat
 {
     /**
+     * 刷卡支付 API.
+     * 
+     * @var string
+     */
+    protected $gateway = 'https://api.mch.weixin.qq.com/pay/micropay';
+
+    /**
      * [getTradeType description].
      *
      * @author yansongda <me@yansongda.cn>
@@ -16,13 +23,26 @@ class PosGateway extends Wechat
      *
      * @return  [type]     [description]
      */
-    public function getTradeType()
+    protected function getTradeType()
     {
-        return 'JSAPI';
+        return 'MICROPAY';
     }
 
+    /**
+     * [pay description].
+     * 
+     * @author yansongda <me@yansongda.cn>
+     * 
+     * @version 2017-08-18
+     * 
+     * @param   array      $config_biz [description]
+     * 
+     * @return  array                  [description]
+     */
     public function pay(array $config_biz = [])
     {
-        # code...
+        unset($this->config['trade_type']);
+
+        return $this->preOrder();
     }
 }

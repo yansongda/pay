@@ -14,9 +14,9 @@ class WapGateway extends Wechat
      *
      * @version 2017-08-15
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
-    public function getTradeType()
+    protected function getTradeType()
     {
         return 'MWEB';
     }
@@ -30,7 +30,7 @@ class WapGateway extends Wechat
      *
      * @param   array      $config_biz [description]
      *
-     * @return  [type]                 [description]
+     * @return  string                 支付中间页 url
      */
     public function pay(array $config_biz = [])
     {

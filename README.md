@@ -234,17 +234,17 @@ $config_biz = [
 ```
 
 #### 返回值
-- pay()
-类型：string
-说明：该接口返回跳转到支付宝支付的 Html 代码。
+- pay()  
+类型：string  
+说明：该接口返回跳转到支付宝支付的 Html 代码。  
 
-- refund()
-类型：bool
-说明：退款成功，返回 true；
+- refund()  
+类型：bool  
+说明：退款成功，返回 true；  
 
-- close()
-类型：bool
-说明：关闭成功，返回 true；
+- close()  
+类型：bool  
+说明：关闭成功，返回 true；  
 
 ### 2、支付宝 - 手机网站支付
 
@@ -269,17 +269,17 @@ $config_biz = [
 该网关大部分参数和 「电脑支付」 相同，具体请参考 [官方文档](https://docs.open.alipay.com/203/107090/ '支付宝手机网站支付文档')
 
 #### 返回值
-- pay()
-类型：string
-说明：该接口返回跳转到支付宝支付的 Html 代码。
+- pay()  
+类型：string  
+说明：该接口返回跳转到支付宝支付的 Html 代码。  
 
-- refund()
-类型：bool
-说明：退款成功，返回 true；
+- refund()  
+类型：bool  
+说明：退款成功，返回 true；  
 
-- close()
-类型：bool
-说明：关闭成功，返回 true；
+- close()  
+类型：bool  
+说明：关闭成功，返回 true；  
 
 ### 3、支付宝 - APP 支付
 
@@ -394,7 +394,7 @@ $config_biz = [
 类型：array  
 说明：返回用于 微信内H5调起支付 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6)。
 
-后续调用举例：
+后续调用举例：  
 
 ```html
 <script type="text/javascript">
@@ -549,8 +549,42 @@ TODO
 
 ### 8、微信 - 刷卡支付
 
+#### 最小配置参数
+```php
+$config = [
+    'wechat' => [
+        'app_id' => '',             // 公众号 APPID
+        'mch_id' => '',             // 微信商户号
+        'notify_url' => '',
+        'key' => '',                // 微信支付签名秘钥
+    ],
+];
+
+$config_biz = [
+    'out_trade_no' => '',           // 订单号
+    'total_fee' => '',              // 订单金额，单位：元
+    'body' => '',                   // 订单描述
+    'spbill_create_ip' => '',       // 支付人的 IP
+    'auth_code' => '',              // 授权码
+];
+```
+
+#### 所有配置参数
+该网关所有参数和其它支付网关基本相同，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1)。
+
+#### 返回值
+- pay()  
+类型：array  
+说明：返回用于服务器返回的数组。返回参数请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1)。
+
+- refund()  
+TODO  
+
+- close()  
+TODO
 
 ### 9、微信 - APP 支付
+
 #### 最小配置参数
 ```php
 $config = [

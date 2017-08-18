@@ -14,7 +14,7 @@ class MpGateway extends Wechat
      *
      * @version 2017-08-15
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     protected function getTradeType()
     {
@@ -30,7 +30,7 @@ class MpGateway extends Wechat
      *
      * @param   array      $config_biz [description]
      *
-     * @return  [type]                 [description]
+     * @return  array                  [description]
      */
     public function pay(array $config_biz = [])
     {
