@@ -39,6 +39,6 @@ class WapGateway extends Wechat
         $data = $this->preOrder();
 
         return is_null($this->user_config->get('return_url')) ? $data['mweb_url'] : $data['mweb_url'] . 
-                        '&redirect_url=' . urlencode($this->config['return_url']);
+                        '&redirect_url=' . urlencode($this->user_config->get('return_url'));
     }
 }

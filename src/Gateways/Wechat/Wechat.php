@@ -256,7 +256,7 @@ abstract class Wechat implements GatewayInterface
         foreach ($data as $key => $val) {
             if (is_numeric($val)) {
                 $xml .= "<" . $key . ">" . $val . "</" . $key . ">";
-            }else {
+            } else {
                 $xml .= "<" . $key . "><![CDATA[" . $val . "]]></" . $key . ">";
             }
         }
