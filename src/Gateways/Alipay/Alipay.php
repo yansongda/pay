@@ -148,13 +148,9 @@ abstract class Alipay implements GatewayInterface
                 wordwrap($this->user_config->get('ali_public_key'), 64, "\n", true) .
                 "\n-----END PUBLIC KEY-----";
 
-        $data = $sync ? json_encode($data, JSON_UNESCAPED_UNICODE) : $this->getSignContent($data, true);
+        $toVerify = $sync ? json_encode($data, JSON_UNESCAPED_UNICODE) : $this->getSignContent($data, true);
         
-        if (openssl_verify($data, base64_decode($sign), $res, OPENSSL_ALGO_SHA256) === 1) {
-            return true;
-        }
-
-        return false;
+        return openssl_verify($toVerify, base64_decode($sign), $res, OPENSSL_ALGO_SHA256) === 1 ? $data : false;
     }
 
     /**
