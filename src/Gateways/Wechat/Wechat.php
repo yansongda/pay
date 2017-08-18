@@ -143,6 +143,8 @@ abstract class Wechat implements GatewayInterface
      */
     protected function preOrder()
     {
+        $this->config['sign'] = $this->getSign($this->config);
+        
         $data = $this->fromXml($this->post($this->preOrder_gateway, [], $this->toXml($this->config)));
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {

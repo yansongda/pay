@@ -528,7 +528,8 @@ $config_biz = [
     'out_trade_no' => '',           // 订单号
     'total_fee' => '',              // 订单金额，单位：元
     'body' => '',                   // 订单描述
-    'spbill_create_ip' => '',       // 支付人的 IP
+    'spbill_create_ip' => '',       // 调用 API 服务器的 IP
+    'product_id' => '',             // 订单商品 ID
 ];
 ```
 
