@@ -555,7 +555,6 @@ $config = [
     'wechat' => [
         'app_id' => '',             // 公众号 APPID
         'mch_id' => '',             // 微信商户号
-        'notify_url' => '',
         'key' => '',                // 微信支付签名秘钥
     ],
 ];
