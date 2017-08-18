@@ -111,7 +111,7 @@ abstract class Wechat implements GatewayInterface
      * @param   string     $sign 服务器返回的签名
      * @param   bool       $sync is sync sign
      *
-     * @return  bool             是否相符
+     * @return  array|boolean    是否相符
      */
     public function verify($data, $sign = null, $sync = false)
     {

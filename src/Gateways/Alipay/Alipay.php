@@ -100,7 +100,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @param   array      $config_biz [description]
      *
-     * @return  boolean                [description]
+     * @return  array|boolean          [description]
      */
     public function refund(array $config_biz = [])
     {
@@ -116,7 +116,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @param   array      $config_biz [description]
      *
-     * @return  boolean                [description]
+     * @return  array|boolean          [description]
      */
     public function close(array $config_biz = [])
     {
@@ -207,7 +207,7 @@ abstract class Alipay implements GatewayInterface
      * @param   array      $config_biz [description]
      * @param   string     $method     [description]
      *
-     * @return  boolean                [description]
+     * @return  array|boolean          [description]
      */
     protected function getResult($config_biz, $method)
     {
