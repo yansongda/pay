@@ -136,7 +136,20 @@ return $pay->dirver('alipay')->gateway('web')->pay($config_biz);
 
 ## 返回值
 
+- pay(array $config_biz)  
 详情请看「支付网关配置说明与返回值」一节。
+
+- refund(array $config_biz)  
+类型：bool  
+说明：退款成功，返回 true；  
+
+- close(array $config_biz)  
+类型：bool  
+说明：关闭成功，返回 服务器返回的数组；否则返回 false；
+
+- verify(mixed $data, $sign = null)  
+类型：mixed
+说明：验证成功，返回 服务器返回的数组；否则返回 false；
 
 ## 错误
 
@@ -238,14 +251,6 @@ $config_biz = [
 类型：string  
 说明：该接口返回跳转到支付宝支付的 Html 代码。  
 
-- refund()  
-类型：bool  
-说明：退款成功，返回 true；  
-
-- close()  
-类型：bool  
-说明：关闭成功，返回 true；  
-
 ### 2、支付宝 - 手机网站支付
 
 #### 最小配置参数
@@ -273,14 +278,6 @@ $config_biz = [
 类型：string  
 说明：该接口返回跳转到支付宝支付的 Html 代码。  
 
-- refund()  
-类型：bool  
-说明：退款成功，返回 true；  
-
-- close()  
-类型：bool  
-说明：关闭成功，返回 true；  
-
 ### 3、支付宝 - APP 支付
 
 #### 最小配置参数
@@ -307,14 +304,6 @@ $config_biz = [
 - pay()  
 类型：string  
 说明：该接口返回用于客户端调用的 orderString 字符串，可直接供 APP 客户端调用，客户端调用方法不在此文档讨论范围内，[Android 用户请看这里](https://docs.open.alipay.com/204/105300/)，[Ios 用户请看这里](https://docs.open.alipay.com/204/105299/)。
-
-- refund()  
-类型：bool  
-说明：退款成功，返回 true；
-
-- close()  
-类型：bool  
-说明：关闭成功，返回 true；
 
 ### 4、微信 - 公众号支付
 
@@ -431,12 +420,6 @@ $config_biz = [
 </script>
 ```
 
-- refund()  
-TODO
-
-- close()  
-TODO
-
 ### 5、微信 - 小程序支付
 
 #### 最小配置参数
@@ -467,12 +450,6 @@ $config_biz = [
 类型：array  
 说明：返回用于 小程序调起支付API 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_7&index=3)。
 
-- refund()  
-TODO  
-
-- close()  
-TODO
-
 ### 6、微信 - H5 支付
 #### 最小配置参数
 
@@ -502,12 +479,6 @@ $config_biz = [
 - pay()  
 类型：string  
 说明：返回微信支付中间页网址，可直接 302 跳转。
-
-- refund()  
-TODO  
-
-- close()  
-TODO
 
 ### 7、微信 - 扫码支付
 这里使用「模式二」进行扫码支付，具体请[参考这里](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=6_5)
@@ -541,12 +512,6 @@ $config_biz = [
 类型：string  
 说明：返回微信支付二维码 URL 地址，可直接将此 url 生成二维码，展示给用户进行扫码支付。
 
-- refund()  
-TODO  
-
-- close()  
-TODO
-
 ### 8、微信 - 刷卡支付
 
 #### 最小配置参数
@@ -575,12 +540,6 @@ $config_biz = [
 - pay()  
 类型：array  
 说明：返回用于服务器返回的数组。返回参数请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1)。
-
-- refund()  
-TODO  
-
-- close()  
-TODO
 
 ### 9、微信 - APP 支付
 
@@ -611,11 +570,6 @@ $config_biz = [
 类型：array  
 说明：返回用于 小程序调起支付API 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=8_5)。
 
-- refund()  
-TODO  
-
-- close()  
-TODO
 
 ## 代码贡献
 由于测试及使用环境的限制，本项目中只开发了「支付宝」和「微信支付」的相关支付网关。

@@ -83,7 +83,7 @@ abstract class Wechat implements GatewayInterface
      */
     public function refund(array $config_biz = [])
     {
-        # code...
+        
     }
 
     /**
@@ -119,7 +119,7 @@ abstract class Wechat implements GatewayInterface
 
         $sign = is_null($sign) ? $data['sign'] : $sign;
 
-        return $this->getSign($data) === $sign;
+        return $this->getSign($data) === $sign ? $data : false;
     }
 
     /**

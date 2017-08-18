@@ -2,9 +2,8 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-/**
- * 微信支付 - 刷卡支付.
- */
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
+
 class PosGateway extends Wechat
 {
     /**
