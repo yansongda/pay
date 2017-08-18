@@ -34,9 +34,11 @@ class WapGateway extends Wechat
      */
     public function pay(array $config_biz = [])
     {
-        $this->config = array_merge($this->config, $config_biz);
+        if (is_null($this->user_config->get('app_id'))) {
+            throw new InvalidArgumentException("Missing Config -- [app_id]");
+        }
 
-        $data = $this->preOrder();
+        $data = $this->preOrder($config_biz);
 
         return is_null($this->user_config->get('return_url')) ? $data['mweb_url'] : $data['mweb_url'] . 
                         '&redirect_url=' . urlencode($this->user_config->get('return_url'));

@@ -34,13 +34,16 @@ class AppGateway extends Wechat
      */
     public function pay(array $config_biz = [])
     {
-        $this->config = array_merge($this->config, $config_biz);
+        if (is_null($this->user_config->get('appid'))) {
+            throw new InvalidArgumentException("Missing Config -- [appid]");
+        }
+
         $this->config['appid'] = $this->user_config->get('appid');
 
         $payRequest = [
             "appid" => $this->user_config->get('appid'),
             'partnerid' => $this->user_config->get('mch_id'),
-            'prepayid' => $this->preOrder()['prepay_id'],
+            'prepayid' => $this->preOrder($config_biz)['prepay_id'],
             "timestamp" => time(),    
             "noncestr" => $this->createNonceStr(),   
             "package" => "Sign=WXPay", 

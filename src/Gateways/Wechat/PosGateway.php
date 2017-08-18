@@ -41,8 +41,12 @@ class PosGateway extends Wechat
      */
     public function pay(array $config_biz = [])
     {
+        if (is_null($this->user_config->get('app_id'))) {
+            throw new InvalidArgumentException("Missing Config -- [app_id]");
+        }
+        
         unset($this->config['trade_type']);
 
-        return $this->preOrder();
+        return $this->preOrder($config_biz);
     }
 }

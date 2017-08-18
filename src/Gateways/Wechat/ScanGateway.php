@@ -34,8 +34,10 @@ class ScanGateway extends Wechat
      */
     public function pay(array $config_biz = [])
     {
-        $this->config = array_merge($this->config, $config_biz);
+        if (is_null($this->user_config->get('app_id'))) {
+            throw new InvalidArgumentException("Missing Config -- [app_id]");
+        }
 
-        return $this->preOrder()['code_url'];
+        return $this->preOrder($config_biz)['code_url'];
     }
 }

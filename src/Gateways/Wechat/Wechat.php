@@ -50,11 +50,11 @@ abstract class Wechat implements GatewayInterface
         $this->user_config = new Config($config);
 
         $this->config = [
-            'appid' => $this->user_config->get('app_id'),
-            'mch_id' => $this->user_config->get('mch_id'),
+            'appid' => $this->user_config->get('app_id', ''),
+            'mch_id' => $this->user_config->get('mch_id', ''),
             'nonce_str' => $this->createNonceStr(),
             'sign_type' => 'MD5',
-            'notify_url' => $this->user_config->get('notify_url'),
+            'notify_url' => $this->user_config->get('notify_url', ''),
             'trade_type' => $this->getTradeType(),
         ];
     }
@@ -139,10 +139,13 @@ abstract class Wechat implements GatewayInterface
      *
      * @version 2017-08-15
      *
-     * @return  array       服务器返回结果数组
+     * @param   array  $config_biz  业务参数
+     *
+     * @return  array               服务器返回结果数组
      */
-    protected function preOrder()
+    protected function preOrder($config_biz = [])
     {
+        $this->config = array_merge($this->config, $config_biz);
         $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
         $this->config['sign'] = $this->getSign($this->config);
 
