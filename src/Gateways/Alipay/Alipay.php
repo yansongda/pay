@@ -134,7 +134,7 @@ abstract class Alipay implements GatewayInterface
      * @param   string     $sign 签名字符串-支付宝服务器发送过来的原始串
      * @param   bool       $sync 是否同步验证
      *
-     * @return  boolean          [description]
+     * @return  array|boolean    [description]
      */
     public function verify($data, $sign = null, $sync = false)
     {
