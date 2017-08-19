@@ -8,9 +8,6 @@ use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
-/**
- * abstract class Alipay.
- */
 abstract class Alipay implements GatewayInterface
 {
     use HasHttpRequest;

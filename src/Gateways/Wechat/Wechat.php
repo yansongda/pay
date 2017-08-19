@@ -106,8 +106,9 @@ abstract class Wechat implements GatewayInterface
     {
         $this->config = array_merge($this->config, $config_biz);
         $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
-        
-        return $this->getResult($this->gateway_refund);
+        $this->config['refund_fee'] = intval($this->config['refund_fee'] * 100);
+
+        return $this->getResult($this->gateway_refund, true);
     }
 
     /**
@@ -206,14 +207,19 @@ abstract class Wechat implements GatewayInterface
      * @version 2017-08-19
      * 
      * @param   string     $end_point [description]
+     * @param   bool       $cert      是否使用证书
      * 
      * @return  [type]                [description]
      */
-    protected function getResult($end_point)
+    protected function getResult($end_point, $cert = false)
     {
         $this->config['sign'] = $this->getSign($this->config);
 
-        $data = $this->fromXml($this->post($end_point, $this->toXml($this->config)));
+        if ($cert) {
+            $data = $this->fromXml($this->post($end_point, $this->toXml($this->config), ['cert' => $this->user_config->get('cert_client', ''), 'ssl_key' => $this->user_config->get('cert_key', '')]));
+        } else {
+            $data = $this->fromXml($this->post($end_point, $this->toXml($this->config)));
+        }
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
             $error = 'getResult error:' . $data['return_msg'];
