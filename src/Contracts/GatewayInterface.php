@@ -1,9 +1,7 @@
 <?php
+
 namespace Yansongda\Pay\Contracts;
 
-/**
- * Interface GatewayInterface.
- */
 interface GatewayInterface
 {
     /**
@@ -26,11 +24,11 @@ interface GatewayInterface
      * 
      * @version 2017-08-15
      * 
-     * @param   array      $config_biz [description]
+     * @param   array|string     $config_biz [description]
      * 
-     * @return  boolean                [description]
+     * @return  array|boolean                [description]
      */
-    public function refund(array $config_biz);
+    public function refund($config_biz);
 
     /**
      * 关闭
@@ -41,7 +39,7 @@ interface GatewayInterface
      * 
      * @param   array|string $config_biz [description]
      * 
-     * @return  boolean                  [description]
+     * @return  array|boolean                  [description]
      */
     public function close($config_biz);
 
@@ -68,7 +66,7 @@ interface GatewayInterface
      * @param   string     $sign 签名字符串-支付宝服务器发送过来的原始串
      * @param   bool       $sync 是否同步验证
      * 
-     * @return  boolean          [description]
+     * @return  array|boolean          [description]
      */
     public function verify($data, $sign = null, $sync = false);
 }

@@ -107,6 +107,7 @@ abstract class Wechat implements GatewayInterface
         $this->config = array_merge($this->config, $config_biz);
         $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
         $this->config['refund_fee'] = intval($this->config['refund_fee'] * 100);
+        $this->config['op_user_id'] = isset($this->config['op_user_id']) ?: $this->user_config->get('mch_id', '');
 
         return $this->getResult($this->gateway_refund, true);
     }
@@ -143,6 +144,7 @@ abstract class Wechat implements GatewayInterface
     {
         unset($this->config['notify_url']);
         unset($this->config['trade_type']);
+        
         $this->config['out_trade_no'] = $out_trade_no;
 
         return $this->getResult($this->gateway_query);

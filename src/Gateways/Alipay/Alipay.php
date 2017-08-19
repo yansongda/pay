@@ -22,14 +22,14 @@ abstract class Alipay implements GatewayInterface
     /**
      * 支付宝公共参数.
      *
-     * @var [type]
+     * @var array
      */
     protected $config;
 
     /**
-     * 用户的传参
+     * 用户的传参.
      *
-     * @var [type]
+     * @var Yansongda\Pay\Support\Config
      */
     protected $user_config;
 
@@ -95,12 +95,19 @@ abstract class Alipay implements GatewayInterface
      *
      * @version 2017-08-15
      *
-     * @param   array      $config_biz [description]
+     * @param   mixed      $config_biz [description]
      *
      * @return  array|boolean          [description]
      */
-    public function refund(array $config_biz = [])
+    public function refund($config_biz, $refund_amount = null)
     {
+        if (!is_array($config_biz)) {
+            $config_biz = [
+                'out_trade_no' => $config_biz,
+                'refund_amount' => $refund_amount,
+            ];
+        }
+
         return $this->getResult($config_biz, 'alipay.trade.refund');
     }
 
@@ -111,12 +118,18 @@ abstract class Alipay implements GatewayInterface
      *
      * @version 2017-08-15
      *
-     * @param   array      $config_biz [description]
+     * @param   array|string $config_biz [description]
      *
-     * @return  array|boolean          [description]
+     * @return  array|boolean            [description]
      */
-    public function close(array $config_biz = [])
+    public function close($config_biz)
     {
+        if (!is_array($config_biz)) {
+            $config_biz = [
+                'out_trade_no' => $config_biz,
+            ];
+        }
+
         return $this->getResult($config_biz, 'alipay.trade.close');
     }
 
