@@ -104,7 +104,10 @@ abstract class Wechat implements GatewayInterface
      */
     public function refund(array $config_biz = [])
     {
+        $this->config = array_merge($this->config, $config_biz);
+        $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
         
+        return $this->getResult($this->gateway_refund);
     }
 
     /**
