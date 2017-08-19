@@ -46,6 +46,18 @@ interface GatewayInterface
     public function close(array $config_biz);
 
     /**
+     * 对外接口 - 订单查询
+     * @author yansongda <me@yansongda.cn>
+     * 
+     * @version 2017-08-19
+     * 
+     * @param   string     $out_trade_no 商家订单号
+     * 
+     * @return  array|boolean            [description]
+     */
+    public function find($out_trade_no);
+
+    /**
      * 验证消息是否官方发出
      * 
      * @author yansongda <me@yansongda.cn>

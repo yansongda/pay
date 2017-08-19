@@ -41,24 +41,19 @@ trait HasHttpRequest
      * Make a post request.
      *
      * @param string $endpoint
-     * @param array  $params
-     * @param string $body
+     * @param mixed  $params
      * @param array  $headers
      *
      * @return string
      */
-    protected function post($endpoint, $params = [], $body = null, $headers = [])
+    protected function post($endpoint, $params = [], $headers = [])
     {
-        $options = [
-            'headers'     => $headers,
-            'form_params' => $params,
-        ];
+        $options['headers'] = $headers;
 
-        if (!is_null($body)) {
-            $options = [
-                'headers' => $headers,
-                'body'    => $body,
-            ];
+        if (!is_array($params)) {
+            $options['body'] = $params;
+        } else {
+            $options['form_params'] = $params;
         }
 
         return $this->request('post', $endpoint, $options);
