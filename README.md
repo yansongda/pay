@@ -22,9 +22,11 @@
 - 文件结构清晰易理解，可以随心所欲添加本项目中没有的支付网关
 - 方法使用更优雅，不必再去研究那些奇怪的的方法名或者类名是做啥用的
 
+
 ## 运行环境
 - PHP 5.6+
 - composer
+
 
 ## 支持的支付网关
 
@@ -70,15 +72,37 @@ SDK 中对应的 driver 和 gateway 如下表所示：
 | wechat | scan    | 扫码支付    |
 | wechat | pos     | 刷卡支付    |
 
+
 ## 支持的方法
 
 所有网关均支持以下方法
 
-- pay    (支付接口)
-- refund (退款接口)
-- close  (关闭订单接口)
-- verify (验证服务器返回消息是否合法)
-  
+- pay(array $config_biz)  
+说明：支付接口  
+参数：数组类型，订单业务配置项，包含 订单号，订单金额等  
+返回：mixed  详情请看「支付网关配置说明与返回值」一节。 
+
+- refund(array|string $config_biz, $refund_amount = null)  
+说明：退款接口  
+参数：`$config_biz` 为字符串类型仅对`支付宝支付`有效，此时代表订单号，第二个参数为退款金额。  
+返回：mixed  退款成功，返回 服务器返回的数组；否则返回 false；  
+
+- close(array|string $config_biz)  
+说明：关闭订单接口  
+参数：`$config_biz` 为字符串类型时代表订单号，如果为数组，则为关闭订单业务配置项，配置项内容请参考各个支付网关官方文档。  
+返回：mixed  退款成功，返回 服务器返回的数组；否则返回 false；  
+
+- find(string $out_trade_no)  
+说明：查找订单接口  
+参数：`$out_trade_no` 为订单号。  
+返回：mixed  退款成功，返回 服务器返回的数组；否则返回 false；  
+
+- verify($data, $sign = null)  
+说明：验证服务器返回消息是否合法  
+参数：`$data` 为服务器接收到的原始内容，`$sign` 为签名信息，当其为空时，系统将自动转化 `$data` 为数组，然后取 `$data['sign']`。  
+返回：mixed  退款成功，返回 服务器返回的数组；否则返回 false；  
+
+
 ## 安装
 ```shell
 composer require yansongda/pay
@@ -121,9 +145,9 @@ $config = [
     ],
 ];
 $config_biz = [
-    'out_trade_no' => '12',                 // 订单号
-    'total_amount' => '13',                 // 订单金额，单位：元
-    'subject' => 'test subject',   // 订单商品标题
+    'out_trade_no' => '12',         // 订单号
+    'total_amount' => '13',         // 订单金额，单位：元
+    'subject' => 'test subject',    // 订单商品标题
 ];
 ```
 
@@ -134,26 +158,11 @@ $pay = new Pay($config);
 return $pay->dirver('alipay')->gateway('web')->pay($config_biz);
 ```
 
-## 返回值
-
-- pay(array $config_biz)  
-详情请看「支付网关配置说明与返回值」一节。
-
-- refund(array $config_biz)  
-类型：bool  
-说明：退款成功，返回 true；  
-
-- close(array $config_biz)  
-类型：bool  
-说明：关闭成功，返回 服务器返回的数组；否则返回 false；
-
-- verify(mixed $data, $sign = null)  
-类型：mixed
-说明：验证成功，返回 服务器返回的数组；否则返回 false；
 
 ## 错误
 
 使用非跳转接口（如， `refund` 接口,`close` 接口）时，如果在调用相关支付网关 API 时有错误产生，会抛出 `GatewayException` 错误，可以通过 `$e->getMessage()` 查看，同时，也可通过 `$e->raw` 查看调用 API 后返回的原始数据，该值为数组格式。
+
 
 ## 支付网关配置说明与返回值
 
@@ -315,6 +324,8 @@ $config = [
         'mch_id' => '',             // 微信商户号
         'notify_url' => '',
         'key' => '',                // 微信支付签名秘钥
+        'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
+        'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
     ],
 ];
 
@@ -336,6 +347,8 @@ $config = [
         'mch_id' => '',             // 微信商户号
         'notify_url' => '',
         'key' => '',                // 微信支付签名秘钥
+        'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
+        'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
     ],
 ];
 
@@ -430,6 +443,8 @@ $config = [
         'mch_id' => '',             // 微信商户号
         'notify_url' => '',
         'key' => '',                // 微信支付签名秘钥
+        'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
+        'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
     ],
 ];
 
@@ -461,6 +476,8 @@ $config = [
         'return_url' => '',         // *此配置选项可选*，注意，该跳转 URL 只有跳转之意，没有同步通知功能
         'notify_url' => '',
         'key' => '',                // 微信支付签名秘钥
+        'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
+        'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
     ],
 ];
 
@@ -492,6 +509,8 @@ $config = [
         'mch_id' => '',             // 微信商户号
         'notify_url' => '',
         'key' => '',                // 微信支付签名秘钥
+        'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
+        'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
     ],
 ];
 
@@ -521,6 +540,8 @@ $config = [
         'app_id' => '',             // 公众号 APPID
         'mch_id' => '',             // 微信商户号
         'key' => '',                // 微信支付签名秘钥
+        'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
+        'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
     ],
 ];
 
@@ -551,6 +572,8 @@ $config = [
         'mch_id' => '',             // 微信商户号
         'notify_url' => '',
         'key' => '',                // 微信支付签名秘钥
+        'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
+        'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
     ],
 ];
 
