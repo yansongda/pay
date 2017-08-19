@@ -106,6 +106,8 @@ abstract class Wechat implements GatewayInterface
         $this->config['refund_fee'] = intval($this->config['refund_fee'] * 100);
         $this->config['op_user_id'] = isset($this->config['op_user_id']) ?: $this->user_config->get('mch_id', '');
 
+        $this->unsetTradeTypeAndNotifyUrl();
+
         return $this->getResult($this->gateway_refund, true);
     }
 
@@ -120,9 +122,9 @@ abstract class Wechat implements GatewayInterface
      */
     public function close($out_trade_no = '')
     {
-        unset($this->config['notify_url']);
-        unset($this->config['trade_type']);
         $this->config['out_trade_no'] = $out_trade_no;
+
+        $this->unsetTradeTypeAndNotifyUrl();
 
         return $this->getResult($this->gateway_close);
     }
@@ -139,10 +141,9 @@ abstract class Wechat implements GatewayInterface
      */
     public function find($out_trade_no = '')
     {
-        unset($this->config['notify_url']);
-        unset($this->config['trade_type']);
-        
         $this->config['out_trade_no'] = $out_trade_no;
+
+        $this->unsetTradeTypeAndNotifyUrl();
 
         return $this->getResult($this->gateway_query);
     }
@@ -360,5 +361,22 @@ abstract class Wechat implements GatewayInterface
         libxml_disable_entity_loader(true);
 
         return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA), JSON_UNESCAPED_UNICODE), true);        
+    }
+
+    /**
+     * 删除 trade_type and notify_url.
+     * 
+     * @author yansongda <me@yansongda.cn>
+     * 
+     * @version 2017-08-19
+     * 
+     * @return  boolean     [description]
+     */
+    protected function unsetTradeTypeAndNotifyUrl()
+    {
+        unset($this->config['notify_url']);
+        unset($this->config['trade_type']);
+
+        return true
     }
 }

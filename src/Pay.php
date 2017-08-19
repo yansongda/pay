@@ -54,7 +54,7 @@ class Pay
      * 
      * @param   string     $driver [description]
      * 
-     * @return  object             [description]
+     * @return  Pay             [description]
      */
     public function driver($driver)
     {
