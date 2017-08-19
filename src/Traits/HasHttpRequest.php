@@ -1,7 +1,6 @@
 <?php
 
 /*
- *
  * (c) overtrue <i@overtrue.me>
  *
  * Modified By yansongda <me@yansongda.cn>
@@ -41,24 +40,19 @@ trait HasHttpRequest
      * Make a post request.
      *
      * @param string $endpoint
-     * @param array  $params
-     * @param string $body
-     * @param array  $headers
+     * @param mixed  $params
+     * @param array  $options
      *
      * @return string
      */
-    protected function post($endpoint, $params = [], $body = null, $headers = [])
+    protected function post($endpoint, $params = [], ...$options)
     {
-        $options = [
-            'headers'     => $headers,
-            'form_params' => $params,
-        ];
+        $options = $options[0];
 
-        if (!is_null($body)) {
-            $options = [
-                'headers' => $headers,
-                'body'    => $body,
-            ];
+        if (!is_array($params)) {
+            $options['body'] = $params;
+        } else {
+            $options['form_params'] = $params;
         }
 
         return $this->request('post', $endpoint, $options);

@@ -16,21 +16,42 @@ abstract class Wechat implements GatewayInterface
     use HasHttpRequest;
 
     /**
-     * [$preOrder_gateway description].
+     * 支付订单.
      *
      * @var string
      */
     protected $gateway = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
     /**
-     * [$config description].
+     * 查询订单.
+     * 
+     * @var string
+     */
+    protected $gateway_query = 'https://api.mch.weixin.qq.com/pay/orderquery';
+
+    /**
+     * 关闭订单.
+     * 
+     * @var string
+     */
+    protected $gateway_close = 'https://api.mch.weixin.qq.com/pay/closeorder';
+
+    /**
+     * 退款.
+     * 
+     * @var string
+     */
+    protected $gateway_refund = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
+
+    /**
+     * 配置项.
      *
      * @var array
      */
     protected $config;
 
     /**
-     * [$user_config description].
+     * 用户传参配置项.
      *
      * @var Yansongda\Pay\Support\Config
      */
@@ -83,7 +104,12 @@ abstract class Wechat implements GatewayInterface
      */
     public function refund(array $config_biz = [])
     {
-        
+        $this->config = array_merge($this->config, $config_biz);
+        $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
+        $this->config['refund_fee'] = intval($this->config['refund_fee'] * 100);
+        $this->config['op_user_id'] = isset($this->config['op_user_id']) ?: $this->user_config->get('mch_id', '');
+
+        return $this->getResult($this->gateway_refund, true);
     }
 
     /**
@@ -93,11 +119,35 @@ abstract class Wechat implements GatewayInterface
      *
      * @version 2017-08-15
      *
-     * @return  [type]     [description]
+     * @return  array|boolean     [description]
      */
-    public function close(array $config_biz = [])
+    public function close($out_trade_no = '')
     {
-        # code...
+        unset($this->config['notify_url']);
+        unset($this->config['trade_type']);
+        $this->config['out_trade_no'] = $out_trade_no;
+
+        return $this->getResult($this->gateway_close);
+    }
+
+    /**
+     * 对外接口 - 订单查询
+     * @author yansongda <me@yansongda.cn>
+     * 
+     * @version 2017-08-19
+     * 
+     * @param   string     $out_trade_no 商家订单号
+     * 
+     * @return  array|boolean            [description]
+     */
+    public function find($out_trade_no = '')
+    {
+        unset($this->config['notify_url']);
+        unset($this->config['trade_type']);
+        
+        $this->config['out_trade_no'] = $out_trade_no;
+
+        return $this->getResult($this->gateway_query);
     }
 
     /**
@@ -147,23 +197,44 @@ abstract class Wechat implements GatewayInterface
     {
         $this->config = array_merge($this->config, $config_biz);
         $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
+
+        return $this->getResult($this->gateway);
+    }
+
+    /**
+     * 获取 API 结果.
+     * 
+     * @author yansongda <me@yansongda.cn>
+     * 
+     * @version 2017-08-19
+     * 
+     * @param   string     $end_point [description]
+     * @param   bool       $cert      是否使用证书
+     * 
+     * @return  [type]                [description]
+     */
+    protected function getResult($end_point, $cert = false)
+    {
         $this->config['sign'] = $this->getSign($this->config);
 
-        $data = $this->fromXml($this->post($this->gateway, [], $this->toXml($this->config)));
-
-        if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
-            $error = 'preOrder error:' . $data['return_msg'];
-            $error .= isset($data['err_code_des']) ? ' - ' . $data['err_code_des'] : '';
-            
-            throw new GatewayException(
-                $error,
-                20000,
-                $data);
+        if ($cert) {
+            $data = $this->fromXml($this->post($end_point, $this->toXml($this->config), ['cert' => $this->user_config->get('cert_client', ''), 'ssl_key' => $this->user_config->get('cert_key', '')]));
+        } else {
+            $data = $this->fromXml($this->post($end_point, $this->toXml($this->config)));
         }
 
-        if ($this->getSign($data) !== $data['sign']) {
+        if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
+            $error = 'getResult error:' . $data['return_msg'];
+            $error .= isset($data['err_code_des']) ? ' - ' . $data['err_code_des'] : '';
+        }
+
+        if (!isset($error) && $this->getSign($data) !== $data['sign']) {
+            $error = 'getResult error: return data sign error';
+        }
+
+        if (isset($error)) {
             throw new GatewayException(
-                'preOrder error: return data sign error',
+                $error,
                 20000,
                 $data);
         }
@@ -233,6 +304,7 @@ abstract class Wechat implements GatewayInterface
      */
     protected function createNonceStr($length = 16) {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
         $str = "";
         for ($i = 0; $i < $length; $i++) {
             $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
