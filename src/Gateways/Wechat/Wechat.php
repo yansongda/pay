@@ -377,6 +377,6 @@ abstract class Wechat implements GatewayInterface
         unset($this->config['notify_url']);
         unset($this->config['trade_type']);
 
-        return true
+        return true;
     }
 }
