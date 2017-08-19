@@ -27,7 +27,14 @@ abstract class Wechat implements GatewayInterface
      * 
      * @var string
      */
-    protected $query_gateway = 'https://api.mch.weixin.qq.com/pay/orderquery';
+    protected $gateway_query = 'https://api.mch.weixin.qq.com/pay/orderquery';
+
+    /**
+     * 关闭订单.
+     * 
+     * @var string
+     */
+    protected $gateway_close = 'https://api.mch.weixin.qq.com/pay/closeorder';
 
     /**
      * 配置项.
@@ -102,9 +109,13 @@ abstract class Wechat implements GatewayInterface
      *
      * @return  [type]     [description]
      */
-    public function close(array $config_biz = [])
+    public function close($out_trade_no = '')
     {
-        # code...
+        unset($this->config['notify_url']);
+        unset($this->config['trade_type']);
+        $this->config['out_trade_no'] = $out_trade_no;
+
+        return $this->getResult($this->gateway_close);
     }
 
     /**
@@ -123,7 +134,7 @@ abstract class Wechat implements GatewayInterface
         unset($this->config['trade_type']);
         $this->config['out_trade_no'] = $out_trade_no;
 
-        return $this->getResult($this->query_gateway);
+        return $this->getResult($this->gateway_query);
     }
 
     /**
