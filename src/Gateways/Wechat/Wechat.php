@@ -37,6 +37,13 @@ abstract class Wechat implements GatewayInterface
     protected $gateway_close = 'https://api.mch.weixin.qq.com/pay/closeorder';
 
     /**
+     * 退款.
+     * 
+     * @var string
+     */
+    protected $gateway_refund = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
+
+    /**
      * 配置项.
      *
      * @var array

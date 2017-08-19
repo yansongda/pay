@@ -45,7 +45,7 @@ trait HasHttpRequest
      *
      * @return string
      */
-    protected function post($endpoint, $params = [], $headers = [])
+    protected function post($endpoint, $params = [], ...$options)
     {
         $options['headers'] = $headers;
 
@@ -54,6 +54,9 @@ trait HasHttpRequest
         } else {
             $options['form_params'] = $params;
         }
+
+        echo "<pre>";
+        print_r($options);die;
 
         return $this->request('post', $endpoint, $options);
     }
