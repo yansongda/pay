@@ -8,9 +8,6 @@ use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
-/**
- * abstract class Wechat.
- */
 abstract class Wechat implements GatewayInterface
 {
     use HasHttpRequest;
@@ -53,7 +50,7 @@ abstract class Wechat implements GatewayInterface
     /**
      * 用户传参配置项.
      *
-     * @var Yansongda\Pay\Support\Config
+     * @var \Yansongda\Pay\Support\Config
      */
     protected $user_config;
 
@@ -100,9 +97,9 @@ abstract class Wechat implements GatewayInterface
      *
      * @version 2017-08-15
      *
-     * @return  [type]     [description]
+     * @return  string|boolean     [description]
      */
-    public function refund(array $config_biz = [])
+    public function refund($config_biz = [])
     {
         $this->config = array_merge($this->config, $config_biz);
         $this->config['total_fee'] = intval($this->config['total_fee'] * 100);
@@ -211,7 +208,7 @@ abstract class Wechat implements GatewayInterface
      * @param   string     $end_point [description]
      * @param   bool       $cert      是否使用证书
      * 
-     * @return  [type]                [description]
+     * @return  array                 [description]
      */
     protected function getResult($end_point, $cert = false)
     {

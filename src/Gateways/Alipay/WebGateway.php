@@ -14,7 +14,7 @@ class WebGateway extends Alipay
      *
      * @version 2017-08-10
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     protected function getPayMethod()
     {
@@ -28,7 +28,7 @@ class WebGateway extends Alipay
      *
      * @version 2017-08-10
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     protected function getPayProductCode()
     {

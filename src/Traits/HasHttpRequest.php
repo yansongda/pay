@@ -47,7 +47,7 @@ trait HasHttpRequest
      */
     protected function post($endpoint, $params = [], ...$options)
     {
-        $options = $options[0];
+        $options = isset($options[0]) ? $options[0] : [];
 
         if (!is_array($params)) {
             $options['body'] = $params;
