@@ -14,7 +14,7 @@ class AppGateway extends Alipay
      *
      * @version 2017-08-10
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     protected function getPayMethod()
     {
@@ -28,7 +28,7 @@ class AppGateway extends Alipay
      *
      * @version 2017-08-10
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     protected function getPayProductCode()
     {
@@ -44,7 +44,7 @@ class AppGateway extends Alipay
      * 
      * @param   array      $config_biz 业务参数
      * 
-     * @return  [type]                 [description]
+     * @return  string                 [description]
      */
     public function pay(array $config_biz = [])
     {

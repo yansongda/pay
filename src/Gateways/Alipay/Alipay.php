@@ -29,7 +29,7 @@ abstract class Alipay implements GatewayInterface
     /**
      * 用户的传参.
      *
-     * @var Yansongda\Pay\Support\Config
+     * @var \Yansongda\Pay\Support\Config
      */
     protected $user_config;
 

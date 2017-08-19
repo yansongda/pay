@@ -13,21 +13,21 @@ class Pay
     /**
      * [$config description]
      * 
-     * @var [type]
+     * @var \Yansongda\Pay\Support\Config
      */
     private $config;
 
     /**
      * [$dirvers description]
      * 
-     * @var [type]
+     * @var string
      */
     private $drivers;
 
     /**
      * [$gateways description]
      * 
-     * @var [type]
+     * @var string
      */
     private $gateways;
 
@@ -52,9 +52,9 @@ class Pay
      * 
      * @version 2017-07-30
      * 
-     * @param   [type]     $driver [description]
+     * @param   string     $driver [description]
      * 
-     * @return  [type]             [description]
+     * @return  object             [description]
      */
     public function driver($driver)
     {
@@ -76,7 +76,7 @@ class Pay
      * 
      * @param   string     $gateway [description]
      * 
-     * @return  [type]              [description]
+     * @return  object              [description]
      */
     public function gateway($gateway = 'web')
     {
@@ -98,7 +98,7 @@ class Pay
      * 
      * @param   string     $gateway [description]
      * 
-     * @return  [type]              [description]
+     * @return  object              [description]
      */
     private function createGateway($gateway)
     {
@@ -120,7 +120,7 @@ class Pay
      * 
      * @param   string     $gateway [description]
      * 
-     * @return  [type]              [description]
+     * @return  object              [description]
      */
     private function build($gateway)
     {

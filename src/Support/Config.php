@@ -35,7 +35,7 @@ class Config implements ArrayAccess
      * @param   string     $key     [description]
      * @param   string     $default [description]
      *
-     * @return  [type]              [description]
+     * @return  mixed               [description]
      */
     public function get($key = null, $default = null)
     {
@@ -68,7 +68,7 @@ class Config implements ArrayAccess
      *
      * @param   string     $key   [description]
      *
-     * @param   [type]     $value [description]
+     * @param   array      $value [description]
      */
     public function set(string $key, $value)
     {
@@ -104,9 +104,9 @@ class Config implements ArrayAccess
      *
      * @version 2017-07-30
      *
-     * @param   [type]     $offset [description]
+     * @param   string     $offset [description]
      *
-     * @return  [type]             [description]
+     * @return  boolean            [description]
      */
     public function offsetExists($offset)
     {
@@ -120,9 +120,9 @@ class Config implements ArrayAccess
      *
      * @version 2017-07-30
      *
-     * @param   [type]     $offset [description]
+     * @param   string     $offset [description]
      *
-     * @return  [type]             [description]
+     * @return  mixed              [description]
      */
     public function offsetGet($offset)
     {
@@ -136,10 +136,10 @@ class Config implements ArrayAccess
      *
      * @version 2017-07-30
      *
-     * @param   [type]     $offset [description]
-     * @param   [type]     $value  [description]
+     * @param   string     $offset [description]
+     * @param   string     $value  [description]
      *
-     * @return  [type]             [description]
+     * @return  array              [description]
      */
     public function offsetSet($offset, $value)
     {
@@ -153,9 +153,9 @@ class Config implements ArrayAccess
      *
      * @version 2017-07-30
      *
-     * @param   [type]     $offset [description]
+     * @param   string     $offset [description]
      *
-     * @return  [type]             [description]
+     * @return  array              [description]
      */
     public function offsetUnset($offset)
     {

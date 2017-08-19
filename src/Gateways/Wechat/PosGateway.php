@@ -20,7 +20,7 @@ class PosGateway extends Wechat
      *
      * @version 2017-08-15
      *
-     * @return  [type]     [description]
+     * @return  string     [description]
      */
     protected function getTradeType()
     {
