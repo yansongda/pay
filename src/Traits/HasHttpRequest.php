@@ -1,7 +1,6 @@
 <?php
 
 /*
- *
  * (c) overtrue <i@overtrue.me>
  *
  * Modified By yansongda <me@yansongda.cn>
