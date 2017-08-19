@@ -107,7 +107,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @version 2017-08-15
      *
-     * @return  [type]     [description]
+     * @return  array|boolean     [description]
      */
     public function close($out_trade_no = '')
     {

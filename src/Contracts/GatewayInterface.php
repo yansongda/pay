@@ -39,11 +39,11 @@ interface GatewayInterface
      * 
      * @version 2017-08-15
      * 
-     * @param   array      $config_biz [description]
+     * @param   array|string $config_biz [description]
      * 
-     * @return  boolean                [description]
+     * @return  boolean                  [description]
      */
-    public function close(array $config_biz);
+    public function close($config_biz);
 
     /**
      * 对外接口 - 订单查询
