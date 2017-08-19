@@ -121,6 +121,7 @@ abstract class Wechat implements GatewayInterface
     {
         unset($this->config['notify_url']);
         unset($this->config['trade_type']);
+        $this->config['out_trade_no'] = $out_trade_no;
 
         return $this->getResult($this->query_gateway);
     }
@@ -198,7 +199,7 @@ abstract class Wechat implements GatewayInterface
             $error .= isset($data['err_code_des']) ? ' - ' . $data['err_code_des'] : '';
         }
 
-        if ($this->getSign($data) !== $data['sign']) {
+        if (!isset($error) && $this->getSign($data) !== $data['sign']) {
             $error = 'getResult error: return data sign error';
         }
 
