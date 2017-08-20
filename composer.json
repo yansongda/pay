@@ -24,5 +24,10 @@
             "Yansongda\\Pay\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Yansongda\\Pay\\Tests\\": "tests"
+        }
+    },
     "license": "MIT"
 }
