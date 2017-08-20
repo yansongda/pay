@@ -216,7 +216,14 @@ abstract class Wechat implements GatewayInterface
         $this->config['sign'] = $this->getSign($this->config);
 
         if ($cert) {
-            $data = $this->fromXml($this->post($end_point, $this->toXml($this->config), ['cert' => $this->user_config->get('cert_client', ''), 'ssl_key' => $this->user_config->get('cert_key', '')]));
+            $data = $this->fromXml($this->post(
+                $end_point,
+                $this->toXml($this->config),
+                [
+                    'cert' => $this->user_config->get('cert_client', ''),
+                    'ssl_key' => $this->user_config->get('cert_key', '')
+                ]
+            ));
         } else {
             $data = $this->fromXml($this->post($end_point, $this->toXml($this->config)));
         }
@@ -281,9 +288,7 @@ abstract class Wechat implements GatewayInterface
 
         foreach ($data as $k => $v)
         {
-            if ($k != "sign" && $v != "" && !is_array($v)) {
-                $buff .= $k . "=" . $v . "&";
-            }
+            $buff .= ($k != "sign" && $v != "" && !is_array($v)) ? $k . "=" . $v . "&" : '';
         }
         
         return trim($buff, "&");
@@ -330,11 +335,8 @@ abstract class Wechat implements GatewayInterface
         
         $xml = "<xml>";
         foreach ($data as $key => $val) {
-            if (is_numeric($val)) {
-                $xml .= "<" . $key . ">" . $val . "</" . $key . ">";
-            } else {
-                $xml .= "<" . $key . "><![CDATA[" . $val . "]]></" . $key . ">";
-            }
+            $xml .= is_numeric($val) ? "<" . $key . ">" . $val . "</" . $key . ">" : 
+                                       "<" . $key . "><![CDATA[" . $val . "]]></" . $key . ">";
         }
         $xml .= "</xml>";
 
