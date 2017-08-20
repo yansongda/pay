@@ -90,17 +90,17 @@ SDK 中对应的 driver 和 gateway 如下表所示：
 - close(array|string $config_biz)  
 说明：关闭订单接口  
 参数：`$config_biz` 为字符串类型时代表订单号，如果为数组，则为关闭订单业务配置项，配置项内容请参考各个支付网关官方文档。  
-返回：mixed  退款成功，返回 服务器返回的数组；否则返回 false；  
+返回：mixed  关闭订单成功，返回 服务器返回的数组；否则返回 false；  
 
 - find(string $out_trade_no)  
 说明：查找订单接口  
 参数：`$out_trade_no` 为订单号。  
-返回：mixed  退款成功，返回 服务器返回的数组；否则返回 false；  
+返回：mixed  查找订单成功，返回 服务器返回的数组；否则返回 false；  
 
 - verify($data, $sign = null)  
 说明：验证服务器返回消息是否合法  
 参数：`$data` 为服务器接收到的原始内容，`$sign` 为签名信息，当其为空时，系统将自动转化 `$data` 为数组，然后取 `$data['sign']`。  
-返回：mixed  退款成功，返回 服务器返回的数组；否则返回 false；  
+返回：mixed  验证成功，返回 服务器返回的数组；否则返回 false；  
 
 
 ## 安装
