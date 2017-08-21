@@ -100,7 +100,7 @@ class Pay
      * 
      * @return  object              [description]
      */
-    private function createGateway($gateway)
+    protected function createGateway($gateway)
     {
         if (!file_exists(__DIR__ . '/Gateways/' . ucfirst($this->drivers) . '/' . ucfirst($gateway) . 'Gateway.php')) {
             throw new InvalidArgumentException("Gateway [$gateway] is not supported.");
@@ -122,7 +122,7 @@ class Pay
      * 
      * @return  object              [description]
      */
-    private function build($gateway)
+    protected function build($gateway)
     {
         return new $gateway($this->config->get($this->drivers));
     }
