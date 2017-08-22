@@ -133,7 +133,7 @@ $config_biz = [
 ];
 
 $pay = new Pay($config);
-return $pay->dirver('alipay')->gateway('web')->pay($config_biz);
+return $pay->driver('alipay')->gateway('web')->pay($config_biz);
 ```
 
 ### 1、准备配置参数
@@ -157,7 +157,7 @@ $config_biz = [
 
 ```php
 $pay = new Pay($config);
-return $pay->dirver('alipay')->gateway('web')->pay($config_biz);
+return $pay->driver('alipay')->gateway('web')->pay($config_biz);
 ```
 
 
