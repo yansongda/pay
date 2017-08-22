@@ -13,6 +13,8 @@
 
 欢迎 Star，欢迎 PR！
 
+laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
+
 ## 特点
 - 命名不那么乱七八糟
 - 隐藏开发者不需要关注的细节
@@ -131,7 +133,7 @@ $config_biz = [
 ];
 
 $pay = new Pay($config);
-return $pay->dirver('alipay')->gateway('web')->pay($config_biz);
+return $pay->driver('alipay')->gateway('web')->pay($config_biz);
 ```
 
 ### 1、准备配置参数
@@ -155,7 +157,7 @@ $config_biz = [
 
 ```php
 $pay = new Pay($config);
-return $pay->dirver('alipay')->gateway('web')->pay($config_biz);
+return $pay->driver('alipay')->gateway('web')->pay($config_biz);
 ```
 
 
