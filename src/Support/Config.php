@@ -72,7 +72,7 @@ class Config implements ArrayAccess
      */
     public function set(string $key, $value)
     {
-        if (is_null($key) || $key == '') {
+        if ($key == '') {
             throw new InvalidArgumentException('Invalid config key.');
         }
 
@@ -86,7 +86,7 @@ class Config implements ArrayAccess
                 $this->config[$keys[0]][$keys[1]] = $value;
                 break;
             case '3':
-                $this->config[$keys[0]][$keys[1]][$keys[3]] = $value;
+                $this->config[$keys[0]][$keys[1]][$keys[2]] = $value;
                 break;
 
             default:
