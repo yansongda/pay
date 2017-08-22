@@ -228,6 +228,8 @@ class PayController extends Controller
 ### 1、准备配置参数
 
 ```php
+<?php
+
 $config = [
     'alipay' => [
         'app_id' => '',             // 支付宝提供的 APP_ID
@@ -245,6 +247,8 @@ $config_biz = [
 ### 2、在代码中使用
 
 ```php
+<?php
+
 $pay = new Pay($config);
 return $pay->driver('alipay')->gateway('web')->pay($config_biz);
 ```
@@ -267,6 +271,8 @@ return $pay->driver('alipay')->gateway('web')->pay($config_biz);
 
 #### 最小配置参数
 ```php
+<?php
+
 $config = [
     'alipay' => [
         'app_id' => '',             // 支付宝提供的 APP_ID
@@ -286,6 +292,8 @@ $config_biz = [
 所有参数均为官方标准参数，无任何差别。[点击这里](https://docs.open.alipay.com/common/105901 '支付宝官方文档') 查看官方文档。
 
 ```php
+<?php
+
 $config = [
     'alipay' => [
         'app_id' => '',             // 支付宝提供的 APP_ID
@@ -355,6 +363,8 @@ $config_biz = [
 
 #### 最小配置参数
 ```php
+<?php
+
 $config = [
     'alipay' => [
         'app_id' => '',             // 支付宝提供的 APP_ID
@@ -382,6 +392,8 @@ $config_biz = [
 
 #### 最小配置参数
 ```php
+<?php
+
 $config = [
     'alipay' => [
         'app_id' => '',             // 支付宝提供的 APP_ID
@@ -409,6 +421,8 @@ $config_biz = [
 
 #### 最小配置参数
 ```php
+<?php
+
 $config = [
     'wechat' => [
         'app_id' => '',             // 公众号APPID
@@ -432,6 +446,8 @@ $config_biz = [
 #### 所有配置参数
 所有参数均为官方标准参数，无任何差别。[点击这里](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1 '微信支付官方文档') 查看官方文档。
 ```php
+<?php
+
 $config = [
     'wechat' => [
         'app_id' => '',             // 公众号APPID
@@ -528,6 +544,8 @@ $config_biz = [
 
 #### 最小配置参数
 ```php
+<?php
+
 $config = [
     'wechat' => [
         'miniapp_id' => '',             // 小程序APPID
@@ -560,6 +578,8 @@ $config_biz = [
 #### 最小配置参数
 
 ```php
+<?php
+
 $config = [
     'wechat' => [
         'app_id' => '',             // 微信公众号 APPID
@@ -594,6 +614,8 @@ $config_biz = [
 #### 最小配置参数
 
 ```php
+<?php
+
 $config = [
     'wechat' => [
         'app_id' => '',             // 微信公众号 APPID
@@ -626,6 +648,8 @@ $config_biz = [
 
 #### 最小配置参数
 ```php
+<?php
+
 $config = [
     'wechat' => [
         'app_id' => '',             // 公众号 APPID
@@ -657,6 +681,8 @@ $config_biz = [
 
 #### 最小配置参数
 ```php
+<?php
+
 $config = [
     'wechat' => [
         'appid' => '',              // APPID
