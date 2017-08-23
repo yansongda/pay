@@ -77,15 +77,13 @@ abstract class Alipay implements GatewayInterface
      *
      * @return  string                 [description]
      */
-    public function pay(array $config_biz = [])
+    abstract public function pay($config_biz)
     {
-        $config_biz['product_code'] = $this->getPayProductCode();
+        $config_biz['product_code'] = $this->getProductCode();
 
-        $this->config['method'] = $this->getPayMethod();
+        $this->config['method'] = $this->getMethod();
         $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
         $this->config['sign'] = $this->getSign();
-
-        return $this->buildPayHtml();
     }
 
     /**
@@ -161,7 +159,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @param   array      $data 待签名数组
      * @param   string     $sign 签名字符串-支付宝服务器发送过来的原始串
-     * @param   bool       $sync 是否同步验证
+     * @param   bool       $sync 是否同步返回验证
      *
      * @return  array|boolean    [description]
      */
@@ -191,7 +189,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @return  string     [description]
      */
-    abstract protected function getPayMethod();
+    abstract protected function getMethod();
 
     /**
      * [getProductCode description].
@@ -202,7 +200,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @return  string     [description]
      */
-    abstract protected function getPayProductCode();
+    abstract protected function getProductCode();
 
     /**
      * [buildHtmlPay description]
@@ -290,7 +288,7 @@ abstract class Alipay implements GatewayInterface
      * @version 2017-08-11
      *
      * @param   array      $toBeSigned [description]
-     * @param   boolean    $verify     是否异步同时验证签名
+     * @param   boolean    $verify     是否验证签名
      *
      * @return  string                 [description]
      */

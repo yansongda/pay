@@ -16,7 +16,7 @@ class AppGateway extends Alipay
      *
      * @return  string     [description]
      */
-    protected function getPayMethod()
+    protected function getMethod()
     {
         return 'alipay.trade.app.pay';
     }
@@ -30,7 +30,7 @@ class AppGateway extends Alipay
      *
      * @return  string     [description]
      */
-    protected function getPayProductCode()
+    protected function getProductCode()
     {
         return 'QUICK_MSECURITY_PAY';
     }
@@ -48,11 +48,7 @@ class AppGateway extends Alipay
      */
     public function pay(array $config_biz = [])
     {
-        $config_biz['product_code'] = $this->getPayProductCode();
-
-        $this->config['method'] = $this->getPayMethod();
-        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
-        $this->config['sign'] = $this->getSign();
+        parent::pay($config_biz);
 
         return http_build_query($this->config);
     }
