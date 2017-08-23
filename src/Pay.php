@@ -27,7 +27,7 @@ class Pay
     /**
      * [$gateways description]
      * 
-     * @var string
+     * @var \Yansongda\Pay\Contracts\GatewayInterface
      */
     private $gateways;
 
