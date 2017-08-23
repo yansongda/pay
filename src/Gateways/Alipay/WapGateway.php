@@ -42,9 +42,9 @@ class WapGateway extends Alipay
      * 
      * @version 2017-08-23
      * 
-     * @param   [type]     $config_biz [description]
+     * @param   array      $config_biz [description]
      * 
-     * @return  [type]                 [description]
+     * @return  string                 [description]
      */
     public function pay(array $config_biz = [])
     {
