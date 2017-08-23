@@ -43,7 +43,7 @@ class ScanGateway extends Alipay
      * 
      * @return  array|boolean          [description]
      */
-    public function pay($config_biz)
+    public function pay(array $config_biz = [])
     {
         return $this->getResult($config_biz, $this->getMethod());
     }
