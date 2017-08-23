@@ -2,10 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-/**
- * class WebGateway.
- */
-class WebGateway extends Alipay
+class ScanGateway extends Alipay
 {
     /**
      * [getMethod description].
@@ -18,7 +15,7 @@ class WebGateway extends Alipay
      */
     protected function getMethod()
     {
-        return 'alipay.trade.page.pay';
+        return 'alipay.trade.precreate';
     }
 
     /**
@@ -32,24 +29,22 @@ class WebGateway extends Alipay
      */
     protected function getProductCode()
     {
-        return 'FAST_INSTANT_TRADE_PAY';
+        return '';
     }
 
     /**
-     * 对外支付.
+     * 扫码支付.
      * 
      * @author yansongda <me@yansongda.cn>
      * 
      * @version 2017-08-23
      * 
-     * @param   [type]     $config_biz [description]
+     * @param   array      $config_biz 订单信息
      * 
-     * @return  [type]                 [description]
+     * @return  array|boolean          [description]
      */
     public function pay(array $config_biz = [])
     {
-        parent::pay($config_biz);
-
-        return $this->buildPayHtml();
+        return $this->getResult($config_biz, $this->getMethod());
     }
 }

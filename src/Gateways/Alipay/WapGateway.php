@@ -16,7 +16,7 @@ class WapGateway extends Alipay
      *
      * @return  string     [description]
      */
-    protected function getPayMethod()
+    protected function getMethod()
     {
         return 'alipay.trade.wap.pay';
     }
@@ -30,8 +30,26 @@ class WapGateway extends Alipay
      *
      * @return  string     [description]
      */
-    protected function getPayProductCode()
+    protected function getProductCode()
     {
         return 'QUICK_WAP_WAY';
+    }
+
+    /**
+     * 对外支付.
+     * 
+     * @author yansongda <me@yansongda.cn>
+     * 
+     * @version 2017-08-23
+     * 
+     * @param   [type]     $config_biz [description]
+     * 
+     * @return  [type]                 [description]
+     */
+    public function pay(array $config_biz = [])
+    {
+        parent::pay($config_biz);
+
+        return $this->buildPayHtml();
     }
 }

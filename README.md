@@ -47,6 +47,8 @@ laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 - 电脑支付
 - 手机网站支付
 - APP 支付
+- 刷卡支付
+- 扫码支付
 
 SDK 中对应的 driver 和 gateway 如下表所示：  
 
@@ -55,6 +57,8 @@ SDK 中对应的 driver 和 gateway 如下表所示：
 | alipay | web     | 电脑支付     |
 | alipay | wap     | 手机网站支付  |
 | alipay | app     | APP 支付  |
+| alipay | pos     | 刷卡支付  |
+| alipay | scan    | 扫码支付  |
   
 ### 2、微信
 
@@ -182,10 +186,10 @@ class PayController extends Controller
 {
     protected $config = [
         'wechat' => [
-            'app_id' => 'wxb3f6d068e382c63d',
-            'mch_id' => '1457768302',
+            'app_id' => 'wxb3f6xxxxxxxxxx',
+            'mch_id' => '1457xxxxx2',
             'notify_url' => 'http://yansongda.cn/wechat_notify.php',
-            'key' => 'mF2suE9sU6Mk1C7GXnT5H12315645645',
+            'key' => 'mF2suE9sU6Mk1Cxxxxxxxxxx45',
             'cert_client' => './apiclient_cert.pem',
             'cert_key' => './apiclient_key.pem',
         ],
@@ -197,7 +201,7 @@ class PayController extends Controller
             'out_trade_no' => 'e2',
             'total_fee' => '0.01',
             'body' => 'test body',
-            'spbill_create_ip' => '14.213.156.207',
+            'spbill_create_ip' => '8.8.8.8',
             'openid' => 'onkVf1FjWS5SBIihS-123456_abc',
         ];
 
@@ -206,10 +210,10 @@ class PayController extends Controller
         return $pay->driver('wechat')->gateway('mp')->pay($config_biz);
     }
 
-    public function notify()
+    public function notify(Request $request)
     {
         $pay = new Pay($this->config);
-        $verify = $p->driver('wechat')->gateway('mp')->verify(file_get_contents('php://input'));
+        $verify = $p->driver('wechat')->gateway('mp')->verify($request->getContent());
 
         if ($verify) {
             file_put_contents('notify.txt', "收到来自微信的异步通知\r\n", FILE_APPEND);
