@@ -2,11 +2,11 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-use Yansongda\Pay\Support\Config;
-use Yansongda\Pay\Traits\HasHttpRequest;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
+use Yansongda\Pay\Support\Config;
+use Yansongda\Pay\Traits\HasHttpRequest;
 
 abstract class Alipay implements GatewayInterface
 {
@@ -36,31 +36,30 @@ abstract class Alipay implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param   array      $config [description]
+     * @param array $config [description]
      */
     public function __construct(array $config)
     {
         $this->user_config = new Config($config);
 
         if (is_null($this->user_config->get('app_id'))) {
-            throw new InvalidArgumentException("Missing Config -- [app_id]");
+            throw new InvalidArgumentException('Missing Config -- [app_id]');
         }
 
         $this->config = [
-            'app_id' => $this->user_config->get('app_id'),
-            'method' => '',
-            'format' => 'JSON',
-            'charset' => 'utf-8',
-            'sign_type' => 'RSA2',
-            'version' => '1.0',
-            'return_url' => $this->user_config->get('return_url', ''),
-            'notify_url' => $this->user_config->get('notify_url', ''),
-            'timestamp' => date('Y-m-d H:i:s'),
-            'sign' => '',
+            'app_id'      => $this->user_config->get('app_id'),
+            'method'      => '',
+            'format'      => 'JSON',
+            'charset'     => 'utf-8',
+            'sign_type'   => 'RSA2',
+            'version'     => '1.0',
+            'return_url'  => $this->user_config->get('return_url', ''),
+            'notify_url'  => $this->user_config->get('notify_url', ''),
+            'timestamp'   => date('Y-m-d H:i:s'),
+            'sign'        => '',
             'biz_content' => '',
         ];
     }
-
 
     /**
      * pay a order.
@@ -87,13 +86,13 @@ abstract class Alipay implements GatewayInterface
      *
      * @param mixed $config_biz
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function refund($config_biz, $refund_amount = null)
     {
         if (!is_array($config_biz)) {
             $config_biz = [
-                'out_trade_no' => $config_biz,
+                'out_trade_no'  => $config_biz,
                 'refund_amount' => $refund_amount,
             ];
         }
@@ -108,7 +107,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @param array|string $config_biz
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function close($config_biz)
     {
@@ -128,14 +127,14 @@ abstract class Alipay implements GatewayInterface
      *
      * @param string $out_trade_no
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function find($out_trade_no = '')
     {
         $config_biz = [
             'out_trade_no' => $out_trade_no,
         ];
-        
+
         return $this->getResult($config_biz, 'alipay.trade.query');
     }
 
@@ -148,22 +147,22 @@ abstract class Alipay implements GatewayInterface
      * @param string $sign
      * @param bool   $sync
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function verify($data, $sign = null, $sync = false)
     {
         if (is_null($this->user_config->get('ali_public_key'))) {
-            throw new InvalidArgumentException("Missing Config -- [ali_public_key]");
+            throw new InvalidArgumentException('Missing Config -- [ali_public_key]');
         }
 
         $sign = is_null($sign) ? $data['sign'] : $sign;
 
-        $res = "-----BEGIN PUBLIC KEY-----\n" .
-                wordwrap($this->user_config->get('ali_public_key'), 64, "\n", true) .
+        $res = "-----BEGIN PUBLIC KEY-----\n".
+                wordwrap($this->user_config->get('ali_public_key'), 64, "\n", true).
                 "\n-----END PUBLIC KEY-----";
 
         $toVerify = $sync ? json_encode($data, JSON_UNESCAPED_UNICODE) : $this->getSignContent($data, true);
-        
+
         return openssl_verify($toVerify, base64_decode($sign), $res, OPENSSL_ALGO_SHA256) === 1 ? $data : false;
     }
 
@@ -181,7 +180,7 @@ abstract class Alipay implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return  string
+     * @return string
      */
     abstract protected function getProductCode();
 
@@ -190,18 +189,18 @@ abstract class Alipay implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return  string
+     * @return string
      */
     protected function buildPayHtml()
     {
-        $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='" . $this->gateway . "?charset=utf-8' method='POST'>";
-        while (list ($key, $val) = each($this->config)) {
-            $val = str_replace("'", "&apos;", $val);
-            $sHtml .= "<input type='hidden' name='" . $key . "' value='" . $val . "'/>";
+        $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$this->gateway."?charset=utf-8' method='POST'>";
+        while (list($key, $val) = each($this->config)) {
+            $val = str_replace("'", '&apos;', $val);
+            $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
         }
         $sHtml .= "<input type='submit' value='ok' style='display:none;''></form>";
         $sHtml .= "<script>document.forms['alipaysubmit'].submit();</script>";
-        
+
         return $sHtml;
     }
 
@@ -213,7 +212,7 @@ abstract class Alipay implements GatewayInterface
      * @param array  $config_biz
      * @param string $method
      *
-     * @return array|boolean
+     * @return array|bool
      */
     protected function getResult($config_biz, $method)
     {
@@ -221,13 +220,13 @@ abstract class Alipay implements GatewayInterface
         $this->config['method'] = $method;
         $this->config['sign'] = $this->getSign();
 
-        $method = str_replace('.', '_', $method) . '_response';
-        
+        $method = str_replace('.', '_', $method).'_response';
+
         $data = json_decode($this->post($this->gateway, $this->config), true);
 
         if (!isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
             throw new GatewayException(
-                'get result error:' . $data[$method]['msg'] . ' - ' . $data[$method]['sub_msg'],
+                'get result error:'.$data[$method]['msg'].' - '.$data[$method]['sub_msg'],
                 $data[$method]['code'],
                 $data);
         }
@@ -240,16 +239,16 @@ abstract class Alipay implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return  string
+     * @return string
      */
     protected function getSign()
     {
         if (is_null($this->user_config->get('private_key'))) {
-            throw new InvalidArgumentException("Missing Config -- [private_key]");
+            throw new InvalidArgumentException('Missing Config -- [private_key]');
         }
 
-        $res = "-----BEGIN RSA PRIVATE KEY-----\n" .
-                wordwrap($this->user_config->get('private_key'), 64, "\n", true) .
+        $res = "-----BEGIN RSA PRIVATE KEY-----\n".
+                wordwrap($this->user_config->get('private_key'), 64, "\n", true).
                 "\n-----END RSA PRIVATE KEY-----";
 
         openssl_sign($this->getSignContent($this->config), $sign, $res, OPENSSL_ALGO_SHA256);
@@ -262,8 +261,8 @@ abstract class Alipay implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array   $toBeSigned
-     * @param boolean $verify
+     * @param array $toBeSigned
+     * @param bool  $verify
      *
      * @return string
      */
@@ -271,17 +270,17 @@ abstract class Alipay implements GatewayInterface
     {
         ksort($toBeSigned);
 
-        $stringToBeSigned = "";
+        $stringToBeSigned = '';
         foreach ($toBeSigned as $k => $v) {
             if ($verify && $k != 'sign' && $k != 'sign_type') {
-                $stringToBeSigned .= $k . "=" . $v . "&";
+                $stringToBeSigned .= $k.'='.$v.'&';
             }
-            if (!$verify && $v !== '' && !is_null($v) && $k != 'sign' && "@" != substr($v, 0, 1)) {
-                $stringToBeSigned .= $k . "=" . $v . "&";
+            if (!$verify && $v !== '' && !is_null($v) && $k != 'sign' && '@' != substr($v, 0, 1)) {
+                $stringToBeSigned .= $k.'='.$v.'&';
             }
         }
         $stringToBeSigned = substr($stringToBeSigned, 0, -1);
-        unset ($k, $v);
+        unset($k, $v);
 
         return $stringToBeSigned;
     }

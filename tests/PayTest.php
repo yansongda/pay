@@ -2,10 +2,9 @@
 
 namespace Yansongda\Pay\Tests;
 
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
+use Yansongda\Pay\Pay;
 
 class PayTest extends TestCase
 {
@@ -47,5 +46,4 @@ class PayTest extends TestCase
         $pay = new Pay(['alipay' => ['app_id' => '']]);
         $this->assertInstanceOf(GatewayInterface::class, $pay->driver('alipay')->gateway());
     }
-
 }

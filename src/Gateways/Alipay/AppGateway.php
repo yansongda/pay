@@ -9,7 +9,7 @@ class AppGateway extends Alipay
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return  string
+     * @return string
      */
     protected function getMethod()
     {
@@ -21,7 +21,7 @@ class AppGateway extends Alipay
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return  string
+     * @return string
      */
     protected function getProductCode()
     {
@@ -30,11 +30,11 @@ class AppGateway extends Alipay
 
     /**
      * pay a order.
-     * 
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
-     * @param array  $config_biz
-     * 
+     *
+     * @param array $config_biz
+     *
      * @return string
      */
     public function pay(array $config_biz = [])

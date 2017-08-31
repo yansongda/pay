@@ -30,12 +30,12 @@ class ScanGateway extends Alipay
 
     /**
      * pay a order.
-     * 
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
+     *
      * @param array $config_biz
-     * 
-     * @return array|boolean
+     *
+     * @return array|bool
      */
     public function pay(array $config_biz = [])
     {

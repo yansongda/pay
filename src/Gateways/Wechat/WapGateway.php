@@ -20,7 +20,7 @@ class WapGateway extends Wechat
 
     /**
      * pay a order.
-     * 
+     *
      * @author yansongda <me@yansongda.cn>
      *
      * @param array $config_biz
@@ -30,12 +30,12 @@ class WapGateway extends Wechat
     public function pay(array $config_biz = [])
     {
         if (is_null($this->user_config->get('app_id'))) {
-            throw new InvalidArgumentException("Missing Config -- [app_id]");
+            throw new InvalidArgumentException('Missing Config -- [app_id]');
         }
 
         $data = $this->preOrder($config_biz);
 
-        return is_null($this->user_config->get('return_url')) ? $data['mweb_url'] : $data['mweb_url'] . 
-                        '&redirect_url=' . urlencode($this->user_config->get('return_url'));
+        return is_null($this->user_config->get('return_url')) ? $data['mweb_url'] : $data['mweb_url'].
+                        '&redirect_url='.urlencode($this->user_config->get('return_url'));
     }
 }
