@@ -2,8 +2,8 @@
 
 namespace Yansongda\Pay;
 
-use Yansongda\Pay\Support\Config;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
+use Yansongda\Pay\Support\Config;
 
 class Pay
 {
@@ -36,7 +36,7 @@ class Pay
 
     /**
      * set pay's driver.
-     * 
+     *
      * @author JasonYan <me@yansongda.cn>
      *
      * @param string $driver
@@ -66,7 +66,7 @@ class Pay
     public function gateway($gateway = 'web')
     {
         if (!isset($this->drivers)) {
-            throw new InvalidArgumentException("Driver is not defined.");
+            throw new InvalidArgumentException('Driver is not defined.');
         }
 
         $this->gateways = $this->createGateway($gateway);
@@ -85,11 +85,11 @@ class Pay
      */
     protected function createGateway($gateway)
     {
-        if (!file_exists(__DIR__ . '/Gateways/' . ucfirst($this->drivers) . '/' . ucfirst($gateway) . 'Gateway.php')) {
+        if (!file_exists(__DIR__.'/Gateways/'.ucfirst($this->drivers).'/'.ucfirst($gateway).'Gateway.php')) {
             throw new InvalidArgumentException("Gateway [$gateway] is not supported.");
         }
 
-        $gateway = __NAMESPACE__ . '\\Gateways\\' . ucfirst($this->drivers) . '\\' . ucfirst($gateway) . 'Gateway';
+        $gateway = __NAMESPACE__.'\\Gateways\\'.ucfirst($this->drivers).'\\'.ucfirst($gateway).'Gateway';
 
         return $this->build($gateway);
     }

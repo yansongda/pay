@@ -2,9 +2,9 @@
 
 namespace Yansongda\Pay\Tests\Support;
 
-use Yansongda\Pay\Tests\TestCase;
-use Yansongda\Pay\Support\Config;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
+use Yansongda\Pay\Support\Config;
+use Yansongda\Pay\Tests\TestCase;
 
 class ConfigTest extends TestCase
 {
@@ -13,9 +13,9 @@ class ConfigTest extends TestCase
         $array = [
             'foo' => 'bar',
             'bar' => [
-                'id' => '18',
+                'id'  => '18',
                 'key' => [
-                    'public' => 'qwer',
+                    'public'  => 'qwer',
                     'private' => 'asdf',
                 ],
             ],

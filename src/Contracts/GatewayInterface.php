@@ -20,9 +20,9 @@ interface GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array|string  $config_biz
+     * @param array|string $config_biz
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function refund($config_biz);
 
@@ -31,9 +31,9 @@ interface GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array|string  $config_biz
+     * @param array|string $config_biz
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function close($config_biz);
 
@@ -42,9 +42,9 @@ interface GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string        $out_trade_no
+     * @param string $out_trade_no
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function find($out_trade_no);
 
@@ -57,7 +57,7 @@ interface GatewayInterface
      * @param string $sign
      * @param bool   $sync
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function verify($data, $sign = null, $sync = false);
 }

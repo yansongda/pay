@@ -2,11 +2,11 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-use Yansongda\Pay\Support\Config;
-use Yansongda\Pay\Traits\HasHttpRequest;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
+use Yansongda\Pay\Support\Config;
+use Yansongda\Pay\Traits\HasHttpRequest;
 
 abstract class Wechat implements GatewayInterface
 {
@@ -54,10 +54,10 @@ abstract class Wechat implements GatewayInterface
         $this->user_config = new Config($config);
 
         $this->config = [
-            'appid' => $this->user_config->get('app_id', ''),
-            'mch_id' => $this->user_config->get('mch_id', ''),
-            'nonce_str' => $this->createNonceStr(),
-            'sign_type' => 'MD5',
+            'appid'      => $this->user_config->get('app_id', ''),
+            'mch_id'     => $this->user_config->get('mch_id', ''),
+            'nonce_str'  => $this->createNonceStr(),
+            'sign_type'  => 'MD5',
             'notify_url' => $this->user_config->get('notify_url', ''),
             'trade_type' => $this->getTradeType(),
         ];
@@ -79,7 +79,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return string|boolean
+     * @return string|bool
      */
     public function refund($config_biz = [])
     {
@@ -98,7 +98,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function close($out_trade_no = '')
     {
@@ -116,7 +116,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @param string $out_trade_no
      *
-     * @return  array|boolean
+     * @return array|bool
      */
     public function find($out_trade_no = '')
     {
@@ -136,7 +136,7 @@ abstract class Wechat implements GatewayInterface
      * @param string $sign
      * @param bool   $sync
      *
-     * @return array|boolean
+     * @return array|bool
      */
     public function verify($data, $sign = null, $sync = false)
     {
@@ -149,9 +149,9 @@ abstract class Wechat implements GatewayInterface
 
     /**
      * get trade type config.
-     * 
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
+     *
      * @return string
      */
     abstract protected function getTradeType();
@@ -192,8 +192,8 @@ abstract class Wechat implements GatewayInterface
                 $end_point,
                 $this->toXml($this->config),
                 [
-                    'cert' => $this->user_config->get('cert_client', ''),
-                    'ssl_key' => $this->user_config->get('cert_key', '')
+                    'cert'    => $this->user_config->get('cert_client', ''),
+                    'ssl_key' => $this->user_config->get('cert_key', ''),
                 ]
             ));
         } else {
@@ -201,8 +201,8 @@ abstract class Wechat implements GatewayInterface
         }
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
-            $error = 'getResult error:' . $data['return_msg'];
-            $error .= isset($data['err_code_des']) ? ' - ' . $data['err_code_des'] : '';
+            $error = 'getResult error:'.$data['return_msg'];
+            $error .= isset($data['err_code_des']) ? ' - '.$data['err_code_des'] : '';
         }
 
         if (!isset($error) && $this->getSign($data) !== $data['sign']) {
@@ -231,12 +231,12 @@ abstract class Wechat implements GatewayInterface
     protected function getSign($data)
     {
         if (is_null($this->user_config->get('key'))) {
-            throw new InvalidArgumentException("Missing Config -- [key]");
+            throw new InvalidArgumentException('Missing Config -- [key]');
         }
 
         ksort($data);
 
-        $string = md5($this->getSignContent($data) . "&key=" . $this->user_config->get('key'));
+        $string = md5($this->getSignContent($data).'&key='.$this->user_config->get('key'));
 
         return strtoupper($string);
     }
@@ -252,14 +252,13 @@ abstract class Wechat implements GatewayInterface
      */
     protected function getSignContent($data)
     {
-        $buff = "";
+        $buff = '';
 
-        foreach ($data as $k => $v)
-        {
-            $buff .= ($k != "sign" && $v != "" && !is_array($v)) ? $k . "=" . $v . "&" : '';
+        foreach ($data as $k => $v) {
+            $buff .= ($k != 'sign' && $v != '' && !is_array($v)) ? $k.'='.$v.'&' : '';
         }
-        
-        return trim($buff, "&");
+
+        return trim($buff, '&');
     }
 
     /**
@@ -267,14 +266,15 @@ abstract class Wechat implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param integer $length
+     * @param int $length
      *
      * @return string
      */
-    protected function createNonceStr($length = 16) {
-        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    protected function createNonceStr($length = 16)
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-        $str = "";
+        $str = '';
         for ($i = 0; $i < $length; $i++) {
             $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
         }
@@ -294,17 +294,17 @@ abstract class Wechat implements GatewayInterface
     protected function toXml($data)
     {
         if (!is_array($data) || count($data) <= 0) {
-            throw new InvalidArgumentException("convert to xml error!invalid array!");
+            throw new InvalidArgumentException('convert to xml error!invalid array!');
         }
-        
-        $xml = "<xml>";
-        foreach ($data as $key => $val) {
-            $xml .= is_numeric($val) ? "<" . $key . ">" . $val . "</" . $key . ">" : 
-                                       "<" . $key . "><![CDATA[" . $val . "]]></" . $key . ">";
-        }
-        $xml .= "</xml>";
 
-        return $xml; 
+        $xml = '<xml>';
+        foreach ($data as $key => $val) {
+            $xml .= is_numeric($val) ? '<'.$key.'>'.$val.'</'.$key.'>' :
+                                       '<'.$key.'><![CDATA['.$val.']]></'.$key.'>';
+        }
+        $xml .= '</xml>';
+
+        return $xml;
     }
 
     /**
@@ -317,14 +317,14 @@ abstract class Wechat implements GatewayInterface
      * @return array
      */
     protected function fromXml($xml)
-    {   
+    {
         if (!$xml) {
-            throw new InvalidArgumentException("convert to array error !invalid xml");
+            throw new InvalidArgumentException('convert to array error !invalid xml');
         }
 
         libxml_disable_entity_loader(true);
 
-        return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA), JSON_UNESCAPED_UNICODE), true);        
+        return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA), JSON_UNESCAPED_UNICODE), true);
     }
 
     /**
@@ -332,7 +332,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return boolean
+     * @return bool
      */
     protected function unsetTradeTypeAndNotifyUrl()
     {

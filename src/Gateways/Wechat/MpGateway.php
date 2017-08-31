@@ -20,7 +20,7 @@ class MpGateway extends Wechat
 
     /**
      * pay a order.
-     * 
+     *
      * @author yansongda <me@yansongda.cn>
      *
      * @param array $config_biz
@@ -30,15 +30,15 @@ class MpGateway extends Wechat
     public function pay(array $config_biz = [])
     {
         if (is_null($this->user_config->get('app_id'))) {
-            throw new InvalidArgumentException("Missing Config -- [app_id]");
+            throw new InvalidArgumentException('Missing Config -- [app_id]');
         }
-        
+
         $payRequest = [
-            "appId" => $this->user_config->get('app_id'),
-            "timeStamp" => time(),    
-            "nonceStr" => $this->createNonceStr(),   
-            "package" => "prepay_id=" . $this->preOrder($config_biz)['prepay_id'],
-            "signType" => "MD5",    
+            'appId'     => $this->user_config->get('app_id'),
+            'timeStamp' => time(),
+            'nonceStr'  => $this->createNonceStr(),
+            'package'   => 'prepay_id='.$this->preOrder($config_biz)['prepay_id'],
+            'signType'  => 'MD5',
         ];
         $payRequest['paySign'] = $this->getSign($payRequest);
 
