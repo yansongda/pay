@@ -11,7 +11,7 @@ class WapGateway extends Alipay
      *
      * @version 2017-08-10
      *
-     * @return  string     [description]
+     * @return string [description]
      */
     protected function getMethod()
     {
@@ -32,11 +32,11 @@ class WapGateway extends Alipay
 
     /**
      * pay a order.
-     * 
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
+     *
      * @param array $config_biz
-     * 
+     *
      * @return string
      */
     public function pay(array $config_biz = [])

@@ -11,7 +11,7 @@ class MiniappGateway extends Wechat
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return  string     [description]
+     * @return string [description]
      */
     protected function getTradeType()
     {
@@ -20,7 +20,7 @@ class MiniappGateway extends Wechat
 
     /**
      * pay a order.
-     * 
+     *
      * @author yansongda <me@yansongda.cn>
      *
      * @param array $config_biz
@@ -30,17 +30,17 @@ class MiniappGateway extends Wechat
     public function pay(array $config_biz = [])
     {
         if (is_null($this->user_config->get('miniapp_id'))) {
-            throw new InvalidArgumentException("Missing Config -- [miniapp_id]");
+            throw new InvalidArgumentException('Missing Config -- [miniapp_id]');
         }
 
         $this->config['appid'] = $this->user_config->get('miniapp_id');
 
         $payRequest = [
-            "appId" => $this->user_config->get('miniapp_id'),
-            "timeStamp" => time(),    
-            "nonceStr" => $this->createNonceStr(),   
-            "package" => "prepay_id=" . $this->preOrder($config_biz)['prepay_id'],
-            "signType" => "MD5", 
+            'appId'     => $this->user_config->get('miniapp_id'),
+            'timeStamp' => time(),
+            'nonceStr'  => $this->createNonceStr(),
+            'package'   => 'prepay_id='.$this->preOrder($config_biz)['prepay_id'],
+            'signType'  => 'MD5',
         ];
         $payRequest['paySign'] = $this->getSign($payRequest);
 

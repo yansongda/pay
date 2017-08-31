@@ -30,13 +30,13 @@ class PosGateway extends Alipay
 
     /**
      * pay a order.
-     * 
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
+     *
      * @param array  $config_biz
      * @param string $scene
-     * 
-     * @return array|boolean
+     *
+     * @return array|bool
      */
     public function pay(array $config_biz = [], $scene = 'bar_code')
     {

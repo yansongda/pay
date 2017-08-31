@@ -94,9 +94,9 @@ class Config implements ArrayAccess
      *
      * @author JasonYan <me@yansongda.cn>
      *
-     * @param string  $offset
+     * @param string $offset
      *
-     * @return boolean
+     * @return bool
      */
     public function offsetExists($offset)
     {
