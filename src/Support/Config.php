@@ -5,9 +5,6 @@ namespace Yansongda\Pay\Support;
 use ArrayAccess;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
-/**
- * Class Config.
- */
 class Config implements ArrayAccess
 {
     /**
@@ -30,12 +27,10 @@ class Config implements ArrayAccess
      *
      * @author JasonYan <me@yansongda.cn>
      *
-     * @version 2017-07-28
+     * @param string $key
+     * @param string $default
      *
-     * @param   string     $key     [description]
-     * @param   string     $default [description]
-     *
-     * @return  mixed               [description]
+     * @return mixed
      */
     public function get($key = null, $default = null)
     {
@@ -64,11 +59,8 @@ class Config implements ArrayAccess
      *
      * @author JasonYan <me@yansongda.cn>
      *
-     * @version 2017-07-29
-     *
-     * @param   string     $key   [description]
-     *
-     * @param   array      $value [description]
+     * @param string $key
+     * @param array  $value
      */
     public function set(string $key, $value)
     {
@@ -102,11 +94,9 @@ class Config implements ArrayAccess
      *
      * @author JasonYan <me@yansongda.cn>
      *
-     * @version 2017-07-30
+     * @param string  $offset
      *
-     * @param   string     $offset [description]
-     *
-     * @return  boolean            [description]
+     * @return boolean
      */
     public function offsetExists($offset)
     {
@@ -118,11 +108,9 @@ class Config implements ArrayAccess
      *
      * @author JasonYan <me@yansongda.cn>
      *
-     * @version 2017-07-30
+     * @param string $offset
      *
-     * @param   string     $offset [description]
-     *
-     * @return  mixed              [description]
+     * @return mixed
      */
     public function offsetGet($offset)
     {
@@ -134,12 +122,10 @@ class Config implements ArrayAccess
      *
      * @author JasonYan <me@yansongda.cn>
      *
-     * @version 2017-07-30
+     * @param string $offset
+     * @param string $value
      *
-     * @param   string     $offset [description]
-     * @param   string     $value  [description]
-     *
-     * @return  array              [description]
+     * @return array
      */
     public function offsetSet($offset, $value)
     {
@@ -151,15 +137,12 @@ class Config implements ArrayAccess
      *
      * @author JasonYan <me@yansongda.cn>
      *
-     * @version 2017-07-30
+     * @param string $offset
      *
-     * @param   string     $offset [description]
-     *
-     * @return  array              [description]
+     * @return array
      */
     public function offsetUnset($offset)
     {
         $this->set($offset, null);
     }
-
 }

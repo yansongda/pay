@@ -2,9 +2,6 @@
 
 namespace Yansongda\Pay\Exceptions;
 
-/**
- * GatewayException.
- */
 class GatewayException extends Exception
 {
     /**
@@ -19,10 +16,8 @@ class GatewayException extends Exception
      *
      * @author JasonYan <me@yansongda.cn>
      *
-     * @version 2017-07-28
-     *
-     * @param   string     $message [description]
-     * @param   string|int $code    [description]
+     * @param string     $message
+     * @param string|int $code
      */
     public function __construct($message, $code, $raw = [])
     {

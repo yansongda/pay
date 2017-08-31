@@ -7,20 +7,16 @@ use Yansongda\Pay\Exceptions\InvalidArgumentException;
 class PosGateway extends Wechat
 {
     /**
-     * 刷卡支付 API.
-     * 
      * @var string
      */
     protected $gateway = 'https://api.mch.weixin.qq.com/pay/micropay';
 
     /**
-     * [getTradeType description].
+     * get trade type config.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
-     *
-     * @return  string     [description]
+     * @return string
      */
     protected function getTradeType()
     {
@@ -28,15 +24,13 @@ class PosGateway extends Wechat
     }
 
     /**
-     * [pay description].
+     * pay a order.
      * 
      * @author yansongda <me@yansongda.cn>
-     * 
-     * @version 2017-08-18
-     * 
-     * @param   array      $config_biz [description]
-     * 
-     * @return  array                  [description]
+     *
+     * @param array $config_biz
+     *
+     * @return array
      */
     public function pay(array $config_biz = [])
     {

@@ -13,21 +13,19 @@ abstract class Alipay implements GatewayInterface
     use HasHttpRequest;
 
     /**
-     * 支付宝支付网关.
-     *
      * @var string
      */
     protected $gateway = 'https://openapi.alipay.com/gateway.do';
 
     /**
-     * 支付宝公共参数.
+     * alipay global config params.
      *
      * @var array
      */
     protected $config;
 
     /**
-     * 用户的传参.
+     * user's config params.
      *
      * @var \Yansongda\Pay\Support\Config
      */
@@ -37,8 +35,6 @@ abstract class Alipay implements GatewayInterface
      * [__construct description].
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @version 2017-08-14
      *
      * @param   array      $config [description]
      */
@@ -67,15 +63,13 @@ abstract class Alipay implements GatewayInterface
 
 
     /**
-     * 对外接口 - 支付.
+     * pay a order.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
+     * @param array $config_biz
      *
-     * @param   array      $config_biz [description]
-     *
-     * @return  mixed                 [description]
+     * @return mixed
      */
     public function pay(array $config_biz)
     {
@@ -87,15 +81,13 @@ abstract class Alipay implements GatewayInterface
     }
 
     /**
-     * 对外接口 - 退款.
+     * refund a order.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
+     * @param mixed $config_biz
      *
-     * @param   mixed      $config_biz [description]
-     *
-     * @return  array|boolean          [description]
+     * @return array|boolean
      */
     public function refund($config_biz, $refund_amount = null)
     {
@@ -110,15 +102,13 @@ abstract class Alipay implements GatewayInterface
     }
 
     /**
-     * 对外接口 - 关闭.
+     * close a order.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
+     * @param array|string $config_biz
      *
-     * @param   array|string $config_biz [description]
-     *
-     * @return  array|boolean            [description]
+     * @return array|boolean
      */
     public function close($config_biz)
     {
@@ -132,14 +122,13 @@ abstract class Alipay implements GatewayInterface
     }
 
     /**
-     * 对外接口 - 订单查询
+     * find a order.
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
-     * @version 2017-08-19
-     * 
-     * @param   string     $out_trade_no 商家订单号
-     * 
-     * @return  array|boolean            [description]
+     *
+     * @param string $out_trade_no
+     *
+     * @return array|boolean
      */
     public function find($out_trade_no = '')
     {
@@ -151,17 +140,15 @@ abstract class Alipay implements GatewayInterface
     }
 
     /**
-     * 对外接口 - 验证.
+     * verify the notify.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-11
+     * @param array  $data
+     * @param string $sign
+     * @param bool   $sync
      *
-     * @param   array      $data 待签名数组
-     * @param   string     $sign 签名字符串-支付宝服务器发送过来的原始串
-     * @param   bool       $sync 是否同步返回验证
-     *
-     * @return  array|boolean    [description]
+     * @return array|boolean
      */
     public function verify($data, $sign = null, $sync = false)
     {
@@ -181,35 +168,29 @@ abstract class Alipay implements GatewayInterface
     }
 
     /**
-     * [getMethod description].
+     * get method config.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-10
-     *
-     * @return  string     [description]
+     * @return string
      */
     abstract protected function getMethod();
 
     /**
-     * [getProductCode description].
+     * get productCode config.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-10
-     *
-     * @return  string     [description]
+     * @return  string
      */
     abstract protected function getProductCode();
 
     /**
-     * [buildHtmlPay description]
+     * build pay html.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-11
-     *
-     * @return  string     [description]
+     * @return  string
      */
     protected function buildPayHtml()
     {
@@ -229,12 +210,10 @@ abstract class Alipay implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-12
+     * @param array  $config_biz
+     * @param string $method
      *
-     * @param   array      $config_biz [description]
-     * @param   string     $method     [description]
-     *
-     * @return  array|boolean          [description]
+     * @return array|boolean
      */
     protected function getResult($config_biz, $method)
     {
@@ -257,13 +236,11 @@ abstract class Alipay implements GatewayInterface
     }
 
     /**
-     * 签名.
+     * get sign.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-10
-     *
-     * @return  string     [description]
+     * @return  string
      */
     protected function getSign()
     {
@@ -281,16 +258,14 @@ abstract class Alipay implements GatewayInterface
     }
 
     /**
-     * 待签名数组.
+     * get signContent that is to be signed.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-11
+     * @param array   $toBeSigned
+     * @param boolean $verify
      *
-     * @param   array      $toBeSigned [description]
-     * @param   boolean    $verify     是否验证签名
-     *
-     * @return  string                 [description]
+     * @return string
      */
     protected function getSignContent(array $toBeSigned, $verify = false)
     {
@@ -310,5 +285,4 @@ abstract class Alipay implements GatewayInterface
 
         return $stringToBeSigned;
     }
-
 }

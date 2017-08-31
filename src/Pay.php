@@ -5,40 +5,29 @@ namespace Yansongda\Pay;
 use Yansongda\Pay\Support\Config;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
-/**
- * class Pay
- */
 class Pay
 {
     /**
-     * [$config description]
-     * 
      * @var \Yansongda\Pay\Support\Config
      */
     private $config;
 
     /**
-     * [$dirvers description]
-     * 
      * @var string
      */
     private $drivers;
 
     /**
-     * [$gateways description]
-     * 
      * @var \Yansongda\Pay\Contracts\GatewayInterface
      */
     private $gateways;
 
     /**
-     * [__construct description]
-     * 
+     * construct method.
+     *
      * @author JasonYan <me@yansongda.cn>
-     * 
-     * @version 2017-07-29
-     * 
-     * @param   array      $config [description]
+     *
+     * @param array $config
      */
     public function __construct(array $config = [])
     {
@@ -46,15 +35,13 @@ class Pay
     }
 
     /**
-     * [driver description]
+     * set pay's driver.
      * 
      * @author JasonYan <me@yansongda.cn>
-     * 
-     * @version 2017-07-30
-     * 
-     * @param   string     $driver [description]
-     * 
-     * @return  Pay             [description]
+     *
+     * @param string $driver
+     *
+     * @return Pay
      */
     public function driver($driver)
     {
@@ -68,15 +55,13 @@ class Pay
     }
 
     /**
-     * [gateway description]
-     * 
+     * set pay's gateway.
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
-     * @version 2017-08-10
-     * 
-     * @param   string     $gateway [description]
-     * 
-     * @return  object              [description]
+     *
+     * @param string $gateway
+     *
+     * @return \Yansongda\Pay\Contracts\GatewayInterface
      */
     public function gateway($gateway = 'web')
     {
@@ -90,15 +75,13 @@ class Pay
     }
 
     /**
-     * [createGateway description]
-     * 
+     * create pay's gateway.
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
-     * @version 2017-08-10
-     * 
-     * @param   string     $gateway [description]
-     * 
-     * @return  object              [description]
+     *
+     * @param string $gateway
+     *
+     * @return \Yansongda\Pay\Contracts\GatewayInterface
      */
     protected function createGateway($gateway)
     {
@@ -112,15 +95,13 @@ class Pay
     }
 
     /**
-     * [buildDriver description]
-     * 
+     * build pay's gateway.
+     *
      * @author JasonYan <me@yansongda.cn>
-     * 
-     * @version 2017-07-30
-     * 
-     * @param   string     $gateway [description]
-     * 
-     * @return  object              [description]
+     *
+     * @param string $gateway
+     *
+     * @return \Yansongda\Pay\Contracts\GatewayInterface
      */
     protected function build($gateway)
     {

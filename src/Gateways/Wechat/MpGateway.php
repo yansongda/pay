@@ -7,13 +7,11 @@ use Yansongda\Pay\Exceptions\InvalidArgumentException;
 class MpGateway extends Wechat
 {
     /**
-     * 交易类型.
+     * get trade type config.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
-     *
-     * @return  string     [description]
+     * @return string
      */
     protected function getTradeType()
     {
@@ -21,15 +19,13 @@ class MpGateway extends Wechat
     }
 
     /**
-     * 对外支付.
-     *
+     * pay a order.
+     * 
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
+     * @param array $config_biz
      *
-     * @param   array      $config_biz [description]
-     *
-     * @return  array                  [description]
+     * @return array
      */
     public function pay(array $config_biz = [])
     {

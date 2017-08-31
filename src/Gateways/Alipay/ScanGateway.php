@@ -5,13 +5,11 @@ namespace Yansongda\Pay\Gateways\Alipay;
 class ScanGateway extends Alipay
 {
     /**
-     * [getMethod description].
+     * get method config.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-10
-     *
-     * @return  string     [description]
+     * @return string
      */
     protected function getMethod()
     {
@@ -19,13 +17,11 @@ class ScanGateway extends Alipay
     }
 
     /**
-     * [getProductCode description].
+     * get productCode config.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-10
-     *
-     * @return  string     [description]
+     * @return string
      */
     protected function getProductCode()
     {
@@ -33,15 +29,13 @@ class ScanGateway extends Alipay
     }
 
     /**
-     * 扫码支付.
+     * pay a order.
      * 
      * @author yansongda <me@yansongda.cn>
      * 
-     * @version 2017-08-23
+     * @param array $config_biz
      * 
-     * @param   array      $config_biz 订单信息
-     * 
-     * @return  array|boolean          [description]
+     * @return array|boolean
      */
     public function pay(array $config_biz = [])
     {

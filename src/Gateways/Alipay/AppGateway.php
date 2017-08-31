@@ -2,19 +2,14 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-/**
- * AppGateway.
- */
 class AppGateway extends Alipay
 {
     /**
-     * [getMethod description].
+     * get method config.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-10
-     *
-     * @return  string     [description]
+     * @return  string
      */
     protected function getMethod()
     {
@@ -22,13 +17,11 @@ class AppGateway extends Alipay
     }
 
     /**
-     * [getProductCode description].
+     * get productCode method.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-10
-     *
-     * @return  string     [description]
+     * @return  string
      */
     protected function getProductCode()
     {
@@ -36,15 +29,13 @@ class AppGateway extends Alipay
     }
 
     /**
-     * [pay description].
+     * pay a order.
      * 
      * @author yansongda <me@yansongda.cn>
      * 
-     * @version 2017-08-16
+     * @param array  $config_biz
      * 
-     * @param   array      $config_biz 业务参数
-     * 
-     * @return  string                 [description]
+     * @return string
      */
     public function pay(array $config_biz = [])
     {

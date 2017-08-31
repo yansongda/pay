@@ -14,9 +14,6 @@ namespace Yansongda\Pay\Traits;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * trait HttpClient.
- */
 trait HasHttpRequest
 {
     /**
@@ -93,8 +90,6 @@ trait HasHttpRequest
      * @param array $options
      *
      * @return \GuzzleHttp\Client
-     *
-     * @codeCoverageIgnore
      */
     protected function getHttpClient(array $options = [])
     {

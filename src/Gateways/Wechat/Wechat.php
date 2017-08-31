@@ -13,43 +13,31 @@ abstract class Wechat implements GatewayInterface
     use HasHttpRequest;
 
     /**
-     * 支付订单.
-     *
      * @var string
      */
     protected $gateway = 'https://api.mch.weixin.qq.com/pay/unifiedorder';
 
     /**
-     * 查询订单.
-     * 
      * @var string
      */
     protected $gateway_query = 'https://api.mch.weixin.qq.com/pay/orderquery';
 
     /**
-     * 关闭订单.
-     * 
      * @var string
      */
     protected $gateway_close = 'https://api.mch.weixin.qq.com/pay/closeorder';
 
     /**
-     * 退款.
-     * 
      * @var string
      */
     protected $gateway_refund = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
 
     /**
-     * 配置项.
-     *
      * @var array
      */
     protected $config;
 
     /**
-     * 用户传参配置项.
-     *
      * @var \Yansongda\Pay\Support\Config
      */
     protected $user_config;
@@ -59,9 +47,7 @@ abstract class Wechat implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-14
-     *
-     * @param   array      $config [description]
+     * @param array $config
      */
     public function __construct(array $config)
     {
@@ -78,26 +64,22 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 对外支付接口.
+     * pay a order.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
+     * @param array $config_biz
      *
-     * @param   array      $config_biz [description]
-     *
-     * @return  mixed                  [description]
+     * @return mixed
      */
     abstract public function pay(array $config_biz = []);
 
     /**
-     * 对外接口 - 退款.
+     * refund.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
-     *
-     * @return  string|boolean     [description]
+     * @return string|boolean
      */
     public function refund($config_biz = [])
     {
@@ -112,13 +94,11 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 对外接口 - 关闭订单.
+     * close a order.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
-     *
-     * @return  array|boolean     [description]
+     * @return array|boolean
      */
     public function close($out_trade_no = '')
     {
@@ -130,14 +110,13 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 对外接口 - 订单查询
+     * find a order.
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
-     * @version 2017-08-19
-     * 
-     * @param   string     $out_trade_no 商家订单号
-     * 
-     * @return  array|boolean            [description]
+     *
+     * @param string $out_trade_no
+     *
+     * @return  array|boolean
      */
     public function find($out_trade_no = '')
     {
@@ -149,17 +128,15 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 验证签名.
+     * verify the notify.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
+     * @param string $data
+     * @param string $sign
+     * @param bool   $sync
      *
-     * @param   string     $data 待验证 xml 数据
-     * @param   string     $sign 服务器返回的签名
-     * @param   bool       $sync is sync sign
-     *
-     * @return  array|boolean    是否相符
+     * @return array|boolean
      */
     public function verify($data, $sign = null, $sync = false)
     {
@@ -171,25 +148,22 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 获取交易类型.
+     * get trade type config.
+     * 
      * @author yansongda <me@yansongda.cn>
      * 
-     * @version 2017-08-17
-     * 
-     * @return  string     [description]
+     * @return string
      */
     abstract protected function getTradeType();
 
     /**
-     * 预下单.
+     * pre order.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
+     * @param array $config_biz
      *
-     * @param   array  $config_biz  业务参数
-     *
-     * @return  array               服务器返回结果数组
+     * @return array
      */
     protected function preOrder($config_biz = [])
     {
@@ -200,16 +174,14 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 获取 API 结果.
-     * 
+     * get api result.
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
-     * @version 2017-08-19
-     * 
-     * @param   string     $end_point [description]
-     * @param   bool       $cert      是否使用证书
-     * 
-     * @return  array                 [description]
+     *
+     * @param string $end_point
+     * @param bool   $cert
+     *
+     * @return array
      */
     protected function getResult($end_point, $cert = false)
     {
@@ -248,15 +220,13 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 签名.
+     * sign.
      *
      * @author yansongda <me@yansongda.cn>
-     * 
-     * @version 2017-08-15
      *
-     * @param   array      $data 带签名数组
+     * @param array $data
      *
-     * @return  string           [description]
+     * @return string
      */
     protected function getSign($data)
     {
@@ -272,15 +242,13 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 将数组转换成 URL 格式.
+     * get sign content.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-15
+     * @param array $data
      *
-     * @param   array      $data [description]
-     *
-     * @return  string           [description]
+     * @return string
      */
     protected function getSignContent($data)
     {
@@ -295,15 +263,13 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 生成随机字符串.
+     * create random string.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-14
+     * @param integer $length
      *
-     * @param   integer    $length [description]
-     *
-     * @return  string             [description]
+     * @return string
      */
     protected function createNonceStr($length = 16) {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -317,15 +283,13 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 转化为 xml.
+     * convert to xml.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-14
+     * @param array $data
      *
-     * @param   array      $data 带转化数组
-     *
-     * @return  string           转化后的xml字符串
+     * @return string
      */
     protected function toXml($data)
     {
@@ -344,15 +308,13 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * xml 转化为 array.
+     * convert to array.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-14
+     * @param string $xml
      *
-     * @param   string     $xml xml字符串
-     *
-     * @return  array           转化后的数组
+     * @return array
      */
     protected function fromXml($xml)
     {   
@@ -366,13 +328,11 @@ abstract class Wechat implements GatewayInterface
     }
 
     /**
-     * 删除 trade_type and notify_url.
-     * 
+     * delete trade_type and notify_url.
+     *
      * @author yansongda <me@yansongda.cn>
-     * 
-     * @version 2017-08-19
-     * 
-     * @return  boolean     [description]
+     *
+     * @return boolean
      */
     protected function unsetTradeTypeAndNotifyUrl()
     {
