@@ -214,7 +214,7 @@ class PayController extends Controller
     public function notify(Request $request)
     {
         $pay = new Pay($this->config);
-        $verify = $p->driver('wechat')->gateway('mp')->verify($request->getContent());
+        $verify = $pay->driver('wechat')->gateway('mp')->verify($request->getContent());
 
         if ($verify) {
             file_put_contents('notify.txt', "收到来自微信的异步通知\r\n", FILE_APPEND);
