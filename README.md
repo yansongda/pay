@@ -200,7 +200,7 @@ class PayController extends Controller
     {
         $config_biz = [
             'out_trade_no' => 'e2',
-            'total_fee' => '0.01',
+            'total_fee' => '1', // **单位：分**
             'body' => 'test body',
             'spbill_create_ip' => '8.8.8.8',
             'openid' => 'onkVf1FjWS5SBIihS-123456_abc',
@@ -244,7 +244,7 @@ $config = [
 ];
 $config_biz = [
     'out_trade_no' => '12',         // 订单号
-    'total_amount' => '13',         // 订单金额，单位：元
+    'total_amount' => '13',         // 订单金额，单位：元，**微信支付，单位：分**
     'subject' => 'test subject',    // 订单商品标题
 ];
 ```
@@ -441,7 +441,7 @@ $config = [
 
 $config_biz = [
     'out_trade_no' => '',           // 订单号
-    'total_fee' => '',              // 订单金额，单位：元
+    'total_fee' => '',              // 订单金额，**单位：分**
     'body' => '',                   // 订单描述
     'spbill_create_ip' => '',       // 支付人的 IP
     'openid' => '',                 // 支付人的 openID
@@ -466,7 +466,7 @@ $config = [
 
 $config_biz = [
     'out_trade_no' => '',           // 订单号
-    'total_fee' => '',              // 订单金额，单位：元
+    'total_fee' => '',              // 订单金额，**单位：分**
     'body' => '',                   // 订单描述
     'spbill_create_ip' => '',       // 支付人的 IP
     'openid' => '',                 // 支付人的 openID
@@ -564,7 +564,7 @@ $config = [
 
 $config_biz = [
     'out_trade_no' => '',           // 订单号
-    'total_fee' => '',              // 订单金额，单位：元
+    'total_fee' => '',              // 订单金额，**单位：分**
     'body' => '',                   // 订单描述
     'spbill_create_ip' => '',       // 支付人的 IP
     'openid' => '',                 // 支付人的 openID
@@ -599,7 +599,7 @@ $config = [
 
 $config_biz = [
     'out_trade_no' => '',           // 订单号
-    'total_fee' => '',              // 订单金额，单位：元
+    'total_fee' => '',              // 订单金额，**单位：分**
     'body' => '',                   // 订单描述
     'spbill_create_ip' => '',       // 支付人的 IP
 ];
@@ -634,7 +634,7 @@ $config = [
 
 $config_biz = [
     'out_trade_no' => '',           // 订单号
-    'total_fee' => '',              // 订单金额，单位：元
+    'total_fee' => '',              // 订单金额，**单位：分**
     'body' => '',                   // 订单描述
     'spbill_create_ip' => '',       // 调用 API 服务器的 IP
     'product_id' => '',             // 订单商品 ID
@@ -667,7 +667,7 @@ $config = [
 
 $config_biz = [
     'out_trade_no' => '',           // 订单号
-    'total_fee' => '',              // 订单金额，单位：元
+    'total_fee' => '',              // 订单金额，**单位：分**
     'body' => '',                   // 订单描述
     'spbill_create_ip' => '',       // 支付人的 IP
     'auth_code' => '',              // 授权码
@@ -701,7 +701,7 @@ $config = [
 
 $config_biz = [
     'out_trade_no' => '',           // 订单号
-    'total_fee' => '',              // 订单金额，单位：元
+    'total_fee' => '',              // 订单金额，**单位：分**
     'body' => '',                   // 订单描述
     'spbill_create_ip' => '',       // 支付人的 IP
 ];
