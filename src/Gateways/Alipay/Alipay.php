@@ -161,7 +161,7 @@ abstract class Alipay implements GatewayInterface
                 wordwrap($this->user_config->get('ali_public_key'), 64, "\n", true).
                 "\n-----END PUBLIC KEY-----";
 
-        $toVerify = $sync ? json_encode($data, JSON_UNESCAPED_UNICODE) : $this->getSignContent($data, true);
+        $toVerify = $sync ? json_encode($data) : $this->getSignContent($data, true);
 
         return openssl_verify($toVerify, base64_decode($sign), $res, OPENSSL_ALGO_SHA256) === 1 ? $data : false;
     }
@@ -216,17 +216,20 @@ abstract class Alipay implements GatewayInterface
      */
     protected function getResult($config_biz, $method)
     {
-        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
+        $this->config['biz_content'] = json_encode($config_biz);
         $this->config['method'] = $method;
         $this->config['sign'] = $this->getSign();
 
         $method = str_replace('.', '_', $method).'_response';
 
-        $data = json_decode($this->post($this->gateway, $this->config), true);
+        $data = json_decode(
+                    mb_convert_encoding($this->post($this->gateway, $this->config), "utf-8", "gb2312"),
+                    true
+                );
 
         if (!isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
             throw new GatewayException(
-                'get result error:'.$data[$method]['msg'].' - '.$data[$method]['sub_msg'],
+                'get result error:'.$data[$method]['msg'].' - '.$data[$method]['sub_code'],
                 $data[$method]['code'],
                 $data);
         }
