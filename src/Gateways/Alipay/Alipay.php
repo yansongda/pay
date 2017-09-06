@@ -223,7 +223,7 @@ abstract class Alipay implements GatewayInterface
         $method = str_replace('.', '_', $method).'_response';
 
         $data = json_decode(
-                    mb_convert_encoding($this->post($this->gateway, $this->config), "utf-8", "gb2312"),
+                    mb_convert_encoding($this->post($this->gateway, $this->config), 'utf-8', 'gb2312'),
                     true
                 );
 
