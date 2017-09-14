@@ -83,7 +83,6 @@ class Config implements ArrayAccess
 
             default:
                 throw new InvalidArgumentException('Invalid config key.');
-                break;
         }
 
         return $this->config;

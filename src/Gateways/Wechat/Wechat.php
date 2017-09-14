@@ -84,8 +84,6 @@ abstract class Wechat implements GatewayInterface
     public function refund($config_biz = [])
     {
         $this->config = array_merge($this->config, $config_biz);
-        $this->config['total_fee'] = $this->config['total_fee'];
-        $this->config['refund_fee'] = $this->config['refund_fee'];
         $this->config['op_user_id'] = isset($this->config['op_user_id']) ?: $this->user_config->get('mch_id', '');
 
         $this->unsetTradeTypeAndNotifyUrl();
@@ -168,7 +166,6 @@ abstract class Wechat implements GatewayInterface
     protected function preOrder($config_biz = [])
     {
         $this->config = array_merge($this->config, $config_biz);
-        $this->config['total_fee'] = $this->config['total_fee'];
 
         return $this->getResult($this->gateway);
     }
