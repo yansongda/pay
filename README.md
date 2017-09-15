@@ -60,6 +60,7 @@ SDK 中对应的 driver 和 gateway 如下表所示：
 | alipay | app     | APP 支付  |
 | alipay | pos     | 刷卡支付  |
 | alipay | scan    | 扫码支付  |
+| alipay | fundtransfer    | 帐户转账（用于用户提现）  |
   
 ### 2、微信
 
