@@ -482,7 +482,58 @@ $config_biz = [
 类型：string  
 说明：该接口返回二维码链接，可以通过其他库转换为二维码供用户扫描。
 
-### 6、微信 - 公众号支付
+### 6、支付宝 - 帐户转账
+
+#### 最小配置参数
+```php
+<?php
+
+$config = [
+    'alipay' => [
+        'app_id' => '',             // 支付宝提供的 APP_ID
+        'ali_public_key' => '',     // 支付宝公钥，1行填写
+        'private_key' => '',        // 自己的私钥，1行填写
+    ],
+];
+$config_biz = [
+    'out_biz_no' => '',                      // 订单号
+    'payee_type' => 'ALIPAY_LOGONID',        // 收款方账户类型(ALIPAY_LOGONID | ALIPAY_USERID)
+    'payee_account' => 'demo@sandbox.com',   // 收款方账户
+    'amount' => '10',                        // 转账金额
+];
+```
+
+#### 所有配置参数
+```php
+<?php
+
+$config = [
+    'alipay' => [
+        'app_id' => '',             // 支付宝提供的 APP_ID
+        'ali_public_key' => '',     // 支付宝公钥，1行填写
+        'private_key' => '',        // 自己的私钥，1行填写
+    ],
+];
+$config_biz = [
+    'out_biz_no' => '',                      // 订单号
+    'payee_type' => 'ALIPAY_LOGONID',        // 收款方账户类型(ALIPAY_LOGONID | ALIPAY_USERID)
+    'payee_account' => 'demo@sandbox.com',   // 收款方账户
+    'amount' => '10',                        // 转账金额
+    'payer_show_name' => '未寒',             // 付款方姓名
+    'payee_real_name' => '张三',             // 收款方真实姓名
+    'remark' => '张三',                      // 转账备注
+];
+```
+
+ [官方文档](https://doc.open.alipay.com/docs/api.htm?apiId=1321&docType=4 ' 单笔转账到支付宝账户接口')
+
+
+#### 返回值
+- pay()  
+类型：array|bool  
+说明：该接口成功时返回服务器响应的数组；验签失败返回 false。
+
+### 7、微信 - 公众号支付
 
 #### 最小配置参数
 ```php
@@ -605,7 +656,7 @@ $config_biz = [
 </script>
 ```
 
-### 7、微信 - 小程序支付
+### 8、微信 - 小程序支付
 
 #### 最小配置参数
 ```php
@@ -639,7 +690,7 @@ $config_biz = [
 类型：array  
 说明：返回用于 小程序调起支付API 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_7&index=3)。
 
-### 8、微信 - H5 支付
+### 9、微信 - H5 支付
 #### 最小配置参数
 
 ```php
@@ -673,7 +724,7 @@ $config_biz = [
 类型：string  
 说明：返回微信支付中间页网址，可直接 302 跳转。
 
-### 9、微信 - 扫码支付
+### 10、微信 - 扫码支付
 这里使用「模式二」进行扫码支付，具体请[参考这里](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=6_5)
 
 #### 最小配置参数
@@ -709,7 +760,7 @@ $config_biz = [
 类型：string  
 说明：返回微信支付二维码 URL 地址，可直接将此 url 生成二维码，展示给用户进行扫码支付。
 
-### 10、微信 - 刷卡支付
+### 11、微信 - 刷卡支付
 
 #### 最小配置参数
 ```php
@@ -742,7 +793,7 @@ $config_biz = [
 类型：array  
 说明：返回用于服务器返回的数组。返回参数请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1)。
 
-### 11、微信 - APP 支付
+### 12、微信 - APP 支付
 
 #### 最小配置参数
 ```php
