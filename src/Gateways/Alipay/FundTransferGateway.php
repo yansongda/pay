@@ -33,7 +33,8 @@ class FundTransferGateway extends Alipay
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array  $config_biz
+     * @param array $config_biz
+     *
      * @return array|bool
      */
     public function pay(array $config_biz = [])
