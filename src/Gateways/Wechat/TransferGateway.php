@@ -2,8 +2,8 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
 class TransferGateway extends Wechat
 {
