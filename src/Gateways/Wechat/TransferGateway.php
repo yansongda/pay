@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
+use Yansongda\Pay\Exceptions\GatewayException;
 
 class TransferGateway extends Wechat
 {
@@ -49,32 +50,16 @@ class TransferGateway extends Wechat
 
         $this->config = array_merge($this->config, $config_biz);
 
-        return $this->getResult($this->gateway);
-    }
-
-    /**
-     * get api result.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $end_point
-     *
-     * @return array
-     */
-    protected function getResult($end_point)
-    {
         $this->config['sign'] = $this->getSign($this->config);
 
-
         $data = $this->fromXml($this->post(
-            $end_point,
+            $this->gateway,
             $this->toXml($this->config),
             [
                 'cert'    => $this->user_config->get('cert_client', ''),
                 'ssl_key' => $this->user_config->get('cert_key', ''),
             ]
         ));
-
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
             $error = 'getResult error:'.$data['return_msg'];
