@@ -15,7 +15,7 @@ abstract class Alipay implements GatewayInterface
     /**
      * @var string
      */
-    protected $gateway = 'https://openapi.alipay.com/gateway.do';
+    protected $gateway = 'https://openapi.alipay.com/gateway.do' . '?charset=utf-8';
 
     /**
      * alipay global config params.
@@ -75,7 +75,7 @@ abstract class Alipay implements GatewayInterface
         $config_biz['product_code'] = $this->getProductCode();
 
         $this->config['method'] = $this->getMethod();
-        $this->config['biz_content'] = json_encode($config_biz, JSON_UNESCAPED_UNICODE);
+        $this->config['biz_content'] = json_encode($config_biz);
         $this->config['sign'] = $this->getSign();
     }
 
@@ -193,7 +193,7 @@ abstract class Alipay implements GatewayInterface
      */
     protected function buildPayHtml()
     {
-        $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$this->gateway."?charset=utf-8' method='POST'>";
+        $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$this->gateway."' method='POST'>";
         while (list($key, $val) = each($this->config)) {
             $val = str_replace("'", '&apos;', $val);
             $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
@@ -222,10 +222,7 @@ abstract class Alipay implements GatewayInterface
 
         $method = str_replace('.', '_', $method).'_response';
 
-        $data = json_decode(
-                    mb_convert_encoding($this->post($this->gateway, $this->config), 'utf-8', 'gb2312'),
-                    true
-                );
+        $data = json_decode($this->post($this->gateway, $this->config), true);
 
         if (!isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
             throw new GatewayException(
