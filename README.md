@@ -12,6 +12,8 @@
 
 开发了多次支付宝与微信支付后，很自然产生一种反感，惰性又来了，想在网上找相关的轮子，可是一直没有找到一款自己觉得逞心如意的，要么使用起来太难理解，要么文件结构太杂乱，只有自己撸起袖子干了。
 
+**说明，请先熟悉支付宝说明文档！！**
+
 欢迎 Star，欢迎 PR！
 
 laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
@@ -166,6 +168,12 @@ class PayController extends Controller
         $pay = new Pay($this->config);
 
         if ($pay->driver('alipay')->gateway()->verify($request->all())) {
+            // 请自行对 trade_status 进行判断及其它逻辑进行判断，在支付宝的业务通知中，只有交易通知状态为 TRADE_SUCCESS 或 TRADE_FINISHED 时，支付宝才会认定为买家付款成功。 
+            // 1、商户需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号； 
+            // 2、判断total_amount是否确实为该订单的实际金额（即商户订单创建时的金额）； 
+            // 3、校验通知中的seller_id（或者seller_email) 是否为out_trade_no这笔单据的对应的操作方（有的时候，一个商户可能有多个seller_id/seller_email）； 
+            // 4、验证app_id是否为该商户本身。 
+            // 5、其它业务逻辑情况
             file_put_contents(storage_path('notify.txt'), "收到来自支付宝的异步通知\r\n", FILE_APPEND);
             file_put_contents(storage_path('notify.txt'), '订单号：' . $request->out_trade_no . "\r\n", FILE_APPEND);
             file_put_contents(storage_path('notify.txt'), '订单金额：' . $request->total_amount . "\r\n\r\n", FILE_APPEND);
