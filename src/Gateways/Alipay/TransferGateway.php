@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-class FundTransferGateway extends Alipay
+class TransferGateway extends Alipay
 {
     /**
      * get method config.
@@ -25,7 +25,7 @@ class FundTransferGateway extends Alipay
      */
     protected function getProductCode()
     {
-        return false;
+        return '';
     }
 
     /**

@@ -60,7 +60,7 @@ SDK 中对应的 driver 和 gateway 如下表所示：
 | alipay | app     | APP 支付  |
 | alipay | pos     | 刷卡支付  |
 | alipay | scan    | 扫码支付  |
-| alipay | fundtransfer    | 帐户转账（用于用户提现）  |
+| alipay | transfer    | 帐户转账（可用于平台用户提现）  |
   
 ### 2、微信
 
@@ -81,6 +81,7 @@ SDK 中对应的 driver 和 gateway 如下表所示：
 | wechat | scan    | 扫码支付    |
 | wechat | pos     | 刷卡支付    |
 | wechat | app     | APP 支付  |
+| wechat | transfer     | 企业付款  |
 
 ## 支持的方法
 
@@ -825,6 +826,41 @@ $config_biz = [
 - pay()  
 类型：array  
 说明：返回用于 小程序调起支付API 的所需参数数组。后续调用不在本文档讨论范围内，具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=8_5)。
+
+### 12、微信 - 企业付款
+
+#### 最小配置参数
+```php
+<?php
+
+$config = [
+    'wechat' => [
+        'appid' => '',              // APPID
+        'mch_id' => '',             // 微信商户号
+        'key' => '',                // 微信支付签名秘钥
+        'cert_client' => './apiclient_cert.pem',        // 客户端证书路径，退款时需要用到
+        'cert_key' => './apiclient_key.pem',            // 客户端秘钥路径，退款时需要用到
+    ],
+];
+
+$config_biz = [
+    'partner_trade_no' => '',              //商户订单号
+    'openid' => '',                        //收款人的openid
+    'check_name' => 'NO_CHECK',            //NO_CHECK：不校验真实姓名\FORCE_CHECK：强校验真实姓名
+//    're_user_name'=>'张三',              //check_name为 FORCE_CHECK 校验实名的时候必须提交
+    'amount' => 100,                       //企业付款金额，单位为分
+    'desc' => '帐户提现',                  //付款说明
+    'spbill_create_ip' => '192.168.0.1',  //发起交易的IP地址
+];
+```
+
+#### 所有配置参数
+具体请看 [官方文档](https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2)。
+
+#### 返回值
+- pay()  
+类型：array  
+说明：返回用于 支付结果 的数组。具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2)。
 
 
 ## 代码贡献
