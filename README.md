@@ -45,6 +45,14 @@ laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 
 详细思路可以查看源代码。
 
+## 微信支付服务商模式说明
+
+如果需要[微信支付服务商版](https://pay.weixin.qq.com/wiki/doc/api/sl.html)，请在以下微信支付的 config 参数中增加两个参数：
+
+- `service_app_id`：对应服务商版微信支付的 appid(公众账号ID)，原 config 参数中的 app_id、miniapp_id 等会自动对应为 sub_appid(子商户公众账号ID)
+
+- `sub_mch_id`：对应服务商版微信支付的 sub_mch_id(子商户号)，原 config 参数中的 mch_id 请填写*服务商的商户号*
+
 ### 1、支付宝
 
 - 电脑支付
