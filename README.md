@@ -53,6 +53,8 @@ laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 
 - `sub_mch_id`：对应服务商版微信支付的 sub_mch_id(子商户号)，原 config 参数中的 mch_id 请填写*服务商的商户号*
 
+> 特别提醒：服务商版中，`key` 参数为服务商的 key，而不是子商户的 key
+
 ### 1、支付宝
 
 - 电脑支付
