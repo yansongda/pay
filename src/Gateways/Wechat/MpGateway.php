@@ -35,7 +35,7 @@ class MpGateway extends Wechat
 
         $payRequest = [
             'appId'     => $this->user_config->get('app_id'),
-            'timeStamp' => time() + '',
+            'timeStamp' => time() . '',
             'nonceStr'  => $this->createNonceStr(),
             'package'   => 'prepay_id='.$this->preOrder($config_biz)['prepay_id'],
             'signType'  => 'MD5',
