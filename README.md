@@ -55,6 +55,8 @@ laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 
 > 特别提醒：服务商版中，`key` 参数为服务商的 key，而不是子商户的 key
 
+> 特别提醒：服务商版中，公众号支付和小程序支付的 `$config_biz` 中 `openid` 和 `appid` 对应，`sub_openid` 和 `sub_openid` 对应。因此如果使用服务商版，请务必传 `sub_openid`，否则会报错 `appid and openid not match`
+
 ### 1、支付宝
 
 - 电脑支付
