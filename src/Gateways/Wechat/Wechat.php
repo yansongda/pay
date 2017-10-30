@@ -56,7 +56,6 @@ abstract class Wechat implements GatewayInterface
         $this->config = [
             'appid'      => $this->user_config->get('app_id', ''),
             'mch_id'     => $this->user_config->get('mch_id', ''),
-            'sub_mch_id' => $this->user_config->get('sub_mch_id', ''),
             'nonce_str'  => $this->createNonceStr(),
             'sign_type'  => 'MD5',
             'notify_url' => $this->user_config->get('notify_url', ''),
@@ -65,7 +64,9 @@ abstract class Wechat implements GatewayInterface
 
         // 服务商的 appId 使用 service_app_id
         if ($serviceAppId = $this->user_config->get('service_app_id', '')) {
-            if (!$this->config['sub_mch_id']) {
+            if($subMchId = $this->user_config->get('sub_mch_id', '')) {
+                $this->config['sub_mch_id'] = $subMchId;
+            } else {
                 throw new InvalidArgumentException('Missing Config -- [sub_mch_id]');
             }
             $this->config['sub_appid'] = $this->config['appid'];
