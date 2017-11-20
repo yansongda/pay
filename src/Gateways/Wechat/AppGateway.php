@@ -33,11 +33,20 @@ class AppGateway extends Wechat
             throw new InvalidArgumentException('Missing Config -- [appid]');
         }
 
-        $this->config['appid'] = $this->user_config->get('appid');
+        if (isset($this->config['sub_appid'])) {
+            $this->config['sub_appid'] = $this->user_config->get('appid');
+        } else {
+            $this->config['appid'] = $this->user_config->get('appid');
+        }
+
+        $partnerid = $this->user_config->get('mch_id');
+        if (isset($this->config['sub_mch_id'])) {
+            $partnerid = $this->config['sub_mch_id'];
+        }
 
         $payRequest = [
-            'appid'     => $this->user_config->get('appid'),
-            'partnerid' => $this->user_config->get('mch_id'),
+            'appid'     => $this->user_config->get('appid'), // 服务商模式下此处为子商户的 appid
+            'partnerid' => $partnerid, // 服务商模式下此处为子商户的 mch_id
             'prepayid'  => $this->preOrder($config_biz)['prepay_id'],
             'timestamp' => time(),
             'noncestr'  => $this->createNonceStr(),
