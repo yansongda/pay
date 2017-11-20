@@ -29,7 +29,9 @@ class ScanGateway extends Wechat
      */
     public function pay(array $config_biz = [])
     {
-        if (is_null($this->user_config->get('app_id'))) {
+        // 服务商模式下，扫码支付 sub_appid 可以为空
+        // @link https://pay.weixin.qq.com/wiki/doc/api/native_sl.php?chapter=9_1
+        if (is_null($this->user_config->get('app_id')) && is_null($this->user_config->get('service_app_id'))) {
             throw new InvalidArgumentException('Missing Config -- [app_id]');
         }
 
