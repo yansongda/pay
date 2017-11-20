@@ -36,7 +36,7 @@ class MpGateway extends Wechat
         }
 
         $appId = $this->user_config->get('app_id', '');
-        if(!$appId) {
+        if (!$appId) {
             $appId = $this->user_config->get('service_app_id');
         }
 
