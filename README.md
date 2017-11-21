@@ -575,6 +575,7 @@ $config_biz = [
 
 $config = [
     'wechat' => [
+        'endpoint_url' => 'https://apihk.mch.weixin.qq.com/', // optional, default 'https://api.mch.weixin.qq.com/'
         'app_id' => '',             // 公众号APPID
         'mch_id' => '',             // 微信商户号
         'notify_url' => '',

@@ -9,7 +9,7 @@ class PosGateway extends Wechat
     /**
      * @var string
      */
-    protected $gateway = 'https://api.mch.weixin.qq.com/pay/micropay';
+    protected $gateway_order = 'pay/micropay';
 
     /**
      * get trade type config.
