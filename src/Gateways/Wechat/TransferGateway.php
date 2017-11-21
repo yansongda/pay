@@ -10,7 +10,7 @@ class TransferGateway extends Wechat
     /**
      * @var string
      */
-    protected $gateway = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
+    protected $gateway_transfer = 'mmpaymkttransfers/promotion/transfers';
 
     /**
      * get trade type config.
@@ -53,7 +53,7 @@ class TransferGateway extends Wechat
         $this->config['sign'] = $this->getSign($this->config);
 
         $data = $this->fromXml($this->post(
-            $this->gateway,
+            $this->endpoint . $this->gateway_transfer,
             $this->toXml($this->config),
             [
                 'cert'    => $this->user_config->get('cert_client', ''),
