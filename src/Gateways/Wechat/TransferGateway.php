@@ -53,7 +53,7 @@ class TransferGateway extends Wechat
         $this->config['sign'] = $this->getSign($this->config);
 
         $data = $this->fromXml($this->post(
-            $this->endpoint . $this->gateway_transfer,
+            $this->endpoint.$this->gateway_transfer,
             $this->toXml($this->config),
             [
                 'cert'    => $this->user_config->get('cert_client', ''),

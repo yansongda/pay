@@ -195,7 +195,7 @@ abstract class Wechat implements GatewayInterface
 
         if ($cert) {
             $data = $this->fromXml($this->post(
-                $this->endpoint . $path,
+                $this->endpoint.$path,
                 $this->toXml($this->config),
                 [
                     'cert'    => $this->user_config->get('cert_client', ''),
@@ -203,7 +203,7 @@ abstract class Wechat implements GatewayInterface
                 ]
             ));
         } else {
-            $data = $this->fromXml($this->post($this->endpoint . $path, $this->toXml($this->config)));
+            $data = $this->fromXml($this->post($this->endpoint.$path, $this->toXml($this->config)));
         }
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
