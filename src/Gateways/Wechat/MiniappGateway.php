@@ -37,7 +37,7 @@ class MiniappGateway extends Wechat
 
         $payRequest = [
             'appId'     => $this->user_config->get('miniapp_id'),
-            'timeStamp' => time(),
+            'timeStamp' => strval(time()),
             'nonceStr'  => $this->createNonceStr(),
             'package'   => 'prepay_id='.$this->preOrder($config_biz)['prepay_id'],
             'signType'  => 'MD5',
