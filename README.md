@@ -108,12 +108,16 @@ return Pay::alipay($config)->gateway('web')->pay($order);
 
 #### 各支付网关说明
 - web
+返回 `Symfony\Component\HttpFoundation\Response` 实例，在各个框架集成中时可直接 return。
 
 - wap
+返回 `Symfony\Component\HttpFoundation\Response` 实例，在各个框架集成中时可直接 return。
 
 - app
+返回 String，可供 APP 直接调用支付。
 
 - pos
+返回 `Symfony\Component\HttpFoundation\Request` 实例。
 
 - scan
 
