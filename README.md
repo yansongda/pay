@@ -45,11 +45,99 @@ composer require yansongda/pay
 
 
 ## 支持的支付环境
+- pay(array $config_biz)  
+说明：支付接口  
+
+- refund(array|string $config_biz, $refund_amount = null)  
+说明：退款接口  
+
+- close(array|string $config_biz)  
+说明：关闭订单接口  
+
+- find(string $out_trade_no)  
+说明：查找订单接口  
+
+- verify($data, $sign = null)  
+说明：验证服务器返回消息是否合法  
+
+### 1、支付宝
+| driver | gateway |   描述       |
+| :----: | :-----: | :-------:   |
+| alipay | web     | 电脑支付     |
+| alipay | wap     | 手机网站支付  |
+| alipay | app     | APP 支付  |
+| alipay | pos     | 刷卡支付  |
+| alipay | scan    | 扫码支付  |
+| alipay | transfer    | 帐户转账 |
+  
+### 2、微信
+| driver | gateway |   描述     |
+| :----: | :-----: | :-------: |
+| wechat | mp      | 公众号支付  |
+| wechat | miniapp | 小程序支付  |
+| wechat | wap     | H5 支付    |
+| wechat | scan    | 扫码支付    |
+| wechat | pos     | 刷卡支付    |
+| wechat | app     | APP 支付  |
+| wechat | transfer     | 企业付款  |
 
 
+## 使用说明 - 支付宝
+### 1. 支付订单
+```php
+use Yansongda\Pay\Pay;
 
-## 使用说明
+$config = [
+    'app_id' => '2016082000295641',
+    'notify_url' => 'http://yansongda.cn/alipay_notify.php',
+    'return_url' => 'http://yansongda.cn/return.php',
+    'ali_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuWJKrQ6SWvS6niI+4vEVZiYfjkCfLQfoFI2nCp9ZLDS42QtiL4Ccyx8scgc3nhVwmVRte8f57TFvGhvJD0upT4O5O/lRxmTjechXAorirVdAODpOu0mFfQV9y/T9o9hHnU+VmO5spoVb3umqpq6D/Pt8p25Yk852/w01VTIczrXC4QlrbOEe3sr1E9auoC7rgYjjCO6lZUIDjX/oBmNXZxhRDrYx4Yf5X7y8FRBFvygIE2FgxV4Yw+SL3QAa2m5MLcbusJpxOml9YVQfP8iSurx41PvvXUMo49JG3BDVernaCYXQCoUJv9fJwbnfZd7J5YByC+5KM4sblJTq7bXZWQIDAQAB',
+    'private_key' => 'MIIEpAIBAAKCAQEAs6+F2leOgOrvj9jTeDhb5q46GewOjqLBlGSs/bVL4Z3fMr3p+Q1Tux/6uogeVi/eHd84xvQdfpZ87A1SfoWnEGH5z15yorccxSOwWUI+q8gz51IWqjgZxhWKe31BxNZ+prnQpyeMBtE25fXp5nQZ/pftgePyUUvUZRcAUisswntobDQKbwx28VCXw5XB2A+lvYEvxmMv/QexYjwKK4M54j435TuC3UctZbnuynSPpOmCu45ZhEYXd4YMsGMdZE5/077ZU1aU7wx/gk07PiHImEOCDkzqsFo0Buc/knGcdOiUDvm2hn2y1XvwjyFOThsqCsQYi4JmwZdRa8kvOf57nwIDAQABAoIBAQCw5QCqln4VTrTvcW+msB1ReX57nJgsNfDLbV2dG8mLYQemBa9833DqDK6iynTLNq69y88ylose33o2TVtEccGp8Dqluv6yUAED14G6LexS43KtrXPgugAtsXE253ZDGUNwUggnN1i0MW2RcMqHdQ9ORDWvJUCeZj/AEafgPN8AyiLrZeL07jJz/uaRfAuNqkImCVIarKUX3HBCjl9TpuoMjcMhz/MsOmQ0agtCatO1eoH1sqv5Odvxb1i59c8Hvq/mGEXyRuoiDo05SE6IyXYXr84/Nf2xvVNHNQA6kTckj8shSi+HGM4mO1Y4Pbb7XcnxNkT0Inn6oJMSiy56P+CpAoGBAO1O+5FE1ZuVGuLb48cY+0lHCD+nhSBd66B5FrxgPYCkFOQWR7pWyfNDBlmO3SSooQ8TQXA25blrkDxzOAEGX57EPiipXr/hy5e+WNoukpy09rsO1TMsvC+v0FXLvZ+TIAkqfnYBgaT56ku7yZ8aFGMwdCPL7WJYAwUIcZX8wZ3dAoGBAMHWplAqhe4bfkGOEEpfs6VvEQxCqYMYVyR65K0rI1LiDZn6Ij8fdVtwMjGKFSZZTspmsqnbbuCE/VTyDzF4NpAxdm3cBtZACv1Lpu2Om+aTzhK2PI6WTDVTKAJBYegXaahBCqVbSxieR62IWtmOMjggTtAKWZ1P5LQcRwdkaB2rAoGAWnAPT318Kp7YcDx8whOzMGnxqtCc24jvk2iSUZgb2Dqv+3zCOTF6JUsV0Guxu5bISoZ8GdfSFKf5gBAo97sGFeuUBMsHYPkcLehM1FmLZk1Q+ljcx3P1A/ds3kWXLolTXCrlpvNMBSN5NwOKAyhdPK/qkvnUrfX8sJ5XK2H4J8ECgYAGIZ0HIiE0Y+g9eJnpUFelXvsCEUW9YNK4065SD/BBGedmPHRC3OLgbo8X5A9BNEf6vP7fwpIiRfKhcjqqzOuk6fueA/yvYD04v+Da2MzzoS8+hkcqF3T3pta4I4tORRdRfCUzD80zTSZlRc/h286Y2eTETd+By1onnFFe2X01mwKBgQDaxo4PBcLL2OyVT5DoXiIdTCJ8KNZL9+kV1aiBuOWxnRgkDjPngslzNa1bK+klGgJNYDbQqohKNn1HeFX3mYNfCUpuSnD2Yag53Dd/1DLO+NxzwvTu4D6DCUnMMMBVaF42ig31Bs0jI3JQZVqeeFzSET8fkoFopJf3G6UXlrIEAQ==',
+];
 
+$order = [
+    'out_trade_no' => time(),
+    'total_amount' => '0.01',
+    'subject'      => '测试订单-test subject',
+];
+
+return Pay::alipay($config)->gateway('web')->pay($order);
+```
+
+所有参数均为官方标准参数，无任何差别。[点击这里](https://docs.open.alipay.com/270/alipay.trade.page.pay/ '支付宝电脑支付官方文档') 查看官方文档。
+
+#### 各支付网关说明
+- web
+
+- wap
+
+- app
+
+- pos
+
+- scan
+
+- transfer
+
+### 2. 验证回调数据
+
+### 3. 退款
+
+### 4. 关闭订单
+
+### 5. 查询订单
+
+
+## 使用说明 - 微信
+### 1. 支付订单
+
+### 2. 验证回调数据
+
+### 3. 退款
+
+### 4. 关闭订单
+
+### 5. 查询订单
 
 
 ## 代码贡献
