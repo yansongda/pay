@@ -4,6 +4,14 @@ namespace Yansongda\Pay\Contracts;
 
 interface GatewayApplicationInterface
 {
+    /**
+     * To pay.
+     *
+     * @author yansongda <me@yansonga.cn>
+     *
+     * @param string $gateway
+     * @param array $params
+     */
     public function pay($gateway, $params);
 
     public function find();
