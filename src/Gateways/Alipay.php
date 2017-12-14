@@ -1,18 +1,18 @@
 <?php
 
-namespace Yansongda\Pay\Gateways\Alipay;
+namespace Yansongda\Pay\Gateways;
 
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Traits\HasHttpRequest;
 
-class Application implements GatewayApplicationInterface
+class Alipay implements GatewayApplicationInterface
 {
     use HasHttpRequest;
 
     protected $config;
 
-    protected payload;
+    protected $payload;
 
     public function __construct($config)
     {

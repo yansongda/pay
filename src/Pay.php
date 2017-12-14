@@ -19,7 +19,7 @@ class Pay
      */
     public static function make($method, $params = [])
     {
-        $app = __NAMESPACE__ . '\\Gateways\\' . Str::studly($method) . '\\Application';
+        $app = __NAMESPACE__ . '\\Gateways\\' . Str::studly($method);
 
         if (class_exists($app)) {
             return new $app($params);
