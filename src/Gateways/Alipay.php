@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways;
 
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
+use Yansongda\Pay\Log;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Traits\HasHttpRequest;
 
@@ -14,14 +15,16 @@ class Alipay implements GatewayApplicationInterface
 
     protected $payload;
 
-    public function __construct($config)
+    public function __construct(Config $config)
     {
-        $this->config = new Config($config);
+        $this->config = $config;
     }
 
     public function pay($gateway, $params)
     {
-        
+        Log::debug('Paying...');
+
+        return 'success';
     }
 
     public function verify()

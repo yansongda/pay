@@ -2,8 +2,8 @@
 
 namespace Yansongda\Pay;
 
-use Monolog\Handler\ErrorLogHandler;
-use Monolog\Handler\NullHandler;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
@@ -12,14 +12,14 @@ class Log
     /**
      * Logger instance.
      *
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     protected static $logger;
 
     /**
      * Return the logger instance.
      *
-     * @return \Psr\Log\LoggerInterface
+     * @return LoggerInterface
      */
     public static function getLogger()
     {
@@ -29,7 +29,7 @@ class Log
     /**
      * Set logger.
      *
-     * @param \Psr\Log\LoggerInterface $logger
+     * @param LoggerInterface $logger
      */
     public static function setLogger(LoggerInterface $logger)
     {
