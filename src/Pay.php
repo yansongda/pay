@@ -33,7 +33,7 @@ class Pay
     }
 
     /**
-     * Make gateway.
+     * Create a instance.
      *
      * @author yansongda <me@yansongda.cn>
      *
@@ -55,7 +55,7 @@ class Pay
     }
 
     /**
-     * Make a instance.
+     * Make a gateway.
      *
      * @author yansongda <me@yansonga.cn>
      *
