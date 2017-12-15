@@ -43,7 +43,7 @@ class Pay
      */
     protected function create($method)
     {
-        !$this->config->has('log') ?: $this->registeLog();
+        !$this->config->has('log.file') ?: $this->registeLog();
 
         $gateway = __NAMESPACE__ . '\\Gateways\\' . Str::studly($method);
 
@@ -82,7 +82,7 @@ class Pay
     protected function registeLog()
     {
         $handler = new StreamHandler(
-            $this->config->get('log.file', sys_get_temp_dir() . '/logs/yansongda.pay.log'),
+            $this->config->get('log.file'),
             $this->config->get('log.level', Logger::WARNING)
         );
         $handler->setFormatter(new LineFormatter("%datetime% > %level_name% > %message% %context% %extra%\n\n"));
