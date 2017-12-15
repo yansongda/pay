@@ -36,6 +36,11 @@ class Application implements GatewayApplicationInterface
         # code...
     }
 
+    public function success()
+    {
+        # code...
+    }
+
     public function __call($method, $params)
     {
         return self::pay($method, $params);
