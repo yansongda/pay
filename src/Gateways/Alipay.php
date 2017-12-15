@@ -72,6 +72,8 @@ class Alipay implements GatewayApplicationInterface
      */
     public function pay($gateway, $params)
     {
+        $this->payload['biz_content'] = json_encode($params);
+
         $gateway = get_class($this) . "\\" . Str::studly($gateway) . "Gateway";
         
         if (class_exists($gateway)) {
@@ -150,8 +152,6 @@ class Alipay implements GatewayApplicationInterface
      */
     public function __call($method, $params)
     {
-        $this->payload['biz_content'] = json_encode(...$params);
-
         return $this->pay($method, ...$params);
     }
 }
