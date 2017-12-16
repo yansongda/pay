@@ -2,16 +2,19 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-class WapGateway extends Alipay
+use Symfony\Component\HttpFoundation\Response;
+use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Gateways\Alipay\Support;
+use Yansongda\Supports\Config;
+
+class WapGateway extends WebGateway
 {
     /**
      * get method config.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @version 2017-08-10
-     *
-     * @return string [description]
+     * @return string
      */
     protected function getMethod()
     {
@@ -28,21 +31,5 @@ class WapGateway extends Alipay
     protected function getProductCode()
     {
         return 'QUICK_WAP_WAY';
-    }
-
-    /**
-     * pay a order.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param array $config_biz
-     *
-     * @return string
-     */
-    public function pay(array $config_biz = [])
-    {
-        parent::pay($config_biz);
-
-        return $this->buildPayHtml();
     }
 }

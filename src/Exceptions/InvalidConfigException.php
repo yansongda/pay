@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Exceptions;
 
-class InvaildConfigException extends Exception
+class InvalidConfigException extends Exception
 {
     /**
      * Raw error info.

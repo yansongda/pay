@@ -33,7 +33,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @var string
      */
-    protected $baseUri = 'https://openapi.alipay.com/gateway.do?charset=utf-8';
+    protected $baseUri = 'https://openapi.alipaydev.com/gateway.do?charset=utf-8';
 
     /**
      * Bootstrap.
@@ -68,16 +68,16 @@ class Alipay implements GatewayApplicationInterface
      * @param string $gateway
      * @param array $params
      *
-     * @return [type]
+     * @return Response
      */
-    public function pay($gateway, $params)
+    public function pay($gateway, $params = []): Response
     {
         $this->payload['biz_content'] = json_encode($params);
 
         $gateway = get_class($this) . "\\" . Str::studly($gateway) . "Gateway";
         
         if (class_exists($gateway)) {
-            return $this->makeGateway($gateway);
+            return $this->makePay($gateway);
         }
 
         throw new GatewayException("Pay Gateway [{$gateway}] not exists", 1);
@@ -127,14 +127,14 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string $gateway
      *
-     * @return [return]
+     * @return Response
      */
-    protected function makeGateway($gateway)
+    protected function makePay($gateway): Response
     {
         $app = new $gateway($this->config);
 
         if ($app instanceof GatewayInterface) {
-            return $app->pay($this->payload);
+            return $app->pay($this->baseUri, $this->payload);
         }
 
         throw new GatewayException("Pay Gateway [{$gateway}] must be a instance of GatewayInterface", 2);

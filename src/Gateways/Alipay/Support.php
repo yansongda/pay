@@ -2,6 +2,9 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
+use Yansongda\Pay\Exceptions\InvalidConfigException;
+use Yansongda\Supports\Str;
+
 class Support
 {
     /**
@@ -11,17 +14,21 @@ class Support
      *
      * @return string
      */
-    protected function generateSign(): string
+    public static function generateSign($parmas, $privateKey = null): string
     {
-        if (is_null($this->user_config->get('private_key'))) {
-            throw new InvalidArgumentException('Missing Config -- [private_key]');
+        if (is_null($privateKey)) {
+            throw new InvalidConfigException('Missing Config -- [private_key]');
         }
 
-        $res = "-----BEGIN RSA PRIVATE KEY-----\n".
-                wordwrap($this->user_config->get('private_key'), 64, "\n", true).
+        if (Str::endsWith($privateKey, '.pem')) {
+            $privateKey = openssl_pkey_get_private($privateKey);
+        } else {
+            $privateKey = "-----BEGIN RSA PRIVATE KEY-----\n".
+                wordwrap($privateKey, 64, "\n", true).
                 "\n-----END RSA PRIVATE KEY-----";
+        }
 
-        openssl_sign($this->getSignContent($this->config), $sign, $res, OPENSSL_ALGO_SHA256);
+        openssl_sign(self::getSignContent($parmas), $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
         return base64_encode($sign);
     }
@@ -36,7 +43,7 @@ class Support
      *
      * @return string
      */
-    protected function getSignContent(array $toBeSigned, $verify = false): string
+    public static function getSignContent(array $toBeSigned, $verify = false): string
     {
         ksort($toBeSigned);
 

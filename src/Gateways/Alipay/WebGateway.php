@@ -2,8 +2,77 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-class WebGateway extends Alipay
+use Symfony\Component\HttpFoundation\Response;
+use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Gateways\Alipay\Support;
+use Yansongda\Supports\Config;
+
+class WebGateway implements GatewayInterface
 {
+    /**
+     * Config.
+     *
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * Bootstrap.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * Pay a order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $endpoint
+     * @param array $payload
+     *
+     * @return Response
+     */
+    public function pay($endpoint, array $payload): Response
+    {
+        $payload['method'] = $this->getMethod();
+        $payload['biz_content'] = json_encode(array_merge(
+            json_decode($payload['biz_content'], true),
+            ['product_code' => $this->getProductCode()]
+        ));
+        $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
+
+        return $this->buildPayHtml($endpoint, $payload);
+    }
+
+    /**
+     * Build Html response.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $endpoint
+     * @param array $payload
+     *
+     * @return Response
+     */
+    protected function buildPayHtml($endpoint, $payload): Response
+    {
+        $sHtml = "<form id='alipaysubmit' name='alipaysubmit' action='".$endpoint."' method='POST'>";
+        foreach ($payload as $key => $val) {
+            $val = str_replace("'", '&apos;', $val);
+            $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
+        }
+        $sHtml .= "<input type='submit' value='ok' style='display:none;''></form>";
+        $sHtml .= "<script>document.forms['alipaysubmit'].submit();</script>";
+
+        return Response::create($sHtml);
+    }
+
     /**
      * get method config.
      *
@@ -26,21 +95,5 @@ class WebGateway extends Alipay
     protected function getProductCode()
     {
         return 'FAST_INSTANT_TRADE_PAY';
-    }
-
-    /**
-     * pay a order.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param array $config_biz
-     *
-     * @return string
-     */
-    public function pay(array $config_biz = [])
-    {
-        parent::pay($config_biz);
-
-        return $this->buildPayHtml();
     }
 }
