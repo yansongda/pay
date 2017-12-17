@@ -17,7 +17,7 @@ class Support
     public static function generateSign($parmas, $privateKey = null): string
     {
         if (is_null($privateKey)) {
-            throw new InvalidConfigException('Missing Config -- [private_key]');
+            throw new InvalidConfigException('Missing Alipay Config -- [private_key]');
         }
 
         if (Str::endsWith($privateKey, '.pem')) {
@@ -31,6 +31,27 @@ class Support
         openssl_sign(self::getSignContent($parmas), $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
         return base64_encode($sign);
+    }
+
+    public static function verifySign($data, $publicKey = null, $sign = null)
+    {
+        if (is_null($publicKey)) {
+            throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]');
+        }
+
+        if (Str::endsWith($publicKey, '.pem')) {
+            $publicKey = openssl_pkey_get_public($publicKey);
+        } else {
+            $publicKey = "-----BEGIN PUBLIC KEY-----\n".
+                wordwrap($publicKey, 64, "\n", true).
+                "\n-----END PUBLIC KEY-----";
+        }
+
+        $sign = $sign ?? $data['sign'];
+
+        $toVerify = $sync ? json_encode($data) : $this->getSignContent($data, true);
+
+        return openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1 ? $data : false;
     }
 
     /**

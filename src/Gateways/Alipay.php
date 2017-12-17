@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Gateways;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
@@ -44,6 +45,10 @@ class Alipay implements GatewayApplicationInterface
      */
     public function __construct(Config $config)
     {
+        if (is_null($config->get('app_id'))) {
+            throw new InvalidConfigException('Missing Alipay Config -- [app_id]');
+        }
+
         $this->config = $config;
         $this->payload = [
             'app_id'      => $this->config->get('app_id'),
@@ -85,7 +90,19 @@ class Alipay implements GatewayApplicationInterface
 
     public function verify($data = null)
     {
-        # code...
+        if (is_null($this->user_config->get('ali_public_key'))) {
+            throw new InvalidArgumentException('Missing Config -- [ali_public_key]');
+        }
+
+        $sign = is_null($sign) ? $data['sign'] : $sign;
+
+        $res = "-----BEGIN PUBLIC KEY-----\n".
+                wordwrap($this->user_config->get('ali_public_key'), 64, "\n", true).
+                "\n-----END PUBLIC KEY-----";
+
+        $toVerify = $sync ? json_encode($data) : $this->getSignContent($data, true);
+
+        return openssl_verify($toVerify, base64_decode($sign), $res, OPENSSL_ALGO_SHA256) === 1 ? $data : false;
     }
 
     public function find()
