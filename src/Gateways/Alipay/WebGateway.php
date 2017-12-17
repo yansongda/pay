@@ -74,25 +74,25 @@ class WebGateway implements GatewayInterface
     }
 
     /**
-     * get method config.
+     * Get method config.
      *
      * @author yansongda <me@yansongda.cn>
      *
      * @return string
      */
-    protected function getMethod()
+    protected function getMethod(): string
     {
         return 'alipay.trade.page.pay';
     }
 
     /**
-     * get productCode config.
+     * Get productCode config.
      *
      * @author yansongda <me@yansongda.cn>
      *
      * @return string
      */
-    protected function getProductCode()
+    protected function getProductCode(): string
     {
         return 'FAST_INSTANT_TRADE_PAY';
     }

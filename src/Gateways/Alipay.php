@@ -70,7 +70,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Response
      */
-    public function pay($gateway, $params = []): Response
+    public function pay($gateway, $params = [])
     {
         $this->payload['biz_content'] = json_encode($params);
 
@@ -129,7 +129,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Response
      */
-    protected function makePay($gateway): Response
+    protected function makePay($gateway)
     {
         $app = new $gateway($this->config);
 
