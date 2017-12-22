@@ -65,7 +65,6 @@ class GroupredpackGateway extends Wechat
                 $data);
         }
 
-        
         return $data;
     }
 
@@ -80,5 +79,4 @@ class GroupredpackGateway extends Wechat
     {
         return '';
     }
-    
 }
