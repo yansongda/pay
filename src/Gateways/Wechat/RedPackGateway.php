@@ -7,6 +7,7 @@
  * Time: 19:23
  * Com:萌点云科技（深圳）有限公司
  * Author:陈老司机
+ *
  * Email:690712575@qq.com
  */
 
@@ -14,6 +15,7 @@ namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
+
 
 class RedpackGateway extends Wechat
 {
@@ -36,8 +38,6 @@ class RedpackGateway extends Wechat
         if (is_null($this->user_config->get('app_id'))) {
             throw new InvalidArgumentException('Missing Config -- [app_id]');
         }
-
-
         unset($this->config['sign_type']);
         unset($this->config['trade_type']);
         unset($this->config['notify_url']);
@@ -47,22 +47,19 @@ class RedpackGateway extends Wechat
         $this->config = array_merge($this->config, $config_biz);
 
         $this->config['sign'] = $this->getSign($this->config);
-        dump($this->config);
 
         $data = $this->fromXml($this->post(
-            $this->endpoint . $this->gateway_transfer,
+            $this->endpoint.$this->gateway_transfer,
             $this->toXml($this->config),
             [
-                'cert' => $this->user_config->get('cert_client', ''),
+                'cert'    => $this->user_config->get('cert_client', ''),
                 'ssl_key' => $this->user_config->get('cert_key', ''),
             ]
         ));
-        //Log::info('xmd=='.$data);
-
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
-            $error = 'getResult error:' . $data['return_msg'];
-            $error .= isset($data['err_code_des']) ? ' - ' . $data['err_code_des'] : '';
+            $error  = 'getResult error:'.$data['return_msg'];
+            $error .= isset($data['err_code_des']) ? ' - '.$data['err_code_des'] : '';
         }
 
         if (isset($error)) {
@@ -73,8 +70,6 @@ class RedpackGateway extends Wechat
         }
 
         return $data;
-
-
     }
 
     /**
