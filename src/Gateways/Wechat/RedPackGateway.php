@@ -17,7 +17,6 @@ namespace Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
-
 class RedpackGateway extends Wechat
 {
     /**
