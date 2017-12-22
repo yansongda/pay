@@ -5,7 +5,7 @@
  * Class RedPackGateway
  * Date: 2017/12/21
  * Time: 19:23
- * Com:萌点云科技（深圳）有限公司
+ * Com:萌点云科技（深圳）有限公司.
  *
  * Author:陈老司机
  *
@@ -58,7 +58,7 @@ class RedpackGateway extends Wechat
         ));
 
         if (!isset($data['return_code']) || $data['return_code'] !== 'SUCCESS' || $data['result_code'] !== 'SUCCESS') {
-            $error  = 'getResult error:'.$data['return_msg'];
+            $error = 'getResult error:'.$data['return_msg'];
             $error .= isset($data['err_code_des']) ? ' - '.$data['err_code_des'] : '';
         }
 

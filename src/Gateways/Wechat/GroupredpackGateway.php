@@ -5,7 +5,7 @@
  * Class GroupredpackGateway
  * Date: 2017/12/21
  * Time: 19:23
- * Com:萌点云科技（深圳）有限公司
+ * Com:萌点云科技（深圳）有限公司.
  *
  * Author:陈老司机
  *
@@ -64,6 +64,8 @@ class GroupredpackGateway extends Wechat
                 20000,
                 $data);
         }
+
+        
         return $data;
     }
 
@@ -78,4 +80,5 @@ class GroupredpackGateway extends Wechat
     {
         return '';
     }
+    
 }
