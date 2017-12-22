@@ -6,6 +6,7 @@
  * Date: 2017/12/21
  * Time: 19:23
  * Com:萌点云科技（深圳）有限公司
+ *
  * Author:陈老司机
  *
  * Email:690712575@qq.com
@@ -15,7 +16,6 @@ namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
-
 
 class RedpackGateway extends Wechat
 {
