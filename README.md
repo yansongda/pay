@@ -145,7 +145,101 @@ return Pay::alipay($config)->gateway('web')->pay($order);
 
 ### 5. 查询订单
 
+### 13、微信 - 发放裂变红包
 
+#### 最小配置参数
+```php
+<?php
+ $config = [
+            'wechat' => [
+                'app_id'=>'wxaxxxxxxxx',
+                'mch_id' => '1442222202',
+                'key' => 'ddddddddddddddd',
+                'cert_client' => 'D:\php\xxx\application\wxpay\cert\apiclient_cert.pem',
+                'cert_key' => 'D:\php\xxx\application\wxpay\cert\apiclient_key.pem',
+            ],
+        ];
+
+        $config_biz = [
+            'wxappid'=>'wxaxxxxxxxx',
+            'mch_billno' => 'hb'.time(),
+            'send_name'=>'萌点云科技',//商户名称
+            're_openid'=>'ogg5JwsssssssssssCdXeD_S54',//用户openid
+            'total_amount' =>333, // 付款金额，单位分
+            'wishing'=>'提前祝你狗年大吉',//红包祝福语
+            'client_ip'=>'192.168.0.1',//调用接口的机器Ip地址
+            'total_num'=>'3',//红包发放总人数
+            'act_name'=>'提前拜年',//活动名称
+            'remark'=>'提前祝你狗年大吉，苟富贵勿相忘！', //备注
+            'amt_type'=>'ALL_RAND',//ALL_RAND—全部随机,商户指定总金额和红包发放总人数，由微信支付随机计算出各红包金额
+        ];
+
+        $pay = new Pay($config);
+        try
+        {
+            $res=   $pay->driver('wechat')->gateway('groupredpack')->pay($config_biz);
+
+        }catch (Exception $e){
+
+        }
+
+```
+
+#### 所有配置参数
+具体请看 [官方文档](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_5&index=4)。
+
+#### 返回值
+- pay()  
+类型：array  
+说明：返回用于 支付结果 的数组。具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_5&index=4)。
+
+
+### 14、微信 - 发放普通红包
+
+#### 最小配置参数
+```php
+<?php
+ $config = [
+            'wechat' => [
+                'app_id'=>'wxaxxxxxxxx',
+                'mch_id' => '1442222202',
+                'key' => 'ddddddddddddddd',
+                'cert_client' => 'D:\php\xxx\application\wxpay\cert\apiclient_cert.pem',
+                'cert_key' => 'D:\php\xxx\application\wxpay\cert\apiclient_key.pem',
+            ],
+        ];
+
+        $config_biz = [
+            'wxappid'=>'wxaxxxxxxxx',
+            'mch_billno' => 'hb'.time(),
+            'send_name'=>'萌点云科技',//商户名称
+            're_openid'=>'ogg5JwsssssssssssCdXeD_S54',//用户openid
+            'total_amount' =>100, // 付款金额，单位分
+            'wishing'=>'提前祝你狗年大吉',//红包祝福语
+            'client_ip'=>'192.168.0.1',//调用接口的机器Ip地址
+            'total_num'=>'1',//红包发放总人数
+            'act_name'=>'提前拜年',//活动名称
+            'remark'=>'提前祝你狗年大吉，苟富贵勿相忘！', //备注
+        ];
+
+        $pay = new Pay($config);
+        try
+        {
+            $res=   $pay->driver('wechat')->gateway('redpack')->pay($config_biz);
+
+        }catch (Exception $e){
+
+        }
+
+```
+
+#### 所有配置参数
+具体请看 [官方文档](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_4&index=3)。
+
+#### 返回值
+- pay()  
+类型：array  
+说明：返回用于 支付结果 的数组。具体请 [参考这里](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_4&index=3)。
 ## 代码贡献
 由于测试及使用环境的限制，本项目中只开发了「支付宝」和「微信支付」的相关支付网关。
 
