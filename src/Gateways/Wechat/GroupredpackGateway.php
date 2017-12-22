@@ -8,12 +8,10 @@
  * Com:萌点云科技（深圳）有限公司
  * Author:陈老司机
  * Email:690712575@qq.com
- * @package Yansongda\Pay\Gateways\Wechat
  */
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-use think\Log;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 
