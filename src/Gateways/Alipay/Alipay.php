@@ -151,7 +151,19 @@ abstract class Alipay implements GatewayInterface
      */
     public function verify($data, $sign = null, $sync = false)
     {
-        
+        if (is_null($this->user_config->get('ali_public_key'))) {
+            throw new InvalidArgumentException('Missing Config -- [ali_public_key]');
+        }
+
+        $sign = is_null($sign) ? $data['sign'] : $sign;
+
+        $res = "-----BEGIN PUBLIC KEY-----\n".
+                wordwrap($this->user_config->get('ali_public_key'), 64, "\n", true).
+                "\n-----END PUBLIC KEY-----";
+
+        $toVerify = $sync ? json_encode($data) : $this->getSignContent($data, true);
+
+        return openssl_verify($toVerify, base64_decode($sign), $res, OPENSSL_ALGO_SHA256) === 1 ? $data : false;
     }
 
     /**
