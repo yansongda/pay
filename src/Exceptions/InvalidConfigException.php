@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Exceptions;
 
-class GatewayException extends Exception
+class InvalidConfigException extends Exception
 {
     /**
      * Raw error info.
