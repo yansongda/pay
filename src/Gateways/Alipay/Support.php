@@ -33,7 +33,18 @@ class Support
         return base64_encode($sign);
     }
 
-    public static function verifySign($data, $publicKey = null, $sign = null)
+    /**
+     * Verfiy sign.
+     *
+     * @author yansongda <me@yansonga.cn>
+     *
+     * @param array $data
+     * @param string $publicKey
+     * @param string|null $sign
+     *
+     * @return bool
+     */
+    public static function verifySign($data, $publicKey = null, $sign = null): bool
     {
         if (is_null($publicKey)) {
             throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]');
@@ -49,9 +60,9 @@ class Support
 
         $sign = $sign ?? $data['sign'];
 
-        $toVerify = $sync ? json_encode($data) : $this->getSignContent($data, true);
+        $toVerify = self::getSignContent($data, true);
 
-        return openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1 ? $data : false;
+        return openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
     }
 
     /**
