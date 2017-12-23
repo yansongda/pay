@@ -77,7 +77,7 @@ class Alipay implements GatewayApplicationInterface
      * @param string $gateway
      * @param array $params
      *
-     * @return Response
+     * @return Response|Collection
      */
     public function pay($gateway, $params = [])
     {
@@ -111,7 +111,7 @@ class Alipay implements GatewayApplicationInterface
 
         Log::warning('Alipay sign verify failed:', $data);
 
-        throw new GatewayException("Sign verify FAILED", 3, $data);
+        throw new GatewayException("Alipay Sign verify FAILED", 3, $data);
     }
 
     public function find()

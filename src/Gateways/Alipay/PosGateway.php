@@ -2,10 +2,49 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-class PosGateway extends Alipay
+use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Supports\Config;
+
+class PosGateway implements GatewayInterface
 {
     /**
-     * get method config.
+     * Config.
+     *
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * Bootstrap.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * Pay a order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param array  $config_biz
+     * @param string $scene
+     *
+     * @return array|bool
+     */
+    public function pay($endpoint, array $payload)
+    {
+        $config_biz['scene'] = $scene;
+
+        return $this->getResult($config_biz, $this->getMethod());
+    }
+
+    /**
+     * Get method config.
      *
      * @author yansongda <me@yansongda.cn>
      *
@@ -17,7 +56,7 @@ class PosGateway extends Alipay
     }
 
     /**
-     * get productCode config.
+     * Get productCode config.
      *
      * @author yansongda <me@yansongda.cn>
      *
@@ -26,22 +65,5 @@ class PosGateway extends Alipay
     protected function getProductCode()
     {
         return 'FACE_TO_FACE_PAYMENT';
-    }
-
-    /**
-     * pay a order.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param array  $config_biz
-     * @param string $scene
-     *
-     * @return array|bool
-     */
-    public function pay(array $config_biz = [], $scene = 'bar_code')
-    {
-        $config_biz['scene'] = $scene;
-
-        return $this->getResult($config_biz, $this->getMethod());
     }
 }
