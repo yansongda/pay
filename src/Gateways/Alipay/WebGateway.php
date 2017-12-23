@@ -48,7 +48,7 @@ class WebGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
 
-        Log::debug('Paying:', [$endpoint, $payload]);
+        Log::debug('Paying a web/wap order:', [$endpoint, $payload]);
 
         return $this->buildPayHtml($endpoint, $payload);
     }
