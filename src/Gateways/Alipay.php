@@ -2,11 +2,15 @@
 
 namespace Yansongda\Pay\Gateways;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
+use Yansongda\Pay\Gateways\Alipay\Support;
 use Yansongda\Pay\Log;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 use Yansongda\Supports\Traits\HasHttpRequest;
@@ -46,7 +50,7 @@ class Alipay implements GatewayApplicationInterface
     public function __construct(Config $config)
     {
         if (is_null($config->get('app_id'))) {
-            throw new InvalidConfigException('Missing Alipay Config -- [app_id]');
+            throw new InvalidConfigException('Missing Alipay Config -- [app_id]', 1);
         }
 
         $this->config = $config;
@@ -88,9 +92,26 @@ class Alipay implements GatewayApplicationInterface
         throw new GatewayException("Pay Gateway [{$gateway}] not exists", 1);
     }
 
-    public function verify()
+    /**
+     * Verfiy sign.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return Collection
+     */
+    public function verify(): Collection
     {
-        
+        $request = Request::createFromGlobals();
+
+        $data = $request->request->count() > 0 ? $request->request->all() : $request->query->all();
+
+        if (Support::verifySign($data, $this->config->get('ali_public_key'))) {
+            return new Collection($data);
+        }
+
+        Log::warning('Alipay sign verify failed:', $data);
+
+        throw new GatewayException("Sign verify FAILED", 3, $data);
     }
 
     public function find()

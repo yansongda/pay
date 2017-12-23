@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Gateways\Alipay;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Gateways\Alipay\Support;
+use Yansongda\Pay\Log;
 use Yansongda\Supports\Config;
 
 class WebGateway implements GatewayInterface
@@ -46,6 +47,8 @@ class WebGateway implements GatewayInterface
             ['product_code' => $this->getProductCode()]
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
+
+        Log::debug('Paying:', [$endpoint, $payload]);
 
         return $this->buildPayHtml($endpoint, $payload);
     }
