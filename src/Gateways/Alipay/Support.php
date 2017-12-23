@@ -2,11 +2,66 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
+use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
+use Yansongda\Pay\Exceptions\InvalidSignException;
+use Yansongda\Pay\Log;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
+use Yansongda\Supports\Traits\HasHttpRequest;
 
 class Support
 {
+    use HasHttpRequest;
+
+    /**
+     * Alipay gateway.
+     *
+     * @var string
+     */
+    protected $baseUri = 'https://openapi.alipaydev.com/gateway.do?charset=utf-8';
+
+    /**
+     * Bootstrap.
+     *
+     * @author yansongda <me@yansongda.cn>
+     */
+    public function __construct()
+    {
+    }
+
+    /**
+     * Get Alipay API result.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param array $data
+     * @param string $publicKey
+     *
+     * @return Collection
+     */
+    public static function getApiResult($data, $publicKey): Collection
+    {
+        $method = str_replace('.', '_', $data['method']).'_response';
+
+        $data = json_decode($this->post('', $data), true);
+
+        if (!isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
+            throw new GatewayException(
+                'Get Alipay API Error:'.$data[$method]['msg'].' - '.$data[$method]['sub_code'],
+                $data[$method]['code'],
+                $data);
+        }
+
+        if (self::verifySign($data, $publicKey, true)) {
+            return new Collection($data);
+        }
+
+        Log::warning('Alipay sign verify failed:', $data);
+
+        throw new InvalidSignException("Alipay Sign verify FAILED", 3, $data);
+    }
+
     /**
      * Generate sign.
      *
@@ -40,11 +95,11 @@ class Support
      *
      * @param array $data
      * @param string $publicKey
-     * @param string|null $sign
+     * @param bool $sync
      *
      * @return bool
      */
-    public static function verifySign($data, $publicKey = null, $sign = null): bool
+    public static function verifySign($data, $publicKey = null, $sync = false): bool
     {
         if (is_null($publicKey)) {
             throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]');
@@ -58,11 +113,9 @@ class Support
                 "\n-----END PUBLIC KEY-----";
         }
 
-        $sign = $sign ?? $data['sign'];
+        $toVerify = $sync ? json_encode($data) : self::getSignContent($data, true);
 
-        $toVerify = self::getSignContent($data, true);
-
-        return openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
+        return openssl_verify($toVerify, base64_decode($data['sign']), $publicKey, OPENSSL_ALGO_SHA256) === 1;
     }
 
     /**
@@ -92,5 +145,17 @@ class Support
         unset($k, $v);
 
         return $stringToBeSigned;
+    }
+
+    /**
+     * Alipay gateway.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return string
+     */
+    public static function baseUri(): string
+    {
+        return $this->baseUri;
     }
 }

@@ -8,17 +8,15 @@ use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
+use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Alipay\Support;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
-use Yansongda\Supports\Traits\HasHttpRequest;
 
 class Alipay implements GatewayApplicationInterface
 {
-    use HasHttpRequest;
-
     /**
      * Config.
      *
@@ -38,7 +36,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @var string
      */
-    protected $baseUri = 'https://openapi.alipaydev.com/gateway.do?charset=utf-8';
+    protected $gateway;
 
     /**
      * Bootstrap.
@@ -49,10 +47,7 @@ class Alipay implements GatewayApplicationInterface
      */
     public function __construct(Config $config)
     {
-        if (is_null($config->get('app_id'))) {
-            throw new InvalidConfigException('Missing Alipay Config -- [app_id]', 1);
-        }
-
+        $this->gateway = Support::baseUri();
         $this->config = $config;
         $this->payload = [
             'app_id'      => $this->config->get('app_id'),
@@ -61,8 +56,8 @@ class Alipay implements GatewayApplicationInterface
             'charset'     => 'utf-8',
             'sign_type'   => 'RSA2',
             'version'     => '1.0',
-            'return_url'  => $this->config->get('return_url', ''),
-            'notify_url'  => $this->config->get('notify_url', ''),
+            'return_url'  => $this->config->get('return_url'),
+            'notify_url'  => $this->config->get('notify_url'),
             'timestamp'   => date('Y-m-d H:i:s'),
             'sign'        => '',
             'biz_content' => '',
@@ -111,7 +106,7 @@ class Alipay implements GatewayApplicationInterface
 
         Log::warning('Alipay sign verify failed:', $data);
 
-        throw new GatewayException("Alipay Sign verify FAILED", 3, $data);
+        throw new InvalidSignException("Alipay Sign verify FAILED", 3, $data);
     }
 
     public function find()
@@ -160,7 +155,7 @@ class Alipay implements GatewayApplicationInterface
         $app = new $gateway($this->config);
 
         if ($app instanceof GatewayInterface) {
-            return $app->pay($this->baseUri, $this->payload);
+            return $app->pay($this->gateway, $this->payload);
         }
 
         throw new GatewayException("Pay Gateway [{$gateway}] must be a instance of GatewayInterface", 2);

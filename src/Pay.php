@@ -105,7 +105,7 @@ class Pay
      */
     public static function __callStatic($method, $params)
     {
-        $app = new static(...$params);
+        $app = new self(...$params);
 
         return $app->create($method);
     }

@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 
 class PosGateway implements GatewayInterface
@@ -31,16 +32,24 @@ class PosGateway implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array  $config_biz
-     * @param string $scene
+     * @param string $endpoint
+     * @param array $payload
      *
-     * @return array|bool
+     * @return Collection
      */
-    public function pay($endpoint, array $payload)
+    public function pay($endpoint, array $payload): Collection
     {
-        $config_biz['scene'] = $scene;
+        $payload['method'] = $this->getMethod();
+        $payload['biz_content'] = json_encode(array_merge(
+            json_decode($payload['biz_content'], true),
+            [
+                'product_code' => $this->getProductCode(),
+                'scene' => 'bar_code ',
+            ]
+        ));
+        $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
 
-        return $this->getResult($config_biz, $this->getMethod());
+        return Support::getApiResult($payload, $this->config->get('ali_public_key'));
     }
 
     /**
