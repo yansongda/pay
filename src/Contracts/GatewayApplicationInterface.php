@@ -11,6 +11,8 @@ interface GatewayApplicationInterface
      *
      * @param string $gateway
      * @param array $params
+     *
+     * @return Yansongda\Supports\Collection|Symfony\Component\HttpFoundation\Response 
      */
     public function pay($gateway, $params);
 
@@ -24,5 +26,12 @@ interface GatewayApplicationInterface
 
     public function verify();
 
+    /**
+     * Echo success to server.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return Symfony\Component\HttpFoundation\Response
+     */
     public function success();
 }
