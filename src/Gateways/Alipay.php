@@ -65,7 +65,7 @@ class Alipay implements GatewayApplicationInterface
     }
 
     /**
-     * Pay a order.
+     * Pay an order.
      *
      * @author yansongda <me@yansongda.cn>
      *
@@ -109,24 +109,84 @@ class Alipay implements GatewayApplicationInterface
         throw new InvalidSignException("Alipay Sign verify FAILED", 3, $data);
     }
 
-    public function find()
+    /**
+     * Query an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string|array $order
+     *
+     * @return Collection
+     */
+    public function find($order): Collection
     {
-        # code...
+        $this->payload['method'] = 'alipay.trade.query';
+        $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
+        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+
+        Log::debug('Find an order:', [$this->gateway, $this->payload]);
+
+        return Support::getApiResult($this->payload, $this->config->get('ali_public_key'));
     }
 
-    public function refund()
+    /**
+     * Refund an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param array $order
+     *
+     * @return Collection
+     */
+    public function refund(array $order): Collection
     {
-        # code...
+        $this->payload['method'] = 'alipay.trade.refund';
+        $this->payload['biz_content'] = json_encode($order);
+        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+
+        Log::debug('Refund an order:', [$this->gateway, $this->payload]);
+
+        return Support::getApiResult($this->payload, $this->config->get('ali_public_key'));
     }
 
-    public function cancel()
+    /**
+     * Cancel an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string|array $order
+     *
+     * @return Collection
+     */
+    public function cancel($order): Collection
     {
-        # code...
+        $this->payload['method'] = 'alipay.trade.cancel';
+        $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
+        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+
+        Log::debug('Cancel an order:', [$this->gateway, $this->payload]);
+
+        return Support::getApiResult($this->payload, $this->config->get('ali_public_key'));
     }
 
-    public function close()
+    /**
+     * Close an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string|array $order
+     *
+     * @return Collection
+     */
+    public function close($order): Collection
     {
-        # code...
+        $this->payload['method'] = 'alipay.trade.close';
+        $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
+        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+
+        Log::debug('Close an order:', [$this->gateway, $this->payload]);
+
+        return Support::getApiResult($this->payload, $this->config->get('ali_public_key'));
     }
 
     /**

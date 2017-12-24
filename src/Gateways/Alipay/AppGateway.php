@@ -30,7 +30,7 @@ class AppGateway implements GatewayInterface
     }
 
     /**
-     * Pay a order.
+     * Pay an order.
      *
      * @author yansongda <me@yansongda.cn>
      *
@@ -48,7 +48,7 @@ class AppGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
 
-        Log::debug('Paying a app order:', [$endpoint, $payload]);
+        Log::debug('Paying an app order:', [$endpoint, $payload]);
 
         return Response::create(http_build_query($payload));
     }

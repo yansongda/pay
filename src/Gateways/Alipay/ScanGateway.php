@@ -29,7 +29,7 @@ class ScanGateway implements GatewayInterface
     }
 
     /**
-     * Pay a order.
+     * Pay an order.
      *
      * @author yansongda <me@yansongda.cn>
      *

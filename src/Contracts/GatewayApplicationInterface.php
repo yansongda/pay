@@ -16,14 +16,57 @@ interface GatewayApplicationInterface
      */
     public function pay($gateway, $params);
 
-    public function find();
+    /**
+     * Query an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string|array $order
+     *
+     * @return Yansongda\Supports\Collection
+     */
+    public function find($order);
 
-    public function refund();
+    /**
+     * Refund an order
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param array $order
+     *
+     * @return Yansongda\Supports\Collection
+     */
+    public function refund(array $order);
 
-    public function cancel();
+    /**
+     * Cancel an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string|array $order
+     *
+     * @return Yansongda\Supports\Collection
+     */
+    public function cancel($order);
 
-    public function close();
+    /**
+     * Close an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string|array $order
+     *
+     * @return Yansongda\Supports\Collection
+     */
+    public function close($order);
 
+    /**
+     * Verify a request.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return Yansongda\Supports\Collection
+     */
     public function verify();
 
     /**
