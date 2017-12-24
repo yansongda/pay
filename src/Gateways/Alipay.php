@@ -100,6 +100,8 @@ class Alipay implements GatewayApplicationInterface
 
         $data = $request->request->count() > 0 ? $request->request->all() : $request->query->all();
 
+        Log::debug('Receive Alipay request:', $data);
+
         if (Support::verifySign($data, $this->config->get('ali_public_key'))) {
             return new Collection($data);
         }
