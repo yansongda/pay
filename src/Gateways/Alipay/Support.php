@@ -37,8 +37,8 @@ class Support
      */
     public static function getInstance()
     {
-        if (! (self::$instance instanceof self)) {
-            self::$instance = new self;
+        if (!(self::$instance instanceof self)) {
+            self::$instance = new self();
         }
 
         return self::$instance;
@@ -49,7 +49,7 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $data
+     * @param array  $data
      * @param string $publicKey
      *
      * @return Collection
@@ -73,7 +73,7 @@ class Support
 
         Log::warning('Alipay sign verify failed:', $data);
 
-        throw new InvalidSignException("Alipay Sign verify FAILED", 3, $data);
+        throw new InvalidSignException('Alipay Sign verify FAILED', 3, $data);
     }
 
     /**
@@ -107,9 +107,9 @@ class Support
      *
      * @author yansongda <me@yansonga.cn>
      *
-     * @param array $data
-     * @param string $publicKey
-     * @param bool $sync
+     * @param array       $data
+     * @param string      $publicKey
+     * @param bool        $sync
      * @param string|null $sign
      *
      * @return bool
@@ -128,7 +128,7 @@ class Support
                 "\n-----END PUBLIC KEY-----";
         }
 
-        $sign = $sign ?? $data['sign']; 
+        $sign = $sign ?? $data['sign'];
 
         $toVerify = $sync ? json_encode($data) : self::getSignContent($data, true);
 

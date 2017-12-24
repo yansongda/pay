@@ -16,8 +16,8 @@ class GatewayException extends Exception
      *
      * @author yansongda <me@yansonga.cn>
      *
-     * @param string $message
-     * @param int|string $code
+     * @param string       $message
+     * @param int|string   $code
      * @param array|string $raw
      */
     public function __construct($message, $code, $raw)

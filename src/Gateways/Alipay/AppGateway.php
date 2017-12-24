@@ -4,7 +4,6 @@ namespace Yansongda\Pay\Gateways\Alipay;
 
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Gateways\Alipay\Support;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Config;
 
@@ -35,7 +34,7 @@ class AppGateway implements GatewayInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array $payload
+     * @param array  $payload
      *
      * @return Response
      */

@@ -12,7 +12,7 @@ interface GatewayApplicationInterface
      * @param string $gateway
      * @param array $params
      *
-     * @return Yansongda\Supports\Collection|Symfony\Component\HttpFoundation\Response 
+     * @return Yansongda\Supports\Collection|Symfony\Component\HttpFoundation\Response
      */
     public function pay($gateway, $params);
 
@@ -28,7 +28,7 @@ interface GatewayApplicationInterface
     public function find($order);
 
     /**
-     * Refund an order
+     * Refund an order.
      *
      * @author yansongda <me@yansongda.cn>
      *

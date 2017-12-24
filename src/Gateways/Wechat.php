@@ -16,22 +16,22 @@ class Application implements GatewayApplicationInterface
         # code...
     }
 
-    public function find()
+    public function find($order)
     {
         # code...
     }
 
-    public function refund()
+    public function refund(array $order)
     {
         # code...
     }
 
-    public function cancel()
+    public function cancel($order)
     {
         # code...
     }
 
-    public function close()
+    public function close($order)
     {
         # code...
     }

@@ -34,7 +34,7 @@ class PosGateway implements GatewayInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array $payload
+     * @param array  $payload
      *
      * @return Collection
      */
@@ -45,7 +45,7 @@ class PosGateway implements GatewayInterface
             json_decode($payload['biz_content'], true),
             [
                 'product_code' => $this->getProductCode(),
-                'scene' => 'bar_code ',
+                'scene'        => 'bar_code ',
             ]
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));

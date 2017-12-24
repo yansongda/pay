@@ -34,7 +34,7 @@ class ScanGateway implements GatewayInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array $payload
+     * @param array  $payload
      *
      * @return Collection
      */
@@ -43,7 +43,7 @@ class ScanGateway implements GatewayInterface
         $payload['method'] = $this->getMethod();
         $payload['biz_content'] = json_encode(array_merge(
             json_decode($payload['biz_content'], true),
-            ['product_code' => $this->getProductCode(),]
+            ['product_code' => $this->getProductCode()]
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
 

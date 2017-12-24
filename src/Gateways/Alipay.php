@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Exceptions\GatewayException;
-use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Alipay\Support;
 use Yansongda\Pay\Log;
@@ -70,7 +69,7 @@ class Alipay implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $gateway
-     * @param array $params
+     * @param array  $params
      *
      * @return Response|Collection
      */
@@ -78,7 +77,7 @@ class Alipay implements GatewayApplicationInterface
     {
         $this->payload['biz_content'] = json_encode($params);
 
-        $gateway = get_class($this) . "\\" . Str::studly($gateway) . "Gateway";
+        $gateway = get_class($this) . '\\' . Str::studly($gateway) . 'Gateway';
         
         if (class_exists($gateway)) {
             return $this->makePay($gateway);
@@ -108,7 +107,7 @@ class Alipay implements GatewayApplicationInterface
 
         Log::warning('Alipay sign verify failed:', $data);
 
-        throw new InvalidSignException("Alipay Sign verify FAILED", 3, $data);
+        throw new InvalidSignException('Alipay Sign verify FAILED', 3, $data);
     }
 
     /**
@@ -229,9 +228,9 @@ class Alipay implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $method
-     * @param array $params
+     * @param array  $params
      *
-     * @return [type]
+     * @return Response|Collection
      */
     public function __call($method, $params)
     {
