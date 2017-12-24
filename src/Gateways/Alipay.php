@@ -197,7 +197,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Response
      */
-    public function success()
+    public function success(): Response
     {
         return Response::create('success');
     }
@@ -209,7 +209,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string $gateway
      *
-     * @return Response
+     * @return Response|Collection
      */
     protected function makePay($gateway)
     {

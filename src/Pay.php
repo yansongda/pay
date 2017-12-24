@@ -7,7 +7,6 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Exceptions\GatewayException;
-use Yansongda\Pay\Log;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
