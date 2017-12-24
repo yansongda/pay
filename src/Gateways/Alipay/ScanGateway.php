@@ -3,6 +3,8 @@
 namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Log;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 
 class ScanGateway implements GatewayInterface
@@ -44,6 +46,8 @@ class ScanGateway implements GatewayInterface
             ['product_code' => $this->getProductCode(),]
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
+
+        Log::debug('Paying a scan order:', [$endpoint, $payload]);
 
         return Support::getApiResult($payload, $this->config->get('ali_public_key'));
     }

@@ -15,6 +15,13 @@ class Support
     use HasHttpRequest;
 
     /**
+     * Instance.
+     *
+     * @var Support
+     */
+    private static $instance;
+
+    /**
      * Alipay gateway.
      *
      * @var string
@@ -22,12 +29,19 @@ class Support
     protected $baseUri = 'https://openapi.alipaydev.com/gateway.do?charset=utf-8';
 
     /**
-     * Bootstrap.
+     * Get instance.
      *
      * @author yansongda <me@yansongda.cn>
+     *
+     * @return Support
      */
-    public function __construct()
+    public static function getInstance()
     {
+        if (! (self::$instance instanceof self)) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
     }
 
     /**
@@ -44,7 +58,7 @@ class Support
     {
         $method = str_replace('.', '_', $data['method']).'_response';
 
-        $data = json_decode($this->post('', $data), true);
+        $data = json_decode(self::getInstance()->post('', $data), true);
 
         if (!isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
             throw new GatewayException(
@@ -53,8 +67,8 @@ class Support
                 $data);
         }
 
-        if (self::verifySign($data, $publicKey, true)) {
-            return new Collection($data);
+        if (self::verifySign($data[$method], $publicKey, true, $data['sign'])) {
+            return new Collection($data[$method]);
         }
 
         Log::warning('Alipay sign verify failed:', $data);
@@ -96,10 +110,11 @@ class Support
      * @param array $data
      * @param string $publicKey
      * @param bool $sync
+     * @param string|null $sign
      *
      * @return bool
      */
-    public static function verifySign($data, $publicKey = null, $sync = false): bool
+    public static function verifySign($data, $publicKey = null, $sync = false, $sign = null): bool
     {
         if (is_null($publicKey)) {
             throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]');
@@ -113,9 +128,11 @@ class Support
                 "\n-----END PUBLIC KEY-----";
         }
 
+        $sign = $sign ?? $data['sign']; 
+
         $toVerify = $sync ? json_encode($data) : self::getSignContent($data, true);
 
-        return openssl_verify($toVerify, base64_decode($data['sign']), $publicKey, OPENSSL_ALGO_SHA256) === 1;
+        return openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
     }
 
     /**
@@ -156,6 +173,6 @@ class Support
      */
     public static function baseUri(): string
     {
-        return $this->baseUri;
+        return self::getInstance()->baseUri;
     }
 }

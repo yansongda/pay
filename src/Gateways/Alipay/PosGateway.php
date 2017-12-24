@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 
@@ -48,6 +49,8 @@ class PosGateway implements GatewayInterface
             ]
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
+
+        Log::debug('Paying a pos order:', [$endpoint, $payload]);
 
         return Support::getApiResult($payload, $this->config->get('ali_public_key'));
     }
