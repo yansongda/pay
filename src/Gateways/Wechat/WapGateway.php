@@ -2,40 +2,42 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-use Yansongda\Pay\Exceptions\InvalidArgumentException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
-class WapGateway extends Wechat
+class WapGateway extends Gateway
 {
     /**
-     * get trade type config.
+     * Pay an order.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return string
+     * @param string $endpoint
+     * @param array  $payload
+     *
+     * @return Response
      */
-    protected function getTradeType()
+    public function pay($endpoint, array $payload): Response
     {
-        return 'MWEB';
+        $payload['trade_type'] = $this->getTradeType();
+
+        $data = $this->preOrder('pay/unifiedorder', $payload);
+
+        $url = is_null($this->config->get('return_url')) ? $data->mweb_url : $data->mweb_url.
+                        '&redirect_url='.urlencode($this->config->get('return_url'));
+
+        return RedirectResponse::create($url);
     }
 
     /**
-     * pay a order.
+     * Get trade type config.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $config_biz
-     *
      * @return string
      */
-    public function pay(array $config_biz = [])
+    protected function getTradeType(): string
     {
-        if (is_null($this->user_config->get('app_id'))) {
-            throw new InvalidArgumentException('Missing Config -- [app_id]');
-        }
-
-        $data = $this->preOrder($config_biz);
-
-        return is_null($this->user_config->get('return_url')) ? $data['mweb_url'] : $data['mweb_url'].
-                        '&redirect_url='.urlencode($this->user_config->get('return_url'));
+        return 'MWEB';
     }
 }

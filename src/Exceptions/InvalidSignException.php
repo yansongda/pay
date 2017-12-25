@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Exceptions;
 
-class InvalidArgumentException extends Exception
+class InvalidSignException extends Exception
 {
     /**
      * Raw error info.

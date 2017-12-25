@@ -2,49 +2,51 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-use Yansongda\Pay\Exceptions\InvalidArgumentException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Yansongda\Supports\Str;
 
-class AppGateway extends Wechat
+class AppGateway extends Gateway
 {
     /**
-     * get trade type config.
+     * Pay an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $endpoint
+     * @param array  $payload
+     *
+     * @return Response
+     */
+    public function pay($endpoint, array $payload)
+    {
+        $payload['appid'] = $this->config->get('appid');
+        $payload['trade_type'] = $this->getTradeType();
+
+        $payRequest = [
+            'appid'     => $payload['appid'],
+            'partnerid' => $payload['mch_id'],
+            'prepayid'  => $this->preOrder('pay/unifiedorder', $payload)->prepay_id,
+            'timestamp' => strval(time()),
+            'noncestr'  => Str::random(),
+            'package'   => 'Sign=WXPay',
+        ];
+        $payRequest['sign'] = Support::generateSign($payRequest, $this->config->get('key'));
+
+        Log::debug('Paying An App Order:', [$endpoint, $payRequest]);
+
+        return JsonResponse::create($payRequest);
+    }
+
+    /**
+     * Get trade type config.
      *
      * @author yansongda <me@yansongda.cn>
      *
      * @return string
      */
-    protected function getTradeType()
+    protected function getTradeType(): string
     {
         return 'APP';
-    }
-
-    /**
-     * pay a order.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param array $config_biz
-     *
-     * @return array
-     */
-    public function pay(array $config_biz = [])
-    {
-        if (is_null($this->user_config->get('appid'))) {
-            throw new InvalidArgumentException('Missing Config -- [appid]');
-        }
-
-        $this->config['appid'] = $this->user_config->get('appid');
-
-        $payRequest = [
-            'appid'     => $this->user_config->get('appid'),
-            'partnerid' => $this->user_config->get('mch_id'),
-            'prepayid'  => $this->preOrder($config_biz)['prepay_id'],
-            'timestamp' => strval(time()),
-            'noncestr'  => $this->createNonceStr(),
-            'package'   => 'Sign=WXPay',
-        ];
-        $payRequest['sign'] = $this->getSign($payRequest);
-
-        return $payRequest;
     }
 }

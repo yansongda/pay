@@ -2,109 +2,110 @@
 
 namespace Yansongda\Pay;
 
-use Yansongda\Pay\Exceptions\InvalidArgumentException;
-use Yansongda\Pay\Support\Config;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Yansongda\Pay\Contracts\GatewayApplicationInterface;
+use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Supports\Config;
+use Yansongda\Supports\Str;
 
 class Pay
 {
     /**
-     * @var \Yansongda\Pay\Support\Config
-     */
-    private $config;
-
-    /**
-     * @var string
-     */
-    private $drivers;
-
-    /**
-     * @var \Yansongda\Pay\Contracts\GatewayInterface
-     */
-    private $gateways;
-
-    /**
-     * construct method.
+     * Config.
      *
-     * @author JasonYan <me@yansongda.cn>
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * Bootstrap.
+     *
+     * @author yansongda <me@yansongda.cn>
      *
      * @param array $config
      */
-    public function __construct(array $config = [])
+    public function __construct($config)
     {
         $this->config = new Config($config);
     }
 
     /**
-     * set pay's driver.
-     *
-     * @author JasonYan <me@yansongda.cn>
-     *
-     * @param string $driver
-     *
-     * @return Pay
-     */
-    public function driver($driver)
-    {
-        if (is_null($this->config->get($driver))) {
-            throw new InvalidArgumentException("Driver [$driver]'s Config is not defined.");
-        }
-
-        $this->drivers = $driver;
-
-        return $this;
-    }
-
-    /**
-     * set pay's gateway.
+     * Create a instance.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $gateway
+     * @param string $method
      *
-     * @return \Yansongda\Pay\Contracts\GatewayInterface
+     * @return GatewayApplicationInterface
      */
-    public function gateway($gateway = 'web')
+    protected function create($method)
     {
-        if (!isset($this->drivers)) {
-            throw new InvalidArgumentException('Driver is not defined.');
+        !$this->config->has('log.file') ?: $this->registeLog();
+
+        $gateway = __NAMESPACE__.'\\Gateways\\'.Str::studly($method);
+
+        if (class_exists($gateway)) {
+            return self::make($gateway);
         }
 
-        $this->gateways = $this->createGateway($gateway);
-
-        return $this->gateways;
+        throw new GatewayException("Gateway [{$method}] Not Exists", 1);
     }
 
     /**
-     * create pay's gateway.
+     * Make a gateway.
+     *
+     * @author yansongda <me@yansonga.cn>
+     *
+     * @param string $gateway
+     *
+     * @return GatewayApplicationInterface
+     */
+    protected function make($gateway)
+    {
+        $app = new $gateway($this->config);
+
+        if ($app instanceof GatewayApplicationInterface) {
+            return $app;
+        }
+
+        throw new GatewayException("Gateway [$gateway] Must Be An Instance Of GatewayApplicationInterface", 2);
+    }
+
+    /**
+     * Registe log service.
+     *
+     * @author yansongda <me@yansongda.cn>
+     */
+    protected function registeLog()
+    {
+        $handler = new StreamHandler(
+            $this->config->get('log.file'),
+            $this->config->get('log.level', Logger::WARNING)
+        );
+        $handler->setFormatter(new LineFormatter("%datetime% > %level_name% > %message% %context% %extra%\n\n"));
+
+        $logger = new Logger('yansongda.pay');
+        $logger->pushHandler($handler);
+
+        Log::setLogger($logger);
+    }
+
+    /**
+     * Magic static call.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $gateway
+     * @param string $method
+     * @param array  $params
      *
-     * @return \Yansongda\Pay\Contracts\GatewayInterface
+     * @return GatewayApplicationInterface
      */
-    protected function createGateway($gateway)
+    public static function __callStatic($method, $params)
     {
-        if (!file_exists(__DIR__.'/Gateways/'.ucfirst($this->drivers).'/'.ucfirst($gateway).'Gateway.php')) {
-            throw new InvalidArgumentException("Gateway [$gateway] is not supported.");
-        }
+        $app = new self(...$params);
 
-        $gateway = __NAMESPACE__.'\\Gateways\\'.ucfirst($this->drivers).'\\'.ucfirst($gateway).'Gateway';
-
-        return $this->build($gateway);
-    }
-
-    /**
-     * build pay's gateway.
-     *
-     * @author JasonYan <me@yansongda.cn>
-     *
-     * @param string $gateway
-     *
-     * @return \Yansongda\Pay\Contracts\GatewayInterface
-     */
-    protected function build($gateway)
-    {
-        return new $gateway($this->config->get($this->drivers));
+        return $app->create($method);
     }
 }

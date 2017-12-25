@@ -2,10 +2,61 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-class PosGateway extends Alipay
+use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Log;
+use Yansongda\Supports\Collection;
+use Yansongda\Supports\Config;
+
+class PosGateway implements GatewayInterface
 {
     /**
-     * get method config.
+     * Config.
+     *
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * Bootstrap.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * Pay an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $endpoint
+     * @param array  $payload
+     *
+     * @return Collection
+     */
+    public function pay($endpoint, array $payload): Collection
+    {
+        $payload['method'] = $this->getMethod();
+        $payload['biz_content'] = json_encode(array_merge(
+            json_decode($payload['biz_content'], true),
+            [
+                'product_code' => $this->getProductCode(),
+                'scene'        => 'bar_code ',
+            ]
+        ));
+        $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
+
+        Log::debug('Paying A Pos Order:', [$endpoint, $payload]);
+
+        return Support::requestApi($payload, $this->config->get('ali_public_key'));
+    }
+
+    /**
+     * Get method config.
      *
      * @author yansongda <me@yansongda.cn>
      *
@@ -17,7 +68,7 @@ class PosGateway extends Alipay
     }
 
     /**
-     * get productCode config.
+     * Get productCode config.
      *
      * @author yansongda <me@yansongda.cn>
      *
@@ -26,22 +77,5 @@ class PosGateway extends Alipay
     protected function getProductCode()
     {
         return 'FACE_TO_FACE_PAYMENT';
-    }
-
-    /**
-     * pay a order.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param array  $config_biz
-     * @param string $scene
-     *
-     * @return array|bool
-     */
-    public function pay(array $config_biz = [], $scene = 'bar_code')
-    {
-        $config_biz['scene'] = $scene;
-
-        return $this->getResult($config_biz, $this->getMethod());
     }
 }
