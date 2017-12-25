@@ -26,7 +26,7 @@ class Support
      *
      * @var string
      */
-    protected $baseUri = 'https://openapi.alipaydev.com/gateway.do?charset=utf-8';
+    protected $baseUri = 'https://openapi.alipay.com/gateway.do?charset=utf-8';
 
     /**
      * Get instance.
@@ -172,10 +172,22 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @param string $mode
+     *
      * @return string
      */
-    public static function baseUri(): string
+    public static function baseUri($mode = null): string
     {
+        switch ($region) {
+            case 'dev':
+                self::getInstance()->baseUri = 'https://openapi.alipaydev.com/gateway.do?charset=utf-8';
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
         return self::getInstance()->baseUri;
     }
 }

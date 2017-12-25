@@ -46,8 +46,8 @@ class Alipay implements GatewayApplicationInterface
      */
     public function __construct(Config $config)
     {
-        $this->gateway = Support::baseUri();
         $this->config = $config;
+        $this->gateway = Support::baseUri($this->config->get('mode', 'normal'));
         $this->payload = [
             'app_id'      => $this->config->get('app_id'),
             'method'      => '',

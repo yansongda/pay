@@ -46,8 +46,8 @@ class Wechat implements GatewayApplicationInterface
      */
     public function __construct(Config $config)
     {
-        $this->gateway = Support::baseUri();
         $this->config = $config;
+        $this->gateway = Support::baseUri($this->config->get('mode', 'normal'));
         $this->payload = [
             'appid'            => $this->config->get('app_id', ''),
             'mch_id'           => $this->config->get('mch_id', ''),

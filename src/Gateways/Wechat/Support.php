@@ -176,10 +176,26 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @param string $mode
+     *
      * @return string
      */
-    public static function baseUri(): string
+    public static function baseUri($mode = null): string
     {
+        switch ($region) {
+            case 'dev':
+                self::getInstance()->baseUri = 'https://api.mch.weixin.qq.com/sandboxnew/';
+                break;
+
+            case 'hk':
+                self::getInstance()->baseUri = 'https://apihk.mch.weixin.qq.com/';
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
         return self::getInstance()->baseUri;
     }
 }
