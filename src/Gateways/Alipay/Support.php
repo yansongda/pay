@@ -62,7 +62,7 @@ class Support
 
         $data = json_decode(self::getInstance()->post('', $data), true);
 
-        if (self::verifySign($data[$method], $publicKey, true, $data['sign'])) {
+        if (!self::verifySign($data[$method], $publicKey, true, $data['sign'])) {
             Log::warning('Alipay Sign Verify FAILED', $data);
 
             throw new InvalidSignException('Alipay Sign Verify FAILED', 3, $data);
