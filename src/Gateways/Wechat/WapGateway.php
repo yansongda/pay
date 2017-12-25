@@ -20,7 +20,7 @@ class WapGateway extends Gateway
     public function pay($endpoint, array $payload): Response
     {
         $payload['trade_type'] = $this->getTradeType();
-        
+
         $data = $this->preOrder('pay/unifiedorder', $payload);
 
         $url = is_null($this->config->get('return_url')) ? $data->mweb_url : $data->mweb_url.

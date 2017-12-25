@@ -48,11 +48,11 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string       $endpoint
-     * @param array        $data
-     * @param string|null  $key
-     * @param string       $certClient
-     * @param string       $certKey
+     * @param string      $endpoint
+     * @param array       $data
+     * @param string|null $key
+     * @param string      $certClient
+     * @param string      $certKey
      *
      * @return Collection
      */
