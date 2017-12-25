@@ -47,7 +47,7 @@ class TransferGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
 
-        Log::debug('Paying a transfer order:', [$endpoint, $payload]);
+        Log::debug('Paying A Transfer Order:', [$endpoint, $payload]);
 
         return Support::requestApi($payload, $this->config->get('ali_public_key'));
     }

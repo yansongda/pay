@@ -47,7 +47,7 @@ class AppGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
 
-        Log::debug('Paying an app order:', [$endpoint, $payload]);
+        Log::debug('Paying An App Order:', [$endpoint, $payload]);
 
         return Response::create(http_build_query($payload));
     }

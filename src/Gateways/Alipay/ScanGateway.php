@@ -47,7 +47,7 @@ class ScanGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
 
-        Log::debug('Paying a scan order:', [$endpoint, $payload]);
+        Log::debug('Paying A Scan Order:', [$endpoint, $payload]);
 
         return Support::requestApi($payload, $this->config->get('ali_public_key'));
     }

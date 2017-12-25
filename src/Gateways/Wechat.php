@@ -51,7 +51,7 @@ class Wechat implements GatewayApplicationInterface
             'nonce_str'  => Str::random(),
             'sign_type'  => 'MD5',
             'notify_url' => $this->config->get('notify_url', ''),
-            //'trade_type' => $this->getTradeType(),
+            'trade_type' => '',
         ];
     }
 
@@ -73,7 +73,7 @@ class Wechat implements GatewayApplicationInterface
             return $this->makePay($gateway);
         }
 
-        throw new GatewayException("Pay Gateway [{$gateway}] not exists", 1);
+        throw new GatewayException("Pay Gateway [{$gateway}] Not Exists", 1);
     }
 
     public function verify()
@@ -134,7 +134,7 @@ class Wechat implements GatewayApplicationInterface
             return $app->pay($this->gateway, $this->payload);
         }
 
-        throw new GatewayException("Pay Gateway [{$gateway}] must be a instance of GatewayInterface", 2);
+        throw new GatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface", 2);
     }
 
     /**

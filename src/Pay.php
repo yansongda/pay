@@ -50,7 +50,7 @@ class Pay
             return self::make($gateway);
         }
 
-        throw new GatewayException("Gateway [{$method}] not exists", 1);
+        throw new GatewayException("Gateway [{$method}] Not Exists", 1);
     }
 
     /**
@@ -70,7 +70,7 @@ class Pay
             return $app;
         }
 
-        throw new GatewayException("Gateway [$gateway] must be a instance of GatewayApplicationInterface", 2);
+        throw new GatewayException("Gateway [$gateway] Must Be An Instance Of GatewayApplicationInterface", 2);
     }
 
     /**

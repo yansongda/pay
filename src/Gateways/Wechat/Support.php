@@ -40,7 +40,7 @@ class Support
         return self::$instance;
     }
 
-    public static function requestApi()
+    public static function requestApi($endpoint, $data, $cert = null)
     {
         # code...
     }

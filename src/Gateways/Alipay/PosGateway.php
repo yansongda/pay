@@ -50,7 +50,7 @@ class PosGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
 
-        Log::debug('Paying a pos order:', [$endpoint, $payload]);
+        Log::debug('Paying A Pos Order:', [$endpoint, $payload]);
 
         return Support::requestApi($payload, $this->config->get('ali_public_key'));
     }

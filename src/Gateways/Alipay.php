@@ -99,13 +99,13 @@ class Alipay implements GatewayApplicationInterface
 
         $data = $request->request->count() > 0 ? $request->request->all() : $request->query->all();
 
-        Log::debug('Receive Alipay request:', $data);
+        Log::debug('Receive Alipay Request:', $data);
 
         if (Support::verifySign($data, $this->config->get('ali_public_key'))) {
             return new Collection($data);
         }
 
-        Log::warning('Alipay sign verify failed:', $data);
+        Log::warning('Alipay Sign verify FAILED', $data);
 
         throw new InvalidSignException('Alipay Sign verify FAILED', 3, $data);
     }
@@ -125,7 +125,7 @@ class Alipay implements GatewayApplicationInterface
         $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
         $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
 
-        Log::debug('Find an order:', [$this->gateway, $this->payload]);
+        Log::debug('Find An Order:', [$this->gateway, $this->payload]);
 
         return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
     }
@@ -145,7 +145,7 @@ class Alipay implements GatewayApplicationInterface
         $this->payload['biz_content'] = json_encode($order);
         $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
 
-        Log::debug('Refund an order:', [$this->gateway, $this->payload]);
+        Log::debug('Refund An Order:', [$this->gateway, $this->payload]);
 
         return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
     }
@@ -165,7 +165,7 @@ class Alipay implements GatewayApplicationInterface
         $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
         $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
 
-        Log::debug('Cancel an order:', [$this->gateway, $this->payload]);
+        Log::debug('Cancel An Order:', [$this->gateway, $this->payload]);
 
         return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
     }
@@ -185,7 +185,7 @@ class Alipay implements GatewayApplicationInterface
         $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
         $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
 
-        Log::debug('Close an order:', [$this->gateway, $this->payload]);
+        Log::debug('Close An Order:', [$this->gateway, $this->payload]);
 
         return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
     }
@@ -219,7 +219,7 @@ class Alipay implements GatewayApplicationInterface
             return $app->pay($this->gateway, $this->payload);
         }
 
-        throw new GatewayException("Pay Gateway [{$gateway}] must be a instance of GatewayInterface", 2);
+        throw new GatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface", 2);
     }
 
     /**
