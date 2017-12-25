@@ -37,5 +37,5 @@ class WapGateway extends Gateway
     protected function getTradeType(): string
     {
         return 'MWEB';
-    } 
+    }
 }

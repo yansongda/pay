@@ -73,8 +73,8 @@ class Wechat implements GatewayApplicationInterface
     {
         $this->payload = array_merge($this->payload, $params);
 
-        $gateway = get_class($this) . '\\' . Str::studly($gateway) . 'Gateway';
-        
+        $gateway = get_class($this).'\\'.Str::studly($gateway).'Gateway';
+
         if (class_exists($gateway)) {
             return $this->makePay($gateway);
         }
@@ -162,7 +162,7 @@ class Wechat implements GatewayApplicationInterface
      */
     public function cancel($order): Collection
     {
-        throw new GatewayException("Wechat Do Not Have Cancel API! Plase use Close API!", 3);
+        throw new GatewayException('Wechat Do Not Have Cancel API! Plase use Close API!', 3);
     }
 
     /**
@@ -184,7 +184,7 @@ class Wechat implements GatewayApplicationInterface
 
         unset($this->payload['notify_url'], $this->payload['trade_type']);
 
-        return Support::requestApi('pay/closeorder',$this->payload);
+        return Support::requestApi('pay/closeorder', $this->payload);
     }
 
     /**

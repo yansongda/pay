@@ -53,7 +53,7 @@ class Log
      */
     protected static function createDefaultLogger()
     {
-        $handler = new StreamHandler(sys_get_temp_dir() . '/logs/yansongda.pay.log');
+        $handler = new StreamHandler(sys_get_temp_dir().'/logs/yansongda.pay.log');
         $handler->setFormatter(new LineFormatter("%datetime% > %level_name% > %message% %context% %extra%\n\n"));
 
         $logger = new Logger('yansongda.pay');

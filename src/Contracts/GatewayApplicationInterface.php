@@ -10,7 +10,7 @@ interface GatewayApplicationInterface
      * @author yansongda <me@yansonga.cn>
      *
      * @param string $gateway
-     * @param array $params
+     * @param array  $params
      *
      * @return Yansongda\Supports\Collection|Symfony\Component\HttpFoundation\Response
      */

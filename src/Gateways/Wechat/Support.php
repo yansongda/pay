@@ -4,7 +4,6 @@ namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
-use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
@@ -50,7 +49,7 @@ class Support
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array $data
+     * @param array  $data
      * @param string $certClient
      * @param string $certKey
      *
@@ -58,7 +57,7 @@ class Support
      */
     public static function requestApi($endpoint, $data, $certClient = null, $certKey = null): Collection
     {
-        Log::debug('Request To Wechat Api', [self::baseUri() . $endpoint, $data]);
+        Log::debug('Request To Wechat Api', [self::baseUri().$endpoint, $data]);
 
         $result = self::getInstance()->post(
             $endpoint,
@@ -79,7 +78,7 @@ class Support
         }
 
         throw new GatewayException(
-            'Get Wechat API Error:' . $result['return_msg'] . $result['err_code_des'] ?? '',
+            'Get Wechat API Error:'.$result['return_msg'].$result['err_code_des'] ?? '',
             20000,
             $result
         );

@@ -44,7 +44,7 @@ class Pay
     {
         !$this->config->has('log.file') ?: $this->registeLog();
 
-        $gateway = __NAMESPACE__ . '\\Gateways\\' . Str::studly($method);
+        $gateway = __NAMESPACE__.'\\Gateways\\'.Str::studly($method);
 
         if (class_exists($gateway)) {
             return self::make($gateway);
@@ -93,12 +93,12 @@ class Pay
     }
 
     /**
-     * Magic static call
+     * Magic static call.
      *
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $method
-     * @param array $params
+     * @param array  $params
      *
      * @return GatewayApplicationInterface
      */

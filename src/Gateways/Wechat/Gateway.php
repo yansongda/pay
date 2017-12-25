@@ -10,7 +10,7 @@ use Yansongda\Supports\Collection;
 abstract class Gateway implements GatewayInterface
 {
     /**
-     * Config
+     * Config.
      *
      * @var Config
      */

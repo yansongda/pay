@@ -3,7 +3,6 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\Request;
-use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Supports\Collection;
 
 class TransferGateway extends Wechat
