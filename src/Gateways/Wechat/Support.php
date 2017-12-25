@@ -63,7 +63,7 @@ class Support
         $result = self::getInstance()->post(
             $endpoint,
             self::toXml($data),
-            ($certClient && $certKey) ? ['cert' => $certClient, 'ssl_key' => $certKey] : null
+            ($certClient !== null && $certKey !== null) ? ['cert' => $certClient, 'ssl_key' => $certKey] : []
         );
 
         $result = self::fromXml($result);
@@ -74,6 +74,7 @@ class Support
                 20000,
                 $result
             );
+
             return new Collection($result);
         }
 

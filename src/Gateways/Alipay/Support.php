@@ -90,7 +90,7 @@ class Support
     public static function generateSign($parmas, $privateKey = null): string
     {
         if (is_null($privateKey)) {
-            throw new InvalidConfigException('Missing Alipay Config -- [private_key]');
+            throw new InvalidConfigException('Missing Alipay Config -- [private_key]', 1);
         }
 
         if (Str::endsWith($privateKey, '.pem')) {
@@ -121,7 +121,7 @@ class Support
     public static function verifySign($data, $publicKey = null, $sync = false, $sign = null): bool
     {
         if (is_null($publicKey)) {
-            throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]');
+            throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]', 2);
         }
 
         if (Str::endsWith($publicKey, '.pem')) {
