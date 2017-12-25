@@ -178,13 +178,12 @@ class Support
      */
     public static function baseUri($mode = null): string
     {
-        switch ($region) {
+        switch ($mode) {
             case 'dev':
                 self::getInstance()->baseUri = 'https://openapi.alipaydev.com/gateway.do?charset=utf-8';
                 break;
-            
+
             default:
-                # code...
                 break;
         }
 

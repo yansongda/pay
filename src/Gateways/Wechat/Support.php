@@ -182,7 +182,7 @@ class Support
      */
     public static function baseUri($mode = null): string
     {
-        switch ($region) {
+        switch ($mode) {
             case 'dev':
                 self::getInstance()->baseUri = 'https://api.mch.weixin.qq.com/sandboxnew/';
                 break;
@@ -190,9 +190,8 @@ class Support
             case 'hk':
                 self::getInstance()->baseUri = 'https://apihk.mch.weixin.qq.com/';
                 break;
-            
+
             default:
-                # code...
                 break;
         }
 
