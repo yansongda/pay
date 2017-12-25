@@ -18,7 +18,7 @@ class AppGateway extends Gateway
      *
      * @return Response
      */
-    public function pay($endpoint, array $payload)
+    public function pay($endpoint, array $payload): Response
     {
         $payload['appid'] = $this->config->get('appid');
         $payload['trade_type'] = $this->getTradeType();
