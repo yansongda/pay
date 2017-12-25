@@ -56,24 +56,27 @@ class Support
      */
     public static function requestApi($data, $publicKey): Collection
     {
+        Log::debug('Request To Alipay Api', [self::baseUri(), $data]);
+
         $method = str_replace('.', '_', $data['method']).'_response';
 
         $data = json_decode(self::getInstance()->post('', $data), true);
 
-        if (!isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
-            throw new GatewayException(
-                'Get Alipay API Error:'.$data[$method]['msg'].' - '.$data[$method]['sub_code'],
-                $data[$method]['code'],
-                $data);
+        if (self::verifySign($data[$method], $publicKey, true, $data['sign'])) {
+            Log::warning('Alipay Sign Verify FAILED', $data);
+
+            throw new InvalidSignException('Alipay Sign Verify FAILED', 3, $data);
         }
 
-        if (self::verifySign($data[$method], $publicKey, true, $data['sign'])) {
+        if (isset($data[$method]['code']) && $data[$method]['code'] == '10000') {
             return new Collection($data[$method]);
         }
 
-        Log::warning('Alipay Sign Verify FAILED', $data);
-
-        throw new InvalidSignException('Alipay Sign Verify FAILED', 3, $data);
+        throw new GatewayException(
+            'Get Alipay API Error:'.$data[$method]['msg'].' - '.$data[$method]['sub_code'],
+            $data[$method]['code'],
+            $data
+        );
     }
 
     /**

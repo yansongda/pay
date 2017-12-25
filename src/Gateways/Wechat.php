@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Gateways;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
@@ -46,12 +47,14 @@ class Wechat implements GatewayApplicationInterface
         $this->gateway = Support::baseUri();
         $this->config = $config;
         $this->payload = [
-            'appid'      => $this->config->get('app_id', ''),
-            'mch_id'     => $this->config->get('mch_id', ''),
-            'nonce_str'  => Str::random(),
-            'sign_type'  => 'MD5',
-            'notify_url' => $this->config->get('notify_url', ''),
-            'trade_type' => '',
+            'appid'            => $this->config->get('app_id', ''),
+            'mch_id'           => $this->config->get('mch_id', ''),
+            'nonce_str'        => Str::random(),
+            'sign_type'        => 'MD5',
+            'notify_url'       => $this->config->get('notify_url', ''),
+            'sign'             => '',
+            'trade_type'       => '',
+            'spbill_create_ip' => Request::createFromGlobals()->getClientIp(),
         ];
     }
 
@@ -67,6 +70,8 @@ class Wechat implements GatewayApplicationInterface
      */
     public function pay($gateway, $params = [])
     {
+        $this->payload = array_merge($this->payload, $params);
+
         $gateway = get_class($this) . '\\' . Str::studly($gateway) . 'Gateway';
         
         if (class_exists($gateway)) {

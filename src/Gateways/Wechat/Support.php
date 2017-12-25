@@ -2,8 +2,12 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
+use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
+use Yansongda\Pay\Exceptions\InvalidSignException;
+use Yansongda\Pay\Log;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Traits\HasHttpRequest;
 
 class Support
@@ -40,9 +44,45 @@ class Support
         return self::$instance;
     }
 
-    public static function requestApi($endpoint, $data, $cert = null)
+    /**
+     * Request wechat api.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $endpoint
+     * @param array $data
+     * @param string $certClient
+     * @param string $certKey
+     *
+     * @return Collection
+     */
+    public static function requestApi($endpoint, $data, $certClient = null, $certKey = null): Collection
     {
-        # code...
+        Log::debug('Request To Wechat Api', [$endpoint, $data]);
+
+        $result = self::getInstance()->post(
+            $endpoint,
+            self::toXml($data),
+            ($certClient && $certKey) ? ['cert' => $certClient, 'ssl_key' => $certKey] : null
+        );
+
+        $result = self::fromXml($result);
+
+        if (self::generateSign($result) !== $result['sign']) {
+            Log::warning('Wechat Sign Verify FAILED', $result);
+
+            throw new InvalidSignException('Wechat Sign Verify FAILED', 3, $result);
+        }
+
+        if (isset($result['return_code']) && $result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
+            return new Collection($result);
+        }
+
+        throw new GatewayException(
+            'Get Wechat API Error:' . $result['return_msg'] . $result['err_code_des'] ?? '',
+            20000,
+            $result
+        );
     }
 
     /**
@@ -57,7 +97,7 @@ class Support
     public static function generateSign($data, $key = null): string
     {
         if (is_null($key)) {
-            throw new InvalidConfigException('Missing Wechat Config -- [key]');
+            throw new InvalidArgumentException('Missing Wechat Config -- [key]');
         }
 
         ksort($data);
@@ -99,7 +139,7 @@ class Support
     public static function toXml($data): string
     {
         if (!is_array($data) || count($data) <= 0) {
-            throw new InvalidArgumentException('Convert to xml error!Invalid array!');
+            throw new InvalidArgumentException('Convert To Xml Error! Invalid Array!');
         }
 
         $xml = '<xml>';
@@ -124,7 +164,7 @@ class Support
     public static function fromXml($xml): array
     {
         if (!$xml) {
-            throw new InvalidArgumentException('Convert to array error !Invalid xml');
+            throw new InvalidArgumentException('Convert To Array Error! Invalid Xml!');
         }
 
         libxml_disable_entity_loader(true);
