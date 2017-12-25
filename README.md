@@ -10,6 +10,9 @@
 <a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/license" alt="License"></a>
 </p>
 
+该文档为 v2.x 版本，如果您想找 v1.x 版本文档，请点击[https://github.com/yansongda/pay/tree/v1.x](https://github.com/yansongda/pay/tree/v1.x)
+
+
 开发了多次支付宝与微信支付后，很自然产生一种反感，惰性又来了，想在网上找相关的轮子，可是一直没有找到一款自己觉得逞心如意的，要么使用起来太难理解，要么文件结构太杂乱，只有自己撸起袖子干了。
 
 **说明，请先熟悉 支付宝/微信 说明文档！！**
@@ -66,7 +69,7 @@ QQ交流群：690027516
 - 普通红包
 - 分裂红包
 
-| gateway |   描述     |
+| method |   描述     |
 | :-----: | :-------: |
 | mp      | 公众号支付  |
 | miniapp | 小程序支付  |
