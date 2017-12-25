@@ -21,7 +21,7 @@ class AppGateway extends Gateway
     public function pay($endpoint, $payload): Response
     {
         $payload['appid'] = $this->config->get('appid');
-        
+
         $payRequest = [
             'appid'     => $payload['appid'],
             'partnerid' => $payload['mch_id'],
