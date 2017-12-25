@@ -18,6 +18,8 @@
 
 laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 
+QQ交流群：690027516
+
 ## 特点
 - 命名不那么乱七八糟
 - 隐藏开发者不需要关注的细节
