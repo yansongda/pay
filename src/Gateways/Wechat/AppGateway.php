@@ -20,9 +20,11 @@ class AppGateway extends Gateway
      */
     public function pay($endpoint, $payload): Response
     {
+        $payload['appid'] = $this->config->get('appid');
+        
         $payRequest = [
-            'appid'     => $this->config->get('appid'),
-            'partnerid' => $this->config->get('mch_id'),
+            'appid'     => $payload['appid'],
+            'partnerid' => $payload['mch_id'],
             'prepayid'  => $this->preOrder('pay/unifiedorder', $payload)->prepay_id,
             'timestamp' => strval(time()),
             'noncestr'  => Str::random(),

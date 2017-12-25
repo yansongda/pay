@@ -21,7 +21,7 @@ class MpGateway extends Gateway
     public function pay($endpoint, $payload): Collection
     {
         $payRequest = [
-            'appId'     => $this->config->get('app_id'),
+            'appId'     => $payload['appid'],
             'timeStamp' => strval(time()),
             'nonceStr'  => Str::random(),
             'package'   => 'prepay_id='.$this->preOrder('pay/unifiedorder', $payload)->prepay_id,

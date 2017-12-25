@@ -139,6 +139,11 @@ class Wechat implements GatewayApplicationInterface
      */
     public function refund($order): Collection
     {
+        if (isset($order['miniapp'])) {
+            $this->payload['appid'] = $this->config->get('miniapp_id');
+            unset($order['miniapp']);
+        }
+
         $this->payload = array_merge($this->payload, $order);
 
         unset($this->payload['notify_url'], $this->payload['trade_type']);
