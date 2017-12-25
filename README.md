@@ -208,8 +208,8 @@ class PayController extends Controller
         'mch_id' => '14577xxxx',
         'key' => 'mF2suE9sU6Mk1Cxxxxxxxxxxx',
         'notify_url' => 'http://yanda.net.cn/notify.php',
-        'cert_client' => './cert/apiclient_cert.pem',
-        'cert_key' => './cert/apiclient_key.pem',
+        'cert_client' => './cert/apiclient_cert.pem', // optional，退款等情况时用到
+        'cert_key' => './cert/apiclient_key.pem',// optional，退款等情况时用到
         'log' => [ // optional
             'file' => './logs/wechat.log',
             'level' => 'debug'
