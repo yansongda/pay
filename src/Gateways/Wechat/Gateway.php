@@ -3,7 +3,6 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Gateways\Wechat\Support;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
