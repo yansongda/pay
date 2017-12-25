@@ -7,7 +7,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Wechat\Support;
+use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
@@ -80,29 +82,109 @@ class Wechat implements GatewayApplicationInterface
         throw new GatewayException("Pay Gateway [{$gateway}] Not Exists", 1);
     }
 
-    public function verify()
+    /**
+     * Verify data.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return Collection
+     */
+    public function verify(): Collection
     {
-        # code...
+        $request = Request::createFromGlobals();
+
+        $data = Support::fromXml($request->getContent());
+
+        Log::debug('Receive Wechat Request:', $data);
+
+        if (Support::generateSign($data, $this->config->get('key')) === $data['sign']) {
+            return new Collection($data);
+        }
+
+        Log::warning('Wechat Sign Verify FAILED', $data);
+
+        throw new InvalidSignException('Wechat Sign Verify FAILED', 3, $data);
     }
 
-    public function find($order)
+    /**
+     * Query an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string|array $order
+     *
+     * @return Collection
+     */
+    public function find($order): Collection
     {
-        # code...
+        if (is_array($order)) {
+            $this->payload = array_merge($this->payload, $order);
+        } else {
+            $this->payload['out_trade_no'] = $order;
+        }
+
+        unset($this->payload['notify_url'], $this->payload['trade_type']);
+
+        return Support::requestApi('pay/orderquery', $this->payload);
     }
 
-    public function refund(array $order)
+    /**
+     * Refund an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param array $order
+     *
+     * @return Collection
+     */
+    public function refund($order): Collection
     {
-        # code...
+        $this->payload = array_merge($this->payload, $order);
+
+        unset($this->payload['notify_url'], $this->payload['trade_type']);
+
+        return Support::requestApi(
+            'secapi/pay/refund',
+            $this->payload,
+            $this->config->get('cert_client'),
+            $this->config->get('cert_key')
+        );
     }
 
-    public function cancel($order)
+    /**
+     * Cancel an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param array $order
+     *
+     * @return Collection
+     */
+    public function cancel($order): Collection
     {
-        # code...
+        throw new GatewayException("Wechat Do Not Have Cancel API! Plase use Close API!", 3);
     }
 
+    /**
+     * Close an order.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string|array $order
+     *
+     * @return Collection
+     */
     public function close($order)
     {
-        # code...
+        if (is_array($order)) {
+            $this->payload = array_merge($this->payload, $order);
+        } else {
+            $this->payload['out_trade_no'] = $order;
+        }
+
+        unset($this->payload['notify_url'], $this->payload['trade_type']);
+
+        return Support::requestApi('pay/closeorder',$this->payload);
     }
 
     /**

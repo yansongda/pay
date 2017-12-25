@@ -139,7 +139,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function refund(array $order): Collection
+    public function refund($order): Collection
     {
         $this->payload['method'] = 'alipay.trade.refund';
         $this->payload['biz_content'] = json_encode($order);

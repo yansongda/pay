@@ -36,7 +36,7 @@ interface GatewayApplicationInterface
      *
      * @return Yansongda\Supports\Collection
      */
-    public function refund(array $order);
+    public function refund($order);
 
     /**
      * Cancel an order.
