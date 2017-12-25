@@ -125,7 +125,9 @@ class Wechat implements GatewayApplicationInterface
 
         unset($this->payload['notify_url'], $this->payload['trade_type']);
 
-        return Support::requestApi('pay/orderquery', $this->payload);
+        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('key'));
+
+        return Support::requestApi('pay/orderquery', $this->payload, $this->config->get('key'));
     }
 
     /**
@@ -148,9 +150,12 @@ class Wechat implements GatewayApplicationInterface
 
         unset($this->payload['notify_url'], $this->payload['trade_type']);
 
+        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('key'));
+
         return Support::requestApi(
             'secapi/pay/refund',
             $this->payload,
+            $this->config->get('key'),
             $this->config->get('cert_client'),
             $this->config->get('cert_key')
         );
@@ -189,7 +194,9 @@ class Wechat implements GatewayApplicationInterface
 
         unset($this->payload['notify_url'], $this->payload['trade_type']);
 
-        return Support::requestApi('pay/closeorder', $this->payload);
+        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('key'));
+
+        return Support::requestApi('pay/closeorder', $this->payload, $this->config->get('key'));
     }
 
     /**
