@@ -240,6 +240,6 @@ class Wechat implements GatewayApplicationInterface
      */
     public function __call($method, $params)
     {
-        return self::pay($method, $params);
+        return self::pay($method, ...$params);
     }
 }

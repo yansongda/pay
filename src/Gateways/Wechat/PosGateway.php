@@ -16,7 +16,7 @@ class PosGateway extends Gateway
      *
      * @return Collection
      */
-    public function pay($endpoint, $payload): Collection
+    public function pay($endpoint, array $payload): Collection
     {
         unset($payload['trade_type'], $payload['notify_url']);
 

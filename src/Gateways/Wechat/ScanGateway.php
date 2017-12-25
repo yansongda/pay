@@ -17,9 +17,10 @@ class ScanGateway extends Gateway
      *
      * @return Collection
      */
-    public function pay($endpoint, $payload): Collection
+    public function pay($endpoint, array $payload): Collection
     {
         $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
+        $payload['trade_type'] = $this->getTradeType();
 
         return $this->preOrder('pay/unifiedorder', $payload);
     }

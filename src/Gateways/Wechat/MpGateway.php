@@ -18,8 +18,10 @@ class MpGateway extends Gateway
      *
      * @return Collection
      */
-    public function pay($endpoint, $payload): Collection
+    public function pay($endpoint, array $payload): Collection
     {
+        $payload['trade_type'] = $this->getTradeType();
+        
         $payRequest = [
             'appId'     => $payload['appid'],
             'timeStamp' => strval(time()),

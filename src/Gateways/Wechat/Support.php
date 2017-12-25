@@ -48,14 +48,15 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $endpoint
-     * @param array  $data
-     * @param string $certClient
-     * @param string $certKey
+     * @param string       $endpoint
+     * @param array        $data
+     * @param string|null  $key
+     * @param string       $certClient
+     * @param string       $certKey
      *
      * @return Collection
      */
-    public static function requestApi($endpoint, $data, $certClient = null, $certKey = null): Collection
+    public static function requestApi($endpoint, $data, $key = null, $certClient = null, $certKey = null): Collection
     {
         Log::debug('Request To Wechat Api', [self::baseUri().$endpoint, $data]);
 
@@ -67,21 +68,22 @@ class Support
 
         $result = self::fromXml($result);
 
-        if (self::generateSign($result) !== $result['sign']) {
-            Log::warning('Wechat Sign Verify FAILED', $result);
-
-            throw new InvalidSignException('Wechat Sign Verify FAILED', 3, $result);
-        }
-
-        if (isset($result['return_code']) && $result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
+        if (!isset($result['return_code']) || $result['return_code'] != 'SUCCESS' || $result['result_code'] != 'SUCCESS') {
+            throw new GatewayException(
+                'Get Wechat API Error:'.$result['return_msg'].($result['err_code_des'] ?? ''),
+                20000,
+                $result
+            );
             return new Collection($result);
         }
 
-        throw new GatewayException(
-            'Get Wechat API Error:'.$result['return_msg'].$result['err_code_des'] ?? '',
-            20000,
-            $result
-        );
+        if (self::generateSign($result, $key) === $result['sign']) {
+            return new Collection($result);
+        }
+
+        Log::warning('Wechat Sign Verify FAILED', $result);
+
+        throw new InvalidSignException('Wechat Sign Verify FAILED', 3, $result);
     }
 
     /**
@@ -96,7 +98,7 @@ class Support
     public static function generateSign($data, $key = null): string
     {
         if (is_null($key)) {
-            throw new InvalidArgumentException('Missing Wechat Config -- [key]');
+            throw new InvalidArgumentException('Missing Wechat Config -- [key]', 1);
         }
 
         ksort($data);
@@ -138,7 +140,7 @@ class Support
     public static function toXml($data): string
     {
         if (!is_array($data) || count($data) <= 0) {
-            throw new InvalidArgumentException('Convert To Xml Error! Invalid Array!');
+            throw new InvalidArgumentException('Convert To Xml Error! Invalid Array!', 2);
         }
 
         $xml = '<xml>';
@@ -163,7 +165,7 @@ class Support
     public static function fromXml($xml): array
     {
         if (!$xml) {
-            throw new InvalidArgumentException('Convert To Array Error! Invalid Xml!');
+            throw new InvalidArgumentException('Convert To Array Error! Invalid Xml!', 3);
         }
 
         libxml_disable_entity_loader(true);

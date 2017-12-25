@@ -18,9 +18,10 @@ class AppGateway extends Gateway
      *
      * @return Response
      */
-    public function pay($endpoint, $payload): Response
+    public function pay($endpoint, array $payload)
     {
         $payload['appid'] = $this->config->get('appid');
+        $payload['trade_type'] = $this->getTradeType();
 
         $payRequest = [
             'appid'     => $payload['appid'],
@@ -30,7 +31,7 @@ class AppGateway extends Gateway
             'noncestr'  => Str::random(),
             'package'   => 'Sign=WXPay',
         ];
-        $payRequest['sign'] = Support::generateSign($payRequest);
+        $payRequest['sign'] = Support::generateSign($payRequest, $this->config->get('key'));
 
         Log::debug('Paying An App Order:', [$endpoint, $payRequest]);
 

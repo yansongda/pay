@@ -17,7 +17,7 @@ class GroupRedpackGateway extends Wechat
      *
      * @return Collection
      */
-    public function pay($endpoint, $payload): Collection
+    public function pay($endpoint, array $payload): Collection
     {
         $payload['wxappid'] = $payload['appid'];
         $payload['amt_type'] = 'ALL_RAND';
@@ -29,6 +29,7 @@ class GroupRedpackGateway extends Wechat
         return Support::requestApi(
             'mmpaymkttransfers/sendgroupredpack',
             $payload,
+            $this->config->get('key'),
             $this->config->get('cert_client'),
             $this->config->get('cert_key')
         );

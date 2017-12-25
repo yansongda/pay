@@ -20,7 +20,7 @@ class InvalidSignException extends Exception
      * @param int|string   $code
      * @param array|string $raw
      */
-    public function __construct($message, $code, $raw)
+    public function __construct($message, $code, $raw = '')
     {
         parent::__construct($message, intval($code));
 

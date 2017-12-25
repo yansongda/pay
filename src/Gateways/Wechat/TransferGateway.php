@@ -17,7 +17,7 @@ class TransferGateway extends Wechat
      *
      * @return Collection
      */
-    public function pay($endpoint, $payload): Collection
+    public function pay($endpoint, array $payload): Collection
     {
         $payload['mch_appid'] = $payload['appid'];
         $payload['mchid'] = $payload['mch_id'];
@@ -30,6 +30,7 @@ class TransferGateway extends Wechat
         return Support::requestApi(
             'mmpaymkttransfers/promotion/transfers',
             $payload,
+            $this->config->get('key'),
             $this->config->get('cert_client'),
             $this->config->get('cert_key')
         );

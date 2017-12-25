@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Config;
 
 abstract class Gateway implements GatewayInterface
 {
@@ -37,7 +38,7 @@ abstract class Gateway implements GatewayInterface
      *
      * @return Collection
      */
-    abstract public function pay($endpoint, $payload);
+    abstract public function pay($endpoint, array $payload);
 
     /**
      * Get trade type config.
@@ -59,11 +60,10 @@ abstract class Gateway implements GatewayInterface
      */
     protected function preOrder($endpoint, $payload): Collection
     {
-        $payload['trade_type'] = $this->getTradeType();
-        $payload['sign'] = Support::generateSign($payload, $this->config->get('sign'));
+        $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
 
         Log::debug('Pre Order:', [$endpoint, $payload]);
 
-        return Support::requestApi($endpoint, $payload);
+        return Support::requestApi($endpoint, $payload, $this->config->get('key'));
     }
 }

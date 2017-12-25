@@ -17,7 +17,7 @@ class RedpackGateway extends Wechat
      *
      * @return Collection
      */
-    public function pay($endpoint, $payload): Collection
+    public function pay($endpoint, array $payload): Collection
     {
         $payload['wxappid'] = $payload['appid'];
         $payload['client_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
@@ -29,6 +29,7 @@ class RedpackGateway extends Wechat
         return Support::requestApi(
             'mmpaymkttransfers/sendredpack',
             $payload,
+            $this->config->get('key'),
             $this->config->get('cert_client'),
             $this->config->get('cert_key')
         );
