@@ -49,7 +49,7 @@ class TransferGateway implements GatewayInterface
 
         Log::debug('Paying a transfer order:', [$endpoint, $payload]);
 
-        return Support::getApiResult($payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($payload, $this->config->get('ali_public_key'));
     }
 
     /**

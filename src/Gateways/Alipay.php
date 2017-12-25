@@ -127,7 +127,7 @@ class Alipay implements GatewayApplicationInterface
 
         Log::debug('Find an order:', [$this->gateway, $this->payload]);
 
-        return Support::getApiResult($this->payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
     }
 
     /**
@@ -147,7 +147,7 @@ class Alipay implements GatewayApplicationInterface
 
         Log::debug('Refund an order:', [$this->gateway, $this->payload]);
 
-        return Support::getApiResult($this->payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
     }
 
     /**
@@ -167,7 +167,7 @@ class Alipay implements GatewayApplicationInterface
 
         Log::debug('Cancel an order:', [$this->gateway, $this->payload]);
 
-        return Support::getApiResult($this->payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
     }
 
     /**
@@ -187,7 +187,7 @@ class Alipay implements GatewayApplicationInterface
 
         Log::debug('Close an order:', [$this->gateway, $this->payload]);
 
-        return Support::getApiResult($this->payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
     }
 
     /**

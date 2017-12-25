@@ -52,7 +52,7 @@ class PosGateway implements GatewayInterface
 
         Log::debug('Paying a pos order:', [$endpoint, $payload]);
 
-        return Support::getApiResult($payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($payload, $this->config->get('ali_public_key'));
     }
 
     /**

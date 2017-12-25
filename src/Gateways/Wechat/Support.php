@@ -40,7 +40,7 @@ class Support
         return self::$instance;
     }
 
-    public static function getApiResult()
+    public static function requestApi()
     {
         # code...
     }

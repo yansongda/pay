@@ -54,7 +54,7 @@ class Support
      *
      * @return Collection
      */
-    public static function getApiResult($data, $publicKey): Collection
+    public static function requestApi($data, $publicKey): Collection
     {
         $method = str_replace('.', '_', $data['method']).'_response';
 
@@ -71,9 +71,9 @@ class Support
             return new Collection($data[$method]);
         }
 
-        Log::warning('Alipay sign verify failed:', $data);
+        Log::warning('Alipay Sign Verify FAILED', $data);
 
-        throw new InvalidSignException('Alipay Sign verify FAILED', 3, $data);
+        throw new InvalidSignException('Alipay Sign Verify FAILED', 3, $data);
     }
 
     /**
