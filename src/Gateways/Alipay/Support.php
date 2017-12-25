@@ -26,7 +26,7 @@ class Support
      *
      * @var string
      */
-    protected $baseUri = 'https://openapi.alipay.com/gateway.do?charset=utf-8';
+    protected $baseUri = 'https://openapi.alipay.com/gateway.do';
 
     /**
      * Get instance.
@@ -60,7 +60,8 @@ class Support
 
         $method = str_replace('.', '_', $data['method']).'_response';
 
-        $data = json_decode(self::getInstance()->post('', $data), true);
+        $data = mb_convert_encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
+        $data = json_decode($data, true);
 
         if (!self::verifySign($data[$method], $publicKey, true, $data['sign'])) {
             Log::warning('Alipay Sign Verify FAILED', $data);
@@ -133,7 +134,7 @@ class Support
 
         $sign = $sign ?? $data['sign'];
 
-        $toVerify = $sync ? json_encode($data) : self::getSignContent($data, true);
+        $toVerify = $sync ? mb_convert_encoding(json_encode($data, JSON_UNESCAPED_UNICODE), 'gb2312', 'utf-8') : self::getSignContent($data, true);
 
         return openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
     }
@@ -180,7 +181,7 @@ class Support
     {
         switch ($mode) {
             case 'dev':
-                self::getInstance()->baseUri = 'https://openapi.alipaydev.com/gateway.do?charset=utf-8';
+                self::getInstance()->baseUri = 'https://openapi.alipaydev.com/gateway.do';
                 break;
 
             default:
