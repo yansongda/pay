@@ -50,7 +50,6 @@ class Wechat implements GatewayApplicationInterface
             'appid'            => $this->config->get('app_id', ''),
             'mch_id'           => $this->config->get('mch_id', ''),
             'nonce_str'        => Str::random(),
-            'sign_type'        => 'MD5',
             'notify_url'       => $this->config->get('notify_url', ''),
             'sign'             => '',
             'trade_type'       => '',

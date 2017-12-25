@@ -58,7 +58,7 @@ class Support
      */
     public static function requestApi($endpoint, $data, $certClient = null, $certKey = null): Collection
     {
-        Log::debug('Request To Wechat Api', [$endpoint, $data]);
+        Log::debug('Request To Wechat Api', [self::baseUri() . $endpoint, $data]);
 
         $result = self::getInstance()->post(
             $endpoint,

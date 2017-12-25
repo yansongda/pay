@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Supports\Collection;
 
-class TransferGateway extends Wechat
+class GroupRedpackGateway extends Wechat
 {
     /**
      * Pay an order.
@@ -20,16 +20,15 @@ class TransferGateway extends Wechat
      */
     public function pay($endpoint, $payload): Collection
     {
-        $payload['mch_appid'] = $payload['appid'];
-        $payload['mchid'] = $payload['mch_id'];
-        $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
+        $payload['wxappid'] = $payload['appid'];
+        $payload['amt_type'] = 'ALL_RAND';
 
-        unset($payload['appid'], $payload['mch_id'], $payload['trade_type'], $payload['notify_url']);
+        unset($payload['appid'], $payload['trade_type'], $payload['notify_url'], $payload['spbill_create_ip']);
 
-        Log::debug('Paying A Transfer Order:', [$endpoint, $payload]);
+        Log::debug('Paying A Groupredpack Order:', [$endpoint, $payload]);
 
         return Support::requestApi(
-            'mmpaymkttransfers/promotion/transfers',
+            'mmpaymkttransfers/sendgroupredpack',
             $payload,
             $this->config->get('cert_client'),
             $this->config->get('cert_key')
