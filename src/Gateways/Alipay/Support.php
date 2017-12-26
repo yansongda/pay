@@ -6,6 +6,7 @@ use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Log;
+use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 use Yansongda\Supports\Traits\HasHttpRequest;
