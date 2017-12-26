@@ -190,7 +190,7 @@ class PayController extends Controller
             // $e->getMessage();
         }
 
-        return $alipay->success()->send();
+        return $alipay->success()->send();// laravel 框架中请直接 `return $alipay->success()`
     }
 }
 ```
@@ -252,7 +252,7 @@ class PayController extends Controller
             // $e->getMessage();
         }
         
-        return $pay->success()->send();// laravel 框架中请直接 `return $alipay`
+        return $pay->success()->send();// laravel 框架中请直接 `return $pay->success()`
     }
 }
 ```
