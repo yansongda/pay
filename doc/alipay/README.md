@@ -2,8 +2,6 @@
 
 **请先熟悉 支付宝支付 开发文档！**
 
-
-
 # QuickReference
 
 ```php
@@ -58,9 +56,11 @@ $alipay = Pay::alipay($config)->close('out_trade_no_123456'); // 返回 `Yansong
 $alipay = Pay::alipay($config)
 $data = $alipay->verify(); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$data->xxx` 访问服务器返回的数据。
 $alipay->success()->send(); // 向支付宝服务器确认接收到的数据。laravel 框架中请直接 `return $alipay->success()`
-
-
 ```
 
 
+
+# 注意
+
+后续文档中，如果没有特别说明， `$alipay` 均代表`Pay::alipay($config)`
 
