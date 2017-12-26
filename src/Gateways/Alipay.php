@@ -10,6 +10,7 @@ use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Alipay\Support;
 use Yansongda\Pay\Log;
+use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
@@ -98,6 +99,8 @@ class Alipay implements GatewayApplicationInterface
         $request = Request::createFromGlobals();
 
         $data = $request->request->count() > 0 ? $request->request->all() : $request->query->all();
+
+        $data = Arr::encoding($data, 'utf-8', 'gb2312');
 
         Log::debug('Receive Alipay Request:', $data);
 
