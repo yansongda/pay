@@ -16,5 +16,5 @@
   * [取消](doc/wechat/cancel.md)
   * [关闭](doc/wechat/close.md)
   * [验证服务器数据](doc/wechat/verify.md)
-  * 向微信服务器确认收到异步通知
+  * [向微信服务器确认收到异步通知](doc/wechat/echoSuccess.md)
 

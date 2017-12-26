@@ -3,10 +3,10 @@
 支付宝支付目前支持 6 中支付方法，对应的支付 method 如下：
 
 | method | 说明 | 参数 | 返回值 |
-| :--- | :--- | :---: | :--- |
+| :---: | :---: | :---: | :---: |
 | web | 电脑支付 | array $order | Response |
 | wap | 手机网站支付 | array $order | Response |
-| app | APP 支付 | array $order | JsonResponse |
+| app | APP 支付 | array $order | Response |
 | pos | 刷卡支付 | array $order | Collection |
 | scan | 扫码支付 | array $order | Collection |
 | transfer | 账户转账 | array $order | Collection |
@@ -64,7 +64,7 @@ $order = [
     'subject'      => 'test subject-测试订单',
 ];
 
-// 将返回 json 格式，供后续 APP 调用，调用方式不在本文档讨论范围内，请参考官方文档。
+// 将返回字符串，供后续 APP 调用，调用方式不在本文档讨论范围内，请参考官方文档。
 return $alipay->app($order)->send(); // laravel 框架中请直接 return $alipay->app($order)
 ```
 
