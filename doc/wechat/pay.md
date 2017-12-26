@@ -38,7 +38,7 @@ $result = Pay::wechat($config)->mp($order);
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1)，查看「请求参数一栏」。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1)，查看「请求参数」一栏。
 
 ## 二、手机网站支付
 
@@ -58,7 +58,7 @@ return $wechat->wap($order)->send(); // laravel 框架中请直接 return $wecha
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_20&index=1)，查看「请求参数一栏」。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/H5.php?chapter=9_20&index=1)，查看「请求参数」一栏。
 
 ## 三、APP 支付
 
@@ -80,7 +80,7 @@ return $wechat->app($order)->send(); // laravel 框架中请直接 return $wecha
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1)，查看「请求参数一栏」。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1)，查看「请求参数」一栏。
 
 ## 四、刷卡支付
 
@@ -101,7 +101,7 @@ $result = $wechat->pos($order);
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1)，查看「请求参数一栏」。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1)，查看「请求参数」一栏。
 
 ## 五、扫码支付
 
@@ -123,7 +123,7 @@ $result = $wechat->scan($order);
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1)，查看「请求参数一栏」。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1)，查看「请求参数」一栏。
 
 ## 六、账户转账
 
@@ -146,7 +146,7 @@ $result = $wechat->transfer($order);
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2)，查看「请求参数一栏」。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2)，查看「请求参数」一栏。
 
 ## 七、小程序
 
@@ -170,7 +170,7 @@ $result = $wechat->miniapp($order);
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1)，查看「请求参数一栏」。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1)，查看「请求参数」一栏。
 
 ## 八、普通红包
 
@@ -195,7 +195,7 @@ $result = $wechat->redpack($order);
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_4&index=3)，查看「请求参数一栏」。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_4&index=3)，查看「请求参数」一栏。
 
 ## 九、裂变红包
 
@@ -220,7 +220,7 @@ $result = $wechat->groupRedpack($order);
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_5&index=4)，查看「请求参数一栏」。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_5&index=4)，查看「请求参数」一栏。
 
 # 返回值
 

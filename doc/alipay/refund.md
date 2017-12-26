@@ -19,7 +19,7 @@ $result = $alipay->refund($order);
 
 ## 订单配置参数
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://docs.open.alipay.com/api_1/alipay.trade.refund)，查看「请求参数一栏」。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://docs.open.alipay.com/api_1/alipay.trade.refund)，查看「请求参数」一栏。
 
 # 返回值
 
