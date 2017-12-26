@@ -14,7 +14,7 @@
   * [取消](doc/alipay/cancel.md)
   * [关闭](doc/alipay/close.md)
   * [验证服务器数据](doc/alipay/verify.md)
-  * [向支付宝服务器确认收到异步通知](doc/alipay/echoSuccess.md)
+  * [向支付宝服务器确认收到异步通知](doc/alipay/success.md)
 * [微信](doc/wechat/README.md)
   * [支付](doc/wechat/pay.md)
     * [公众号支付](/doc/wechat/pay.md#一、公众号支付)
@@ -31,5 +31,6 @@
   * [取消](doc/wechat/cancel.md)
   * [关闭](doc/wechat/close.md)
   * [验证服务器数据](doc/wechat/verify.md)
-  * [向微信服务器确认收到异步通知](doc/wechat/echoSuccess.md)
+  * [向微信服务器确认收到异步通知](doc/wechat/success.md)
+* [其它功能](doc/OTHERS.md)
 
