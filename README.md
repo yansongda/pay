@@ -117,7 +117,7 @@ SDK 中对应的 driver 和 gateway 如下表所示：
 
 ## 安装
 ```shell
-composer require yansongda/pay
+composer require "yansongda/pay:^1.0"
 ```
 
 ## 使用说明
