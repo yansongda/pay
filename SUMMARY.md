@@ -8,6 +8,7 @@
   * [取消](doc/alipay/cancel.md)
   * [关闭](doc/alipay/close.md)
   * [验证服务器数据](doc/alipay/verify.md)
+  * [异步通知成功后返回给支付宝服务器](doc/alipay/echoSuccess.md)
 * [微信](doc/wechat/README.md)
   * [支付](doc/wechat/pay.md)
   * [退款](doc/wechat/refund.md)

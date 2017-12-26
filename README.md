@@ -164,7 +164,7 @@ class PayController extends Controller
 
     public function return()
     {
-        $data = Pay::alipay($this->config)->verify();
+        $data = Pay::alipay($this->config)->verify(); // 是的，验签就这么简单！
 
         // 订单号：$data->out_trade_no
         // 支付宝交易号：$data->trade_no
@@ -176,7 +176,7 @@ class PayController extends Controller
         $alipay = Pay::alipay($this->config);
     
         try{
-            $data = $alipay->verify();
+            $data = $alipay->verify(); // 是的，验签就这么简单！
 
             // 请自行对 trade_status 进行判断及其它逻辑进行判断，在支付宝的业务通知中，只有交易通知状态为 TRADE_SUCCESS 或 TRADE_FINISHED 时，支付宝才会认定为买家付款成功。
             // 1、商户需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号；
@@ -245,7 +245,7 @@ class PayController extends Controller
         $pay = Pay::wechat($this->config);
 
         try{
-            $data = $pay->verify();
+            $data = $pay->verify(); // 是的，验签就这么简单！
 
             Log::debug('Wechat notify', $data);
         } catch (Exception $e) {

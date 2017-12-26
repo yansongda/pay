@@ -2,14 +2,15 @@
 
 | 方法名 | 参数 | 返回值 |
 | :---: | :---: | :---: |
-| verify | 无 | Collection |
+| success | 无 | Response |
 
 # 使用方法
 
 ```php
-$result = $alipay->verify();
 
-// return $alipay->success()->send(); // laravel 框架直接 return $alipay->success();
+// $result = $alipay->verify();
+
+return $alipay->success()->send(); // laravel 框架直接 return $alipay->success();
 ```
 
 ## 订单配置参数
@@ -18,7 +19,7 @@ $result = $alipay->verify();
 
 # 返回值
 
-返回 Collection 类型，可以通过 `$collection->xxx` 得到服务器返回的数据。
+返回 Response 类型，可以通过` return $response->send();` 进行返回；如果在 laravel 框架中，可直接 `return $response;`
 
 # 异常
 
