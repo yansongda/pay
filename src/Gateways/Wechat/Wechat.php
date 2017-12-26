@@ -92,8 +92,12 @@ abstract class Wechat implements GatewayInterface
      */
     public function refund($config_biz = [])
     {
+        if (isset($config_biz['miniapp'])) {
+            $this->config['appid'] = $this->user_config->get('miniapp_id');
+            unset($config_biz['miniapp']);
+        }
+
         $this->config = array_merge($this->config, $config_biz);
-        $this->config['op_user_id'] = isset($this->config['op_user_id']) ?: $this->user_config->get('mch_id', '');
 
         $this->unsetTradeTypeAndNotifyUrl();
 
