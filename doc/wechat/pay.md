@@ -125,7 +125,7 @@ $result = $wechat->scan($order);
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/native.php?chapter=9_1)，查看「请求参数一栏」。
 
-## 六、转账
+## 六、账户转账
 
 ### 例子
 
