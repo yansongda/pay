@@ -148,6 +148,80 @@ $result = $wechat->transfer($order);
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2)，查看「请求参数一栏」。
 
+## 七、小程序
+
+### 例子
+
+```php
+$order = [
+    'out_trade_no' => time(),
+    'body' => 'subject-测试',
+    'total_fee' => '1',
+    'openid' => 'onkVf1FjWS5SBxxxxxxxx',
+];
+
+$result = $wechat->miniapp($order);
+// 返回 Collection 实例。包含了调用 JSAPI 的所有参数，如appId，timeStamp，nonceStr，package，signType，paySign 等；
+// 可直接通过 $result->appId, $result->timeStamp 获取相关值。
+// 后续调用不在本文档讨论范围内，请自行参考官方文档。
+```
+
+### 订单配置参数
+
+**所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
+
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1)，查看「请求参数一栏」。
+
+## 八、普通红包
+
+### 例子
+
+```php
+$order = [
+    'mch_billno' => '商户订单号',
+    'send_name' => '商户名称',
+    'total_amount' => '1',
+    're_openid' => '用户openid',
+    'total_num' => '1',
+    'wishing' => '祝福语',
+    'act_name' => '活动名称',
+    'remark' => '备注',
+];
+
+$result = $wechat->redpack($order);
+```
+
+### 订单配置参数
+
+**所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
+
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_4&index=3)，查看「请求参数一栏」。
+
+## 九、裂变红包
+
+### 例子
+
+```php
+$order = [
+    'mch_billno' => '商户订单号',
+    'send_name' => '商户名称',
+    'total_amount' => '1',
+    're_openid' => '用户openid',
+    'total_num' => '3',
+    'wishing' => '祝福语',
+    'act_name' => '活动名称',
+    'remark' => '备注',
+];
+
+$result = $wechat->groupRedpack($order);
+```
+
+### 订单配置参数
+
+**所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
+
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_5&index=4)，查看「请求参数一栏」。
+
 # 返回值
 
 **各支付方法返回值请参考「支持的支付方法」一节。**

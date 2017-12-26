@@ -185,7 +185,7 @@ class PayController extends Controller
             // 4、验证app_id是否为该商户本身。
             // 5、其它业务逻辑情况
 
-            Log::debug('Alipay notify', $data);
+            Log::debug('Alipay notify', $data->all());
         } catch (Exception $e) {
             // $e->getMessage();
         }
@@ -247,7 +247,7 @@ class PayController extends Controller
         try{
             $data = $pay->verify(); // 是的，验签就这么简单！
 
-            Log::debug('Wechat notify', $data);
+            Log::debug('Wechat notify', $data->all());
         } catch (Exception $e) {
             // $e->getMessage();
         }
