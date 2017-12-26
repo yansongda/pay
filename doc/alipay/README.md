@@ -32,24 +32,24 @@ $alipay = Pay::alipay($config)->web($order);
 return $alipay->send();// laravel 框架中请直接 `return $alipay`
 
 // 退款
-$refund = [
+$order = [
     'out_trade_no' => '1514027114',
     'refund_amount' => '0.01',
 ];
 
-$alipay = Pay::alipay($config)->refund($order); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$alipay->xxx` 访问服务器返回的数据。
+$result = Pay::alipay($config)->refund($order); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
 
 
 // 查询
-$alipay = Pay::alipay($config)->find('out_trade_no_123456'); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$alipay->xxx` 访问服务器返回的数据。
+$result = Pay::alipay($config)->find('out_trade_no_123456'); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
 
 
 // 取消
-$alipay = Pay::alipay($config)->cancel('out_trade_no_123456'); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$alipay->xxx` 访问服务器返回的数据。
+$result = Pay::alipay($config)->cancel('out_trade_no_123456'); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
 
 
 // 关闭
-$alipay = Pay::alipay($config)->close('out_trade_no_123456'); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$alipay->xxx` 访问服务器返回的数据。
+$result = Pay::alipay($config)->close('out_trade_no_123456'); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
 
 
 // 验证服务器数据

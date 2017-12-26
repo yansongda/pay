@@ -8,6 +8,7 @@
 
 ```php
 $result = $alipay->verify();
+// 是的，你没有看错，就是这么简单！
 
 // return $alipay->success()->send(); // laravel 框架直接 return $alipay->success();
 ```
