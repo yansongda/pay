@@ -134,7 +134,8 @@ class Support
 
         $sign = $sign ?? $data['sign'];
 
-        $toVerify = $sync ? mb_convert_encoding(json_encode($data, JSON_UNESCAPED_UNICODE), 'gb2312', 'utf-8') : self::getSignContent($data, true);
+        $toVerify = $sync ? mb_convert_encoding(json_encode($data, JSON_UNESCAPED_UNICODE), 'gb2312', 'utf-8') :
+                            self::getSignContent(Arr::encoding($data, 'gb2312', 'utf-8'), true);
 
         return openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
     }
