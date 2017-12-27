@@ -8,9 +8,9 @@
 use Yansongda\Pay\Pay;
 
 $config = [
-    'appid' => 'wxb3f6d0xxxxx',
-    'app_id' => 'wxb3f6d06xxxxx',
-    'miniapp_id' => 'wxb3f6d0xxxxx',
+    'appid' => 'wxb3fxxxxxxxxxxx', // APP APPID
+    'app_id' => 'wxb3fxxxxxxxxxxx', // 公众号 APPID
+    'miniapp_id' => 'wxb3fxxxxxxxxxxx', // 小程序 APPID
     'mch_id' => '145776xxxx',
     'key' => 'mF2suE9sU6Mk1CxxxxIxxxxx',
     'notify_url' => 'http://yanda.net.cn',

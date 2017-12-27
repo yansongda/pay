@@ -207,9 +207,9 @@ use Yansongda\Pay\Log;
 class PayController extends Controller
 {
     protected $config = [
-        'appid' => 'wxb3fxxxxxxxxxxx',
-        'app_id' => 'wxb3fxxxxxxxxxxx',
-        'miniapp_id' => 'wxb3fxxxxxxxxxxx',
+        'appid' => 'wxb3fxxxxxxxxxxx', // APP APPID
+        'app_id' => 'wxb3fxxxxxxxxxxx', // 公众号 APPID
+        'miniapp_id' => 'wxb3fxxxxxxxxxxx', // 小程序 APPID
         'mch_id' => '14577xxxx',
         'key' => 'mF2suE9sU6Mk1Cxxxxxxxxxxx',
         'notify_url' => 'http://yanda.net.cn/notify.php',
