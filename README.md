@@ -240,7 +240,7 @@ class PayController extends Controller
         // $pay->signType
     }
 
-    public function notify(Request $request)
+    public function notify()
     {
         $pay = Pay::wechat($this->config);
 
