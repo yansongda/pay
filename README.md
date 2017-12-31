@@ -99,7 +99,7 @@ QQ交流群：690027516
 - cancel(array/string $order)  
 说明：取消订单接口  
 参数：`$order` 为 `string` 类型时，请传入系统订单号，对应支付宝或微信中的 `out_trade_no`； `array` 类型时，参数请参考支付宝或微信官方文档。    
-返回：取消成功，返回 `Yansongda\Supports\Collection` 实例，可以通过 `$colletion->xxx` 或 `$collection['xxx']` 访问服务器返回的数据。
+返回：取消成功，返回 `Yansongda\Supports\Collection` 实例，可以通过 `$colletion->xxx` 或 `$collection['xxx']` 访问服务器返回的数据。  
 异常：`GatewayException` 或 `InvalidSignException`
 
 - close(array/string $order)  
