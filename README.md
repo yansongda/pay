@@ -110,7 +110,6 @@ QQ交流群：690027516
 
 - verify()  
 说明：验证服务器返回消息是否合法  
-加密方式： **RSA2**  
 返回：验证成功，返回 `Yansongda\Supports\Collection` 实例，可以通过 `$colletion->xxx` 或 `$collection['xxx']` 访问服务器返回的数据。  
 异常：`GatewayException` 或 `InvalidSignException`  
 
