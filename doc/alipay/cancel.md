@@ -2,7 +2,7 @@
 
 | 方法名 | 参数 | 返回值 |
 | :---: | :---: | :---: |
-| cancel | string\|array $order | Collection |
+| cancel | string/array $order | Collection |
 
 # 使用方法
 
