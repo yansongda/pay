@@ -25,6 +25,7 @@ class PayTest extends TestCase
     public function testFooGateway()
     {
         $this->expectException(GatewayException::class);
+        $this->expectExceptionMessage('Gateway [foo] Not Exists');
 
         $foo = Pay::foo([]);
     }
