@@ -100,7 +100,9 @@ class Alipay implements GatewayApplicationInterface
 
         $data = $request->request->count() > 0 ? $request->request->all() : $request->query->all();
 
-        $data = (!isset($data['charset']) || $data['charset'] != 'utf-8') ? Arr::encoding($data, 'utf-8', 'gb2312') : $data;
+        if (!isset($data['charset']) || $data['charset'] != 'utf-8') {
+            $data = Arr::encoding($data, 'utf-8', 'gb2312');
+        }
 
         Log::debug('Receive Alipay Request:', $data);
 
