@@ -61,7 +61,7 @@ class Support
 
         $method = str_replace('.', '_', $data['method']).'_response';
 
-        $data = mb_convert_encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
+        $data = self::encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
         $data = json_decode($data, true);
 
         if (!self::verifySign($data[$method], $publicKey, true, $data['sign'])) {
@@ -135,9 +135,9 @@ class Support
 
         $sign = $sign ?? $data['sign'];
 
-        $toVerify = $sync ? mb_convert_encoding(json_encode($data, JSON_UNESCAPED_UNICODE), 'gb2312', 'utf-8') :
+        $toVerify = $sync ? self::encoding(json_encode($data, JSON_UNESCAPED_UNICODE), 'gb2312', 'utf-8') :
                             self::getSignContent(
-                                (!isset($data['charset']) || $data['charset'] != 'utf-8') ? Arr::encoding($data, 'gb2312', 'utf-8') : $data,
+                                self::encoding($data, 'gb2312', 'utf-8'),
                                 true
                             );
 
@@ -168,9 +168,30 @@ class Support
             }
         }
         $stringToBeSigned = substr($stringToBeSigned, 0, -1);
-        unset($k, $v);
 
         return $stringToBeSigned;
+    }
+
+    /**
+     * Convert encoding.
+     *
+     * @author yansongda <me@yansonga.cn>
+     *
+     * @param string|array $data
+     * @param string       $to
+     * @param string       $from
+     *
+     * @return string|array
+     */
+    public static function encoding($data, $to = 'utf-8', $from = 'gb2312')
+    {
+        if (is_string($data)) {
+            $data = Str::encoding($data, $to, $from);
+        } elseif (is_array($data) && (!isset($data['charset']) || $data['charset'] != 'utf-8')) {
+            $data = Arr::encoding($data, $to, $from);
+        }
+
+        return $data;
     }
 
     /**
