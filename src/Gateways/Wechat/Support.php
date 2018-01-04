@@ -74,8 +74,6 @@ class Support
                 20000,
                 $result
             );
-
-            return new Collection($result);
         }
 
         if (self::generateSign($result, $key) === $result['sign']) {
