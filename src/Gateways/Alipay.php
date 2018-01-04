@@ -100,7 +100,7 @@ class Alipay implements GatewayApplicationInterface
 
         $data = $request->request->count() > 0 ? $request->request->all() : $request->query->all();
 
-        $data = Arr::encoding($data, 'utf-8', 'gb2312');
+        $data = (!isset($data['charset']) || $data['charset'] != 'utf-8') ? Arr::encoding($data, 'utf-8', 'gb2312') : $data;
 
         Log::debug('Receive Alipay Request:', $data);
 
@@ -108,9 +108,9 @@ class Alipay implements GatewayApplicationInterface
             return new Collection($data);
         }
 
-        Log::warning('Alipay Sign verify FAILED', $data);
+        Log::warning('Alipay Sign Verify FAILED', $data);
 
-        throw new InvalidSignException('Alipay Sign verify FAILED', 3, $data);
+        throw new InvalidSignException('Alipay Sign Verify FAILED', 3, $data);
     }
 
     /**
