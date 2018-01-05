@@ -55,29 +55,29 @@ class Support
      *
      * @return Collection
      */
-    public static function requestApi($data, $publicKey): Collection
+    public static function requestApi(array $data, $publicKey): Collection
     {
-        Log::debug('Request To Alipay Api', [self::baseUri(), $data]);
+        Log::debug('Request To Alipay Api', [self::getInstance()->baseUri(), $data]);
 
         $method = str_replace('.', '_', $data['method']).'_response';
 
-        $data = self::encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
-        $data = json_decode($data, true);
+        $result = self::encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
+        $result = json_decode($result, true);
 
-        if (!self::verifySign($data[$method], $publicKey, true, $data['sign'])) {
-            Log::warning('Alipay Sign Verify FAILED', $data);
+        if (!self::verifySign($result[$method], $publicKey, true, $result['sign'])) {
+            Log::warning('Alipay Sign Verify FAILED', $result);
 
-            throw new InvalidSignException('Alipay Sign Verify FAILED', 3, $data);
+            throw new InvalidSignException('Alipay Sign Verify FAILED', 3, $result);
         }
 
-        if (isset($data[$method]['code']) && $data[$method]['code'] == '10000') {
-            return new Collection($data[$method]);
+        if (isset($result[$method]['code']) && $result[$method]['code'] == '10000') {
+            return new Collection($result[$method]);
         }
 
         throw new GatewayException(
-            'Get Alipay API Error:'.$data[$method]['msg'].' - '.$data[$method]['sub_code'],
-            $data[$method]['code'],
-            $data
+            'Get Alipay API Error:'.$result[$method]['msg'].' - '.$result[$method]['sub_code'],
+            $result[$method]['code'],
+            $result
         );
     }
 
@@ -86,9 +86,12 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @param array  $parmas
+     * @param string $privateKey
+     *
      * @return string
      */
-    public static function generateSign($parmas, $privateKey = null): string
+    public static function generateSign(array $parmas, $privateKey = null): string
     {
         if (is_null($privateKey)) {
             throw new InvalidConfigException('Missing Alipay Config -- [private_key]', 1);
@@ -119,7 +122,7 @@ class Support
      *
      * @return bool
      */
-    public static function verifySign($data, $publicKey = null, $sync = false, $sign = null): bool
+    public static function verifySign(array $data, $publicKey = null, $sync = false, $sign = null): bool
     {
         if (is_null($publicKey)) {
             throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]', 2);
@@ -136,10 +139,7 @@ class Support
         $sign = $sign ?? $data['sign'];
 
         $toVerify = $sync ? self::encoding(json_encode($data, JSON_UNESCAPED_UNICODE), 'gb2312', 'utf-8') :
-                            self::getSignContent(
-                                self::encoding($data, 'gb2312', 'utf-8'),
-                                true
-                            );
+                            self::getSignContent($data, true);
 
         return openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
     }
@@ -149,17 +149,19 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $toBeSigned
+     * @param array $data
      * @param bool  $verify
      *
      * @return string
      */
-    public static function getSignContent(array $toBeSigned, $verify = false): string
+    public static function getSignContent(array $data, $verify = false): string
     {
-        ksort($toBeSigned);
+        $data = self::encoding($data, $data['charset'] ?? 'gb2312', 'utf-8');
+
+        ksort($data);
 
         $stringToBeSigned = '';
-        foreach ($toBeSigned as $k => $v) {
+        foreach ($data as $k => $v) {
             if ($verify && $k != 'sign' && $k != 'sign_type') {
                 $stringToBeSigned .= $k.'='.$v.'&';
             }
@@ -181,17 +183,11 @@ class Support
      * @param string       $to
      * @param string       $from
      *
-     * @return string|array
+     * @return array
      */
-    public static function encoding($data, $to = 'utf-8', $from = 'gb2312')
+    public static function encoding($data, $to = 'utf-8', $from = null): array
     {
-        if (is_string($data)) {
-            $data = Str::encoding($data, $to, $from);
-        } elseif (is_array($data) && (!isset($data['charset']) || $data['charset'] != 'utf-8')) {
-            $data = Arr::encoding($data, $to, $from);
-        }
-
-        return $data;
+        return Arr::encoding((array) $data, $to, $from);
     }
 
     /**
