@@ -66,7 +66,7 @@ class Support
             ($certClient !== null && $certKey !== null) ? ['cert' => $certClient, 'ssl_key' => $certKey] : []
         );
 
-        $result = self::fromXml($result);
+        $result = is_array($result) ? $result : self::fromXml($result);
 
         if (!isset($result['return_code']) || $result['return_code'] != 'SUCCESS' || $result['result_code'] != 'SUCCESS') {
             throw new GatewayException(
@@ -102,7 +102,7 @@ class Support
 
         ksort($data);
 
-        $string = md5(self::GenerateSignContent($data).'&key='.$key);
+        $string = md5(self::getSignContent($data).'&key='.$key);
 
         return strtoupper($string);
     }
@@ -116,7 +116,7 @@ class Support
      *
      * @return string
      */
-    public static function generateSignContent($data): string
+    public static function getSignContent($data): string
     {
         $buff = '';
 

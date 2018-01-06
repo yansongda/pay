@@ -138,7 +138,7 @@ class Support
 
         $sign = $sign ?? $data['sign'];
 
-        $toVerify = $sync ? self::encoding(json_encode($data, JSON_UNESCAPED_UNICODE), 'gb2312', 'utf-8') :
+        $toVerify = $sync ? mb_convert_encoding(json_encode($data, JSON_UNESCAPED_UNICODE), 'gb2312', 'utf-8') :
                             self::getSignContent($data, true);
 
         return openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
@@ -169,9 +169,8 @@ class Support
                 $stringToBeSigned .= $k.'='.$v.'&';
             }
         }
-        $stringToBeSigned = substr($stringToBeSigned, 0, -1);
 
-        return $stringToBeSigned;
+        return trim($stringToBeSigned, '&');
     }
 
     /**
