@@ -184,7 +184,7 @@ class Support
      *
      * @return array
      */
-    public static function encoding($data, $to = 'utf-8', $from = null): array
+    public static function encoding($data, $to = 'utf-8', $from = 'gb2312'): array
     {
         return Arr::encoding((array) $data, $to, $from);
     }
