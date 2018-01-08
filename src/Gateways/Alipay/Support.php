@@ -61,7 +61,7 @@ class Support
 
         $method = str_replace('.', '_', $data['method']).'_response';
 
-        $result = self::encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
+        $result = mb_convert_encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
         $result = json_decode($result, true);
 
         if (!self::verifySign($result[$method], $publicKey, true, $result['sign'])) {
