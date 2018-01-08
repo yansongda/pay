@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\Request;
+use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
 class RedpackGateway extends Wechat
