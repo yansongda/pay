@@ -69,7 +69,6 @@ $order = [
     'out_trade_no' => time(),
     'body' => 'subject-测试',
     'total_fee' => '1',
-    'openid' => 'onkVf1FjWS5SBxxxxxxxx',
 ];
 
 // 将返回 json 格式，供后续 APP 调用，调用方式不在本文档讨论范围内，请参考官方文档。
