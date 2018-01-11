@@ -24,9 +24,9 @@ $result = $wechat->refund($order);
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4)，查看「请求参数」一栏。
 
-### 注意
+### APP/小程序退款
 
-**如果需要退款小程序的订单，请在 $order 中传入` "miniapp" => true`**
+如果您需要退 `APP/小程序` 的订单，请传入参数：`['type' => 'app']`/`['type' => 'miniapp']`
 
 # 返回值
 
