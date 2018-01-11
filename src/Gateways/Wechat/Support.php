@@ -98,11 +98,9 @@ class Support
      */
     public static function filterPayload($payload, $order, $config)
     {
-        $payload['out_trade_no'] = is_array($order) ? '' : $order;
+        $payload = array_merge($payload, is_array($order) ? $order : ['out_trade_no' => $order]);
 
-        $payload = array_merge($payload, $order);
-
-        $type = isset($order['type']) ? ($order['type'].($order['type'] != 'app' ?: '_').'id') : 'app_id';
+        $type = isset($order['type']) ? ($order['type'].($order['type'] == 'app' ?: '_').'id') : 'app_id';
 
         $payload['appid'] = $config->get($type, '');
 
