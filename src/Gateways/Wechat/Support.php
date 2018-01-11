@@ -102,7 +102,7 @@ class Support
 
         $payload = array_merge($payload, $order);
 
-        $type = isset($order['type']) ? ($order['type'] . ($order['type'] != 'app' ?: '_') . 'id') : 'app_id';
+        $type = isset($order['type']) ? ($order['type'].($order['type'] != 'app' ?: '_').'id') : 'app_id';
 
         $payload['appid'] = $config->get($type, '');
 
