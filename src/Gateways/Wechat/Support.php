@@ -86,6 +86,34 @@ class Support
     }
 
     /**
+     * Filter payload.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param array                     $payload
+     * @param array|string              $order
+     * @param Yansongda\Supports\Config $config
+     *
+     * @return array
+     */
+    public static function filterPayload($payload, $order, $config)
+    {
+        $payload['out_trade_no'] = is_array($order) ? '' : $order;
+
+        $payload = array_merge($payload, $order);
+
+        $type = isset($order['type']) ? ($order['type'] . ($order['type'] != 'app' ?: '_') . 'id') : 'app_id';
+
+        $payload['appid'] = $config->get($type, '');
+
+        unset($payload['notify_url'], $payload['trade_type'], $payload['type']);
+
+        $payload['sign'] = self::generateSign($payload, $config->get('key'));
+
+        return $payload;
+    }
+
+    /**
      * Generate wechat sign.
      *
      * @author yansongda <me@yansongda.cn>

@@ -117,15 +117,7 @@ class Wechat implements GatewayApplicationInterface
      */
     public function find($order): Collection
     {
-        if (is_array($order)) {
-            $this->payload = array_merge($this->payload, $order);
-        } else {
-            $this->payload['out_trade_no'] = $order;
-        }
-
-        unset($this->payload['notify_url'], $this->payload['trade_type']);
-
-        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('key'));
+        $this->payload = Support::filterPayload($this->payload, $order, $this->config);
 
         return Support::requestApi('pay/orderquery', $this->payload, $this->config->get('key'));
     }
@@ -141,16 +133,7 @@ class Wechat implements GatewayApplicationInterface
      */
     public function refund($order): Collection
     {
-        if (isset($order['miniapp'])) {
-            $this->payload['appid'] = $this->config->get('miniapp_id');
-            unset($order['miniapp']);
-        }
-
-        $this->payload = array_merge($this->payload, $order);
-
-        unset($this->payload['notify_url'], $this->payload['trade_type']);
-
-        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('key'));
+        $this->payload = Support::filterPayload($this->payload, $order, $this->config);
 
         return Support::requestApi(
             'secapi/pay/refund',
@@ -186,15 +169,7 @@ class Wechat implements GatewayApplicationInterface
      */
     public function close($order)
     {
-        if (is_array($order)) {
-            $this->payload = array_merge($this->payload, $order);
-        } else {
-            $this->payload['out_trade_no'] = $order;
-        }
-
-        unset($this->payload['notify_url'], $this->payload['trade_type']);
-
-        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('key'));
+        $this->payload = Support::filterPayload($this->payload, $order, $this->config);
 
         return Support::requestApi('pay/closeorder', $this->payload, $this->config->get('key'));
     }
