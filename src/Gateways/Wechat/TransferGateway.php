@@ -27,7 +27,7 @@ class TransferGateway extends Gateway
         unset($payload['appid'], $payload['mch_id'], $payload['trade_type'], $payload['notify_url']);
 
         $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
-        
+
         Log::debug('Paying A Transfer Order:', [$endpoint, $payload]);
 
         return Support::requestApi(
