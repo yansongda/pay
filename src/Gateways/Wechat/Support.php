@@ -65,7 +65,6 @@ class Support
             self::toXml($data),
             ($certClient !== null && $certKey !== null) ? ['cert' => $certClient, 'ssl_key' => $certKey] : []
         );
-
         $result = is_array($result) ? $result : self::fromXml($result);
 
         if (!isset($result['return_code']) || $result['return_code'] != 'SUCCESS' || $result['result_code'] != 'SUCCESS') {
@@ -76,7 +75,7 @@ class Support
             );
         }
 
-        if (self::generateSign($result, $key) === $result['sign']) {
+        if (self::generateSign($result, $key) === $result['sign'] || $endpoint === 'mmpaymkttransfers/promotion/transfers') {
             return new Collection($result);
         }
 
