@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
-class TransferGateway extends Wechat
+class TransferGateway extends Gateway
 {
     /**
      * Pay an order.

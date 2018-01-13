@@ -5,7 +5,7 @@ namespace Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
-class GroupRedpackGateway extends Wechat
+class GroupRedpackGateway extends Gateway
 {
     /**
      * Pay an order.

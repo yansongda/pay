@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
-class RedpackGateway extends Wechat
+class RedpackGateway extends Gateway
 {
     /**
      * Pay an order.
