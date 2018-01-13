@@ -75,7 +75,7 @@ class Support
             );
         }
 
-        if (self::generateSign($result, $key) === $result['sign'] || $endpoint === 'mmpaymkttransfers/promotion/transfers') {
+        if ($endpoint === 'mmpaymkttransfers/promotion/transfers' || self::generateSign($result, $key) === $result['sign']) {
             return new Collection($result);
         }
 
