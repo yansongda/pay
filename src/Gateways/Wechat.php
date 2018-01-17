@@ -169,6 +169,8 @@ class Wechat implements GatewayApplicationInterface
      */
     public function close($order)
     {
+        unset($this->payload['spbill_create_ip']);
+
         $this->payload = Support::filterPayload($this->payload, $order, $this->config);
 
         return Support::requestApi('pay/closeorder', $this->payload, $this->config->get('key'));
