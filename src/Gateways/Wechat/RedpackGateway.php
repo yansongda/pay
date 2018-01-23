@@ -25,6 +25,8 @@ class RedpackGateway extends Gateway
 
         unset($payload['appid'], $payload['trade_type'], $payload['notify_url'], $payload['spbill_create_ip']);
 
+        $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
+
         Log::debug('Paying A Redpack Order:', [$endpoint, $payload]);
 
         return Support::requestApi(
