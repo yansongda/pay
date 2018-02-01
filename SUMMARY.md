@@ -32,5 +32,7 @@
   * [关闭](docs/wechat/close.md)
   * [验证服务器数据](docs/wechat/verify.md)
   * [向微信服务器确认收到异步通知](docs/wechat/success.md)
-* [其它功能](docs/OTHERS.md)
+* [其它]()
+  * [其他功能](docs/others/others.md)
+  * [FAQ](docs/others/faq.md)
 
