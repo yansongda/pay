@@ -89,9 +89,9 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array                     $payload
-     * @param array|string              $order
-     * @param Yansongda\Supports\Config $config
+     * @param array                      $payload
+     * @param array|string               $order
+     * @param \Yansongda\Supports\Config $config
      *
      * @return array
      */
