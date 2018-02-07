@@ -147,6 +147,10 @@ $result = $wechat->transfer($order);
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2)，查看「请求参数」一栏。
 
+### 使用 APP/小程序 账号转账
+
+如果您需要通过 `APP/小程序` 的商户账号appid进行转账，请传入参数：`['type' => 'app']`/`['type' => 'miniapp']`
+
 ## 七、小程序
 
 ### 例子
