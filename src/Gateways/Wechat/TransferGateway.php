@@ -20,7 +20,7 @@ class TransferGateway extends Gateway
      */
     public function pay($endpoint, array $payload): Collection
     {
-        $type = isset($order['type']) ? ($order['type'].($order['type'] == 'app' ?: '_').'id') : 'app_id';
+        $type = isset($payload['type']) ? ($payload['type'].($payload['type'] == 'app' ?: '_').'id') : 'app_id';
 
         $payload['mch_appid'] = $this->config->get($type, '');
         $payload['mchid'] = $payload['mch_id'];
