@@ -153,6 +153,28 @@ class Alipay implements GatewayApplicationInterface
     }
 
     /**
+     * download bill
+     *
+     * @param string $date the date string of bill you want to download
+     *
+     * @return array
+     */
+    public function billDownload($date): Collection
+    {
+
+        $this->payload['method'] = 'alipay.data.dataservice.bill.downloadurl.query';
+        $biz = json_encode([
+            'bill_type' => 'trade',
+            'bill_date' => date('Y-m-d',strtotime($date)),
+        ]);
+
+        $this->payload['biz_content'] = $biz;
+        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+
+        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
+    }
+
+    /**
      * Cancel an order.
      *
      * @author yansongda <me@yansongda.cn>
