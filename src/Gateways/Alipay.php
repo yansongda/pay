@@ -153,7 +153,7 @@ class Alipay implements GatewayApplicationInterface
     }
 
     /**
-     * download bill
+     * download bill.
      *
      * @param string $date the date string of bill you want to download.
      *
@@ -161,7 +161,6 @@ class Alipay implements GatewayApplicationInterface
      */
     public function billDownload($date): Collection
     {
-
         $this->payload['method'] = 'alipay.data.dataservice.bill.downloadurl.query';
         $biz = json_encode([
             'bill_type' => 'trade',
