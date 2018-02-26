@@ -14,6 +14,17 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
+/**
+ * @method \Yansongda\Pay\Gateways\Wechat\AppGateway app(Config $config) APP 支付
+ * @method \Yansongda\Pay\Gateways\Wechat\GroupRedpackGateway groupRedpack(Config $config) 分裂红包
+ * @method \Yansongda\Pay\Gateways\Wechat\MiniappGateway miniapp(Config $config) 小程序支付
+ * @method \Yansongda\Pay\Gateways\Wechat\MpGateway mp(Config $config) 公众号支付
+ * @method \Yansongda\Pay\Gateways\Wechat\PosGateway pos(Config $config) 刷卡支付
+ * @method \Yansongda\Pay\Gateways\Wechat\RedpackGateway redpack(Config $config) 普通红包
+ * @method \Yansongda\Pay\Gateways\Wechat\ScanGateway scan(Config $config) 扫码支付
+ * @method \Yansongda\Pay\Gateways\Wechat\TransferGateway transfer(Config $config) 企业付款
+ * @method \Yansongda\Pay\Gateways\Wechat\WapGateway wap(Config $config) H5 支付
+ */
 class Wechat implements GatewayApplicationInterface
 {
     /**
