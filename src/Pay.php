@@ -10,6 +10,10 @@ use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
+/**
+ * @method static \Yansongda\Pay\Gateways\Alipay alipay(array $config) 支付宝
+ * @method static \Yansongda\Pay\Gateways\Wechat wechat(array $config) 微信
+ */
 class Pay
 {
     /**
