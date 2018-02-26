@@ -226,7 +226,7 @@ abstract class Alipay implements GatewayInterface
 
         if (!isset($data[$method]['code']) || $data[$method]['code'] !== '10000') {
             throw new GatewayException(
-                'get result error:'.$data[$method]['msg'].' - '.$data[$method]['sub_code'],
+                'get result error:'.$data[$method]['msg'],
                 $data[$method]['code'],
                 $data);
         }
