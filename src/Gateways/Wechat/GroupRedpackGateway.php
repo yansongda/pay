@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
+use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
@@ -20,6 +21,9 @@ class GroupRedpackGateway extends Gateway
     public function pay($endpoint, array $payload): Collection
     {
         $payload['wxappid'] = $payload['appid'];
+        if ($this->mode === Wechat::MODE_SERVICE) {
+            $payload['msgappid'] = $payload['appid'];
+        }
         $payload['amt_type'] = 'ALL_RAND';
 
         unset($payload['appid'], $payload['trade_type'], $payload['notify_url'], $payload['spbill_create_ip']);

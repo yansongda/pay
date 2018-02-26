@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\Request;
+use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
@@ -21,6 +22,9 @@ class RedpackGateway extends Gateway
     public function pay($endpoint, array $payload): Collection
     {
         $payload['wxappid'] = $payload['appid'];
+        if ($this->mode === Wechat::MODE_SERVICE) {
+           $payload['msgappid'] = $payload['appid'];
+        }
         $payload['client_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
 
         unset($payload['appid'], $payload['trade_type'], $payload['notify_url'], $payload['spbill_create_ip']);

@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
+use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Traits\HasHttpRequest;
@@ -209,11 +210,11 @@ class Support
     public static function baseUri($mode = null): string
     {
         switch ($mode) {
-            case 'dev':
+            case Wechat::MODE_DEV:
                 self::getInstance()->baseUri = 'https://api.mch.weixin.qq.com/sandboxnew/';
                 break;
 
-            case 'hk':
+            case Wechat::MODE_HK:
                 self::getInstance()->baseUri = 'https://apihk.mch.weixin.qq.com/';
                 break;
 

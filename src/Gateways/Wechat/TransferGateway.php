@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\Request;
+use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
@@ -20,6 +21,9 @@ class TransferGateway extends Gateway
      */
     public function pay($endpoint, array $payload): Collection
     {
+        if ($this->mode === Wechat::MODE_SERVICE) {
+            unset($payload['sub_mch_id'], $payload['sub_appid']);
+        }
         $type = isset($payload['type']) ? ($payload['type'].($payload['type'] == 'app' ?: '_').'id') : 'app_id';
 
         $payload['mch_appid'] = $this->config->get($type, '');
