@@ -27,12 +27,24 @@ use Yansongda\Supports\Str;
  */
 class Wechat implements GatewayApplicationInterface
 {
+    const MODE_NORMAL = 'normal'; // 普通模式
+    const MODE_DEV = 'dev'; // 沙箱模式
+    const MODE_HK = 'hk'; // 香港钱包
+    const MODE_SERVICE = 'service'; // 服务商
+
     /**
      * Config.
      *
      * @var Config
      */
     protected $config;
+
+    /**
+     * Mode.
+     *
+     * @var string
+     */
+    protected $mode;
 
     /**
      * Wechat payload.
@@ -58,7 +70,8 @@ class Wechat implements GatewayApplicationInterface
     public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->gateway = Support::baseUri($this->config->get('mode', 'normal'));
+        $this->mode = $this->config->get('mode', Wechat::MODE_NORMAL);
+        $this->gateway = Support::baseUri($this->mode);
         $this->payload = [
             'appid'            => $this->config->get('app_id', ''),
             'mch_id'           => $this->config->get('mch_id', ''),
@@ -68,6 +81,13 @@ class Wechat implements GatewayApplicationInterface
             'trade_type'       => '',
             'spbill_create_ip' => Request::createFromGlobals()->getClientIp(),
         ];
+
+        if ($this->mode === static::MODE_SERVICE) {
+            $this->payload = array_merge($this->payload, [
+                'sub_mch_id' => $this->config->get('sub_mch_id'),
+                'sub_appid'  => $this->config->get('sub_app_id', ''),
+            ]);
+        }
     }
 
     /**

@@ -23,7 +23,7 @@ class RedpackGateway extends Gateway
     {
         $payload['wxappid'] = $payload['appid'];
         if ($this->mode === Wechat::MODE_SERVICE) {
-           $payload['msgappid'] = $payload['appid'];
+            $payload['msgappid'] = $payload['appid'];
         }
         $payload['client_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
 
