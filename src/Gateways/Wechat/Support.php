@@ -105,7 +105,7 @@ class Support
         $payload['appid'] = $config->get($type, '');
         $mode = $config->get('mode', Wechat::MODE_NORMAL);
         if ($mode === Wechat::MODE_SERVICE) {
-           $payload['sub_appid'] = $config->get('sub_' . $type, '');
+            $payload['sub_appid'] = $config->get('sub_'.$type, '');
         }
 
         unset($payload['notify_url'], $payload['trade_type'], $payload['type']);
