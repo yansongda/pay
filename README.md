@@ -10,6 +10,8 @@
 <a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/license" alt="License"></a>
 </p>
 
+## 失恋了，暂停更新一星期，暂停处理 ISSUE，PR。请谅解！
+
 该文档为 v2.x 版本，如果您想找 v1.x 版本文档，请点击[https://github.com/yansongda/pay/tree/v1.x](https://github.com/yansongda/pay/tree/v1.x)
 
 **注意：v1.x 与 v2.x 版本不兼容**
