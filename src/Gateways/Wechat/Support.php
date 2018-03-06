@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
+use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Traits\HasHttpRequest;
@@ -102,6 +103,10 @@ class Support
         $type = isset($order['type']) ? $order['type'].($order['type'] == 'app' ? '' : '_').'id' : 'app_id';
 
         $payload['appid'] = $config->get($type, '');
+        $mode = $config->get('mode', Wechat::MODE_NORMAL);
+        if ($mode === Wechat::MODE_SERVICE) {
+            $payload['sub_appid'] = $config->get('sub_'.$type, '');
+        }
 
         unset($payload['notify_url'], $payload['trade_type'], $payload['type']);
 
@@ -209,11 +214,11 @@ class Support
     public static function baseUri($mode = null): string
     {
         switch ($mode) {
-            case 'dev':
+            case Wechat::MODE_DEV:
                 self::getInstance()->baseUri = 'https://api.mch.weixin.qq.com/sandboxnew/';
                 break;
 
-            case 'hk':
+            case Wechat::MODE_HK:
                 self::getInstance()->baseUri = 'https://apihk.mch.weixin.qq.com/';
                 break;
 

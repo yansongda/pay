@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
@@ -17,6 +18,13 @@ abstract class Gateway implements GatewayInterface
     protected $config;
 
     /**
+     * Mode.
+     *
+     * @var string
+     */
+    protected $mode;
+
+    /**
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
@@ -26,6 +34,7 @@ abstract class Gateway implements GatewayInterface
     public function __construct(Config $config)
     {
         $this->config = $config;
+        $this->mode = $this->config->get('mode', Wechat::MODE_NORMAL);
     }
 
     /**

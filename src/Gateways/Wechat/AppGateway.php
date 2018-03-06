@@ -4,6 +4,7 @@ namespace Yansongda\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Str;
 
@@ -23,10 +24,13 @@ class AppGateway extends Gateway
     {
         $payload['appid'] = $this->config->get('appid');
         $payload['trade_type'] = $this->getTradeType();
+        if ($this->mode === Wechat::MODE_SERVICE) {
+            $payload['sub_appid'] = $this->config->get('sub_appid');
+        }
 
         $payRequest = [
             'appid'     => $payload['appid'],
-            'partnerid' => $payload['mch_id'],
+            'partnerid' => $this->mode === Wechat::MODE_SERVICE ? $payload['sub_mch_id'] : $payload['mch_id'],
             'prepayid'  => $this->preOrder('pay/unifiedorder', $payload)->prepay_id,
             'timestamp' => strval(time()),
             'noncestr'  => Str::random(),
