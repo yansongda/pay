@@ -69,3 +69,4 @@ $wechat->success()->send(); // 向微信服务器确认接收到的数据。lara
 
 后续文档中，如果没有特别说明， `$wechat` 均代表`Pay::wechat($config)`
 
+服务商的参数略有不同，请参考[微信服务商](../others.md#微信服务商模式)
