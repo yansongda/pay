@@ -28,7 +28,7 @@ class TransferGateway extends Gateway
 
         $payload['mch_appid'] = $this->config->get($type, '');
         $payload['mchid'] = $payload['mch_id'];
-        $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
+        $payload['spbill_create_ip'] = php_sapi_name() === 'cli' ?: Request::createFromGlobals()->server->get('SERVER_ADDR');
 
         unset($payload['appid'], $payload['mch_id'], $payload['trade_type'],
             $payload['notify_url'], $payload['type']);

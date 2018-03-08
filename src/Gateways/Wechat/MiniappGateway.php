@@ -20,6 +20,7 @@ class MiniappGateway extends MpGateway
     public function pay($endpoint, array $payload): Collection
     {
         $payload['appid'] = $this->config->get('miniapp_id');
+
         if ($this->mode === Wechat::MODE_SERVICE) {
             $payload['sub_appid'] = $this->config->get('sub_miniapp_id');
         }

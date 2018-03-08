@@ -21,10 +21,11 @@ class GroupRedpackGateway extends Gateway
     public function pay($endpoint, array $payload): Collection
     {
         $payload['wxappid'] = $payload['appid'];
+        $payload['amt_type'] = 'ALL_RAND';
+
         if ($this->mode === Wechat::MODE_SERVICE) {
             $payload['msgappid'] = $payload['appid'];
         }
-        $payload['amt_type'] = 'ALL_RAND';
 
         unset($payload['appid'], $payload['trade_type'], $payload['notify_url'], $payload['spbill_create_ip']);
 

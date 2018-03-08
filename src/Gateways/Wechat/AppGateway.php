@@ -24,6 +24,7 @@ class AppGateway extends Gateway
     {
         $payload['appid'] = $this->config->get('appid');
         $payload['trade_type'] = $this->getTradeType();
+
         if ($this->mode === Wechat::MODE_SERVICE) {
             $payload['sub_appid'] = $this->config->get('sub_appid');
         }
