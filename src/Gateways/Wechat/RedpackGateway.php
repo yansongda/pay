@@ -21,7 +21,7 @@ class RedpackGateway extends Gateway
     public function pay($endpoint, array $payload): Collection
     {
         $payload['wxappid'] = $payload['appid'];
-        $payload['client_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
+        $payload['client_ip'] = php_sapi_name() === 'cli' ?: Request::createFromGlobals()->server->get('SERVER_ADDR');
 
         unset($payload['appid'], $payload['trade_type'], $payload['notify_url'], $payload['spbill_create_ip']);
 
