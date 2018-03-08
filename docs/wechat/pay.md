@@ -151,6 +151,10 @@ $result = $wechat->transfer($order);
 
 如果您需要通过 `APP/小程序` 的商户账号appid进行转账，请传入参数：`['type' => 'app']`/`['type' => 'miniapp']`
 
+### ！注意！
+
+如果您在队列中使用，请自行传参 `spbill_create_ip`。
+
 ## 七、小程序
 
 ### 例子
@@ -199,6 +203,10 @@ $result = $wechat->redpack($order);
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`trade_type`，`appid`** **，** **`sign`, `spbill_create_ip` **等参数，大家只需传入订单类主观参数即可。**
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon.php?chapter=13_4&index=3)，查看「请求参数」一栏。
+
+### ！注意！
+
+如果您在队列中使用，请自行传参 `client_ip`。
 
 ## 九、裂变红包
 
