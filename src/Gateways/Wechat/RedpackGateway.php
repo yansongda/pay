@@ -22,11 +22,9 @@ class RedpackGateway extends Gateway
     public function pay($endpoint, array $payload): Collection
     {
         $payload['wxappid'] = $payload['appid'];
-        $payload['client_ip'] = php_sapi_name() === 'cli' ?: Request::createFromGlobals()->server->get('SERVER_ADDR');
+        php_sapi_name() === 'cli' ?: $payload['client_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
 
-        if ($this->mode === Wechat::MODE_SERVICE) {
-            $payload['msgappid'] = $payload['appid'];
-        }
+        $this->mode !== Wechat::MODE_SERVICE ?: $payload['msgappid'] = $payload['appid'];
 
         unset($payload['appid'], $payload['trade_type'], $payload['notify_url'], $payload['spbill_create_ip']);
 

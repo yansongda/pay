@@ -23,9 +23,7 @@ class GroupRedpackGateway extends Gateway
         $payload['wxappid'] = $payload['appid'];
         $payload['amt_type'] = 'ALL_RAND';
 
-        if ($this->mode === Wechat::MODE_SERVICE) {
-            $payload['msgappid'] = $payload['appid'];
-        }
+        $this->mode !== Wechat::MODE_SERVICE ?: $payload['msgappid'] = $payload['appid'];
 
         unset($payload['appid'], $payload['trade_type'], $payload['notify_url'], $payload['spbill_create_ip']);
 
