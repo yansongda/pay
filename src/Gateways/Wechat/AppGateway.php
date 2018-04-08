@@ -1,12 +1,12 @@
 <?php
 
-namespace Yansongda\Pay\Gateways\Wechat;
+namespace Hanwenbo\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Yansongda\Pay\Gateways\Wechat;
-use Yansongda\Pay\Log;
-use Yansongda\Supports\Str;
+use Hanwenbo\Pay\Gateways\Wechat;
+use Hanwenbo\Pay\Log;
+use Hanwenbo\Supports\Str;
 
 class AppGateway extends Gateway
 {

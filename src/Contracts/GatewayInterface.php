@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Contracts;
+namespace Hanwenbo\Pay\Contracts;
 
 interface GatewayInterface
 {
@@ -12,7 +12,7 @@ interface GatewayInterface
      * @param string $endpoint
      * @param array  $payload
      *
-     * @return Yansongda\Supports\Collection|Symfony\Component\HttpFoundation\Response
+     * @return Hanwenbo\Supports\Collection|Symfony\Component\HttpFoundation\Response
      */
     public function pay($endpoint, array $payload);
 }

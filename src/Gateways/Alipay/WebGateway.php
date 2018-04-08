@@ -1,11 +1,11 @@
 <?php
 
-namespace Yansongda\Pay\Gateways\Alipay;
+namespace Hanwenbo\Pay\Gateways\Alipay;
 
 use Symfony\Component\HttpFoundation\Response;
-use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Log;
-use Yansongda\Supports\Config;
+use Hanwenbo\Pay\Contracts\GatewayInterface;
+use Hanwenbo\Pay\Log;
+use Hanwenbo\Supports\Config;
 
 class WebGateway implements GatewayInterface
 {

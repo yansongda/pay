@@ -1,9 +1,9 @@
 <?php
 
-namespace Yansongda\Pay\Gateways\Wechat;
+namespace Hanwenbo\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\Request;
-use Yansongda\Supports\Collection;
+use Hanwenbo\Supports\Collection;
 
 class ScanGateway extends Gateway
 {

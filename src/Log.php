@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay;
+namespace Hanwenbo\Pay;
 
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;

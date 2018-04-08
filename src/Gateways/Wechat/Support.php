@@ -1,14 +1,14 @@
 <?php
 
-namespace Yansongda\Pay\Gateways\Wechat;
+namespace Hanwenbo\Pay\Gateways\Wechat;
 
-use Yansongda\Pay\Exceptions\GatewayException;
-use Yansongda\Pay\Exceptions\InvalidArgumentException;
-use Yansongda\Pay\Exceptions\InvalidSignException;
-use Yansongda\Pay\Gateways\Wechat;
-use Yansongda\Pay\Log;
-use Yansongda\Supports\Collection;
-use Yansongda\Supports\Traits\HasHttpRequest;
+use Hanwenbo\Pay\Exceptions\GatewayException;
+use Hanwenbo\Pay\Exceptions\InvalidArgumentException;
+use Hanwenbo\Pay\Exceptions\InvalidSignException;
+use Hanwenbo\Pay\Gateways\Wechat;
+use Hanwenbo\Pay\Log;
+use Hanwenbo\Supports\Collection;
+use Hanwenbo\Supports\Traits\HasHttpRequest;
 
 class Support
 {
@@ -92,7 +92,7 @@ class Support
      *
      * @param array                      $payload
      * @param array|string               $order
-     * @param \Yansongda\Supports\Config $config
+     * @param \Hanwenbo\Supports\Config $config
      *
      * @return array
      */

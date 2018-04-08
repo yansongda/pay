@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Contracts;
+namespace Hanwenbo\Pay\Contracts;
 
 interface GatewayApplicationInterface
 {
@@ -12,7 +12,7 @@ interface GatewayApplicationInterface
      * @param string $gateway
      * @param array  $params
      *
-     * @return Yansongda\Supports\Collection|Symfony\Component\HttpFoundation\Response
+     * @return Hanwenbo\Supports\Collection|Symfony\Component\HttpFoundation\Response
      */
     public function pay($gateway, $params);
 
@@ -23,7 +23,7 @@ interface GatewayApplicationInterface
      *
      * @param string|array $order
      *
-     * @return Yansongda\Supports\Collection
+     * @return Hanwenbo\Supports\Collection
      */
     public function find($order);
 
@@ -34,7 +34,7 @@ interface GatewayApplicationInterface
      *
      * @param array $order
      *
-     * @return Yansongda\Supports\Collection
+     * @return Hanwenbo\Supports\Collection
      */
     public function refund($order);
 
@@ -45,7 +45,7 @@ interface GatewayApplicationInterface
      *
      * @param string|array $order
      *
-     * @return Yansongda\Supports\Collection
+     * @return Hanwenbo\Supports\Collection
      */
     public function cancel($order);
 
@@ -56,7 +56,7 @@ interface GatewayApplicationInterface
      *
      * @param string|array $order
      *
-     * @return Yansongda\Supports\Collection
+     * @return Hanwenbo\Supports\Collection
      */
     public function close($order);
 
@@ -65,7 +65,7 @@ interface GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return Yansongda\Supports\Collection
+     * @return Hanwenbo\Supports\Collection
      */
     public function verify();
 

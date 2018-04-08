@@ -7,7 +7,7 @@
 # QuickReference
 
 ```php
-use Yansongda\Pay\Pay;
+use Hanwenbo\Pay\Pay;
 
 $config = [
     'app_id' => '2016082000295641',
@@ -39,26 +39,26 @@ $order = [
     'refund_amount' => '0.01',
 ];
 
-$result = Pay::alipay($config)->refund($order); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
+$result = Pay::alipay($config)->refund($order); // 返回 `Hanwenbo\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
 
 
 // 查询
-$result = Pay::alipay($config)->find('out_trade_no_123456'); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
+$result = Pay::alipay($config)->find('out_trade_no_123456'); // 返回 `Hanwenbo\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
 
 
 // 取消
-$result = Pay::alipay($config)->cancel('out_trade_no_123456'); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
+$result = Pay::alipay($config)->cancel('out_trade_no_123456'); // 返回 `Hanwenbo\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
 
 
 // 关闭
-$result = Pay::alipay($config)->close('out_trade_no_123456'); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
+$result = Pay::alipay($config)->close('out_trade_no_123456'); // 返回 `Hanwenbo\Supports\Collection` 实例，可以通过 `$result->xxx` 访问服务器返回的数据。
 
 
 // 验证服务器数据
 $alipay = Pay::alipay($config)
 
 // 是的，验签就这么简单！
-$data = $alipay->verify(); // 返回 `Yansongda\Supports\Collection` 实例，可以通过 `$data->xxx` 访问服务器返回的数据。
+$data = $alipay->verify(); // 返回 `Hanwenbo\Supports\Collection` 实例，可以通过 `$data->xxx` 访问服务器返回的数据。
 
 $alipay->success()->send(); // 向支付宝服务器确认接收到的数据。laravel 框架中请直接 `return $alipay->success()`
 ```
