@@ -1,26 +1,26 @@
 <?php
 
-namespace Yansongda\Pay\Gateways;
+namespace Hanwenbo\Pay\Gateways;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Yansongda\Pay\Contracts\GatewayApplicationInterface;
-use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Exceptions\GatewayException;
-use Yansongda\Pay\Exceptions\InvalidSignException;
-use Yansongda\Pay\Gateways\Alipay\Support;
-use Yansongda\Pay\Log;
-use Yansongda\Supports\Collection;
-use Yansongda\Supports\Config;
-use Yansongda\Supports\Str;
+use Hanwenbo\Pay\Contracts\GatewayApplicationInterface;
+use Hanwenbo\Pay\Contracts\GatewayInterface;
+use Hanwenbo\Pay\Exceptions\GatewayException;
+use Hanwenbo\Pay\Exceptions\InvalidSignException;
+use Hanwenbo\Pay\Gateways\Alipay\Support;
+use Hanwenbo\Pay\Log;
+use Hanwenbo\Supports\Collection;
+use Hanwenbo\Supports\Config;
+use Hanwenbo\Supports\Str;
 
 /**
- * @method \Yansongda\Pay\Gateways\Alipay\AppGateway app(array $config) APP 支付
- * @method \Yansongda\Pay\Gateways\Alipay\PosGateway pos(array $config) 刷卡支付
- * @method \Yansongda\Pay\Gateways\Alipay\ScanGateway scan(array $config) 扫码支付
- * @method \Yansongda\Pay\Gateways\Alipay\TransferGateway transfer(array $config) 帐户转账
- * @method \Yansongda\Pay\Gateways\Alipay\WapGateway wap(array $config) 手机网站支付
- * @method \Yansongda\Pay\Gateways\Alipay\WebGateway web(array $config) 电脑支付
+ * @method \Hanwenbo\Pay\Gateways\Alipay\AppGateway app(array $config) APP 支付
+ * @method \Hanwenbo\Pay\Gateways\Alipay\PosGateway pos(array $config) 刷卡支付
+ * @method \Hanwenbo\Pay\Gateways\Alipay\ScanGateway scan(array $config) 扫码支付
+ * @method \Hanwenbo\Pay\Gateways\Alipay\TransferGateway transfer(array $config) 帐户转账
+ * @method \Hanwenbo\Pay\Gateways\Alipay\WapGateway wap(array $config) 手机网站支付
+ * @method \Hanwenbo\Pay\Gateways\Alipay\WebGateway web(array $config) 电脑支付
  */
 class Alipay implements GatewayApplicationInterface
 {

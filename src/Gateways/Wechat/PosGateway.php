@@ -1,8 +1,8 @@
 <?php
 
-namespace Yansongda\Pay\Gateways\Wechat;
+namespace Hanwenbo\Pay\Gateways\Wechat;
 
-use Yansongda\Supports\Collection;
+use Hanwenbo\Supports\Collection;
 
 class PosGateway extends Gateway
 {

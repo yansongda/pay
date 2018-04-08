@@ -14,7 +14,7 @@ SDK 自带日志系统，如果需要指定日志文件或日志级别，请 con
 > 使用日志功能前，请先确认已经使用过支付等功能进行了初始化！
 
 ```php
-use Yansongda\Pay\Log;
+use Hanwenbo\Pay\Log;
 
 Log::debug('Paying...', $order->all());
 ```

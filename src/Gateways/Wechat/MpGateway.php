@@ -1,10 +1,10 @@
 <?php
 
-namespace Yansongda\Pay\Gateways\Wechat;
+namespace Hanwenbo\Pay\Gateways\Wechat;
 
-use Yansongda\Pay\Log;
-use Yansongda\Supports\Collection;
-use Yansongda\Supports\Str;
+use Hanwenbo\Pay\Log;
+use Hanwenbo\Supports\Collection;
+use Hanwenbo\Supports\Str;
 
 class MpGateway extends Gateway
 {

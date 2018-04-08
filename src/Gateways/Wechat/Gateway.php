@@ -1,12 +1,12 @@
 <?php
 
-namespace Yansongda\Pay\Gateways\Wechat;
+namespace Hanwenbo\Pay\Gateways\Wechat;
 
-use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Gateways\Wechat;
-use Yansongda\Pay\Log;
-use Yansongda\Supports\Collection;
-use Yansongda\Supports\Config;
+use Hanwenbo\Pay\Contracts\GatewayInterface;
+use Hanwenbo\Pay\Gateways\Wechat;
+use Hanwenbo\Pay\Log;
+use Hanwenbo\Supports\Collection;
+use Hanwenbo\Supports\Config;
 
 abstract class Gateway implements GatewayInterface
 {

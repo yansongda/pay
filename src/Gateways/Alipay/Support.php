@@ -1,15 +1,15 @@
 <?php
 
-namespace Yansongda\Pay\Gateways\Alipay;
+namespace Hanwenbo\Pay\Gateways\Alipay;
 
-use Yansongda\Pay\Exceptions\GatewayException;
-use Yansongda\Pay\Exceptions\InvalidConfigException;
-use Yansongda\Pay\Exceptions\InvalidSignException;
-use Yansongda\Pay\Log;
-use Yansongda\Supports\Arr;
-use Yansongda\Supports\Collection;
-use Yansongda\Supports\Str;
-use Yansongda\Supports\Traits\HasHttpRequest;
+use Hanwenbo\Pay\Exceptions\GatewayException;
+use Hanwenbo\Pay\Exceptions\InvalidConfigException;
+use Hanwenbo\Pay\Exceptions\InvalidSignException;
+use Hanwenbo\Pay\Log;
+use Hanwenbo\Supports\Arr;
+use Hanwenbo\Supports\Collection;
+use Hanwenbo\Supports\Str;
+use Hanwenbo\Supports\Traits\HasHttpRequest;
 
 class Support
 {

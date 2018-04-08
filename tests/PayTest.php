@@ -1,10 +1,10 @@
 <?php
 
-namespace Yansongda\Pay\Tests;
+namespace Hanwenbo\Pay\Tests;
 
-use Yansongda\Pay\Contracts\GatewayApplicationInterface;
-use Yansongda\Pay\Exceptions\GatewayException;
-use Yansongda\Pay\Pay;
+use Hanwenbo\Pay\Contracts\GatewayApplicationInterface;
+use Hanwenbo\Pay\Exceptions\GatewayException;
+use Hanwenbo\Pay\Pay;
 
 class PayTest extends TestCase
 {

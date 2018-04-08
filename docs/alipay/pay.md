@@ -141,16 +141,16 @@ $result = $alipay->transfer($order);
 
 **各支付方法返回值请参考「支持的支付方法」一节。**
 
-返回只会返回两种类型 `Symfony\Component\HttpFoundation\Response` 或 `Yansongda\Supports\Collection`
+返回只会返回两种类型 `Symfony\Component\HttpFoundation\Response` 或 `Hanwenbo\Supports\Collection`
 
 * 返回 Response 类型时，可以通过 `return $response->send()` 直接进行返回（laravel 框架中使用请直接`return $response` ）
 * 返回 Collection 类型时，可以通过 `$collection->xxx` 得到服务器返回的数据。 
 
 # 异常
 
-* Yansongda\Pay\Exceptions\InvalidSignException ，表示验签失败。
-* Yansongda\Pay\Exceptions\GatewayException ，表示支付宝服务器返回的数据非正常结果，例如，参数错误等。
-* Yansongda\Pay\Exceptions\InvalidConfigException ，表示缺少配置参数，如，`ali_public_key`, `private_key` 等
+* Hanwenbo\Pay\Exceptions\InvalidSignException ，表示验签失败。
+* Hanwenbo\Pay\Exceptions\GatewayException ，表示支付宝服务器返回的数据非正常结果，例如，参数错误等。
+* Hanwenbo\Pay\Exceptions\InvalidConfigException ，表示缺少配置参数，如，`ali_public_key`, `private_key` 等
 
 
 
