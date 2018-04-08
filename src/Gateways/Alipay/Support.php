@@ -75,7 +75,7 @@ class Support
         }
 
         throw new GatewayException(
-            'Get Alipay API Error:'.$result[$method]['msg'],
+            'Get Alipay API Error:'.$result[$method]['msg'].($result[$method]['sub_code'] ?? ''),
             $result[$method]['code'],
             $result
         );
