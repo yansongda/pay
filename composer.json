@@ -1,5 +1,5 @@
 {
-    "name": "hanwenbopay",
+    "name": "hanwenbo/pay",
     "description": "专注 Alipay 和 WeChat 的支付扩展包，基于yansongda/pay",
     "keywords": ["alipay", "wechat", "pay"],
     "type": "library",
