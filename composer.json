@@ -1,16 +1,16 @@
 {
-    "name": "yansongda/pay",
-    "description": "专注 Alipay 和 WeChat 的支付扩展包",
+    "name": "hanwenbopay",
+    "description": "专注 Alipay 和 WeChat 的支付扩展包，基于yansongda/pay",
     "keywords": ["alipay", "wechat", "pay"],
     "type": "library",
     "support": {
-        "issues": "https://github.com/yansongda/pay/issues",
-        "source": "https://github.com/yansongda/pay"
+        "issues": "https://github.com/hanwenbo/pay/issues",
+        "source": "https://github.com/hanwenbo/pay"
     },
     "authors": [
         {
-            "name": "yansongda",
-            "email": "me@yansongda.cn"
+            "name": "hanwenbo",
+            "email": "9476400@qq.com"
         }
     ],
     "require": {

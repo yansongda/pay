@@ -1,3 +1,5 @@
+#基于yansongda/pay
+时间不允许细研究，着急使用，临时fork应急使用，主要目的是为了适配swoole
 <h1 align="center">Pay</h1>
 
 <p align="center">
