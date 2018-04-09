@@ -118,13 +118,13 @@ class Wechat implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @param string|null $content
+     *
      * @return Collection
      */
-    public function verify(): Collection
+    public function verify($content = null): Collection
     {
-        $request = Request::createFromGlobals();
-
-        $data = Support::fromXml($request->getContent());
+        $data = Support::fromXml($content ?? Request::createFromGlobals()->getContent());
 
         Log::debug('Receive Wechat Request:', $data);
 
