@@ -201,6 +201,32 @@ class Alipay implements GatewayApplicationInterface
     }
 
     /**
+     * Download bill.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string|array $bill
+     *
+     * @return string
+     */
+    public function download($bill)
+    {
+        $this->payload['method'] = 'alipay.data.dataservice.bill.downloadurl.query';
+        $this->payload['biz_content'] = json_encode(is_array($bill) ? $bill : ['bill_type' => 'trade', 'bill_date' => $bill]);
+        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+
+        Log::debug('Download Bill:', [$this->gateway, $this->payload]);
+
+        $result = Support::requestApi($this->payload, $this->config->get('ali_public_key'));
+
+        if ($result instanceof Collection) {
+            return $result->bill_download_url;
+        }
+
+        return '';
+    }
+
+    /**
      * Reply success to alipay.
      *
      * @author yansongda <me@yansongda.cn>
