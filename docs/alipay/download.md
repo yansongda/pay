@@ -16,7 +16,7 @@ $bill = [
 
 // $bill = '2016-04-05';
 
-$url = $alipay->download($order);
+$url = $alipay->download($bill);
 ```
 
 ## 订单配置参数
