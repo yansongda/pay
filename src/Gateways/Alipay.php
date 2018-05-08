@@ -219,11 +219,7 @@ class Alipay implements GatewayApplicationInterface
 
         $result = Support::requestApi($this->payload, $this->config->get('ali_public_key'));
 
-        if ($result instanceof Collection) {
-            return $result->bill_download_url;
-        }
-
-        return '';
+        return ($result instanceof Collection) ? $result->bill_download_url : '';
     }
 
     /**
