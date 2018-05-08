@@ -209,7 +209,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return string
      */
-    public function download($bill)
+    public function download($bill): string
     {
         $this->payload['method'] = 'alipay.data.dataservice.bill.downloadurl.query';
         $this->payload['biz_content'] = json_encode(is_array($bill) ? $bill : ['bill_type' => 'trade', 'bill_date' => $bill]);
