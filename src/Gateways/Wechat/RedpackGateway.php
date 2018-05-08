@@ -36,8 +36,7 @@ class RedpackGateway extends Gateway
             'mmpaymkttransfers/sendredpack',
             $payload,
             $this->config->get('key'),
-            $this->config->get('cert_client'),
-            $this->config->get('cert_key')
+            ['cert' => $this->config->get('cert_client'), 'ssl_key' => $this->config->get('cert_key')]
         );
     }
 

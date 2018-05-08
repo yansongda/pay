@@ -52,19 +52,18 @@ class Support
      * @param string      $endpoint
      * @param array       $data
      * @param string|null $key
-     * @param string      $certClient
-     * @param string      $certKey
+     * @param array       $cert
      *
      * @return Collection
      */
-    public static function requestApi($endpoint, $data, $key = null, $certClient = null, $certKey = null): Collection
+    public static function requestApi($endpoint, $data, $key = null, $cert = []): Collection
     {
         Log::debug('Request To Wechat Api', [self::baseUri().$endpoint, $data]);
 
         $result = self::getInstance()->post(
             $endpoint,
             self::toXml($data),
-            ($certClient !== null && $certKey !== null) ? ['cert' => $certClient, 'ssl_key' => $certKey] : []
+            $cert
         );
         $result = is_array($result) ? $result : self::fromXml($result);
 
