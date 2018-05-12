@@ -64,7 +64,7 @@ class Support
         $result = mb_convert_encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
         $result = json_decode($result, true);
 
-        if (!self::verifySign($result[$method], $publicKey, true, $result['sign'])) {
+        if (!isset($result['sign']) || !self::verifySign($result[$method], $publicKey, true, $result['sign'])) {
             Log::warning('Alipay Sign Verify FAILED', $result);
 
             throw new InvalidSignException('Alipay Sign Verify FAILED', 3, $result);
