@@ -6,8 +6,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
+use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Gateways\Wechat\Support;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
@@ -110,7 +111,7 @@ class Wechat implements GatewayApplicationInterface
             return $this->makePay($gateway);
         }
 
-        throw new GatewayException("Pay Gateway [{$gateway}] Not Exists", 1);
+        throw new InvalidGatewayException("Pay Gateway [{$gateway}] Not Exists");
     }
 
     /**
@@ -134,7 +135,7 @@ class Wechat implements GatewayApplicationInterface
 
         Log::warning('Wechat Sign Verify FAILED', $data);
 
-        throw new InvalidSignException('Wechat Sign Verify FAILED', 3, $data);
+        throw new InvalidSignException('Wechat Sign Verify FAILED', $data);
     }
 
     /**
@@ -185,7 +186,7 @@ class Wechat implements GatewayApplicationInterface
      */
     public function cancel($order): Collection
     {
-        throw new GatewayException('Wechat Do Not Have Cancel API! Plase use Close API!', 3);
+        throw new GatewayException('Wechat Do Not Have Cancel API! Plase use Close API!');
     }
 
     /**
@@ -239,7 +240,7 @@ class Wechat implements GatewayApplicationInterface
             return $app->pay($this->gateway, $this->payload);
         }
 
-        throw new GatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface", 2);
+        throw new InvalidGatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface");
     }
 
     /**

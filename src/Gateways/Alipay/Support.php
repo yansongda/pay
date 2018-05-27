@@ -64,21 +64,21 @@ class Support
         $result = mb_convert_encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
         $result = json_decode($result, true);
 
-        if (!isset($result['sign']) || !self::verifySign($result[$method], $publicKey, true, $result['sign'])) {
-            Log::warning('Alipay Sign Verify FAILED', $result);
-
-            throw new InvalidSignException('Alipay Sign Verify FAILED', 3, $result);
+        if (!isset($result['sign']) || !isset($result[$method]['code']) || $result[$method]['code'] != '10000') {
+            throw new GatewayException(
+                'Get Alipay API Error:'.$result[$method]['msg'].($result[$method]['sub_code'] ?? ''),
+                $result,
+                $result[$method]['code']
+            );
         }
 
-        if (isset($result[$method]['code']) && $result[$method]['code'] == '10000') {
+        if (self::verifySign($result[$method], $publicKey, true, $result['sign'])) {
             return new Collection($result[$method]);
         }
 
-        throw new GatewayException(
-            'Get Alipay API Error:'.$result[$method]['msg'].($result[$method]['sub_code'] ?? ''),
-            $result[$method]['code'],
-            $result
-        );
+        Log::warning('Alipay Sign Verify FAILED', $result);
+
+        throw new InvalidSignException('Alipay Sign Verify FAILED', $result);
     }
 
     /**
@@ -94,7 +94,7 @@ class Support
     public static function generateSign(array $parmas, $privateKey = null): string
     {
         if (is_null($privateKey)) {
-            throw new InvalidConfigException('Missing Alipay Config -- [private_key]', 1);
+            throw new InvalidConfigException('Missing Alipay Config -- [private_key]');
         }
 
         if (Str::endsWith($privateKey, '.pem')) {
@@ -125,7 +125,7 @@ class Support
     public static function verifySign(array $data, $publicKey = null, $sync = false, $sign = null): bool
     {
         if (is_null($publicKey)) {
-            throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]', 2);
+            throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]');
         }
 
         if (Str::endsWith($publicKey, '.pem')) {

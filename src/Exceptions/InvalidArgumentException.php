@@ -17,10 +17,10 @@ class InvalidArgumentException extends Exception
      * @author yansongda <me@yansonga.cn>
      *
      * @param string       $message
-     * @param int|string   $code
      * @param array|string $raw
+     * @param int|string   $code
      */
-    public function __construct($message, $code, $raw = '')
+    public function __construct($message, $raw = '', $code = 3)
     {
         parent::__construct($message, intval($code));
 

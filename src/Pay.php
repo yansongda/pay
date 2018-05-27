@@ -6,7 +6,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
-use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
@@ -54,7 +54,7 @@ class Pay
             return self::make($gateway);
         }
 
-        throw new GatewayException("Gateway [{$method}] Not Exists", 1);
+        throw new InvalidGatewayException("Gateway [{$method}] Not Exists");
     }
 
     /**
@@ -74,7 +74,7 @@ class Pay
             return $app;
         }
 
-        throw new GatewayException("Gateway [$gateway] Must Be An Instance Of GatewayApplicationInterface", 2);
+        throw new InvalidGatewayException("Gateway [$gateway] Must Be An Instance Of GatewayApplicationInterface");
     }
 
     /**

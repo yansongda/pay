@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Exceptions;
 
-class GatewayException extends Exception
+class InvalidGatewayException extends Exception
 {
     /**
      * Raw error info.
@@ -20,7 +20,7 @@ class GatewayException extends Exception
      * @param array|string $raw
      * @param int|string   $code
      */
-    public function __construct($message, $raw = '', $code = 4)
+    public function __construct($message, $raw = '', $code = 1)
     {
         parent::__construct($message, intval($code));
 
