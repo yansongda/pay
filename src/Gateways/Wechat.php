@@ -165,7 +165,7 @@ class Wechat implements GatewayApplicationInterface
      */
     public function refund($order): Collection
     {
-        $this->payload = Support::filterPayload($this->payload, $order, $this->config);
+        $this->payload = Support::filterPayload($this->payload, $order, $this->config, true);
 
         return Support::requestApi(
             'secapi/pay/refund',

@@ -95,7 +95,7 @@ class Support
      *
      * @return array
      */
-    public static function filterPayload($payload, $order, $config)
+    public static function filterPayload($payload, $order, $config, $preserveNotifyUrl = false)
     {
         $payload = array_merge($payload, is_array($order) ? $order : ['out_trade_no' => $order]);
 
@@ -107,7 +107,11 @@ class Support
             $payload['sub_appid'] = $config->get('sub_'.$type, '');
         }
 
-        unset($payload['notify_url'], $payload['trade_type'], $payload['type']);
+        unset($payload['trade_type'], $payload['type']);
+
+        if (!$preserveNotifyUrl) {
+            unset($payload['notify_url']);
+        }
 
         $payload['sign'] = self::generateSign($payload, $config->get('key'));
 
