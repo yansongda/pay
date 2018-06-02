@@ -60,11 +60,7 @@ class Support
         Log::debug('Request To Alipay Api', [self::getInstance()->baseUri(), $data]);
 
         $data = array_filter($data, function ($value) {
-            if ($value == '' || is_null($value)) {
-                return false;
-            }
-
-            return true;
+            return ($value == '' || is_null($value)) ? false : true;
         });
 
         $result = mb_convert_encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
