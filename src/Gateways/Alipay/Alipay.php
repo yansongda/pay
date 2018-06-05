@@ -220,6 +220,10 @@ abstract class Alipay implements GatewayInterface
         $this->config['method'] = $method;
         $this->config['sign'] = $this->getSign();
 
+        $this->config = array_filter($this->config, function ($value) {
+            return ($value == '' || is_null($value)) ? false : true;
+        });
+
         $method = str_replace('.', '_', $method).'_response';
 
         $data = json_decode($this->post($this->gateway, $this->config), true);
