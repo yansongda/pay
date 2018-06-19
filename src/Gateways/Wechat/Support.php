@@ -100,10 +100,9 @@ class Support
         $payload = array_merge($payload, is_array($order) ? $order : ['out_trade_no' => $order]);
 
         $type = isset($order['type']) ? $order['type'].($order['type'] == 'app' ? '' : '_').'id' : 'app_id';
-
         $payload['appid'] = $config->get($type, '');
-        $mode = $config->get('mode', Wechat::MODE_NORMAL);
-        if ($mode === Wechat::MODE_SERVICE) {
+
+        if ($config->get('mode', Wechat::MODE_NORMAL) === Wechat::MODE_SERVICE) {
             $payload['sub_appid'] = $config->get('sub_'.$type, '');
         }
 

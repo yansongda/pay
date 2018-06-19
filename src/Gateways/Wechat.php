@@ -28,10 +28,17 @@ use Yansongda\Supports\Str;
  */
 class Wechat implements GatewayApplicationInterface
 {
-    const MODE_NORMAL = 'normal'; // 普通模式
-    const MODE_DEV = 'dev'; // 沙箱模式
-    const MODE_HK = 'hk'; // 香港钱包
-    const MODE_SERVICE = 'service'; // 服务商
+    // 普通模式
+    const MODE_NORMAL = 'normal';
+
+    // 沙箱模式
+    const MODE_DEV = 'dev';
+
+    // 香港钱包
+    const MODE_HK = 'hk';
+
+    // 服务商
+    const MODE_SERVICE = 'service';
 
     /**
      * Config.
