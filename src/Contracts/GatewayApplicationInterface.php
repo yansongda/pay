@@ -22,10 +22,11 @@ interface GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
+     * @param bool         $refund
      *
      * @return Yansongda\Supports\Collection
      */
-    public function find($order);
+    public function find($order, $refund);
 
     /**
      * Refund an order.
@@ -65,9 +66,12 @@ interface GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @param string|null $content
+     * @param bool        $refund
+     *
      * @return Yansongda\Supports\Collection
      */
-    public function verify();
+    public function verify($content, $refund);
 
     /**
      * Echo success to server.

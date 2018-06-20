@@ -101,7 +101,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function verify(): Collection
+    public function verify($content = null, $refund = false): Collection
     {
         $request = Request::createFromGlobals();
 
@@ -126,10 +126,11 @@ class Alipay implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
+     * @param bool         $refund
      *
      * @return Collection
      */
-    public function find($order): Collection
+    public function find($order, $refund = false): Collection
     {
         $this->payload['method'] = 'alipay.trade.query';
         $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
