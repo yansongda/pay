@@ -4,9 +4,10 @@
 | :---: | :---: | :---: |
 | refund | array $order | Collection |
 
+
 # 使用方法
 
-## 例子
+## 退款操作
 
 ```PHP
 $order = [
@@ -28,17 +29,11 @@ $result = $wechat->refund($order);
 
 如果您需要退 `APP/小程序` 的订单，请传入参数：`['type' => 'app']`/`['type' => 'miniapp']`
 
-# 异步通知验证
-```PHP
-$result = $wechat->verify(null, true);
-// 是的，你没有看错，就是这么简单！
-
-// return $wechat->success()->send(); // laravel 框架直接 return $wechat->success();
-```
 
 # 返回值
 
 返回 Collection 类型，可以通过 `$collection->xxx` 得到服务器返回的数据。
+
 
 # 异常
 
