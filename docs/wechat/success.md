@@ -6,7 +6,7 @@
 
 # 使用方法
 
-```php
+```PHP
 // $result = $wechat->verify();
 
 return $wechat->success()->send(); // laravel 框架直接 return $wechat->success();

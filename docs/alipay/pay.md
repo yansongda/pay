@@ -17,7 +17,7 @@
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -37,7 +37,7 @@ return $alipay->web($order)->send(); // laravel 框架中请直接 return $alipa
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -57,7 +57,7 @@ return $alipay->wap($order)->send(); // laravel 框架中请直接 return $alipa
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -78,7 +78,7 @@ return $alipay->app($order)->send(); // laravel 框架中请直接 return $alipa
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -99,7 +99,7 @@ $result = $alipay->pos($order);
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -120,7 +120,7 @@ $result = $alipay->scan($order);
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_biz_no' => time(),
     'payee_type' => 'ALIPAY_LOGONID',

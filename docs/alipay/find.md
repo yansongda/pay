@@ -6,9 +6,9 @@
 
 # 使用方法
 
-## 例子
+## 查询普通订单
 
-```php
+```PHP
 $order = [
     'out_trade_no' => '1514027114',
     'bill_type' => 'trade'
@@ -18,6 +18,20 @@ $order = [
 
 $result = $alipay->find($order);
 ```
+
+## 查询退款订单
+
+> v2.4.0 及以上可用
+
+```PHP
+$order = [
+    'out_trade_no' => '1514027114',
+    'out_request_no' => '1514027114'
+];
+
+$result = $alipay->find($order, true);
+```
+
 
 ## 订单配置参数
 

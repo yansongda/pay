@@ -8,7 +8,7 @@
 
 # 使用方法
 
-```php
+```PHP
 $result = $alipay->verify();
 // 是的，你没有看错，就是这么简单！
 

@@ -6,7 +6,7 @@
 
 # 使用方法
 
-```php
+```PHP
 // $result = $alipay->verify();
 
 return $alipay->success()->send(); // laravel 框架直接 return $alipay->success();

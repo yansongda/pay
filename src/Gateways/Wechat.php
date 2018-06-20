@@ -163,6 +163,8 @@ class Wechat implements GatewayApplicationInterface
     {
         $this->payload = Support::filterPayload($this->payload, $order, $this->config);
 
+        Log::debug('Wechat Find An Order:', [$this->gateway, $this->payload]);
+
         return Support::requestApi(
             $refund ? 'pay/refundquery' : 'pay/orderquery',
             $this->payload,
@@ -182,6 +184,8 @@ class Wechat implements GatewayApplicationInterface
     public function refund($order): Collection
     {
         $this->payload = Support::filterPayload($this->payload, $order, $this->config, true);
+
+        Log::debug('Wechat Refund An Order:', [$this->gateway, $this->payload]);
 
         return Support::requestApi(
             'secapi/pay/refund',
@@ -219,6 +223,8 @@ class Wechat implements GatewayApplicationInterface
         unset($this->payload['spbill_create_ip']);
 
         $this->payload = Support::filterPayload($this->payload, $order, $this->config);
+
+        Log::debug('Wechat Close An Order:', [$this->gateway, $this->payload]);
 
         return Support::requestApi('pay/closeorder', $this->payload, $this->config->get('key'));
     }

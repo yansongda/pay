@@ -10,7 +10,7 @@
 
 ## 例子
 
-```php
+```PHP
 $bill = [
     'bill_date' => '2016-04-05',    // 2016-04
     'bill_type' => 'trade'
