@@ -127,6 +127,7 @@ class Wechat implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|null $content
+     * @param bool        $refund
      *
      * @return Collection
      */

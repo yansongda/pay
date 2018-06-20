@@ -8,7 +8,7 @@
 
 ## 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => '1514192025',
     'out_refund_no' => time(),
@@ -27,6 +27,14 @@ $result = $wechat->refund($order);
 ### APP/小程序退款
 
 如果您需要退 `APP/小程序` 的订单，请传入参数：`['type' => 'app']`/`['type' => 'miniapp']`
+
+# 异步通知验证
+```PHP
+$result = $wechat->verify(null, true);
+// 是的，你没有看错，就是这么简单！
+
+// return $wechat->success()->send(); // laravel 框架直接 return $wechat->success();
+```
 
 # 返回值
 
