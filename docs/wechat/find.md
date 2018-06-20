@@ -20,6 +20,8 @@ $result = $wechat->find($order);
 
 ## 查询退款订单
 
+> v2.4.0 及以上可用
+
 ```PHP
 $order = [
     'out_trade_no' => '1514027114',
