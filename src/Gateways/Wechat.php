@@ -155,14 +155,19 @@ class Wechat implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
+     * @param bool         $refund
      *
      * @return Collection
      */
-    public function find($order): Collection
+    public function find($order, $refund = false): Collection
     {
         $this->payload = Support::filterPayload($this->payload, $order, $this->config);
 
-        return Support::requestApi('pay/orderquery', $this->payload, $this->config->get('key'));
+        return Support::requestApi(
+            $refund ? 'pay/refundquery' : 'pay/orderquery',
+            $this->payload,
+            $this->config->get('key')
+        );
     }
 
     /**
