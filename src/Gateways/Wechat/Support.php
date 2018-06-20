@@ -160,7 +160,7 @@ class Support
     }
 
     /**
-     * Decrypt refund contents
+     * Decrypt refund contents.
      *
      * @author yansongda <me@yansongda.cn>
      *
