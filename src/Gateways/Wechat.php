@@ -130,13 +130,16 @@ class Wechat implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function verify($content = null): Collection
+    public function verify($content = null, $refund = false): Collection
     {
-        $data = Support::fromXml($content ?? Request::createFromGlobals()->getContent());
+        $content = $content ?? Request::createFromGlobals()->getContent();
+        $data = Support::fromXml(
+            $refund ? Support::decryptRefundContents($content, $this->config->get('key')) : $content
+        );
 
         Log::debug('Receive Wechat Request:', $data);
 
-        if (Support::generateSign($data, $this->config->get('key')) === $data['sign']) {
+        if ($refund || Support::generateSign($data, $this->config->get('key')) === $data['sign']) {
             return new Collection($data);
         }
 
@@ -224,7 +227,7 @@ class Wechat implements GatewayApplicationInterface
     public function success(): Response
     {
         return Response::create(
-            Support::toXml(['return_code' => 'SUCCESS']),
+            Support::toXml(['return_code' => 'SUCCESS', 'return_msg' => 'OK']),
             200,
             ['Content-Type' => 'application/xml']
         );

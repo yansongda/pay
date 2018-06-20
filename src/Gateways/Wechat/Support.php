@@ -160,6 +160,21 @@ class Support
     }
 
     /**
+     * Decrypt refund contents
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $contents
+     * @param string $key
+     *
+     * @return string
+     */
+    public static function decryptRefundContents($contents, $key): string
+    {
+        return openssl_decrypt(base64_decode($contents), 'AES-256-ECB', md5($key), OPENSSL_RAW_DATA);
+    }
+
+    /**
      * Convert array to xml.
      *
      * @author yansongda <me@yansongda.cn>
