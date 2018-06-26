@@ -29,6 +29,15 @@ class Support
     protected $baseUri = 'https://api.mch.weixin.qq.com/';
 
     /**
+     * Bootstrap,
+     *
+     * @author yansongda <me@yansongda.cn>
+     */
+    private function __construct()
+    {
+    }
+
+    /**
      * Get instance.
      *
      * @author yansongda <me@yansongda.cn>

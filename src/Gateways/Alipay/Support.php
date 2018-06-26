@@ -30,6 +30,15 @@ class Support
     protected $baseUri = 'https://openapi.alipay.com/gateway.do';
 
     /**
+     * Bootstrap,
+     *
+     * @author yansongda <me@yansongda.cn>
+     */
+    private function __construct()
+    {
+    }
+
+    /**
      * Get instance.
      *
      * @author yansongda <me@yansongda.cn>
