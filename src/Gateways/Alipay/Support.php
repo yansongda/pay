@@ -30,7 +30,7 @@ class Support
     protected $baseUri = 'https://openapi.alipay.com/gateway.do';
 
     /**
-     * Bootstrap,
+     * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
      */

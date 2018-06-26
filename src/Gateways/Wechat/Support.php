@@ -29,7 +29,7 @@ class Support
     protected $baseUri = 'https://api.mch.weixin.qq.com/';
 
     /**
-     * Bootstrap,
+     * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
      */
