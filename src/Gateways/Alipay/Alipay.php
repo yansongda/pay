@@ -221,7 +221,7 @@ abstract class Alipay implements GatewayInterface
         $this->config['sign'] = $this->getSign();
 
         $this->config = array_filter($this->config, function ($value) {
-            return ($value == '' || is_null($value)) ? false : true;
+            return $value !== '' && !is_null($value);
         });
 
         $method = str_replace('.', '_', $method).'_response';
