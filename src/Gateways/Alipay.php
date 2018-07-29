@@ -83,6 +83,12 @@ class Alipay implements GatewayApplicationInterface
      */
     public function pay($gateway, $params = [])
     {
+        foreach (['return_url', 'notify_url'] as $field) {
+            if (isset($params[$field])) {
+                $this->payload[$field] = $params[$field];
+                unset($params[$field]);
+            }
+        }
         $this->payload['biz_content'] = json_encode($params);
 
         $gateway = get_class($this).'\\'.Str::studly($gateway).'Gateway';
