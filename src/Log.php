@@ -8,7 +8,6 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
 /**
- * @package Yansongda\Pay
  * @method static void emergency($message, array $context = array())
  * @method static void alert($message, array $context = array())
  * @method static void critical($message, array $context = array())
