@@ -99,12 +99,12 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array  $parmas
+     * @param array  $params
      * @param string $privateKey
      *
      * @return string
      */
-    public static function generateSign(array $parmas, $privateKey = null): string
+    public static function generateSign(array $params, $privateKey = null): string
     {
         if (is_null($privateKey)) {
             throw new InvalidConfigException('Missing Alipay Config -- [private_key]');
@@ -118,7 +118,7 @@ class Support
                 "\n-----END RSA PRIVATE KEY-----";
         }
 
-        openssl_sign(self::getSignContent($parmas), $sign, $privateKey, OPENSSL_ALGO_SHA256);
+        openssl_sign(self::getSignContent($params), $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
         return base64_encode($sign);
     }
