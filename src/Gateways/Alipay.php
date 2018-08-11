@@ -15,12 +15,12 @@ use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 /**
- * @method \Yansongda\Pay\Gateways\Alipay\AppGateway app(array $config) APP 支付
- * @method \Yansongda\Pay\Gateways\Alipay\PosGateway pos(array $config) 刷卡支付
- * @method \Yansongda\Pay\Gateways\Alipay\ScanGateway scan(array $config) 扫码支付
- * @method \Yansongda\Pay\Gateways\Alipay\TransferGateway transfer(array $config) 帐户转账
- * @method \Yansongda\Pay\Gateways\Alipay\WapGateway wap(array $config) 手机网站支付
- * @method \Yansongda\Pay\Gateways\Alipay\WebGateway web(array $config) 电脑支付
+ * @method Response app(array $config) APP 支付
+ * @method Collection pos(array $config) 刷卡支付
+ * @method Collection scan(array $config) 扫码支付
+ * @method Collection transfer(array $config) 帐户转账
+ * @method Response wap(array $config) 手机网站支付
+ * @method Response web(array $config) 电脑支付
  */
 class Alipay implements GatewayApplicationInterface
 {
