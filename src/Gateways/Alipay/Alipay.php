@@ -50,7 +50,7 @@ abstract class Alipay implements GatewayInterface
             'app_id'      => $this->user_config->get('app_id'),
             'method'      => '',
             'format'      => 'JSON',
-            'charset'     => 'utf-8',
+            'charset'     => 'UTF-8',
             'sign_type'   => 'RSA2',
             'version'     => '1.0',
             'return_url'  => $this->user_config->get('return_url', ''),
