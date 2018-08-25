@@ -12,7 +12,7 @@ interface GatewayApplicationInterface
      * @param string $gateway
      * @param array  $params
      *
-     * @return Yansongda\Supports\Collection|Symfony\Component\HttpFoundation\Response
+     * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
      */
     public function pay($gateway, $params);
 
@@ -24,7 +24,7 @@ interface GatewayApplicationInterface
      * @param string|array $order
      * @param bool         $refund
      *
-     * @return Yansongda\Supports\Collection
+     * @return \Yansongda\Supports\Collection
      */
     public function find($order, $refund);
 
@@ -35,7 +35,7 @@ interface GatewayApplicationInterface
      *
      * @param array $order
      *
-     * @return Yansongda\Supports\Collection
+     * @return \Yansongda\Supports\Collection
      */
     public function refund($order);
 
@@ -46,7 +46,7 @@ interface GatewayApplicationInterface
      *
      * @param string|array $order
      *
-     * @return Yansongda\Supports\Collection
+     * @return \Yansongda\Supports\Collection
      */
     public function cancel($order);
 
@@ -57,7 +57,7 @@ interface GatewayApplicationInterface
      *
      * @param string|array $order
      *
-     * @return Yansongda\Supports\Collection
+     * @return \Yansongda\Supports\Collection
      */
     public function close($order);
 
@@ -69,7 +69,7 @@ interface GatewayApplicationInterface
      * @param string|null $content
      * @param bool        $refund
      *
-     * @return Yansongda\Supports\Collection
+     * @return \Yansongda\Supports\Collection
      */
     public function verify($content, $refund);
 
@@ -78,7 +78,7 @@ interface GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function success();
 }

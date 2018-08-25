@@ -2,17 +2,17 @@
 
 namespace Yansongda\Pay;
 
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
+use Yansongda\Pay\Gateways\Alipay;
+use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
+use Yansongda\Supports\Log;
 
 /**
- * @method static \Yansongda\Pay\Gateways\Alipay alipay(array $config) 支付宝
- * @method static \Yansongda\Pay\Gateways\Wechat wechat(array $config) 微信
+ * @method static Alipay alipay(array $config) 支付宝
+ * @method static Wechat wechat(array $config) 微信
  */
 class Pay
 {
@@ -42,11 +42,14 @@ class Pay
      *
      * @param string $method
      *
+     * @throws InvalidGatewayException
+     * @throws \Exception
+     *
      * @return GatewayApplicationInterface
      */
     protected function create($method)
     {
-        !$this->config->has('log.file') ?: $this->registeLog();
+        !$this->config->has('log.file') ?: $this->registerLog();
 
         $gateway = __NAMESPACE__.'\\Gateways\\'.Str::studly($method);
 
@@ -64,6 +67,8 @@ class Pay
      *
      * @param string $gateway
      *
+     * @throws InvalidGatewayException
+     *
      * @return GatewayApplicationInterface
      */
     protected function make($gateway)
@@ -78,20 +83,21 @@ class Pay
     }
 
     /**
-     * Registe log service.
+     * Register log service.
      *
      * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Exception
      */
-    protected function registeLog()
+    protected function registerLog()
     {
-        $handler = new StreamHandler(
+        $logger = Log::createLogger(
             $this->config->get('log.file'),
-            $this->config->get('log.level', Logger::WARNING)
+            'yansongda.pay',
+            $this->config->get('log.level', 'warning'),
+            $this->config->get('log.type', 'daily'),
+            $this->config->get('log.max_file', 30)
         );
-        $handler->setFormatter(new LineFormatter("%datetime% > %level_name% > %message% %context% %extra%\n\n"));
-
-        $logger = new Logger('yansongda.pay');
-        $logger->pushHandler($handler);
 
         Log::setLogger($logger);
     }
@@ -103,6 +109,8 @@ class Pay
      *
      * @param string $method
      * @param array  $params
+     *
+     * @throws InvalidGatewayException
      *
      * @return GatewayApplicationInterface
      */

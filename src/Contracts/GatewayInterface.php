@@ -12,7 +12,7 @@ interface GatewayInterface
      * @param string $endpoint
      * @param array  $payload
      *
-     * @return Yansongda\Supports\Collection|Symfony\Component\HttpFoundation\Response
+     * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
      */
     public function pay($endpoint, array $payload);
 }
