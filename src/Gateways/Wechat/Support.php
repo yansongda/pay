@@ -141,6 +141,7 @@ class Support
      * @param null  $key
      *
      * @throws InvalidArgumentException
+     *
      * @return string
      */
     public static function generateSign($data, $key = null): string
