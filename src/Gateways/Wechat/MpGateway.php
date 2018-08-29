@@ -16,6 +16,8 @@ class MpGateway extends Gateway
      * @param string $endpoint
      * @param array  $payload
      *
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     *
      * @return Collection
      */
     public function pay($endpoint, array $payload): Collection

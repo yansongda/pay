@@ -72,12 +72,31 @@ class Alipay implements GatewayApplicationInterface
     }
 
     /**
+     * Magic pay.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $method
+     * @param array  $params
+     *
+     * @throws InvalidGatewayException
+     *
+     * @return Response|Collection
+     */
+    public function __call($method, $params)
+    {
+        return $this->pay($method, ...$params);
+    }
+
+    /**
      * Pay an order.
      *
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $gateway
      * @param array  $params
+     *
+     * @throws InvalidGatewayException
      *
      * @return Response|Collection
      */
@@ -101,9 +120,15 @@ class Alipay implements GatewayApplicationInterface
     }
 
     /**
-     * Verfiy sign.
+     * Verify sign.
      *
      * @author yansongda <me@yansongda.cn>
+     *
+     * @param null $content
+     * @param bool $refund
+     *
+     * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Collection
      */
@@ -134,6 +159,10 @@ class Alipay implements GatewayApplicationInterface
      * @param string|array $order
      * @param bool         $refund
      *
+     * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     *
      * @return Collection
      */
     public function find($order, $refund = false): Collection
@@ -153,6 +182,10 @@ class Alipay implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param array $order
+     *
+     * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Collection
      */
@@ -174,6 +207,10 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string|array $order
      *
+     * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     *
      * @return Collection
      */
     public function cancel($order): Collection
@@ -194,6 +231,10 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string|array $order
      *
+     * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     *
      * @return Collection
      */
     public function close($order): Collection
@@ -213,6 +254,10 @@ class Alipay implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $bill
+     *
+     * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return string
      */
@@ -248,6 +293,8 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string $gateway
      *
+     * @throws InvalidGatewayException
+     *
      * @return Response|Collection
      */
     protected function makePay($gateway)
@@ -259,20 +306,5 @@ class Alipay implements GatewayApplicationInterface
         }
 
         throw new InvalidGatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface");
-    }
-
-    /**
-     * Magic pay.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $method
-     * @param array  $params
-     *
-     * @return Response|Collection
-     */
-    public function __call($method, $params)
-    {
-        return $this->pay($method, ...$params);
     }
 }

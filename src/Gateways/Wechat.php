@@ -99,12 +99,31 @@ class Wechat implements GatewayApplicationInterface
     }
 
     /**
+     * Magic pay.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $method
+     * @param string $params
+     *
+     * @throws InvalidGatewayException
+     *
+     * @return Response|Collection
+     */
+    public function __call($method, $params)
+    {
+        return self::pay($method, ...$params);
+    }
+
+    /**
      * Pay an order.
      *
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $gateway
      * @param array  $params
+     *
+     * @throws InvalidGatewayException
      *
      * @return Response|Collection
      */
@@ -128,6 +147,9 @@ class Wechat implements GatewayApplicationInterface
      *
      * @param string|null $content
      * @param bool        $refund
+     *
+     * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      *
      * @return Collection
      */
@@ -158,6 +180,9 @@ class Wechat implements GatewayApplicationInterface
      * @param string|array $order
      * @param bool         $refund
      *
+     * @throws GatewayException
+     * @throws InvalidSignException
+     *
      * @return Collection
      */
     public function find($order, $refund = false): Collection
@@ -179,6 +204,9 @@ class Wechat implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param array $order
+     *
+     * @throws GatewayException
+     * @throws InvalidSignException
      *
      * @return Collection
      */
@@ -203,6 +231,8 @@ class Wechat implements GatewayApplicationInterface
      *
      * @param array $order
      *
+     * @throws GatewayException
+     *
      * @return Collection
      */
     public function cancel($order): Collection
@@ -216,6 +246,9 @@ class Wechat implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
+     *
+     * @throws GatewayException
+     * @throws InvalidSignException
      *
      * @return Collection
      */
@@ -235,6 +268,8 @@ class Wechat implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     *
      * @return Response
      */
     public function success(): Response
@@ -253,6 +288,8 @@ class Wechat implements GatewayApplicationInterface
      *
      * @param string $gateway
      *
+     * @throws InvalidGatewayException
+     *
      * @return Response
      */
     protected function makePay($gateway)
@@ -264,20 +301,5 @@ class Wechat implements GatewayApplicationInterface
         }
 
         throw new InvalidGatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface");
-    }
-
-    /**
-     * Magic pay.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $method
-     * @param string $params
-     *
-     * @return Response|Collection
-     */
-    public function __call($method, $params)
-    {
-        return self::pay($method, ...$params);
     }
 }

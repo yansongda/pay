@@ -7,8 +7,8 @@ use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Gateways\Alipay;
 use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Supports\Config;
-use Yansongda\Supports\Str;
 use Yansongda\Supports\Log;
+use Yansongda\Supports\Str;
 
 /**
  * @method static Alipay alipay(array $config) 支付宝
@@ -33,6 +33,25 @@ class Pay
     public function __construct(array $config)
     {
         $this->config = new Config($config);
+    }
+
+    /**
+     * Magic static call.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $method
+     * @param array  $params
+     *
+     * @throws InvalidGatewayException
+     *
+     * @return GatewayApplicationInterface
+     */
+    public static function __callStatic($method, $params)
+    {
+        $app = new self(...$params);
+
+        return $app->create($method);
     }
 
     /**
@@ -100,24 +119,5 @@ class Pay
         );
 
         Log::setLogger($logger);
-    }
-
-    /**
-     * Magic static call.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $method
-     * @param array  $params
-     *
-     * @throws InvalidGatewayException
-     *
-     * @return GatewayApplicationInterface
-     */
-    public static function __callStatic($method, $params)
-    {
-        $app = new self(...$params);
-
-        return $app->create($method);
     }
 }

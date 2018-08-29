@@ -15,18 +15,18 @@ class Support
     use HasHttpRequest;
 
     /**
-     * Instance.
-     *
-     * @var Support
-     */
-    private static $instance;
-
-    /**
      * Wechat gateway.
      *
      * @var string
      */
     protected $baseUri = 'https://api.mch.weixin.qq.com/';
+
+    /**
+     * Instance.
+     *
+     * @var Support
+     */
+    private static $instance;
 
     /**
      * Bootstrap.
@@ -62,6 +62,10 @@ class Support
      * @param array       $data
      * @param string|null $key
      * @param array       $cert
+     *
+     * @throws GatewayException
+     * @throws InvalidArgumentException
+     * @throws InvalidSignException
      *
      * @return Collection
      */
@@ -102,6 +106,8 @@ class Support
      * @param array|string               $order
      * @param \Yansongda\Supports\Config $config
      *
+     * @throws InvalidArgumentException
+     *
      * @return array
      */
     public static function filterPayload($payload, $order, $config, $preserveNotifyUrl = false)
@@ -132,7 +138,9 @@ class Support
      * @author yansongda <me@yansongda.cn>
      *
      * @param array $data
+     * @param null  $key
      *
+     * @throws InvalidArgumentException
      * @return string
      */
     public static function generateSign($data, $key = null): string
@@ -190,6 +198,8 @@ class Support
      *
      * @param array $data
      *
+     * @throws InvalidArgumentException
+     *
      * @return string
      */
     public static function toXml($data): string
@@ -214,6 +224,8 @@ class Support
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $xml
+     *
+     * @throws InvalidArgumentException
      *
      * @return array
      */

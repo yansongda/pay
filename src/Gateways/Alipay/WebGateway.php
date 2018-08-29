@@ -36,6 +36,8 @@ class WebGateway implements GatewayInterface
      * @param string $endpoint
      * @param array  $payload
      *
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     *
      * @return Response
      */
     public function pay($endpoint, array $payload): Response

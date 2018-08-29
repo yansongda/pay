@@ -15,6 +15,8 @@ class MiniappGateway extends MpGateway
      * @param string $endpoint
      * @param array  $payload
      *
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     *
      * @return Collection
      */
     public function pay($endpoint, array $payload): Collection

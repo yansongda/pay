@@ -16,18 +16,18 @@ class Support
     use HasHttpRequest;
 
     /**
-     * Instance.
-     *
-     * @var Support
-     */
-    private static $instance;
-
-    /**
      * Alipay gateway.
      *
      * @var string
      */
     protected $baseUri = 'https://openapi.alipay.com/gateway.do';
+
+    /**
+     * Instance.
+     *
+     * @var Support
+     */
+    private static $instance;
 
     /**
      * Bootstrap.
@@ -61,6 +61,10 @@ class Support
      *
      * @param array  $data
      * @param string $publicKey
+     *
+     * @throws GatewayException
+     * @throws InvalidConfigException
+     * @throws InvalidSignException
      *
      * @return Collection
      */
@@ -102,6 +106,8 @@ class Support
      * @param array  $params
      * @param string $privateKey
      *
+     * @throws InvalidConfigException
+     *
      * @return string
      */
     public static function generateSign(array $params, $privateKey = null): string
@@ -132,6 +138,8 @@ class Support
      * @param string      $publicKey
      * @param bool        $sync
      * @param string|null $sign
+     *
+     * @throws InvalidConfigException
      *
      * @return bool
      */
