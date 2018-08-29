@@ -137,8 +137,8 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $data
-     * @param null  $key
+     * @param array       $data
+     * @param null|string $key
      *
      * @throws InvalidArgumentException
      *
