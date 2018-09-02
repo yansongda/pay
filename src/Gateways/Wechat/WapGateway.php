@@ -15,6 +15,10 @@ class WapGateway extends Gateway
      * @param string $endpoint
      * @param array  $payload
      *
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     *
      * @return Response
      */
     public function pay($endpoint, array $payload): Response

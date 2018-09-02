@@ -130,7 +130,7 @@ class Support
     }
 
     /**
-     * Verfiy sign.
+     * Verify sign.
      *
      * @author yansongda <me@yansonga.cn>
      *

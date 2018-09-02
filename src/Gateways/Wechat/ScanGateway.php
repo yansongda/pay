@@ -15,6 +15,10 @@ class ScanGateway extends Gateway
      * @param string $endpoint
      * @param array  $payload
      *
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     *
      * @return Collection
      */
     public function pay($endpoint, array $payload): Collection

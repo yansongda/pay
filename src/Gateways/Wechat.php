@@ -182,6 +182,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @throws GatewayException
      * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      *
      * @return Collection
      */
@@ -207,6 +208,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @throws GatewayException
      * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      *
      * @return Collection
      */
@@ -249,6 +251,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @throws GatewayException
      * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      *
      * @return Collection
      */
