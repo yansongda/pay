@@ -43,9 +43,9 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return Support
+     * @return self
      */
-    public static function getInstance()
+    public static function getInstance(): self
     {
         if (!(self::$instance instanceof self)) {
             self::$instance = new self();

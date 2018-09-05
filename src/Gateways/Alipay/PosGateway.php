@@ -66,7 +66,7 @@ class PosGateway implements GatewayInterface
      *
      * @return string
      */
-    protected function getMethod()
+    protected function getMethod(): string
     {
         return 'alipay.trade.pay';
     }
@@ -78,7 +78,7 @@ class PosGateway implements GatewayInterface
      *
      * @return string
      */
-    protected function getProductCode()
+    protected function getProductCode(): string
     {
         return 'FACE_TO_FACE_PAYMENT';
     }
