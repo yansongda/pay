@@ -47,7 +47,7 @@ class Pay
      *
      * @return GatewayApplicationInterface
      */
-    public static function __callStatic($method, $params)
+    public static function __callStatic($method, $params): GatewayApplicationInterface
     {
         $app = new self(...$params);
 
@@ -66,7 +66,7 @@ class Pay
      *
      * @return GatewayApplicationInterface
      */
-    protected function create($method)
+    protected function create($method): GatewayApplicationInterface
     {
         !$this->config->has('log.file') ?: $this->registerLog();
 
@@ -90,7 +90,7 @@ class Pay
      *
      * @return GatewayApplicationInterface
      */
-    protected function make($gateway)
+    protected function make($gateway): GatewayApplicationInterface
     {
         $app = new $gateway($this->config);
 
@@ -98,7 +98,7 @@ class Pay
             return $app;
         }
 
-        throw new InvalidGatewayException("Gateway [$gateway] Must Be An Instance Of GatewayApplicationInterface");
+        throw new InvalidGatewayException("Gateway [{$gateway}] Must Be An Instance Of GatewayApplicationInterface");
     }
 
     /**
