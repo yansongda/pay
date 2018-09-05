@@ -255,7 +255,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function close($order)
+    public function close($order): Collection
     {
         unset($this->payload['spbill_create_ip']);
 
@@ -293,7 +293,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @throws InvalidGatewayException
      *
-     * @return Response
+     * @return Response|Collection
      */
     protected function makePay($gateway)
     {

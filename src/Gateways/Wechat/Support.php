@@ -44,7 +44,7 @@ class Support
      *
      * @return Support
      */
-    public static function getInstance()
+    public static function getInstance(): Support
     {
         if (!(self::$instance instanceof self)) {
             self::$instance = new self();
@@ -105,12 +105,13 @@ class Support
      * @param array                      $payload
      * @param array|string               $order
      * @param \Yansongda\Supports\Config $config
+     * @param bool                       $preserveNotifyUrl
      *
      * @throws InvalidArgumentException
      *
      * @return array
      */
-    public static function filterPayload($payload, $order, $config, $preserveNotifyUrl = false)
+    public static function filterPayload($payload, $order, $config, $preserveNotifyUrl = false): array
     {
         $payload = array_merge($payload, is_array($order) ? $order : ['out_trade_no' => $order]);
 
