@@ -222,7 +222,9 @@ class PayController extends Controller
         'cert_key' => './cert/apiclient_key.pem',// optional，退款等情况时用到
         'log' => [ // optional
             'file' => './logs/wechat.log',
-            'level' => 'debug'
+            'level' => 'debug',
+            'type' => 'single', // optional, 可选 daily.
+            'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
         ],
         'mode' => 'dev', // optional, dev/hk;当为 `hk` 时，为香港 gateway。
     ];
