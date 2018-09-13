@@ -5,7 +5,6 @@ namespace Yansongda\Pay\Gateways\Alipay;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Log;
-use Yansongda\Supports\Config;
 
 class WebGateway implements GatewayInterface
 {
