@@ -24,12 +24,9 @@ use Yansongda\Supports\Str;
  */
 class Alipay implements GatewayApplicationInterface
 {
-    /**
-     * Config.
-     *
-     * @var Config
-     */
-    protected $config;
+    const MODE_NORMAL = 'normal';
+
+    const MODE_DEV = 'dev';
 
     /**
      * Alipay payload.
@@ -51,20 +48,21 @@ class Alipay implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param Config $config
+     *
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      */
     public function __construct(Config $config)
     {
-        $this->config = $config;
-        $this->gateway = Support::baseUri($this->config->get('mode', 'normal'));
+        $this->gateway = Support::getInstance($config)->getBaseUri();
         $this->payload = [
-            'app_id'      => $this->config->get('app_id'),
+            'app_id'      => $config->get('app_id'),
             'method'      => '',
             'format'      => 'JSON',
             'charset'     => 'utf-8',
             'sign_type'   => 'RSA2',
             'version'     => '1.0',
-            'return_url'  => $this->config->get('return_url'),
-            'notify_url'  => $this->config->get('notify_url'),
+            'return_url'  => $config->get('return_url'),
+            'notify_url'  => $config->get('notify_url'),
             'timestamp'   => date('Y-m-d H:i:s'),
             'sign'        => '',
             'biz_content' => '',
@@ -129,6 +127,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @throws InvalidSignException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      *
      * @return Collection
      */
@@ -142,7 +141,7 @@ class Alipay implements GatewayApplicationInterface
 
         Log::info('Received Alipay Request', $data);
 
-        if (Support::verifySign($data, $this->config->get('ali_public_key'))) {
+        if (Support::verifySign($data)) {
             return new Collection($data);
         }
 
@@ -162,6 +161,7 @@ class Alipay implements GatewayApplicationInterface
      * @throws InvalidSignException
      * @throws \Yansongda\Pay\Exceptions\GatewayException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      *
      * @return Collection
      */
@@ -169,11 +169,11 @@ class Alipay implements GatewayApplicationInterface
     {
         $this->payload['method'] = $refund ? 'alipay.trade.fastpay.refund.query' : 'alipay.trade.query';
         $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
-        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+        $this->payload['sign'] = Support::generateSign($this->payload);
 
         Log::info('Starting To Find An Alipay Order', [$this->gateway, $this->payload]);
 
-        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($this->payload);
     }
 
     /**
@@ -186,6 +186,7 @@ class Alipay implements GatewayApplicationInterface
      * @throws InvalidSignException
      * @throws \Yansongda\Pay\Exceptions\GatewayException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      *
      * @return Collection
      */
@@ -193,11 +194,11 @@ class Alipay implements GatewayApplicationInterface
     {
         $this->payload['method'] = 'alipay.trade.refund';
         $this->payload['biz_content'] = json_encode($order);
-        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+        $this->payload['sign'] = Support::generateSign($this->payload);
 
         Log::info('Starting To Refund An Alipay Order', [$this->gateway, $this->payload]);
 
-        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($this->payload);
     }
 
     /**
@@ -210,6 +211,7 @@ class Alipay implements GatewayApplicationInterface
      * @throws InvalidSignException
      * @throws \Yansongda\Pay\Exceptions\GatewayException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      *
      * @return Collection
      */
@@ -217,11 +219,11 @@ class Alipay implements GatewayApplicationInterface
     {
         $this->payload['method'] = 'alipay.trade.cancel';
         $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
-        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+        $this->payload['sign'] = Support::generateSign($this->payload);
 
         Log::info('Starting To Cancel An Alipay Order', [$this->gateway, $this->payload]);
 
-        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($this->payload);
     }
 
     /**
@@ -233,6 +235,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @throws InvalidSignException
      * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Collection
@@ -241,11 +244,11 @@ class Alipay implements GatewayApplicationInterface
     {
         $this->payload['method'] = 'alipay.trade.close';
         $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
-        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+        $this->payload['sign'] = Support::generateSign($this->payload);
 
         Log::info('Starting To Close An Alipay Order', [$this->gateway, $this->payload]);
 
-        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($this->payload);
     }
 
     /**
@@ -257,6 +260,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @throws InvalidSignException
      * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return string
@@ -265,11 +269,11 @@ class Alipay implements GatewayApplicationInterface
     {
         $this->payload['method'] = 'alipay.data.dataservice.bill.downloadurl.query';
         $this->payload['biz_content'] = json_encode(is_array($bill) ? $bill : ['bill_type' => 'trade', 'bill_date' => $bill]);
-        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+        $this->payload['sign'] = Support::generateSign($this->payload);
 
         Log::info('Starting To Download The Alipay Bill', [$this->gateway, $this->payload]);
 
-        $result = Support::requestApi($this->payload, $this->config->get('ali_public_key'));
+        $result = Support::requestApi($this->payload);
 
         return ($result instanceof Collection) ? $result->bill_download_url : '';
     }
@@ -299,7 +303,7 @@ class Alipay implements GatewayApplicationInterface
      */
     protected function makePay($gateway)
     {
-        $app = new $gateway($this->config);
+        $app = new $gateway();
 
         if ($app instanceof GatewayInterface) {
             return $app->pay($this->gateway, $this->payload);

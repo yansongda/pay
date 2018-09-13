@@ -37,6 +37,7 @@ class TransferGateway implements GatewayInterface
      * @param array  $payload
      *
      * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      * @throws \Yansongda\Pay\Exceptions\InvalidSignException
      *
@@ -49,11 +50,11 @@ class TransferGateway implements GatewayInterface
             json_decode($payload['biz_content'], true),
             ['product_code' => $this->getProductCode()]
         ));
-        $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
+        $payload['sign'] = Support::generateSign($payload);
 
         Log::info('Starting To Pay An Alipay Transfer Order', [$endpoint, $payload]);
 
-        return Support::requestApi($payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($payload);
     }
 
     /**

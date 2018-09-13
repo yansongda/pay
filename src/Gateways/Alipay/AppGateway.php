@@ -36,6 +36,7 @@ class AppGateway implements GatewayInterface
      * @param string $endpoint
      * @param array  $payload
      *
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Response
@@ -47,7 +48,7 @@ class AppGateway implements GatewayInterface
             json_decode($payload['biz_content'], true),
             ['product_code' => $this->getProductCode()]
         ));
-        $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
+        $payload['sign'] = Support::generateSign($payload);
 
         Log::info('Starting To Pay An Alipay App Order', [$endpoint, $payload]);
 
