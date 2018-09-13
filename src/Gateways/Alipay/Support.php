@@ -186,9 +186,11 @@ class Support
 
         openssl_sign(self::getSignContent($params), $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
+        $sign = base64_encode($sign);
+
         Log::debug('Alipay Generate Sign Before Base64', [$params, $sign]);
 
-        return base64_encode($sign);
+        return $sign;
     }
 
     /**
