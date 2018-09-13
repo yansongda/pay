@@ -426,7 +426,7 @@ class Support
      */
     private function setHttpOptions(): self
     {
-        if ($this->config->has('http')) {
+        if ($this->config->has('http') && is_array($this->config->get('http'))) {
             $this->config->forget('http.base_uri');
             $this->httpOptions = $this->config->get('http');
         }
