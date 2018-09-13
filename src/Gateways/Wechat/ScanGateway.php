@@ -29,7 +29,7 @@ class ScanGateway extends Gateway
 
         Log::info('Starting To Pay A Wechat Scan Order', [$endpoint, $payload]);
 
-        return $this->preOrder('pay/unifiedorder', $payload);
+        return $this->preOrder($payload);
     }
 
     /**

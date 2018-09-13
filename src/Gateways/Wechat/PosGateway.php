@@ -27,7 +27,11 @@ class PosGateway extends Gateway
 
         Log::info('Starting To Pay A Wechat Pos Order', [$endpoint, $payload]);
 
-        return $this->preOrder('pay/micropay', $payload);
+        $payload['sign'] = Support::generateSign($payload);
+
+        Log::info('Starting To Pay A Wechat Pos order', [$payload]);
+
+        return Support::requestApi('pay/micropay', $payload);
     }
 
     /**

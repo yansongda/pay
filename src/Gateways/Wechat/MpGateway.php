@@ -31,10 +31,10 @@ class MpGateway extends Gateway
             'appId'     => $payload['appid'],
             'timeStamp' => strval(time()),
             'nonceStr'  => Str::random(),
-            'package'   => 'prepay_id='.$this->preOrder('pay/unifiedorder', $payload)->prepay_id,
+            'package'   => 'prepay_id='.$this->preOrder($payload)->prepay_id,
             'signType'  => 'MD5',
         ];
-        $payRequest['paySign'] = Support::generateSign($payRequest, $this->config->get('key'));
+        $payRequest['paySign'] = Support::generateSign($payRequest);
 
         Log::info('Starting To Pay A Wechat JSAPI Order', [$endpoint, $payRequest]);
 

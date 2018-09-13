@@ -8,8 +8,28 @@ use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Config;
 use Yansongda\Supports\Traits\HasHttpRequest;
 
+/**
+ * @author yansongda <me@yansongda.cn>
+ *
+ * @property string appid
+ * @property string app_id
+ * @property string miniapp_id
+ * @property string sub_appid
+ * @property string sub_app_id
+ * @property string sub_miniapp_id
+ * @property string mch_id
+ * @property string sub_mch_id
+ * @property string key
+ * @property string return_url
+ * @property string cert_client
+ * @property string cert_key
+ * @property array log
+ * @property array http
+ * @property string mode
+ */
 class Support
 {
     use HasHttpRequest;
@@ -22,6 +42,13 @@ class Support
     protected $baseUri = 'https://api.mch.weixin.qq.com/';
 
     /**
+     * Config.
+     *
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * Instance.
      *
      * @var Support
@@ -32,9 +59,41 @@ class Support
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
+     *
+     * @param Config $config
+     *
+     * @throws InvalidArgumentException
      */
-    private function __construct()
+    private function __construct(Config $config)
     {
+        $this->config = $config;
+        $this->setBaseUri()->setHttpOptions();
+    }
+
+    /**
+     * __get.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param $key
+     *
+     * @return mixed|null|Config
+     */
+    public function __get($key)
+    {
+        return $this->getConfig($key);
+    }
+
+    /**
+     * Get Base Uri.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return string
+     */
+    public function getBaseUri()
+    {
+        return $this->baseUri;
     }
 
     /**
@@ -42,12 +101,20 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @param Config|null $config
+     *
+     * @throws InvalidArgumentException
+     *
      * @return self
      */
-    public static function getInstance(): self
+    public static function getInstance($config = null): self
     {
+        if ((!(self::$instance instanceof self)) && is_null($config)) {
+            throw new InvalidArgumentException('Must Initialize Support With Config Before Using');
+        }
+
         if (!(self::$instance instanceof self)) {
-            self::$instance = new self();
+            self::$instance = new self($config);
         }
 
         return self::$instance;
@@ -58,10 +125,9 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string      $endpoint
-     * @param array       $data
-     * @param string|null $key
-     * @param array       $cert
+     * @param string $endpoint
+     * @param array  $data
+     * @param bool   $cert
      *
      * @throws GatewayException
      * @throws InvalidArgumentException
@@ -69,16 +135,21 @@ class Support
      *
      * @return Collection
      */
-    public static function requestApi($endpoint, $data, $key = null, $cert = []): Collection
+    public static function requestApi($endpoint, $data, $cert = false): Collection
     {
-        Log::debug('Request To Wechat Api', [self::baseUri().$endpoint, $data]);
+        Log::debug('Request To Wechat Api', [self::getInstance()->getBaseUri().$endpoint, $data]);
 
         $result = self::getInstance()->post(
             $endpoint,
             self::toXml($data),
-            $cert
+            $cert ? [
+                'cert' => self::getInstance()->cert_client,
+                'ssl_key' => self::getInstance()->cert_key
+            ] : []
         );
         $result = is_array($result) ? $result : self::fromXml($result);
+
+        Log::debug('Result Of Wechat Api', $result);
 
         if (!isset($result['return_code']) || $result['return_code'] != 'SUCCESS' || $result['result_code'] != 'SUCCESS') {
             throw new GatewayException(
@@ -88,7 +159,7 @@ class Support
             );
         }
 
-        if (strpos($endpoint, 'mmpaymkttransfers') !== false || self::generateSign($result, $key) === $result['sign']) {
+        if (strpos($endpoint, 'mmpaymkttransfers') !== false || self::generateSign($result) === $result['sign']) {
             return new Collection($result);
         }
 
@@ -102,24 +173,27 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array                      $payload
-     * @param array|string               $order
-     * @param \Yansongda\Supports\Config $config
-     * @param bool                       $preserveNotifyUrl
+     * @param array        $payload
+     * @param array|string $params
+     * @param bool         $preserveNotifyUrl
      *
      * @throws InvalidArgumentException
      *
      * @return array
      */
-    public static function filterPayload($payload, $order, $config, $preserveNotifyUrl = false): array
+    public static function filterPayload($payload, $params, $preserveNotifyUrl = false): array
     {
-        $payload = array_merge($payload, is_array($order) ? $order : ['out_trade_no' => $order]);
+        $payload = array_merge(
+            $payload,
+            is_array($params) ? $params : ['out_trade_no' => $params]
+        );
 
-        $type = isset($order['type']) ? $order['type'].($order['type'] == 'app' ? '' : '_').'id' : 'app_id';
-        $payload['appid'] = $config->get($type, '');
+        $type = self::getInstance()->getTypeName($params['type'] ?? '');
 
-        if ($config->get('mode', Wechat::MODE_NORMAL) === Wechat::MODE_SERVICE) {
-            $payload['sub_appid'] = $config->get('sub_'.$type, '');
+        $payload['appid'] = self::getInstance()->getConfig($type, '');
+
+        if (self::getInstance()->getConfig('mode', Wechat::MODE_NORMAL) === Wechat::MODE_SERVICE) {
+            $payload['sub_appid'] = self::getInstance()->getConfig('sub_'.$type, '');
         }
 
         unset($payload['trade_type'], $payload['type']);
@@ -128,7 +202,7 @@ class Support
             unset($payload['notify_url']);
         }
 
-        $payload['sign'] = self::generateSign($payload, $config->get('key'));
+        $payload['sign'] = self::generateSign($payload);
 
         return $payload;
     }
@@ -138,15 +212,16 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array       $data
-     * @param null|string $key
+     * @param array $data
      *
      * @throws InvalidArgumentException
      *
      * @return string
      */
-    public static function generateSign($data, $key = null): string
+    public static function generateSign($data): string
     {
+        $key = self::getInstance()->key;
+
         if (is_null($key)) {
             throw new InvalidArgumentException('Missing Wechat Config -- [key]');
         }
@@ -188,13 +263,19 @@ class Support
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $contents
-     * @param string $key
+     *
+     * @throws InvalidArgumentException
      *
      * @return string
      */
-    public static function decryptRefundContents($contents, $key): string
+    public static function decryptRefundContents($contents): string
     {
-        return openssl_decrypt(base64_decode($contents), 'AES-256-ECB', md5($key), OPENSSL_RAW_DATA);
+        return openssl_decrypt(
+            base64_decode($contents),
+            'AES-256-ECB',
+            self::getInstance()->key,
+            OPENSSL_RAW_DATA
+        );
     }
 
     /**
@@ -247,17 +328,80 @@ class Support
     }
 
     /**
-     * Wechat gateway.
+     * Initialize.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $mode
+     * @param Config $config
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return Support
+     */
+    public static function initialize(Config $config): self
+    {
+        return self::getInstance($config);
+    }
+
+    /**
+     * Get service config.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param null|string $key
+     * @param null|mixed  $default
+     *
+     * @return mixed|null
+     */
+    public function getConfig($key = null, $default = null)
+    {
+        if (is_null($key)) {
+            return $this->config->all();
+        }
+
+        if ($this->config->has($key)) {
+            return $this->config[$key];
+        }
+
+        return $default;
+    }
+
+    /**
+     * Get app id according to param type.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $type
      *
      * @return string
      */
-    public static function baseUri($mode = null): string
+    public function getTypeName($type = ''): string
     {
-        switch ($mode) {
+        $type = $type.'_id';
+
+        if ($type == 'app') {
+            $type = 'appid';
+        }
+
+        if ($type == '') {
+            $type = 'app_id';
+        }
+
+        return $type;
+    }
+
+    /**
+     * Set base uri.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return self
+     */
+    private function setBaseUri(): self
+    {
+        switch ($this->config->get('mode', Wechat::MODE_NORMAL)) {
             case Wechat::MODE_DEV:
                 self::getInstance()->baseUri = 'https://api.mch.weixin.qq.com/sandboxnew/';
                 break;
@@ -270,6 +414,23 @@ class Support
                 break;
         }
 
-        return self::getInstance()->baseUri;
+        return $this;
+    }
+
+    /**
+     * Set Http options.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return self
+     */
+    private function setHttpOptions(): self
+    {
+        if ($this->config->has('http')) {
+            $this->config->forget('http.base_uri');
+            $this->httpOptions = $this->config->get('http');
+        }
+
+        return $this;
     }
 }

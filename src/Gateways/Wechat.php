@@ -41,20 +41,6 @@ class Wechat implements GatewayApplicationInterface
     const MODE_SERVICE = 'service';
 
     /**
-     * Config.
-     *
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * Mode.
-     *
-     * @var string
-     */
-    protected $mode;
-
-    /**
      * Wechat payload.
      *
      * @var array
@@ -79,23 +65,21 @@ class Wechat implements GatewayApplicationInterface
      */
     public function __construct(Config $config)
     {
-        $this->config = $config;
-        $this->mode = $this->config->get('mode', self::MODE_NORMAL);
-        $this->gateway = Support::baseUri($this->mode);
+        $this->gateway = Support::getInstance($config)->getBaseUri();
         $this->payload = [
-            'appid'            => $this->config->get('app_id', ''),
-            'mch_id'           => $this->config->get('mch_id', ''),
+            'appid'            => $config->get('app_id', ''),
+            'mch_id'           => $config->get('mch_id', ''),
             'nonce_str'        => Str::random(),
-            'notify_url'       => $this->config->get('notify_url', ''),
+            'notify_url'       => $config->get('notify_url', ''),
             'sign'             => '',
             'trade_type'       => '',
             'spbill_create_ip' => Request::createFromGlobals()->getClientIp(),
         ];
 
-        if ($this->mode === static::MODE_SERVICE) {
+        if ($config->get('mode', self::MODE_NORMAL) === static::MODE_SERVICE) {
             $this->payload = array_merge($this->payload, [
-                'sub_mch_id' => $this->config->get('sub_mch_id'),
-                'sub_appid'  => $this->config->get('sub_app_id', ''),
+                'sub_mch_id' => $config->get('sub_mch_id'),
+                'sub_appid'  => $config->get('sub_app_id', ''),
             ]);
         }
     }
@@ -165,13 +149,13 @@ class Wechat implements GatewayApplicationInterface
 
         $data = Support::fromXml($content);
         if ($refund) {
-            $decrypt_data = Support::decryptRefundContents($data['req_info'], $this->config->get('key'));
+            $decrypt_data = Support::decryptRefundContents($data['req_info']);
             $data = array_merge(Support::fromXml($decrypt_data), $data);
         }
 
         Log::debug('Resolved The Received Wechat Request Data', $data);
 
-        if ($refund || Support::generateSign($data, $this->config->get('key')) === $data['sign']) {
+        if ($refund || Support::generateSign($data) === $data['sign']) {
             return new Collection($data);
         }
 
@@ -196,14 +180,13 @@ class Wechat implements GatewayApplicationInterface
      */
     public function find($order, $refund = false): Collection
     {
-        $this->payload = Support::filterPayload($this->payload, $order, $this->config);
+        $this->payload = Support::filterPayload($this->payload, $order);
 
         Log::info('Starting To Find An Wechat Order', [$this->gateway, $this->payload]);
 
         return Support::requestApi(
             $refund ? 'pay/refundquery' : 'pay/orderquery',
-            $this->payload,
-            $this->config->get('key')
+            $this->payload
         );
     }
 
@@ -222,15 +205,14 @@ class Wechat implements GatewayApplicationInterface
      */
     public function refund($order): Collection
     {
-        $this->payload = Support::filterPayload($this->payload, $order, $this->config, true);
+        $this->payload = Support::filterPayload($this->payload, $order, true);
 
         Log::info('Starting To Refund An Wechat Order', [$this->gateway, $this->payload]);
 
         return Support::requestApi(
             'secapi/pay/refund',
             $this->payload,
-            $this->config->get('key'),
-            ['cert' => $this->config->get('cert_client'), 'ssl_key' => $this->config->get('cert_key')]
+            true
         );
     }
 
@@ -269,11 +251,11 @@ class Wechat implements GatewayApplicationInterface
     {
         unset($this->payload['spbill_create_ip']);
 
-        $this->payload = Support::filterPayload($this->payload, $order, $this->config);
+        $this->payload = Support::filterPayload($this->payload, $order);
 
         Log::info('Starting To Close An Wechat Order', [$this->gateway, $this->payload]);
 
-        return Support::requestApi('pay/closeorder', $this->payload, $this->config->get('key'));
+        return Support::requestApi('pay/closeorder', $this->payload);
     }
 
     /**
@@ -307,7 +289,7 @@ class Wechat implements GatewayApplicationInterface
      */
     protected function makePay($gateway)
     {
-        $app = new $gateway($this->config);
+        $app = new $gateway();
 
         if ($app instanceof GatewayInterface) {
             return $app->pay($this->gateway, $this->payload);

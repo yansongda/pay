@@ -137,6 +137,8 @@ class Support
         $result = mb_convert_encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
         $result = json_decode($result, true);
 
+        Log::debug('Result Of Alipay Api', $result);
+
         $method = str_replace('.', '_', $data['method']).'_response';
 
         if (!isset($result['sign']) || $result[$method]['code'] != '10000') {
@@ -302,12 +304,12 @@ class Support
      * @param null|string $key
      * @param null|mixed  $default
      *
-     * @return mixed|null|Config
+     * @return mixed|null
      */
     public function getConfig($key = null, $default = null)
     {
         if (is_null($key)) {
-            return $this->config;
+            return $this->config->all();
         }
 
         if ($this->config->has($key)) {

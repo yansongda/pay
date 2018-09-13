@@ -21,25 +21,28 @@ class AppGateway extends Gateway
      * @throws \Yansongda\Pay\Exceptions\GatewayException
      * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     * @throws \Exception
      *
      * @return Response
      */
     public function pay($endpoint, array $payload): Response
     {
-        $payload['appid'] = $this->config->get('appid');
+        $payload['appid'] = Support::getInstance()->appid;
         $payload['trade_type'] = $this->getTradeType();
 
-        $this->mode !== Wechat::MODE_SERVICE ?: $payload['sub_appid'] = $this->config->get('sub_appid');
+        if ($this->mode !== Wechat::MODE_SERVICE) {
+            $payload['sub_appid'] = Support::getInstance()->sub_appid;
+        }
 
         $payRequest = [
             'appid'     => $this->mode === Wechat::MODE_SERVICE ? $payload['sub_appid'] : $payload['appid'],
             'partnerid' => $this->mode === Wechat::MODE_SERVICE ? $payload['sub_mch_id'] : $payload['mch_id'],
-            'prepayid'  => $this->preOrder('pay/unifiedorder', $payload)->prepay_id,
+            'prepayid'  => $this->preOrder($payload)->prepay_id,
             'timestamp' => strval(time()),
             'noncestr'  => Str::random(),
             'package'   => 'Sign=WXPay',
         ];
-        $payRequest['sign'] = Support::generateSign($payRequest, $this->config->get('key'));
+        $payRequest['sign'] = Support::generateSign($payRequest);
 
         Log::info('Starting To Pay A Wechat App Order', [$endpoint, $payRequest]);
 

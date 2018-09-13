@@ -29,17 +29,17 @@ class GroupRedpackGateway extends Gateway
 
         $this->mode !== Wechat::MODE_SERVICE ?: $payload['msgappid'] = $payload['appid'];
 
-        unset($payload['appid'], $payload['trade_type'], $payload['notify_url'], $payload['spbill_create_ip']);
+        unset($payload['appid'], $payload['trade_type'],
+              $payload['notify_url'], $payload['spbill_create_ip']);
 
-        $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
+        $payload['sign'] = Support::generateSign($payload);
 
         Log::info('Starting To Pay A Wechat Group Redpack Order', [$endpoint, $payload]);
 
         return Support::requestApi(
             'mmpaymkttransfers/sendgroupredpack',
             $payload,
-            $this->config->get('key'),
-            ['cert' => $this->config->get('cert_client'), 'ssl_key' => $this->config->get('cert_key')]
+            true
         );
     }
 
