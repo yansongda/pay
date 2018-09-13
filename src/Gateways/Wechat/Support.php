@@ -144,7 +144,7 @@ class Support
             self::toXml($data),
             $cert ? [
                 'cert'    => self::getInstance()->cert_client,
-                'ssl_key' => self::getInstance()->cert_key
+                'ssl_key' => self::getInstance()->cert_key,
             ] : []
         );
         $result = is_array($result) ? $result : self::fromXml($result);
