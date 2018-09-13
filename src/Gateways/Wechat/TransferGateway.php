@@ -39,7 +39,7 @@ class TransferGateway extends Gateway
 
         $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
 
-        Log::debug('Paying A Transfer Order:', [$endpoint, $payload]);
+        Log::info('Starting To Pay A Wechat Transfer Order', [$endpoint, $payload]);
 
         return Support::requestApi(
             'mmpaymkttransfers/promotion/transfers',

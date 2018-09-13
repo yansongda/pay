@@ -49,7 +49,7 @@ class AppGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
 
-        Log::debug('Paying An App Order:', [$endpoint, $payload]);
+        Log::info('Starting To Pay An Alipay App Order', [$endpoint, $payload]);
 
         return Response::create(http_build_query($payload));
     }

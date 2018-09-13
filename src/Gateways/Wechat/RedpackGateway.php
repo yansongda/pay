@@ -34,7 +34,7 @@ class RedpackGateway extends Gateway
 
         $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
 
-        Log::debug('Paying A Redpack Order:', [$endpoint, $payload]);
+        Log::info('Starting To Pay A Wechat Redpack Order', [$endpoint, $payload]);
 
         return Support::requestApi(
             'mmpaymkttransfers/sendredpack',

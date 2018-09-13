@@ -19,6 +19,7 @@ class MpGateway extends Gateway
      * @throws \Yansongda\Pay\Exceptions\GatewayException
      * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     * @throws \Exception
      *
      * @return Collection
      */
@@ -35,7 +36,7 @@ class MpGateway extends Gateway
         ];
         $payRequest['paySign'] = Support::generateSign($payRequest, $this->config->get('key'));
 
-        Log::debug('Paying A JSAPI Order:', [$endpoint, $payRequest]);
+        Log::info('Starting To Pay A Wechat JSAPI Order', [$endpoint, $payRequest]);
 
         return new Collection($payRequest);
     }

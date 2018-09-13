@@ -49,7 +49,7 @@ class WebGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
 
-        Log::debug('Paying A Web/Wap Order:', [$endpoint, $payload]);
+        Log::info('Starting To Pay An Alipay Web/Wap Order', [$endpoint, $payload]);
 
         return $this->buildPayHtml($endpoint, $payload);
     }

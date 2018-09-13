@@ -33,7 +33,7 @@ class GroupRedpackGateway extends Gateway
 
         $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
 
-        Log::debug('Paying A Groupredpack Order:', [$endpoint, $payload]);
+        Log::info('Starting To Pay A Wechat Group Redpack Order', [$endpoint, $payload]);
 
         return Support::requestApi(
             'mmpaymkttransfers/sendgroupredpack',

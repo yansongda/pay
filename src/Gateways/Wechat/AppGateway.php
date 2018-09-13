@@ -41,7 +41,7 @@ class AppGateway extends Gateway
         ];
         $payRequest['sign'] = Support::generateSign($payRequest, $this->config->get('key'));
 
-        Log::debug('Paying An App Order:', [$endpoint, $payRequest]);
+        Log::info('Starting To Pay A Wechat App Order', [$endpoint, $payRequest]);
 
         return JsonResponse::create($payRequest);
     }

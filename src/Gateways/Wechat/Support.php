@@ -155,6 +155,8 @@ class Support
 
         $string = md5(self::getSignContent($data).'&key='.$key);
 
+        Log::debug('Wechat Generate Sign Before UPPER', [$data, $string]);
+
         return strtoupper($string);
     }
 
@@ -174,6 +176,8 @@ class Support
         foreach ($data as $k => $v) {
             $buff .= ($k != 'sign' && $v != '' && !is_array($v)) ? $k.'='.$v.'&' : '';
         }
+
+        Log::debug('Wechat Generate Sign Content Before Trim', [$data, $buff]);
 
         return trim($buff, '&');
     }

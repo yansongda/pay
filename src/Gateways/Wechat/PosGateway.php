@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
+use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
 class PosGateway extends Gateway
@@ -23,6 +24,8 @@ class PosGateway extends Gateway
     public function pay($endpoint, array $payload): Collection
     {
         unset($payload['trade_type'], $payload['notify_url']);
+
+        Log::info('Starting To Pay A Wechat Pos Order', [$endpoint, $payload]);
 
         return $this->preOrder('pay/micropay', $payload);
     }

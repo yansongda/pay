@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\Request;
+use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
 class ScanGateway extends Gateway
@@ -25,6 +26,8 @@ class ScanGateway extends Gateway
     {
         $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
         $payload['trade_type'] = $this->getTradeType();
+
+        Log::info('Starting To Pay A Wechat Scan Order', [$endpoint, $payload]);
 
         return $this->preOrder('pay/unifiedorder', $payload);
     }

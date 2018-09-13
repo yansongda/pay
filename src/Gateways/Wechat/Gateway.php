@@ -59,7 +59,7 @@ abstract class Gateway implements GatewayInterface
     abstract protected function getTradeType();
 
     /**
-     * Preorder an order.
+     * Schedule an order.
      *
      * @author yansongda <me@yansongda.cn>
      *
@@ -76,7 +76,7 @@ abstract class Gateway implements GatewayInterface
     {
         $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
 
-        Log::debug('Pre Order:', [$endpoint, $payload]);
+        Log::info('Starting To Schedule A Wechat order', [$endpoint, $payload]);
 
         return Support::requestApi($endpoint, $payload, $this->config->get('key'));
     }

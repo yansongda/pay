@@ -126,6 +126,8 @@ class Support
 
         openssl_sign(self::getSignContent($params), $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
+        Log::debug('Alipay Generate Sign Before Base64', [$params, $sign]);
+
         return base64_encode($sign);
     }
 
@@ -190,6 +192,8 @@ class Support
                 $stringToBeSigned .= $k.'='.$v.'&';
             }
         }
+
+        Log::debug('Alipay Generate Sign Content Before Trim', [$data, $stringToBeSigned]);
 
         return trim($stringToBeSigned, '&');
     }
