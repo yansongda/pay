@@ -21,6 +21,31 @@ use Yansongda\Pay\Log;
 Log::debug('Paying...', $order->all());
 ```
 
+# guzzle 自定义配置
+
+> v2.5.0-beta 及以上支持
+
+SDK 依赖 guzzle 作 http 的请求客户端。所以如果有特殊配置需求，可直接在 config 中传入一下配置项来启用自定义配置。
+
+```php
+'http' => [
+    'timeout' => 5.0,
+    'connect_timeout' => 5.0,
+    // ...
+],
+```
+
+更多配置项请参考 [Guzzle](https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html)
+
+如果不传入任何配置项，SDK 默认的配置规则为：
+
+```php
+'http' => [
+    'timeout' => 5.0,
+    'connect_timeout' => 5.0,
+],
+```
+
 # 支持的模式
 
 | 支付 | 模式 | 说明 |

@@ -22,6 +22,12 @@ $config = [
         'type' => 'single', // optional, 可选 daily.
         'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
     ],
+    'http' => [ // optional
+        'timeout' => 5.0,
+        'connect_timeout' => 5.0,
+        // 更多配置项请参考 [Guzzle](https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html)
+    ],
+    // 'mode' => 'dev',
 ];
 
 // 支付
