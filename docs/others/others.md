@@ -5,7 +5,9 @@ SDK 自带日志系统，如果需要指定日志文件或日志级别，请 con
 ```php
 'log' => [
     'file' => './logs/pay.log', // 请注意权限
-    'level' => 'debug'
+    'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
+    'type' => 'single', // optional, 可选 daily， daily 时将按时间自动划分文件.
+    'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
 ],
 ```
 
@@ -64,7 +66,9 @@ $config = [
     'cert_key' => './cert/apiclient_key.pem',// optional，退款等情况时用到
     'log' => [ // optional
         'file' => './logs/wechat.log',
-        'level' => 'debug'
+        'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
+        'type' => 'single', // optional, 可选 daily， daily 时将按时间自动划分文件.
+        'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
     ],
     'mode' => 'service',
 ]
