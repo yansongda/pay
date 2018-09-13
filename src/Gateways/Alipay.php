@@ -27,7 +27,7 @@ class Alipay implements GatewayApplicationInterface
     /**
      * Const mode_normal.
      */
-    const MODE_PROD = 'prod';
+    const MODE_NORMAL = 'normal';
 
     /**
      * Const mode_dev.
@@ -38,7 +38,7 @@ class Alipay implements GatewayApplicationInterface
      * Const url.
      */
     const URL = [
-        Alipay::MODE_PROD => 'https://openapi.alipay.com/gateway.do',
+        Alipay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do',
         Alipay::MODE_DEV => 'https://openapi.alipaydev.com/gateway.do',
     ];
 
