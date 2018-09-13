@@ -152,7 +152,6 @@ class Alipay implements GatewayApplicationInterface
             $request = Request::createFromGlobals();
 
             $data = $request->request->count() > 0 ? $request->request->all() : $request->query->all();
-
             $data = Support::encoding($data, 'utf-8', $data['charset'] ?? 'gb2312');
         }
 
