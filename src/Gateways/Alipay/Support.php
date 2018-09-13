@@ -101,11 +101,11 @@ class Support
      */
     public static function getInstance($config = null): self
     {
-        if ((! (self::$instance instanceof self)) && is_null($config)) {
+        if ((!(self::$instance instanceof self)) && is_null($config)) {
             throw new InvalidArgumentException('Must Initialize Support With Config Before Using');
         }
 
-        if (! (self::$instance instanceof self)) {
+        if (!(self::$instance instanceof self)) {
             self::$instance = new self($config);
         }
 
@@ -117,7 +117,7 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array  $data
+     * @param array $data
      *
      * @throws GatewayException
      * @throws InvalidConfigException
@@ -287,7 +287,7 @@ class Support
      *
      * @return Support
      */
-    public static function initialize(Config $config)
+    public static function initialize(Config $config): self
     {
         return self::getInstance($config);
     }
@@ -320,9 +320,9 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return $this
+     * @return self
      */
-    protected function setBaseUri()
+    protected function setBaseUri(): self
     {
         switch ($this->config->get('mode', Alipay::MODE_NORMAL)) {
             case Alipay::MODE_DEV:
@@ -341,9 +341,9 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return $this
+     * @return self
      */
-    protected function setHttpClient()
+    protected function setHttpClient(): self
     {
         if ($this->config->has('http')) {
             $this->httpOptions = $this->config->get('http');
