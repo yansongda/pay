@@ -39,7 +39,7 @@ class Support
      *
      * @var string
      */
-    protected $baseUri = 'https://api.mch.weixin.qq.com/';
+    protected $baseUri;
 
     /**
      * Config.
@@ -61,13 +61,12 @@ class Support
      * @author yansongda <me@yansongda.cn>
      *
      * @param Config $config
-     *
-     * @throws InvalidArgumentException
      */
     private function __construct(Config $config)
     {
+        $this->baseUri = Wechat::URL[$config->get('mode', Wechat::MODE_NORMAL)];
         $this->config = $config;
-        $this->setBaseUri()->setHttpOptions();
+        $this->setHttpOptions();
     }
 
     /**
@@ -183,13 +182,12 @@ class Support
      */
     public static function filterPayload($payload, $params, $preserveNotifyUrl = false): array
     {
+        $type = self::getInstance()->getTypeName($params['type'] ?? '');
+
         $payload = array_merge(
             $payload,
             is_array($params) ? $params : ['out_trade_no' => $params]
         );
-
-        $type = self::getInstance()->getTypeName($params['type'] ?? '');
-
         $payload['appid'] = self::getInstance()->getConfig($type, '');
 
         if (self::getInstance()->getConfig('mode', Wechat::MODE_NORMAL) === Wechat::MODE_SERVICE) {
@@ -197,7 +195,6 @@ class Support
         }
 
         unset($payload['trade_type'], $payload['type']);
-
         if (!$preserveNotifyUrl) {
             unset($payload['notify_url']);
         }
@@ -377,44 +374,18 @@ class Support
      */
     public function getTypeName($type = ''): string
     {
-        $type = $type.'_id';
-
-        if ($type == 'app') {
-            $type = 'appid';
-        }
-
-        if ($type == '') {
-            $type = 'app_id';
+        switch ($type) {
+            case '':
+                $type = 'app_id';
+                break;
+            case 'app':
+                $type = 'appid';
+                break;
+            default:
+                $type = $type.'_id';
         }
 
         return $type;
-    }
-
-    /**
-     * Set base uri.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return self
-     */
-    private function setBaseUri(): self
-    {
-        switch ($this->config->get('mode', Wechat::MODE_NORMAL)) {
-            case Wechat::MODE_DEV:
-                self::getInstance()->baseUri = 'https://api.mch.weixin.qq.com/sandboxnew/';
-                break;
-
-            case Wechat::MODE_HK:
-                self::getInstance()->baseUri = 'https://apihk.mch.weixin.qq.com/';
-                break;
-
-            default:
-                break;
-        }
-
-        return $this;
     }
 
     /**

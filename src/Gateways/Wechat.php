@@ -28,17 +28,35 @@ use Yansongda\Supports\Str;
  */
 class Wechat implements GatewayApplicationInterface
 {
-    // 普通模式
+    /**
+     * 普通模式.
+     */
     const MODE_NORMAL = 'normal';
 
-    // 沙箱模式
+    /**
+     * 沙箱模式.
+     */
     const MODE_DEV = 'dev';
 
-    // 香港钱包
+    /**
+     * 香港钱包 API.
+     */
     const MODE_HK = 'hk';
 
-    // 服务商
+    /**
+     * 服务商模式.
+     */
     const MODE_SERVICE = 'service';
+
+    /**
+     * Const url.
+     */
+    const URL = [
+        Wechat::MODE_NORMAL => 'https://api.mch.weixin.qq.com/',
+        Wechat::MODE_DEV => 'https://api.mch.weixin.qq.com/sandboxnew/',
+        Wechat::MODE_HK => 'https://apihk.mch.weixin.qq.com/',
+        Wechat::MODE_SERVICE => 'https://api.mch.weixin.qq.com/',
+    ];
 
     /**
      * Wechat payload.

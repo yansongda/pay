@@ -25,8 +25,6 @@ class PosGateway extends Gateway
     {
         unset($payload['trade_type'], $payload['notify_url']);
 
-        Log::info('Starting To Pay A Wechat Pos Order', [$endpoint, $payload]);
-
         $payload['sign'] = Support::generateSign($payload);
 
         Log::info('Starting To Pay A Wechat Pos order', [$payload]);
