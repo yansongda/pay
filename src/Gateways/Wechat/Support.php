@@ -143,7 +143,7 @@ class Support
             $endpoint,
             self::toXml($data),
             $cert ? [
-                'cert' => self::getInstance()->cert_client,
+                'cert'    => self::getInstance()->cert_client,
                 'ssl_key' => self::getInstance()->cert_key
             ] : []
         );
