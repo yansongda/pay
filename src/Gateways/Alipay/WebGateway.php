@@ -10,25 +10,6 @@ use Yansongda\Supports\Config;
 class WebGateway implements GatewayInterface
 {
     /**
-     * Config.
-     *
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * Bootstrap.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param Config $config
-     */
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
-
-    /**
      * Pay an order.
      *
      * @author yansongda <me@yansongda.cn>
