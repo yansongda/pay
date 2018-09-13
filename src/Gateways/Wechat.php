@@ -52,10 +52,10 @@ class Wechat implements GatewayApplicationInterface
      * Const url.
      */
     const URL = [
-        Wechat::MODE_NORMAL  => 'https://api.mch.weixin.qq.com/',
-        Wechat::MODE_DEV     => 'https://api.mch.weixin.qq.com/sandboxnew/',
-        Wechat::MODE_HK      => 'https://apihk.mch.weixin.qq.com/',
-        Wechat::MODE_SERVICE => 'https://api.mch.weixin.qq.com/',
+        self::MODE_NORMAL  => 'https://api.mch.weixin.qq.com/',
+        self::MODE_DEV     => 'https://api.mch.weixin.qq.com/sandboxnew/',
+        self::MODE_HK      => 'https://apihk.mch.weixin.qq.com/',
+        self::MODE_SERVICE => 'https://api.mch.weixin.qq.com/',
     ];
 
     /**
