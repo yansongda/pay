@@ -24,9 +24,23 @@ use Yansongda\Supports\Str;
  */
 class Alipay implements GatewayApplicationInterface
 {
-    const MODE_NORMAL = 'normal';
+    /**
+     * Const mode_normal.
+     */
+    const MODE_PROD = 'prod';
 
+    /**
+     * Const mode_dev.
+     */
     const MODE_DEV = 'dev';
+
+    /**
+     * Const url.
+     */
+    const URL = [
+        Alipay::MODE_PROD => 'https://openapi.alipay.com/gateway.do',
+        Alipay::MODE_DEV => 'https://openapi.alipaydev.com/gateway.do',
+    ];
 
     /**
      * Alipay payload.
@@ -104,6 +118,7 @@ class Alipay implements GatewayApplicationInterface
 
         $this->payload['return_url'] = $params['return_url'] ?? $this->payload['return_url'];
         $this->payload['notify_url'] = $params['notify_url'] ?? $this->payload['notify_url'];
+
         unset($params['return_url'], $params['notify_url']);
 
         $this->payload['biz_content'] = json_encode($params);
@@ -122,22 +137,24 @@ class Alipay implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param null $content
-     * @param bool $refund
+     * @param null|array $data
+     * @param bool       $refund
      *
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Collection
      */
-    public function verify($content = null, $refund = false): Collection
+    public function verify($data = null, $refund = false): Collection
     {
-        $request = Request::createFromGlobals();
+        if (is_null($data)) {
+            $request = Request::createFromGlobals();
 
-        $data = $request->request->count() > 0 ? $request->request->all() : $request->query->all();
+            $data = $request->request->count() > 0 ? $request->request->all() : $request->query->all();
 
-        $data = Support::encoding($data, 'utf-8', $data['charset'] ?? 'gb2312');
+            $data = Support::encoding($data, 'utf-8', $data['charset'] ?? 'gb2312');
+        }
 
         Log::info('Received Alipay Request', $data);
 

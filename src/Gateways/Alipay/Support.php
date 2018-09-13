@@ -33,7 +33,7 @@ class Support
      *
      * @var string
      */
-    protected $baseUri = 'https://openapi.alipay.com/gateway.do';
+    protected $baseUri;
 
     /**
      * Config.
@@ -58,8 +58,9 @@ class Support
      */
     private function __construct(Config $config)
     {
+        $this->baseUri = Alipay::URL[$config->get('mode', Alipay::MODE_PROD)];
         $this->config = $config;
-        $this->setBaseUri()->setHttpOptions();
+        $this->setHttpOptions();
     }
 
     /**
@@ -317,27 +318,6 @@ class Support
         }
 
         return $default;
-    }
-
-    /**
-     * Set base uri.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @return self
-     */
-    protected function setBaseUri(): self
-    {
-        switch ($this->config->get('mode', Alipay::MODE_NORMAL)) {
-            case Alipay::MODE_DEV:
-                $this->baseUri = 'https://openapi.alipaydev.com/gateway.do';
-                break;
-
-            default:
-                break;
-        }
-
-        return $this;
     }
 
     /**
