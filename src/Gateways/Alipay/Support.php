@@ -59,7 +59,7 @@ class Support
     private function __construct(Config $config)
     {
         $this->config = $config;
-        $this->setBaseUri()->setHttpClient();
+        $this->setBaseUri()->setHttpOptions();
     }
 
     /**
@@ -337,13 +337,13 @@ class Support
     }
 
     /**
-     * Set Http Client.
+     * Set Http options.
      *
      * @author yansongda <me@yansongda.cn>
      *
      * @return self
      */
-    protected function setHttpClient(): self
+    protected function setHttpOptions(): self
     {
         if ($this->config->has('http')) {
             $this->httpOptions = $this->config->get('http');
