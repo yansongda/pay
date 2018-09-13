@@ -161,7 +161,7 @@ class Wechat implements GatewayApplicationInterface
     {
         $content = $content ?? Request::createFromGlobals()->getContent();
 
-        Log::info('Received Wechat Request', $content);
+        Log::info('Received Wechat Request', [$content]);
 
         $data = Support::fromXml($content);
         if ($refund) {
