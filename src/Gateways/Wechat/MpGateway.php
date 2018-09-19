@@ -27,18 +27,18 @@ class MpGateway extends Gateway
     {
         $payload['trade_type'] = $this->getTradeType();
 
-        $payRequest = [
+        $pay_request = [
             'appId'     => $payload['appid'],
             'timeStamp' => strval(time()),
             'nonceStr'  => Str::random(),
             'package'   => 'prepay_id='.$this->preOrder($payload)->prepay_id,
             'signType'  => 'MD5',
         ];
-        $payRequest['paySign'] = Support::generateSign($payRequest);
+        $pay_request['paySign'] = Support::generateSign($pay_request);
 
-        Log::info('Starting To Pay A Wechat JSAPI Order', [$endpoint, $payRequest]);
+        Log::info('Starting To Pay A Wechat JSAPI Order', [$endpoint, $pay_request]);
 
-        return new Collection($payRequest);
+        return new Collection($pay_request);
     }
 
     /**
