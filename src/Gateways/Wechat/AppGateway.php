@@ -34,7 +34,7 @@ class AppGateway extends Gateway
             $payload['sub_appid'] = Support::getInstance()->sub_appid;
         }
 
-        $payRequest = [
+        $pay_request = [
             'appid'     => $this->mode === Wechat::MODE_SERVICE ? $payload['sub_appid'] : $payload['appid'],
             'partnerid' => $this->mode === Wechat::MODE_SERVICE ? $payload['sub_mch_id'] : $payload['mch_id'],
             'prepayid'  => $this->preOrder($payload)->prepay_id,
@@ -42,11 +42,11 @@ class AppGateway extends Gateway
             'noncestr'  => Str::random(),
             'package'   => 'Sign=WXPay',
         ];
-        $payRequest['sign'] = Support::generateSign($payRequest);
+        $pay_request['sign'] = Support::generateSign($pay_request);
 
-        Log::info('Starting To Pay A Wechat App Order', [$endpoint, $payRequest]);
+        Log::info('Starting To Pay A Wechat App Order', [$endpoint, $pay_request]);
 
-        return JsonResponse::create($payRequest);
+        return JsonResponse::create($pay_request);
     }
 
     /**
