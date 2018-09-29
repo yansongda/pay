@@ -28,7 +28,7 @@ class RedpackGateway extends Gateway
         $payload['wxappid'] = $payload['appid'];
 
         if (php_sapi_name() !== 'cli') {
-            $payload['client_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
+            $payload['client_ip'] = (php_sapi_name() == 'cli' ? request() : Request::createFromGlobals())->server->get('SERVER_ADDR');
         }
 
         if ($this->mode !== Wechat::MODE_SERVICE) {

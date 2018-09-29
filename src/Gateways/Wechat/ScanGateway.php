@@ -24,7 +24,7 @@ class ScanGateway extends Gateway
      */
     public function pay($endpoint, array $payload): Collection
     {
-        $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
+        $payload['spbill_create_ip'] = (php_sapi_name() == 'cli' ? request() : Request::createFromGlobals())->server->get('SERVER_ADDR');
         $payload['trade_type'] = $this->getTradeType();
 
         Log::info('Starting To Pay A Wechat Scan Order', [$endpoint, $payload]);
