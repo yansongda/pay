@@ -91,7 +91,7 @@ class Wechat implements GatewayApplicationInterface
             'notify_url'       => $config->get('notify_url', ''),
             'sign'             => '',
             'trade_type'       => '',
-            'spbill_create_ip' => Request::createFromGlobals()->getClientIp(),
+            'spbill_create_ip' => (php_sapi_name() == 'cli' ? request() : Request::createFromGlobals())->getClientIp(),
         ];
 
         if ($config->get('mode', self::MODE_NORMAL) === static::MODE_SERVICE) {
@@ -161,7 +161,7 @@ class Wechat implements GatewayApplicationInterface
      */
     public function verify($content = null, $refund = false): Collection
     {
-        $content = $content ?? Request::createFromGlobals()->getContent();
+        $content = $content ?? (php_sapi_name() == 'cli' ? request() : Request::createFromGlobals())->getContent();
 
         Log::info('Received Wechat Request', [$content]);
 
