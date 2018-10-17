@@ -39,7 +39,6 @@ QQ交流群：690027516
 - PHP 7.0+
 - composer
 
-> php5 请使用 v1.x 版本[https://github.com/yansongda/pay/tree/v1.x](https://github.com/yansongda/pay/tree/v1.x)
 
 
 ## 支持的支付方法
