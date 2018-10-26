@@ -315,4 +315,15 @@ class Wechat implements GatewayApplicationInterface
 
         throw new InvalidGatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface");
     }
+    
+    
+    
+    protected function test($gateway)
+    {
+        $app = new $gateway();
+        if ($app instanceof GatewayInterface) {
+            return $app->pay($this->gateway, $this->payload);
+        }
+        throw new InvalidGatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface");
+    }
 }
