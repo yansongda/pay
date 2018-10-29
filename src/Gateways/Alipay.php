@@ -173,23 +173,28 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string|array $order
      * @param bool         $refund
-     *
-     * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @param bool         $transfer
      *
      * @return Collection
      */
-    public function find($order, $refund = false): Collection
+    public function find($order, $refund = false, $transfer = false): Collection
     {
-        $this->payload['method'] = $refund ? 'alipay.trade.fastpay.refund.query' : 'alipay.trade.query';
-        $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
-        $this->payload['sign'] = Support::generateSign($this->payload);
+        $method = 'alipay.trade.query';
+        $requestOrder = is_array($order) ? $order : ['out_trade_no' => $order];
+        if ($refund) {
+            $method = 'alipay.trade.fastpay.refund.query';
+        }
+        if ($transfer) {
+            $requestOrder = is_array($order) ? $order : ['out_biz_no' => $order];
+            $method = 'alipay.fund.trans.order.query';
+        }
+        $this->payload['method'] = $method;
+        $this->payload['biz_content'] = json_encode($requestOrder);
+        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
 
-        Log::info('Starting To Find An Alipay Order', [$this->gateway, $this->payload]);
+        Log::debug('Alipay Find An Order:', [$this->gateway, $this->payload]);
 
-        return Support::requestApi($this->payload);
+        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
     }
 
     /**
