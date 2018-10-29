@@ -198,6 +198,7 @@ class Alipay implements GatewayApplicationInterface
         $this->payload['sign'] = Support::generateSign($this->payload);
 
         Log::info('Starting To Find An Alipay Order', [$this->gateway, $this->payload]);
+        
         return Support::requestApi($this->payload);
     }
 
