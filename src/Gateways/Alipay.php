@@ -194,11 +194,11 @@ class Alipay implements GatewayApplicationInterface
             $method = 'alipay.fund.trans.order.query';
         }
         $this->payload['method'] = $method;
-        $this->payload['biz_content'] = json_encode($requestOrder);
-        $this->payload['sign'] = Support::generateSign($this->payload);
+	$this->payload['biz_content'] = json_encode($requestOrder);
+	$this->payload['sign'] = Support::generateSign($this->payload);
 
         Log::info('Starting To Find An Alipay Order', [$this->gateway, $this->payload]);
-        
+
         return Support::requestApi($this->payload);
     }
 
