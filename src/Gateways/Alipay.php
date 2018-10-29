@@ -175,6 +175,11 @@ class Alipay implements GatewayApplicationInterface
      * @param bool         $refund
      * @param bool         $transfer
      *
+     * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     *
      * @return Collection
      */
     public function find($order, $refund = false, $transfer = false): Collection
@@ -190,11 +195,10 @@ class Alipay implements GatewayApplicationInterface
         }
         $this->payload['method'] = $method;
         $this->payload['biz_content'] = json_encode($requestOrder);
-        $this->payload['sign'] = Support::generateSign($this->payload, $this->config->get('private_key'));
+        $this->payload['sign'] = Support::generateSign($this->payload);
 
-        Log::debug('Alipay Find An Order:', [$this->gateway, $this->payload]);
-
-        return Support::requestApi($this->payload, $this->config->get('ali_public_key'));
+        Log::info('Starting To Find An Alipay Order', [$this->gateway, $this->payload]);
+        return Support::requestApi($this->payload);
     }
 
     /**
