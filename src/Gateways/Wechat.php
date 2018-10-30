@@ -44,6 +44,11 @@ class Wechat implements GatewayApplicationInterface
     const MODE_HK = 'hk';
 
     /**
+     * 境外 API.
+     */
+    const MODE_US = 'us';
+
+    /**
      * 服务商模式.
      */
     const MODE_SERVICE = 'service';
@@ -56,6 +61,7 @@ class Wechat implements GatewayApplicationInterface
         self::MODE_DEV     => 'https://api.mch.weixin.qq.com/sandboxnew/',
         self::MODE_HK      => 'https://apihk.mch.weixin.qq.com/',
         self::MODE_SERVICE => 'https://api.mch.weixin.qq.com/',
+        self::MODE_US      => 'https://apius.mch.weixin.qq.com/',
     ];
 
     /**
