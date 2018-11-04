@@ -206,6 +206,10 @@ class Wechat implements GatewayApplicationInterface
     {
         $this->payload = Support::filterPayload($this->payload, $order);
 
+        if ($refund) {
+            unset($this->payload['spbill_create_ip']);
+        }
+
         Log::info('Starting To Find An Wechat Order', [$this->gateway, $this->payload]);
 
         return Support::requestApi(
