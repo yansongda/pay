@@ -204,11 +204,11 @@ class Wechat implements GatewayApplicationInterface
      */
     public function find($order, $refund = false): Collection
     {
-        $this->payload = Support::filterPayload($this->payload, $order);
-
         if ($refund) {
             unset($this->payload['spbill_create_ip']);
         }
+
+        $this->payload = Support::filterPayload($this->payload, $order);
 
         Log::info('Starting To Find An Wechat Order', [$this->gateway, $this->payload]);
 
