@@ -151,8 +151,9 @@ class Support
         Log::debug('Result Of Wechat Api', $result);
 
         if (!isset($result['return_code']) || $result['return_code'] != 'SUCCESS' || $result['result_code'] != 'SUCCESS') {
+            $return_msg = $result['return_msg'] ?? $result['retmsg'];
             throw new GatewayException(
-                'Get Wechat API Error:'.$result['return_msg'].($result['err_code_des'] ?? ''),
+                'Get Wechat API Error:'. $return_msg .($result['err_code_des'] ?? ''),
                 $result,
                 20000
             );
@@ -270,7 +271,7 @@ class Support
         return openssl_decrypt(
             base64_decode($contents),
             'AES-256-ECB',
-            self::getInstance()->key,
+            md5(self::getInstance()->key),
             OPENSSL_RAW_DATA
         );
     }
