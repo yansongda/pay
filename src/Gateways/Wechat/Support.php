@@ -270,7 +270,7 @@ class Support
         return openssl_decrypt(
             base64_decode($contents),
             'AES-256-ECB',
-            self::getInstance()->key,
+            md5(self::getInstance()->key),
             OPENSSL_RAW_DATA
         );
     }
