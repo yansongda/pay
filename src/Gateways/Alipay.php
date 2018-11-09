@@ -173,6 +173,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string|array $order
      * @param bool         $refund
+     * @param bool         $transfer
      *
      * @throws InvalidSignException
      * @throws \Yansongda\Pay\Exceptions\GatewayException
@@ -181,10 +182,19 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function find($order, $refund = false): Collection
+    public function find($order, $refund = false, $transfer = false): Collection
     {
-        $this->payload['method'] = $refund ? 'alipay.trade.fastpay.refund.query' : 'alipay.trade.query';
-        $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
+        $method = 'alipay.trade.query';
+        $requestOrder = is_array($order) ? $order : ['out_trade_no' => $order];
+        if ($refund) {
+            $method = 'alipay.trade.fastpay.refund.query';
+        }
+        if ($transfer) {
+            $requestOrder = is_array($order) ? $order : ['out_biz_no' => $order];
+            $method = 'alipay.fund.trans.order.query';
+        }
+        $this->payload['method'] = $method;
+        $this->payload['biz_content'] = json_encode($requestOrder);
         $this->payload['sign'] = Support::generateSign($this->payload);
 
         Log::info('Starting To Find An Alipay Order', [$this->gateway, $this->payload]);
