@@ -163,7 +163,7 @@ class Wechat implements GatewayApplicationInterface
      * @throws InvalidSignException
      * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      *
-     * @return WeChatPayRefundCollection|WeChatOfficialAccountNoticeCollection
+     * @return Collection
      */
     public function verify($content = null, $refund = false): Collection
     {
