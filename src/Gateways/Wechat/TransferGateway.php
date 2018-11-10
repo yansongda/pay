@@ -15,7 +15,7 @@ class TransferGateway extends Gateway
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array  $payload
+     * @param array $payload
      *
      * @throws \Yansongda\Pay\Exceptions\GatewayException
      * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
@@ -29,7 +29,7 @@ class TransferGateway extends Gateway
             unset($payload['sub_mch_id'], $payload['sub_appid']);
         }
 
-        $type = Support::getInstance()->getTypeName($payload['type']??'');
+        $type = Support::getInstance()->getTypeName($payload['type'] ?? '');
 
         $payload['mch_appid'] = Support::getInstance()->getConfig($type, '');
         $payload['mchid'] = $payload['mch_id'];
