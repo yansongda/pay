@@ -9,6 +9,7 @@ use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Log;
 use Yansongda\Supports\Str;
+use Monolog\Logger;
 
 /**
  * @method static Alipay alipay(array $config) 支付宝
@@ -113,7 +114,7 @@ class Pay
         $logger = Log::createLogger(
             $this->config->get('log.file'),
             'yansongda.pay',
-            $this->config->get('log.level', 'warning'),
+            $this->config->get('log.level', Logger::WARNING),
             $this->config->get('log.type', 'daily'),
             $this->config->get('log.max_file', 30)
         );
