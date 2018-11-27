@@ -9,6 +9,11 @@ use Yansongda\Supports\Str;
 class MpGateway extends Gateway
 {
     /**
+     * @var bool
+     */
+    protected $payRequestUseSubAppId = false;
+
+    /**
      * Pay an order.
      *
      * @author yansongda <me@yansongda.cn>
@@ -28,7 +33,7 @@ class MpGateway extends Gateway
         $payload['trade_type'] = $this->getTradeType();
 
         $pay_request = [
-            'appId'     => $payload['appid'],
+            'appId'     => !$this->payRequestUseSubAppId ? $payload['appid'] : $payload['sub_appid'],
             'timeStamp' => strval(time()),
             'nonceStr'  => Str::random(),
             'package'   => 'prepay_id='.$this->preOrder($payload)->prepay_id,
