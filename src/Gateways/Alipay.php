@@ -301,7 +301,7 @@ class Alipay implements GatewayApplicationInterface
 
         $result = Support::requestApi($this->payload);
 
-        return ($result instanceof Collection) ? $result->bill_download_url : '';
+        return ($result instanceof Collection) ? $result->get('bill_download_url') : '';
     }
 
     /**
