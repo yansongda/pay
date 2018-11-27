@@ -8,7 +8,6 @@ use Yansongda\Supports\Str;
 
 class MpGateway extends Gateway
 {
-
     /**
      * @var bool
      */
