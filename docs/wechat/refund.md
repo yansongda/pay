@@ -4,11 +4,12 @@
 | :---: | :---: | :---: |
 | refund | array $order | Collection |
 
+
 # 使用方法
 
-## 例子
+## 退款操作
 
-```php
+```PHP
 $order = [
     'out_trade_no' => '1514192025',
     'out_refund_no' => time(),
@@ -28,15 +29,18 @@ $result = $wechat->refund($order);
 
 如果您需要退 `APP/小程序` 的订单，请传入参数：`['type' => 'app']`/`['type' => 'miniapp']`
 
+
 # 返回值
 
 返回 Collection 类型，可以通过 `$collection->xxx` 得到服务器返回的数据。
 
+
 # 异常
 
+* Yansongda\Pay\Exceptions\InvalidGatewayException ，表示使用了除本 SDK 支持的支付网关。
 * Yansongda\Pay\Exceptions\InvalidSignException ，表示验签失败。
-* Yansongda\Pay\Exceptions\GatewayException ，表示支付宝服务器返回的数据非正常结果，例如，参数错误等。
-* Yansongda\Pay\Exceptions\InvalidConfigException ，表示缺少配置参数，如，`ali_public_key`, `private_key` 等
+* Yansongda\Pay\Exceptions\InvalidConfigException ，表示缺少配置参数，如，`ali_public_key`, `private_key` 等。
+* Yansongda\Pay\Exceptions\GatewayException ，表示支付宝/微信服务器返回的数据非正常结果，例如，参数错误，对账单不存在等。
 
 
 

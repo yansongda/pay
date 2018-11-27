@@ -3,17 +3,44 @@
 namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
+use Yansongda\Pay\Gateways\Alipay;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 use Yansongda\Supports\Traits\HasHttpRequest;
 
+/**
+ * @author yansongda <me@yansongda.cn>
+ *
+ * @property string app_id alipay app_id
+ * @property string ali_public_key
+ * @property string private_key
+ * @property array http http options
+ * @property string mode current mode
+ * @property array log log options
+ */
 class Support
 {
     use HasHttpRequest;
+
+    /**
+     * Alipay gateway.
+     *
+     * @var string
+     */
+    protected $baseUri;
+
+    /**
+     * Config.
+     *
+     * @var Config
+     */
+    protected $config;
 
     /**
      * Instance.
@@ -23,23 +50,64 @@ class Support
     private static $instance;
 
     /**
-     * Alipay gateway.
+     * Bootstrap.
      *
-     * @var string
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param Config $config
      */
-    protected $baseUri = 'https://openapi.alipay.com/gateway.do';
+    private function __construct(Config $config)
+    {
+        $this->baseUri = Alipay::URL[$config->get('mode', Alipay::MODE_NORMAL)];
+        $this->config = $config;
+        $this->setHttpOptions();
+    }
+
+    /**
+     * __get.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param $key
+     *
+     * @return mixed|null|Config
+     */
+    public function __get($key)
+    {
+        return $this->getConfig($key);
+    }
+
+    /**
+     * Get Base Uri.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return string
+     */
+    public function getBaseUri()
+    {
+        return $this->baseUri;
+    }
 
     /**
      * Get instance.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return Support
+     * @param Config|null $config
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return self
      */
-    public static function getInstance()
+    public static function getInstance($config = null): self
     {
+        if ((!(self::$instance instanceof self)) && is_null($config)) {
+            throw new InvalidArgumentException('Must Initialize Support With Config Before Using');
+        }
+
         if (!(self::$instance instanceof self)) {
-            self::$instance = new self();
+            self::$instance = new self($config);
         }
 
         return self::$instance;
@@ -50,35 +118,45 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array  $data
-     * @param string $publicKey
+     * @param array $data
+     *
+     * @throws GatewayException
+     * @throws InvalidConfigException
+     * @throws InvalidSignException
+     * @throws InvalidArgumentException
      *
      * @return Collection
      */
-    public static function requestApi(array $data, $publicKey): Collection
+    public static function requestApi(array $data): Collection
     {
-        Log::debug('Request To Alipay Api', [self::getInstance()->baseUri(), $data]);
+        Log::debug('Request To Alipay Api', [self::getInstance()->getBaseUri(), $data]);
 
-        $method = str_replace('.', '_', $data['method']).'_response';
+        $data = array_filter($data, function ($value) {
+            return ($value == '' || is_null($value)) ? false : true;
+        });
 
         $result = mb_convert_encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
         $result = json_decode($result, true);
 
-        if (!self::verifySign($result[$method], $publicKey, true, $result['sign'])) {
-            Log::warning('Alipay Sign Verify FAILED', $result);
+        Log::debug('Result Of Alipay Api', $result);
 
-            throw new InvalidSignException('Alipay Sign Verify FAILED', 3, $result);
+        $method = str_replace('.', '_', $data['method']).'_response';
+
+        if (!isset($result['sign']) || $result[$method]['code'] != '10000') {
+            throw new GatewayException(
+                'Get Alipay API Error:'.$result[$method]['msg'].($result[$method]['sub_code'] ?? ''),
+                $result,
+                $result[$method]['code']
+            );
         }
 
-        if (isset($result[$method]['code']) && $result[$method]['code'] == '10000') {
+        if (self::verifySign($result[$method], true, $result['sign'])) {
             return new Collection($result[$method]);
         }
 
-        throw new GatewayException(
-            'Get Alipay API Error:'.$result[$method]['msg'],
-            $result[$method]['code'],
-            $result
-        );
+        Log::warning('Alipay Sign Verify FAILED', $result);
+
+        throw new InvalidSignException('Alipay Sign Verify FAILED', $result);
     }
 
     /**
@@ -86,15 +164,19 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array  $parmas
-     * @param string $privateKey
+     * @param array $params
+     *
+     * @throws InvalidConfigException
+     * @throws InvalidArgumentException
      *
      * @return string
      */
-    public static function generateSign(array $parmas, $privateKey = null): string
+    public static function generateSign(array $params): string
     {
+        $privateKey = self::getInstance()->private_key;
+
         if (is_null($privateKey)) {
-            throw new InvalidConfigException('Missing Alipay Config -- [private_key]', 1);
+            throw new InvalidConfigException('Missing Alipay Config -- [private_key]');
         }
 
         if (Str::endsWith($privateKey, '.pem')) {
@@ -105,27 +187,35 @@ class Support
                 "\n-----END RSA PRIVATE KEY-----";
         }
 
-        openssl_sign(self::getSignContent($parmas), $sign, $privateKey, OPENSSL_ALGO_SHA256);
+        openssl_sign(self::getSignContent($params), $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
-        return base64_encode($sign);
+        $sign = base64_encode($sign);
+
+        Log::debug('Alipay Generate Sign Before Base64', [$params, $sign]);
+
+        return $sign;
     }
 
     /**
-     * Verfiy sign.
+     * Verify sign.
      *
      * @author yansongda <me@yansonga.cn>
      *
      * @param array       $data
-     * @param string      $publicKey
      * @param bool        $sync
      * @param string|null $sign
      *
+     * @throws InvalidConfigException
+     * @throws InvalidArgumentException
+     *
      * @return bool
      */
-    public static function verifySign(array $data, $publicKey = null, $sync = false, $sign = null): bool
+    public static function verifySign(array $data, $sync = false, $sign = null): bool
     {
+        $publicKey = self::getInstance()->ali_public_key;
+
         if (is_null($publicKey)) {
-            throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]', 2);
+            throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]');
         }
 
         if (Str::endsWith($publicKey, '.pem')) {
@@ -170,6 +260,8 @@ class Support
             }
         }
 
+        Log::debug('Alipay Generate Sign Content Before Trim', [$data, $stringToBeSigned]);
+
         return trim($stringToBeSigned, '&');
     }
 
@@ -190,25 +282,58 @@ class Support
     }
 
     /**
-     * Alipay gateway.
+     * Initialize.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $mode
+     * @param Config $config
      *
-     * @return string
+     * @throws InvalidArgumentException
+     *
+     * @return Support
      */
-    public static function baseUri($mode = null): string
+    public static function initialize(Config $config): self
     {
-        switch ($mode) {
-            case 'dev':
-                self::getInstance()->baseUri = 'https://openapi.alipaydev.com/gateway.do';
-                break;
+        return self::getInstance($config);
+    }
 
-            default:
-                break;
+    /**
+     * Get service config.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param null|string $key
+     * @param null|mixed  $default
+     *
+     * @return mixed|null
+     */
+    public function getConfig($key = null, $default = null)
+    {
+        if (is_null($key)) {
+            return $this->config->all();
         }
 
-        return self::getInstance()->baseUri;
+        if ($this->config->has($key)) {
+            return $this->config[$key];
+        }
+
+        return $default;
+    }
+
+    /**
+     * Set Http options.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return self
+     */
+    protected function setHttpOptions(): self
+    {
+        if ($this->config->has('http') && is_array($this->config->get('http'))) {
+            $this->config->forget('http.base_uri');
+            $this->httpOptions = $this->config->get('http');
+        }
+
+        return $this;
     }
 }

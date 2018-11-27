@@ -15,13 +15,19 @@ class MiniappGateway extends MpGateway
      * @param string $endpoint
      * @param array  $payload
      *
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     *
      * @return Collection
      */
     public function pay($endpoint, array $payload): Collection
     {
-        $payload['appid'] = $this->config->get('miniapp_id');
+        $payload['appid'] = Support::getInstance()->miniapp_id;
 
-        $this->mode !== Wechat::MODE_SERVICE ?: $payload['sub_appid'] = $this->config->get('sub_miniapp_id');
+        if ($this->mode !== Wechat::MODE_SERVICE) {
+            $payload['sub_appid'] = Support::getInstance()->sub_miniapp_id;
+        }
 
         return parent::pay($endpoint, $payload);
     }

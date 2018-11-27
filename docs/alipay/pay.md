@@ -17,7 +17,7 @@
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -37,7 +37,7 @@ return $alipay->web($order)->send(); // laravel 框架中请直接 return $alipa
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -57,7 +57,7 @@ return $alipay->wap($order)->send(); // laravel 框架中请直接 return $alipa
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -78,7 +78,7 @@ return $alipay->app($order)->send(); // laravel 框架中请直接 return $alipa
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -99,7 +99,7 @@ $result = $alipay->pos($order);
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -120,7 +120,7 @@ $result = $alipay->scan($order);
 
 ### 例子
 
-```php
+```PHP
 $order = [
     'out_biz_no' => time(),
     'payee_type' => 'ALIPAY_LOGONID',
@@ -148,9 +148,10 @@ $result = $alipay->transfer($order);
 
 # 异常
 
+* Yansongda\Pay\Exceptions\InvalidGatewayException ，表示使用了除本 SDK 支持的支付网关。
 * Yansongda\Pay\Exceptions\InvalidSignException ，表示验签失败。
-* Yansongda\Pay\Exceptions\GatewayException ，表示支付宝服务器返回的数据非正常结果，例如，参数错误等。
-* Yansongda\Pay\Exceptions\InvalidConfigException ，表示缺少配置参数，如，`ali_public_key`, `private_key` 等
+* Yansongda\Pay\Exceptions\InvalidConfigException ，表示缺少配置参数，如，`ali_public_key`, `private_key` 等。
+* Yansongda\Pay\Exceptions\GatewayException ，表示支付宝/微信服务器返回的数据非正常结果，例如，参数错误，对账单不存在等。
 
 
 

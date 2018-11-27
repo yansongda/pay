@@ -5,29 +5,9 @@ namespace Yansongda\Pay\Gateways\Alipay;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Log;
-use Yansongda\Supports\Config;
 
 class AppGateway implements GatewayInterface
 {
-    /**
-     * Config.
-     *
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * Bootstrap.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param Config $config
-     */
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
-
     /**
      * Pay an order.
      *
@@ -35,6 +15,9 @@ class AppGateway implements GatewayInterface
      *
      * @param string $endpoint
      * @param array  $payload
+     *
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Response
      */
@@ -45,9 +28,9 @@ class AppGateway implements GatewayInterface
             json_decode($payload['biz_content'], true),
             ['product_code' => $this->getProductCode()]
         ));
-        $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
+        $payload['sign'] = Support::generateSign($payload);
 
-        Log::debug('Paying An App Order:', [$endpoint, $payload]);
+        Log::info('Starting To Pay An Alipay App Order', [$endpoint, $payload]);
 
         return Response::create(http_build_query($payload));
     }

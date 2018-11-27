@@ -5,29 +5,9 @@ namespace Yansongda\Pay\Gateways\Alipay;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
-use Yansongda\Supports\Config;
 
 class PosGateway implements GatewayInterface
 {
-    /**
-     * Config.
-     *
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * Bootstrap.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param Config $config
-     */
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
-
     /**
      * Pay an order.
      *
@@ -35,6 +15,11 @@ class PosGateway implements GatewayInterface
      *
      * @param string $endpoint
      * @param array  $payload
+     *
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
      *
      * @return Collection
      */
@@ -48,11 +33,11 @@ class PosGateway implements GatewayInterface
                 'scene'        => 'bar_code',
             ]
         ));
-        $payload['sign'] = Support::generateSign($payload, $this->config->get('private_key'));
+        $payload['sign'] = Support::generateSign($payload);
 
-        Log::debug('Paying A Pos Order:', [$endpoint, $payload]);
+        Log::info('Starting To Pay An Alipay Pos Order', [$endpoint, $payload]);
 
-        return Support::requestApi($payload, $this->config->get('ali_public_key'));
+        return Support::requestApi($payload);
     }
 
     /**
@@ -62,7 +47,7 @@ class PosGateway implements GatewayInterface
      *
      * @return string
      */
-    protected function getMethod()
+    protected function getMethod(): string
     {
         return 'alipay.trade.pay';
     }
@@ -74,7 +59,7 @@ class PosGateway implements GatewayInterface
      *
      * @return string
      */
-    protected function getProductCode()
+    protected function getProductCode(): string
     {
         return 'FACE_TO_FACE_PAYMENT';
     }

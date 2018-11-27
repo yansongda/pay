@@ -16,24 +16,29 @@ class MpGateway extends Gateway
      * @param string $endpoint
      * @param array  $payload
      *
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     * @throws \Exception
+     *
      * @return Collection
      */
     public function pay($endpoint, array $payload): Collection
     {
         $payload['trade_type'] = $this->getTradeType();
 
-        $payRequest = [
+        $pay_request = [
             'appId'     => $payload['appid'],
             'timeStamp' => strval(time()),
             'nonceStr'  => Str::random(),
-            'package'   => 'prepay_id='.$this->preOrder('pay/unifiedorder', $payload)->prepay_id,
+            'package'   => 'prepay_id='.$this->preOrder($payload)->prepay_id,
             'signType'  => 'MD5',
         ];
-        $payRequest['paySign'] = Support::generateSign($payRequest, $this->config->get('key'));
+        $pay_request['paySign'] = Support::generateSign($pay_request);
 
-        Log::debug('Paying A JSAPI Order:', [$endpoint, $payRequest]);
+        Log::info('Starting To Pay A Wechat JSAPI Order', [$endpoint, $pay_request]);
 
-        return new Collection($payRequest);
+        return new Collection($pay_request);
     }
 
     /**

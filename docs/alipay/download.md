@@ -2,26 +2,32 @@
 
 | 方法名 | 参数 | 返回值 |
 | :---: | :---: | :---: |
-| verify | 无 | Collection |
+| download | string/array $bill | string |
 
-使用的加密方式为支付宝官方推荐的 **RSA2**，目前只支持这一种加密方式，且没有支持其他加密方式的计划。
+> 对账单下载功能在 v2.2.0 及以上版本可用
 
 # 使用方法
 
-```PHP
-$result = $alipay->verify();
-// 是的，你没有看错，就是这么简单！
+## 例子
 
-// return $alipay->success()->send(); // laravel 框架直接 return $alipay->success();
+```PHP
+$bill = [
+    'bill_date' => '2016-04-05',    // 2016-04
+    'bill_type' => 'trade'
+];
+
+// $bill = '2016-04-05';
+
+$url = $alipay->download($bill);
 ```
 
 ## 订单配置参数
 
-无
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://docs.open.alipay.com/api_15/alipay.data.dataservice.bill.downloadurl.query)，查看「请求参数」一栏。
 
 # 返回值
 
-返回 Collection 类型，可以通过 `$collection->xxx` 得到服务器返回的数据。
+返回 string 类型。直接返回账单下载链接。
 
 # 异常
 

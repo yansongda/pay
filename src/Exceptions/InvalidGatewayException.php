@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Exceptions;
 
-class InvalidArgumentException extends Exception
+class InvalidGatewayException extends Exception
 {
     /**
      * Bootstrap.
@@ -13,7 +13,7 @@ class InvalidArgumentException extends Exception
      * @param array|string $raw
      * @param int|string   $code
      */
-    public function __construct($message, $raw = [], $code = 3)
+    public function __construct($message, $raw = [], $code = 1)
     {
         parent::__construct($message, $raw, $code);
     }

@@ -17,6 +17,10 @@ class TransferGateway extends Gateway
      * @param string $endpoint
      * @param array  $payload
      *
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     *
      * @return Collection
      */
     public function pay($endpoint, array $payload): Collection
@@ -24,25 +28,27 @@ class TransferGateway extends Gateway
         if ($this->mode === Wechat::MODE_SERVICE) {
             unset($payload['sub_mch_id'], $payload['sub_appid']);
         }
-        $type = isset($payload['type']) ? ($payload['type'].($payload['type'] == 'app' ?: '_').'id') : 'app_id';
 
-        $payload['mch_appid'] = $this->config->get($type, '');
+        $type = Support::getInstance()->getTypeName($payload['type'] ?? '');
+
+        $payload['mch_appid'] = Support::getInstance()->getConfig($type, '');
         $payload['mchid'] = $payload['mch_id'];
-        php_sapi_name() === 'cli' ?: $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
+
+        if (php_sapi_name() !== 'cli') {
+            $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
+        }
 
         unset($payload['appid'], $payload['mch_id'], $payload['trade_type'],
             $payload['notify_url'], $payload['type']);
 
-        $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
+        $payload['sign'] = Support::generateSign($payload);
 
-        Log::debug('Paying A Transfer Order:', [$endpoint, $payload]);
+        Log::info('Starting To Pay A Wechat Transfer Order', [$endpoint, $payload]);
 
         return Support::requestApi(
             'mmpaymkttransfers/promotion/transfers',
             $payload,
-            $this->config->get('key'),
-            $this->config->get('cert_client'),
-            $this->config->get('cert_key')
+            true
         );
     }
 

@@ -5,7 +5,9 @@ SDK 自带日志系统，如果需要指定日志文件或日志级别，请 con
 ```php
 'log' => [
     'file' => './logs/pay.log', // 请注意权限
-    'level' => 'debug'
+    'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
+    'type' => 'single', // optional, 可选 daily， daily 时将按时间自动划分文件.
+    'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
 ],
 ```
 
@@ -17,6 +19,31 @@ SDK 自带日志系统，如果需要指定日志文件或日志级别，请 con
 use Yansongda\Pay\Log;
 
 Log::debug('Paying...', $order->all());
+```
+
+# guzzle 自定义配置
+
+> v2.5.0-beta 及以上支持
+
+SDK 依赖 guzzle 作 http 的请求客户端。所以如果有特殊配置需求，可直接在 config 中传入一下配置项来启用自定义配置。
+
+```php
+'http' => [
+    'timeout' => 5.0,
+    'connect_timeout' => 5.0,
+    // ...
+],
+```
+
+更多配置项请参考 [Guzzle](https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html)
+
+如果不传入任何配置项，SDK 默认的配置规则为：
+
+```php
+'http' => [
+    'timeout' => 5.0,
+    'connect_timeout' => 5.0,
+],
 ```
 
 # 支持的模式
@@ -38,7 +65,7 @@ Log::debug('Paying...', $order->all());
 
 ### 关于微信沙箱模式
 
-微信沙箱模式与支付宝沙箱模式不同，也没有支付宝沙箱模式那样简单，SDK 只对微信支付 API 进行了沙箱处理，所以，在测试微信时，推荐直接使用正式环境 *￥0.01* 进行测试。
+微信沙箱模式与支付宝沙箱模式不同，也没有支付宝沙箱模式那样简单，SDK 只对微信支付 API 进行了沙箱处理，所以，在测试微信时，推荐直接使用正式环境 *￥0.01* 进行测试，随后再进行退款，这样，两个功能都可以测试到。
 
 详细请参考 [https://github.com/yansongda/pay/issues/62](https://github.com/yansongda/pay/issues/62)
 
@@ -64,7 +91,9 @@ $config = [
     'cert_key' => './cert/apiclient_key.pem',// optional，退款等情况时用到
     'log' => [ // optional
         'file' => './logs/wechat.log',
-        'level' => 'debug'
+        'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
+        'type' => 'single', // optional, 可选 daily， daily 时将按时间自动划分文件.
+        'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
     ],
     'mode' => 'service',
 ]

@@ -12,7 +12,7 @@ interface GatewayApplicationInterface
      * @param string $gateway
      * @param array  $params
      *
-     * @return Yansongda\Supports\Collection|Symfony\Component\HttpFoundation\Response
+     * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
      */
     public function pay($gateway, $params);
 
@@ -22,10 +22,11 @@ interface GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
+     * @param bool         $refund
      *
-     * @return Yansongda\Supports\Collection
+     * @return \Yansongda\Supports\Collection
      */
-    public function find($order);
+    public function find($order, $refund);
 
     /**
      * Refund an order.
@@ -34,7 +35,7 @@ interface GatewayApplicationInterface
      *
      * @param array $order
      *
-     * @return Yansongda\Supports\Collection
+     * @return \Yansongda\Supports\Collection
      */
     public function refund($order);
 
@@ -45,7 +46,7 @@ interface GatewayApplicationInterface
      *
      * @param string|array $order
      *
-     * @return Yansongda\Supports\Collection
+     * @return \Yansongda\Supports\Collection
      */
     public function cancel($order);
 
@@ -56,7 +57,7 @@ interface GatewayApplicationInterface
      *
      * @param string|array $order
      *
-     * @return Yansongda\Supports\Collection
+     * @return \Yansongda\Supports\Collection
      */
     public function close($order);
 
@@ -65,16 +66,19 @@ interface GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return Yansongda\Supports\Collection
+     * @param string|null $content
+     * @param bool        $refund
+     *
+     * @return \Yansongda\Supports\Collection
      */
-    public function verify();
+    public function verify($content, $refund);
 
     /**
      * Echo success to server.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function success();
 }

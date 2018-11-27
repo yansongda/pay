@@ -3,20 +3,11 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
-use Yansongda\Supports\Config;
 
 abstract class Gateway implements GatewayInterface
 {
-    /**
-     * Config.
-     *
-     * @var Config
-     */
-    protected $config;
-
     /**
      * Mode.
      *
@@ -29,12 +20,11 @@ abstract class Gateway implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param Config $config
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      */
-    public function __construct(Config $config)
+    public function __construct()
     {
-        $this->config = $config;
-        $this->mode = $this->config->get('mode', Wechat::MODE_NORMAL);
+        $this->mode = Support::getInstance()->mode;
     }
 
     /**
@@ -59,21 +49,24 @@ abstract class Gateway implements GatewayInterface
     abstract protected function getTradeType();
 
     /**
-     * Preorder an order.
+     * Schedule an order.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $endpoint
-     * @param array  $payload
+     * @param array $payload
+     *
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
      *
      * @return Collection
      */
-    protected function preOrder($endpoint, $payload): Collection
+    protected function preOrder($payload): Collection
     {
-        $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
+        $payload['sign'] = Support::generateSign($payload);
 
-        Log::debug('Pre Order:', [$endpoint, $payload]);
+        Log::debug('Schedule A Wechat order', [$payload]);
 
-        return Support::requestApi($endpoint, $payload, $this->config->get('key'));
+        return Support::requestApi('pay/unifiedorder', $payload);
     }
 }

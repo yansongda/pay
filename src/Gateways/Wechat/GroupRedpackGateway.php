@@ -16,6 +16,10 @@ class GroupRedpackGateway extends Gateway
      * @param string $endpoint
      * @param array  $payload
      *
+     * @throws \Yansongda\Pay\Exceptions\GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     *
      * @return Collection
      */
     public function pay($endpoint, array $payload): Collection
@@ -25,18 +29,17 @@ class GroupRedpackGateway extends Gateway
 
         $this->mode !== Wechat::MODE_SERVICE ?: $payload['msgappid'] = $payload['appid'];
 
-        unset($payload['appid'], $payload['trade_type'], $payload['notify_url'], $payload['spbill_create_ip']);
+        unset($payload['appid'], $payload['trade_type'],
+              $payload['notify_url'], $payload['spbill_create_ip']);
 
-        $payload['sign'] = Support::generateSign($payload, $this->config->get('key'));
+        $payload['sign'] = Support::generateSign($payload);
 
-        Log::debug('Paying A Groupredpack Order:', [$endpoint, $payload]);
+        Log::info('Starting To Pay A Wechat Group Redpack Order', [$endpoint, $payload]);
 
         return Support::requestApi(
             'mmpaymkttransfers/sendgroupredpack',
             $payload,
-            $this->config->get('key'),
-            $this->config->get('cert_client'),
-            $this->config->get('cert_key')
+            true
         );
     }
 

@@ -2,17 +2,17 @@
 
 namespace Yansongda\Pay;
 
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
-use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidGatewayException;
+use Yansongda\Pay\Gateways\Alipay;
+use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Supports\Config;
+use Yansongda\Supports\Log;
 use Yansongda\Supports\Str;
 
 /**
- * @method static \Yansongda\Pay\Gateways\Alipay alipay(array $config) 支付宝
- * @method static \Yansongda\Pay\Gateways\Wechat wechat(array $config) 微信
+ * @method static Alipay alipay(array $config) 支付宝
+ * @method static Wechat wechat(array $config) 微信
  */
 class Pay
 {
@@ -30,70 +30,9 @@ class Pay
      *
      * @param array $config
      */
-    public function __construct($config)
+    public function __construct(array $config)
     {
         $this->config = new Config($config);
-    }
-
-    /**
-     * Create a instance.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $method
-     *
-     * @return GatewayApplicationInterface
-     */
-    protected function create($method)
-    {
-        !$this->config->has('log.file') ?: $this->registeLog();
-
-        $gateway = __NAMESPACE__.'\\Gateways\\'.Str::studly($method);
-
-        if (class_exists($gateway)) {
-            return self::make($gateway);
-        }
-
-        throw new GatewayException("Gateway [{$method}] Not Exists", 1);
-    }
-
-    /**
-     * Make a gateway.
-     *
-     * @author yansongda <me@yansonga.cn>
-     *
-     * @param string $gateway
-     *
-     * @return GatewayApplicationInterface
-     */
-    protected function make($gateway)
-    {
-        $app = new $gateway($this->config);
-
-        if ($app instanceof GatewayApplicationInterface) {
-            return $app;
-        }
-
-        throw new GatewayException("Gateway [$gateway] Must Be An Instance Of GatewayApplicationInterface", 2);
-    }
-
-    /**
-     * Registe log service.
-     *
-     * @author yansongda <me@yansongda.cn>
-     */
-    protected function registeLog()
-    {
-        $handler = new StreamHandler(
-            $this->config->get('log.file'),
-            $this->config->get('log.level', Logger::WARNING)
-        );
-        $handler->setFormatter(new LineFormatter("%datetime% > %level_name% > %message% %context% %extra%\n\n"));
-
-        $logger = new Logger('yansongda.pay');
-        $logger->pushHandler($handler);
-
-        Log::setLogger($logger);
     }
 
     /**
@@ -104,12 +43,81 @@ class Pay
      * @param string $method
      * @param array  $params
      *
+     * @throws InvalidGatewayException
+     *
      * @return GatewayApplicationInterface
      */
-    public static function __callStatic($method, $params)
+    public static function __callStatic($method, $params): GatewayApplicationInterface
     {
         $app = new self(...$params);
 
         return $app->create($method);
+    }
+
+    /**
+     * Create a instance.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $method
+     *
+     * @throws InvalidGatewayException
+     * @throws \Exception
+     *
+     * @return GatewayApplicationInterface
+     */
+    protected function create($method): GatewayApplicationInterface
+    {
+        !$this->config->has('log.file') ?: $this->registerLog();
+
+        $gateway = __NAMESPACE__.'\\Gateways\\'.Str::studly($method);
+
+        if (class_exists($gateway)) {
+            return self::make($gateway);
+        }
+
+        throw new InvalidGatewayException("Gateway [{$method}] Not Exists");
+    }
+
+    /**
+     * Make a gateway.
+     *
+     * @author yansongda <me@yansonga.cn>
+     *
+     * @param string $gateway
+     *
+     * @throws InvalidGatewayException
+     *
+     * @return GatewayApplicationInterface
+     */
+    protected function make($gateway): GatewayApplicationInterface
+    {
+        $app = new $gateway($this->config);
+
+        if ($app instanceof GatewayApplicationInterface) {
+            return $app;
+        }
+
+        throw new InvalidGatewayException("Gateway [{$gateway}] Must Be An Instance Of GatewayApplicationInterface");
+    }
+
+    /**
+     * Register log service.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Exception
+     */
+    protected function registerLog()
+    {
+        $logger = Log::createLogger(
+            $this->config->get('log.file'),
+            'yansongda.pay',
+            $this->config->get('log.level', 'warning'),
+            $this->config->get('log.type', 'daily'),
+            $this->config->get('log.max_file', 30)
+        );
+
+        Log::setLogger($logger);
     }
 }
