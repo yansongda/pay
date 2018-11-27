@@ -30,7 +30,7 @@ class AppGateway extends Gateway
         $payload['appid'] = Support::getInstance()->appid;
         $payload['trade_type'] = $this->getTradeType();
 
-        if ($this->mode !== Wechat::MODE_SERVICE) {
+        if ($this->mode === Wechat::MODE_SERVICE) {
             $payload['sub_appid'] = Support::getInstance()->sub_appid;
         }
 
