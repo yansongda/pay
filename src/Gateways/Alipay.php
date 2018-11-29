@@ -332,7 +332,9 @@ class Alipay implements GatewayApplicationInterface
         $app = new $gateway();
 
         if ($app instanceof GatewayInterface) {
-            return $app->pay($this->gateway, $this->payload);
+            return $app->pay($this->gateway, array_filter($this->payload, function ($value) {
+                return $value !== '' && !is_null($value);
+            }));
         }
 
         throw new InvalidGatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface");
