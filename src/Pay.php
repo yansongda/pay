@@ -29,10 +29,14 @@ class Pay
      * @author yansongda <me@yansongda.cn>
      *
      * @param array $config
+     *
+     * @throws \Exception
      */
     public function __construct(array $config)
     {
         $this->config = new Config($config);
+
+        $this->registerLog();
     }
 
     /**
@@ -44,6 +48,8 @@ class Pay
      * @param array  $params
      *
      * @throws InvalidGatewayException
+     *
+     * @throws \Exception
      *
      * @return GatewayApplicationInterface
      */
@@ -62,14 +68,11 @@ class Pay
      * @param string $method
      *
      * @throws InvalidGatewayException
-     * @throws \Exception
      *
      * @return GatewayApplicationInterface
      */
     protected function create($method): GatewayApplicationInterface
     {
-        !$this->config->has('log.file') ?: $this->registerLog();
-
         $gateway = __NAMESPACE__.'\\Gateways\\'.Str::studly($method);
 
         if (class_exists($gateway)) {
