@@ -64,6 +64,20 @@ class Support
     }
 
     /**
+     * __get.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param $key
+     *
+     * @return mixed|null|Config
+     */
+    public function __get($key)
+    {
+        return $this->getConfig($key);
+    }
+
+    /**
      * create.
      *
      * @author yansongda <me@yansongda.cn>
@@ -79,20 +93,6 @@ class Support
         }
 
         return self::$instance;
-    }
-
-    /**
-     * __get.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param $key
-     *
-     * @return mixed|null|Config
-     */
-    public function __get($key)
-    {
-        return $this->getConfig($key);
     }
 
     /**
@@ -261,23 +261,6 @@ class Support
     }
 
     /**
-     * Set Http options.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @return self
-     */
-    protected function setHttpOptions(): self
-    {
-        if ($this->config->has('http') && is_array($this->config->get('http'))) {
-            $this->config->forget('http.base_uri');
-            $this->httpOptions = $this->config->get('http');
-        }
-
-        return $this;
-    }
-
-    /**
      * Get service config.
      *
      * @author yansongda <me@yansongda.cn>
@@ -310,5 +293,22 @@ class Support
     public function getBaseUri()
     {
         return $this->baseUri;
+    }
+
+    /**
+     * Set Http options.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return self
+     */
+    protected function setHttpOptions(): self
+    {
+        if ($this->config->has('http') && is_array($this->config->get('http'))) {
+            $this->config->forget('http.base_uri');
+            $this->httpOptions = $this->config->get('http');
+        }
+
+        return $this;
     }
 }

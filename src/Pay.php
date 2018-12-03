@@ -48,7 +48,6 @@ class Pay
      * @param array  $params
      *
      * @throws InvalidGatewayException
-     *
      * @throws \Exception
      *
      * @return GatewayApplicationInterface
