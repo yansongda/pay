@@ -3,7 +3,6 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Log;
 
 class WapGateway extends Gateway
