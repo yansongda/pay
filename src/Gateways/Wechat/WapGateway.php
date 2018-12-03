@@ -20,7 +20,7 @@ class WapGateway extends Gateway
      * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidSignException
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function pay($endpoint, array $payload): Response
     {
