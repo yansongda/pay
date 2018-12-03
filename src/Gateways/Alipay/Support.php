@@ -3,7 +3,6 @@
 namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Exceptions\GatewayException;
-use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Alipay;
@@ -60,7 +59,26 @@ class Support
     {
         $this->baseUri = Alipay::URL[$config->get('mode', Alipay::MODE_NORMAL)];
         $this->config = $config;
+
         $this->setHttpOptions();
+    }
+
+    /**
+     * create.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param Config $config
+     *
+     * @return Support
+     */
+    public static function create(Config $config)
+    {
+        if (php_sapi_name() === 'cli' || !(self::$instance instanceof self)) {
+            self::$instance = new self($config);
+        }
+
+        return self::$instance;
     }
 
     /**
@@ -78,42 +96,6 @@ class Support
     }
 
     /**
-     * Get Base Uri.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @return string
-     */
-    public function getBaseUri()
-    {
-        return $this->baseUri;
-    }
-
-    /**
-     * Get instance.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param Config|null $config
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return self
-     */
-    public static function getInstance($config = null): self
-    {
-        if ((!(self::$instance instanceof self)) && is_null($config)) {
-            throw new InvalidArgumentException('Must Initialize Support With Config Before Using');
-        }
-
-        if (!(self::$instance instanceof self)) {
-            self::$instance = new self($config);
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Get Alipay API result.
      *
      * @author yansongda <me@yansongda.cn>
@@ -123,19 +105,18 @@ class Support
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     * @throws InvalidArgumentException
      *
      * @return Collection
      */
     public static function requestApi(array $data): Collection
     {
-        Log::debug('Request To Alipay Api', [self::getInstance()->getBaseUri(), $data]);
+        Log::debug('Request To Alipay Api', [self::$instance->getBaseUri(), $data]);
 
         $data = array_filter($data, function ($value) {
             return ($value == '' || is_null($value)) ? false : true;
         });
 
-        $result = mb_convert_encoding(self::getInstance()->post('', $data), 'utf-8', 'gb2312');
+        $result = mb_convert_encoding(self::$instance->post('', $data), 'utf-8', 'gb2312');
         $result = json_decode($result, true);
 
         Log::debug('Result Of Alipay Api', $result);
@@ -167,13 +148,12 @@ class Support
      * @param array $params
      *
      * @throws InvalidConfigException
-     * @throws InvalidArgumentException
      *
      * @return string
      */
     public static function generateSign(array $params): string
     {
-        $privateKey = self::getInstance()->private_key;
+        $privateKey = self::$instance->private_key;
 
         if (is_null($privateKey)) {
             throw new InvalidConfigException('Missing Alipay Config -- [private_key]');
@@ -206,13 +186,12 @@ class Support
      * @param string|null $sign
      *
      * @throws InvalidConfigException
-     * @throws InvalidArgumentException
      *
      * @return bool
      */
     public static function verifySign(array $data, $sync = false, $sign = null): bool
     {
-        $publicKey = self::getInstance()->ali_public_key;
+        $publicKey = self::$instance->ali_public_key;
 
         if (is_null($publicKey)) {
             throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]');
@@ -282,19 +261,20 @@ class Support
     }
 
     /**
-     * Initialize.
+     * Set Http options.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param Config $config
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return Support
+     * @return self
      */
-    public static function initialize(Config $config): self
+    protected function setHttpOptions(): self
     {
-        return self::getInstance($config);
+        if ($this->config->has('http') && is_array($this->config->get('http'))) {
+            $this->config->forget('http.base_uri');
+            $this->httpOptions = $this->config->get('http');
+        }
+
+        return $this;
     }
 
     /**
@@ -321,19 +301,14 @@ class Support
     }
 
     /**
-     * Set Http options.
+     * Get Base Uri.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return self
+     * @return string
      */
-    protected function setHttpOptions(): self
+    public function getBaseUri()
     {
-        if ($this->config->has('http') && is_array($this->config->get('http'))) {
-            $this->config->forget('http.base_uri');
-            $this->httpOptions = $this->config->get('http');
-        }
-
-        return $this;
+        return $this->baseUri;
     }
 }

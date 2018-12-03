@@ -62,12 +62,10 @@ class Alipay implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param Config $config
-     *
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      */
     public function __construct(Config $config)
     {
-        $this->gateway = Support::getInstance($config)->getBaseUri();
+        $this->gateway = Support::create($config)->getBaseUri();
         $this->payload = [
             'app_id'      => $config->get('app_id'),
             'method'      => '',
