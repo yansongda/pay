@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Gateways;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
@@ -24,7 +25,7 @@ use Yansongda\Supports\Str;
  * @method Collection redpack(array $config) 普通红包
  * @method Collection scan(array $config) 扫码支付
  * @method Collection transfer(array $config) 企业付款
- * @method Response wap(array $config) H5 支付
+ * @method RedirectResponse wap(array $config) H5 支付
  */
 class Wechat implements GatewayApplicationInterface
 {

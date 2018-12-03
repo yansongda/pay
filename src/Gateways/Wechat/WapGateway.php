@@ -3,7 +3,6 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Log;
 
 class WapGateway extends Gateway
@@ -20,9 +19,9 @@ class WapGateway extends Gateway
      * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidSignException
      *
-     * @return Response
+     * @return RedirectResponse
      */
-    public function pay($endpoint, array $payload): Response
+    public function pay($endpoint, array $payload): RedirectResponse
     {
         $payload['trade_type'] = $this->getTradeType();
 
