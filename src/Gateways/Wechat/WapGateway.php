@@ -22,7 +22,7 @@ class WapGateway extends Gateway
      *
      * @return RedirectResponse
      */
-    public function pay($endpoint, array $payload): Response
+    public function pay($endpoint, array $payload): RedirectResponse
     {
         $payload['trade_type'] = $this->getTradeType();
 
