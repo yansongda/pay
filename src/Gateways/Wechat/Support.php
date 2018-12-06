@@ -187,13 +187,13 @@ class Support
      *
      * @param array        $payload
      * @param array|string $params
-     * @param bool         $preserveNotifyUrl
+     * @param bool         $preserve_notify_url
      *
      * @throws InvalidArgumentException
      *
      * @return array
      */
-    public static function filterPayload($payload, $params, $preserveNotifyUrl = false): array
+    public static function filterPayload($payload, $params, $preserve_notify_url = false): array
     {
         $type = self::getTypeName($params['type'] ?? '');
 
@@ -208,7 +208,7 @@ class Support
         }
 
         unset($payload['trade_type'], $payload['type']);
-        if (!$preserveNotifyUrl) {
+        if (!$preserve_notify_url) {
             unset($payload['notify_url']);
         }
 
