@@ -106,6 +106,7 @@ class Support
      * getInstance.
      *
      * @author yansongda <me@yansongda.cn>
+     *
      * @throws InvalidArgumentException
      *
      * @return Support
