@@ -66,6 +66,7 @@ class Support
     {
         $this->baseUri = Wechat::URL[$config->get('mode', Wechat::MODE_NORMAL)];
         $this->config = $config;
+
         $this->setHttpOptions();
     }
 
@@ -84,39 +85,50 @@ class Support
     }
 
     /**
-     * Get Base Uri.
+     * create.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return string
+     * @param Config $config
+     *
+     * @return Support
      */
-    public function getBaseUri()
+    public static function create(Config $config)
     {
-        return $this->baseUri;
-    }
-
-    /**
-     * Get instance.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param Config|null $config
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return self
-     */
-    public static function getInstance($config = null): self
-    {
-        if ((!(self::$instance instanceof self)) && is_null($config)) {
-            throw new InvalidArgumentException('Must Initialize Support With Config Before Using');
-        }
-
-        if (!(self::$instance instanceof self)) {
+        if (php_sapi_name() === 'cli' || !(self::$instance instanceof self)) {
             self::$instance = new self($config);
         }
 
         return self::$instance;
+    }
+
+    /**
+     * getInstance.
+     *
+     * @author yansongda <me@yansongda.cn>
+     * @throws InvalidArgumentException
+     *
+     * @return Support
+     */
+    public static function getInstance()
+    {
+        if (is_null(self::$instance)) {
+            throw new InvalidArgumentException('You Should [Create] First Before Using');
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * clear.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        self::$instance = null;
     }
 
     /**
@@ -136,14 +148,14 @@ class Support
      */
     public static function requestApi($endpoint, $data, $cert = false): Collection
     {
-        Log::debug('Request To Wechat Api', [self::getInstance()->getBaseUri().$endpoint, $data]);
+        Log::debug('Request To Wechat Api', [self::$instance->getBaseUri().$endpoint, $data]);
 
-        $result = self::getInstance()->post(
+        $result = self::$instance->post(
             $endpoint,
             self::toXml($data),
             $cert ? [
-                'cert'    => self::getInstance()->cert_client,
-                'ssl_key' => self::getInstance()->cert_key,
+                'cert'    => self::$instance->cert_client,
+                'ssl_key' => self::$instance->cert_key,
             ] : []
         );
         $result = is_array($result) ? $result : self::fromXml($result);
@@ -182,16 +194,16 @@ class Support
      */
     public static function filterPayload($payload, $params, $preserveNotifyUrl = false): array
     {
-        $type = self::getInstance()->getTypeName($params['type'] ?? '');
+        $type = self::getTypeName($params['type'] ?? '');
 
         $payload = array_merge(
             $payload,
             is_array($params) ? $params : ['out_trade_no' => $params]
         );
-        $payload['appid'] = self::getInstance()->getConfig($type, '');
+        $payload['appid'] = self::$instance->getConfig($type, '');
 
-        if (self::getInstance()->getConfig('mode', Wechat::MODE_NORMAL) === Wechat::MODE_SERVICE) {
-            $payload['sub_appid'] = self::getInstance()->getConfig('sub_'.$type, '');
+        if (self::$instance->getConfig('mode', Wechat::MODE_NORMAL) === Wechat::MODE_SERVICE) {
+            $payload['sub_appid'] = self::$instance->getConfig('sub_'.$type, '');
         }
 
         unset($payload['trade_type'], $payload['type']);
@@ -217,7 +229,7 @@ class Support
      */
     public static function generateSign($data): string
     {
-        $key = self::getInstance()->key;
+        $key = self::$instance->key;
 
         if (is_null($key)) {
             throw new InvalidArgumentException('Missing Wechat Config -- [key]');
@@ -261,8 +273,6 @@ class Support
      *
      * @param string $contents
      *
-     * @throws InvalidArgumentException
-     *
      * @return string
      */
     public static function decryptRefundContents($contents): string
@@ -270,7 +280,7 @@ class Support
         return openssl_decrypt(
             base64_decode($contents),
             'AES-256-ECB',
-            md5(self::getInstance()->key),
+            md5(self::$instance->key),
             OPENSSL_RAW_DATA
         );
     }
@@ -325,22 +335,6 @@ class Support
     }
 
     /**
-     * Initialize.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param Config $config
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return Support
-     */
-    public static function initialize(Config $config): self
-    {
-        return self::getInstance($config);
-    }
-
-    /**
      * Get service config.
      *
      * @author yansongda <me@yansongda.cn>
@@ -372,7 +366,7 @@ class Support
      *
      * @return string
      */
-    public function getTypeName($type = ''): string
+    public static function getTypeName($type = ''): string
     {
         switch ($type) {
             case '':
@@ -386,6 +380,18 @@ class Support
         }
 
         return $type;
+    }
+
+    /**
+     * Get Base Uri.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return string
+     */
+    public function getBaseUri()
+    {
+        return $this->baseUri;
     }
 
     /**

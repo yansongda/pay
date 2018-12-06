@@ -90,7 +90,7 @@ class Wechat implements GatewayApplicationInterface
      */
     public function __construct(Config $config)
     {
-        $this->gateway = Support::getInstance($config)->getBaseUri();
+        $this->gateway = Support::create($config)->getBaseUri();
         $this->payload = [
             'appid'            => $config->get('app_id', ''),
             'mch_id'           => $config->get('mch_id', ''),
@@ -321,7 +321,9 @@ class Wechat implements GatewayApplicationInterface
         $app = new $gateway();
 
         if ($app instanceof GatewayInterface) {
-            return $app->pay($this->gateway, $this->payload);
+            return $app->pay($this->gateway, array_filter($this->payload, function ($value) {
+                return $value !== '' && !is_null($value);
+            }));
         }
 
         throw new InvalidGatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface");

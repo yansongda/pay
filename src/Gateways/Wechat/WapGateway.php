@@ -27,9 +27,9 @@ class WapGateway extends Gateway
 
         Log::info('Starting To Pay A Wechat Wap Order', [$endpoint, $payload]);
 
-        $data = $this->preOrder($payload);
+        $mweb_url = $this->preOrder($payload)->get('mweb_url');
 
-        $url = is_null(Support::getInstance()->return_url) ? $data->mweb_url : $data->mweb_url.
+        $url = is_null(Support::getInstance()->return_url) ? $mweb_url : $mweb_url.
                         '&redirect_url='.urlencode(Support::getInstance()->return_url);
 
         return RedirectResponse::create($url);

@@ -36,7 +36,7 @@ class MpGateway extends Gateway
             'appId'     => !$this->payRequestUseSubAppId ? $payload['appid'] : $payload['sub_appid'],
             'timeStamp' => strval(time()),
             'nonceStr'  => Str::random(),
-            'package'   => 'prepay_id='.$this->preOrder($payload)->prepay_id,
+            'package'   => 'prepay_id='.$this->preOrder($payload)->get('prepay_id'),
             'signType'  => 'MD5',
         ];
         $pay_request['paySign'] = Support::generateSign($pay_request);

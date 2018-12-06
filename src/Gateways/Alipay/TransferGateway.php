@@ -17,7 +17,6 @@ class TransferGateway implements GatewayInterface
      * @param array  $payload
      *
      * @throws \Yansongda\Pay\Exceptions\GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      * @throws \Yansongda\Pay\Exceptions\InvalidSignException
      *

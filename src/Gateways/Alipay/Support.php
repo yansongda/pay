@@ -96,6 +96,18 @@ class Support
     }
 
     /**
+     * clear.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return void
+     */
+    public function clear()
+    {
+        self::$instance = null;
+    }
+
+    /**
      * Get Alipay API result.
      *
      * @author yansongda <me@yansongda.cn>
