@@ -136,7 +136,7 @@ namespace App\Http\Controllers;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Log;
 
-class PayController extends Controller
+class PayController
 {
     protected $config = [
         'app_id' => '2016082000295641',
@@ -196,7 +196,7 @@ class PayController extends Controller
             // 5、其它业务逻辑情况
 
             Log::debug('Alipay notify', $data->all());
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // $e->getMessage();
         }
 
@@ -214,7 +214,7 @@ namespace App\Http\Controllers;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Log;
 
-class PayController extends Controller
+class PayController
 {
     protected $config = [
         'appid' => 'wxb3fxxxxxxxxxxx', // APP APPID
@@ -265,7 +265,7 @@ class PayController extends Controller
             $data = $pay->verify(); // 是的，验签就这么简单！
 
             Log::debug('Wechat notify', $data->all());
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // $e->getMessage();
         }
         
@@ -275,7 +275,7 @@ class PayController extends Controller
 ```
 
 ## 文档
-[详细说明文档](https://yansongda.gitbooks.io/pay/)
+[详细说明文档](https://docs.pay.yansongda.cn)
 
 ## 错误
 如果在调用相关支付网关 API 时有错误产生，会抛出 `GatewayException`,`InvalidSignException` 错误，可以通过 `$e->getMessage()` 查看，同时，也可通过 `$e->raw` 查看调用 API 后返回的原始数据，该值为数组格式。
