@@ -124,6 +124,13 @@ class Pay
         Log::setLogger($logger);
     }
 
+    /**
+     * Register event service.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return void
+     */
     protected function registerEventService()
     {
 
