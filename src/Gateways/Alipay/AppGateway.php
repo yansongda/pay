@@ -29,6 +29,7 @@ class AppGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload);
 
+        // before paying
         Log::info('Starting To Pay An Alipay App Order', [$endpoint, $payload]);
 
         return Response::create(http_build_query($payload));

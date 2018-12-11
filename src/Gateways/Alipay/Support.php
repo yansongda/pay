@@ -122,6 +122,7 @@ class Support
      */
     public static function requestApi(array $data): Collection
     {
+        // paying
         Log::debug('Request To Alipay Api', [self::$instance->getBaseUri(), $data]);
 
         $data = array_filter($data, function ($value) {
@@ -131,6 +132,7 @@ class Support
         $result = mb_convert_encoding(self::$instance->post('', $data), 'utf-8', 'gb2312');
         $result = json_decode($result, true);
 
+        // paid
         Log::debug('Result Of Alipay Api', $result);
 
         $method = str_replace('.', '_', $data['method']).'_response';
@@ -147,6 +149,7 @@ class Support
             return new Collection($result[$method]);
         }
 
+        // sign error
         Log::warning('Alipay Sign Verify FAILED', $result);
 
         throw new InvalidSignException('Alipay Sign Verify FAILED', $result);

@@ -112,6 +112,7 @@ class Alipay implements GatewayApplicationInterface
      */
     public function pay($gateway, $params = [])
     {
+        // start pay
         Log::debug('Starting To Alipay', [$gateway, $params]);
 
         $this->payload['return_url'] = $params['return_url'] ?? $this->payload['return_url'];
