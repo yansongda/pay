@@ -36,7 +36,8 @@ class Pay
     {
         $this->config = new Config($config);
 
-        $this->registerLog();
+        $this->registerLogService();
+        $this->registerEventService();
     }
 
     /**
@@ -110,7 +111,7 @@ class Pay
      *
      * @throws \Exception
      */
-    protected function registerLog()
+    protected function registerLogService()
     {
         $logger = Log::createLogger(
             $this->config->get('log.file'),
@@ -121,5 +122,10 @@ class Pay
         );
 
         Log::setLogger($logger);
+    }
+
+    protected function registerEventService()
+    {
+
     }
 }
