@@ -152,6 +152,10 @@ class Alipay implements GatewayApplicationInterface
             $data = Support::encoding($data, 'utf-8', $data['charset'] ?? 'gb2312');
         }
 
+        if (isset($data['fund_bill_list'])) {
+            $data['fund_bill_list'] = htmlspecialchars_decode($data['fund_bill_list']);
+        }
+
         Log::info('Received Alipay Request', $data);
 
         if (Support::verifySign($data)) {
