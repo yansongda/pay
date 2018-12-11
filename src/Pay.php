@@ -133,6 +133,6 @@ class Pay
      */
     protected function registerEventService()
     {
-
+        Event::setDispatcher(Event::createDispatcher());
     }
 }
