@@ -19,6 +19,13 @@ class Event extends \Symfony\Component\EventDispatcher\Event
     public $gateway;
 
     /**
+     * Extra attributes.
+     *
+     * @var mixed
+     */
+    public $attributes;
+
+    /**
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>

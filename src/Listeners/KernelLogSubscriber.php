@@ -65,28 +65,76 @@ class KernelLogSubscriber implements EventSubscriberInterface
     public function writePayStartedLog(Events\PayStarted $event)
     {
         Log::info(
-            "{$event->driver} {$event->gateway} Drivers Started",
+            "{$event->driver} {$event->gateway} Has Started",
             [$event->endpoint, $event->payload]
         );
     }
 
+    /**
+     * writeApiRequestingLog.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param Events\ApiRequesting $event
+     *
+     * @return void
+     */
     public function writeApiRequestingLog(Events\ApiRequesting $event)
     {
     }
 
+    /**
+     * writeApiRequestedLog.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param Events\ApiRequested $event
+     *
+     * @return void
+     */
     public function writeApiRequestedLog(Events\ApiRequested $event)
     {
     }
 
+    /**
+     * writeSignFailedLog.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param Events\SignFailed $event
+     *
+     * @return void
+     */
     public function writeSignFailedLog(Events\SignFailed $event)
     {
+        Log::warning("{$event->driver} Sign Verify FAILED", $event->data);
     }
 
+    /**
+     * writeRequestReceivedLog.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param Events\RequestReceived $event
+     *
+     * @return void
+     */
     public function writeRequestReceivedLog(Events\RequestReceived $event)
     {
+        Log::info("Received {$event->driver} Request", $event->data);
     }
 
+    /**
+     * writeMethodCalledLog.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param Events\MethodCalled $event
+     *
+     * @return void
+     */
     public function writeMethodCalledLog(Events\MethodCalled $event)
     {
+        Log::info("{$event->driver} {$event->gateway} Method Has Called", [$event->endpoint, $event->payload]);
     }
 }
