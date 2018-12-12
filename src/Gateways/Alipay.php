@@ -157,6 +157,7 @@ class Alipay implements GatewayApplicationInterface
             $data['fund_bill_list'] = htmlspecialchars_decode($data['fund_bill_list']);
         }
 
+        // request received
         Log::info('Received Alipay Request', $data);
 
         if (Support::verifySign($data)) {

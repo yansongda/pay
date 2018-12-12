@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Events;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class StartPay extends Event
+class StartingPay extends Event
 {
     /**
      * Driver.

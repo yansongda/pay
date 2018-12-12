@@ -4,8 +4,57 @@ namespace Yansongda\Pay;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class Event
+class Events
 {
+    /**
+     * Start pay.
+     *
+     * @Event("Yansongda\Pay\Events\StartingPay")
+     */
+    const STARTING_PAY = 'yansongda.pay.starting';
+
+    /**
+     * Before pay.
+     *
+     * @Event("Yansongda\Pay\Events\PayBefore")
+     */
+    const BEFORE_PAY = 'yansongda.pay.before';
+
+    /**
+     * Paying.
+     *
+     * @Event("Yansongda\Pay\Events\ApiRequeting")
+     */
+    const API_REQUESTING = 'yansongda.pay.api.requesting';
+
+    /**
+     * Paid.
+     *
+     * @Event("Yansongda\Pay\Events\ApiRequeted")
+     */
+    const API_REQUESTED = 'yansongda.pay.api.requested';
+
+    /**
+     * Sign error.
+     *
+     * @Event("Yansongda\Pay\Events\WrongSign")
+     */
+    const SIGN_FAILED = 'yansongda.pay.sign.failed';
+
+    /**
+     * Receive request.
+     *
+     * @Event("Yansongda\Pay\Events\RequestReceived")
+     */
+    const REQUEST_RECEIVED = 'yansongda.pay.request.received';
+
+    /**
+     * Method called.
+     *
+     * @Event("Yansongda\Pay\Events\MethodCalled")
+     */
+    const METHOD_CALLED = 'yansongda.pay.method.called';
+
     /**
      * dispatcher.
      *

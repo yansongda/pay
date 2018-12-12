@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Events;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class SignError extends Event
+class MethodCalled extends Event
 {
 
 }
