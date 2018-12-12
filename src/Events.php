@@ -37,14 +37,14 @@ class Events
     /**
      * Paying.
      *
-     * @Event("Yansongda\Pay\Events\ApiRequeting")
+     * @Event("Yansongda\Pay\Events\ApiRequesting")
      */
     const API_REQUESTING = 'yansongda.pay.api.requesting';
 
     /**
      * Paid.
      *
-     * @Event("Yansongda\Pay\Events\ApiRequeted")
+     * @Event("Yansongda\Pay\Events\ApiRequested")
      */
     const API_REQUESTED = 'yansongda.pay.api.requested';
 
