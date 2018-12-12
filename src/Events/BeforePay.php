@@ -2,24 +2,8 @@
 
 namespace Yansongda\Pay\Events;
 
-use Symfony\Component\EventDispatcher\Event;
-
 class BeforePay extends Event
 {
-    /**
-     * Driver.
-     *
-     * @var string
-     */
-    public $driver;
-
-    /**
-     * Method.
-     *
-     * @var string
-     */
-    public $method;
-
     /**
      * Endpoint.
      *
@@ -38,15 +22,15 @@ class BeforePay extends Event
      * Bootstrap.
      *
      * @param string $driver
-     * @param string $method
+     * @param string $gateway
      * @param string $endpoint
      * @param array  $payload
      */
-    public function __construct(string $driver, string $method, string $endpoint, array $payload)
+    public function __construct(string $driver, string $gateway, string $endpoint, array $payload)
     {
-        $this->driver = $driver;
-        $this->method = $method;
         $this->endpoint = $endpoint;
         $this->payload = $payload;
+
+        parent::__construct($driver, $gateway);
     }
 }

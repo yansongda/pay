@@ -2,8 +2,18 @@
 
 namespace Yansongda\Pay\Events;
 
-use Symfony\Component\EventDispatcher\Event;
-
 class RequestReceived extends Event
 {
+    /**
+     * Bootstrap.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $driver
+     * @param string $gateway
+     */
+    public function __construct(string $driver, string $gateway)
+    {
+        parent::__construct($driver, $gateway);
+    }
 }
