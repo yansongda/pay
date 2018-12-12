@@ -51,7 +51,7 @@ class Events
     /**
      * Sign error.
      *
-     * @Event("Yansongda\Pay\Events\WrongSign")
+     * @Event("Yansongda\Pay\Events\SignFailed")
      */
     const SIGN_FAILED = 'yansongda.pay.sign.failed';
 
