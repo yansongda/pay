@@ -28,17 +28,17 @@ class KernelSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents ()
     {
         return [
-            Events::STARTING_PAY => [],
-            Events::BEFORE_PAY => [],
-            Events::API_REQUESTING => [],
-            Events::API_REQUESTED => [],
-            Events::SIGN_FAILED => [],
-            Events::REQUEST_RECEIVED => [],
-            Events::METHOD_CALLED => []
+            Events::PAY_STARTING => ['writeLog', 256],
+            Events::PAY_STARTED => ['writeLog', 256],
+            Events::API_REQUESTING => ['writeLog', 256],
+            Events::API_REQUESTED => ['writeLog', 256],
+            Events::SIGN_FAILED => ['writeLog', 256],
+            Events::REQUEST_RECEIVED => ['writeLog', 256],
+            Events::METHOD_CALLED => ['writeLog', 256]
         ];
     }
 
-    public function WriteLog()
+    public function writeLog(Events\Event $event)
     {
 
     }

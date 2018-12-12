@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Events;
 
-class BeforePay extends Event
+class PayStarted extends Event
 {
     /**
      * Endpoint.

@@ -6,6 +6,7 @@ use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Gateways\Alipay;
 use Yansongda\Pay\Gateways\Wechat;
+use Yansongda\Pay\Listeners\KernelSubscriber;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Log;
 use Yansongda\Supports\Str;
@@ -134,5 +135,7 @@ class Pay
     protected function registerEventService()
     {
         Events::setDispatcher(Events::createDispatcher());
+
+        Events::addSubscriber(new KernelSubscriber());
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Events;
 
-class StartingPay extends Event
+class PayStarting extends Event
 {
     /**
      * Params.
