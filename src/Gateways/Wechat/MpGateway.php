@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-use Yansongda\Pay\Log;
+use Yansongda\Pay\Events;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -41,7 +41,7 @@ class MpGateway extends Gateway
         ];
         $pay_request['paySign'] = Support::generateSign($pay_request);
 
-        Log::info('Starting To Pay A Wechat JSAPI Order', [$endpoint, $pay_request]);
+        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Wechat', 'JSAPI', $endpoint, $pay_request));
 
         return new Collection($pay_request);
     }

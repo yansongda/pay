@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Log;
+use Yansongda\Pay\Events;
 use Yansongda\Supports\Collection;
 
 class ScanGateway implements GatewayInterface
@@ -31,7 +31,7 @@ class ScanGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload);
 
-        Log::info('Starting To Pay An Alipay Scan Order', [$endpoint, $payload]);
+        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Alipay', 'Scan', $endpoint, $payload));
 
         return Support::requestApi($payload);
     }

@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Yansongda\Pay\Log;
+use Yansongda\Pay\Events;
 
 class WapGateway extends Gateway
 {
@@ -25,7 +25,7 @@ class WapGateway extends Gateway
     {
         $payload['trade_type'] = $this->getTradeType();
 
-        Log::info('Starting To Pay A Wechat Wap Order', [$endpoint, $payload]);
+        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Wechat', 'Wap', $endpoint, $payload));
 
         $mweb_url = $this->preOrder($payload)->get('mweb_url');
 

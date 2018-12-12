@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Alipay\Support;
@@ -112,8 +113,7 @@ class Alipay implements GatewayApplicationInterface
      */
     public function pay($gateway, $params = [])
     {
-        // start pay
-        Log::debug('Starting To Alipay', [$gateway, $params]);
+        Events::dispatch(Events::PAY_STARTING, new Events\PayStarting('Alipay', $gateway, $params));
 
         $this->payload['return_url'] = $params['return_url'] ?? $this->payload['return_url'];
         $this->payload['notify_url'] = $params['notify_url'] ?? $this->payload['notify_url'];
