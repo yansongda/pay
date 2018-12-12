@@ -299,8 +299,7 @@ class PayController
 
 ## 赏一杯咖啡吧
 
-![alipay](docs/alipay.jpg)
-![wechat](docs/wechat.jpg)
+![pay](docs/pay.jpg)
 
 ## LICENSE
 MIT
