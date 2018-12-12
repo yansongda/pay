@@ -74,5 +74,8 @@ class PayStartingListener
 
 // 2. 添加监听器
 Events::addListener(Events::PAY_STARTING, [new PayStartingListener(), 'sendEmail']);
+
+// 3. 喝杯咖啡
+
 ```
 
