@@ -28,15 +28,13 @@ class KernelSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents ()
     {
         return [
-            Events::STARTING_PAY => [
-
-            ],
-            Events::BEFORE_PAY,
-            Events::API_REQUESTING,
-            Events::API_REQUESTED,
-            Events::SIGN_FAILED,
-            Events::REQUEST_RECEIVED,
-            Events::METHOD_CALLED
+            Events::STARTING_PAY => [],
+            Events::BEFORE_PAY => [],
+            Events::API_REQUESTING => [],
+            Events::API_REQUESTED => [],
+            Events::SIGN_FAILED => [],
+            Events::REQUEST_RECEIVED => [],
+            Events::METHOD_CALLED => []
         ];
     }
 
