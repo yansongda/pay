@@ -29,13 +29,13 @@ class KernelLogSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Events::PAY_STARTING => ['writePayStartingLog', 256],
-            Events::PAY_STARTED => ['writePayStartedLog', 256],
-            Events::API_REQUESTING => ['writeApiRequestingLog', 256],
-            Events::API_REQUESTED => ['writeApiRequestedLog', 256],
-            Events::SIGN_FAILED => ['writeSignFailedLog', 256],
+            Events::PAY_STARTING     => ['writePayStartingLog', 256],
+            Events::PAY_STARTED      => ['writePayStartedLog', 256],
+            Events::API_REQUESTING   => ['writeApiRequestingLog', 256],
+            Events::API_REQUESTED    => ['writeApiRequestedLog', 256],
+            Events::SIGN_FAILED      => ['writeSignFailedLog', 256],
             Events::REQUEST_RECEIVED => ['writeRequestReceivedLog', 256],
-            Events::METHOD_CALLED => ['writeMethodCalledLog', 256]
+            Events::METHOD_CALLED    => ['writeMethodCalledLog', 256],
         ];
     }
 
