@@ -8,6 +8,16 @@ SDK 使用 [symfony/event-dispatcher](https://github.com/symfony/event-dispatche
 
 ## 所有事件说明
 
+| 事件名 | 别名 | 事件类 | 额外数据 |
+| :---: | :---: | :---: | :---: |
+| yansongda.pay.starting | Events::PAY_STARTING | Yansongda\Pay\Events\PayStarting::class | $driver (支付机构), $gateway (支付网关), $params (传递的原始参数) |
+| yansongda.pay.started | Events::PAY_STARTED | Yansongda\Pay\Events\PayStarted::class | $driver (支付机构), $gateway (支付网关), $endpoint (支付的 url endpoint), $payload (数据) |
+| yansongda.pay.api.requesting | Events::API_REQUESTING | Yansongda\Pay\Events\ApiRequesting::class | $driver (支付机构), $gateway (支付网关), $endpoint (支付的 url endpoint), $payload (数据) |
+| yansongda.pay.api.requested | Events::API_REQUESTED |Yansongda\Pay\Events\ApiRequested::class | $driver (支付机构), $gateway (支付网关), $endpoint (支付的 url endpoint), $result (请求后的返回数据) |
+| yansongda.pay.sign.failed | Events::SIGN_FAILED | Yansongda\Pay\Events\WrongSign::class | $driver (支付机构), $gateway (支付网关), $data (验签数据) |
+| yansongda.pay.request.received | Events::REQUEST_RECEIVED | Yansongda\Pay\Events\RequestReceived::class | $driver (支付机构), $gateway (支付网关), $data (收到的数据) |
+| yansongda.pay.method.called | Events::METHOD_CALLED | Yansongda\Pay\Events\MethodCalled::class | $driver (支付机构), $gateway (调用方法), $endpoint (支付的 url endpoint), $payload (数据) |
+
 - yansongda.pay.starting (Yansongda\Pay\Events\PayStarting)
     
     - 事件类：Yansongda\Pay\Events\PayStarting::class
