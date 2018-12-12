@@ -26,6 +26,7 @@ laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 QQ交流群：690027516
 
 ## 特点
+- 丰富的事件系统
 - 命名不那么乱七八糟
 - 隐藏开发者不需要关注的细节
 - 根据支付宝、微信最新 API 开发而成
@@ -274,7 +275,10 @@ class PayController
 }
 ```
 
-## 文档
+## 事件系统
+[请见详细文档](https://docs.pay.yansongda.cn/qi-ta/event)
+
+## 详细文档
 [详细说明文档](https://docs.pay.yansongda.cn)
 
 ## 错误
