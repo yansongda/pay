@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
+use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
@@ -122,8 +123,7 @@ class Support
      */
     public static function requestApi(array $data): Collection
     {
-        // api requesting
-        Log::debug('Request To Alipay Api', [self::$instance->getBaseUri(), $data]);
+        Events::dispatch(Events::API_REQUESTING, new Events\ApiRequesting('Alipay', '', self::$instance->getBaseUri(), $data));
 
         $data = array_filter($data, function ($value) {
             return ($value == '' || is_null($value)) ? false : true;
@@ -132,8 +132,7 @@ class Support
         $result = mb_convert_encoding(self::$instance->post('', $data), 'utf-8', 'gb2312');
         $result = json_decode($result, true);
 
-        // api requested
-        Log::debug('Result Of Alipay Api', $result);
+        Events::dispatch(Events::API_REQUESTED, new Events\ApiRequesting('Alipay', '', self::$instance->getBaseUri(), $result));
 
         $method = str_replace('.', '_', $data['method']).'_response';
 
@@ -149,8 +148,7 @@ class Support
             return new Collection($result[$method]);
         }
 
-        // sign failed
-        Log::warning('Alipay Sign Verify FAILED', $result);
+        Events::dispatch(Events::SIGN_FAILED, new Events\SignFailed('Alipay', '', $result));
 
         throw new InvalidSignException('Alipay Sign Verify FAILED', $result);
     }
@@ -186,7 +184,7 @@ class Support
 
         $sign = base64_encode($sign);
 
-        Log::debug('Alipay Generate Sign Before Base64', [$params, $sign]);
+        Log::debug('Alipay Generate Sign', [$params, $sign]);
 
         return $sign;
     }

@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
+use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
@@ -149,7 +150,7 @@ class Support
      */
     public static function requestApi($endpoint, $data, $cert = false): Collection
     {
-        Log::debug('Request To Wechat Api', [self::$instance->getBaseUri().$endpoint, $data]);
+        Events::dispatch(Events::API_REQUESTING, new Events\ApiRequesting('Wechat', '', self::$instance->getBaseUri(), $data));
 
         $result = self::$instance->post(
             $endpoint,
@@ -161,7 +162,7 @@ class Support
         );
         $result = is_array($result) ? $result : self::fromXml($result);
 
-        Log::debug('Result Of Wechat Api', $result);
+        Events::dispatch(Events::API_REQUESTED, new Events\ApiRequesting('Wechat', '', self::$instance->getBaseUri(), $result));
 
         if (!isset($result['return_code']) || $result['return_code'] != 'SUCCESS' || $result['result_code'] != 'SUCCESS') {
             throw new GatewayException(
@@ -175,7 +176,7 @@ class Support
             return new Collection($result);
         }
 
-        Log::warning('Wechat Sign Verify FAILED', $result);
+        Events::dispatch(Events::SIGN_FAILED, new Events\SignFailed('Wechat', '', $result));
 
         throw new InvalidSignException('Wechat Sign Verify FAILED', $result);
     }

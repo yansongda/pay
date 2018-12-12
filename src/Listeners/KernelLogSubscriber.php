@@ -81,6 +81,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeApiRequestingLog(Events\ApiRequesting $event)
     {
+        Log::debug("Requesting To {$event->driver} Api", [$event->endpoint, $event->payload]);
     }
 
     /**
@@ -94,6 +95,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeApiRequestedLog(Events\ApiRequested $event)
     {
+        Log::debug("Result Of {$event->driver} Api", $event->result);
     }
 
     /**

@@ -185,7 +185,7 @@ class Wechat implements GatewayApplicationInterface
             return new Collection($data);
         }
 
-        Events::dispatch(Events::SIGN_FAILED, new Events\RequestReceived('Wechat', '', $data));
+        Events::dispatch(Events::SIGN_FAILED, new Events\SignFailed('Wechat', '', $data));
 
         throw new InvalidSignException('Wechat Sign Verify FAILED', $data);
     }

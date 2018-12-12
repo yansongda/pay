@@ -162,7 +162,7 @@ class Alipay implements GatewayApplicationInterface
             return new Collection($data);
         }
 
-        Events::dispatch(Events::SIGN_FAILED, new Events\RequestReceived('Alipay', '', $data));
+        Events::dispatch(Events::SIGN_FAILED, new Events\SignFailed('Alipay', '', $data));
 
         throw new InvalidSignException('Alipay Sign Verify FAILED', $data);
     }
