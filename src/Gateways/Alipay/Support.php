@@ -132,7 +132,7 @@ class Support
         $result = mb_convert_encoding(self::$instance->post('', $data), 'utf-8', 'gb2312');
         $result = json_decode($result, true);
 
-        Events::dispatch(Events::API_REQUESTED, new Events\ApiRequesting('Alipay', '', self::$instance->getBaseUri(), $result));
+        Events::dispatch(Events::API_REQUESTED, new Events\ApiRequested('Alipay', '', self::$instance->getBaseUri(), $result));
 
         $method = str_replace('.', '_', $data['method']).'_response';
 

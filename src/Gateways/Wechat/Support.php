@@ -162,7 +162,7 @@ class Support
         );
         $result = is_array($result) ? $result : self::fromXml($result);
 
-        Events::dispatch(Events::API_REQUESTED, new Events\ApiRequesting('Wechat', '', self::$instance->getBaseUri(), $result));
+        Events::dispatch(Events::API_REQUESTED, new Events\ApiRequested('Wechat', '', self::$instance->getBaseUri(), $result));
 
         if (!isset($result['return_code']) || $result['return_code'] != 'SUCCESS' || $result['result_code'] != 'SUCCESS') {
             throw new GatewayException(
