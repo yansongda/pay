@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Supports\Collection;
 use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Log;
+use Yansongda\Pay\Events;
 
 class MiniGateway implements GatewayInterface
 {
@@ -27,18 +27,14 @@ class MiniGateway implements GatewayInterface
      */
     public function pay($endpoint, array $payload): Collection
     {
-        $bizContent = json_decode($payload['biz_content'], true);
-        if (empty($bizContent['buyer_id'])) {
+        if (empty(json_decode($payload['biz_content'], true)['buyer_id'])) {
             throw new \Yansongda\Pay\Exceptions\InvalidArgumentException('buyer_id required');
         }
 
         $payload['method'] = $this->getMethod();
-        $payload['biz_content'] = json_encode(array_merge(
-            $bizContent
-        ));
         $payload['sign'] = Support::generateSign($payload);
 
-        Log::info('Starting To Pay An Alipay Mini Order', [$endpoint, $payload]);
+        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Alipay', 'Mini', $endpoint, $payload));
 
         return Support::requestApi($payload);
     }
