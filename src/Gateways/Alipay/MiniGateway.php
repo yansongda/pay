@@ -2,9 +2,9 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-use Yansongda\Supports\Collection;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Events;
+use Yansongda\Supports\Collection;
 
 class MiniGateway implements GatewayInterface
 {
