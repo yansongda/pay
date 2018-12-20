@@ -34,7 +34,7 @@ class TransferGateway extends Gateway
         $payload['mch_appid'] = Support::getInstance()->getConfig($type, '');
         $payload['mchid'] = $payload['mch_id'];
 
-        if (php_sapi_name() !== 'cli') {
+        if (php_sapi_name() !== 'cli' && (!isset($payload['spbill_create_ip']) || empty($payload['spbill_create_ip']))) {
             $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
         }
 
