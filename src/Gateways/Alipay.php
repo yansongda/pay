@@ -68,21 +68,19 @@ class Alipay implements GatewayApplicationInterface
     {
         $this->gateway = Support::create($config)->getBaseUri();
         $this->payload = [
-            'app_id'      => $config->get('app_id'),
-            'method'      => '',
-            'format'      => 'JSON',
-            'charset'     => 'utf-8',
-            'sign_type'   => 'RSA2',
-            'version'     => '1.0',
-            'return_url'  => $config->get('return_url'),
-            'notify_url'  => $config->get('notify_url'),
-            'timestamp'   => date('Y-m-d H:i:s'),
-            'sign'        => '',
-            'biz_content' => '',
+            'app_id'         => $config->get('app_id'),
+            'method'         => '',
+            'format'         => 'JSON',
+            'charset'        => 'utf-8',
+            'sign_type'      => 'RSA2',
+            'version'        => '1.0',
+            'return_url'     => $config->get('return_url'),
+            'notify_url'     => $config->get('notify_url'),
+            'timestamp'      => date('Y-m-d H:i:s'),
+            'sign'           => '',
+            'biz_content'    => '',
+            'app_auth_token' => $config->get('app_auth_token'),
         ];
-        if (!empty($config->get('app_auth_token'))) {
-            $this->payload['app_auth_token'] = $config->get('app_auth_token');
-        }
     }
 
     /**
