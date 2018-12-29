@@ -1,6 +1,6 @@
 # 支持的支付方法
 
-支付宝支付目前支持 6 种支付方法，对应的支付 method 如下：
+支付宝支付目前支持 7 种支付方法，对应的支付 method 如下：
 
 | method | 说明 | 参数 | 返回值 |
 | :---: | :---: | :---: | :---: |
@@ -10,6 +10,7 @@
 | pos | 刷卡支付 | array $order | Collection |
 | scan | 扫码支付 | array $order | Collection |
 | transfer | 账户转账 | array $order | Collection |
+| mini | 小程序支付 | array $order | Collection |
 
 # 使用方法
 
@@ -136,6 +137,29 @@ $result = $alipay->transfer($order);
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`product_code`** 等参数。**
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://docs.open.alipay.com/api_28/alipay.fund.trans.toaccount.transfer)，查看「请求参数」一栏。
+
+## 七、小程序支付
+
+### 例子
+
+```PHP
+$order  = [
+    'out_trade_no' => time(),
+    'subject' => 'test subject-小程序支付',
+    'total_amount' => '0.01',
+    'buyer_id' => 2088622190161234,
+];
+
+$result = $alipay->mini($order);
+```
+
+### 订单配置参数
+
+**所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了，比如，**`product_code`** 等参数。**
+
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://docs.open.alipay.com/api_1/alipay.trade.create/)，查看「请求参数」一栏。
+
+小程序支付接入文档：[https://docs.alipay.com/mini/introduce/pay](https://docs.alipay.com/mini/introduce/pay)。
 
 # 返回值
 

@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Gateways\Alipay;
 
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Log;
+use Yansongda\Pay\Events;
 
 class AppGateway implements GatewayInterface
 {
@@ -16,7 +16,6 @@ class AppGateway implements GatewayInterface
      * @param string $endpoint
      * @param array  $payload
      *
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Response
@@ -30,7 +29,7 @@ class AppGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload);
 
-        Log::info('Starting To Pay An Alipay App Order', [$endpoint, $payload]);
+        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Alipay', 'App', $endpoint, $payload));
 
         return Response::create(http_build_query($payload));
     }

@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-use Yansongda\Pay\Log;
+use Yansongda\Pay\Events;
 use Yansongda\Supports\Collection;
 
 class PosGateway extends Gateway
@@ -27,7 +27,7 @@ class PosGateway extends Gateway
 
         $payload['sign'] = Support::generateSign($payload);
 
-        Log::info('Starting To Pay A Wechat Pos order', [$payload]);
+        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Wechat', 'Pos', $endpoint, $payload));
 
         return Support::requestApi('pay/micropay', $payload);
     }

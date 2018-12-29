@@ -26,6 +26,7 @@ laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 QQ交流群：690027516
 
 ## 特点
+- 丰富的事件系统
 - 命名不那么乱七八糟
 - 隐藏开发者不需要关注的细节
 - 根据支付宝、微信最新 API 开发而成
@@ -50,6 +51,7 @@ QQ交流群：690027516
 - 刷卡支付
 - 扫码支付
 - 账户转账
+- 小程序支付
 
 |  method   |   描述       |
 | :-------: | :-------:   |
@@ -59,6 +61,7 @@ QQ交流群：690027516
 |  pos      | 刷卡支付  |
 |  scan     | 扫码支付  |
 |  transfer | 帐户转账  |
+|  mini     | 小程序支付 |
 
 ### 2、微信
 - 公众号支付
@@ -136,7 +139,7 @@ namespace App\Http\Controllers;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Log;
 
-class PayController extends Controller
+class PayController
 {
     protected $config = [
         'app_id' => '2016082000295641',
@@ -196,7 +199,7 @@ class PayController extends Controller
             // 5、其它业务逻辑情况
 
             Log::debug('Alipay notify', $data->all());
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // $e->getMessage();
         }
 
@@ -214,7 +217,7 @@ namespace App\Http\Controllers;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Log;
 
-class PayController extends Controller
+class PayController
 {
     protected $config = [
         'appid' => 'wxb3fxxxxxxxxxxx', // APP APPID
@@ -265,7 +268,7 @@ class PayController extends Controller
             $data = $pay->verify(); // 是的，验签就这么简单！
 
             Log::debug('Wechat notify', $data->all());
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // $e->getMessage();
         }
         
@@ -274,8 +277,11 @@ class PayController extends Controller
 }
 ```
 
-## 文档
-[详细说明文档](https://yansongda.gitbooks.io/pay/)
+## 事件系统
+[请见详细文档](https://docs.pay.yansongda.cn/qi-ta/event)
+
+## 详细文档
+[详细说明文档](https://docs.pay.yansongda.cn)
 
 ## 错误
 如果在调用相关支付网关 API 时有错误产生，会抛出 `GatewayException`,`InvalidSignException` 错误，可以通过 `$e->getMessage()` 查看，同时，也可通过 `$e->raw` 查看调用 API 后返回的原始数据，该值为数组格式。
@@ -292,6 +298,10 @@ class PayController extends Controller
 由于测试及使用环境的限制，本项目中只开发了「支付宝」和「微信支付」的相关支付网关。
 
 如果您有其它支付网关的需求，或者发现本项目中需要改进的代码，**_欢迎 Fork 并提交 PR！_**
+
+## 赏一杯咖啡吧
+
+![pay](docs/pay.jpg)
 
 ## LICENSE
 MIT

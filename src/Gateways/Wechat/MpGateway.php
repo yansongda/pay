@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-use Yansongda\Pay\Log;
+use Yansongda\Pay\Events;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -36,12 +36,12 @@ class MpGateway extends Gateway
             'appId'     => !$this->payRequestUseSubAppId ? $payload['appid'] : $payload['sub_appid'],
             'timeStamp' => strval(time()),
             'nonceStr'  => Str::random(),
-            'package'   => 'prepay_id='.$this->preOrder($payload)->prepay_id,
+            'package'   => 'prepay_id='.$this->preOrder($payload)->get('prepay_id'),
             'signType'  => 'MD5',
         ];
         $pay_request['paySign'] = Support::generateSign($pay_request);
 
-        Log::info('Starting To Pay A Wechat JSAPI Order', [$endpoint, $pay_request]);
+        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Wechat', 'JSAPI', $endpoint, $pay_request));
 
         return new Collection($pay_request);
     }

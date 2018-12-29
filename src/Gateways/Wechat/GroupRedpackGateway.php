@@ -2,8 +2,8 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
+use Yansongda\Pay\Events;
 use Yansongda\Pay\Gateways\Wechat;
-use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 
 class GroupRedpackGateway extends Gateway
@@ -36,7 +36,7 @@ class GroupRedpackGateway extends Gateway
 
         $payload['sign'] = Support::generateSign($payload);
 
-        Log::info('Starting To Pay A Wechat Group Redpack Order', [$endpoint, $payload]);
+        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Wechat', 'Group Redpack', $endpoint, $payload));
 
         return Support::requestApi(
             'mmpaymkttransfers/sendgroupredpack',

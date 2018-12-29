@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Gateways\Alipay;
 
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Log;
+use Yansongda\Pay\Events;
 
 class WebGateway implements GatewayInterface
 {
@@ -16,7 +16,6 @@ class WebGateway implements GatewayInterface
      * @param string $endpoint
      * @param array  $payload
      *
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Response
@@ -30,7 +29,7 @@ class WebGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload);
 
-        Log::info('Starting To Pay An Alipay Web/Wap Order', [$endpoint, $payload]);
+        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Alipay', 'Web/Wap', $endpoint, $payload));
 
         return $this->buildPayHtml($endpoint, $payload);
     }
@@ -52,7 +51,7 @@ class WebGateway implements GatewayInterface
             $val = str_replace("'", '&apos;', $val);
             $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
         }
-        $sHtml .= "<input type='submit' value='ok' style='display:none;''></form>";
+        $sHtml .= "<input type='submit' value='ok' style='display:none;'></form>";
         $sHtml .= "<script>document.forms['alipaysubmit'].submit();</script>";
 
         return Response::create($sHtml);

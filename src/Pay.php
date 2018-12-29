@@ -6,6 +6,7 @@ use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Gateways\Alipay;
 use Yansongda\Pay\Gateways\Wechat;
+use Yansongda\Pay\Listeners\KernelLogSubscriber;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Log;
 use Yansongda\Supports\Str;
@@ -29,10 +30,15 @@ class Pay
      * @author yansongda <me@yansongda.cn>
      *
      * @param array $config
+     *
+     * @throws \Exception
      */
     public function __construct(array $config)
     {
         $this->config = new Config($config);
+
+        $this->registerLogService();
+        $this->registerEventService();
     }
 
     /**
@@ -44,6 +50,7 @@ class Pay
      * @param array  $params
      *
      * @throws InvalidGatewayException
+     * @throws \Exception
      *
      * @return GatewayApplicationInterface
      */
@@ -62,14 +69,11 @@ class Pay
      * @param string $method
      *
      * @throws InvalidGatewayException
-     * @throws \Exception
      *
      * @return GatewayApplicationInterface
      */
     protected function create($method): GatewayApplicationInterface
     {
-        !$this->config->has('log.file') ?: $this->registerLog();
-
         $gateway = __NAMESPACE__.'\\Gateways\\'.Str::studly($method);
 
         if (class_exists($gateway)) {
@@ -108,7 +112,7 @@ class Pay
      *
      * @throws \Exception
      */
-    protected function registerLog()
+    protected function registerLogService()
     {
         $logger = Log::createLogger(
             $this->config->get('log.file'),
@@ -119,5 +123,19 @@ class Pay
         );
 
         Log::setLogger($logger);
+    }
+
+    /**
+     * Register event service.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return void
+     */
+    protected function registerEventService()
+    {
+        Events::setDispatcher(Events::createDispatcher());
+
+        Events::addSubscriber(new KernelLogSubscriber());
     }
 }

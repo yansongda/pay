@@ -34,6 +34,7 @@
   * [验证服务器数据](docs/wechat/verify.md)
   * [向微信服务器确认收到异步通知](docs/wechat/success.md)
 * [其它]()
-  * [其他功能](docs/others/others.md)
+  * [日志系统](docs/others/log.md)
+  * [事件系统](docs/others/event.md)
   * [FAQ](docs/others/faq.md)
-
+  * [其他功能](docs/others/others.md)
