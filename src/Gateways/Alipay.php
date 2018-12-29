@@ -80,6 +80,9 @@ class Alipay implements GatewayApplicationInterface
             'sign'        => '',
             'biz_content' => '',
         ];
+        if (!empty($config->get('app_auth_token'))) {
+            $this->payload['app_auth_token'] = $config->get('app_auth_token');
+        }
     }
 
     /**
