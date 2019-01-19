@@ -28,21 +28,21 @@ class Events
     const PAY_STARTING = 'yansongda.pay.starting';
 
     /**
-     * Before pay.
+     * Pay started.
      *
      * @Event("Yansongda\Pay\Events\PayStarted")
      */
     const PAY_STARTED = 'yansongda.pay.started';
 
     /**
-     * Paying.
+     * Api requesting.
      *
      * @Event("Yansongda\Pay\Events\ApiRequesting")
      */
     const API_REQUESTING = 'yansongda.pay.api.requesting';
 
     /**
-     * Paid.
+     * Api requested.
      *
      * @Event("Yansongda\Pay\Events\ApiRequested")
      */
