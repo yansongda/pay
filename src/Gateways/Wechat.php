@@ -254,14 +254,24 @@ class Wechat implements GatewayApplicationInterface
      * @param array $order
      *
      * @throws GatewayException
+     * @throws InvalidSignException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
      *
      * @return Collection
      */
     public function cancel($order): Collection
     {
+        unset($this->payload['spbill_create_ip']);
+
+        $this->payload = Support::filterPayload($this->payload, $order, true);
+
         Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Wechat', 'Cancel', $this->gateway, $this->payload));
 
-        throw new GatewayException('Wechat Do Not Have Cancel API! Please use Close API!');
+        return Support::requestApi(
+            'secapi/pay/reverse',
+            $this->payload,
+            true
+        );
     }
 
     /**
