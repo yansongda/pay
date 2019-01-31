@@ -319,6 +319,38 @@ class Wechat implements GatewayApplicationInterface
     }
 
     /**
+     * Download the bill.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param array $params
+     *
+     * @throws GatewayException
+     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     *
+     * @return string
+     */
+    public function download(array $params): string
+    {
+        unset($this->payload['spbill_create_ip']);
+
+        $this->payload = Support::filterPayload($this->payload, $params, true);
+
+        Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Wechat', 'Download', $this->gateway, $this->payload));
+
+        $result = Support::getInstance()->post(
+            'pay/downloadbill',
+            Support::getInstance()->toXml($this->payload)
+        );
+
+        if (is_array($result)) {
+            throw new GatewayException('Get Wechat API Error: '.$result['return_msg'], $result);
+        }
+
+        return $result;
+    }
+
+    /**
      * Make pay gateway.
      *
      * @author yansongda <me@yansongda.cn>
