@@ -68,7 +68,24 @@ class Support
         $this->baseUri = Wechat::URL[$config->get('mode', Wechat::MODE_NORMAL)];
         $this->config = $config;
 
+        $this->setDevKey();
         $this->setHttpOptions();
+    }
+
+    /**
+     * setDevKey.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @return void
+     */
+    public function setDevKey()
+    {
+        if (self::$instance->mode != Wechat::MODE_DEV) {
+            return;
+        }
+
+
     }
 
     /**
@@ -128,7 +145,7 @@ class Support
      *
      * @return void
      */
-    public function clear()
+    public static function clear()
     {
         self::$instance = null;
     }
@@ -164,6 +181,25 @@ class Support
 
         Events::dispatch(Events::API_REQUESTED, new Events\ApiRequested('Wechat', '', self::$instance->getBaseUri(), $result));
 
+        return self::processingApiResult($endpoint, $result);
+    }
+
+    /**
+     * processingApiResult.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param       $endpoint
+     * @param array $result
+     *
+     * @throws GatewayException
+     * @throws InvalidArgumentException
+     * @throws InvalidSignException
+     *
+     * @return Collection
+     */
+    protected static function processingApiResult($endpoint, array $result)
+    {
         if (!isset($result['return_code']) || $result['return_code'] != 'SUCCESS' || $result['result_code'] != 'SUCCESS') {
             throw new GatewayException(
                 'Get Wechat API Error:'.($result['return_msg'] ?? $result['retmsg']).($result['err_code_des'] ?? ''),
