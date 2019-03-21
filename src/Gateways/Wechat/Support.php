@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Events;
+use Yansongda\Pay\Exceptions\BusinessException;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
@@ -10,6 +11,7 @@ use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
+use Yansongda\Supports\Str;
 use Yansongda\Supports\Traits\HasHttpRequest;
 
 /**
@@ -62,6 +64,10 @@ class Support
      * @author yansongda <me@yansongda.cn>
      *
      * @param Config $config
+     *
+     * @throws GatewayException
+     * @throws InvalidArgumentException
+     * @throws InvalidSignException
      */
     private function __construct(Config $config)
     {
@@ -91,15 +97,28 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return void
+     * @throws GatewayException
+     * @throws InvalidArgumentException
+     * @throws InvalidSignException
+     * @throws \Exception
+     *
+     * @return Support
      */
     public function setDevKey()
     {
-        if (self::$instance->mode != Wechat::MODE_DEV) {
-            return;
+        if (self::$instance->mode == Wechat::MODE_DEV) {
+            $data = [
+                'mch_id' => self::$instance->mch_id,
+                'nonce_str' => Str::random(),
+            ];
+            $data['sign'] = self::generateSign($data);
+
+            $result = self::requestApi('pay/getsignkey', $data);
+
+            self::$instance->config->set('key', $result['sandbox_signkey']);
         }
 
-        // todo
+        return self::$instance;
     }
 
     /**
@@ -108,6 +127,10 @@ class Support
      * @author yansongda <me@yansongda.cn>
      *
      * @param Config $config
+     *
+     * @throws GatewayException
+     * @throws InvalidArgumentException
+     * @throws InvalidSignException
      *
      * @return Support
      */
@@ -415,11 +438,21 @@ class Support
      */
     protected static function processingApiResult($endpoint, array $result)
     {
-        if (!isset($result['return_code']) || $result['return_code'] != 'SUCCESS' || $result['result_code'] != 'SUCCESS') {
+        if (!isset($result['return_code']) || $result['return_code'] != 'SUCCESS') {
             throw new GatewayException(
-                'Get Wechat API Error:'.($result['return_msg'] ?? $result['retmsg']).($result['err_code_des'] ?? ''),
-                $result,
-                20000
+                'Get Wechat API Error:'.($result['return_msg'] ?? $result['retmsg']),
+                $result
+            );
+        }
+
+        if ($endpoint === 'pay/getsignkey') {
+            return new Collection($result);
+        }
+
+        if ($result['result_code'] != 'SUCCESS') {
+            throw new BusinessException(
+                'Wechat Business Error: '.$result['err_code'].' - '.$result['err_code_des'],
+                $result
             );
         }
 

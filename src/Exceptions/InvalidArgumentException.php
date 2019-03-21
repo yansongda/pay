@@ -11,10 +11,9 @@ class InvalidArgumentException extends Exception
      *
      * @param string       $message
      * @param array|string $raw
-     * @param int|string   $code
      */
-    public function __construct($message, $raw = [], $code = 3)
+    public function __construct($message, $raw = [])
     {
-        parent::__construct($message, $raw, $code);
+        parent::__construct('INVALID_ARGUMENT: '.$message, $raw, self::INVALID_ARGUMENT);
     }
 }

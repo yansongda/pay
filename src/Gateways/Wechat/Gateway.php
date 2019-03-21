@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Contracts\GatewayInterface;
-use Yansongda\Pay\Log;
+use Yansongda\Pay\Events;
 use Yansongda\Supports\Collection;
 
 abstract class Gateway implements GatewayInterface
@@ -65,7 +65,7 @@ abstract class Gateway implements GatewayInterface
     {
         $payload['sign'] = Support::generateSign($payload);
 
-        Log::debug('Schedule A Wechat order', [$payload]);
+        Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Wechat', 'PreOrder', '', $payload));
 
         return Support::requestApi('pay/unifiedorder', $payload);
     }

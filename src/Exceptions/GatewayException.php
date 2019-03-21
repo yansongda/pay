@@ -11,10 +11,9 @@ class GatewayException extends Exception
      *
      * @param string       $message
      * @param array|string $raw
-     * @param int|string   $code
      */
-    public function __construct($message, $raw = [], $code = 4)
+    public function __construct($message, $raw = [])
     {
-        parent::__construct($message, $raw, $code);
+        parent::__construct('ERROR_GATEWAY: '.$message, $raw, self::ERROR_GATEWAY);
     }
 }

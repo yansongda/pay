@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Exceptions;
 
-class InvalidSignException extends Exception
+class BusinessException extends GatewayException
 {
     /**
      * Bootstrap.
@@ -14,6 +14,6 @@ class InvalidSignException extends Exception
      */
     public function __construct($message, $raw = [])
     {
-        parent::__construct('INVALID_SIGN: '.$message, $raw, self::INVALID_SIGN);
+        parent::__construct('ERROR_BUSINESS: '.$message, $raw, self::ERROR_BUSINESS);
     }
 }

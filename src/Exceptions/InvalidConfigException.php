@@ -11,10 +11,9 @@ class InvalidConfigException extends Exception
      *
      * @param string       $message
      * @param array|string $raw
-     * @param int|string   $code
      */
-    public function __construct($message, $raw = [], $code = 2)
+    public function __construct($message, $raw = [])
     {
-        parent::__construct($message, $raw, $code);
+        parent::__construct('INVALID_CONFIG: '.$message, $raw, self::INVALID_CONFIG);
     }
 }

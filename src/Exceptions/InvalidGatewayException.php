@@ -11,10 +11,9 @@ class InvalidGatewayException extends Exception
      *
      * @param string       $message
      * @param array|string $raw
-     * @param int|string   $code
      */
-    public function __construct($message, $raw = [], $code = 1)
+    public function __construct($message, $raw = [])
     {
-        parent::__construct($message, $raw, $code);
+        parent::__construct('INVALID_GATEWAY: '.$message, $raw, self::INVALID_GATEWAY);
     }
 }
