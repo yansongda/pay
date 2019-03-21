@@ -445,18 +445,15 @@ class Support
             );
         }
 
-        if ($endpoint === 'pay/getsignkey') {
-            return new Collection($result);
-        }
-
-        if ($result['result_code'] != 'SUCCESS') {
+        if (isset($result['result_code']) && $result['result_code'] != 'SUCCESS') {
             throw new BusinessException(
                 'Wechat Business Error: '.$result['err_code'].' - '.$result['err_code_des'],
                 $result
             );
         }
 
-        if (strpos($endpoint, 'mmpaymkttransfers') !== false ||
+        if ($endpoint === 'pay/getsignkey' ||
+            strpos($endpoint, 'mmpaymkttransfers') !== false ||
             self::generateSign($result) === $result['sign']) {
             return new Collection($result);
         }
