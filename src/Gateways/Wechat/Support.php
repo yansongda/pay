@@ -108,7 +108,7 @@ class Support
     {
         if (self::$instance->mode == Wechat::MODE_DEV) {
             $data = [
-                'mch_id' => self::$instance->mch_id,
+                'mch_id'    => self::$instance->mch_id,
                 'nonce_str' => Str::random(),
             ];
             $data['sign'] = self::generateSign($data);
