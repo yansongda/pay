@@ -42,9 +42,7 @@ SDK 依赖 guzzle 作 http 的请求客户端。所以如果有特殊配置需�
 
 ### 关于微信沙箱模式
 
-微信沙箱模式与支付宝沙箱模式不同，也没有支付宝沙箱模式那样简单，SDK 只对微信支付 API 进行了沙箱处理，所以，在测试微信时，推荐直接使用正式环境 *￥0.01* 进行测试，随后再进行退款，这样，两个功能都可以测试到。
-
-详细请参考 [https://github.com/yansongda/pay/issues/62](https://github.com/yansongda/pay/issues/62)
+微信沙箱模式已经全面支持，无需手动调用 `getsignkey` 方法，SDK 已经完全支持。关于测试用例，请参考 [官方文档](https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=23_1)
 
 ## 微信服务商模式
 
