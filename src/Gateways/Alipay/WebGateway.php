@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Events;
@@ -51,6 +52,10 @@ class WebGateway implements GatewayInterface
      */
     protected function buildPayHtml($endpoint, $payload, $method = 'POST'): Response
     {
+        if (strtoupper($method) === 'GET') {
+            return RedirectResponse::create($endpoint.'?'.http_build_url($payload));
+        }
+
         $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='.$method.'>";
         foreach ($payload as $key => $val) {
             $val = str_replace("'", '&apos;', $val);
