@@ -23,6 +23,7 @@ $order = [
     'out_trade_no' => time(),
     'total_amount' => '0.01',
     'subject'      => 'test subject-测试订单',
+    // 'http_method'  => 'GET' // 如果想在 wap 支付时使用 GET 方式提交，请加上此参数。默认使用 POST 方式提交
 ];
 
 return $alipay->web($order)->send(); // laravel 框架中请直接 return $alipay->web($order)
