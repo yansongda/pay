@@ -52,7 +52,7 @@ class WebGateway implements GatewayInterface
     {
         return [
             'method'      => 'alipay.trade.query',
-            'biz_content' => json_encode(is_array($order) ? $order : ['out_trade_no' => $order])
+            'biz_content' => json_encode(is_array($order) ? $order : ['out_trade_no' => $order]),
         ];
     }
 

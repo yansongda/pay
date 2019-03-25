@@ -49,7 +49,7 @@ class TransferGateway implements GatewayInterface
     {
         return [
             'method'      => 'alipay.fund.trans.order.query',
-            'biz_content' => json_encode(is_array($order) ? $order : ['out_biz_no' => $order])
+            'biz_content' => json_encode(is_array($order) ? $order : ['out_biz_no' => $order]),
         ];
     }
 }
