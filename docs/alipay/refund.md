@@ -17,6 +17,23 @@ $order = [
 $result = $alipay->refund($order);
 ```
 
+## 查询退款订单
+
+> v2.4.0 及以上可用
+
+```PHP
+$order = [
+    'out_trade_no' => '1514027114',
+    'out_request_no' => '1514027114'
+];
+
+// v2.7.2 及以下版本请使用
+// $result = $alipay->find($order, true);
+
+// v2.7.3 及以上版本请使用
+$result = $alipay->find($order, 'refund');
+```
+
 ## 订单配置参数
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://docs.open.alipay.com/api_1/alipay.trade.refund)，查看「请求参数」一栏。

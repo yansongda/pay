@@ -11,7 +11,6 @@
 ```PHP
 $order = [
     'out_trade_no' => '1514027114',
-    'bill_type' => 'trade'
 ];
 
 // $order = '1514027114';
@@ -29,9 +28,30 @@ $order = [
     'out_request_no' => '1514027114'
 ];
 
-$result = $alipay->find($order, true);
+// v2.7.2 及以下版本请使用
+// $result = $alipay->find($order, true);
+
+// v2.7.3 及以上版本请使用
+$result = $alipay->find($order, 'refund');
 ```
 
+## 查询转账订单
+
+> v2.5.2 及以上可用
+
+```PHP
+$order = [
+    'out_trade_no' => '1514027114',
+];
+
+// $order = '1514027114';
+
+// v2.7.2 及以下版本请使用
+// $result = $alipay->find($order, false, true);
+
+// v2.7.3 及以上版本请使用
+$result = $alipay->find($order, 'transfer');
+```
 
 ## 订单配置参数
 
