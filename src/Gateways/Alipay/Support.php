@@ -139,40 +139,6 @@ class Support
     }
 
     /**
-     * processingApiResult.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param $data
-     * @param $result
-     *
-     * @throws GatewayException
-     * @throws InvalidConfigException
-     * @throws InvalidSignException
-     *
-     * @return Collection
-     */
-    protected static function processingApiResult($data, $result): Collection
-    {
-        $method = str_replace('.', '_', $data['method']).'_response';
-
-        if (!isset($result['sign']) || $result[$method]['code'] != '10000') {
-            throw new GatewayException(
-                'Get Alipay API Error:'.$result[$method]['msg'].($result[$method]['sub_code'] ?? ''),
-                $result
-            );
-        }
-
-        if (self::verifySign($result[$method], true, $result['sign'])) {
-            return new Collection($result[$method]);
-        }
-
-        Events::dispatch(Events::SIGN_FAILED, new Events\SignFailed('Alipay', '', $result));
-
-        throw new InvalidSignException('Alipay Sign Verify FAILED', $result);
-    }
-
-    /**
      * Generate sign.
      *
      * @author yansongda <me@yansongda.cn>
@@ -325,6 +291,40 @@ class Support
     public function getBaseUri()
     {
         return $this->baseUri;
+    }
+
+    /**
+     * processingApiResult.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param $data
+     * @param $result
+     *
+     * @throws GatewayException
+     * @throws InvalidConfigException
+     * @throws InvalidSignException
+     *
+     * @return Collection
+     */
+    protected static function processingApiResult($data, $result): Collection
+    {
+        $method = str_replace('.', '_', $data['method']).'_response';
+
+        if (!isset($result['sign']) || $result[$method]['code'] != '10000') {
+            throw new GatewayException(
+                'Get Alipay API Error:'.$result[$method]['msg'].($result[$method]['sub_code'] ?? ''),
+                $result
+            );
+        }
+
+        if (self::verifySign($result[$method], true, $result['sign'])) {
+            return new Collection($result[$method]);
+        }
+
+        Events::dispatch(Events::SIGN_FAILED, new Events\SignFailed('Alipay', '', $result));
+
+        throw new InvalidSignException('Alipay Sign Verify FAILED', $result);
     }
 
     /**

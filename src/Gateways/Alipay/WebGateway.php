@@ -6,7 +6,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Events;
-use Yansongda\Supports\Collection;
 
 class WebGateway implements GatewayInterface
 {
@@ -52,7 +51,7 @@ class WebGateway implements GatewayInterface
     public function find($order): array
     {
         return [
-            'method' => 'alipay.trade.query',
+            'method'      => 'alipay.trade.query',
             'biz_content' => json_encode(is_array($order) ? $order : ['out_trade_no' => $order])
         ];
     }
