@@ -53,7 +53,7 @@ class WebGateway implements GatewayInterface
     protected function buildPayHtml($endpoint, $payload, $method = 'POST'): Response
     {
         if (strtoupper($method) === 'GET') {
-            return RedirectResponse::create($endpoint.'?'.http_build_url($payload));
+            return RedirectResponse::create($endpoint.'?'.http_build_query($payload));
         }
 
         $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='.$method.'>";
