@@ -7,9 +7,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Events;
+use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Alipay\Support;
+use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
@@ -175,8 +177,8 @@ class Alipay implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
-     * @param bool         $refund
-     * @param bool         $transfer
+     * @param string       $type
+     * @param bool         $transfer @deprecated since v2.7.3
      *
      * @throws InvalidSignException
      * @throws \Yansongda\Pay\Exceptions\GatewayException
@@ -184,19 +186,25 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function find($order, $refund = false, $transfer = false): Collection
+    public function find($order, $type = 'wap', $transfer = false): Collection
     {
-        $method = 'alipay.trade.query';
-        $requestOrder = is_array($order) ? $order : ['out_trade_no' => $order];
-        if ($refund) {
-            $method = 'alipay.trade.fastpay.refund.query';
+        if ($type === true || $transfer) {
+            Log::warning('DEPRECATED: In Alipay->find(), the REFUND/TRANSFER param is deprecated since v2.7.3, use TYPE param instead!');
+            @trigger_error('In yansongda/pay Alipay->find(), the REFUND/TRANSFER param is deprecated since v2.7.3, use TYPE param instead!', E_USER_DEPRECATED);
+
+            $type = $type === true ? 'refund' : 'transfer';
         }
-        if ($transfer) {
-            $requestOrder = is_array($order) ? $order : ['out_biz_no' => $order];
-            $method = 'alipay.fund.trans.order.query';
+
+        $gateway = get_class($this).'\\'.Str::studly($type).'Gateway';
+
+        if (!class_exists($gateway) || !is_callable([$gateway, 'find'])) {
+            throw new GatewayException("{$gateway} Done Not Exist Or Done Not Has FIND Method");
         }
-        $this->payload['method'] = $method;
-        $this->payload['biz_content'] = json_encode($requestOrder);
+
+        $config = call_user_func([$gateway, 'find'], $order);
+
+        $this->payload['method'] = $config['method'];
+        $this->payload['biz_content'] = $config['biz_content'];
         $this->payload['sign'] = Support::generateSign($this->payload);
 
         Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Alipay', 'Find', $this->gateway, $this->payload));

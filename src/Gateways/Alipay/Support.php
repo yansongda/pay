@@ -130,10 +130,30 @@ class Support
         });
 
         $result = mb_convert_encoding(self::$instance->post('', $data), 'utf-8', 'gb2312');
+
         $result = json_decode($result, true);
 
         Events::dispatch(Events::API_REQUESTED, new Events\ApiRequested('Alipay', '', self::$instance->getBaseUri(), $result));
 
+        return self::processingApiResult($data, $result);
+    }
+
+    /**
+     * processingApiResult.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param $data
+     * @param $result
+     *
+     * @throws GatewayException
+     * @throws InvalidConfigException
+     * @throws InvalidSignException
+     *
+     * @return Collection
+     */
+    protected static function processingApiResult($data, $result): Collection
+    {
         $method = str_replace('.', '_', $data['method']).'_response';
 
         if (!isset($result['sign']) || $result[$method]['code'] != '10000') {
