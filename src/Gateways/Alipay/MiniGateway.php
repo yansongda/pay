@@ -31,23 +31,11 @@ class MiniGateway implements GatewayInterface
             throw new \Yansongda\Pay\Exceptions\InvalidArgumentException('buyer_id required');
         }
 
-        $payload['method'] = $this->getMethod();
+        $payload['method'] = 'alipay.trade.create';
         $payload['sign'] = Support::generateSign($payload);
 
         Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Alipay', 'Mini', $endpoint, $payload));
 
         return Support::requestApi($payload);
-    }
-
-    /**
-     * Get method config.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @return string
-     */
-    protected function getMethod(): string
-    {
-        return 'alipay.trade.create';
     }
 }

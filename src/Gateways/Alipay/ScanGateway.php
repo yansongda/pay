@@ -24,39 +24,15 @@ class ScanGateway implements GatewayInterface
      */
     public function pay($endpoint, array $payload): Collection
     {
-        $payload['method'] = $this->getMethod();
+        $payload['method'] = 'alipay.trade.precreate';
         $payload['biz_content'] = json_encode(array_merge(
             json_decode($payload['biz_content'], true),
-            ['product_code' => $this->getProductCode()]
+            ['product_code' => '']
         ));
         $payload['sign'] = Support::generateSign($payload);
 
         Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Alipay', 'Scan', $endpoint, $payload));
 
         return Support::requestApi($payload);
-    }
-
-    /**
-     * Get method config.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @return string
-     */
-    protected function getMethod(): string
-    {
-        return 'alipay.trade.precreate';
-    }
-
-    /**
-     * Get productCode config.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @return string
-     */
-    protected function getProductCode(): string
-    {
-        return '';
     }
 }
