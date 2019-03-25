@@ -313,7 +313,8 @@ class Support
 
         if (!isset($result['sign']) || $result[$method]['code'] != '10000') {
             throw new GatewayException(
-                'Get Alipay API Error:'.$result[$method]['msg'].($result[$method]['sub_code'] ?? ''),
+                'Get Alipay API Error:'.$result[$method]['msg'].
+                    (isset($result[$method]['sub_code']) ? (' - '.$result[$method]['sub_code']) : ''),
                 $result
             );
         }
