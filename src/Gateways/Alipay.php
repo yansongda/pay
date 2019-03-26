@@ -197,11 +197,11 @@ class Alipay implements GatewayApplicationInterface
 
         $gateway = get_class($this).'\\'.Str::studly($type).'Gateway';
 
-        if (!class_exists($gateway) || !is_callable([$gateway, 'find'])) {
+        if (!class_exists($gateway) || !is_callable([new $gateway(), 'find'])) {
             throw new GatewayException("{$gateway} Done Not Exist Or Done Not Has FIND Method");
         }
 
-        $config = call_user_func([$gateway, 'find'], $order);
+        $config = call_user_func([new $gateway(), 'find'], $order);
 
         $this->payload['method'] = $config['method'];
         $this->payload['biz_content'] = $config['biz_content'];
