@@ -325,6 +325,20 @@ class Alipay implements GatewayApplicationInterface
     }
 
     /**
+     * extend.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string   $method
+     * @param callable $function
+     *
+     * @return void
+     */
+    public function extend(string $method, callable $function)
+    {
+    }
+
+    /**
      * Make pay gateway.
      *
      * @author yansongda <me@yansongda.cn>
