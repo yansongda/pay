@@ -4,6 +4,9 @@ namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Events;
+use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
+use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Supports\Collection;
 
 abstract class Gateway implements GatewayInterface
@@ -20,7 +23,7 @@ abstract class Gateway implements GatewayInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct()
     {
@@ -55,9 +58,9 @@ abstract class Gateway implements GatewayInterface
      *
      * @param array $payload
      *
-     * @throws \Yansongda\Pay\Exceptions\GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
-     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     * @throws GatewayException
+     * @throws InvalidArgumentException
+     * @throws InvalidSignException
      *
      * @return Collection
      */

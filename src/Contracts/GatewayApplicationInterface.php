@@ -2,6 +2,9 @@
 
 namespace Yansongda\Pay\Contracts;
 
+use Symfony\Component\HttpFoundation\Response;
+use Yansongda\Supports\Collection;
+
 interface GatewayApplicationInterface
 {
     /**
@@ -12,7 +15,7 @@ interface GatewayApplicationInterface
      * @param string $gateway
      * @param array  $params
      *
-     * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
+     * @return Collection|Response
      */
     public function pay($gateway, $params);
 
@@ -24,7 +27,7 @@ interface GatewayApplicationInterface
      * @param string|array $order
      * @param bool         $refund
      *
-     * @return \Yansongda\Supports\Collection
+     * @return Collection
      */
     public function find($order, $refund);
 
@@ -35,7 +38,7 @@ interface GatewayApplicationInterface
      *
      * @param array $order
      *
-     * @return \Yansongda\Supports\Collection
+     * @return Collection
      */
     public function refund($order);
 
@@ -46,7 +49,7 @@ interface GatewayApplicationInterface
      *
      * @param string|array $order
      *
-     * @return \Yansongda\Supports\Collection
+     * @return Collection
      */
     public function cancel($order);
 
@@ -57,7 +60,7 @@ interface GatewayApplicationInterface
      *
      * @param string|array $order
      *
-     * @return \Yansongda\Supports\Collection
+     * @return Collection
      */
     public function close($order);
 
@@ -69,7 +72,7 @@ interface GatewayApplicationInterface
      * @param string|null $content
      * @param bool        $refund
      *
-     * @return \Yansongda\Supports\Collection
+     * @return Collection
      */
     public function verify($content, $refund);
 
@@ -78,7 +81,7 @@ interface GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function success();
 }

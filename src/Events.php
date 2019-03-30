@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay;
 
+use Exception;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -84,7 +85,7 @@ class Events
      * @param string $method
      * @param array  $args
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return mixed
      */
@@ -101,7 +102,7 @@ class Events
      * @param string $method
      * @param array  $args
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return mixed
      */

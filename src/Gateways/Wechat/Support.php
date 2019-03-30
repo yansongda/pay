@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
+use Exception;
 use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\BusinessException;
 use Yansongda\Pay\Exceptions\GatewayException;
@@ -439,7 +440,7 @@ class Support
      * @throws GatewayException
      * @throws InvalidArgumentException
      * @throws InvalidSignException
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Support
      */

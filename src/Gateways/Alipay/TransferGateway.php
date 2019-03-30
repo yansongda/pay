@@ -4,6 +4,9 @@ namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Events;
+use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidConfigException;
+use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Supports\Collection;
 
 class TransferGateway implements GatewayInterface
@@ -16,9 +19,9 @@ class TransferGateway implements GatewayInterface
      * @param string $endpoint
      * @param array  $payload
      *
-     * @throws \Yansongda\Pay\Exceptions\GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
-     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     * @throws GatewayException
+     * @throws InvalidConfigException
+     * @throws InvalidSignException
      *
      * @return Collection
      */

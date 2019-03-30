@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Gateways;
 
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,6 +10,7 @@ use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Wechat\Support;
@@ -87,7 +89,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @param Config $config
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(Config $config)
     {
@@ -163,7 +165,7 @@ class Wechat implements GatewayApplicationInterface
      * @param bool        $refund
      *
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return Collection
      */
@@ -200,7 +202,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @throws GatewayException
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return Collection
      */
@@ -229,7 +231,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @throws GatewayException
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return Collection
      */
@@ -255,7 +257,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @throws GatewayException
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return Collection
      */
@@ -283,7 +285,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @throws GatewayException
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return Collection
      */
@@ -303,7 +305,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return Response
      */
@@ -326,7 +328,7 @@ class Wechat implements GatewayApplicationInterface
      * @param array $params
      *
      * @throws GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return string
      */

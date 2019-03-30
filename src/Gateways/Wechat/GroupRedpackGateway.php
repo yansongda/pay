@@ -3,6 +3,9 @@
 namespace Yansongda\Pay\Gateways\Wechat;
 
 use Yansongda\Pay\Events;
+use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
+use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Wechat;
 use Yansongda\Supports\Collection;
 
@@ -16,9 +19,9 @@ class GroupRedpackGateway extends Gateway
      * @param string $endpoint
      * @param array  $payload
      *
-     * @throws \Yansongda\Pay\Exceptions\GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidArgumentException
-     * @throws \Yansongda\Pay\Exceptions\InvalidSignException
+     * @throws GatewayException
+     * @throws InvalidArgumentException
+     * @throws InvalidSignException
      *
      * @return Collection
      */
