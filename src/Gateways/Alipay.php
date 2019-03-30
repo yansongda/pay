@@ -8,6 +8,7 @@ use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Alipay\Support;
@@ -143,7 +144,7 @@ class Alipay implements GatewayApplicationInterface
      * @param bool       $refund
      *
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     * @throws InvalidConfigException
      *
      * @return Collection
      */
@@ -181,8 +182,8 @@ class Alipay implements GatewayApplicationInterface
      * @param bool         $transfer @deprecated since v2.7.3
      *
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     * @throws GatewayException
+     * @throws InvalidConfigException
      *
      * @return Collection
      */
@@ -219,9 +220,9 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param array $order
      *
+     * @throws GatewayException
+     * @throws InvalidConfigException
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Collection
      */
@@ -243,9 +244,9 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string|array $order
      *
+     * @throws GatewayException
+     * @throws InvalidConfigException
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Collection
      */
@@ -263,13 +264,13 @@ class Alipay implements GatewayApplicationInterface
     /**
      * Close an order.
      *
-     * @author yansongda <me@yansongda.cn>
-     *
      * @param string|array $order
      *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws GatewayException
+     * @throws InvalidConfigException
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
      *
      * @return Collection
      */
@@ -291,9 +292,9 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string|array $bill
      *
+     * @throws InvalidConfigException
      * @throws InvalidSignException
-     * @throws \Yansongda\Pay\Exceptions\GatewayException
-     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     * @throws GatewayException
      *
      * @return string
      */
