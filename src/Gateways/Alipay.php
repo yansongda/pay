@@ -25,6 +25,7 @@ use Yansongda\Supports\Str;
  * @method Response wap(array $config) 手机网站支付
  * @method Response web(array $config) 电脑支付
  * @method Collection mini(array $config) 小程序支付
+ * @method Collection js(array $config) jsapi支付
  */
 class Alipay implements GatewayApplicationInterface
 {
