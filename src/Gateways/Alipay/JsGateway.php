@@ -2,8 +2,6 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-
-
 use Yansongda\Supports\Collection;
 
 class JsGateway extends MiniGateway
