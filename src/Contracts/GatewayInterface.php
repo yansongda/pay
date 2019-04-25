@@ -2,6 +2,9 @@
 
 namespace Yansongda\Pay\Contracts;
 
+use Symfony\Component\HttpFoundation\Response;
+use Yansongda\Supports\Collection;
+
 interface GatewayInterface
 {
     /**
@@ -12,7 +15,7 @@ interface GatewayInterface
      * @param string $endpoint
      * @param array  $payload
      *
-     * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
+     * @return Collection|Response
      */
     public function pay($endpoint, array $payload);
 }

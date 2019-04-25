@@ -271,9 +271,9 @@ class Alipay implements GatewayApplicationInterface
     /**
      * Close an order.
      *
-     * @author yansongda <me@yansongda.cn>
-     *
      * @param string|array $order
+     *
+     * @author yansongda <me@yansongda.cn>
      *
      * @throws GatewayException
      * @throws InvalidConfigException

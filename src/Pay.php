@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay;
 
+use Exception;
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Gateways\Alipay;
@@ -31,7 +32,7 @@ class Pay
      *
      * @param array $config
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(array $config)
     {
@@ -50,7 +51,7 @@ class Pay
      * @param array  $params
      *
      * @throws InvalidGatewayException
-     * @throws \Exception
+     * @throws Exception
      *
      * @return GatewayApplicationInterface
      */
@@ -110,7 +111,7 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function registerLogService()
     {

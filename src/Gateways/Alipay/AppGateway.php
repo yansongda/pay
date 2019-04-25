@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Gateways\Alipay;
 use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Events;
+use Yansongda\Pay\Exceptions\InvalidConfigException;
 
 class AppGateway implements GatewayInterface
 {
@@ -16,7 +17,7 @@ class AppGateway implements GatewayInterface
      * @param string $endpoint
      * @param array  $payload
      *
-     * @throws \Yansongda\Pay\Exceptions\InvalidConfigException
+     * @throws InvalidConfigException
      *
      * @return Response
      */
