@@ -203,7 +203,7 @@ $result = $alipay->js($order);
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://docs.open.alipay.com/api_1/alipay.trade.create/)，查看「请求参数」一栏。
 
-jsapi支付接入文档：[https://myjsapi.alipay.com/jsapi/native/trade-pay.html](https://myjsapi.alipay.com/jsapi/native/trade-pay.html)。
+jsapi支付轻便模式接入文档：[https://myjsapi.alipay.com/jsapi/native/trade-pay.html](https://myjsapi.alipay.com/jsapi/native/trade-pay.html)。
 
 # 返回值
 
