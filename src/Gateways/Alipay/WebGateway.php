@@ -74,7 +74,7 @@ class WebGateway implements GatewayInterface
             return RedirectResponse::create($endpoint.'?'.http_build_query($payload));
         }
 
-        $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='.$method.'>";
+        $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='".$method."'>";
         foreach ($payload as $key => $val) {
             $val = str_replace("'", '&apos;', $val);
             $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
