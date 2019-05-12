@@ -181,9 +181,9 @@ class Alipay implements GatewayApplicationInterface
      * @param string       $type
      * @param bool         $transfer @deprecated since v2.7.3
      *
-     * @throws InvalidSignException
      * @throws GatewayException
      * @throws InvalidConfigException
+     * @throws InvalidSignException
      *
      * @return Collection
      */
@@ -194,6 +194,13 @@ class Alipay implements GatewayApplicationInterface
             @trigger_error('In yansongda/pay Alipay->find(), the REFUND/TRANSFER param is deprecated since v2.7.3, use TYPE param instead!', E_USER_DEPRECATED);
 
             $type = $type === true ? 'refund' : 'transfer';
+        }
+
+        if ($type === false) {
+            Log::warning('DEPRECATED: In Alipay->find(), the REFUND/TRANSFER param is deprecated since v2.7.3, use TYPE param instead!');
+            @trigger_error('In yansongda/pay Alipay->find(), the REFUND/TRANSFER param is deprecated since v2.7.3, use TYPE param instead!', E_USER_DEPRECATED);
+
+            $type = 'wap';
         }
 
         $gateway = get_class($this).'\\'.Str::studly($type).'Gateway';
@@ -242,7 +249,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string|array $order
+     * @param array $order
      *
      * @throws GatewayException
      * @throws InvalidConfigException
@@ -292,9 +299,9 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string|array $bill
      *
+     * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     * @throws GatewayException
      *
      * @return string
      */
