@@ -2,20 +2,20 @@
 
 namespace Yansongda\Pay\Gateways;
 
-use Yansongda\Pay\Log;
-use Yansongda\Pay\Events;
-use Yansongda\Supports\Str;
-use Yansongda\Supports\Config;
-use Yansongda\Supports\Collection;
-use Yansongda\Pay\Gateways\Alipay\Support;
 use Symfony\Component\HttpFoundation\Request;
-use Yansongda\Pay\Contracts\GatewayInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Yansongda\Pay\Contracts\GatewayApplicationInterface;
+use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\GatewayException;
-use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
-use Yansongda\Pay\Contracts\GatewayApplicationInterface;
+use Yansongda\Pay\Exceptions\InvalidSignException;
+use Yansongda\Pay\Gateways\Alipay\Support;
+use Yansongda\Pay\Log;
+use Yansongda\Supports\Collection;
+use Yansongda\Supports\Config;
+use Yansongda\Supports\Str;
 
 /**
  * @method Response app(array $config) APP 支付
