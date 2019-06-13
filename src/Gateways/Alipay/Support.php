@@ -171,6 +171,10 @@ class Support
 
         Log::debug('Alipay Generate Sign', [$params, $sign]);
 
+        if(is_resource($privateKey)){
+            openssl_free_key($privateKey);
+        }
+
         return $sign;
     }
 
