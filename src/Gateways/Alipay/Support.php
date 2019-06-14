@@ -171,6 +171,10 @@ class Support
 
         Log::debug('Alipay Generate Sign', [$params, $sign]);
 
+        if (is_resource($privateKey)) {
+            openssl_free_key($privateKey);
+        }
+
         return $sign;
     }
 
@@ -208,7 +212,13 @@ class Support
         $toVerify = $sync ? mb_convert_encoding(json_encode($data, JSON_UNESCAPED_UNICODE), 'gb2312', 'utf-8') :
                             self::getSignContent($data, true);
 
-        return openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
+        $isVerify = openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
+
+        if (is_resource($publicKey)) {
+            openssl_free_key($publicKey);
+        }
+
+        return $isVerify;
     }
 
     /**
