@@ -199,6 +199,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @param string|array $order
      * @param bool         $refund
+     * @param bool         $transfer
      *
      * @throws GatewayException
      * @throws InvalidSignException
@@ -206,10 +207,18 @@ class Wechat implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function find($order, $refund = false): Collection
+    public function find($order, $refund = false, $transfer = false): Collection
     {
-        if ($refund) {
+        if ($refund || $transfer) {
             unset($this->payload['spbill_create_ip']);
+        }
+
+        $endpoint = 'pay/refundquery';
+        if ($refund) {
+            $endpoint = 'pay/orderquery';
+        } elseif ($transfer) {
+            $order = ['partner_trade_no' => $order];
+            $endpoint = 'mmpaymkttransfers/gettransferinfo';
         }
 
         $this->payload = Support::filterPayload($this->payload, $order);
@@ -217,8 +226,9 @@ class Wechat implements GatewayApplicationInterface
         Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Wechat', 'Find', $this->gateway, $this->payload));
 
         return Support::requestApi(
-            $refund ? 'pay/refundquery' : 'pay/orderquery',
-            $this->payload
+            $endpoint,
+            $this->payload,
+            $transfer
         );
     }
 

@@ -26,10 +26,11 @@ interface GatewayApplicationInterface
      *
      * @param string|array $order
      * @param bool         $refund
+     * @param bool         $transfer
      *
      * @return Collection
      */
-    public function find($order, $refund);
+    public function find($order, $refund, $transfer);
 
     /**
      * Refund an order.
