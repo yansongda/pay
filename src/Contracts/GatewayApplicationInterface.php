@@ -25,12 +25,11 @@ interface GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
-     * @param bool         $refund
-     * @param bool         $transfer
+     * @param string       $type
      *
      * @return Collection
      */
-    public function find($order, $refund, $transfer);
+    public function find($order, $type);
 
     /**
      * Refund an order.

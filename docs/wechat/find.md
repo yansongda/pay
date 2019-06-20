@@ -30,6 +30,9 @@ $order = [
 // $order = '1514027114';
 
 $result = $wechat->find($order, true);
+
+// v2.7.8 及以上版本请使用
+$result = $wechat->find($order, 'refund');
 ```
 
 ## 查询企业付款订单
@@ -43,7 +46,7 @@ $order = [
 
 // $order = '1514027114';
 
-$result = $wechat->find($order, false, true);
+$result = $wechat->find($order, 'transfer');
 ```
 
 ## 订单配置参数

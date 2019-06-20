@@ -198,8 +198,7 @@ class Wechat implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
-     * @param bool         $refund
-     * @param bool         $transfer
+     * @param string       $type
      *
      * @throws GatewayException
      * @throws InvalidSignException
@@ -207,28 +206,42 @@ class Wechat implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function find($order, $refund = false, $transfer = false): Collection
+    public function find($order, $type = 'wap'): Collection
     {
-        if ($refund || $transfer) {
+        if ($type === true) {
+            Log::warning('DEPRECATED: In Wechat->find(), the REFUND param is deprecated since v2.7.8, use TYPE param instead!');
+            @trigger_error('In yansongda/pay Wechat->find(), the REFUND param is deprecated since v2.7.8, use TYPE param instead!', E_USER_DEPRECATED);
+
+            $type = 'refund';
+        }
+
+        if ($type === false) {
+            Log::warning('DEPRECATED: In Wechat->find(), the REFUND param is deprecated since v2.7.8, use TYPE param instead!');
+            @trigger_error('In yansongda/pay Wechat->find(), the REFUND param is deprecated since v2.7.8, use TYPE param instead!', E_USER_DEPRECATED);
+
+            $type = 'wap';
+        }
+
+        if ($type != 'wap') {
             unset($this->payload['spbill_create_ip']);
         }
 
-        $endpoint = 'pay/refundquery';
-        if ($refund) {
-            $endpoint = 'pay/orderquery';
-        } elseif ($transfer) {
-            $order = ['partner_trade_no' => $order];
-            $endpoint = 'mmpaymkttransfers/gettransferinfo';
+        $gateway = get_class($this).'\\'.Str::studly($type).'Gateway';
+
+        if (!class_exists($gateway) || !is_callable([new $gateway(), 'find'])) {
+            throw new GatewayException("{$gateway} Done Not Exist Or Done Not Has FIND Method");
         }
 
-        $this->payload = Support::filterPayload($this->payload, $order);
+        $config = call_user_func([new $gateway(), 'find'], $order);
+
+        $this->payload = Support::filterPayload($this->payload, $config['order']);
 
         Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Wechat', 'Find', $this->gateway, $this->payload));
 
         return Support::requestApi(
-            $endpoint,
+            $config['endpoint'],
             $this->payload,
-            $transfer
+            $config['cert']
         );
     }
 
