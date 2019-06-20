@@ -39,6 +39,24 @@ class WapGateway extends Gateway
     }
 
     /**
+     * Find.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param $order
+     *
+     * @return array
+     */
+    public function find($order): array
+    {
+        return [
+            'endpoint' => 'pay/orderquery',
+            'order'    => is_array($order) ? $order : ['out_trade_no' => $order],
+            'cert'     => false,
+        ];
+    }
+
+    /**
      * Get trade type config.
      *
      * @author yansongda <me@yansongda.cn>

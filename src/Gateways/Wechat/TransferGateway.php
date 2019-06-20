@@ -56,6 +56,24 @@ class TransferGateway extends Gateway
     }
 
     /**
+     * Find.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param $order
+     *
+     * @return array
+     */
+    public function find($order): array
+    {
+        return [
+            'endpoint' => 'mmpaymkttransfers/gettransferinfo',
+            'order'    => is_array($order) ? $order : ['partner_trade_no' => $order],
+            'cert'     => true,
+        ];
+    }
+
+    /**
      * Get trade type config.
      *
      * @author yansongda <me@yansongda.cn>
