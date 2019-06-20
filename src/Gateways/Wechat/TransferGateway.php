@@ -69,7 +69,7 @@ class TransferGateway extends Gateway
         return [
             'endpoint' => 'mmpaymkttransfers/gettransferinfo',
             'order'    => is_array($order) ? $order : ['partner_trade_no' => $order],
-            'cert'     => true
+            'cert'     => true,
         ];
     }
 

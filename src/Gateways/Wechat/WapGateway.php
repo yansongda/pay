@@ -52,7 +52,7 @@ class WapGateway extends Gateway
         return [
             'endpoint' => 'pay/orderquery',
             'order'    => is_array($order) ? $order : ['out_trade_no' => $order],
-            'cert'     => false
+            'cert'     => false,
         ];
     }
 

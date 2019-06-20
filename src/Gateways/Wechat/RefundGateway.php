@@ -18,7 +18,7 @@ class RefundGateway
         return [
             'endpoint' => 'pay/refundquery',
             'order'    => is_array($order) ? $order : ['out_trade_no' => $order],
-            'cert'     => false
+            'cert'     => false,
         ];
     }
 }
