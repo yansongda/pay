@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Wechat;
 
-class RefundGateway
+class RefundGateway extends Gateway
 {
     /**
      * Find.
