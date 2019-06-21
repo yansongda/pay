@@ -68,7 +68,7 @@ abstract class Gateway implements GatewayInterface
     {
         $payload['sign'] = Support::generateSign($payload);
 
-        Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Wechat', 'PreOrder', '', $payload));
+        Events::dispatch(new Events\MethodCalled('Wechat', 'PreOrder', '', $payload));
 
         return Support::requestApi('pay/unifiedorder', $payload);
     }

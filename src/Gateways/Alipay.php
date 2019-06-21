@@ -12,7 +12,6 @@ use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Alipay\Support;
-use Yansongda\Pay\Log;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
@@ -117,7 +116,7 @@ class Alipay implements GatewayApplicationInterface
      */
     public function pay($gateway, $params = [])
     {
-        Events::dispatch(Events::PAY_STARTING, new Events\PayStarting('Alipay', $gateway, $params));
+        Events::dispatch(new Events\PayStarting('Alipay', $gateway, $params));
 
         $this->payload['return_url'] = $params['return_url'] ?? $this->payload['return_url'];
         $this->payload['notify_url'] = $params['notify_url'] ?? $this->payload['notify_url'];
@@ -161,13 +160,13 @@ class Alipay implements GatewayApplicationInterface
             $data['fund_bill_list'] = htmlspecialchars_decode($data['fund_bill_list']);
         }
 
-        Events::dispatch(Events::REQUEST_RECEIVED, new Events\RequestReceived('Alipay', '', $data));
+        Events::dispatch(new Events\RequestReceived('Alipay', '', $data));
 
         if (Support::verifySign($data)) {
             return new Collection($data);
         }
 
-        Events::dispatch(Events::SIGN_FAILED, new Events\SignFailed('Alipay', '', $data));
+        Events::dispatch(new Events\SignFailed('Alipay', '', $data));
 
         throw new InvalidSignException('Alipay Sign Verify FAILED', $data);
     }
@@ -179,7 +178,6 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string|array $order
      * @param string       $type
-     * @param bool         $transfer @deprecated since v2.7.3
      *
      * @throws GatewayException
      * @throws InvalidConfigException
@@ -187,22 +185,8 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function find($order, $type = 'wap', $transfer = false): Collection
+    public function find($order, $type = 'wap'): Collection
     {
-        if ($type === true || $transfer) {
-            Log::warning('DEPRECATED: In Alipay->find(), the REFUND/TRANSFER param is deprecated since v2.7.3, use TYPE param instead!');
-            @trigger_error('In yansongda/pay Alipay->find(), the REFUND/TRANSFER param is deprecated since v2.7.3, use TYPE param instead!', E_USER_DEPRECATED);
-
-            $type = $type === true ? 'refund' : 'transfer';
-        }
-
-        if ($type === false) {
-            Log::warning('DEPRECATED: In Alipay->find(), the REFUND/TRANSFER param is deprecated since v2.7.3, use TYPE param instead!');
-            @trigger_error('In yansongda/pay Alipay->find(), the REFUND/TRANSFER param is deprecated since v2.7.3, use TYPE param instead!', E_USER_DEPRECATED);
-
-            $type = 'wap';
-        }
-
         $gateway = get_class($this).'\\'.Str::studly($type).'Gateway';
 
         if (!class_exists($gateway) || !is_callable([new $gateway(), 'find'])) {
@@ -215,7 +199,7 @@ class Alipay implements GatewayApplicationInterface
         $this->payload['biz_content'] = $config['biz_content'];
         $this->payload['sign'] = Support::generateSign($this->payload);
 
-        Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Alipay', 'Find', $this->gateway, $this->payload));
+        Events::dispatch(new Events\MethodCalled('Alipay', 'Find', $this->gateway, $this->payload));
 
         return Support::requestApi($this->payload);
     }
@@ -239,7 +223,7 @@ class Alipay implements GatewayApplicationInterface
         $this->payload['biz_content'] = json_encode($order);
         $this->payload['sign'] = Support::generateSign($this->payload);
 
-        Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Alipay', 'Refund', $this->gateway, $this->payload));
+        Events::dispatch(new Events\MethodCalled('Alipay', 'Refund', $this->gateway, $this->payload));
 
         return Support::requestApi($this->payload);
     }
@@ -263,7 +247,7 @@ class Alipay implements GatewayApplicationInterface
         $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
         $this->payload['sign'] = Support::generateSign($this->payload);
 
-        Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Alipay', 'Cancel', $this->gateway, $this->payload));
+        Events::dispatch(new Events\MethodCalled('Alipay', 'Cancel', $this->gateway, $this->payload));
 
         return Support::requestApi($this->payload);
     }
@@ -287,7 +271,7 @@ class Alipay implements GatewayApplicationInterface
         $this->payload['biz_content'] = json_encode(is_array($order) ? $order : ['out_trade_no' => $order]);
         $this->payload['sign'] = Support::generateSign($this->payload);
 
-        Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Alipay', 'Close', $this->gateway, $this->payload));
+        Events::dispatch(new Events\MethodCalled('Alipay', 'Close', $this->gateway, $this->payload));
 
         return Support::requestApi($this->payload);
     }
@@ -311,7 +295,7 @@ class Alipay implements GatewayApplicationInterface
         $this->payload['biz_content'] = json_encode(is_array($bill) ? $bill : ['bill_type' => 'trade', 'bill_date' => $bill]);
         $this->payload['sign'] = Support::generateSign($this->payload);
 
-        Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Alipay', 'Download', $this->gateway, $this->payload));
+        Events::dispatch(new Events\MethodCalled('Alipay', 'Download', $this->gateway, $this->payload));
 
         $result = Support::requestApi($this->payload);
 
@@ -327,7 +311,7 @@ class Alipay implements GatewayApplicationInterface
      */
     public function success(): Response
     {
-        Events::dispatch(Events::METHOD_CALLED, new Events\MethodCalled('Alipay', 'Success', $this->gateway));
+        Events::dispatch(new Events\MethodCalled('Alipay', 'Success', $this->gateway));
 
         return Response::create('success');
     }

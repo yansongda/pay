@@ -45,7 +45,7 @@ class MpGateway extends Gateway
         ];
         $pay_request['paySign'] = Support::generateSign($pay_request);
 
-        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Wechat', 'JSAPI', $endpoint, $pay_request));
+        Events::dispatch(new Events\PayStarted('Wechat', 'JSAPI', $endpoint, $pay_request));
 
         return new Collection($pay_request);
     }

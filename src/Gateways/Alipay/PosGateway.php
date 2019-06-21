@@ -37,7 +37,7 @@ class PosGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload);
 
-        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Alipay', 'Pos', $endpoint, $payload));
+        Events::dispatch(new Events\PayStarted('Alipay', 'Pos', $endpoint, $payload));
 
         return Support::requestApi($payload);
     }

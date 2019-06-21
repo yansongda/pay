@@ -30,7 +30,7 @@ class AppGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload);
 
-        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Alipay', 'App', $endpoint, $payload));
+        Events::dispatch(new Events\PayStarted('Alipay', 'App', $endpoint, $payload));
 
         return Response::create(http_build_query($payload));
     }

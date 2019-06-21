@@ -38,7 +38,7 @@ class MiniGateway implements GatewayInterface
         $payload['method'] = 'alipay.trade.create';
         $payload['sign'] = Support::generateSign($payload);
 
-        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Alipay', 'Mini', $endpoint, $payload));
+        Events::dispatch(new Events\PayStarted('Alipay', 'Mini', $endpoint, $payload));
 
         return Support::requestApi($payload);
     }

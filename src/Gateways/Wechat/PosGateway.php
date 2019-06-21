@@ -30,7 +30,7 @@ class PosGateway extends Gateway
 
         $payload['sign'] = Support::generateSign($payload);
 
-        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Wechat', 'Pos', $endpoint, $payload));
+        Events::dispatch(new Events\PayStarted('Wechat', 'Pos', $endpoint, $payload));
 
         return Support::requestApi('pay/micropay', $payload);
     }

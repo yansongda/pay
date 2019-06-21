@@ -48,7 +48,7 @@ class AppGateway extends Gateway
         ];
         $pay_request['sign'] = Support::generateSign($pay_request);
 
-        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Wechat', 'App', $endpoint, $pay_request));
+        Events::dispatch(new Events\PayStarted('Wechat', 'App', $endpoint, $pay_request));
 
         return JsonResponse::create($pay_request);
     }

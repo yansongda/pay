@@ -30,7 +30,7 @@ class ScanGateway extends Gateway
         $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
         $payload['trade_type'] = $this->getTradeType();
 
-        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Wechat', 'Scan', $endpoint, $payload));
+        Events::dispatch(new Events\PayStarted('Wechat', 'Scan', $endpoint, $payload));
 
         return $this->preOrder($payload);
     }

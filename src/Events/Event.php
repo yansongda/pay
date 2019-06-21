@@ -2,7 +2,9 @@
 
 namespace Yansongda\Pay\Events;
 
-class Event extends \Symfony\Component\EventDispatcher\Event
+use Symfony\Contracts\EventDispatcher\Event as SymfonyEvent;
+
+class Event extends SymfonyEvent
 {
     /**
      * Driver.

@@ -34,7 +34,7 @@ class TransferGateway implements GatewayInterface
         ));
         $payload['sign'] = Support::generateSign($payload);
 
-        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Alipay', 'Transfer', $endpoint, $payload));
+        Events::dispatch(new Events\PayStarted('Alipay', 'Transfer', $endpoint, $payload));
 
         return Support::requestApi($payload);
     }

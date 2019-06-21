@@ -28,7 +28,7 @@ class WapGateway extends Gateway
     {
         $payload['trade_type'] = $this->getTradeType();
 
-        Events::dispatch(Events::PAY_STARTED, new Events\PayStarted('Wechat', 'Wap', $endpoint, $payload));
+        Events::dispatch(new Events\PayStarted('Wechat', 'Wap', $endpoint, $payload));
 
         $mweb_url = $this->preOrder($payload)->get('mweb_url');
 

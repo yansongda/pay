@@ -159,7 +159,7 @@ class Support
      */
     public static function requestApi($endpoint, $data, $cert = false): Collection
     {
-        Events::dispatch(Events::API_REQUESTING, new Events\ApiRequesting('Wechat', '', self::$instance->getBaseUri().$endpoint, $data));
+        Events::dispatch(new Events\ApiRequesting('Wechat', '', self::$instance->getBaseUri().$endpoint, $data));
 
         $result = self::$instance->post(
             $endpoint,
@@ -171,7 +171,7 @@ class Support
         );
         $result = is_array($result) ? $result : self::fromXml($result);
 
-        Events::dispatch(Events::API_REQUESTED, new Events\ApiRequested('Wechat', '', self::$instance->getBaseUri().$endpoint, $result));
+        Events::dispatch(new Events\ApiRequested('Wechat', '', self::$instance->getBaseUri().$endpoint, $result));
 
         return self::processingApiResult($endpoint, $result);
     }
@@ -427,7 +427,7 @@ class Support
             return new Collection($result);
         }
 
-        Events::dispatch(Events::SIGN_FAILED, new Events\SignFailed('Wechat', '', $result));
+        Events::dispatch(new Events\SignFailed('Wechat', '', $result));
 
         throw new InvalidSignException('Wechat Sign Verify FAILED', $result);
     }

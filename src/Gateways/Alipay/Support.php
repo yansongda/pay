@@ -123,7 +123,7 @@ class Support
      */
     public static function requestApi(array $data): Collection
     {
-        Events::dispatch(Events::API_REQUESTING, new Events\ApiRequesting('Alipay', '', self::$instance->getBaseUri(), $data));
+        Events::dispatch(new Events\ApiRequesting('Alipay', '', self::$instance->getBaseUri(), $data));
 
         $data = array_filter($data, function ($value) {
             return ($value == '' || is_null($value)) ? false : true;
@@ -133,7 +133,7 @@ class Support
 
         $result = json_decode($result, true);
 
-        Events::dispatch(Events::API_REQUESTED, new Events\ApiRequested('Alipay', '', self::$instance->getBaseUri(), $result));
+        Events::dispatch(new Events\ApiRequested('Alipay', '', self::$instance->getBaseUri(), $result));
 
         return self::processingApiResult($data, $result);
     }
