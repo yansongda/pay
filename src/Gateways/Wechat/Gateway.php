@@ -43,6 +43,24 @@ abstract class Gateway implements GatewayInterface
     abstract public function pay($endpoint, array $payload);
 
     /**
+     * Find.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string|array $order
+     *
+     * @return array
+     */
+    public function find($order): array
+    {
+        return [
+            'endpoint' => 'pay/orderquery',
+            'order'    => is_array($order) ? $order : ['out_trade_no' => $order],
+            'cert'     => false,
+        ];
+    }
+
+    /**
      * Get trade type config.
      *
      * @author yansongda <me@yansongda.cn>
@@ -71,23 +89,5 @@ abstract class Gateway implements GatewayInterface
         Events::dispatch(new Events\MethodCalled('Wechat', 'PreOrder', '', $payload));
 
         return Support::requestApi('pay/unifiedorder', $payload);
-    }
-
-    /**
-     * Find.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param string|array $order
-     *
-     * @return array
-     */
-    public function find($order): array
-    {
-        return [
-            'endpoint' => 'pay/orderquery',
-            'order'    => is_array($order) ? $order : ['out_trade_no' => $order],
-            'cert'     => false,
-        ];
     }
 }

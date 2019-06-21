@@ -36,7 +36,7 @@ class RefundGateway extends Gateway
      *
      * @return void
      */
-    public function pay ($endpoint, array $payload)
+    public function pay($endpoint, array $payload)
     {
         throw new InvalidArgumentException('Not Support Refund In Pay');
     }
@@ -50,7 +50,7 @@ class RefundGateway extends Gateway
      *
      * @return void
      */
-    protected function getTradeType ()
+    protected function getTradeType()
     {
         throw new InvalidArgumentException('Not Support Refund In Pay');
     }
