@@ -333,7 +333,7 @@ class Support
             return new Collection($result[$method]);
         }
 
-        Events::dispatch(Events::SIGN_FAILED, new Events\SignFailed('Alipay', '', $result));
+        Events::dispatch(new Events\SignFailed('Alipay', '', $result));
 
         throw new InvalidSignException('Alipay Sign Verify FAILED', $result);
     }
