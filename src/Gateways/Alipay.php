@@ -41,8 +41,8 @@ class Alipay implements GatewayApplicationInterface
      * Const url.
      */
     const URL = [
-        self::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do',
-        self::MODE_DEV    => 'https://openapi.alipaydev.com/gateway.do',
+        self::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
+        self::MODE_DEV    => 'https://openapi.alipaydev.com/gateway.do?charset=utf-8',
     ];
 
     /**
@@ -153,7 +153,6 @@ class Alipay implements GatewayApplicationInterface
             $request = Request::createFromGlobals();
 
             $data = $request->request->count() > 0 ? $request->request->all() : $request->query->all();
-            $data = Support::encoding($data, 'utf-8', $data['charset'] ?? 'gb2312');
         }
 
         if (isset($data['fund_bill_list'])) {

@@ -129,9 +129,7 @@ class Support
             return ($value == '' || is_null($value)) ? false : true;
         });
 
-        $result = mb_convert_encoding(self::$instance->post('', $data), 'utf-8', 'gb2312');
-
-        $result = json_decode($result, true);
+        $result = json_decode(self::$instance->post('', $data), true);
 
         Events::dispatch(new Events\ApiRequested('Alipay', '', self::$instance->getBaseUri(), $result));
 
@@ -209,8 +207,7 @@ class Support
 
         $sign = $sign ?? $data['sign'];
 
-        $toVerify = $sync ? mb_convert_encoding(json_encode($data, JSON_UNESCAPED_UNICODE), 'gb2312', 'utf-8') :
-                            self::getSignContent($data, true);
+        $toVerify = $sync ? json_encode($data, JSON_UNESCAPED_UNICODE) : self::getSignContent($data, true);
 
         $isVerify = openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
 
@@ -233,8 +230,6 @@ class Support
      */
     public static function getSignContent(array $data, $verify = false): string
     {
-        $data = self::encoding($data, $data['charset'] ?? 'gb2312', 'utf-8');
-
         ksort($data);
 
         $stringToBeSigned = '';
