@@ -278,10 +278,10 @@ class PayController
 ```
 
 ## 事件系统
-[请见详细文档](https://docs.pay.yansongda.cn/qi-ta/event)
+[请见详细文档](http://pay.yansongda.cn)
 
 ## 详细文档
-[详细说明文档](https://docs.pay.yansongda.cn)
+[详细说明文档](http://pay.yansongda.cn)
 
 ## 错误
 如果在调用相关支付网关 API 时有错误产生，会抛出 `GatewayException`,`InvalidSignException` 错误，可以通过 `$e->getMessage()` 查看，同时，也可通过 `$e->raw` 查看调用 API 后返回的原始数据，该值为数组格式。
@@ -301,7 +301,7 @@ class PayController
 
 ## 赏一杯咖啡吧
 
-![pay](docs/pay.jpg)
+![pay](https://pay.yanda.net.cn/images/pay.jpg)
 
 ## LICENSE
 MIT
