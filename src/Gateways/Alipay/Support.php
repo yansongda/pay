@@ -156,7 +156,9 @@ class Support
         }
 
         if (Str::endsWith($privateKey, '.pem')) {
-            $privateKey = openssl_pkey_get_private($privateKey);
+            $privateKey = openssl_pkey_get_private(
+                Str::startsWith($privateKey, 'file://') ? $privateKey : 'file://'.$privateKey
+            );
         } else {
             $privateKey = "-----BEGIN RSA PRIVATE KEY-----\n".
                 wordwrap($privateKey, 64, "\n", true).
