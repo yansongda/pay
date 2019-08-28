@@ -101,7 +101,11 @@ class Alipay implements GatewayApplicationInterface
      * @param string $method
      * @param array  $params
      *
+     * @throws GatewayException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
      * @throws InvalidGatewayException
+     * @throws InvalidSignException
      *
      * @return Response|Collection
      */
@@ -398,8 +402,45 @@ class Alipay implements GatewayApplicationInterface
         throw new InvalidGatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface");
     }
 
+    /**
+     * makeExtend.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $method
+     * @param array  $params
+     *
+     * @throws GatewayException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws InvalidSignException
+     *
+     * @return Collection
+     */
     protected function makeExtend(string $method, array $params)
     {
+        $function = $this->extends[$method];
 
+        $customize = $function($this->payload, $params);
+
+        if (!is_array($customize) && !($customize instanceof Collection)) {
+            throw new InvalidArgumentException('Return Type Must Be Array Or Collection');
+        }
+
+        Events::dispatch(new Events\MethodCalled(
+            'Alipay',
+            'extend - '.$method,
+            $this->gateway,
+            is_array($customize) ? $customize : $customize->toArray()
+        ));
+
+        if (is_array($customize)) {
+            $this->payload = $customize;
+            $this->payload['sign'] = Support::generateSign($this->payload);
+
+            return Support::requestApi($this->payload);
+        }
+
+        return $customize;
     }
 }
