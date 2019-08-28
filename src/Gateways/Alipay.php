@@ -8,6 +8,7 @@ use Yansongda\Pay\Contracts\GatewayApplicationInterface;
 use Yansongda\Pay\Contracts\GatewayInterface;
 use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
@@ -60,6 +61,13 @@ class Alipay implements GatewayApplicationInterface
     protected $gateway;
 
     /**
+     * extends.
+     *
+     * @var array
+     */
+    protected $extends;
+
+    /**
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
@@ -99,6 +107,12 @@ class Alipay implements GatewayApplicationInterface
      */
     public function __call($method, $params)
     {
+        if (isset($this->extends[$method])) {
+            Events::dispatch(new Events\MethodCalled('Alipay', 'extend:'.$method, $this->gateway, $this->payload));
+
+            return $this->extends[$method]($this->payload, ...$params);
+        }
+
         return $this->pay($method, ...$params);
     }
 
@@ -322,11 +336,44 @@ class Alipay implements GatewayApplicationInterface
      *
      * @param string   $method
      * @param callable $function
+     * @param bool     $now
      *
-     * @return void
+     * @throws GatewayException
+     * @throws InvalidConfigException
+     * @throws InvalidSignException
+     * @throws InvalidArgumentException
+     *
+     * @return Collection|null
      */
-    public function extend(string $method, callable $function)
+    public function extend(string $method, callable $function, bool $now = false): ?Collection
     {
+        if (!$now) {
+            $this->extends[$method] = $function;
+
+            return null;
+        }
+
+        $customize = $function($this->payload);
+
+        if (!is_array($customize) && !($customize instanceof Collection)) {
+            throw new InvalidArgumentException('Return Type Must Be Array Or Collection');
+        }
+
+        Events::dispatch(new Events\MethodCalled(
+            'Alipay',
+            'extend',
+            $this->gateway,
+            is_array($customize) ? $customize : $customize->toArray()
+        ));
+
+        if (is_array($customize)) {
+            $this->payload = $customize;
+            $this->payload['sign'] = Support::generateSign($this->payload);
+
+            return Support::requestApi($this->payload);
+        }
+
+        return $customize;
     }
 
     /**
