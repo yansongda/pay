@@ -361,12 +361,7 @@ class Alipay implements GatewayApplicationInterface
             throw new InvalidArgumentException('Return Type Must Be Array Or Collection');
         }
 
-        Events::dispatch(new Events\MethodCalled(
-            'Alipay',
-            'extend',
-            $this->gateway,
-            is_array($customize) ? $customize : $customize->toArray()
-        ));
+        Events::dispatch(new Events\MethodCalled('Alipay', 'extend', $this->gateway, $customize));
 
         if (is_array($customize)) {
             $this->payload = $customize;
