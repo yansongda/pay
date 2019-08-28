@@ -70,7 +70,7 @@ interface GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array|null $content
-     * @param bool        $refund
+     * @param bool              $refund
      *
      * @return Collection
      */
