@@ -169,7 +169,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function verify($content = null, $refund = false): Collection
+    public function verify($content = null, bool $refund = false): Collection
     {
         $content = $content ?? Request::createFromGlobals()->getContent();
 
@@ -206,7 +206,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function find($order, $type = 'wap'): Collection
+    public function find($order, string $type = 'wap'): Collection
     {
         if ($type != 'wap') {
             unset($this->payload['spbill_create_ip']);
@@ -244,7 +244,7 @@ class Wechat implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function refund($order): Collection
+    public function refund(array $order): Collection
     {
         $this->payload = Support::filterPayload($this->payload, $order, true);
 

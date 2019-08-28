@@ -108,9 +108,7 @@ class Alipay implements GatewayApplicationInterface
     public function __call($method, $params)
     {
         if (isset($this->extends[$method])) {
-            Events::dispatch(new Events\MethodCalled('Alipay', 'extend:'.$method, $this->gateway, $this->payload));
-
-            return $this->extends[$method]($this->payload, ...$params);
+            return $this->makeExtend($method, ...$params);
         }
 
         return $this->pay($method, ...$params);
@@ -161,7 +159,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function verify($data = null, $refund = false): Collection
+    public function verify($data = null, bool $refund = false): Collection
     {
         if (is_null($data)) {
             $request = Request::createFromGlobals();
@@ -198,7 +196,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function find($order, $type = 'wap'): Collection
+    public function find($order, string $type = 'wap'): Collection
     {
         $gateway = get_class($this).'\\'.Str::studly($type).'Gateway';
 
@@ -230,7 +228,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    public function refund($order): Collection
+    public function refund(array $order): Collection
     {
         $this->payload['method'] = 'alipay.trade.refund';
         $this->payload['biz_content'] = json_encode($order);
@@ -246,7 +244,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $order
+     * @param array|string $order
      *
      * @throws GatewayException
      * @throws InvalidConfigException
@@ -345,9 +343,9 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Collection|null
      */
-    public function extend(string $method, callable $function, bool $now = false): ?Collection
+    public function extend(string $method, callable $function, bool $now = true): ?Collection
     {
-        if (!$now) {
+        if (!$now && !method_exists($this, $method)) {
             $this->extends[$method] = $function;
 
             return null;
@@ -387,7 +385,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Response|Collection
      */
-    protected function makePay($gateway)
+    protected function makePay(string $gateway)
     {
         $app = new $gateway();
 
@@ -398,5 +396,10 @@ class Alipay implements GatewayApplicationInterface
         }
 
         throw new InvalidGatewayException("Pay Gateway [{$gateway}] Must Be An Instance Of GatewayInterface");
+    }
+
+    protected function makeExtend(string $method, array $params)
+    {
+
     }
 }
