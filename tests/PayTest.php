@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests;
 
 use Yansongda\Pay\Contracts\GatewayApplicationInterface;
-use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidGatewayException;
 use Yansongda\Pay\Pay;
 
 class PayTest extends TestCase
@@ -24,8 +24,8 @@ class PayTest extends TestCase
 
     public function testFooGateway()
     {
-        $this->expectException(GatewayException::class);
-        $this->expectExceptionMessage('Gateway [foo] Not Exists');
+        $this->expectException(InvalidGatewayException::class);
+        $this->expectExceptionMessage('INVALID_GATEWAY: Gateway [foo] Not Exists');
 
         Pay::foo([]);
     }
