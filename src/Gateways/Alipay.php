@@ -414,6 +414,8 @@ class Alipay implements GatewayApplicationInterface
      */
     protected function makeExtend(string $method, array $params): Collection
     {
+        $params = count($params) >= 1 ? $params[0] : $params;
+
         $function = $this->extends[$method];
 
         $customize = $function($this->payload, $params);
