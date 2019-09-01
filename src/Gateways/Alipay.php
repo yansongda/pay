@@ -412,7 +412,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @return Collection
      */
-    protected function makeExtend(string $method, array $params): Collection
+    protected function makeExtend(string $method, array ...$params): Collection
     {
         $params = count($params) >= 1 ? $params[0] : $params;
 
