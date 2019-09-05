@@ -15,7 +15,7 @@ class ConfigService implements ServiceInterface
      *
      * @param Container $pimple A container instance
      */
-    public function register (Container $pimple)
+    public function register(Container $pimple)
     {
 
     }
