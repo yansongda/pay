@@ -1,0 +1,8 @@
+preset: symfony
+
+enabled:
+  - recommended
+
+finder:
+  exclude:
+    - "tests"

@@ -8,11 +8,9 @@ return PhpCsFixer\Config::create()
     ->setUsingCache(false)
     ->setRules([
         '@Symfony' => true,
-        'blank_line_after_opening_tag' => true,
         'class_attributes_separation' => true,
-        'no_unused_imports' => true,
         'ordered_class_elements' => true,
-        'ordered_imports' => true,
+        'ordered_imports' => ['sort_algorithm' => 'alpha'],
         'line_ending' => true,
         'single_quote' => true,
         'array_syntax' => ['syntax' => 'short'],
