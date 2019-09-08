@@ -1,7 +1,8 @@
 preset: symfony
 
 enabled:
-  - recommended
+  - alpha_ordered_imports
+  - short_array_syntax
 
 finder:
   exclude:
