@@ -19,7 +19,7 @@
         "ext-simplexml":"*",
         "ext-libxml": "*",
         "ext-json": "*",
-        "yansongda/supports": "^1.8",
+        "yansongda/supports": "^2.0",
         "symfony/http-foundation": "^4.0",
         "symfony/event-dispatcher": "^4.0",
         "pimple/pimple": "^3.2"
