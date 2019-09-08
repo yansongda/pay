@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Exception;
 
 use Throwable;
 
-class UnknownServiceException extends Exception
+class UnknownServiceException extends ServiceException
 {
     /**
      * Bootstrap.
@@ -13,7 +13,6 @@ class UnknownServiceException extends Exception
      * @param int             $code
      * @param array           $raw
      * @param \Throwable|null $previous
-     *
      */
     public function __construct($message = 'Unknown Service Exception!', $code = self::UNKNOWN_SERVICE, $raw = [], Throwable $previous = null)
     {

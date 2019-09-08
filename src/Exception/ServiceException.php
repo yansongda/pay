@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Exception;
 
 use Throwable;
 
-class FrozenServiceException extends ServiceException
+class ServiceException extends Exception
 {
     /**
      * Bootstrap.
@@ -14,7 +14,7 @@ class FrozenServiceException extends ServiceException
      * @param array           $raw
      * @param \Throwable|null $previous
      */
-    public function __construct($message = 'Frozen Service Exception!', $code = self::FROZEN_SERVICE, $raw = [], Throwable $previous = null)
+    public function __construct($message = 'Service Exception', $code = self::SERVICE_EXCEPTION, $raw = [], Throwable $previous = null)
     {
         parent::__construct($message, $code, $raw, $previous);
     }

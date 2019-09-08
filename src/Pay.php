@@ -13,6 +13,14 @@ use Yansongda\Pay\Service\EventService;
 use Yansongda\Pay\Service\LoggerService;
 use Yansongda\Supports\Str;
 
+/**
+ * @author yansongda <me@yansongda.cn>
+ *
+ * @property \Yansongda\Supports\Logger logger
+ * @property \Yansongda\Supports\Logger log
+ * @property \Yansongda\Supports\Config config
+ * @property \Symfony\Component\EventDispatcher\EventDispatcher event
+ */
 class Pay extends Container
 {
     /**
@@ -89,10 +97,8 @@ class Pay extends Container
      * @param $value
      *
      * @throws \Yansongda\Pay\Exception\FrozenServiceException
-     *
-     * @return void
      */
-    public function __set($key, $value)
+    public function __set($key, $value): void
     {
         $this->set($key, $value);
     }
@@ -107,7 +113,7 @@ class Pay extends Container
      *
      * @return \Yansongda\Pay\Contract\ServiceInterface
      */
-    public static function __callStatic($method, $params)
+    public static function __callStatic($method, $params): ServiceInterface
     {
         $app = new static(...$params);
 
@@ -145,10 +151,8 @@ class Pay extends Container
      * @param $value
      *
      * @throws \Yansongda\Pay\Exception\FrozenServiceException
-     *
-     * @return void
      */
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         try {
             $this->offsetSet($key, $value);
@@ -180,7 +184,7 @@ class Pay extends Container
      *
      * @return ServiceInterface
      */
-    protected function create($method)
+    protected function create($method): ServiceInterface
     {
         if (!isset($this[$method])) {
             $service = __NAMESPACE__.'\\Service\\Gateway\\'.Str::studly($method).'Service';
@@ -203,10 +207,8 @@ class Pay extends Container
      * @param $service
      *
      * @throws \Yansongda\Pay\Exception\GatewayServiceException
-     *
-     * @return void
      */
-    private function make($service)
+    private function make($service): void
     {
         $gatewayService = new $service($this);
 
@@ -223,10 +225,8 @@ class Pay extends Container
      * @author yansongda <me@yansongda.cn>
      *
      * @param \Yansongda\Pay\Contract\ServiceInterface|null $service
-     *
-     * @return void
      */
-    private function registerService(?ServiceInterface $service = null)
+    private function registerService(?ServiceInterface $service = null): void
     {
         if (!is_null($service)) {
             parent::register($service);

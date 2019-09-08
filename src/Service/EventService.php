@@ -3,7 +3,9 @@
 namespace Yansongda\Pay\Service;
 
 use Pimple\Container;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Yansongda\Pay\Contract\ServiceInterface;
+use Yansongda\Pay\Listener\KernelLogSubscriber;
 
 class EventService implements ServiceInterface
 {
@@ -15,8 +17,14 @@ class EventService implements ServiceInterface
      *
      * @param Container $pimple A container instance
      */
-    public function register (Container $pimple)
+    public function register(Container $pimple)
     {
+        $pimple['event'] = function ($container) {
+            $event = new EventDispatcher();
 
+            $event->addSubscriber(new KernelLogSubscriber($container));
+
+            return $event;
+        };
     }
 }

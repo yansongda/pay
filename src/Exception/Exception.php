@@ -9,11 +9,13 @@ class Exception extends \Exception
     const UNKNOWN_ERROR = 9999;
 
     // Service
-    const UNKNOWN_SERVICE = 1000;
+    const SERVICE_EXCEPTION = 1000;
 
-    const FROZEN_SERVICE = 1001;
+    const UNKNOWN_SERVICE = 1001;
 
-    const GATEWAY_SERVICE = 1002;
+    const FROZEN_SERVICE = 1002;
+
+    const GATEWAY_SERVICE = 1003;
 
     /**
      * raw.

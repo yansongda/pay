@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Exception;
 
 use Throwable;
 
-class GatewayServiceException extends Exception
+class GatewayServiceException extends ServiceException
 {
     /**
      * Bootstrap.
@@ -13,7 +13,6 @@ class GatewayServiceException extends Exception
      * @param int             $code
      * @param array           $raw
      * @param \Throwable|null $previous
-     *
      */
     public function __construct($message = 'Gateway Service Exception!', $code = self::GATEWAY_SERVICE, $raw = [], Throwable $previous = null)
     {
