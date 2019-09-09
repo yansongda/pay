@@ -11,6 +11,14 @@ use Yansongda\Supports\Logger;
 
 class PayTest extends TestCase
 {
+    protected $baseConfig = [
+        'http' => [
+            'timeout' => 5.0,
+            'connect_timeout' => 3.0,
+        ],
+        'mode' => 'normal'
+    ];
+
     public function testBootstrap()
     {
         $pay = new Pay([]);
@@ -26,8 +34,8 @@ class PayTest extends TestCase
         $pay = new Pay($config);
 
         $this->assertInstanceOf(Config::class, $pay->config);
-        $this->assertEquals(new Config($config), $pay->config);
-        $this->assertEquals(new Config($config), $pay->get('config'));
+        $this->assertEquals(new Config(array_merge($this->baseConfig, $config)), $pay->config);
+        $this->assertEquals(new Config(array_merge($this->baseConfig, $config)), $pay->get('config'));
         $this->assertInstanceOf(Logger::class, $pay->logger);
         $this->assertInstanceOf(Logger::class, $pay->log);
         $this->assertInstanceOf(EventDispatcher::class, $pay->event);
@@ -71,7 +79,7 @@ class PayTest extends TestCase
                 'timeout' => 5.0,
                 'connect_timeout' => 3.0,
             ],
-            'mode' => 'dev'
+            'mode' => 'normal'
         ], $config), $pay->getConfig());
     }
 }

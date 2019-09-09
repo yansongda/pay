@@ -23,6 +23,7 @@ use Yansongda\Supports\Str;
  * @property \Yansongda\Supports\Logger log
  * @property \Yansongda\Supports\Config config
  * @property \Symfony\Component\EventDispatcher\EventDispatcher event
+ *
  * @method static Config config($config)
  * @method static Logger logger($config)
  * @method static Logger log($config)
@@ -54,7 +55,7 @@ class Pay extends Container
             'timeout' => 5.0,
             'connect_timeout' => 3.0,
         ],
-        'mode' => 'dev',
+        'mode' => 'normal',
     ];
 
     /**
