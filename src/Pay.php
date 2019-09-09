@@ -77,13 +77,13 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param $key
+     * @param string $key
      *
      * @throws \Yansongda\Pay\Exception\UnknownServiceException
      *
      * @return mixed
      */
-    public function __get($key)
+    public function __get(string $key)
     {
         return $this->get($key);
     }
@@ -93,12 +93,12 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed  $value
      *
      * @throws \Yansongda\Pay\Exception\FrozenServiceException
      */
-    public function __set($key, $value): void
+    public function __set(string $key, $value): void
     {
         $this->set($key, $value);
     }
@@ -125,13 +125,13 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param $key
+     * @param string $key
      *
      * @throws \Yansongda\Pay\Exception\UnknownServiceException
      *
      * @return mixed
      */
-    public function get($key)
+    public function get(string $key)
     {
         try {
             $result = $this->offsetGet($key);
@@ -147,12 +147,12 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed  $value
      *
      * @throws \Yansongda\Pay\Exception\FrozenServiceException
      */
-    public function set($key, $value): void
+    public function set(string $key, $value): void
     {
         try {
             $this->offsetSet($key, $value);
@@ -178,13 +178,13 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param $method
+     * @param string $method
      *
      * @throws \Yansongda\Pay\Exception\GatewayServiceException
      *
      * @return ServiceInterface
      */
-    protected function create($method): ServiceInterface
+    protected function create(string $method): ServiceInterface
     {
         if (!isset($this[$method])) {
             $service = __NAMESPACE__.'\\Service\\Gateway\\'.Str::studly($method).'Service';
@@ -204,11 +204,11 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param $service
+     * @param string $service
      *
      * @throws \Yansongda\Pay\Exception\GatewayServiceException
      */
-    private function make($service): void
+    private function make(string $service): void
     {
         $gatewayService = new $service($this);
 
