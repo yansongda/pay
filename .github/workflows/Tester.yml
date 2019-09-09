@@ -1,0 +1,21 @@
+name: Tester
+on: [push, pull_request]
+
+jobs:
+  PHPUnit:
+    name: php-${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - 7.1
+          - 7.2
+    container:
+      image: yansongda/php-fpm:${{ matrix.php }}
+    steps:
+      - uses: actions/checkout@master
+      - name: Install Dependencies
+        run: composer update --prefer-dist --no-interaction --no-suggest
+      - name: Run PHPUnit
+        run: ./vendor/bin/phpunit

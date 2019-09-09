@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Service;
 use Pimple\Container;
 use Yansongda\Pay\Contract\ServiceInterface;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Config;
 
 class ConfigService implements ServiceInterface
 {
@@ -20,7 +21,7 @@ class ConfigService implements ServiceInterface
     {
         $pimple['config'] = function ($container) {
             /* @var \Yansongda\Pay\Pay $container */
-            return new Collection($container->getConfig());
+            return new Config($container->getConfig());
         };
     }
 }

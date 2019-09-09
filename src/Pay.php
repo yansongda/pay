@@ -5,12 +5,15 @@ namespace Yansongda\Pay;
 use Pimple\Container;
 use Pimple\Exception\FrozenServiceException;
 use Pimple\Exception\UnknownIdentifierException;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Yansongda\Pay\Contract\ServiceInterface;
 use Yansongda\Pay\Exception\GatewayServiceException;
 use Yansongda\Pay\Exception\UnknownServiceException;
 use Yansongda\Pay\Service\ConfigService;
 use Yansongda\Pay\Service\EventService;
 use Yansongda\Pay\Service\LoggerService;
+use Yansongda\Supports\Config;
+use Yansongda\Supports\Logger;
 use Yansongda\Supports\Str;
 
 /**
@@ -20,6 +23,10 @@ use Yansongda\Supports\Str;
  * @property \Yansongda\Supports\Logger log
  * @property \Yansongda\Supports\Config config
  * @property \Symfony\Component\EventDispatcher\EventDispatcher event
+ * @method static Config config($config)
+ * @method static Logger logger($config)
+ * @method static Logger log($config)
+ * @method static EventDispatcher event($config)
  */
 class Pay extends Container
 {
@@ -28,26 +35,32 @@ class Pay extends Container
      *
      * @var array
      */
-    protected $config;
+    protected $config = [];
 
     /**
      * service.
      *
-     * @var array
+     * @var string[]
      */
-    protected $service;
+    protected $service = [];
 
     /**
      * baseConfig.
      *
      * @var array
      */
-    private $baseConfig;
+    private $baseConfig = [
+        'http' => [
+            'timeout' => 5.0,
+            'connect_timeout' => 3.0,
+        ],
+        'mode' => 'dev',
+    ];
 
     /**
      * baseService.
      *
-     * @var array
+     * @var string[]
      */
     private $baseService = [
         ConfigService::class,
@@ -111,9 +124,9 @@ class Pay extends Container
      * @param $method
      * @param $params
      *
-     * @return \Yansongda\Pay\Contract\ServiceInterface
+     * @return mixed
      */
-    public static function __callStatic($method, $params): ServiceInterface
+    public static function __callStatic($method, $params)
     {
         $app = new static(...$params);
 
@@ -182,41 +195,21 @@ class Pay extends Container
      *
      * @throws \Yansongda\Pay\Exception\GatewayServiceException
      *
-     * @return ServiceInterface
+     * @return mixed
      */
-    protected function create(string $method): ServiceInterface
+    protected function create(string $method)
     {
-        if (!isset($this[$method])) {
-            $service = __NAMESPACE__.'\\Service\\Gateway\\'.Str::studly($method).'Service';
-
-            if (class_exists($service)) {
-                self::make($service);
-            }
-
-            throw new GatewayServiceException("Gateway [{$method}] Not Exists");
+        if (isset($this[$method])) {
+            return $this[$method];
         }
 
-        return $this[$method];
-    }
+        $service = __NAMESPACE__.'\\Service\\Gateway\\'.Str::studly($method).'Service';
 
-    /**
-     * make.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $service
-     *
-     * @throws \Yansongda\Pay\Exception\GatewayServiceException
-     */
-    private function make(string $service): void
-    {
-        $gatewayService = new $service($this);
-
-        if ($gatewayService instanceof ServiceInterface) {
-            $this->registerService($gatewayService);
+        if (class_exists($service)) {
+            self::make($service);
         }
 
-        throw new GatewayServiceException("Gateway [{$service}] Must Be An Instance Of ServiceInterface");
+        throw new GatewayServiceException("Gateway [{$method}] Not Exists");
     }
 
     /**
@@ -237,5 +230,25 @@ class Pay extends Container
         foreach (array_merge($this->baseService, $this->service) as $service) {
             parent::register(new $service());
         }
+    }
+
+    /**
+     * make.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $service
+     *
+     * @throws \Yansongda\Pay\Exception\GatewayServiceException
+     */
+    private function make(string $service): void
+    {
+        $gatewayService = new $service($this);
+
+        if ($gatewayService instanceof ServiceInterface) {
+            $this->registerService($gatewayService);
+        }
+
+        throw new GatewayServiceException("Gateway [{$service}] Must Be An Instance Of ServiceInterface");
     }
 }

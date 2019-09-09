@@ -33,7 +33,7 @@ class LoggerService implements ServiceInterface
 
             $logger->setConfig($config);
 
-            return $logger->getLogger();
+            return $logger;
         };
     }
 }
