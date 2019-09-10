@@ -74,12 +74,6 @@ class PayTest extends TestCase
         $pay = new Pay($config);
 
         $this->assertArrayHasKey('name', $pay->getConfig());
-        $this->assertEquals(array_merge([
-            'http' => [
-                'timeout' => 5.0,
-                'connect_timeout' => 3.0,
-            ],
-            'mode' => 'normal'
-        ], $config), $pay->getConfig());
+        $this->assertEquals(array_merge($this->baseConfig, $config), $pay->getConfig());
     }
 }

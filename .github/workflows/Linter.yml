@@ -3,10 +3,11 @@ on: [push, pull_request]
 
 jobs:
   php_cs_fixer:
-    name: PHP-CS-Fxier
+    name: php_cs_fixer
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout Code
+        uses: actions/checkout@master
       - name: Install Dependencies
         run: composer install --no-progress
       - name: Run PHP-CS-Fxier
