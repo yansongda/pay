@@ -21,7 +21,7 @@ class EventServiceProvider implements ServiceProviderInterface
     public function register(Container $pimple)
     {
         $pimple['event'] = function ($container) {
-            $event = new class extends EventDispatcher implements ServiceInterface {
+            $event = new class() extends EventDispatcher implements ServiceInterface {
             };
 
             $event->addSubscriber(new KernelLogSubscriber($container));

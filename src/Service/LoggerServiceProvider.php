@@ -22,7 +22,6 @@ class LoggerServiceProvider implements ServiceProviderInterface
         $pimple['logger'] = $pimple['log'] = function ($container) {
             /* @var \Yansongda\Pay\Pay $container */
             $logger = new class() extends Logger implements ServiceInterface {
-
             };
 
             $config = ['identify' => 'yansongda.pay'];

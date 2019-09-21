@@ -11,11 +11,11 @@ use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ServiceException;
 use Yansongda\Pay\Exception\ServiceProviderException;
 use Yansongda\Pay\Exception\UnknownServiceException;
+use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\ConfigServiceProvider;
 use Yansongda\Pay\Service\EventServiceProvider;
-use Yansongda\Pay\Service\AlipayServiceProvider;
-use Yansongda\Pay\Service\WechatServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
+use Yansongda\Pay\Service\WechatServiceProvider;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
 use Yansongda\Supports\Str;
@@ -49,7 +49,7 @@ class Pay extends Container
      */
     protected $service = [
         AlipayServiceProvider::class,
-        WechatServiceProvider::class
+        WechatServiceProvider::class,
     ];
 
     /**
@@ -64,7 +64,7 @@ class Pay extends Container
             'identify' => 'yansongda.supports',
             'level' => 'debug',
             'type' => 'daily',
-            'max_files' => 30
+            'max_files' => 30,
         ],
         'http' => [
             'timeout' => 5.0,
@@ -89,7 +89,7 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $c customer config
+     * @param array $c     customer config
      * @param array $value
      */
     public function __construct(array $c, array $value = [])
@@ -222,8 +222,6 @@ class Pay extends Container
      * @param string $method
      *
      * @throws \Yansongda\Pay\Exception\ServiceProviderException
-     *
-     * @return void
      */
     protected function create(string $method): void
     {
