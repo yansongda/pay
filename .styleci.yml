@@ -1,9 +1,0 @@
-preset: symfony
-
-enabled:
-  - alpha_ordered_imports
-  - short_array_syntax
-
-finder:
-  exclude:
-    - "tests"
