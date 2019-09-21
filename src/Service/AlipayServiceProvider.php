@@ -3,10 +3,9 @@
 namespace Yansongda\Pay\Service;
 
 use Pimple\Container;
-use Yansongda\Pay\Contract\ServiceInterface;
-use Yansongda\Supports\Config;
+use Yansongda\Pay\Contract\ServiceProviderInterface;
 
-class ConfigService implements ServiceInterface
+class AlipayServiceProvider implements ServiceProviderInterface
 {
     /**
      * Registers services on the given container.
@@ -18,9 +17,6 @@ class ConfigService implements ServiceInterface
      */
     public function register(Container $pimple)
     {
-        $pimple['config'] = function ($container) {
-            /* @var \Yansongda\Pay\Pay $container */
-            return new Config($container->getConfig());
-        };
+        // TODO: Implement register() method.
     }
 }

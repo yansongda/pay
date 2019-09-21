@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Exception;
 
 use Throwable;
 
-class GatewayServiceException extends ServiceException
+class ServiceProviderException extends ServiceException
 {
     /**
      * Bootstrap.

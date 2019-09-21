@@ -7,11 +7,15 @@ use Pimple\Exception\FrozenServiceException;
 use Pimple\Exception\UnknownIdentifierException;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Yansongda\Pay\Contract\ServiceInterface;
-use Yansongda\Pay\Exception\GatewayServiceException;
+use Yansongda\Pay\Contract\ServiceProviderInterface;
+use Yansongda\Pay\Exception\ServiceException;
+use Yansongda\Pay\Exception\ServiceProviderException;
 use Yansongda\Pay\Exception\UnknownServiceException;
-use Yansongda\Pay\Service\ConfigService;
-use Yansongda\Pay\Service\EventService;
-use Yansongda\Pay\Service\LoggerService;
+use Yansongda\Pay\Service\ConfigServiceProvider;
+use Yansongda\Pay\Service\EventServiceProvider;
+use Yansongda\Pay\Service\AlipayServiceProvider;
+use Yansongda\Pay\Service\WechatServiceProvider;
+use Yansongda\Pay\Service\LoggerServiceProvider;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
 use Yansongda\Supports\Str;
@@ -36,14 +40,17 @@ class Pay extends Container
      *
      * @var array
      */
-    protected $config = [];
+    protected $c = [];
 
     /**
      * service.
      *
      * @var string[]
      */
-    protected $service = [];
+    protected $service = [
+        AlipayServiceProvider::class,
+        WechatServiceProvider::class
+    ];
 
     /**
      * baseConfig.
@@ -51,6 +58,14 @@ class Pay extends Container
      * @var array
      */
     private $baseConfig = [
+        'log' => [
+            'enable' => true,
+            'file' => null,
+            'identify' => 'yansongda.supports',
+            'level' => 'debug',
+            'type' => 'daily',
+            'max_files' => 30
+        ],
         'http' => [
             'timeout' => 5.0,
             'connect_timeout' => 3.0,
@@ -64,9 +79,9 @@ class Pay extends Container
      * @var string[]
      */
     private $baseService = [
-        ConfigService::class,
-        LoggerService::class,
-        EventService::class,
+        ConfigServiceProvider::class,
+        LoggerServiceProvider::class,
+        EventServiceProvider::class,
     ];
 
     /**
@@ -74,12 +89,12 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $config
+     * @param array $c customer config
      * @param array $value
      */
-    public function __construct(array $config, array $value = [])
+    public function __construct(array $c, array $value = [])
     {
-        $this->config = $config;
+        $this->c = $c;
 
         parent::__construct($value);
 
@@ -93,11 +108,12 @@ class Pay extends Container
      *
      * @param string $key
      *
+     * @throws \Yansongda\Pay\Exception\ServiceException
      * @throws \Yansongda\Pay\Exception\UnknownServiceException
      *
-     * @return mixed
+     * @return ServiceInterface
      */
-    public function __get(string $key)
+    public function __get(string $key): ServiceInterface
     {
         return $this->get($key);
     }
@@ -125,13 +141,19 @@ class Pay extends Container
      * @param $method
      * @param $params
      *
-     * @return mixed
+     * @throws \Yansongda\Pay\Exception\ServiceException
+     * @throws \Yansongda\Pay\Exception\ServiceProviderException
+     * @throws \Yansongda\Pay\Exception\UnknownServiceException
+     *
+     * @return ServiceInterface
      */
-    public static function __callStatic($method, $params)
+    public static function __callStatic($method, $params): ServiceInterface
     {
         $app = new static(...$params);
 
-        return $app->create($method);
+        $app->create($method);
+
+        return $app->get($method);
     }
 
     /**
@@ -141,11 +163,12 @@ class Pay extends Container
      *
      * @param string $key
      *
+     * @throws \Yansongda\Pay\Exception\ServiceException
      * @throws \Yansongda\Pay\Exception\UnknownServiceException
      *
-     * @return mixed
+     * @return ServiceInterface
      */
-    public function get(string $key)
+    public function get(string $key): ServiceInterface
     {
         try {
             $result = $this->offsetGet($key);
@@ -153,7 +176,11 @@ class Pay extends Container
             throw new UnknownServiceException();
         }
 
-        return $result;
+        if ($result instanceof ServiceInterface) {
+            return $result;
+        }
+
+        throw new ServiceException("Service [{$key}]'s Impl Must Be An Instance Of ServiceInterface");
     }
 
     /**
@@ -184,7 +211,7 @@ class Pay extends Container
      */
     public function getConfig(): array
     {
-        return array_merge($this->baseConfig, $this->config);
+        return array_replace_recursive($this->baseConfig, $this->c);
     }
 
     /**
@@ -194,23 +221,23 @@ class Pay extends Container
      *
      * @param string $method
      *
-     * @throws \Yansongda\Pay\Exception\GatewayServiceException
+     * @throws \Yansongda\Pay\Exception\ServiceProviderException
      *
-     * @return mixed
+     * @return void
      */
-    protected function create(string $method)
+    protected function create(string $method): void
     {
         if (isset($this[$method])) {
-            return $this[$method];
+            return;
         }
 
-        $service = __NAMESPACE__.'\\Service\\Gateway\\'.Str::studly($method).'Service';
+        $service = __NAMESPACE__.'\\Service\\'.Str::studly($method).'Service';
 
         if (class_exists($service)) {
             self::make($service);
         }
 
-        throw new GatewayServiceException("Gateway [{$method}] Not Exists");
+        throw new ServiceProviderException("ServiceProvider [{$method}] Not Exists");
     }
 
     /**
@@ -218,9 +245,9 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param \Yansongda\Pay\Contract\ServiceInterface|null $service
+     * @param \Yansongda\Pay\Contract\ServiceProviderInterface|null $service
      */
-    private function registerService(?ServiceInterface $service = null): void
+    private function registerService(?ServiceProviderInterface $service = null): void
     {
         if (!is_null($service)) {
             parent::register($service);
@@ -240,16 +267,16 @@ class Pay extends Container
      *
      * @param string $service
      *
-     * @throws \Yansongda\Pay\Exception\GatewayServiceException
+     * @throws \Yansongda\Pay\Exception\ServiceProviderException
      */
     private function make(string $service): void
     {
         $gatewayService = new $service($this);
 
-        if ($gatewayService instanceof ServiceInterface) {
+        if ($gatewayService instanceof ServiceProviderInterface) {
             $this->registerService($gatewayService);
         }
 
-        throw new GatewayServiceException("Gateway [{$service}] Must Be An Instance Of ServiceInterface");
+        throw new ServiceProviderException("[{$service}] Must Be An Instance Of ServiceProviderInterface");
     }
 }

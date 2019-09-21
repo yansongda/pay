@@ -4,9 +4,10 @@ namespace Yansongda\Pay\Service;
 
 use Pimple\Container;
 use Yansongda\Pay\Contract\ServiceInterface;
+use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Supports\Logger;
 
-class LoggerService implements ServiceInterface
+class LoggerServiceProvider implements ServiceProviderInterface
 {
     /**
      * Registers services on the given container.
@@ -20,7 +21,9 @@ class LoggerService implements ServiceInterface
     {
         $pimple['logger'] = $pimple['log'] = function ($container) {
             /* @var \Yansongda\Pay\Pay $container */
-            $logger = new Logger();
+            $logger = new class() extends Logger implements ServiceInterface {
+
+            };
 
             $config = ['identify' => 'yansongda.pay'];
 
