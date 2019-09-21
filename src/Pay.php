@@ -61,7 +61,7 @@ class Pay extends Container
         'log' => [
             'enable' => true,
             'file' => null,
-            'identify' => 'yansongda.supports',
+            'identify' => 'yansongda.pay',
             'level' => 'debug',
             'type' => 'daily',
             'max_files' => 30,
@@ -102,6 +102,21 @@ class Pay extends Container
     }
 
     /**
+     * __set.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @throws \Yansongda\Pay\Exception\FrozenServiceException
+     */
+    public function __set(string $key, $value): void
+    {
+        $this->set($key, $value);
+    }
+
+    /**
      * __get.
      *
      * @author yansongda <me@yansongda.cn>
@@ -116,21 +131,6 @@ class Pay extends Container
     public function __get(string $key): ServiceInterface
     {
         return $this->get($key);
-    }
-
-    /**
-     * __set.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @throws \Yansongda\Pay\Exception\FrozenServiceException
-     */
-    public function __set(string $key, $value): void
-    {
-        $this->set($key, $value);
     }
 
     /**
