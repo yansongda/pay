@@ -200,7 +200,9 @@ class Support
         }
 
         if (Str::endsWith($publicKey, '.pem')) {
-            $publicKey = openssl_pkey_get_public($publicKey);
+            $publicKey = openssl_pkey_get_public(
+                Str::startsWith($publicKey, 'file://') ? $publicKey : 'file://'.$publicKey
+            );
         } else {
             $publicKey = "-----BEGIN PUBLIC KEY-----\n".
                 wordwrap($publicKey, 64, "\n", true).
