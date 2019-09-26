@@ -42,7 +42,7 @@ class LoggerServiceProvider implements ServiceProviderInterface
 
                 public function __call($method, $args): bool
                 {
-                    if (false === $this->container['config']['log']['enable']) {
+                    if (false === $this->container['config']->get('log.enable', false)) {
                         return true;
                     }
 
@@ -54,8 +54,8 @@ class LoggerServiceProvider implements ServiceProviderInterface
 
             if (isset($container['config']['log'])) {
                 $config = array_merge(
-                    $config,
-                    $container['config']['log']
+                    $container['config']['log'],
+                    $config
                 );
             }
 
