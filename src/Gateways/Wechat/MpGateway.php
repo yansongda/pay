@@ -37,11 +37,11 @@ class MpGateway extends Gateway
         $payload['trade_type'] = $this->getTradeType();
 
         $pay_request = [
-            'appId'     => !$this->payRequestUseSubAppId ? $payload['appid'] : $payload['sub_appid'],
+            'appId' => !$this->payRequestUseSubAppId ? $payload['appid'] : $payload['sub_appid'],
             'timeStamp' => strval(time()),
-            'nonceStr'  => Str::random(),
-            'package'   => 'prepay_id='.$this->preOrder($payload)->get('prepay_id'),
-            'signType'  => 'MD5',
+            'nonceStr' => Str::random(),
+            'package' => 'prepay_id='.$this->preOrder($payload)->get('prepay_id'),
+            'signType' => 'MD5',
         ];
         $pay_request['paySign'] = Support::generateSign($pay_request);
 

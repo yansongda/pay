@@ -71,7 +71,7 @@ class Support
      *
      * @param $key
      *
-     * @return mixed|null|Config
+     * @return mixed|Config|null
      */
     public function __get($key)
     {
@@ -89,7 +89,7 @@ class Support
      */
     public static function create(Config $config)
     {
-        if (php_sapi_name() === 'cli' || !(self::$instance instanceof self)) {
+        if ('cli' === php_sapi_name() || !(self::$instance instanceof self)) {
             self::$instance = new self($config);
         }
 
@@ -100,8 +100,6 @@ class Support
      * clear.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return void
      */
     public function clear()
     {
@@ -126,7 +124,7 @@ class Support
         Events::dispatch(new Events\ApiRequesting('Alipay', '', self::$instance->getBaseUri(), $data));
 
         $data = array_filter($data, function ($value) {
-            return ($value == '' || is_null($value)) ? false : true;
+            return ('' == $value || is_null($value)) ? false : true;
         });
 
         $result = json_decode(self::$instance->post('', $data), true);
@@ -213,7 +211,7 @@ class Support
 
         $toVerify = $sync ? json_encode($data, JSON_UNESCAPED_UNICODE) : self::getSignContent($data, true);
 
-        $isVerify = openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256) === 1;
+        $isVerify = 1 === openssl_verify($toVerify, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256);
 
         if (is_resource($publicKey)) {
             openssl_free_key($publicKey);
@@ -238,10 +236,10 @@ class Support
 
         $stringToBeSigned = '';
         foreach ($data as $k => $v) {
-            if ($verify && $k != 'sign' && $k != 'sign_type') {
+            if ($verify && 'sign' != $k && 'sign_type' != $k) {
                 $stringToBeSigned .= $k.'='.$v.'&';
             }
-            if (!$verify && $v !== '' && !is_null($v) && $k != 'sign' && '@' != substr($v, 0, 1)) {
+            if (!$verify && '' !== $v && !is_null($v) && 'sign' != $k && '@' != substr($v, 0, 1)) {
                 $stringToBeSigned .= $k.'='.$v.'&';
             }
         }
@@ -272,8 +270,8 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param null|string $key
-     * @param null|mixed  $default
+     * @param string|null $key
+     * @param mixed|null  $default
      *
      * @return mixed|null
      */
@@ -320,7 +318,7 @@ class Support
     {
         $method = str_replace('.', '_', $data['method']).'_response';
 
-        if (!isset($result['sign']) || $result[$method]['code'] != '10000') {
+        if (!isset($result['sign']) || '10000' != $result[$method]['code']) {
             throw new GatewayException(
                 'Get Alipay API Error:'.$result[$method]['msg'].
                     (isset($result[$method]['sub_code']) ? (' - '.$result[$method]['sub_code']) : ''),

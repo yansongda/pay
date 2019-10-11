@@ -20,15 +20,15 @@ use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 /**
- * @method Response app(array $config) APP 支付
- * @method Collection groupRedpack(array $config) 分裂红包
- * @method Collection miniapp(array $config) 小程序支付
- * @method Collection mp(array $config) 公众号支付
- * @method Collection pos(array $config) 刷卡支付
- * @method Collection redpack(array $config) 普通红包
- * @method Collection scan(array $config) 扫码支付
- * @method Collection transfer(array $config) 企业付款
- * @method RedirectResponse wap(array $config) H5 支付
+ * @method Response         app(array $config)          APP 支付
+ * @method Collection       groupRedpack(array $config) 分裂红包
+ * @method Collection       miniapp(array $config)      小程序支付
+ * @method Collection       mp(array $config)           公众号支付
+ * @method Collection       pos(array $config)          刷卡支付
+ * @method Collection       redpack(array $config)      普通红包
+ * @method Collection       scan(array $config)         扫码支付
+ * @method Collection       transfer(array $config)     企业付款
+ * @method RedirectResponse wap(array $config)          H5 支付
  */
 class Wechat implements GatewayApplicationInterface
 {
@@ -61,11 +61,11 @@ class Wechat implements GatewayApplicationInterface
      * Const url.
      */
     const URL = [
-        self::MODE_NORMAL  => 'https://api.mch.weixin.qq.com/',
-        self::MODE_DEV     => 'https://api.mch.weixin.qq.com/sandboxnew/',
-        self::MODE_HK      => 'https://apihk.mch.weixin.qq.com/',
+        self::MODE_NORMAL => 'https://api.mch.weixin.qq.com/',
+        self::MODE_DEV => 'https://api.mch.weixin.qq.com/sandboxnew/',
+        self::MODE_HK => 'https://apihk.mch.weixin.qq.com/',
         self::MODE_SERVICE => 'https://api.mch.weixin.qq.com/',
-        self::MODE_US      => 'https://apius.mch.weixin.qq.com/',
+        self::MODE_US => 'https://apius.mch.weixin.qq.com/',
     ];
 
     /**
@@ -95,19 +95,19 @@ class Wechat implements GatewayApplicationInterface
     {
         $this->gateway = Support::create($config)->getBaseUri();
         $this->payload = [
-            'appid'            => $config->get('app_id', ''),
-            'mch_id'           => $config->get('mch_id', ''),
-            'nonce_str'        => Str::random(),
-            'notify_url'       => $config->get('notify_url', ''),
-            'sign'             => '',
-            'trade_type'       => '',
+            'appid' => $config->get('app_id', ''),
+            'mch_id' => $config->get('mch_id', ''),
+            'nonce_str' => Str::random(),
+            'notify_url' => $config->get('notify_url', ''),
+            'sign' => '',
+            'trade_type' => '',
             'spbill_create_ip' => Request::createFromGlobals()->getClientIp(),
         ];
 
         if ($config->get('mode', self::MODE_NORMAL) === static::MODE_SERVICE) {
             $this->payload = array_merge($this->payload, [
                 'sub_mch_id' => $config->get('sub_mch_id'),
-                'sub_appid'  => $config->get('sub_app_id', ''),
+                'sub_appid' => $config->get('sub_app_id', ''),
             ]);
         }
     }
@@ -208,7 +208,7 @@ class Wechat implements GatewayApplicationInterface
      */
     public function find($order, string $type = 'wap'): Collection
     {
-        if ($type != 'wap') {
+        if ('wap' != $type) {
             unset($this->payload['spbill_create_ip']);
         }
 
@@ -378,7 +378,7 @@ class Wechat implements GatewayApplicationInterface
 
         if ($app instanceof GatewayInterface) {
             return $app->pay($this->gateway, array_filter($this->payload, function ($value) {
-                return $value !== '' && !is_null($value);
+                return '' !== $value && !is_null($value);
             }));
         }
 

@@ -18,13 +18,13 @@ use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 /**
- * @method Response app(array $config) APP 支付
- * @method Collection pos(array $config) 刷卡支付
- * @method Collection scan(array $config) 扫码支付
+ * @method Response   app(array $config)      APP 支付
+ * @method Collection pos(array $config)      刷卡支付
+ * @method Collection scan(array $config)     扫码支付
  * @method Collection transfer(array $config) 帐户转账
- * @method Response wap(array $config) 手机网站支付
- * @method Response web(array $config) 电脑支付
- * @method Collection mini(array $config) 小程序支付
+ * @method Response   wap(array $config)      手机网站支付
+ * @method Response   web(array $config)      电脑支付
+ * @method Collection mini(array $config)     小程序支付
  */
 class Alipay implements GatewayApplicationInterface
 {
@@ -43,7 +43,7 @@ class Alipay implements GatewayApplicationInterface
      */
     const URL = [
         self::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
-        self::MODE_DEV    => 'https://openapi.alipaydev.com/gateway.do?charset=utf-8',
+        self::MODE_DEV => 'https://openapi.alipaydev.com/gateway.do?charset=utf-8',
     ];
 
     /**
@@ -78,17 +78,17 @@ class Alipay implements GatewayApplicationInterface
     {
         $this->gateway = Support::create($config)->getBaseUri();
         $this->payload = [
-            'app_id'         => $config->get('app_id'),
-            'method'         => '',
-            'format'         => 'JSON',
-            'charset'        => 'utf-8',
-            'sign_type'      => 'RSA2',
-            'version'        => '1.0',
-            'return_url'     => $config->get('return_url'),
-            'notify_url'     => $config->get('notify_url'),
-            'timestamp'      => date('Y-m-d H:i:s'),
-            'sign'           => '',
-            'biz_content'    => '',
+            'app_id' => $config->get('app_id'),
+            'method' => '',
+            'format' => 'JSON',
+            'charset' => 'utf-8',
+            'sign_type' => 'RSA2',
+            'version' => '1.0',
+            'return_url' => $config->get('return_url'),
+            'notify_url' => $config->get('notify_url'),
+            'timestamp' => date('Y-m-d H:i:s'),
+            'sign' => '',
+            'biz_content' => '',
             'app_auth_token' => $config->get('app_auth_token'),
         ];
     }
@@ -155,7 +155,7 @@ class Alipay implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param null|array $data
+     * @param array|null $data
      * @param bool       $refund
      *
      * @throws InvalidSignException
@@ -390,7 +390,7 @@ class Alipay implements GatewayApplicationInterface
 
         if ($app instanceof GatewayInterface) {
             return $app->pay($this->gateway, array_filter($this->payload, function ($value) {
-                return $value !== '' && !is_null($value);
+                return '' !== $value && !is_null($value);
             }));
         }
 

@@ -29,13 +29,13 @@ class KernelLogSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            Events\PayStarting::class     => ['writePayStartingLog', 256],
-            Events\PayStarted::class      => ['writePayStartedLog', 256],
-            Events\ApiRequesting::class   => ['writeApiRequestingLog', 256],
-            Events\ApiRequested::class    => ['writeApiRequestedLog', 256],
-            Events\SignFailed::class      => ['writeSignFailedLog', 256],
+            Events\PayStarting::class => ['writePayStartingLog', 256],
+            Events\PayStarted::class => ['writePayStartedLog', 256],
+            Events\ApiRequesting::class => ['writeApiRequestingLog', 256],
+            Events\ApiRequested::class => ['writeApiRequestedLog', 256],
+            Events\SignFailed::class => ['writeSignFailedLog', 256],
             Events\RequestReceived::class => ['writeRequestReceivedLog', 256],
-            Events\MethodCalled::class    => ['writeMethodCalledLog', 256],
+            Events\MethodCalled::class => ['writeMethodCalledLog', 256],
         ];
     }
 
@@ -45,8 +45,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param Events\PayStarting $event
-     *
-     * @return void
      */
     public function writePayStartingLog(Events\PayStarting $event)
     {
@@ -59,8 +57,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param Events\PayStarted $event
-     *
-     * @return void
      */
     public function writePayStartedLog(Events\PayStarted $event)
     {
@@ -76,8 +72,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param Events\ApiRequesting $event
-     *
-     * @return void
      */
     public function writeApiRequestingLog(Events\ApiRequesting $event)
     {
@@ -90,8 +84,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param Events\ApiRequested $event
-     *
-     * @return void
      */
     public function writeApiRequestedLog(Events\ApiRequested $event)
     {
@@ -104,8 +96,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param Events\SignFailed $event
-     *
-     * @return void
      */
     public function writeSignFailedLog(Events\SignFailed $event)
     {
@@ -118,8 +108,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param Events\RequestReceived $event
-     *
-     * @return void
      */
     public function writeRequestReceivedLog(Events\RequestReceived $event)
     {
@@ -132,8 +120,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param Events\MethodCalled $event
-     *
-     * @return void
      */
     public function writeMethodCalledLog(Events\MethodCalled $event)
     {

@@ -28,7 +28,7 @@ class MiniappGateway extends MpGateway
     {
         $payload['appid'] = Support::getInstance()->miniapp_id;
 
-        if ($this->mode === Wechat::MODE_SERVICE) {
+        if (Wechat::MODE_SERVICE === $this->mode) {
             $payload['sub_appid'] = Support::getInstance()->sub_miniapp_id;
             $this->payRequestUseSubAppId = true;
         }

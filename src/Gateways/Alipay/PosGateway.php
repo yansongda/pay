@@ -32,7 +32,7 @@ class PosGateway implements GatewayInterface
             json_decode($payload['biz_content'], true),
             [
                 'product_code' => 'FACE_TO_FACE_PAYMENT',
-                'scene'        => 'bar_code',
+                'scene' => 'bar_code',
             ]
         ));
         $payload['sign'] = Support::generateSign($payload);

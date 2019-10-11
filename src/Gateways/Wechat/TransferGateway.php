@@ -28,7 +28,7 @@ class TransferGateway extends Gateway
      */
     public function pay($endpoint, array $payload): Collection
     {
-        if ($this->mode === Wechat::MODE_SERVICE) {
+        if (Wechat::MODE_SERVICE === $this->mode) {
             unset($payload['sub_mch_id'], $payload['sub_appid']);
         }
 
@@ -37,7 +37,7 @@ class TransferGateway extends Gateway
         $payload['mch_appid'] = Support::getInstance()->getConfig($type, '');
         $payload['mchid'] = $payload['mch_id'];
 
-        if (php_sapi_name() !== 'cli' && !isset($payload['spbill_create_ip'])) {
+        if ('cli' !== php_sapi_name() && !isset($payload['spbill_create_ip'])) {
             $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
         }
 
@@ -68,8 +68,8 @@ class TransferGateway extends Gateway
     {
         return [
             'endpoint' => 'mmpaymkttransfers/gettransferinfo',
-            'order'    => is_array($order) ? $order : ['partner_trade_no' => $order],
-            'cert'     => true,
+            'order' => is_array($order) ? $order : ['partner_trade_no' => $order],
+            'cert' => true,
         ];
     }
 

@@ -52,7 +52,7 @@ class WebGateway implements GatewayInterface
     public function find($order): array
     {
         return [
-            'method'      => 'alipay.trade.query',
+            'method' => 'alipay.trade.query',
             'biz_content' => json_encode(is_array($order) ? $order : ['out_trade_no' => $order]),
         ];
     }
@@ -70,7 +70,7 @@ class WebGateway implements GatewayInterface
      */
     protected function buildPayHtml($endpoint, $payload, $method = 'POST'): Response
     {
-        if (strtoupper($method) === 'GET') {
+        if ('GET' === strtoupper($method)) {
             return RedirectResponse::create($endpoint.'&'.http_build_query($payload));
         }
 

@@ -36,7 +36,7 @@ class Exception extends \Exception
      */
     public function __construct($message = '', $raw = [], $code = self::UNKNOWN_ERROR)
     {
-        $message = $message === '' ? 'Unknown Error' : $message;
+        $message = '' === $message ? 'Unknown Error' : $message;
         $this->raw = is_array($raw) ? $raw : [$raw];
 
         parent::__construct($message, intval($code));

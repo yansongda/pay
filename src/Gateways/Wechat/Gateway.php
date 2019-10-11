@@ -55,8 +55,8 @@ abstract class Gateway implements GatewayInterface
     {
         return [
             'endpoint' => 'pay/orderquery',
-            'order'    => is_array($order) ? $order : ['out_trade_no' => $order],
-            'cert'     => false,
+            'order' => is_array($order) ? $order : ['out_trade_no' => $order],
+            'cert' => false,
         ];
     }
 

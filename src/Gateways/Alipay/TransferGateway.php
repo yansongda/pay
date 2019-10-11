@@ -51,7 +51,7 @@ class TransferGateway implements GatewayInterface
     public function find($order): array
     {
         return [
-            'method'      => 'alipay.fund.trans.order.query',
+            'method' => 'alipay.fund.trans.order.query',
             'biz_content' => json_encode(is_array($order) ? $order : ['out_biz_no' => $order]),
         ];
     }

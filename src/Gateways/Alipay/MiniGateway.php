@@ -25,7 +25,7 @@ class MiniGateway implements GatewayInterface
      * @throws InvalidConfigException
      * @throws InvalidSignException
      *
-     * @link https://docs.alipay.com/mini/introduce/pay
+     * @see https://docs.alipay.com/mini/introduce/pay
      *
      * @return Collection
      */

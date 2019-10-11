@@ -129,8 +129,6 @@ class Pay
      * Register event service.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return void
      */
     protected function registerEventService()
     {
