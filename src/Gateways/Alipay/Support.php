@@ -199,7 +199,9 @@ class Support
             throw new InvalidConfigException('Missing Alipay Config -- [ali_public_key]');
         }
 
-        if (Str::endsWith($publicKey, '.pem')) {
+        if (Str::endsWith($publicKey, '.crt')) {
+            $publicKey = file_get_contents($publicKey);
+        } elseif (Str::endsWith($publicKey, '.pem')) {
             $publicKey = openssl_pkey_get_public(
                 Str::startsWith($publicKey, 'file://') ? $publicKey : 'file://'.$publicKey
             );
@@ -352,5 +354,100 @@ class Support
         }
 
         return $this;
+    }
+
+    /**
+     * 生成应用证书SN
+     * 
+     * @author 大冰 https://sbing.vip/archives/2019-new-alipay-php-docking.html
+     * 
+     * @param $certPath
+     * @return string
+     * @throws /Exception
+     */
+    public static function getCertSN($certPath): string
+    {
+        if (!is_file($certPath)) {
+            throw new \Exception('unknown certPath -- [getCertSN]');
+        }
+        $x509data = file_get_contents($certPath);
+        if ($x509data === false) {
+            throw new \Exception('Alipay CertSN Error -- [getCertSN]');
+        }
+        openssl_x509_read($x509data);
+        $certdata = openssl_x509_parse($x509data);
+        if (empty($certdata)) {
+            throw new \Exception('Alipay openssl_x509_parse Error -- [getCertSN]');
+        }
+        $issuer_arr = [];
+        foreach ($certdata['issuer'] as $key => $val) {
+            $issuer_arr[] = $key . '=' . $val;
+        }
+        $issuer = implode(',', array_reverse($issuer_arr));
+        Log::debug('getCertSN:', [$certPath, $issuer, $certdata['serialNumber']]);
+        return md5($issuer . $certdata['serialNumber']);
+    }
+
+    /**
+     * 0x转高精度数字
+     * 
+     * @author 大冰 https://sbing.vip/archives/2019-new-alipay-php-docking.html
+     * 
+     * @param $hex
+     * @return int|string
+     */
+    private static function bchexdec($hex)
+    {
+        $dec = 0;
+        $len = strlen($hex);
+        for ($i = 1; $i <= $len; $i++) {
+            $dec = bcadd($dec, bcmul(strval(hexdec($hex[$i - 1])), bcpow('16', strval($len - $i))));
+        }
+        return $dec;
+    }
+
+    /**
+     * 生成支付宝根证书SN
+     * 
+     * @author 大冰 https://sbing.vip/archives/2019-new-alipay-php-docking.html
+     * 
+     * @param $certPath
+     * @return string
+     * @throws /Exception
+     */
+    public static function getRootCertSN($certPath)
+    {
+        if (!is_file($certPath)) {
+            throw new \Exception('unknown certPath -- [getRootCertSN]');
+        }
+        $x509data = file_get_contents($certPath);
+        if ($x509data === false) {
+            throw new \Exception('Alipay CertSN Error -- [getRootCertSN]');
+        }
+        $kCertificateEnd = "-----END CERTIFICATE-----";
+        $certStrList = explode($kCertificateEnd, $x509data);
+        $md5_arr = [];
+        foreach ($certStrList as $one) {
+            if (!empty(trim($one))) {
+                $_x509data = $one . $kCertificateEnd;
+                openssl_x509_read($_x509data);
+                $_certdata = openssl_x509_parse($_x509data);
+                if (in_array($_certdata['signatureTypeSN'], ['RSA-SHA256', 'RSA-SHA1'])) {
+                    $issuer_arr = [];
+                    foreach ($_certdata['issuer'] as $key => $val) {
+                        $issuer_arr[] = $key . '=' . $val;
+                    }
+                    $_issuer = implode(',', array_reverse($issuer_arr));
+                    if (strpos($_certdata['serialNumber'], '0x') === 0) {
+                        $serialNumber = self::bchexdec($_certdata['serialNumber']);
+                    } else {
+                        $serialNumber = $_certdata['serialNumber'];
+                    }
+                    $md5_arr[] = md5($_issuer . $serialNumber);
+                    Log::debug('getRootCertSN Sub:', [$certPath, $_issuer, $serialNumber]);
+                }
+            }
+        }
+        return implode('_', $md5_arr);
     }
 }
