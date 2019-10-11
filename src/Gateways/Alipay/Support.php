@@ -4,6 +4,7 @@ namespace Yansongda\Pay\Gateways\Alipay;
 
 use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Pay\Gateways\Alipay;
@@ -91,6 +92,24 @@ class Support
     {
         if (php_sapi_name() === 'cli' || !(self::$instance instanceof self)) {
             self::$instance = new self($config);
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * getInstance.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return Support
+     */
+    public static function getInstance()
+    {
+        if (is_null(self::$instance)) {
+            throw new InvalidArgumentException('You Should [Create] First Before Using');
         }
 
         return self::$instance;
