@@ -2,14 +2,15 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
-use Yansongda\Pay\Contracts\GatewayInterface;
+use Yansongda\Pay\Gateways\Alipay;
 use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\GatewayException;
+use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
 use Yansongda\Pay\Exceptions\InvalidSignException;
 use Yansongda\Supports\Collection;
 
-class ScanGateway implements GatewayInterface
+class ScanGateway extends Gateway
 {
     /**
      * Pay an order.
@@ -20,6 +21,7 @@ class ScanGateway implements GatewayInterface
      * @param array  $payload
      *
      * @throws GatewayException
+     * @throws InvalidArgumentException
      * @throws InvalidConfigException
      * @throws InvalidSignException
      *
@@ -28,10 +30,11 @@ class ScanGateway implements GatewayInterface
     public function pay($endpoint, array $payload): Collection
     {
         $payload['method'] = 'alipay.trade.precreate';
-        $payload['biz_content'] = json_encode(array_merge(
-            json_decode($payload['biz_content'], true),
-            ['product_code' => '']
-        ));
+        $biz_array = json_decode($payload['biz_content'], true);
+        if (($this->mode === Alipay::MODE_SERVICE) && (!empty(Support::getInstance()->pid))) {
+            $biz_array['extend_params'] = is_array($biz_array['extend_params']) ? array_merge(['sys_service_provider_id' => Support::getInstance()->pid], $biz_array['extend_params']) : ['sys_service_provider_id' => Support::getInstance()->pid];
+        }
+        $payload['biz_content'] = json_encode(array_merge($biz_array, ['product_code' => '']));
         $payload['sign'] = Support::generateSign($payload);
 
         Events::dispatch(new Events\PayStarted('Alipay', 'Scan', $endpoint, $payload));
