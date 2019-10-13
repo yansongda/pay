@@ -39,6 +39,11 @@ class Alipay implements GatewayApplicationInterface
     const MODE_DEV = 'dev';
 
     /**
+     * Const mode_service.
+     */
+    const MODE_SERVICE = 'service';
+
+    /**
      * Const url.
      */
     const URL = [
