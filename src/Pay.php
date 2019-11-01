@@ -40,7 +40,7 @@ class Pay extends Container
      *
      * @var array
      */
-    protected $c = [];
+    protected $userConfig = [];
 
     /**
      * service.
@@ -50,27 +50,6 @@ class Pay extends Container
     protected $service = [
         AlipayServiceProvider::class,
         WechatServiceProvider::class,
-    ];
-
-    /**
-     * baseConfig.
-     *
-     * @var array
-     */
-    private $baseConfig = [
-        'log' => [
-            'enable' => true,
-            'file' => null,
-            'identify' => 'yansongda.pay',
-            'level' => 'debug',
-            'type' => 'daily',
-            'max_files' => 30,
-        ],
-        'http' => [
-            'timeout' => 5.0,
-            'connect_timeout' => 3.0,
-        ],
-        'mode' => 'normal',
     ];
 
     /**
@@ -94,7 +73,7 @@ class Pay extends Container
      */
     public function __construct(array $c, array $value = [])
     {
-        $this->c = $c;
+        $this->userConfig = $c;
 
         parent::__construct($value);
 
@@ -209,9 +188,9 @@ class Pay extends Container
      *
      * @return array
      */
-    public function getConfig(): array
+    public function getUserConfig(): array
     {
-        return array_replace_recursive($this->baseConfig, $this->c);
+        return $this->userConfig;
     }
 
     /**

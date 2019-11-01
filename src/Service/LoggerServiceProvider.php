@@ -50,16 +50,7 @@ class LoggerServiceProvider implements ServiceProviderInterface
                 }
             };
 
-            $config = ['identify' => 'yansongda.pay'];
-
-            if (isset($container['config']['log'])) {
-                $config = array_merge(
-                    $container['config']['log'],
-                    $config
-                );
-            }
-
-            $logger->setConfig($config);
+            $logger->setConfig($container['config']['log']);
 
             return $logger;
         };
