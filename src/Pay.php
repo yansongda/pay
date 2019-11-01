@@ -42,6 +42,8 @@ class Pay extends Container
      */
     protected $userConfig = [];
 
+    protected $middleware = [];
+
     /**
      * service.
      *
