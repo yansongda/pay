@@ -256,7 +256,7 @@ class Support
 
         $stringToBeSigned = '';
         foreach ($data as $k => $v) {
-            if ($verify && 'sign' != $k && 'sign_type' != $k) {
+            if ($verify && $k != 'sign' && $k != 'sign_type' && $k != 's') {
                 $stringToBeSigned .= $k.'='.$v.'&';
             }
             if (!$verify && '' !== $v && !is_null($v) && 'sign' != $k && '@' != substr($v, 0, 1)) {
