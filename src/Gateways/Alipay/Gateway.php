@@ -33,9 +33,23 @@ abstract class Gateway implements GatewayInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array  $payload
      *
      * @return Collection
      */
     abstract public function pay($endpoint, array $payload);
+
+    /**
+     * Find.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param $order
+     */
+    public function find($order): array
+    {
+        return [
+            'method' => 'alipay.trade.query',
+            'biz_content' => json_encode(is_array($order) ? $order : ['out_trade_no' => $order]),
+        ];
+    }
 }
