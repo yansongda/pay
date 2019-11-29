@@ -25,6 +25,7 @@ class ScanGateway extends Gateway
      * @throws InvalidConfigException
      * @throws InvalidSignException
      * 
+     * 
      * @return Collection
      */
     public function pay($endpoint, array $payload): Collection
