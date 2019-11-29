@@ -33,6 +33,7 @@ abstract class Gateway implements GatewayInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
+     * @param array  $payload
      *
      * @return Collection
      */
