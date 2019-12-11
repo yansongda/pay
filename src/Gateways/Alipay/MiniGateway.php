@@ -36,7 +36,7 @@ class MiniGateway extends Gateway
             throw new InvalidArgumentException('buyer_id required');
         }
         if ((Alipay::MODE_SERVICE === $this->mode) && Support::getInstance()->pid) {
-            $biz_array['extend_params'] = is_array($biz_array['extend_params']) ? array_merge(['sys_service_provider_id' => Support::getInstance()->pid], $biz_array['extend_params']) : ['sys_service_provider_id' => Support::getInstance()->pid];
+            $biz_array['extend_params'] = isset($biz_array['extend_params']) && is_array($biz_array['extend_params']) ? array_merge(['sys_service_provider_id' => Support::getInstance()->pid], $biz_array['extend_params']) : ['sys_service_provider_id' => Support::getInstance()->pid];
         }
         $payload['biz_content'] = json_encode($biz_array);
         $payload['method'] = 'alipay.trade.create';
