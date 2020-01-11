@@ -76,6 +76,8 @@ class Alipay implements GatewayApplicationInterface
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Exception
      */
     public function __construct(Config $config)
     {
