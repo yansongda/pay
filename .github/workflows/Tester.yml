@@ -9,13 +9,16 @@ jobs:
       fail-fast: false
       matrix:
         php:
-          - 7.1
           - 7.2
+          - 7.3
     container:
       image: yansongda/php-fpm:${{ matrix.php }}
     steps:
-      - uses: actions/checkout@master
+      - name: Install Git
+        run: apt update && apt install -y git
+      - name: Checkout Code
+        uses: actions/checkout@master
       - name: Install Dependencies
-        run: composer update --prefer-dist --no-interaction --no-suggest
+        run: composer install --no-progress
       - name: Run PHPUnit
         run: ./vendor/bin/phpunit
