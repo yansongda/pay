@@ -66,8 +66,6 @@ class Events
      * setDispatcher.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param EventDispatcher $dispatcher
      */
     public static function setDispatcher(EventDispatcher $dispatcher)
     {
@@ -78,8 +76,6 @@ class Events
      * getDispatcher.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return EventDispatcher
      */
     public static function getDispatcher(): EventDispatcher
     {
@@ -94,8 +90,6 @@ class Events
      * createDispatcher.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return EventDispatcher
      */
     public static function createDispatcher(): EventDispatcher
     {

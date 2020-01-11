@@ -18,14 +18,11 @@ class PosGateway extends Gateway
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array  $payload
      *
      * @throws InvalidArgumentException
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     public function pay($endpoint, array $payload): Collection
     {

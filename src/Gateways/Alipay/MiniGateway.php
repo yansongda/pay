@@ -18,7 +18,6 @@ class MiniGateway extends Gateway
      * @author xiaozan <i@xiaozan.me>
      *
      * @param string $endpoint
-     * @param array  $payload
      *
      * @throws GatewayException
      * @throws InvalidArgumentException
@@ -26,8 +25,6 @@ class MiniGateway extends Gateway
      * @throws InvalidSignException
      *
      * @see https://docs.alipay.com/mini/introduce/pay
-     *
-     * @return Collection
      */
     public function pay($endpoint, array $payload): Collection
     {

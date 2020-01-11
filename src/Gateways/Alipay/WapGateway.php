@@ -8,8 +8,6 @@ class WapGateway extends WebGateway
      * Get method config.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return string
      */
     protected function getMethod(): string
     {
@@ -20,8 +18,6 @@ class WapGateway extends WebGateway
      * Get productCode config.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return string
      */
     protected function getProductCode(): string
     {

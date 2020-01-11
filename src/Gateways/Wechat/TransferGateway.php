@@ -18,13 +18,10 @@ class TransferGateway extends Gateway
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array  $payload
      *
      * @throws GatewayException
      * @throws InvalidArgumentException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     public function pay($endpoint, array $payload): Collection
     {
@@ -61,8 +58,6 @@ class TransferGateway extends Gateway
      * @author yansongda <me@yansongda.cn>
      *
      * @param $order
-     *
-     * @return array
      */
     public function find($order): array
     {
@@ -77,8 +72,6 @@ class TransferGateway extends Gateway
      * Get trade type config.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return string
      */
     protected function getTradeType(): string
     {

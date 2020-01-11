@@ -16,13 +16,10 @@ class WapGateway extends Gateway
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array  $payload
      *
      * @throws GatewayException
      * @throws InvalidArgumentException
      * @throws InvalidSignException
-     *
-     * @return RedirectResponse
      */
     public function pay($endpoint, array $payload): RedirectResponse
     {
@@ -42,8 +39,6 @@ class WapGateway extends Gateway
      * Get trade type config.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return string
      */
     protected function getTradeType(): string
     {

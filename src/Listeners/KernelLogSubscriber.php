@@ -43,8 +43,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * writePayStartingLog.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param Events\PayStarting $event
      */
     public function writePayStartingLog(Events\PayStarting $event)
     {
@@ -55,8 +53,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * writePayStartedLog.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param Events\PayStarted $event
      */
     public function writePayStartedLog(Events\PayStarted $event)
     {
@@ -70,8 +66,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * writeApiRequestingLog.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param Events\ApiRequesting $event
      */
     public function writeApiRequestingLog(Events\ApiRequesting $event)
     {
@@ -82,8 +76,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * writeApiRequestedLog.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param Events\ApiRequested $event
      */
     public function writeApiRequestedLog(Events\ApiRequested $event)
     {
@@ -94,8 +86,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * writeSignFailedLog.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param Events\SignFailed $event
      */
     public function writeSignFailedLog(Events\SignFailed $event)
     {
@@ -106,8 +96,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * writeRequestReceivedLog.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param Events\RequestReceived $event
      */
     public function writeRequestReceivedLog(Events\RequestReceived $event)
     {
@@ -118,8 +106,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      * writeMethodCalledLog.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param Events\MethodCalled $event
      */
     public function writeMethodCalledLog(Events\MethodCalled $event)
     {

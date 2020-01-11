@@ -17,13 +17,10 @@ class TransferGateway implements GatewayInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array  $payload
      *
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     public function pay($endpoint, array $payload): Collection
     {
@@ -45,8 +42,6 @@ class TransferGateway implements GatewayInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param $order
-     *
-     * @return array
      */
     public function find($order): array
     {

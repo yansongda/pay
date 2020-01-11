@@ -55,8 +55,6 @@ class Support
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param Config $config
      */
     private function __construct(Config $config)
     {
@@ -84,8 +82,6 @@ class Support
      * create.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param Config $config
      *
      * @return Support
      */
@@ -131,13 +127,9 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $data
-     *
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     public static function requestApi(array $data): Collection
     {
@@ -159,11 +151,7 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $params
-     *
      * @throws InvalidConfigException
-     *
-     * @return string
      */
     public static function generateSign(array $params): string
     {
@@ -201,13 +189,10 @@ class Support
      *
      * @author yansongda <me@yansonga.cn>
      *
-     * @param array       $data
      * @param bool        $sync
      * @param string|null $sign
      *
      * @throws InvalidConfigException
-     *
-     * @return bool
      */
     public static function verifySign(array $data, $sync = false, $sign = null): bool
     {
@@ -247,10 +232,7 @@ class Support
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $data
-     * @param bool  $verify
-     *
-     * @return string
+     * @param bool $verify
      */
     public static function getSignContent(array $data, $verify = false): string
     {
@@ -279,8 +261,6 @@ class Support
      * @param string|array $data
      * @param string       $to
      * @param string       $from
-     *
-     * @return array
      */
     public static function encoding($data, $to = 'utf-8', $from = 'gb2312'): array
     {
@@ -323,6 +303,87 @@ class Support
     }
 
     /**
+     * 生成应用证书SN.
+     *
+     * @author 大冰 https://sbing.vip/archives/2019-new-alipay-php-docking.html
+     *
+     * @param $certPath
+     *
+     * @throws /Exception
+     */
+    public static function getCertSN($certPath): string
+    {
+        if (!is_file($certPath)) {
+            throw new \Exception('unknown certPath -- [getCertSN]');
+        }
+        $x509data = file_get_contents($certPath);
+        if (false === $x509data) {
+            throw new \Exception('Alipay CertSN Error -- [getCertSN]');
+        }
+        openssl_x509_read($x509data);
+        $certdata = openssl_x509_parse($x509data);
+        if (empty($certdata)) {
+            throw new \Exception('Alipay openssl_x509_parse Error -- [getCertSN]');
+        }
+        $issuer_arr = [];
+        foreach ($certdata['issuer'] as $key => $val) {
+            $issuer_arr[] = $key.'='.$val;
+        }
+        $issuer = implode(',', array_reverse($issuer_arr));
+        Log::debug('getCertSN:', [$certPath, $issuer, $certdata['serialNumber']]);
+
+        return md5($issuer.$certdata['serialNumber']);
+    }
+
+    /**
+     * 生成支付宝根证书SN.
+     *
+     * @author 大冰 https://sbing.vip/archives/2019-new-alipay-php-docking.html
+     *
+     * @param $certPath
+     *
+     * @return string
+     *
+     * @throws /Exception
+     */
+    public static function getRootCertSN($certPath)
+    {
+        if (!is_file($certPath)) {
+            throw new \Exception('unknown certPath -- [getRootCertSN]');
+        }
+        $x509data = file_get_contents($certPath);
+        if (false === $x509data) {
+            throw new \Exception('Alipay CertSN Error -- [getRootCertSN]');
+        }
+        $kCertificateEnd = '-----END CERTIFICATE-----';
+        $certStrList = explode($kCertificateEnd, $x509data);
+        $md5_arr = [];
+        foreach ($certStrList as $one) {
+            if (!empty(trim($one))) {
+                $_x509data = $one.$kCertificateEnd;
+                openssl_x509_read($_x509data);
+                $_certdata = openssl_x509_parse($_x509data);
+                if (in_array($_certdata['signatureTypeSN'], ['RSA-SHA256', 'RSA-SHA1'])) {
+                    $issuer_arr = [];
+                    foreach ($_certdata['issuer'] as $key => $val) {
+                        $issuer_arr[] = $key.'='.$val;
+                    }
+                    $_issuer = implode(',', array_reverse($issuer_arr));
+                    if (0 === strpos($_certdata['serialNumber'], '0x')) {
+                        $serialNumber = self::bchexdec($_certdata['serialNumber']);
+                    } else {
+                        $serialNumber = $_certdata['serialNumber'];
+                    }
+                    $md5_arr[] = md5($_issuer.$serialNumber);
+                    Log::debug('getRootCertSN Sub:', [$certPath, $_issuer, $serialNumber]);
+                }
+            }
+        }
+
+        return implode('_', $md5_arr);
+    }
+
+    /**
      * processingApiResult.
      *
      * @author yansongda <me@yansongda.cn>
@@ -333,19 +394,13 @@ class Support
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     protected static function processingApiResult($data, $result): Collection
     {
         $method = str_replace('.', '_', $data['method']).'_response';
 
         if (!isset($result['sign']) || '10000' != $result[$method]['code']) {
-            throw new GatewayException(
-                'Get Alipay API Error:'.$result[$method]['msg'].
-                    (isset($result[$method]['sub_code']) ? (' - '.$result[$method]['sub_code']) : ''),
-                $result
-            );
+            throw new GatewayException('Get Alipay API Error:'.$result[$method]['msg'].(isset($result[$method]['sub_code']) ? (' - '.$result[$method]['sub_code']) : ''), $result);
         }
 
         if (self::verifySign($result[$method], true, $result['sign'])) {
@@ -361,8 +416,6 @@ class Support
      * Set Http options.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return self
      */
     protected function setHttpOptions(): self
     {
@@ -375,99 +428,24 @@ class Support
     }
 
     /**
-     * 生成应用证书SN
-     * 
+     * 0x转高精度数字.
+     *
      * @author 大冰 https://sbing.vip/archives/2019-new-alipay-php-docking.html
-     * 
-     * @param $certPath
-     * @return string
-     * @throws /Exception
-     */
-    public static function getCertSN($certPath): string
-    {
-        if (!is_file($certPath)) {
-            throw new \Exception('unknown certPath -- [getCertSN]');
-        }
-        $x509data = file_get_contents($certPath);
-        if ($x509data === false) {
-            throw new \Exception('Alipay CertSN Error -- [getCertSN]');
-        }
-        openssl_x509_read($x509data);
-        $certdata = openssl_x509_parse($x509data);
-        if (empty($certdata)) {
-            throw new \Exception('Alipay openssl_x509_parse Error -- [getCertSN]');
-        }
-        $issuer_arr = [];
-        foreach ($certdata['issuer'] as $key => $val) {
-            $issuer_arr[] = $key . '=' . $val;
-        }
-        $issuer = implode(',', array_reverse($issuer_arr));
-        Log::debug('getCertSN:', [$certPath, $issuer, $certdata['serialNumber']]);
-        return md5($issuer . $certdata['serialNumber']);
-    }
-
-    /**
-     * 0x转高精度数字
-     * 
-     * @author 大冰 https://sbing.vip/archives/2019-new-alipay-php-docking.html
-     * 
+     *
      * @param $hex
+     *
      * @return int|string
      */
     private static function bchexdec($hex)
     {
         $dec = 0;
         $len = strlen($hex);
-        for ($i = 1; $i <= $len; $i++) {
+        for ($i = 1; $i <= $len; ++$i) {
             if (ctype_xdigit($hex[$i - 1])) {
                 $dec = bcadd($dec, bcmul(strval(hexdec($hex[$i - 1])), bcpow('16', strval($len - $i))));
             }
         }
-        return $dec;
-    }
 
-    /**
-     * 生成支付宝根证书SN
-     * 
-     * @author 大冰 https://sbing.vip/archives/2019-new-alipay-php-docking.html
-     * 
-     * @param $certPath
-     * @return string
-     * @throws /Exception
-     */
-    public static function getRootCertSN($certPath)
-    {
-        if (!is_file($certPath)) {
-            throw new \Exception('unknown certPath -- [getRootCertSN]');
-        }
-        $x509data = file_get_contents($certPath);
-        if ($x509data === false) {
-            throw new \Exception('Alipay CertSN Error -- [getRootCertSN]');
-        }
-        $kCertificateEnd = "-----END CERTIFICATE-----";
-        $certStrList = explode($kCertificateEnd, $x509data);
-        $md5_arr = [];
-        foreach ($certStrList as $one) {
-            if (!empty(trim($one))) {
-                $_x509data = $one . $kCertificateEnd;
-                openssl_x509_read($_x509data);
-                $_certdata = openssl_x509_parse($_x509data);
-                if (in_array($_certdata['signatureTypeSN'], ['RSA-SHA256', 'RSA-SHA1'])) {
-                    $issuer_arr = [];
-                    foreach ($_certdata['issuer'] as $key => $val) {
-                        $issuer_arr[] = $key . '=' . $val;
-                    }
-                    $_issuer = implode(',', array_reverse($issuer_arr));
-                    if (strpos($_certdata['serialNumber'], '0x') === 0) {
-                        $serialNumber = self::bchexdec($_certdata['serialNumber']);
-                    } else {
-                        $serialNumber = $_certdata['serialNumber'];
-                    }
-                    $md5_arr[] = md5($_issuer . $serialNumber);
-                    Log::debug('getRootCertSN Sub:', [$certPath, $_issuer, $serialNumber]);
-                }
-            }
-        }
-        return implode('_', $md5_arr);
+        return $dec;
     }
 }

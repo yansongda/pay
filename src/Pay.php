@@ -31,8 +31,6 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $config
-     *
      * @throws Exception
      */
     public function __construct(array $config)
@@ -53,8 +51,6 @@ class Pay
      *
      * @throws InvalidGatewayException
      * @throws Exception
-     *
-     * @return GatewayApplicationInterface
      */
     public static function __callStatic($method, $params): GatewayApplicationInterface
     {
@@ -71,8 +67,6 @@ class Pay
      * @param string $method
      *
      * @throws InvalidGatewayException
-     *
-     * @return GatewayApplicationInterface
      */
     protected function create($method): GatewayApplicationInterface
     {
@@ -93,8 +87,6 @@ class Pay
      * @param string $gateway
      *
      * @throws InvalidGatewayException
-     *
-     * @return GatewayApplicationInterface
      */
     protected function make($gateway): GatewayApplicationInterface
     {

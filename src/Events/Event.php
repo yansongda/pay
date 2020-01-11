@@ -31,9 +31,6 @@ class Event extends SymfonyEvent
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $driver
-     * @param string $gateway
      */
     public function __construct(string $driver, string $gateway)
     {

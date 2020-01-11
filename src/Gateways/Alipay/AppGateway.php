@@ -16,12 +16,9 @@ class AppGateway extends Gateway
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array  $payload
      *
      * @throws InvalidConfigException
      * @throws InvalidArgumentException
-     *
-     * @return Response
      */
     public function pay($endpoint, array $payload): Response
     {

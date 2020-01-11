@@ -76,8 +76,6 @@ class Alipay implements GatewayApplicationInterface
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param Config $config
      */
     public function __construct(Config $config)
     {
@@ -166,12 +164,9 @@ class Alipay implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param array|null $data
-     * @param bool       $refund
      *
      * @throws InvalidSignException
      * @throws InvalidConfigException
-     *
-     * @return Collection
      */
     public function verify($data = null, bool $refund = false): Collection
     {
@@ -202,13 +197,10 @@ class Alipay implements GatewayApplicationInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
-     * @param string       $type
      *
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     public function find($order, string $type = 'wap'): Collection
     {
@@ -234,13 +226,9 @@ class Alipay implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $order
-     *
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     public function refund(array $order): Collection
     {
@@ -263,8 +251,6 @@ class Alipay implements GatewayApplicationInterface
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     public function cancel($order): Collection
     {
@@ -287,8 +273,6 @@ class Alipay implements GatewayApplicationInterface
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     public function close($order): Collection
     {
@@ -311,8 +295,6 @@ class Alipay implements GatewayApplicationInterface
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     *
-     * @return string
      */
     public function download($bill): string
     {
@@ -331,8 +313,6 @@ class Alipay implements GatewayApplicationInterface
      * Reply success to alipay.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return Response
      */
     public function success(): Response
     {
@@ -346,16 +326,10 @@ class Alipay implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string   $method
-     * @param callable $function
-     * @param bool     $now
-     *
      * @throws GatewayException
      * @throws InvalidConfigException
      * @throws InvalidSignException
      * @throws InvalidArgumentException
-     *
-     * @return Collection|null
      */
     public function extend(string $method, callable $function, bool $now = true): ?Collection
     {
@@ -388,8 +362,6 @@ class Alipay implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $gateway
-     *
      * @throws InvalidGatewayException
      *
      * @return Response|Collection
@@ -412,15 +384,10 @@ class Alipay implements GatewayApplicationInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $method
-     * @param array  $params
-     *
      * @throws GatewayException
      * @throws InvalidArgumentException
      * @throws InvalidConfigException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     protected function makeExtend(string $method, array ...$params): Collection
     {

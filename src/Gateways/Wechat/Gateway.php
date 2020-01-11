@@ -36,7 +36,6 @@ abstract class Gateway implements GatewayInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string $endpoint
-     * @param array  $payload
      *
      * @return Collection
      */
@@ -48,8 +47,6 @@ abstract class Gateway implements GatewayInterface
      * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
-     *
-     * @return array
      */
     public function find($order): array
     {
@@ -79,8 +76,6 @@ abstract class Gateway implements GatewayInterface
      * @throws GatewayException
      * @throws InvalidArgumentException
      * @throws InvalidSignException
-     *
-     * @return Collection
      */
     protected function preOrder($payload): Collection
     {

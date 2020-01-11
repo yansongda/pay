@@ -20,11 +20,6 @@ class ApiRequested extends Event
 
     /**
      * Bootstrap.
-     *
-     * @param string $driver
-     * @param string $gateway
-     * @param string $endpoint
-     * @param array  $result
      */
     public function __construct(string $driver, string $gateway, string $endpoint, array $result)
     {

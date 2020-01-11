@@ -10,8 +10,6 @@ class RefundGateway
      * @author yansongda <me@yansongda.cn>
      *
      * @param $order
-     *
-     * @return array
      */
     public function find($order): array
     {
