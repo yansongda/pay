@@ -20,7 +20,7 @@ class PayTest extends TestCase
             'identify' => 'yansongda.pay',
             'level' => 'debug',
             'type' => 'daily',
-            'max_files' => 30
+            'max_files' => 30,
         ],
         'http' => [
             'timeout' => 5.0,
@@ -113,16 +113,17 @@ class PayTest extends TestCase
     {
         $config = ['name' => 'yansongda'];
         $pay = new Pay($config);
-        $this->assertEquals(array_replace_recursive($this->baseConfig, $config), $pay->getConfig());
-        $this->assertArrayHasKey('name', $pay->getConfig());
+        $this->assertEquals($config, $pay->getUserConfig());
+        $this->assertEquals(array_replace_recursive($this->baseConfig, $config), $pay->config->all());
+        $this->assertArrayHasKey('name', $pay->config->all());
 
         $config1 = ['http' => ['timeout' => '3']];
         $pay1 = new Pay($config1);
-        $this->assertEquals(array_replace_recursive($this->baseConfig, $config1), $pay1->getConfig());
-        $this->assertArrayHasKey('http', $pay1->getConfig());
-        $this->assertArrayNotHasKey('name', $pay1->getConfig());
-        $this->assertEquals('3', $pay1->getConfig()['http']['timeout']);
-        $this->assertArrayHasKey('connect_timeout', $pay1->getConfig()['http']);
-        $this->assertEquals('3', $pay1->getConfig()['http']['connect_timeout']);
+        $this->assertEquals(array_replace_recursive($this->baseConfig, $config1), $pay1->config->all());
+        $this->assertArrayHasKey('http', $pay1->config->all());
+        $this->assertArrayNotHasKey('name', $pay1->config->all());
+        $this->assertEquals('3', $pay1->config->all()['http']['timeout']);
+        $this->assertArrayHasKey('connect_timeout', $pay1->config->all()['http']);
+        $this->assertEquals('3', $pay1->config->all()['http']['connect_timeout']);
     }
 }
