@@ -9,10 +9,9 @@ class UnknownServiceException extends ServiceException
     /**
      * Bootstrap.
      *
-     * @param string          $message
-     * @param int             $code
-     * @param array           $raw
-     * @param \Throwable|null $previous
+     * @param string $message
+     * @param int    $code
+     * @param array  $raw
      */
     public function __construct($message = 'Unknown Service Exception!', $code = self::UNKNOWN_SERVICE, $raw = [], Throwable $previous = null)
     {

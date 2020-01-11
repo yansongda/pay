@@ -70,8 +70,7 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $c     customer config
-     * @param array $value
+     * @param array $c customer config
      */
     public function __construct(array $c, array $value = [])
     {
@@ -87,8 +86,7 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @throws \Yansongda\Pay\Exception\FrozenServiceException
      */
@@ -102,12 +100,8 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $key
-     *
      * @throws \Yansongda\Pay\Exception\ServiceException
      * @throws \Yansongda\Pay\Exception\UnknownServiceException
-     *
-     * @return ServiceInterface
      */
     public function __get(string $key): ServiceInterface
     {
@@ -125,8 +119,6 @@ class Pay extends Container
      * @throws \Yansongda\Pay\Exception\ServiceException
      * @throws \Yansongda\Pay\Exception\ServiceProviderException
      * @throws \Yansongda\Pay\Exception\UnknownServiceException
-     *
-     * @return ServiceInterface
      */
     public static function __callStatic($method, $params): ServiceInterface
     {
@@ -142,12 +134,8 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $key
-     *
      * @throws \Yansongda\Pay\Exception\ServiceException
      * @throws \Yansongda\Pay\Exception\UnknownServiceException
-     *
-     * @return ServiceInterface
      */
     public function get(string $key): ServiceInterface
     {
@@ -169,8 +157,7 @@ class Pay extends Container
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @throws \Yansongda\Pay\Exception\FrozenServiceException
      */
@@ -187,8 +174,6 @@ class Pay extends Container
      * getConfig.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @return array
      */
     public function getUserConfig(): array
     {
@@ -199,8 +184,6 @@ class Pay extends Container
      * create.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $method
      *
      * @throws \Yansongda\Pay\Exception\ServiceProviderException
      */
@@ -223,8 +206,6 @@ class Pay extends Container
      * registerService.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param \Yansongda\Pay\Contract\ServiceProviderInterface|null $service
      */
     private function registerService(?ServiceProviderInterface $service = null): void
     {
@@ -243,8 +224,6 @@ class Pay extends Container
      * make.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $service
      *
      * @throws \Yansongda\Pay\Exception\ServiceProviderException
      */

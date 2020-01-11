@@ -9,10 +9,9 @@ class FrozenServiceException extends ServiceException
     /**
      * Bootstrap.
      *
-     * @param string          $message
-     * @param int             $code
-     * @param array           $raw
-     * @param \Throwable|null $previous
+     * @param string $message
+     * @param int    $code
+     * @param array  $raw
      */
     public function __construct($message = 'Frozen Service Exception!', $code = self::FROZEN_SERVICE, $raw = [], Throwable $previous = null)
     {

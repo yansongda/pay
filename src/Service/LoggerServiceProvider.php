@@ -32,8 +32,6 @@ class LoggerServiceProvider implements ServiceProviderInterface
 
                 /**
                  * Bootstrap.
-                 *
-                 * @param \Yansongda\Pay\Pay $container
                  */
                 public function __construct(Pay $container)
                 {

@@ -27,10 +27,9 @@ class Exception extends \Exception
     /**
      * Bootstrap.
      *
-     * @param string          $message
-     * @param int             $code
-     * @param array|string    $raw
-     * @param \Throwable|null $previous
+     * @param string       $message
+     * @param int          $code
+     * @param array|string $raw
      */
     public function __construct($message = '', $code = self::UNKNOWN_ERROR, $raw = [], Throwable $previous = null)
     {

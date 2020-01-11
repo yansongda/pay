@@ -9,10 +9,9 @@ class ServiceException extends Exception
     /**
      * Bootstrap.
      *
-     * @param string          $message
-     * @param int             $code
-     * @param array           $raw
-     * @param \Throwable|null $previous
+     * @param string $message
+     * @param int    $code
+     * @param array  $raw
      */
     public function __construct($message = 'Service Exception', $code = self::SERVICE_EXCEPTION, $raw = [], Throwable $previous = null)
     {

@@ -13,10 +13,6 @@ class PayStarting extends Event
 
     /**
      * Bootstrap.
-     *
-     * @param string $driver
-     * @param string $gateway
-     * @param array  $params
      */
     public function __construct(string $driver, string $gateway, array $params)
     {

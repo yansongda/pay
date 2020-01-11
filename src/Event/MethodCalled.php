@@ -22,11 +22,6 @@ class MethodCalled extends Event
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param string $driver
-     * @param string $gateway
-     * @param string $endpoint
-     * @param array  $payload
      */
     public function __construct(string $driver, string $gateway, string $endpoint, array $payload = [])
     {
