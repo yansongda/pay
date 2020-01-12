@@ -2,9 +2,8 @@
 
 namespace Yansongda\Pay;
 
-use Pimple\Container;
-use Pimple\Exception\FrozenServiceException;
-use Pimple\Exception\UnknownIdentifierException;
+use DI\Container;
+use DI\ContainerBuilder;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Yansongda\Pay\Contract\ServiceInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
@@ -33,7 +32,7 @@ use Yansongda\Supports\Str;
  * @method static Logger log($config)
  * @method static EventDispatcher event($config)
  */
-class Pay extends Container
+class Pay
 {
     /**
      * config.
@@ -65,18 +64,21 @@ class Pay extends Container
         EventServiceProvider::class,
     ];
 
+    private $container;
+
     /**
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
      *
      * @param array $c customer config
+     *
+     * @throws \Exception
      */
     public function __construct(array $c, array $value = [])
     {
         $this->userConfig = $c;
-
-        parent::__construct($value);
+        $this->container = $this->getContainer();
 
         $this->registerService();
     }
@@ -236,5 +238,23 @@ class Pay extends Container
         }
 
         throw new ServiceProviderException("[{$service}] Must Be An Instance Of ServiceProviderInterface");
+    }
+
+    /**
+     * getContainer.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Exception
+     *
+     * @return \DI\Container
+     */
+    private function getContainer(): Container
+    {
+        $builder = new ContainerBuilder();
+
+        $builder->useAnnotations(true);
+
+        return $builder->build();
     }
 }

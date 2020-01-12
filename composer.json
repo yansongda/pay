@@ -19,10 +19,10 @@
         "ext-simplexml":"*",
         "ext-libxml": "*",
         "ext-json": "*",
+        "php-di/php-di": "^6.0",
         "yansongda/supports": "^2.0",
         "symfony/http-foundation": "^4.0",
-        "symfony/event-dispatcher": "^4.0",
-        "pimple/pimple": "^3.2"
+        "symfony/event-dispatcher": "^4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5",
