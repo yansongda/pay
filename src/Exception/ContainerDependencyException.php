@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Exception;
 
 use Throwable;
 
-class ServiceException extends Exception
+class ContainerDependencyException extends ContainerException
 {
     /**
      * Bootstrap.
@@ -13,12 +13,8 @@ class ServiceException extends Exception
      * @param array  $extra
      * @param int    $code
      */
-    public function __construct(
-        $message = 'Service Error',
-        $extra = [],
-        $code = self::SERVICE_EXCEPTION,
-        Throwable $previous = null
-    ) {
+    public function __construct($message = 'Dependency Resolve Error', $extra = [], $code = self::CONTAINER_DEPENDENCY_ERROR, Throwable $previous = null)
+    {
         parent::__construct($message, $extra, $code, $previous);
     }
 }

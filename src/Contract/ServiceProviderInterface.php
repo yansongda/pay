@@ -2,8 +2,12 @@
 
 namespace Yansongda\Pay\Contract;
 
-use Pimple\ServiceProviderInterface as BaseServiceProviderInterface;
-
-interface ServiceProviderInterface extends BaseServiceProviderInterface
+interface ServiceProviderInterface
 {
+    /**
+     * register the service.
+     *
+     * @author yansongda <me@yansongda.cn>
+     */
+    public function register(): void;
 }

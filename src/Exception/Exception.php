@@ -8,32 +8,35 @@ class Exception extends \Exception
 {
     const UNKNOWN_ERROR = 9999;
 
-    // Service
-    const SERVICE_EXCEPTION = 1000;
+    /**
+     * about container di.
+     */
+    const CONTAINER_ERROR = 1000;
 
-    const UNKNOWN_SERVICE = 1001;
+    const NOT_FOUND_CONTAINER = 1001;
 
-    const FROZEN_SERVICE = 1002;
+    const CONTAINER_DEPENDENCY_ERROR = 1002;
 
-    const GATEWAY_SERVICE = 1003;
+    /**
+     * about service.
+     */
+    const SERVICE_EXCEPTION = 2000;
 
     /**
      * raw.
      *
      * @var array
      */
-    public $raw = [];
+    public $extra = [];
 
     /**
      * Bootstrap.
      *
-     * @param string       $message
-     * @param int          $code
-     * @param array|string $raw
+     * @param array|string $extra
      */
-    public function __construct($message = '', $code = self::UNKNOWN_ERROR, $raw = [], Throwable $previous = null)
+    public function __construct($message = 'Unknown Error', $extra = [], $code = self::UNKNOWN_ERROR, Throwable $previous = null)
     {
-        $this->raw = is_array($raw) ? $raw : [$raw];
+        $this->extra = is_array($extra) ? $extra : [$extra];
 
         parent::__construct($message, $code, $previous);
     }

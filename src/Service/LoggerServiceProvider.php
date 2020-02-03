@@ -2,7 +2,6 @@
 
 namespace Yansongda\Pay\Service;
 
-use Pimple\Container;
 use Yansongda\Pay\Contract\ServiceInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
@@ -11,14 +10,9 @@ use Yansongda\Supports\Logger;
 class LoggerServiceProvider implements ServiceProviderInterface
 {
     /**
-     * Registers services on the given container.
-     *
-     * This method should only be used to configure services and parameters.
-     * It should not get services.
-     *
-     * @param Container $pimple A container instance
+     * {@inheritdoc}
      */
-    public function register(Container $pimple)
+    public function register(): void
     {
         $pimple['logger'] = $pimple['log'] = function ($container) {
             /* @var \Yansongda\Pay\Pay $container */

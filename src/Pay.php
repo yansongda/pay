@@ -4,43 +4,29 @@ namespace Yansongda\Pay;
 
 use DI\Container;
 use DI\ContainerBuilder;
-use Symfony\Component\EventDispatcher\EventDispatcher;
+use DI\DependencyException;
+use DI\NotFoundException;
+use Exception;
 use Yansongda\Pay\Contract\ServiceInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
+use Yansongda\Pay\Exception\ContainerDependencyException;
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceException;
-use Yansongda\Pay\Exception\ServiceProviderException;
-use Yansongda\Pay\Exception\UnknownServiceException;
 use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\ConfigServiceProvider;
 use Yansongda\Pay\Service\EventServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
-use Yansongda\Supports\Config;
-use Yansongda\Supports\Logger;
-use Yansongda\Supports\Str;
 
 /**
  * @author yansongda <me@yansongda.cn>
- *
- * @property \Yansongda\Supports\Logger logger
- * @property \Yansongda\Supports\Logger log
- * @property \Yansongda\Supports\Config config
- * @property \Symfony\Component\EventDispatcher\EventDispatcher event
- *
- * @method static Config config($config)
- * @method static Logger logger($config)
- * @method static Logger log($config)
- * @method static EventDispatcher event($config)
  */
 class Pay
 {
     /**
-     * config.
-     *
      * @var array
      */
-    protected $userConfig = [];
-
     protected $middleware = [];
 
     /**
@@ -64,50 +50,22 @@ class Pay
         EventServiceProvider::class,
     ];
 
-    private $container;
+    /**
+     * @var \DI\Container
+     */
+    private static $container;
 
     /**
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array $c customer config
-     *
-     * @throws \Exception
+     * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    public function __construct(array $c, array $value = [])
+    public function __construct(array $config)
     {
-        $this->userConfig = $c;
-        $this->container = $this->getContainer();
-
-        $this->registerService();
-    }
-
-    /**
-     * __set.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @param mixed $value
-     *
-     * @throws \Yansongda\Pay\Exception\FrozenServiceException
-     */
-    public function __set(string $key, $value): void
-    {
-        $this->set($key, $value);
-    }
-
-    /**
-     * __get.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @throws \Yansongda\Pay\Exception\ServiceException
-     * @throws \Yansongda\Pay\Exception\UnknownServiceException
-     */
-    public function __get(string $key): ServiceInterface
-    {
-        return $this->get($key);
+        $this->initContainer();
+        $this->registerService($config);
     }
 
     /**
@@ -115,20 +73,18 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param $method
-     * @param $params
-     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      * @throws \Yansongda\Pay\Exception\ServiceException
-     * @throws \Yansongda\Pay\Exception\ServiceProviderException
-     * @throws \Yansongda\Pay\Exception\UnknownServiceException
+     *
+     * @return \Yansongda\Pay\Contract\ServiceInterface
      */
-    public static function __callStatic($method, $params): ServiceInterface
+    public static function __callStatic(string $service, array $config): ServiceInterface
     {
-        $app = new static(...$params);
+        $pay = new self($config);
 
-        $app->create($method);
-
-        return $app->get($method);
+        return $pay->get($service);
     }
 
     /**
@@ -136,15 +92,19 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      * @throws \Yansongda\Pay\Exception\ServiceException
-     * @throws \Yansongda\Pay\Exception\UnknownServiceException
      */
     public function get(string $key): ServiceInterface
     {
         try {
-            $result = $this->offsetGet($key);
-        } catch (UnknownIdentifierException $e) {
-            throw new UnknownServiceException();
+            $result = self::getContainer()->get($key);
+        } catch (NotFoundException $e) {
+            throw new ContainerNotFoundException($e->getMessage());
+        } catch (DependencyException $e) {
+            throw new ContainerDependencyException($e->getMessage());
         }
 
         if ($result instanceof ServiceInterface) {
@@ -161,83 +121,11 @@ class Pay
      *
      * @param mixed $value
      *
-     * @throws \Yansongda\Pay\Exception\FrozenServiceException
+     * @throws \Yansongda\Pay\Exception\ContainerException
      */
     public function set(string $key, $value): void
     {
-        try {
-            $this->offsetSet($key, $value);
-        } catch (FrozenServiceException $e) {
-            throw new Exception\FrozenServiceException();
-        }
-    }
-
-    /**
-     * getConfig.
-     *
-     * @author yansongda <me@yansongda.cn>
-     */
-    public function getUserConfig(): array
-    {
-        return $this->userConfig;
-    }
-
-    /**
-     * create.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @throws \Yansongda\Pay\Exception\ServiceProviderException
-     */
-    protected function create(string $method): void
-    {
-        if (isset($this[$method])) {
-            return;
-        }
-
-        $service = __NAMESPACE__.'\\Service\\'.Str::studly($method).'Service';
-
-        if (class_exists($service)) {
-            self::make($service);
-        }
-
-        throw new ServiceProviderException("ServiceProvider [{$method}] Not Exists");
-    }
-
-    /**
-     * registerService.
-     *
-     * @author yansongda <me@yansongda.cn>
-     */
-    private function registerService(?ServiceProviderInterface $service = null): void
-    {
-        if (!is_null($service)) {
-            parent::register($service);
-
-            return;
-        }
-
-        foreach (array_merge($this->baseService, $this->service) as $service) {
-            parent::register(new $service());
-        }
-    }
-
-    /**
-     * make.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @throws \Yansongda\Pay\Exception\ServiceProviderException
-     */
-    private function make(string $service): void
-    {
-        $gatewayService = new $service($this);
-
-        if ($gatewayService instanceof ServiceProviderInterface) {
-            $this->registerService($gatewayService);
-        }
-
-        throw new ServiceProviderException("[{$service}] Must Be An Instance Of ServiceProviderInterface");
+        self::getContainer()->set($key, $value);
     }
 
     /**
@@ -245,16 +133,54 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @throws \Exception
-     *
-     * @return \DI\Container
+     * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    private function getContainer(): Container
+    public static function getContainer(): Container
     {
+        if (self::$container instanceof Container) {
+            return self::$container;
+        }
+
         $builder = new ContainerBuilder();
 
-        $builder->useAnnotations(true);
+        $builder->useAnnotations(false);
 
-        return $builder->build();
+        try {
+            self::$container = $builder->build();
+
+            return self::$container;
+        } catch (Exception $e) {
+            throw new ContainerException($e->getMessage());
+        }
+    }
+
+    /**
+     * setContainer.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     *
+     * @return void
+     */
+    private function initContainer()
+    {
+        self::getContainer();
+    }
+
+    /**
+     * registerService.
+     *
+     * @author yansongda <me@yansongda.cn>
+     */
+    private function registerService(array $config): void
+    {
+        foreach (array_merge($this->baseService, $this->service) as $service) {
+            $var = new $service();
+
+            if ($var instanceof ServiceProviderInterface) {
+                $var->register();
+            }
+        }
     }
 }
