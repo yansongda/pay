@@ -24,11 +24,7 @@ class TransferGateway implements GatewayInterface
      */
     public function pay($endpoint, array $payload): Collection
     {
-        $payload['method'] = 'alipay.fund.trans.toaccount.transfer';
-        $payload['biz_content'] = json_encode(array_merge(
-            json_decode($payload['biz_content'], true),
-            ['product_code' => '']
-        ));
+        $payload['method'] = 'alipay.fund.trans.uni.transfer';
         $payload['sign'] = Support::generateSign($payload);
 
         Events::dispatch(new Events\PayStarted('Alipay', 'Transfer', $endpoint, $payload));
