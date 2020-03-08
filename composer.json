@@ -21,8 +21,8 @@
         "ext-json": "*",
         "php-di/php-di": "^6.0",
         "yansongda/supports": "^2.0",
-        "symfony/http-foundation": "^4.0",
-        "symfony/event-dispatcher": "^4.0"
+        "symfony/http-foundation": "^4.0 || ^5.0",
+        "symfony/event-dispatcher": "^4.0 || ^5.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5",
