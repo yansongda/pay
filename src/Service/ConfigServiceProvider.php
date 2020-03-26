@@ -4,6 +4,7 @@ namespace Yansongda\Pay\Service;
 
 use Yansongda\Pay\Contract\ServiceInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
+use Yansongda\Pay\Pay;
 use Yansongda\Supports\Config;
 
 class ConfigServiceProvider implements ServiceProviderInterface
@@ -34,11 +35,13 @@ class ConfigServiceProvider implements ServiceProviderInterface
      * This method should only be used to configure services and parameters.
      * It should not get services.
      *
-     * @param Container $pimple A container instance
+     * @param Pay $pay A container instance
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    public function register(Container $pimple)
+    public function register(Pay $pay): void
     {
-        $pimple['config'] = function ($container) {
+        $config = function () use ($pay) {
             /* @var \Yansongda\Pay\Pay $container */
             $config = array_replace_recursive($this->baseConfig, $container->getUserConfig());
             $config['log']['identify'] = 'yansongda.pay';
@@ -46,5 +49,8 @@ class ConfigServiceProvider implements ServiceProviderInterface
             return new class($config) extends Config implements ServiceInterface {
             };
         };
+
+        $pay->set('config', $config);
+        $pay->set(Config::class, $config);
     }
 }

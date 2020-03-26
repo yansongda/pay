@@ -25,11 +25,6 @@ use Yansongda\Pay\Service\WechatServiceProvider;
 class Pay
 {
     /**
-     * @var array
-     */
-    protected $middleware = [];
-
-    /**
      * service.
      *
      * @var string[]
@@ -62,10 +57,10 @@ class Pay
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    public function __construct(array $config)
+    private function __construct(array $config)
     {
-        $this->initContainer();
-        $this->registerService($config);
+        $this->initContainer($config);
+        $this->registerService();
     }
 
     /**
@@ -97,7 +92,7 @@ class Pay
      * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      * @throws \Yansongda\Pay\Exception\ServiceException
      */
-    public function get(string $key): ServiceInterface
+    public static function get(string $key): ServiceInterface
     {
         try {
             $result = self::getContainer()->get($key);
@@ -123,7 +118,7 @@ class Pay
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    public function set(string $key, $value): void
+    public static function set(string $key, $value): void
     {
         self::getContainer()->set($key, $value);
     }
@@ -163,7 +158,7 @@ class Pay
      *
      * @return void
      */
-    private function initContainer()
+    private function initContainer(array $config)
     {
         self::getContainer();
     }
@@ -173,13 +168,13 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      */
-    private function registerService(array $config): void
+    private function registerService(): void
     {
         foreach (array_merge($this->baseService, $this->service) as $service) {
             $var = new $service();
 
             if ($var instanceof ServiceProviderInterface) {
-                $var->register();
+                $var->register($this);
             }
         }
     }

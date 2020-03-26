@@ -2,6 +2,8 @@
 
 namespace Yansongda\Pay\Contract;
 
+use Yansongda\Pay\Pay;
+
 interface ServiceProviderInterface
 {
     /**
@@ -9,5 +11,5 @@ interface ServiceProviderInterface
      *
      * @author yansongda <me@yansongda.cn>
      */
-    public function register(): void;
+    public function register(Pay $pay): void;
 }
