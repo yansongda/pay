@@ -2,9 +2,9 @@
 
 namespace Yansongda\Pay\Service;
 
-use Yansongda\Pay\Contract\ServiceInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
+use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
 
 class LoggerServiceProvider implements ServiceProviderInterface
@@ -12,39 +12,55 @@ class LoggerServiceProvider implements ServiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function register(): void
+    public function prepare(array $data): void
     {
-        $pimple['logger'] = $pimple['log'] = function ($container) {
-            /* @var \Yansongda\Pay\Pay $container */
-            $logger = new class($container) extends Logger implements ServiceInterface {
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     */
+    public function register(Pay $pay): void
+    {
+        $service = function () {
+            /* @var \Yansongda\Supports\Config $config */
+            $config = Pay::get('config');
+            $logger = new class($config) extends Logger {
                 /**
-                 * container.
-                 *
-                 * @var \Yansongda\Pay\Pay
+                 * @var \Yansongda\Supports\Config
                  */
-                protected $container;
+                private $conf;
 
                 /**
                  * Bootstrap.
                  */
-                public function __construct(Pay $container)
+                public function __construct(Config $config)
                 {
-                    $this->container = $container;
+                    $this->conf = $config;
                 }
 
-                public function __call($method, $args): bool
+                /**
+                 * __call.
+                 *
+                 * @author yansongda <me@yansongda.cn>
+                 */
+                public function __call($method, $args): void
                 {
-                    if (false === $this->container['config']->get('log.enable', false)) {
-                        return true;
+                    if (false === $this->conf->get('log.enable', false)) {
+                        return;
                     }
 
-                    return parent::__call($method, $args);
+                    parent::__call($method, $args);
                 }
             };
 
-            $logger->setConfig($container['config']['log']);
+            $logger->setConfig($config->get('log'));
 
             return $logger;
         };
+
+        $pay::set('logger', $service);
+        $pay::set('log', $service);
     }
 }

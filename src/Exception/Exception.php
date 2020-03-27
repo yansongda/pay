@@ -22,6 +22,8 @@ class Exception extends \Exception
      */
     const SERVICE_EXCEPTION = 2000;
 
+    const SERVICE_NOT_FOUND_EXCEPTION = 2001;
+
     /**
      * raw.
      *

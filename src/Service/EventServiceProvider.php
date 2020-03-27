@@ -2,31 +2,36 @@
 
 namespace Yansongda\Pay\Service;
 
-use Pimple\Container;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Yansongda\Pay\Contract\ServiceInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Listener\KernelLogSubscriber;
+use Yansongda\Pay\Pay;
 
 class EventServiceProvider implements ServiceProviderInterface
 {
     /**
-     * Registers services on the given container.
-     *
-     * This method should only be used to configure services and parameters.
-     * It should not get services.
-     *
-     * @param Container $pimple A container instance
+     * {@inheritdoc}
      */
-    public function register(Container $pimple)
+    public function prepare(array $data): void
     {
-        $pimple['event'] = function ($container) {
-            $event = new class() extends EventDispatcher implements ServiceInterface {
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     */
+    public function register(Pay $pay): void
+    {
+        $service = function () {
+            $event = new class() extends EventDispatcher {
             };
 
-            $event->addSubscriber(new KernelLogSubscriber($container));
+            $event->addSubscriber(new KernelLogSubscriber());
 
             return $event;
         };
+
+        $pay::set('event', $service);
     }
 }

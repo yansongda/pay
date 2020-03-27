@@ -9,10 +9,6 @@ class ContainerNotFoundException extends ContainerException implements NotFoundE
 {
     /**
      * Bootstrap.
-     *
-     * @param string $message
-     * @param array  $extra
-     * @param int    $code
      */
     public function __construct($message = 'Container Not Found', $extra = [], $code = self::NOT_FOUND_CONTAINER, Throwable $previous = null)
     {

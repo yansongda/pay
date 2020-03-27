@@ -15,18 +15,21 @@ use Yansongda\Pay\Pay;
 class KernelLogSubscriber implements EventSubscriberInterface
 {
     /**
-     * container.
-     *
-     * @var Pay
+     * @var \Yansongda\Pay\Contract\ServiceInterface|\Psr\Log\LoggerInterface
      */
-    protected $container;
+    protected $logger;
 
     /**
      * Bootstrap.
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws \Yansongda\Pay\Exception\ServiceException
      */
-    public function __construct(Pay $container)
+    public function __construct()
     {
-        $this->container = $container;
+        $this->logger = Pay::get('logger');
     }
 
     /**
@@ -67,7 +70,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writePayStartingLog(PayStarting $event)
     {
-        $this->container->logger->debug("Starting To {$event->driver}", [$event->gateway, $event->params]);
+        $this->logger->debug("Starting To {$event->driver}", [$event->gateway, $event->params]);
     }
 
     /**
@@ -77,7 +80,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writePayStartedLog(PayStarted $event)
     {
-        $this->container->logger->info(
+        $this->logger->info(
             "{$event->driver} {$event->gateway} Has Started",
             [$event->endpoint, $event->payload]
         );
@@ -90,7 +93,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeApiRequestingLog(ApiRequesting $event)
     {
-        $this->container->logger->debug("Requesting To {$event->driver} Api", [$event->endpoint, $event->payload]);
+        $this->logger->debug("Requesting To {$event->driver} Api", [$event->endpoint, $event->payload]);
     }
 
     /**
@@ -100,7 +103,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeApiRequestedLog(ApiRequested $event)
     {
-        $this->container->logger->debug("Result Of {$event->driver} Api", $event->result);
+        $this->logger->debug("Result Of {$event->driver} Api", $event->result);
     }
 
     /**
@@ -110,7 +113,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeSignFailedLog(SignFailed $event)
     {
-        $this->container->logger->warning("{$event->driver} Sign Verify FAILED", $event->data);
+        $this->logger->warning("{$event->driver} Sign Verify FAILED", $event->data);
     }
 
     /**
@@ -120,7 +123,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeRequestReceivedLog(RequestReceived $event)
     {
-        $this->container->logger->info("Received {$event->driver} Request", $event->data);
+        $this->logger->info("Received {$event->driver} Request", $event->data);
     }
 
     /**
@@ -130,6 +133,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeMethodCalledLog(MethodCalled $event)
     {
-        $this->container->logger->info("{$event->driver} {$event->gateway} Method Has Called", [$event->endpoint, $event->payload]);
+        $this->logger->info("{$event->driver} {$event->gateway} Method Has Called", [$event->endpoint, $event->payload]);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Yansongda\Pay\Tests;
 
+use Yansongda\Pay\Pay;
+
 class TestCase extends \PHPUnit\Framework\TestCase
 {
     public function setUp()
@@ -10,5 +12,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
     public function tearDown()
     {
+        Pay::clear();
     }
 }

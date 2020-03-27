@@ -7,31 +7,33 @@ use DI\ContainerBuilder;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use Yansongda\Pay\Contract\ServiceInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerDependencyException;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ContainerNotFoundException;
-use Yansongda\Pay\Exception\ServiceException;
-use Yansongda\Pay\Service\AlipayServiceProvider;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Service\ConfigServiceProvider;
 use Yansongda\Pay\Service\EventServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
-use Yansongda\Pay\Service\WechatServiceProvider;
 
-/**
- * @author yansongda <me@yansongda.cn>
- */
 class Pay
 {
+    /**
+     * production mode.
+     */
+    const MODE_PRODUCTION = 'production';
+
+    /**
+     * sandbox mode.
+     */
+    const MODE_SANDBOX = 'sandbox';
+
     /**
      * service.
      *
      * @var string[]
      */
     protected $service = [
-        AlipayServiceProvider::class,
-        WechatServiceProvider::class,
     ];
 
     /**
@@ -59,8 +61,8 @@ class Pay
      */
     private function __construct(array $config)
     {
-        $this->initContainer($config);
-        $this->registerService();
+        $this->initContainer();
+        $this->registerService($config);
     }
 
     /**
@@ -70,12 +72,11 @@ class Pay
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
-     * @throws \Yansongda\Pay\Exception\ServiceException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Pay\Contract\ServiceInterface
+     * @return mixed
      */
-    public static function __callStatic(string $service, array $config): ServiceInterface
+    public static function __callStatic(string $service, array $config)
     {
         $pay = new self($config);
 
@@ -89,32 +90,25 @@ class Pay
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
-     * @throws \Yansongda\Pay\Exception\ServiceException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return mixed
      */
-    public static function get(string $key): ServiceInterface
+    public static function get(string $key)
     {
         try {
-            $result = self::getContainer()->get($key);
+            return self::getContainer()->get($key);
         } catch (NotFoundException $e) {
-            throw new ContainerNotFoundException($e->getMessage());
+            throw new ServiceNotFoundException($e->getMessage());
         } catch (DependencyException $e) {
             throw new ContainerDependencyException($e->getMessage());
         }
-
-        if ($result instanceof ServiceInterface) {
-            return $result;
-        }
-
-        throw new ServiceException("Service [{$key}]'s Impl Must Be An Instance Of ServiceInterface");
     }
 
     /**
      * set.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @param mixed $value
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
@@ -130,37 +124,51 @@ class Pay
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    public static function getContainer(): Container
+    public static function getContainer(?array $forceInitConfig = null): Container
     {
         if (self::$container instanceof Container) {
             return self::$container;
         }
 
-        $builder = new ContainerBuilder();
-
-        $builder->useAnnotations(false);
-
-        try {
-            self::$container = $builder->build();
-
-            return self::$container;
-        } catch (Exception $e) {
-            throw new ContainerException($e->getMessage());
+        if (is_null($forceInitConfig)) {
+            throw new ContainerNotFoundException('You Must Init The Container First');
         }
+
+        new self($forceInitConfig);
+
+        return self::$container;
     }
 
     /**
-     * setContainer.
+     * clear.
+     *
+     * @author yansongda <me@yansongda.cn>
+     */
+    public static function clear(): void
+    {
+        self::$container = null;
+    }
+
+    /**
+     * initContainer.
      *
      * @author yansongda <me@yansongda.cn>
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
-     *
-     * @return void
      */
-    private function initContainer(array $config)
+    private function initContainer()
     {
-        self::getContainer();
+        $builder = new ContainerBuilder();
+        $builder->useAnnotations(false);
+
+        try {
+            self::$container = $builder->build();
+        } catch (Exception $e) {
+            throw new ContainerException($e->getMessage());
+        }
+
+        self::set('container', self::$container);
+        self::set('pay', $this);
     }
 
     /**
@@ -168,12 +176,13 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      */
-    private function registerService(): void
+    private function registerService(array $config): void
     {
         foreach (array_merge($this->baseService, $this->service) as $service) {
             $var = new $service();
 
             if ($var instanceof ServiceProviderInterface) {
+                $var->prepare($config);
                 $var->register($this);
             }
         }

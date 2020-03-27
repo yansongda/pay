@@ -2,128 +2,83 @@
 
 namespace Yansongda\Pay\Tests;
 
-use Pimple\Container;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Yansongda\Pay\Contract\ServiceInterface;
-use Yansongda\Pay\Exception\ServiceException;
-use Yansongda\Pay\Exception\UnknownServiceException;
+use DI\Container;
+use Psr\Log\LoggerInterface;
+use Yansongda\Pay\Exception\ContainerNotFoundException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
 
 class PayTest extends TestCase
 {
-    protected $baseConfig = [
-        'log' => [
-            'enable' => true,
-            'file' => null,
-            'identify' => 'yansongda.pay',
-            'level' => 'debug',
-            'type' => 'daily',
-            'max_files' => 30,
-        ],
-        'http' => [
-            'timeout' => 5.0,
-            'connect_timeout' => 3.0,
-        ],
-        'mode' => 'normal',
-    ];
-
-    public function testBootstrap()
+    public function testMagicCallNotFoundService()
     {
-        $pay = new Pay([]);
+        $this->expectException(ServiceNotFoundException::class);
 
-        $this->assertInstanceOf(Pay::class, $pay);
-        $this->assertInstanceOf(Container::class, $pay);
+        Pay::foo([]);
     }
 
-    public function testMagicSetAndSet()
+    public function testSetAndGet()
     {
-        $pay = new Pay([]);
+        $data = [
+            'name' => 'yansongda',
+            'age' => 26
+        ];
 
-        $test = new class implements ServiceInterface {
-            public $name = 'yansongda';
-            public $age = 26;
-        };
+        Pay::getContainer([]);
+        Pay::set('profile', $data);
 
-        $pay->test = $test;
-        $this->assertEquals($test, $pay->test);
-        $this->assertEquals(26, $pay->test->age);
-        $this->assertEquals('yansongda', $pay->test->name);
-
-        $pay->set('test2', $test);
-        $this->assertEquals($test, $pay->test2);
+        $this->assertEquals($data, Pay::get('profile'));
     }
 
-    public function testMagicGetAndGet()
+    public function testBase()
     {
         $config = [];
 
-        $pay = new Pay($config);
+        $container = Pay::container($config);
 
-        $this->assertInstanceOf(Config::class, $pay->config);
-        $this->assertInstanceOf(ServiceInterface::class, $pay->config);
-
-        $this->assertInstanceOf(Logger::class, $pay->logger);
-        $this->assertInstanceOf(Logger::class, $pay->log);
-        $this->assertInstanceOf(ServiceInterface::class, $pay->logger);
-        $this->assertInstanceOf(ServiceInterface::class, $pay->log);
-
-        $this->assertInstanceOf(EventDispatcher::class, $pay->event);
-        $this->assertInstanceOf(ServiceInterface::class, $pay->event);
-
-        // todo alipay && wechat
+        $this->assertInstanceOf(Container::class, $container);
+        $this->assertInstanceOf(Pay::class, Pay::get('pay'));
     }
 
-    public function testMagicGetAndGetForUnknownServiceException()
+    public function testConfig()
     {
-        $pay = new Pay([]);
+        $config = [
+            'name' => 'yansongda',
+            'age' => 26
+        ];
 
-        $this->expectException(UnknownServiceException::class);
-        $pay->get('foo');
+        $container = Pay::getContainer($config);
+
+        $this->assertInstanceOf(Container::class, $container);
+        $this->assertInstanceOf(Config::class, $container->get('config'));
+        $this->assertInstanceOf(Config::class, Pay::get('config'));
+        $this->assertEquals($config['name'], Pay::get('config')->get('name'));
     }
 
-    public function testMagicGetAndGetForServiceException()
-    {
-        $pay = new Pay([]);
-        $pay->set('foo', '1');
-
-        $this->expectException(ServiceException::class);
-        $pay->get('foo');
-    }
-
-    public function testStaticCall()
+    public function testLogger()
     {
         $config = [];
 
-        $this->assertInstanceOf(Config::class, Pay::config($config));
-        $this->assertInstanceOf(Logger::class, Pay::logger($config));
-        $this->assertInstanceOf(Logger::class, Pay::log($config));
-        $this->assertInstanceOf(EventDispatcher::class, Pay::event($config));
+        $container = Pay::container($config);
 
-        $this->assertInstanceOf(ServiceInterface::class, Pay::config($config));
-        $this->assertInstanceOf(ServiceInterface::class, Pay::logger($config));
-        $this->assertInstanceOf(ServiceInterface::class, Pay::log($config));
-        $this->assertInstanceOf(ServiceInterface::class, Pay::event($config));
-
-        // todo alipay && wechat
+        $this->assertInstanceOf(Logger::class, $container->get('logger'));
+        $this->assertInstanceOf(Logger::class, $container->get('log'));
+        $this->assertInstanceOf(\Monolog\Logger::class, $container->get('logger')->getLogger());
+        $this->assertInstanceOf(LoggerInterface::class, $container->get('logger')->getLogger());
     }
 
-    public function testGetConfig()
+    public function testGetContainer()
     {
-        $config = ['name' => 'yansongda'];
-        $pay = new Pay($config);
-        $this->assertEquals($config, $pay->getUserConfig());
-        $this->assertEquals(array_replace_recursive($this->baseConfig, $config), $pay->config->all());
-        $this->assertArrayHasKey('name', $pay->config->all());
+        $this->expectExceptionMessage('You Must Init The Container First');
+        $this->expectException(ContainerNotFoundException::class);
 
-        $config1 = ['http' => ['timeout' => '3']];
-        $pay1 = new Pay($config1);
-        $this->assertEquals(array_replace_recursive($this->baseConfig, $config1), $pay1->config->all());
-        $this->assertArrayHasKey('http', $pay1->config->all());
-        $this->assertArrayNotHasKey('name', $pay1->config->all());
-        $this->assertEquals('3', $pay1->config->all()['http']['timeout']);
-        $this->assertArrayHasKey('connect_timeout', $pay1->config->all()['http']);
-        $this->assertEquals('3', $pay1->config->all()['http']['connect_timeout']);
+        Pay::getContainer();
+    }
+
+    public function testGetForceContainer()
+    {
+        $this->assertInstanceOf(Container::class, Pay::getContainer([]));
     }
 }
