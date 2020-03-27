@@ -446,6 +446,6 @@ class Support
             }
         }
 
-        return $dec;
+        return str_replace('.00', '', $dec);
     }
 }
