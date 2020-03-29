@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Service;
 
+use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Config;
@@ -24,7 +25,7 @@ class ConfigServiceProvider implements ServiceProviderInterface
             'timeout' => 5.0,
             'connect_timeout' => 3.0,
         ],
-        'mode' => Pay::MODE_PRODUCTION,
+        'mode' => Pay::MODE_NORMAL,
     ];
 
     /**
@@ -50,10 +51,9 @@ class ConfigServiceProvider implements ServiceProviderInterface
         $service = function () {
             $config = array_replace_recursive($this->baseConfig, $this->userConfig);
 
-            return new class($config) extends Config {
-            };
+            return new Config($config);
         };
 
-        $pay::set('config', $service);
+        $pay::set(ConfigInterface::class, $service);
     }
 }

@@ -5,14 +5,13 @@ namespace Yansongda\Pay\Service;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
 
-class AlipayServiceProvider implements ServiceProviderInterface
+class HttpServiceProvider implements ServiceProviderInterface
 {
     /**
      * {@inheritdoc}
      */
     public function prepare(array $data): void
     {
-        // TODO: Implement prepare() method.
     }
 
     /**

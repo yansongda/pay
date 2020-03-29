@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Service;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Yansongda\Pay\Contract\EventDispatcherInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Listener\KernelLogSubscriber;
 use Yansongda\Pay\Pay;
@@ -32,6 +33,6 @@ class EventServiceProvider implements ServiceProviderInterface
             return $event;
         };
 
-        $pay::set('event', $service);
+        $pay::set(EventDispatcherInterface::class, $service);
     }
 }

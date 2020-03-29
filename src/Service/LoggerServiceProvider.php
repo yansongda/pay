@@ -2,6 +2,8 @@
 
 namespace Yansongda\Pay\Service;
 
+use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Contract\LoggerInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Config;
@@ -24,11 +26,11 @@ class LoggerServiceProvider implements ServiceProviderInterface
     public function register(Pay $pay): void
     {
         $service = function () {
-            /* @var \Yansongda\Supports\Config $config */
-            $config = Pay::get('config');
+            /* @var ConfigInterface $config */
+            $config = Pay::get(ConfigInterface::class);
             $logger = new class($config) extends Logger {
                 /**
-                 * @var \Yansongda\Supports\Config
+                 * @var ConfigInterface
                  */
                 private $conf;
 
@@ -60,7 +62,6 @@ class LoggerServiceProvider implements ServiceProviderInterface
             return $logger;
         };
 
-        $pay::set('logger', $service);
-        $pay::set('log', $service);
+        $pay::set(LoggerInterface::class, $service);
     }
 }

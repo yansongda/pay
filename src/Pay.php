@@ -7,26 +7,34 @@ use DI\ContainerBuilder;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
+use Yansongda\Pay\Contract\ContainerInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerDependencyException;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\ConfigServiceProvider;
 use Yansongda\Pay\Service\EventServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
+use Yansongda\Pay\Service\WechatServiceProvider;
 
 class Pay
 {
     /**
-     * production mode.
+     * 普通模式.
      */
-    const MODE_PRODUCTION = 'production';
+    const MODE_NORMAL = 'normal';
 
     /**
-     * sandbox mode.
+     * 沙箱模式.
      */
     const MODE_SANDBOX = 'sandbox';
+
+    /**
+     * 服务商模式.
+     */
+    const MODE_SERVICE = 'service';
 
     /**
      * service.
@@ -34,6 +42,8 @@ class Pay
      * @var string[]
      */
     protected $service = [
+        AlipayServiceProvider::class,
+        WechatServiceProvider::class,
     ];
 
     /**
@@ -167,8 +177,8 @@ class Pay
             throw new ContainerException($e->getMessage());
         }
 
-        self::set('container', self::$container);
-        self::set('pay', $this);
+        self::set(ContainerInterface::class, self::$container);
+        self::set(Pay::class, $this);
     }
 
     /**

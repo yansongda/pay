@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Yansongda\Pay\Contract\LoggerInterface;
 use Yansongda\Pay\Event\ApiRequested;
 use Yansongda\Pay\Event\ApiRequesting;
 use Yansongda\Pay\Event\MethodCalled;
@@ -15,7 +16,7 @@ use Yansongda\Pay\Pay;
 class KernelLogSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var \Yansongda\Pay\Contract\ServiceInterface|\Psr\Log\LoggerInterface
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
 
@@ -24,12 +25,11 @@ class KernelLogSubscriber implements EventSubscriberInterface
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
-     * @throws \Yansongda\Pay\Exception\ServiceException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public function __construct()
     {
-        $this->logger = Pay::get('logger');
+        $this->logger = Pay::get(LoggerInterface::class);
     }
 
     /**
