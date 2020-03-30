@@ -98,6 +98,24 @@ class PayTest extends TestCase
         $this->assertEquals($container1, $container2);
     }
 
+    public function testCliMode()
+    {
+        $config = [
+            'name' => 'yansongda',
+            'cli' => true,
+        ];
+        Pay::getContainer($config);
+        $this->assertEquals($config['name'], Pay::get(ConfigInterface::class)->get('name'));
+
+        // 修改 config 的情况
+        $config2 = [
+            'name' => 'yansongda2',
+            'cli' => true
+        ];
+        Pay::getContainer($config2);
+        $this->assertEquals($config2['name'], Pay::get(ConfigInterface::class)->get('name'));
+    }
+
     public function testGetContainer()
     {
         $this->expectExceptionMessage('You Must Init The Container First');

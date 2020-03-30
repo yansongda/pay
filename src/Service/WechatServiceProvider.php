@@ -19,7 +19,10 @@ class WechatServiceProvider implements ServiceProviderInterface
     /**
      * {@inheritdoc}
      *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public function register(Pay $pay): void
     {

@@ -7,6 +7,7 @@ use DI\ContainerBuilder;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
+use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\ContainerInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerDependencyException;
@@ -18,6 +19,7 @@ use Yansongda\Pay\Service\ConfigServiceProvider;
 use Yansongda\Pay\Service\EventServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
+use Yansongda\Supports\Config;
 
 class Pay
 {
@@ -67,7 +69,10 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     private function __construct(array $config)
     {
@@ -120,7 +125,12 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @param $value
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public static function set(string $key, $value): void
     {
@@ -132,7 +142,10 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public static function has(string $key): bool
     {
@@ -144,11 +157,20 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public static function getContainer(?array $initConfig = null): Container
     {
         if (self::$container instanceof Container) {
+            if (isset($initConfig['cli']) && true === $initConfig['cli']) {
+                /* @var Config $config */
+                $config = self::get(ConfigInterface::class);
+                self::set(ConfigInterface::class, new Config(array_replace_recursive($config->all(), $initConfig)));
+            }
+
             return self::$container;
         }
 
@@ -176,7 +198,10 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     private function initContainer(): void
     {

@@ -25,6 +25,9 @@ class ConfigServiceProvider implements ServiceProviderInterface
             'timeout' => 5.0,
             'connect_timeout' => 3.0,
         ],
+        // 是否处于命令行模式
+        'cli' => false,
+        // 当前支付体系
         'mode' => Pay::MODE_NORMAL,
     ];
 
@@ -44,7 +47,10 @@ class ConfigServiceProvider implements ServiceProviderInterface
     /**
      * {@inheritdoc}
      *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public function register(Pay $pay): void
     {
