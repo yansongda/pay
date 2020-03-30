@@ -88,9 +88,9 @@ class Pay
      */
     public static function __callStatic(string $service, array $config)
     {
-        $pay = new self($config);
+        self::getContainer($config);
 
-        return $pay->get($service);
+        return self::get($service);
     }
 
     /**
@@ -125,6 +125,18 @@ class Pay
     public static function set(string $key, $value): void
     {
         self::getContainer()->set($key, $value);
+    }
+
+    /**
+     * has.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     */
+    public static function has(string $key): bool
+    {
+        return self::getContainer()->has($key);
     }
 
     /**
@@ -166,7 +178,7 @@ class Pay
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    private function initContainer()
+    private function initContainer(): void
     {
         $builder = new ContainerBuilder();
         $builder->useAnnotations(false);

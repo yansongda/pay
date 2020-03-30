@@ -4,6 +4,7 @@ namespace Yansongda\Pay\Service;
 
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Wechat;
 
 class WechatServiceProvider implements ServiceProviderInterface
 {
@@ -17,9 +18,13 @@ class WechatServiceProvider implements ServiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
      */
     public function register(Pay $pay): void
     {
-        // TODO: Implement register() method.
+        $pay::set(Wechat::class, '');
+        $pay::set('wechat', '');
+        $pay::set('wechat.http', '');
     }
 }

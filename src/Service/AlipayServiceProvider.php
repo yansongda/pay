@@ -4,6 +4,7 @@ namespace Yansongda\Pay\Service;
 
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Alipay;
 
 class AlipayServiceProvider implements ServiceProviderInterface
 {
@@ -12,14 +13,17 @@ class AlipayServiceProvider implements ServiceProviderInterface
      */
     public function prepare(array $data): void
     {
-        // TODO: Implement prepare() method.
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
      */
     public function register(Pay $pay): void
     {
-        // TODO: Implement register() method.
+        $pay::set(Alipay::class, '');
+        $pay::set('alipay', '');
+        $pay::set('alipay.http', '');
     }
 }

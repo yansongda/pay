@@ -53,12 +53,19 @@ class PayTest extends TestCase
             'name' => 'yansongda',
             'age' => 26
         ];
+        $config2 = [
+            'name' => 'yansongda2'
+        ];
 
         $container = Pay::getContainer($config);
 
         $this->assertInstanceOf(Container::class, $container);
         $this->assertInstanceOf(Config::class, $container->get(ConfigInterface::class));
         $this->assertEquals($config['name'], Pay::get(ConfigInterface::class)->get('name'));
+
+        $container2 = Pay::getContainer($config2);
+
+        $this->assertEquals($container, $container2);
     }
 
     public function testLogger()
