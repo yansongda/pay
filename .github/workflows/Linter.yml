@@ -10,5 +10,5 @@ jobs:
         uses: actions/checkout@master
       - name: Install Dependencies
         run: composer install --no-progress
-      - name: Run PHP-CS-Fxier
+      - name: Run PHP-CS-Fixer
         run: ./vendor/bin/php-cs-fixer fix --dry-run --diff 1>&2
