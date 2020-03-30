@@ -38,9 +38,7 @@ class PayTest extends TestCase
 
     public function testBase()
     {
-        $config = [];
-
-        $container = Pay::getContainer($config);
+        $container = Pay::getContainer([]);
 
         $this->assertInstanceOf(Container::class, $container);
         $this->assertInstanceOf(Container::class, $container->get(ContainerInterface::class));
@@ -51,10 +49,6 @@ class PayTest extends TestCase
     {
         $config = [
             'name' => 'yansongda',
-            'age' => 26
-        ];
-        $config2 = [
-            'name' => 'yansongda2'
         ];
 
         $container = Pay::getContainer($config);
@@ -63,16 +57,18 @@ class PayTest extends TestCase
         $this->assertInstanceOf(Config::class, $container->get(ConfigInterface::class));
         $this->assertEquals($config['name'], Pay::get(ConfigInterface::class)->get('name'));
 
-        $container2 = Pay::getContainer($config2);
+        // 修改 config 的情况
+        $config2 = [
+            'name' => 'yansongda2',
+        ];
+        Pay::set(ConfigInterface::class, new Config($config2));
 
-        $this->assertEquals($container, $container2);
+        $this->assertEquals($config2['name'], Pay::get(ConfigInterface::class)->get('name'));
     }
 
     public function testLogger()
     {
-        $config = [];
-
-        $container = Pay::getContainer($config);
+        $container = Pay::getContainer([]);
         $otherLogger = new \Monolog\Logger('test');
 
         $this->assertInstanceOf(Logger::class, $container->get(\Yansongda\Pay\Contract\LoggerInterface::class));
@@ -86,11 +82,20 @@ class PayTest extends TestCase
 
     public function testEvent()
     {
-        $config = [];
-
-        $container = Pay::getContainer($config);
+        $container = Pay::getContainer([]);
 
         $this->assertInstanceOf(EventDispatcher::class, $container->get(EventDispatcherInterface::class));
+    }
+
+    public function testSingletonContainer()
+    {
+        $config1 = ['name' => 'yansongda'];
+        $config2 = ['age' => 26];
+
+        $container1 = Pay::getContainer($config1);
+        $container2 = Pay::getContainer($config2);
+
+        $this->assertEquals($container1, $container2);
     }
 
     public function testGetContainer()

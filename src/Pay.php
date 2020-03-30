@@ -146,17 +146,17 @@ class Pay
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    public static function getContainer(?array $forceInitConfig = null): Container
+    public static function getContainer(?array $initConfig = null): Container
     {
         if (self::$container instanceof Container) {
             return self::$container;
         }
 
-        if (is_null($forceInitConfig)) {
+        if (is_null($initConfig)) {
             throw new ContainerNotFoundException('You Must Init The Container First');
         }
 
-        new self($forceInitConfig);
+        new self($initConfig);
 
         return self::$container;
     }

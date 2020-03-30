@@ -11,4 +11,6 @@ class Alipay
         Pay::MODE_SANDBOX => 'https://openapi.alipaydev.com/gateway.do',
         Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do',
     ];
+
+
 }

@@ -46,6 +46,8 @@ class LoggerServiceProvider implements ServiceProviderInterface
                  * __call.
                  *
                  * @author yansongda <me@yansongda.cn>
+                 *
+                 * @throws \Exception
                  */
                 public function __call($method, $args): void
                 {
