@@ -1,6 +1,6 @@
-<h1 align="center">Pay</h1>
+<h1 style="text-align: center;">Pay</h1>
 
-<p align="center">
+<p style="text-align: center;">
 
 [![Linter Status](https://github.com/yansongda/pay/workflows/Linter/badge.svg)](https://github.com/yansongda/pay/actions) 
 [![Tester Status](https://github.com/yansongda/pay/workflows/Tester/badge.svg)](https://github.com/yansongda/pay/actions) 

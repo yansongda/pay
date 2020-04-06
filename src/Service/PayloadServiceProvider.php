@@ -2,17 +2,24 @@
 
 namespace Yansongda\Pay\Service;
 
+use Yansongda\Pay\Contract\PayloadInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Alipay;
+use Yansongda\Supports\Config;
 
-class AlipayServiceProvider implements ServiceProviderInterface
+class PayloadServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * @var array
+     */
+    private $payload = [];
+
     /**
      * {@inheritdoc}
      */
     public function prepare(array $data): void
     {
+        $this->payload = array_replace_recursive($this->payload, $data['payload'] ?? []);
     }
 
     /**
@@ -25,9 +32,6 @@ class AlipayServiceProvider implements ServiceProviderInterface
      */
     public function register(Pay $pay): void
     {
-        $service = new Alipay();
-
-        $pay::set(Alipay::class, $service);
-        $pay::set('alipay', $service);
+        $pay::set(PayloadInterface::class, new Config($this->payload));
     }
 }

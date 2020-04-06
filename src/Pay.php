@@ -7,7 +7,6 @@ use DI\ContainerBuilder;
 use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
-use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\ContainerInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerDependencyException;
@@ -17,9 +16,10 @@ use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\ConfigServiceProvider;
 use Yansongda\Pay\Service\EventServiceProvider;
+use Yansongda\Pay\Service\HttpServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
+use Yansongda\Pay\Service\PayloadServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
-use Yansongda\Supports\Config;
 
 class Pay
 {
@@ -49,14 +49,16 @@ class Pay
     ];
 
     /**
-     * baseService.
+     * coreService.
      *
      * @var string[]
      */
-    private $baseService = [
+    private $coreService = [
         ConfigServiceProvider::class,
         LoggerServiceProvider::class,
         EventServiceProvider::class,
+        PayloadServiceProvider::class,
+        HttpServiceProvider::class,
     ];
 
     /**
@@ -125,8 +127,6 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param $value
-     *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
@@ -166,9 +166,7 @@ class Pay
     {
         if (self::$container instanceof Container) {
             if (isset($initConfig['cli']) && true === $initConfig['cli']) {
-                /* @var Config $config */
-                $config = self::get(ConfigInterface::class);
-                self::set(ConfigInterface::class, new Config(array_replace_recursive($config->all(), $initConfig)));
+                self::get(self::class)->registerService($initConfig);
             }
 
             return self::$container;
@@ -225,7 +223,7 @@ class Pay
      */
     private function registerService(array $config): void
     {
-        foreach (array_merge($this->baseService, $this->service) as $service) {
+        foreach (array_merge($this->coreService, $this->service) as $service) {
             $var = new $service();
 
             if ($var instanceof ServiceProviderInterface) {

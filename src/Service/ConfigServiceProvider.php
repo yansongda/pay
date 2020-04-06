@@ -12,7 +12,7 @@ class ConfigServiceProvider implements ServiceProviderInterface
     /**
      * @var array
      */
-    private $baseConfig = [
+    private $config = [
         'log' => [
             'enable' => true,
             'file' => null,
@@ -32,16 +32,11 @@ class ConfigServiceProvider implements ServiceProviderInterface
     ];
 
     /**
-     * @var array
-     */
-    private $userConfig = [];
-
-    /**
      * {@inheritdoc}
      */
     public function prepare(array $data): void
     {
-        $this->userConfig = $data;
+        $this->config = array_replace_recursive($this->config, $data);
     }
 
     /**
@@ -54,12 +49,6 @@ class ConfigServiceProvider implements ServiceProviderInterface
      */
     public function register(Pay $pay): void
     {
-        $service = function () {
-            $config = array_replace_recursive($this->baseConfig, $this->userConfig);
-
-            return new Config($config);
-        };
-
-        $pay::set(ConfigInterface::class, $service);
+        $pay::set(ConfigInterface::class, new Config($this->config));
     }
 }

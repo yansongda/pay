@@ -3,14 +3,18 @@
 namespace Yansongda\Pay\Tests;
 
 use DI\Container;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\ContainerInterface;
 use Yansongda\Pay\Contract\EventDispatcherInterface;
+use Yansongda\Pay\Contract\HttpInterface;
 use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Service\HttpServiceProvider;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
 
@@ -36,7 +40,7 @@ class PayTest extends TestCase
         $this->assertEquals($data, Pay::get('profile'));
     }
 
-    public function testBase()
+    public function testCoreServiceBase()
     {
         $container = Pay::getContainer([]);
 
@@ -45,7 +49,7 @@ class PayTest extends TestCase
         $this->assertInstanceOf(Pay::class, Pay::get(Pay::class));
     }
 
-    public function testConfig()
+    public function testCoreServiceConfig()
     {
         $config = [
             'name' => 'yansongda',
@@ -66,7 +70,7 @@ class PayTest extends TestCase
         $this->assertEquals($config2['name'], Pay::get(ConfigInterface::class)->get('name'));
     }
 
-    public function testLogger()
+    public function testCoreServiceLogger()
     {
         $container = Pay::getContainer([]);
         $otherLogger = new \Monolog\Logger('test');
@@ -80,11 +84,29 @@ class PayTest extends TestCase
         $this->assertEquals($otherLogger, $container->get(\Yansongda\Pay\Contract\LoggerInterface::class)->getLogger());
     }
 
-    public function testEvent()
+    public function testCoreServiceEvent()
     {
         $container = Pay::getContainer([]);
 
         $this->assertInstanceOf(EventDispatcher::class, $container->get(EventDispatcherInterface::class));
+    }
+
+    public function testCoreServiceHttpClient()
+    {
+        $container = Pay::getContainer([]);
+
+        $this->assertInstanceOf(Client::class, $container->get(HttpInterface::class));
+    }
+
+    public function testCoreServiceExternalHttpClient()
+    {
+        Pay::getContainer([]);
+
+        $client = new Client(['timeout' => 3.0]);
+
+        Pay::set(HttpInterface::class, $client);
+
+        $this->assertEquals($client, Pay::get(HttpInterface::class));
     }
 
     public function testSingletonContainer()
@@ -116,7 +138,7 @@ class PayTest extends TestCase
         $this->assertEquals($config2['name'], Pay::get(ConfigInterface::class)->get('name'));
     }
 
-    public function testGetContainer()
+    public function testGetNotFoundContainer()
     {
         $this->expectExceptionMessage('You Must Init The Container First');
         $this->expectException(ContainerNotFoundException::class);

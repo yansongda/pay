@@ -28,9 +28,10 @@ class LoggerServiceProvider implements ServiceProviderInterface
      */
     public function register(Pay $pay): void
     {
-        $service = function () {
-            /* @var ConfigInterface $config */
-            $config = Pay::get(ConfigInterface::class);
+        /* @var ConfigInterface $config */
+        $config = Pay::get(ConfigInterface::class);
+
+        $service = function () use ($config) {
             $logger = new class($config) extends Logger {
                 /**
                  * @var ConfigInterface
@@ -54,7 +55,7 @@ class LoggerServiceProvider implements ServiceProviderInterface
                  */
                 public function __call($method, $args): void
                 {
-                    if (false === $this->conf->get('log.enable', false)) {
+                    if (false === $this->conf->get('log.enable', true)) {
                         return;
                     }
 
