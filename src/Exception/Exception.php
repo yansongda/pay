@@ -17,6 +17,8 @@ class Exception extends \Exception
 
     const CONTAINER_DEPENDENCY_ERROR = 1002;
 
+    const CONTAINER_NOT_FOUND_ENTRY = 1003;
+
     /**
      * about service.
      */

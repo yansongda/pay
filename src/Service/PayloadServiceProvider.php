@@ -32,6 +32,10 @@ class PayloadServiceProvider implements ServiceProviderInterface
      */
     public function register(Pay $pay): void
     {
-        $pay::set(PayloadInterface::class, new Config($this->payload));
+        $service = $pay::make(Config::class, [
+            'items' => $this->payload,
+        ]);
+
+        $pay::set(PayloadInterface::class, $service);
     }
 }

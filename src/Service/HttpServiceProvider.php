@@ -33,11 +33,13 @@ class HttpServiceProvider implements ServiceProviderInterface
      */
     public function register(Pay $pay): void
     {
-        $service = function () {
+        $service = function () use ($pay) {
             /* @var \Yansongda\Supports\Config $config */
             $config = Pay::get(ConfigInterface::class);
 
-            return new Client($config->get('http', []));
+            return $pay::make(Client::class, [
+                'config' => $config->get('http', []),
+            ]);
         };
 
         $pay::set(HttpInterface::class, $service);

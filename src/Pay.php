@@ -153,6 +153,29 @@ class Pay
     }
 
     /**
+     * make.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return mixed
+     */
+    public static function make()
+    {
+        try {
+            return self::getContainer()->make(...func_get_args());
+        } catch (DependencyException $e) {
+            throw new ContainerDependencyException($e->getMessage());
+        } catch (NotFoundException $e) {
+            throw new ContainerException($e->getMessage(), [], ContainerException::CONTAINER_NOT_FOUND_ENTRY);
+        }
+    }
+
+    /**
      * getContainer.
      *
      * @author yansongda <me@yansongda.cn>

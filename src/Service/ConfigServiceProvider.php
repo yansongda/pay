@@ -49,6 +49,10 @@ class ConfigServiceProvider implements ServiceProviderInterface
      */
     public function register(Pay $pay): void
     {
-        $pay::set(ConfigInterface::class, new Config($this->config));
+        $service = $pay::make(Config::class, [
+            'items' => $this->config,
+        ]);
+
+        $pay::set(ConfigInterface::class, $service);
     }
 }
