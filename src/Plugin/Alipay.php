@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Plugin;
 
 use Symfony\Component\HttpFoundation\Response;
+use Yansongda\Pay\Contract\MiddlewareInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
@@ -14,6 +15,22 @@ class Alipay implements PluginInterface
         Pay::MODE_SANDBOX => 'https://openapi.alipaydev.com/gateway.do',
         Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do',
     ];
+
+    /**
+     * @inheritDoc
+     */
+    public function addMiddleware(MiddlewareInterface $middleware): PluginInterface
+    {
+        // TODO: Implement addMiddleware() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function pay($order, ?array $middleware = [])
+    {
+        // TODO: Implement pay() method.
+    }
 
     /**
      * {@inheritdoc}

@@ -8,7 +8,26 @@ use Yansongda\Supports\Collection;
 interface PluginInterface
 {
     /**
-     * Query an order.
+     * addMiddleware.
+     *
+     * @author yansongda <me@yansongda.cn>
+     */
+    public function addMiddleware(MiddlewareInterface $middleware): self;
+
+    /**
+     * pay.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param array|string          $order      order params
+     * @param MiddlewareInterface[] $middleware middleware before pay
+     *
+     * @return Collection|Response
+     */
+    public function pay($order, ?array $middleware = []);
+
+    /**
+     * Quick road - Query an order.
      *
      * @author yansongda <me@yansongda.cn>
      *
@@ -18,14 +37,14 @@ interface PluginInterface
     public function find($order, string $type): Collection;
 
     /**
-     * Refund an order.
+     * Quick road - Refund an order.
      *
      * @author yansongda <me@yansongda.cn>
      */
     public function refund(array $order): Collection;
 
     /**
-     * Cancel an order.
+     * Quick road - Cancel an order.
      *
      * @author yansongda <me@yansongda.cn>
      *
@@ -34,7 +53,7 @@ interface PluginInterface
     public function cancel($order): Collection;
 
     /**
-     * Close an order.
+     * Quick road - Close an order.
      *
      * @author yansongda <me@yansongda.cn>
      *
