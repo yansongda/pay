@@ -37,7 +37,7 @@ QQ交流群：690027516
 
 
 ## 运行环境
-- PHP 7.0+ (v2.8.0 开始 >= 7.1.3)
+- PHP 7.0+ (v2.8.0 开始 >= 7.2.5)
 - composer
 
 > php5 请使用 v1.x 版本[https://github.com/yansongda/pay/tree/v1.x](https://github.com/yansongda/pay/tree/v1.x)
