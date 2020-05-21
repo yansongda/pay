@@ -400,7 +400,7 @@ class Support
         $method = str_replace('.', '_', $data['method']).'_response';
 
         if (!isset($result['sign']) || '10000' != $result[$method]['code']) {
-            throw new GatewayException('Get Alipay API Error:'.$result[$method]['msg'].(isset($result[$method]['sub_code']) ? (' - '.$result[$method]['sub_code']) : '').(isset($result[$method]['sub_msg']) ? (' - ' . $result[$method]['sub_msg']) : ''), $result);
+            throw new GatewayException('Get Alipay API Error:'.$result[$method]['msg'].(isset($result[$method]['sub_code']) ? (' - '.$result[$method]['sub_code']) : '').(isset($result[$method]['sub_msg']) ? (' - '.$result[$method]['sub_msg']) : ''), $result);
         }
 
         if (self::verifySign($result[$method], true, $result['sign'])) {
