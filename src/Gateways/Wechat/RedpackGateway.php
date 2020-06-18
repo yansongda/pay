@@ -64,7 +64,7 @@ class RedpackGateway extends Gateway
             'cert' => true,
         ];
     }
-    
+
     /**
      * Get trade type config.
      *
