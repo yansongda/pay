@@ -1,4 +1,4 @@
-/vendor
+vendor/
 composer.lock
 *.DS_Store
-.idea
+.idea/

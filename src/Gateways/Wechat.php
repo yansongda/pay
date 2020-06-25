@@ -304,7 +304,7 @@ class Wechat implements GatewayApplicationInterface
     {
         Events::dispatch(new Events\MethodCalled('Wechat', 'Success', $this->gateway));
 
-        return Response::create(
+        return new Response(
             Support::toXml(['return_code' => 'SUCCESS', 'return_msg' => 'OK']),
             200,
             ['Content-Type' => 'application/xml']

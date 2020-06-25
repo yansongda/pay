@@ -320,7 +320,7 @@ class Alipay implements GatewayApplicationInterface
     {
         Events::dispatch(new Events\MethodCalled('Alipay', 'Success', $this->gateway));
 
-        return Response::create('success');
+        return new Response('success');
     }
 
     /**

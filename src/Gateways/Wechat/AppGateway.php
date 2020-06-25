@@ -47,7 +47,7 @@ class AppGateway extends Gateway
 
         Events::dispatch(new Events\PayStarted('Wechat', 'App', $endpoint, $pay_request));
 
-        return JsonResponse::create($pay_request);
+        return new JsonResponse($pay_request);
     }
 
     /**

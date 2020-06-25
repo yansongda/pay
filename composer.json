@@ -21,7 +21,7 @@
         "ext-json": "*",
         "ext-bcmath": "*",
         "yansongda/supports": "^2.0",
-        "symfony/http-foundation": "^4.0 || ^5.0",
+        "symfony/http-foundation": "^4.0 || ^5.0.7",
         "symfony/event-dispatcher": "^4.0 || ^5.0"
     },
     "require-dev": {

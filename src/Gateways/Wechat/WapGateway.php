@@ -32,7 +32,7 @@ class WapGateway extends Gateway
         $url = is_null(Support::getInstance()->return_url) ? $mweb_url : $mweb_url.
                         '&redirect_url='.urlencode(Support::getInstance()->return_url);
 
-        return RedirectResponse::create($url);
+        return new RedirectResponse($url);
     }
 
     /**

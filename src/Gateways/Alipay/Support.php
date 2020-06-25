@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Gateways\Alipay;
 
+use Exception;
 use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\GatewayException;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
@@ -314,16 +315,16 @@ class Support
     public static function getCertSN($certPath): string
     {
         if (!is_file($certPath)) {
-            throw new \Exception('unknown certPath -- [getCertSN]');
+            throw new Exception('unknown certPath -- [getCertSN]');
         }
         $x509data = file_get_contents($certPath);
         if (false === $x509data) {
-            throw new \Exception('Alipay CertSN Error -- [getCertSN]');
+            throw new Exception('Alipay CertSN Error -- [getCertSN]');
         }
         openssl_x509_read($x509data);
         $certdata = openssl_x509_parse($x509data);
         if (empty($certdata)) {
-            throw new \Exception('Alipay openssl_x509_parse Error -- [getCertSN]');
+            throw new Exception('Alipay openssl_x509_parse Error -- [getCertSN]');
         }
         $issuer_arr = [];
         foreach ($certdata['issuer'] as $key => $val) {
@@ -349,11 +350,11 @@ class Support
     public static function getRootCertSN($certPath)
     {
         if (!is_file($certPath)) {
-            throw new \Exception('unknown certPath -- [getRootCertSN]');
+            throw new Exception('unknown certPath -- [getRootCertSN]');
         }
         $x509data = file_get_contents($certPath);
         if (false === $x509data) {
-            throw new \Exception('Alipay CertSN Error -- [getRootCertSN]');
+            throw new Exception('Alipay CertSN Error -- [getRootCertSN]');
         }
         $kCertificateEnd = '-----END CERTIFICATE-----';
         $certStrList = explode($kCertificateEnd, $x509data);

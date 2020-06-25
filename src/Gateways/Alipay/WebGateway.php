@@ -68,7 +68,7 @@ class WebGateway extends Gateway
     protected function buildPayHtml($endpoint, $payload, $method = 'POST'): Response
     {
         if ('GET' === strtoupper($method)) {
-            return RedirectResponse::create($endpoint.'&'.http_build_query($payload));
+            return new RedirectResponse($endpoint.'&'.http_build_query($payload));
         }
 
         $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='".$method."'>";
@@ -79,7 +79,7 @@ class WebGateway extends Gateway
         $sHtml .= "<input type='submit' value='ok' style='display:none;'></form>";
         $sHtml .= "<script>document.forms['alipay_submit'].submit();</script>";
 
-        return Response::create($sHtml);
+        return new Response($sHtml);
     }
 
     /**
