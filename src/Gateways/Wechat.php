@@ -260,7 +260,7 @@ class Wechat implements GatewayApplicationInterface
     {
         unset($this->payload['spbill_create_ip']);
 
-        $this->payload = Support::filterPayload($this->payload, $order, true);
+        $this->payload = Support::filterPayload($this->payload, $order);
 
         Events::dispatch(new Events\MethodCalled('Wechat', 'Cancel', $this->gateway, $this->payload));
 
