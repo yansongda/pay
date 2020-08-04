@@ -50,6 +50,22 @@ class RedpackGateway extends Gateway
     }
 
     /**
+     * Find.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param $billno
+     */
+    public function find($billno): array
+    {
+        return [
+            'endpoint' => 'mmpaymkttransfers/gethbinfo',
+            'order' => ['mch_billno' => $billno, 'bill_type' => 'MCHT'],
+            'cert' => true,
+        ];
+    }
+
+    /**
      * Get trade type config.
      *
      * @author yansongda <me@yansongda.cn>
