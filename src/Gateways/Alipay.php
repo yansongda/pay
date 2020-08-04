@@ -48,6 +48,7 @@ class Alipay implements GatewayApplicationInterface
      */
     const URL = [
         self::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
+        self::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
         self::MODE_DEV => 'https://openapi.alipaydev.com/gateway.do?charset=utf-8',
     ];
 
