@@ -206,7 +206,8 @@ class PayController
             // $e->getMessage();
         }
 
-        return $alipay->success()->send();// laravel 框架中请直接 `return $alipay->success()`
+        $alipay->success()->send();
+        die;// laravel 框架中请直接 `return $alipay->success()`
     }
 }
 ```
@@ -275,7 +276,8 @@ class PayController
             // $e->getMessage();
         }
         
-        return $pay->success()->send();// laravel 框架中请直接 `return $pay->success()`
+        $pay->success()->send();
+        die; // laravel 框架中请直接 `return $pay->success()`
     }
 }
 ```
