@@ -239,7 +239,7 @@ class Support
     {
         ksort($data);
         
-        $isReturn = array_key_exists('method', $data) && $data['method'] == 'alipay.trade.page.pay.return';
+        $isReturn = array_key_exists('method', $data) && 'alipay.trade.page.pay.return' == $data['method'];
 
         $stringToBeSigned = '';
         foreach ($data as $k => $v) {
