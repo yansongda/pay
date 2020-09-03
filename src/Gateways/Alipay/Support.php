@@ -238,10 +238,12 @@ class Support
     public static function getSignContent(array $data, $verify = false): string
     {
         ksort($data);
+        
+        $isReturn = array_key_exists('method', $data) && $data['method'] == 'alipay.trade.page.pay.return';
 
         $stringToBeSigned = '';
         foreach ($data as $k => $v) {
-            if ($verify && 'sign' != $k && 'sign_type' != $k) {
+            if ($verify && 'sign' != $k && ('sign_type' != $k || $isReturn)) {
                 $stringToBeSigned .= $k.'='.$v.'&';
             }
             if (!$verify && '' !== $v && !is_null($v) && 'sign' != $k && '@' != substr($v, 0, 1)) {
