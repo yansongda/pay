@@ -238,7 +238,7 @@ class Support
     public static function getSignContent(array $data, $verify = false): string
     {
         ksort($data);
-        
+
         $isReturn = array_key_exists('method', $data) && 'alipay.trade.page.pay.return' == $data['method'];
 
         $stringToBeSigned = '';
