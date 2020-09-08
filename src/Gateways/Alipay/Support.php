@@ -239,7 +239,7 @@ class Support
     {
         ksort($data);
 
-        $isDevModeReturn = self::$instance->mode == Alipay::MODE_DEV && array_key_exists('method', $data) && (in_array($data['method'], ['alipay.trade.page.pay.return', 'alipay.trade.wap.pay.return']));
+        $isDevModeReturn = Alipay::MODE_DEV == self::$instance->mode && array_key_exists('method', $data) && (in_array($data['method'], ['alipay.trade.page.pay.return', 'alipay.trade.wap.pay.return']));
 
         $stringToBeSigned = '';
         foreach ($data as $k => $v) {
