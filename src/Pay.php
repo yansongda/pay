@@ -244,14 +244,20 @@ class Pay
     }
 
     /**
-     * registerService.
+     * register.
      *
      * @author yansongda <me@yansongda.cn>
+     *
+     * @param array $config
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     private function registerService(array $config): void
     {
         foreach (array_merge($this->coreService, $this->service) as $service) {
-            $var = new $service();
+            $var = self::get($service);
 
             if ($var instanceof ServiceProviderInterface) {
                 $var->prepare($config);

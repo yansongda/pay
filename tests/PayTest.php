@@ -140,7 +140,7 @@ class PayTest extends TestCase
 
     public function testGetNotFoundContainer()
     {
-        $this->expectExceptionMessage('You Must Init The Container First');
+        $this->expectExceptionMessage('You must init the container first with config');
         $this->expectException(ContainerNotFoundException::class);
 
         Pay::getContainer();
