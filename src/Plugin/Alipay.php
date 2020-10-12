@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Plugin;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -10,14 +12,14 @@ use Yansongda\Supports\Collection;
 
 class Alipay implements PluginInterface
 {
-    const URL = [
+    public const URL = [
         Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do',
         Pay::MODE_SANDBOX => 'https://openapi.alipaydev.com/gateway.do',
         Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do',
     ];
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function addMiddleware(MiddlewareInterface $middleware): PluginInterface
     {
@@ -25,7 +27,7 @@ class Alipay implements PluginInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function pay($order, ?array $middleware = [])
     {

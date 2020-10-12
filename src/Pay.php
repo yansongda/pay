@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay;
 
 use DI\Container;
@@ -26,17 +28,17 @@ class Pay
     /**
      * 普通模式.
      */
-    const MODE_NORMAL = 'normal';
+    public const MODE_NORMAL = 'normal';
 
     /**
      * 沙箱模式.
      */
-    const MODE_SANDBOX = 'sandbox';
+    public const MODE_SANDBOX = 'sandbox';
 
     /**
      * 服务商模式.
      */
-    const MODE_SERVICE = 'service';
+    public const MODE_SERVICE = 'service';
 
     /**
      * service.
@@ -126,6 +128,8 @@ class Pay
      * set.
      *
      * @author yansongda <me@yansongda.cn>
+     *
+     * @param mixed $value
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException

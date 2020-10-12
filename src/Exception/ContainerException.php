@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Exception;
 
 use Psr\Container\ContainerExceptionInterface;
@@ -10,7 +12,7 @@ class ContainerException extends Exception implements ContainerExceptionInterfac
     /**
      * Bootstrap.
      */
-    public function __construct($message = '', $extra = [], $code = self::CONTAINER_ERROR, Throwable $previous = null)
+    public function __construct(string $message = '', array $extra = [], int $code = self::CONTAINER_ERROR, Throwable $previous = null)
     {
         parent::__construct($message, $extra, $code, $previous);
     }

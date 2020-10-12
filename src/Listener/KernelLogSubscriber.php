@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

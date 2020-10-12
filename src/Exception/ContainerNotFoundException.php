@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Exception;
 
 use Psr\Container\NotFoundExceptionInterface;
@@ -10,7 +12,7 @@ class ContainerNotFoundException extends ContainerException implements NotFoundE
     /**
      * Bootstrap.
      */
-    public function __construct($message = 'Container Not Found', $extra = [], $code = self::NOT_FOUND_CONTAINER, Throwable $previous = null)
+    public function __construct(string $message = 'Container Not Found', array $extra = [], int $code = self::NOT_FOUND_CONTAINER, Throwable $previous = null)
     {
         parent::__construct($message, $extra, $code, $previous);
     }

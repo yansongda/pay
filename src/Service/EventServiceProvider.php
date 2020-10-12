@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Service;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;

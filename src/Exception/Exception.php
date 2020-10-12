@@ -1,30 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Exception;
 
 use Throwable;
 
 class Exception extends \Exception
 {
-    const UNKNOWN_ERROR = 9999;
+    public const UNKNOWN_ERROR = 9999;
 
     /**
      * about container di.
      */
-    const CONTAINER_ERROR = 1000;
+    public const CONTAINER_ERROR = 1000;
 
-    const NOT_FOUND_CONTAINER = 1001;
+    public const NOT_FOUND_CONTAINER = 1001;
 
-    const CONTAINER_DEPENDENCY_ERROR = 1002;
+    public const CONTAINER_DEPENDENCY_ERROR = 1002;
 
-    const CONTAINER_NOT_FOUND_ENTRY = 1003;
+    public const CONTAINER_NOT_FOUND_ENTRY = 1003;
 
     /**
      * about service.
      */
-    const SERVICE_EXCEPTION = 2000;
+    public const SERVICE_EXCEPTION = 2000;
 
-    const SERVICE_NOT_FOUND_EXCEPTION = 2001;
+    public const SERVICE_NOT_FOUND_EXCEPTION = 2001;
 
     /**
      * raw.
@@ -35,12 +37,10 @@ class Exception extends \Exception
 
     /**
      * Bootstrap.
-     *
-     * @param array|string $extra
      */
-    public function __construct($message = 'Unknown Error', $extra = [], $code = self::UNKNOWN_ERROR, Throwable $previous = null)
+    public function __construct(string $message = 'Unknown Error', array $extra = [], int $code = self::UNKNOWN_ERROR, Throwable $previous = null)
     {
-        $this->extra = is_array($extra) ? $extra : [$extra];
+        $this->extra = $extra;
 
         parent::__construct($message, $code, $previous);
     }

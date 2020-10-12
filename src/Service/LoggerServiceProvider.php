@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Service;
 
 use Yansongda\Pay\Contract\ConfigInterface;
@@ -53,7 +55,7 @@ class LoggerServiceProvider implements ServiceProviderInterface
                  *
                  * @throws \Exception
                  */
-                public function __call($method, $args): void
+                public function __call(string $method, array $args): void
                 {
                     if (false === $this->conf->get('log.enable', true)) {
                         return;
