@@ -200,7 +200,7 @@ class Pay
         }
 
         if (is_null($initConfig)) {
-            throw new ContainerNotFoundException('You Must Init The Container First');
+            throw new ContainerNotFoundException('You must init the container first with config');
         }
 
         new self($initConfig);
