@@ -18,6 +18,29 @@ use Yansongda\Supports\Logger;
 
 class PayTest extends TestCase
 {
+    public function testGetContainerNullConfig()
+    {
+        $this->expectException(ContainerNotFoundException::class);
+        $this->expectExceptionCode(ContainerNotFoundException::CONTAINER_NOT_FOUND);
+        $this->expectExceptionMessage('You must init the container first with config');
+
+        Pay::getContainer();
+    }
+
+    public function testGetContainer()
+    {
+        self::assertInstanceOf(Container::class, Pay::getContainer([]));
+    }
+
+    public function testHasContainer()
+    {
+        self::assertFalse(Pay::hasContainer());
+
+        Pay::getContainer([]);
+
+        self::assertTrue(Pay::hasContainer());
+    }
+
     public function testMagicCallNotFoundService()
     {
         $this->expectException(ServiceNotFoundException::class);

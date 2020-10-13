@@ -15,7 +15,7 @@ class Exception extends \Exception
      */
     public const CONTAINER_ERROR = 1000;
 
-    public const NOT_FOUND_CONTAINER = 1001;
+    public const CONTAINER_NOT_FOUND = 1001;
 
     public const CONTAINER_DEPENDENCY_ERROR = 1002;
 
