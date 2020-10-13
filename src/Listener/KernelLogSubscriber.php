@@ -24,10 +24,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
 
     /**
      * Bootstrap.
-     *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public function __construct()
     {

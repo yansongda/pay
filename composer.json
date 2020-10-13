@@ -20,7 +20,7 @@
         "ext-libxml": "*",
         "ext-json": "*",
         "php-di/php-di": "^6.0",
-        "yansongda/supports": "^2.0",
+        "yansongda/supports": "^3.0",
         "symfony/http-foundation": "^5.0.7",
         "symfony/event-dispatcher": "^5.0"
     },

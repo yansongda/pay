@@ -14,11 +14,6 @@ class HttpServiceProvider implements ServiceProviderInterface
 {
     /**
      * {@inheritdoc}
-     *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public function prepare(array $data): void
     {
@@ -27,11 +22,6 @@ class HttpServiceProvider implements ServiceProviderInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public function register(Pay $pay): void
     {
