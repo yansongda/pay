@@ -17,7 +17,6 @@ class HttpServiceProvider implements ServiceProviderInterface
      */
     public function prepare(array $data): void
     {
-        Pay::set(HttpClientInterface::class, null);
     }
 
     /**

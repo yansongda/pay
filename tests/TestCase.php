@@ -6,11 +6,17 @@ use Yansongda\Pay\Pay;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    public function setUp()
+    /**
+     * This method is called before each test.
+     */
+    protected function setUp(): void
     {
     }
 
-    public function tearDown()
+    /**
+     * This method is called after each test.
+     */
+    protected function tearDown(): void
     {
         Pay::clear();
     }
