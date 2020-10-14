@@ -9,7 +9,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\ContainerInterface;
 use Yansongda\Pay\Contract\EventDispatcherInterface;
-use Yansongda\Pay\Contract\HttpInterface;
+use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
@@ -116,18 +116,20 @@ class PayTest extends TestCase
     {
         $container = Pay::getContainer([]);
 
-        self::assertInstanceOf(Client::class, $container->get(HttpInterface::class));
+        self::assertInstanceOf(Client::class, $container->get(HttpClientInterface::class));
     }
 
     public function testCoreServiceExternalHttpClient()
     {
         Pay::getContainer([]);
 
+        $oldClient = Pay::get(HttpClientInterface::class);
+
         $client = new Client(['timeout' => 3.0]);
+        Pay::set(HttpClientInterface::class, $client);
 
-        Pay::set(HttpInterface::class, $client);
-
-        self::assertEquals($client, Pay::get(HttpInterface::class));
+        self::assertEquals($client, Pay::get(HttpClientInterface::class));
+        self::assertNotEquals($oldClient, Pay::get(HttpClientInterface::class));
     }
 
     public function testSingletonContainer()

@@ -6,7 +6,7 @@ namespace Yansongda\Pay\Service;
 
 use GuzzleHttp\Client;
 use Yansongda\Pay\Contract\ConfigInterface;
-use Yansongda\Pay\Contract\HttpInterface;
+use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
 
@@ -17,7 +17,7 @@ class HttpServiceProvider implements ServiceProviderInterface
      */
     public function prepare(array $data): void
     {
-        Pay::set(HttpInterface::class, null);
+        Pay::set(HttpClientInterface::class, null);
     }
 
     /**
@@ -34,6 +34,6 @@ class HttpServiceProvider implements ServiceProviderInterface
             ]);
         };
 
-        $pay::set(HttpInterface::class, $service);
+        $pay::set(HttpClientInterface::class, $service);
     }
 }

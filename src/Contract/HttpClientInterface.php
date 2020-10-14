@@ -6,6 +6,6 @@ namespace Yansongda\Pay\Contract;
 
 use GuzzleHttp\ClientInterface;
 
-interface HttpInterface extends ClientInterface
+interface HttpClientInterface extends ClientInterface, \Psr\Http\Client\ClientInterface
 {
 }
