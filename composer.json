@@ -5,7 +5,8 @@
     "type": "library",
     "support": {
         "issues": "https://github.com/yansongda/pay/issues",
-        "source": "https://github.com/yansongda/pay"
+        "source": "https://github.com/yansongda/pay",
+        "homepage": "https://pay.yansongda.cn"
     },
     "authors": [
         {
