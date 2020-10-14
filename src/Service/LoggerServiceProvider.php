@@ -28,43 +28,39 @@ class LoggerServiceProvider implements ServiceProviderInterface
         /* @var ConfigInterface $config */
         $config = Pay::get(ConfigInterface::class);
 
-        $service = function () use ($config) {
-            $logger = new class($config) extends Logger {
-                /**
-                 * @var ConfigInterface
-                 */
-                private $conf;
+        $logger = new class($config) extends Logger {
+            /**
+             * @var ConfigInterface
+             */
+            private $conf;
 
-                /**
-                 * Bootstrap.
-                 */
-                public function __construct(Config $config)
-                {
-                    $this->conf = $config;
+            /**
+             * Bootstrap.
+             */
+            public function __construct(Config $config)
+            {
+                $this->conf = $config;
+            }
+
+            /**
+             * __call.
+             *
+             * @author yansongda <me@yansongda.cn>
+             *
+             * @throws \Exception
+             */
+            public function __call(string $method, array $args): void
+            {
+                if (false === $this->conf->get('log.enable', true)) {
+                    return;
                 }
 
-                /**
-                 * __call.
-                 *
-                 * @author yansongda <me@yansongda.cn>
-                 *
-                 * @throws \Exception
-                 */
-                public function __call(string $method, array $args): void
-                {
-                    if (false === $this->conf->get('log.enable', true)) {
-                        return;
-                    }
-
-                    parent::__call($method, $args);
-                }
-            };
-
-            $logger->setConfig($config->get('log'));
-
-            return $logger;
+                parent::__call($method, $args);
+            }
         };
 
-        $pay::set(LoggerInterface::class, $service);
+        $logger->setConfig($config->get('log'));
+
+        $pay::set(LoggerInterface::class, $logger);
     }
 }
