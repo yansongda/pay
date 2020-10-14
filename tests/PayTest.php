@@ -48,7 +48,7 @@ class PayTest extends TestCase
         Pay::foo([]);
     }
 
-    public function testSetAndGet()
+    public function testMagicCallSetAndGet()
     {
         $data = [
             'name' => 'yansongda',
@@ -79,7 +79,6 @@ class PayTest extends TestCase
 
         $container = Pay::getContainer($config);
 
-        self::assertInstanceOf(Container::class, $container);
         self::assertInstanceOf(Config::class, $container->get(ConfigInterface::class));
         self::assertEquals($config['name'], Pay::get(ConfigInterface::class)->get('name'));
 
@@ -148,10 +147,5 @@ class PayTest extends TestCase
         $this->expectException(ContainerNotFoundException::class);
 
         Pay::getContainer();
-    }
-
-    public function testGetForceContainer()
-    {
-        self::assertInstanceOf(Container::class, Pay::getContainer([]));
     }
 }

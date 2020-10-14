@@ -85,7 +85,7 @@ class Pay
     private function __construct(array $config)
     {
         $this->initContainer();
-        $this->registerService($config);
+        $this->registerServices($config);
     }
 
     /**
@@ -153,6 +153,19 @@ class Pay
     }
 
     /**
+     * @author yansongda <me@yansongda.cn>
+     */
+    public static function registerService(string $service, array $config)
+    {
+        $var = self::get($service);
+
+        if ($var instanceof ServiceProviderInterface) {
+            $var->prepare($config);
+            $var->register(self::get(Pay::class));
+        }
+    }
+
+    /**
      * clear.
      *
      * @author yansongda <me@yansongda.cn>
@@ -190,15 +203,10 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      */
-    private function registerService(array $config): void
+    private function registerServices(array $config): void
     {
         foreach (array_merge($this->coreService, $this->service) as $service) {
-            $var = self::get($service);
-
-            if ($var instanceof ServiceProviderInterface) {
-                $var->prepare($config);
-                $var->register($this);
-            }
+            self::registerService($service, $config);
         }
     }
 }

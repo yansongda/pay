@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Exception;
 
+use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
 
-class ServiceNotFoundException extends Exception
+class ServiceNotFoundException extends Exception implements NotFoundExceptionInterface
 {
     /**
      * Bootstrap.
