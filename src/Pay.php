@@ -20,7 +20,6 @@ use Yansongda\Pay\Service\ConfigServiceProvider;
 use Yansongda\Pay\Service\EventServiceProvider;
 use Yansongda\Pay\Service\HttpServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
-use Yansongda\Pay\Service\PayloadServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
 
 /**
@@ -66,7 +65,6 @@ class Pay
         ConfigServiceProvider::class,
         LoggerServiceProvider::class,
         EventServiceProvider::class,
-        PayloadServiceProvider::class,
         HttpServiceProvider::class,
     ];
 
