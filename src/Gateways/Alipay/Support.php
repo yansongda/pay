@@ -449,4 +449,23 @@ class Support
 
         return str_replace('.00', '', $dec);
     }
+
+    /**
+     * 根据不同模式处理 biz_array 参数
+     *
+     * @param $bizArray
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public static function bizArrayByMode($bizArray) {
+        $config = self::getInstance()->getConfig();
+
+        $pid = $config['pid'] ?? '';
+        $mode = $config['mode'] ?? Alipay::MODE_NORMAL;
+        if (Alipay::MODE_SERVICE === $mode && $pid) {
+            $bizArray['extend_params'] = empty($bizArray['extend_params']) ? ['sys_service_provider_id' => $pid] : array_merge(['sys_service_provider_id' => $pid], $bizArray['extend_params']);
+        }
+
+        return $bizArray;
+    }
 }
