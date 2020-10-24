@@ -41,6 +41,16 @@ class AppGateway extends Alipay
     {
         parent::pay($config_biz);
 
+
+        /**
+         * 支付宝支付报错 alin10146,原因支付宝不允许传空值，如return_url或notify_url有时为空，造成签名错误
+         * @author kingofzihua
+         * @link https://github.com/yansongda/pay/issues/119#ref-commit-bb4abeb
+         */
+        $this->config = array_filter($this->config, function ($value) {
+            return $value !== '' && !is_null($value);
+        });
+        
         return http_build_query($this->config);
     }
 }
