@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Yansongda\Pay\Events;
 use Yansongda\Pay\Exceptions\InvalidArgumentException;
 use Yansongda\Pay\Exceptions\InvalidConfigException;
-use Yansongda\Pay\Gateways\Alipay;
 
 class WebGateway extends Gateway
 {
