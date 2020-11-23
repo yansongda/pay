@@ -132,7 +132,7 @@ class Support
      * @throws InvalidConfigException
      * @throws InvalidSignException
      */
-    public static function requestApi(array $data): Collection
+    public static function requestApi(array $data, bool $response = false): Collection
     {
         Events::dispatch(new Events\ApiRequesting('Alipay', '', self::$instance->getBaseUri(), $data));
 
@@ -144,7 +144,7 @@ class Support
 
         Events::dispatch(new Events\ApiRequested('Alipay', '', self::$instance->getBaseUri(), $result));
 
-        return self::processingApiResult($data, $result);
+        return self::processingApiResult($data, $result, $response);
     }
 
     /**
@@ -396,8 +396,12 @@ class Support
      * @throws InvalidConfigException
      * @throws InvalidSignException
      */
-    protected static function processingApiResult($data, $result): Collection
+    protected static function processingApiResult($data, $result, $response = false): Collection
     {
+        if ($response) {
+            return new Collection($result);
+        }
+
         $method = str_replace('.', '_', $data['method']).'_response';
 
         if (!isset($result['sign']) || '10000' != $result[$method]['code']) {
