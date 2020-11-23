@@ -398,7 +398,7 @@ class Support
      */
     protected static function processingApiResult($data, $result, $response = false): Collection
     {
-        if($response){
+        if ($response) {
             return new Collection($result);
         }
 
