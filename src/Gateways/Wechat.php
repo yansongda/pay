@@ -145,7 +145,7 @@ class Wechat implements GatewayApplicationInterface
 
         $this->payload = array_merge($this->payload, $params);
 
-        $gateway = get_class($this).'\\'.Str::studly($gateway).'Gateway';
+        $gateway = __CLASS__.'\\'.Str::studly($gateway).'Gateway';
 
         if (class_exists($gateway)) {
             return $this->makePay($gateway);
