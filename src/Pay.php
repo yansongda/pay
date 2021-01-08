@@ -109,7 +109,6 @@ class Pay
     protected function registerLogService()
     {
         $config = $this->config->get('log');
-        $config['identify'] = 'yansongda.pay';
 
         $logger = new Logger();
         $logger->setConfig($config);
