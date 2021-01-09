@@ -36,21 +36,6 @@ use Yansongda\Pay\Service\WechatServiceProvider;
 class Pay
 {
     /**
-     * 普通模式.
-     */
-    public const MODE_NORMAL = 'normal';
-
-    /**
-     * 沙箱模式.
-     */
-    public const MODE_SANDBOX = 'sandbox';
-
-    /**
-     * 服务商模式.
-     */
-    public const MODE_SERVICE = 'service';
-
-    /**
      * @var string[]
      */
     protected $service = [
