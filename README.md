@@ -1,12 +1,16 @@
 <h1 style="text-align: center;">Pay</h1>
 
 <p style="text-align: center;">
+
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yansongda/pay/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yansongda/pay/?branch=master)
 [![Linter Status](https://github.com/yansongda/pay/workflows/Linter/badge.svg)](https://github.com/yansongda/pay/actions)
 [![Tester Status](https://github.com/yansongda/pay/workflows/Tester/badge.svg)](https://github.com/yansongda/pay/actions)
 [![Latest Stable Version](https://poser.pugx.org/yansongda/pay/v/stable)](https://packagist.org/packages/yansongda/pay)
 [![Total Downloads](https://poser.pugx.org/yansongda/pay/downloads)](https://packagist.org/packages/yansongda/pay)
 [![Latest Unstable Version](https://poser.pugx.org/yansongda/pay/v/unstable)](https://packagist.org/packages/yansongda/pay)
 [![License](https://poser.pugx.org/yansongda/pay/license)](https://packagist.org/packages/yansongda/pay)
+
+</p>
 
 该文档为 v2.x 版本，如果您想找 v1.x 版本文档，请点击[https://github.com/yansongda/pay/tree/v1](https://github.com/yansongda/pay/tree/v1)
 
