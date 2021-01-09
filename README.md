@@ -1,15 +1,14 @@
-<h1 align="center">Pay</h1>
+<h1 style="text-align: center;">Pay</h1>
 
-<p align="center">
-<a href="https://scrutinizer-ci.com/g/yansongda/pay/?branch=master"><img src="https://scrutinizer-ci.com/g/yansongda/pay/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
-<a href="https://scrutinizer-ci.com/g/yansongda/pay/build-status/master"><img src="https://scrutinizer-ci.com/g/yansongda/pay/badges/build.png?b=master" alt="Build Status"></a>
-<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/v/stable" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/downloads" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/v/unstable" alt="Latest Unstable Version"></a>
-<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/license" alt="License"></a>
-</p>
+<p style="text-align: center;">
+[![Linter Status](https://github.com/yansongda/pay/workflows/Linter/badge.svg)](https://github.com/yansongda/pay/actions)
+[![Tester Status](https://github.com/yansongda/pay/workflows/Tester/badge.svg)](https://github.com/yansongda/pay/actions)
+[![Latest Stable Version](https://poser.pugx.org/yansongda/pay/v/stable)](https://packagist.org/packages/yansongda/pay)
+[![Total Downloads](https://poser.pugx.org/yansongda/pay/downloads)](https://packagist.org/packages/yansongda/pay)
+[![Latest Unstable Version](https://poser.pugx.org/yansongda/pay/v/unstable)](https://packagist.org/packages/yansongda/pay)
+[![License](https://poser.pugx.org/yansongda/pay/license)](https://packagist.org/packages/yansongda/pay)
 
-该文档为 v2.x 版本，如果您想找 v1.x 版本文档，请点击[https://github.com/yansongda/pay/tree/v1.x](https://github.com/yansongda/pay/tree/v1.x)
+该文档为 v2.x 版本，如果您想找 v1.x 版本文档，请点击[https://github.com/yansongda/pay/tree/v1](https://github.com/yansongda/pay/tree/v1)
 
 **注意：v1.x 与 v2.x 版本不兼容**
 
@@ -304,7 +303,7 @@ class PayController
 
 ## 赏一杯咖啡吧
 
-![pay](https://pay.yanda.net.cn/images/pay.jpg)
+![pay](https://pay.yansongda.cn/images/pay.jpg)
 
 ## LICENSE
 MIT
