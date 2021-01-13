@@ -306,7 +306,9 @@ class Support
             throw new InvalidArgumentException('Convert To Array Error! Invalid Xml!');
         }
 
-        libxml_disable_entity_loader(true);
+        if (\PHP_VERSION_ID < 80000) {
+            libxml_disable_entity_loader(true);
+        }
 
         return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA), JSON_UNESCAPED_UNICODE), true);
     }
