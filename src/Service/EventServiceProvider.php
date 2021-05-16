@@ -13,21 +13,16 @@ use Yansongda\Pay\Pay;
 class EventServiceProvider implements ServiceProviderInterface
 {
     /**
-     * {@inheritdoc}
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function prepare(array $data): void
+    public function register(Pay $pay, ?array $data = null): void
     {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function register(Pay $pay): void
-    {
-        $event = $pay::make(EventDispatcher::class);
+        $event = Pay::get(EventDispatcher::class);
 
         $event->addSubscriber(new KernelLogSubscriber());
 
-        $pay::set(EventDispatcherInterface::class, $event);
+        Pay::set(EventDispatcherInterface::class, $event);
     }
 }

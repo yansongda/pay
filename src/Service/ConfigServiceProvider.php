@@ -27,27 +27,13 @@ class ConfigServiceProvider implements ServiceProviderInterface
             'timeout' => 5.0,
             'connect_timeout' => 3.0,
         ],
-        // 当前支付体系
         'mode' => Pay::MODE_NORMAL,
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function prepare(array $data): void
+    public function register(Pay $pay, ?array $data = null): void
     {
-        $this->config = array_replace_recursive($this->config, $data);
-    }
+        $config = new Config(array_replace_recursive($this->config, $data ?? []));
 
-    /**
-     * {@inheritdoc}
-     */
-    public function register(Pay $pay): void
-    {
-        $service = $pay::make(Config::class, [
-            'items' => $this->config,
-        ]);
-
-        $pay::set(ConfigInterface::class, $service);
+        $pay::set(ConfigInterface::class, $config);
     }
 }

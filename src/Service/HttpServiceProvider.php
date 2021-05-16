@@ -12,27 +12,15 @@ use Yansongda\Pay\Pay;
 
 class HttpServiceProvider implements ServiceProviderInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function prepare(array $data): void
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function register(Pay $pay): void
+    public function register(Pay $pay, ?array $data = null): void
     {
         $service = function () use ($pay) {
             /* @var \Yansongda\Supports\Config $config */
             $config = Pay::get(ConfigInterface::class);
 
-            return $pay::make(Client::class, [
-                'config' => $config->get('http', []),
-            ]);
+            return new Client($config->get('http', []));
         };
 
-        $pay::set(HttpClientInterface::class, $service);
+        Pay::set(HttpClientInterface::class, $service);
     }
 }

@@ -10,18 +10,7 @@ use Yansongda\Pay\Plugin\Wechat;
 
 class WechatServiceProvider implements ServiceProviderInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function prepare(array $data): void
-    {
-        // TODO: Implement prepare() method.
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function register(Pay $pay): void
+    public function register(Pay $pay, ?array $data = null): void
     {
         $pay::set(Wechat::class, '');
         $pay::set('wechat', '');

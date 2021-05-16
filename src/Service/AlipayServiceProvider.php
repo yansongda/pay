@@ -10,17 +10,7 @@ use Yansongda\Pay\Plugin\Alipay;
 
 class AlipayServiceProvider implements ServiceProviderInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function prepare(array $data): void
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function register(Pay $pay): void
+    public function register(Pay $pay, ?array $data = null): void
     {
         $service = new Alipay();
 

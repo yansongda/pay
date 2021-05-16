@@ -14,23 +14,18 @@ use Yansongda\Supports\Logger;
 class LoggerServiceProvider implements ServiceProviderInterface
 {
     /**
-     * {@inheritdoc}
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function prepare(array $data): void
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function register(Pay $pay): void
+    public function register(Pay $pay, ?array $data = null): void
     {
         /* @var ConfigInterface $config */
         $config = Pay::get(ConfigInterface::class);
 
         $logger = new class($config) extends Logger {
             /**
-             * @var ConfigInterface
+             * @var array
              */
             private $conf;
 
@@ -39,7 +34,9 @@ class LoggerServiceProvider implements ServiceProviderInterface
              */
             public function __construct(Config $config)
             {
-                $this->conf = $config;
+                $this->conf = $config->get('log', []);
+
+                parent::__construct($this->conf);
             }
 
             /**
@@ -51,15 +48,13 @@ class LoggerServiceProvider implements ServiceProviderInterface
              */
             public function __call(string $method, array $args): void
             {
-                if (false === $this->conf->get('log.enable', true)) {
+                if (false === $this->conf['enable'] ?? false) {
                     return;
                 }
 
                 parent::__call($method, $args);
             }
         };
-
-        $logger->setConfig($config->get('log'));
 
         $pay::set(LoggerInterface::class, $logger);
     }
