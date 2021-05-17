@@ -8,12 +8,11 @@ use DI\Container;
 use DI\ContainerBuilder;
 use DI\DependencyException;
 use DI\NotFoundException;
-use Exception;
+use Throwable;
 use Yansongda\Pay\Contract\ContainerInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerDependencyException;
 use Yansongda\Pay\Exception\ContainerException;
-use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\ConfigServiceProvider;
@@ -22,19 +21,23 @@ use Yansongda\Pay\Service\HttpServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
 
-/**
- * @method static mixed get(string $name)
- * @method static mixed make($name, array $parameters = [])
- * @method static mixed has(string $name)
- * @method static object injectOn($instance)
- * @method static mixed call($callable, array $parameters = [])
- * @method static void set(string $name, $value)
- * @method static array getKnownEntryNames()
- * @method static string debugEntry(string $name)
- * @method static string getEntryType($entry)
- */
 class Pay
 {
+    /**
+     * 正常模式.
+     */
+    public const MODE_NORMAL = 0;
+
+    /**
+     * 沙箱模式.
+     */
+    public const MODE_SANDBOX = 1;
+
+    /**
+     * 服务商模式.
+     */
+    public const MODE_SERVICE = 2;
+
     /**
      * @var string[]
      */
@@ -56,19 +59,37 @@ class Pay
     /**
      * @var \DI\Container
      */
-    private static $container;
+    private static $container = null;
 
     /**
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
      *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     private function __construct(array $config)
     {
         $this->initContainer();
         $this->registerServices($config);
+    }
+
+    /**
+     * __call.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return mixed
+     */
+    public function __call(string $service)
+    {
+        return self::get($service);
     }
 
     /**
@@ -78,26 +99,65 @@ class Pay
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
      * @return mixed
      */
     public static function __callStatic(string $service, array $config)
     {
-        $container = self::hasContainer() ? self::getContainer() : self::getContainer(...$config);
+        self::config(...$config);
 
-        if (!is_callable([$container, $service])) {
-            return self::get($service);
+        return self::get($service);
+    }
+
+    /**
+     * 初始化容器、配置等信息.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    public static function config(array $config): Pay
+    {
+        if (empty($config) && self::hasContainer()) {
+            return self::get(Pay::class);
         }
 
+        return new self($config);
+    }
+
+    /**
+     * 定义.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @param mixed $value
+     */
+    public static function set(string $name, $value): void
+    {
+        Pay::getContainer()->set($name, $value);
+    }
+
+    /**
+     * 获取服务.
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return mixed
+     */
+    public static function get(string $service)
+    {
         try {
-            return call_user_func_array([$container, $service], $config);
+            return Pay::getContainer()->get($service);
         } catch (NotFoundException $e) {
             throw new ServiceNotFoundException($e->getMessage());
         } catch (DependencyException $e) {
             throw new ContainerDependencyException($e->getMessage());
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw new ContainerException($e->getMessage());
         }
     }
@@ -106,22 +166,9 @@ class Pay
      * getContainer.
      *
      * @author yansongda <me@yansongda.cn>
-     *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      */
-    public static function getContainer(?array $initConfig = null): Container
+    public static function getContainer(): Container
     {
-        if (self::hasContainer()) {
-            return self::$container;
-        }
-
-        if (is_null($initConfig) || !is_array($initConfig)) {
-            throw new ContainerNotFoundException('You must init the container first with config');
-        }
-
-        new self($initConfig);
-
         return self::$container;
     }
 
@@ -132,20 +179,7 @@ class Pay
      */
     public static function hasContainer(): bool
     {
-        return self::$container instanceof Container;
-    }
-
-    /**
-     * @author yansongda <me@yansongda.cn>
-     */
-    public static function registerService(string $service, array $config)
-    {
-        $var = self::get($service);
-
-        if ($var instanceof ServiceProviderInterface) {
-            $var->prepare($config);
-            $var->register(self::get(Pay::class));
-        }
+        return isset(self::$container) && self::$container instanceof Container;
     }
 
     /**
@@ -156,6 +190,24 @@ class Pay
     public static function clear(): void
     {
         self::$container = null;
+    }
+
+    /**
+     * 注册服务.
+     *
+     * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    public static function registerService(string $service, array $config): void
+    {
+        $var = self::get($service);
+
+        if ($var instanceof ServiceProviderInterface) {
+            $var->register(self::get(Pay::class), $config);
+        }
     }
 
     /**
@@ -176,15 +228,20 @@ class Pay
             $container->set(Pay::class, $this);
 
             self::$container = $container;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw new ContainerException($e->getMessage());
         }
     }
 
     /**
-     * register.
+     * register services.
      *
      * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
      */
     private function registerServices(array $config): void
     {

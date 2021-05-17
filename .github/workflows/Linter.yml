@@ -3,9 +3,19 @@ on: [push, pull_request]
 
 jobs:
   php_cs_fixer:
-    name: php_cs_fixer
+    name: php_cs_fixer-php-${{ matrix.php }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - 7.3
+          - 7.4
+    container:
+      image: yansongda/php-fpm:${{ matrix.php }}
     steps:
+      - name: Install Git
+        run: apt-get update && apt-get install -y git
       - name: Checkout Code
         uses: actions/checkout@master
       - name: Install Dependencies
