@@ -28,6 +28,11 @@ class Exception extends \Exception
 
     public const SERVICE_NOT_FOUND_EXCEPTION = 2001;
 
+    /*
+     * about config.
+     */
+    public const CONFIG_EXCEPTION = 3000;
+
     /**
      * raw.
      *

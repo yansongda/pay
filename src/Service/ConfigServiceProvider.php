@@ -34,6 +34,7 @@ class ConfigServiceProvider implements ServiceProviderInterface
     {
         $config = new Config(array_replace_recursive($this->config, $data ?? []));
 
-        $pay::set(ConfigInterface::class, $config);
+        Pay::set(ConfigInterface::class, $config);
+        Pay::set('config', $config);
     }
 }

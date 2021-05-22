@@ -10,7 +10,7 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
-class Alipay implements PluginInterface
+class Alipay
 {
     public const URL = [
         Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do',
@@ -18,67 +18,35 @@ class Alipay implements PluginInterface
         Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function addMiddleware(MiddlewareInterface $middleware): PluginInterface
+    public function pay($order)
     {
-        // TODO: Implement addMiddleware() method.
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function pay($order, ?array $middleware = [])
-    {
-        // TODO: Implement pay() method.
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function find($order, string $type): Collection
     {
-        // TODO: Implement find() method.
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function refund(array $order): Collection
     {
-        // TODO: Implement refund() method.
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function cancel($order): Collection
     {
-        // TODO: Implement cancel() method.
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function close($order): Collection
     {
-        // TODO: Implement close() method.
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function verify($content, bool $refund): Collection
     {
-        // TODO: Implement verify() method.
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function success(): Response
     {
-        // TODO: Implement success() method.
+    }
+
+    public function launch(Collection $payload)
+    {
     }
 }
