@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Middleware\Alipay;
+namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
 use Yansongda\Pay\Contract\ConfigInterface;
@@ -13,7 +13,7 @@ use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
-class SignMiddleware
+class SignPlugin
 {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
@@ -33,8 +33,7 @@ class SignMiddleware
 
         !is_resource($privateKey) ?: openssl_free_key($privateKey);
 
-        // todo
-        $payload->set('sign', $sign);
+        $payload = $payload->merge(['sign' => $sign]);
 
         return $next($params, $payload);
     }

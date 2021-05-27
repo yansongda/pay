@@ -20,10 +20,10 @@
         "ext-simplexml":"*",
         "ext-libxml": "*",
         "ext-json": "*",
-        "php-di/php-di": "^6.0",
-        "yansongda/supports": "^3.0",
-        "symfony/event-dispatcher": "^5.0",
-        "symfony/http-foundation": "^5.0.7"
+        "php-di/php-di": "~6.3.0",
+        "yansongda/supports": "~3.0.0",
+        "symfony/event-dispatcher": "~5.2.0",
+        "symfony/http-foundation": "~5.2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
@@ -34,7 +34,10 @@
     "autoload": {
         "psr-4": {
             "Yansongda\\Pay\\": "src"
-        }
+        },
+        "files": [
+            "src/Functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

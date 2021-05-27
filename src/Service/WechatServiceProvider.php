@@ -6,14 +6,17 @@ namespace Yansongda\Pay\Service;
 
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Wechat;
+use Yansongda\Pay\Provider\Wechat;
 
 class WechatServiceProvider implements ServiceProviderInterface
 {
     public function register(Pay $pay, ?array $data = null): void
     {
-        $pay::set(Wechat::class, '');
-        $pay::set('wechat', '');
-        $pay::set('wechat.http', '');
+        $service = function () {
+            return new Wechat();
+        };
+
+        $pay::set(Wechat::class, $service);
+        $pay::set('wechat', $service);
     }
 }

@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin;
+namespace Yansongda\Pay\Provider;
 
 use Symfony\Component\HttpFoundation\Response;
-use Yansongda\Pay\Contract\MiddlewareInterface;
-use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
@@ -18,11 +16,11 @@ class Alipay
         Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do',
     ];
 
-    public function pay($order)
+    public function pay(array $order)
     {
     }
 
-    public function find($order, string $type): Collection
+    public function find($order): Collection
     {
     }
 
@@ -38,7 +36,7 @@ class Alipay
     {
     }
 
-    public function verify($content, bool $refund): Collection
+    public function verify($content): Collection
     {
     }
 
@@ -46,7 +44,7 @@ class Alipay
     {
     }
 
-    public function launch(Collection $payload)
+    public function launch(array $params, array $plugins): Collection
     {
     }
 }

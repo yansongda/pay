@@ -6,7 +6,7 @@ namespace Yansongda\Pay\Service;
 
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Alipay;
+use Yansongda\Pay\Provider\Alipay;
 
 class AlipayServiceProvider implements ServiceProviderInterface
 {
