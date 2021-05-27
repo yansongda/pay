@@ -20,13 +20,14 @@ class IgnitePlugin
             'app_id' => get_alipay_config($params)['app_id'] ?? '',
             'method' => '',
             'format' => 'JSON',
+            'return_url' => get_alipay_config($params)['return_url'] ?? '',
             'charset' => 'utf-8',
             'sign_type' => 'RSA2',
             'sign' => '',
             'timestamp' => date('Y-m-d H:i:s'),
             'version' => '1.0',
             'notify_url' => get_alipay_config($params)['notify_url'] ?? '',
-            'app_auth_token' => '',
+            'app_auth_token' => get_alipay_config($params)['app_auth_token'] ?? '',
             'biz_content' => '',
         ]);
 

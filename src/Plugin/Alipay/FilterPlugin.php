@@ -12,7 +12,7 @@ class FilterPlugin
     public function apply(array $params, Collection $payload, Closure $next): Collection
     {
         $payload = $payload->filter(function ($v, $k) {
-            return '' !== $v && !is_null($v) && 'sign' != $k && '@' != substr($v, 0, 1);
+            return '' !== $v && !is_null($v) && 'sign' != $k && '_config' != $k;
         });
 
         return $next($params, $payload);
