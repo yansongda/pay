@@ -20,7 +20,18 @@ class Alipay
         Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do',
     ];
 
-    public function pay(array $order): Collection
+    /**
+     * @return \Yansongda\Supports\Collection
+     */
+    public function __call(string $method, array $params)
+    {
+        return $this->pay($method, ...$params);
+    }
+
+    /**
+     * @return \Yansongda\Supports\Collection
+     */
+    public function pay(string $method, array $order)
     {
         $plugins = [
             IgnitePlugin::class,

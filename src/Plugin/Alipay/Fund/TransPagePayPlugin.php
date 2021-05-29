@@ -2,20 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay;
+namespace Yansongda\Pay\Plugin\Alipay\Fund;
 
 use Closure;
 use Yansongda\Supports\Collection;
 
-class TradePayPlugin
+class TransPagePayPlugin
 {
     public function apply(array $params, Collection $payload, Closure $next): Collection
     {
-        $biz = array_merge(['product_code' => 'QUICK_WAP_PAY'], $params);
-
         $payload = $payload->merge([
-            'method' => 'alipay.trade.wap.pay',
-            'biz_content' => json_encode($biz),
+            'method' => 'alipay.fund.trans.page.pay',
+            'biz_content' => json_encode($params),
         ]);
 
         return $next($params, $payload);

@@ -27,7 +27,7 @@ if (!function_exists('get_wechat_config')) {
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    function get_alipay_config(array $params): array
+    function get_wechat_config(array $params): array
     {
         $wechat = Pay::get(ConfigInterface::class)->get('wechat');
 
@@ -36,4 +36,3 @@ if (!function_exists('get_wechat_config')) {
         return $wechat[$config] ?? [];
     }
 }
-
