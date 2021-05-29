@@ -13,7 +13,12 @@ class WapPayPlugin
     {
         $payload = $payload->merge([
             'method' => 'alipay.trade.wap.pay',
-            'biz_content' => json_encode($params),
+            'biz_content' => json_encode(array_merge(
+                [
+                    'product_code' => 'QUICK_WAP_PAY',
+                ],
+                $params
+            )),
         ]);
 
         return $next($params, $payload);

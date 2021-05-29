@@ -12,8 +12,8 @@ class ContainerException extends Exception implements ContainerExceptionInterfac
     /**
      * Bootstrap.
      */
-    public function __construct(string $message = '', array $extra = [], int $code = self::CONTAINER_ERROR, Throwable $previous = null)
+    public function __construct(string $message = '', int $code = self::CONTAINER_ERROR, array $extra = [], Throwable $previous = null)
     {
-        parent::__construct($message, $extra, $code, $previous);
+        parent::__construct($message, $code, $extra, $previous);
     }
 }

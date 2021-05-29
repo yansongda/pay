@@ -27,7 +27,7 @@ class IgnitePlugin
             'timestamp' => date('Y-m-d H:i:s'),
             'version' => '1.0',
             'notify_url' => get_alipay_config($params)['notify_url'] ?? '',
-            'app_auth_token' => get_alipay_config($params)['app_auth_token'] ?? '',
+            'app_auth_token' => '',
             'biz_content' => '',
         ]);
 

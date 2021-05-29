@@ -11,8 +11,8 @@ class ContainerNotFoundException extends ContainerException
     /**
      * Bootstrap.
      */
-    public function __construct(string $message = 'Container Not Found', array $extra = [], int $code = self::CONTAINER_NOT_FOUND, Throwable $previous = null)
+    public function __construct(string $message = 'Container Not Found', int $code = self::CONTAINER_NOT_FOUND, array $extra = [], Throwable $previous = null)
     {
-        parent::__construct($message, $extra, $code, $previous);
+        parent::__construct($message, $code, $extra, $previous);
     }
 }
