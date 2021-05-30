@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
-use Symfony\Component\HttpFoundation\Response;
-use Yansongda\Pay\Contract\PluginInterface;
+use Psr\Http\Message\RequestInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\FilterPlugin;
-use Yansongda\Pay\Plugin\Alipay\IgnitePlugin;
+use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
+use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
+use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Pipeline;
 use Yansongda\Supports\Str;
 
 class Alipay
@@ -23,64 +27,76 @@ class Alipay
     ];
 
     /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
      * @return \Yansongda\Supports\Collection
      */
-    public function __call(string $method, array $params)
+    public function __call(string $shortcut, array $params)
     {
         $plugin = '\\Yansongda\\Pay\\Plugin\\Alipay\\Shortcut\\'.
-            Str::studly($method).'Plugin';
+            Str::studly($shortcut).'Shortcut';
 
-        if (!class_exists($plugin) || !in_array(PluginInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException('Shortcut not found', InvalidParamsException::SHORTCUT_NOT_FOUND);
+        if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
+            throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] not found");
         }
 
-        return $this->pay([$plugin], ...$params);
+        /* @var ShortcutInterface $money */
+        $money = Pay::get($plugin);
+
+        return $this->pay($money->getPlugins(), ...$params);
     }
 
     /**
-     * @return \Yansongda\Supports\Collection
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
      */
-    public function pay(array $plugins, array $order)
+    public function pay(array $plugins, array $params)
     {
         $plugins = array_merge(
-            [IgnitePlugin::class],
+            [PreparePlugin::class],
             $plugins,
-            [FilterPlugin::class, SignPlugin::class]
+            [FilterPlugin::class, SignPlugin::class, RadarPlugin::class]
         );
 
-        // todo
-        $payload = [];
+        /* @var Pipeline $pipeline */
+        $pipeline = Pay::get(Pipeline::class);
 
-        return $this->launch($payload);
+        return $pipeline
+            ->send((new Rocket())->setParams($params)->setPayload(new Collection()))
+            ->through($plugins)
+            ->via('assembly')
+            ->then(function ($rocket) {
+                return $this->ignite($rocket);
+            });
     }
 
-    public function find($order): Collection
+    public function ignite(Rocket $rocket)
     {
     }
 
-    public function refund(array $order): Collection
+    protected function launchResponse(RequestInterface $radar, Collection $payload): Response
     {
-    }
+        $method = $radar->getMethod();
+        $endpoint = $radar->getUri()->getScheme().'://'.$radar->getUri()->getHost();
 
-    public function cancel($order): Collection
-    {
-    }
+        if ('GET' === $method) {
+            return new RedirectResponse($radar->getUri()->__toString());
+        }
 
-    public function close($order): Collection
-    {
-    }
+        $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='".$method."'>";
+        foreach ($payload->all() as $key => $val) {
+            $val = str_replace("'", '&apos;', $val);
+            $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
+        }
+        $sHtml .= "<input type='submit' value='ok' style='display:none;'></form>";
+        $sHtml .= "<script>document.forms['alipay_submit'].submit();</script>";
 
-    public function verify($content): Collection
-    {
-    }
-
-    public function success(): Response
-    {
-    }
-
-    public function launch(array $payload): Collection
-    {
+        return new Response($sHtml);
     }
 }

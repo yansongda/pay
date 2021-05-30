@@ -5,22 +5,19 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Trade;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Rocket;
 
-class AppPayPlugin
+class AppPayPlugin implements PluginInterface
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $payload->merge([
+        return $next($rocket->mergePayload([
             'method' => 'alipay.trade.app.pay',
-            'biz_content' => json_encode(array_merge(
-                [
-                    'product_code' => 'QUICK_MSECURITY_PAY',
-                ],
-                $params
-            )),
-        ]);
-
-        return $next($params, $payload);
+            'biz_content' => array_merge(
+                ['product_code' => 'QUICK_MSECURITY_PAY'],
+                $rocket->getParams(),
+            ),
+        ]));
     }
 }

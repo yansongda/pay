@@ -5,18 +5,31 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Rocket;
 
-class IgnitePlugin
+class PreparePlugin implements PluginInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next)
     {
-        $payload->merge([
+        return $next(
+            $rocket->mergePayload($this->getPayload($rocket->getParams()))
+        );
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getPayload(array $params): array
+    {
+        return [
             'app_id' => get_alipay_config($params)['app_id'] ?? '',
             'method' => '',
             'format' => 'JSON',
@@ -28,9 +41,7 @@ class IgnitePlugin
             'version' => '1.0',
             'notify_url' => get_alipay_config($params)['notify_url'] ?? '',
             'app_auth_token' => '',
-            'biz_content' => '',
-        ]);
-
-        return $next($params, $payload);
+            'biz_content' => [],
+        ];
     }
 }

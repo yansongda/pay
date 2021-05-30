@@ -8,7 +8,7 @@ use Throwable;
 
 class InvalidParamsException extends Exception
 {
-    public function __construct(string $message = 'Params Error', int $code = self::PARAMS_ERROR, array $extra = [], Throwable $previous = null)
+    public function __construct(int $code = self::PARAMS_ERROR, string $message = 'Params Error', array $extra = [], Throwable $previous = null)
     {
         parent::__construct($message, $code, $extra, $previous);
     }

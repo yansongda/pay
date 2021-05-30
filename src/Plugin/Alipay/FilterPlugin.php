@@ -5,16 +5,23 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Str;
 
-class FilterPlugin
+class FilterPlugin implements PluginInterface
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    /**
+     * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
+     */
+    public function assembly(Rocket $rocket, Closure $next)
     {
-        $payload = $payload->filter(function ($v, $k) {
-            return '' !== $v && !is_null($v) && 'sign' != $k && '_config' != $k;
+        $payload = $rocket->getPayload()->filter(function ($v, $k) {
+            return '' !== $v && !is_null($v) && 'sign' != $k && Str::startsWith($k, '_');
         });
 
-        return $next($params, $payload);
+        $payload->set('biz_content', json_encode($payload->get('biz_content')));
+
+        return $next($rocket->setPayload($payload));
     }
 }

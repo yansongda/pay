@@ -224,7 +224,8 @@ class Pay
 
         try {
             $container = $builder->build();
-            $container->set(ContainerInterface::class, $this);
+            $container->set(ContainerInterface::class, $container);
+            $container->set(\Psr\Container\ContainerInterface::class, $container);
             $container->set(Pay::class, $this);
 
             self::$container = $container;

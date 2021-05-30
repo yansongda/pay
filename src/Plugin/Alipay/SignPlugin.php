@@ -6,14 +6,16 @@ namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
 use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
-class SignPlugin
+class SignPlugin implements PluginInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
@@ -21,8 +23,9 @@ class SignPlugin
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next)
     {
+        $payload = $rocket->getPayload();
         $privateKey = $this->getPrivateKey();
 
         openssl_sign($this->getSignContent($payload), $sign, $privateKey, OPENSSL_ALGO_SHA256);
@@ -33,9 +36,9 @@ class SignPlugin
 
         !is_resource($privateKey) ?: openssl_free_key($privateKey);
 
-        $payload = $payload->merge(['sign' => $sign]);
-
-        return $next($params, $payload);
+        return $next($rocket->mergePayload([
+            'sign' => $sign,
+        ]));
     }
 
     /**

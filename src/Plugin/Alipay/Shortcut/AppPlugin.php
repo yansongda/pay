@@ -10,8 +10,8 @@ use Yansongda\Supports\Collection;
 
 class AppPlugin extends AppPayPlugin
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(array $params, Collection $payload, Closure $next): Collection
     {
-        return parent::apply(...func_get_args());
+        return parent::assembly(...func_get_args());
     }
 }

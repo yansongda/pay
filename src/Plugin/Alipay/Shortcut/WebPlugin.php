@@ -6,12 +6,12 @@ namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
 
 use Closure;
 use Yansongda\Pay\Plugin\Alipay\Trade\PagePayPlugin;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Rocket;
 
 class WebPlugin extends PagePayPlugin
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        return parent::apply(...func_get_args());
+        return parent::assembly(...func_get_args());
     }
 }
