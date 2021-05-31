@@ -15,7 +15,7 @@ class PreparePlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function assembly(Rocket $rocket, Closure $next)
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         return $next(
             $rocket->mergePayload($this->getPayload($rocket->getParams()))

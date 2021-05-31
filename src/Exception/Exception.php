@@ -41,6 +41,15 @@ class Exception extends \Exception
     public const SHORTCUT_NOT_FOUND = 4001;
 
     /**
+     * 关于api.
+     */
+    public const RESPONSE_ERROR = 5000;
+
+    public const REQUEST_RESPONSE_ERROR = 5001;
+
+    public const UNPACK_RESPONSE_ERROR = 5002;
+
+    /**
      * raw.
      *
      * @var array

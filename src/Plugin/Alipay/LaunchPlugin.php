@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
+use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Rocket;
 
-class RadarPlugin implements PluginInterface
+class LaunchPlugin implements PluginInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
@@ -19,10 +19,12 @@ class RadarPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $config = get_alipay_config($rocket->getParams());
+        /* @var Rocket $rocket */
+        $rocket = $next($rocket);
 
-        return $next($rocket->setRadar(
-            $config['mode'] ?? Alipay::URL[Pay::MODE_NORMAL]
-        ));
+        /* @var PackerInterface $packer */
+        $packer = Pay::get(PackerInterface::class);
+
+        return $rocket->setDestination($packer->unpack($rocket->getDestination()));
     }
 }

@@ -14,7 +14,7 @@ class FilterPlugin implements PluginInterface
     /**
      * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
      */
-    public function assembly(Rocket $rocket, Closure $next)
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         $payload = $rocket->getPayload()->filter(function ($v, $k) {
             return '' !== $v && !is_null($v) && 'sign' != $k && Str::startsWith($k, '_');

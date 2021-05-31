@@ -9,10 +9,5 @@ use Yansongda\Pay\Rocket;
 
 interface PluginInterface
 {
-    /**
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
-     */
-    public function assembly(Rocket $rocket, Closure $next);
+    public function assembly(Rocket $rocket, Closure $next): Rocket;
 }

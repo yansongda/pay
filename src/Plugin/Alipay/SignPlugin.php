@@ -23,7 +23,7 @@ class SignPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function assembly(Rocket $rocket, Closure $next)
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         $payload = $rocket->getPayload();
         $privateKey = $this->getPrivateKey();

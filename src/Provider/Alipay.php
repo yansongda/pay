@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
-use Psr\Http\Message\RequestInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Throwable;
+use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\FilterPlugin;
+use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
@@ -32,7 +34,7 @@ class Alipay
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection
+     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
      */
     public function __call(string $shortcut, array $params)
     {
@@ -46,7 +48,14 @@ class Alipay
         /* @var ShortcutInterface $money */
         $money = Pay::get($plugin);
 
-        return $this->pay($money->getPlugins(), ...$params);
+        $plugins = array_merge(
+            [PreparePlugin::class],
+            $money->getPlugins(),
+            [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
+            [LaunchPlugin::class],
+        );
+
+        return $this->pay($plugins, ...$params);
     }
 
     /**
@@ -54,49 +63,46 @@ class Alipay
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
+     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
      */
     public function pay(array $plugins, array $params)
     {
-        $plugins = array_merge(
-            [PreparePlugin::class],
-            $plugins,
-            [FilterPlugin::class, SignPlugin::class, RadarPlugin::class]
-        );
-
         /* @var Pipeline $pipeline */
         $pipeline = Pay::get(Pipeline::class);
 
-        return $pipeline
+        /* @var Rocket $rocket */
+        $rocket = $pipeline
             ->send((new Rocket())->setParams($params)->setPayload(new Collection()))
             ->through($plugins)
             ->via('assembly')
             ->then(function ($rocket) {
                 return $this->ignite($rocket);
             });
+
+        return $rocket->getDestination();
     }
 
-    public function ignite(Rocket $rocket)
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     */
+    public function ignite(Rocket $rocket): Rocket
     {
-    }
-
-    protected function launchResponse(RequestInterface $radar, Collection $payload): Response
-    {
-        $method = $radar->getMethod();
-        $endpoint = $radar->getUri()->getScheme().'://'.$radar->getUri()->getHost();
-
-        if ('GET' === $method) {
-            return new RedirectResponse($radar->getUri()->__toString());
+        if (!empty($rocket->getDestination())) {
+            return $rocket;
         }
 
-        $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='".$method."'>";
-        foreach ($payload->all() as $key => $val) {
-            $val = str_replace("'", '&apos;', $val);
-            $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
-        }
-        $sHtml .= "<input type='submit' value='ok' style='display:none;'></form>";
-        $sHtml .= "<script>document.forms['alipay_submit'].submit();</script>";
+        /* @var HttpClientInterface $http */
+        $http = Pay::get(HttpClientInterface::class);
 
-        return new Response($sHtml);
+        try {
+            $response = $http->sendRequest($rocket->getRadar());
+        } catch (Throwable $e) {
+            throw new InvalidResponseException(InvalidResponseException::REQUEST_RESPONSE_ERROR);
+        }
+
+        return $rocket->setDestination($response);
     }
 }

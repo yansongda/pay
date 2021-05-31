@@ -77,22 +77,6 @@ class Pay
     }
 
     /**
-     * __call.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return mixed
-     */
-    public function __call(string $service)
-    {
-        return self::get($service);
-    }
-
-    /**
      * __callStatic.
      *
      * @author yansongda <me@yansongda.cn>

@@ -13,8 +13,7 @@ class PagePayPlugin implements PluginInterface
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         return $next(
-            $rocket->setType(Response::class)
-                ->mergePayload([
+            $rocket->mergePayload([
                 'method' => 'alipay.trade.page.pay',
                 'biz_content' => array_merge(
                     ['product_code' => 'FAST_INSTANT_TRADE_PAY'],
