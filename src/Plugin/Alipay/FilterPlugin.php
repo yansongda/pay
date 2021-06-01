@@ -17,7 +17,7 @@ class FilterPlugin implements PluginInterface
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         $payload = $rocket->getPayload()->filter(function ($v, $k) {
-            return '' !== $v && !is_null($v) && 'sign' != $k && Str::startsWith($k, '_');
+            return '' !== $v && !is_null($v) && 'sign' != $k && !Str::startsWith($k, '_');
         });
 
         $payload->set('biz_content', json_encode($payload->get('biz_content')));
