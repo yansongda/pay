@@ -30,16 +30,16 @@ class PreparePlugin implements PluginInterface
     protected function getPayload(array $params): array
     {
         return [
-            'app_id' => get_alipay_config($params)['app_id'] ?? '',
+            'app_id' => get_alipay_config($params)->get('app_id', ''),
             'method' => '',
             'format' => 'JSON',
-            'return_url' => get_alipay_config($params)['return_url'] ?? '',
+            'return_url' => get_alipay_config($params)->get('return_url', ''),
             'charset' => 'utf-8',
             'sign_type' => 'RSA2',
             'sign' => '',
             'timestamp' => date('Y-m-d H:i:s'),
             'version' => '1.0',
-            'notify_url' => get_alipay_config($params)['notify_url'] ?? '',
+            'notify_url' => get_alipay_config($params)->get('notify_url', ''),
             'app_auth_token' => '',
             'biz_content' => [],
         ];

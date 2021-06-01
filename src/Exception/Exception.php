@@ -33,6 +33,10 @@ class Exception extends \Exception
      */
     public const CONFIG_ERROR = 3000;
 
+    public const INVALID_PACKER = 3001;
+
+    public const ALIPAY_PRIVATE_KEY_ERROR = 3002;
+
     /*
      * 关于参数.
      */

@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
-use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
@@ -26,7 +24,7 @@ class SignPlugin implements PluginInterface
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         $payload = $rocket->getPayload();
-        $privateKey = $this->getPrivateKey();
+        $privateKey = $this->getPrivateKey($rocket->getParams());
 
         openssl_sign($this->getSignContent($payload), $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
@@ -49,12 +47,12 @@ class SignPlugin implements PluginInterface
      *
      * @return false|resource|string
      */
-    protected function getPrivateKey()
+    protected function getPrivateKey(array $params)
     {
-        $privateKey = Pay::get(ConfigInterface::class)->get('private_key');
+        $privateKey = get_alipay_config($params)->get('private_key');
 
         if (is_null($privateKey)) {
-            throw new InvalidConfigException('Missing Alipay Config -- [private_key]');
+            throw new InvalidConfigException(InvalidConfigException::ALIPAY_PRIVATE_KEY_ERROR, 'Missing Alipay Config -- [private_key]');
         }
 
         $privateKey = "-----BEGIN RSA PRIVATE KEY-----\n".

@@ -31,7 +31,8 @@
         "mockery/mockery": "^1.4",
         "friendsofphp/php-cs-fixer": "^2.15",
         "symfony/var-dumper": "^5.1",
-        "symfony/http-foundation": "~5.2.0"
+        "symfony/http-foundation": "~5.2.0",
+        "symfony/psr-http-message-bridge": "^2.1"
     },
     "autoload": {
         "psr-4": {

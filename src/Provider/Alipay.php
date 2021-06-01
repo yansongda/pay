@@ -48,14 +48,10 @@ class Alipay
         /* @var ShortcutInterface $money */
         $money = Pay::get($plugin);
 
-        $plugins = array_merge(
-            [PreparePlugin::class],
-            $money->getPlugins(),
-            [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
-            [LaunchPlugin::class],
+        return $this->pay(
+            $this->getShortcutPlugins($money->getPlugins()),
+            ...$params
         );
-
-        return $this->pay($plugins, ...$params);
     }
 
     /**
@@ -104,5 +100,15 @@ class Alipay
         }
 
         return $rocket->setDestination($response);
+    }
+
+    protected function getShortcutPlugins(array $plugins): array
+    {
+        return array_merge(
+            [PreparePlugin::class],
+            $plugins,
+            [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
+            [LaunchPlugin::class],
+        );
     }
 }

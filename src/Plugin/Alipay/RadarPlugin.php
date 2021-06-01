@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
+use GuzzleHttp\Psr7\Request;
+use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
@@ -19,10 +21,50 @@ class RadarPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
+        return $next($rocket->setRadar($this->getResponse($rocket)));
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getResponse(Rocket $rocket): RequestInterface
+    {
+        return new Request(
+            $this->getMethod($rocket),
+            $this->getUrl($rocket),
+            $this->getHeaders(),
+            $this->getBody($rocket),
+        );
+    }
+
+    protected function getMethod(Rocket $rocket): string
+    {
+        return $rocket->getParams()['_method'] ?? 'POST';
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getUrl(Rocket $rocket): string
+    {
         $config = get_alipay_config($rocket->getParams());
 
-        return $next($rocket->setRadar(
-            $config['mode'] ?? Alipay::URL[Pay::MODE_NORMAL]
-        ));
+        return Alipay::URL[$config->get('mode', Pay::MODE_NORMAL)];
+    }
+
+    protected function getHeaders(): array
+    {
+        return [
+            'Content-Type' => 'application/json',
+        ];
+    }
+
+    protected function getBody(Rocket $rocket): string
+    {
+        return $rocket->getPayload()->toJson();
     }
 }

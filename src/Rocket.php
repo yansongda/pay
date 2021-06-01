@@ -35,6 +35,11 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
     private $payload;
 
     /**
+     * @var string|null
+     */
+    private $direction = Collection::class;
+
+    /**
      * @var \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
      */
     private $destination;
@@ -78,6 +83,18 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
     public function mergePayload(array $payload): Rocket
     {
         $this->payload = $this->payload->merge($payload);
+
+        return $this;
+    }
+
+    public function getDirection(): ?string
+    {
+        return $this->direction;
+    }
+
+    public function setDirection(?string $direction): Rocket
+    {
+        $this->direction = $direction;
 
         return $this;
     }

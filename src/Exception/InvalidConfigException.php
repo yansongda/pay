@@ -8,7 +8,7 @@ use Throwable;
 
 class InvalidConfigException extends Exception
 {
-    public function __construct(string $message = 'Config Error', int $code = self::CONFIG_ERROR, array $extra = [], Throwable $previous = null)
+    public function __construct(int $code = self::CONFIG_ERROR, string $message = 'Config Error', array $extra = [], Throwable $previous = null)
     {
         parent::__construct($message, $code, $extra, $previous);
     }

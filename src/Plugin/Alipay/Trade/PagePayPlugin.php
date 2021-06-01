@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Alipay\Trade;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Packer\ResponsePacker;
 use Yansongda\Pay\Rocket;
 
 class PagePayPlugin implements PluginInterface
@@ -13,7 +14,8 @@ class PagePayPlugin implements PluginInterface
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         return $next(
-            $rocket->mergePayload([
+            $rocket->setDirection(ResponsePacker::class)
+                ->mergePayload([
                 'method' => 'alipay.trade.page.pay',
                 'biz_content' => array_merge(
                     ['product_code' => 'FAST_INSTANT_TRADE_PAY'],

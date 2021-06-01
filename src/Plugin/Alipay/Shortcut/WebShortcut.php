@@ -7,26 +7,16 @@ namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
 use Closure;
 use const ENT_QUOTES;
 use GuzzleHttp\Psr7\Response;
-use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
-use Yansongda\Pay\Packer\ResponsePacker;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\Trade\PagePayPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
 class WebShortcut implements ShortcutInterface
 {
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     */
     public function getPlugins(): array
     {
-        Pay::set(PackerInterface::class, Pay::get(ResponsePacker::class));
-
         return [
             PagePayPlugin::class,
             $this->buildHtmlResponse(),

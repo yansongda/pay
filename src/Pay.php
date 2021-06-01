@@ -89,7 +89,9 @@ class Pay
      */
     public static function __callStatic(string $service, array $config)
     {
-        self::config(...$config);
+        if (!empty($config)) {
+            self::config(...$config);
+        }
 
         return self::get($service);
     }
