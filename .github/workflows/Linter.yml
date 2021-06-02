@@ -1,23 +1,23 @@
-name: Linter
+name: Coding Style
 on: [push, pull_request]
 
 jobs:
   php_cs_fixer:
-    name: php_cs_fixer-php-${{ matrix.php }}
-    runs-on: ubuntu-latest
+    name: php_cs_fixer-php
+    runs-on: "${{ matrix.os }}"
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
-        php:
-          - 7.3
+        os: [ubuntu-latest]
+        php-version:
           - 7.4
-    container:
-      image: yansongda/php-fpm:${{ matrix.php }}
     steps:
-      - name: Install Git
-        run: apt-get update && apt-get install -y git
       - name: Checkout Code
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
+      - name: PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
       - name: Install Dependencies
         run: composer install --no-progress
       - name: Run PHP-CS-Fixer
