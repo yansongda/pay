@@ -5,22 +5,25 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Trade;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Packer\ResponsePacker;
+use Yansongda\Pay\Rocket;
 
-class WapPayPlugin
+class WapPayPlugin implements PluginInterface
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $payload->merge([
+        $rocket->setDirection(ResponsePacker::class)
+            ->mergePayload([
             'method' => 'alipay.trade.wap.pay',
-            'biz_content' => json_encode(array_merge(
+            'biz_content' => array_merge(
                 [
                     'product_code' => 'QUICK_WAP_PAY',
                 ],
-                $params
-            )),
+                $rocket->getParams(),
+            ),
         ]);
 
-        return $next($params, $payload);
+        return $next($rocket);
     }
 }
