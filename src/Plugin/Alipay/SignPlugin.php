@@ -48,7 +48,7 @@ class SignPlugin implements PluginInterface
         $privateKey = get_alipay_config($params)->get('app_secret_cert');
 
         if (is_null($privateKey)) {
-            throw new InvalidConfigException(InvalidConfigException::ALIPAY_PRIVATE_KEY_ERROR, 'Missing Alipay Config -- [private_key]');
+            throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [app_secret_cert]');
         }
 
         $privateKey = "-----BEGIN RSA PRIVATE KEY-----\n".
