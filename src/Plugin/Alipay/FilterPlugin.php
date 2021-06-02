@@ -17,12 +17,16 @@ class FilterPlugin implements PluginInterface
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         $payload = $rocket->getPayload()->filter(function ($v, $k) {
-            return '' !== $v && !is_null($v) && 'sign' != $k && !Str::startsWith($k, '_');
+            return '' !== $v && !is_null($v) && 'sign' != $k;
         });
 
-        $payload->set('biz_content', json_encode($payload->get('biz_content')));
+        $contents = array_filter($payload->get('biz_content'), function ($v, $k) {
+            return !Str::startsWith($k, '_');
+        }, ARRAY_FILTER_USE_BOTH);
 
-        $rocket->setPayload($payload);
+        $rocket->setPayload(
+            $payload->merge(['biz_content' => json_encode($contents)])
+        );
 
         return $next($rocket);
     }

@@ -43,7 +43,7 @@ class RadarPlugin implements PluginInterface
 
     protected function getMethod(Rocket $rocket): string
     {
-        return $rocket->getParams()['_method'] ?? 'POST';
+        return strtoupper($rocket->getParams()['_method'] ?? 'POST');
     }
 
     /**

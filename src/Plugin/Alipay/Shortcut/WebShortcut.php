@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
 
 use Closure;
+use Yansongda\Supports\Arr;
 use const ENT_QUOTES;
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Pay\Contract\PluginInterface;
@@ -44,7 +45,7 @@ class WebShortcut implements ShortcutInterface
 
             protected function buildRedirect(string $endpoint, Collection $payload): Response
             {
-                $url = $endpoint.'&'.http_build_query($payload->all());
+                $url = $endpoint.'?'.Arr::query($payload->all());
 
                 $content = sprintf('<!DOCTYPE html>
                     <html lang="en">
@@ -65,7 +66,7 @@ class WebShortcut implements ShortcutInterface
 
             protected function buildHtml(string $endpoint, Collection $payload): Response
             {
-                $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='POST'>";
+                $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."?charset=utf-8' method='POST'>";
                 foreach ($payload->all() as $key => $val) {
                     $val = str_replace("'", '&apos;', $val);
                     $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
