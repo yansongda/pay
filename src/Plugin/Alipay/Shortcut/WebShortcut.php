@@ -11,6 +11,7 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\Alipay\Trade\PagePayPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 
 class WebShortcut implements ShortcutInterface
@@ -44,7 +45,7 @@ class WebShortcut implements ShortcutInterface
 
             protected function buildRedirect(string $endpoint, Collection $payload): Response
             {
-                $url = $endpoint.'&'.http_build_query($payload->all());
+                $url = $endpoint.'?'.Arr::query($payload->all());
 
                 $content = sprintf('<!DOCTYPE html>
                     <html lang="en">
@@ -65,7 +66,7 @@ class WebShortcut implements ShortcutInterface
 
             protected function buildHtml(string $endpoint, Collection $payload): Response
             {
-                $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='POST'>";
+                $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."?charset=utf-8' method='POST'>";
                 foreach ($payload->all() as $key => $val) {
                     $val = str_replace("'", '&apos;', $val);
                     $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";

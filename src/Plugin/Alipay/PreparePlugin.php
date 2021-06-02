@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Rocket;
 
 class PreparePlugin implements PluginInterface
@@ -14,6 +15,7 @@ class PreparePlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -26,6 +28,7 @@ class PreparePlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
      */
     protected function getPayload(array $params): array
     {
@@ -41,7 +44,97 @@ class PreparePlugin implements PluginInterface
             'version' => '1.0',
             'notify_url' => get_alipay_config($params)->get('notify_url', ''),
             'app_auth_token' => '',
+            'app_cert_sn' => $this->getAppCertSn($params),
+            'alipay_root_cert_sn' => $this->getAlipayRootCertSn($params),
             'biz_content' => [],
         ];
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     */
+    protected function getAppCertSn(array $params): string
+    {
+        $path = get_alipay_config($params)->get('app_public_cert_path');
+
+        if (is_null($path)) {
+            throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [app_public_cert_path]');
+        }
+
+        $cert = file_get_contents($path);
+        $ssl = openssl_x509_parse($cert);
+
+        return $this->getCertSn($ssl['issuer'], $ssl['serialNumber']);
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getAlipayRootCertSn(array $params): string
+    {
+        $path = get_alipay_config($params)->get('alipay_root_cert_path');
+
+        if (is_null($path)) {
+            throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_root_cert_path]');
+        }
+
+        $sn = '';
+        foreach (explode("\r\n\r\n", file_get_contents($path)) as $cert) {
+            $detail = $this->formatCert(openssl_x509_parse($cert));
+
+            if ('sha1WithRSAEncryption' == $detail['signatureTypeLN'] || 'sha256WithRSAEncryption' == $detail['signatureTypeLN']) {
+                $sn .= $this->getCertSn($detail['issuer'], $detail['serialNumber']).'_';
+            }
+        }
+
+        return substr($sn, 0, -1);
+    }
+
+    protected function getCertSn(array $issuer, string $serialNumber): string
+    {
+        return md5(
+            $this->array2string(array_reverse($issuer)).$serialNumber
+        );
+    }
+
+    protected function array2string(array $array): string
+    {
+        $string = [];
+
+        foreach ($array as $key => $value) {
+            $string[] = $key.'='.$value;
+        }
+
+        return implode(',', $string);
+    }
+
+    protected function formatCert(array $ssl): array
+    {
+        if (0 === strpos($ssl['serialNumber'], '0x')) {
+            $ssl['serialNumber'] = $this->hex2dec($ssl['serialNumber']);
+        }
+
+        return $ssl;
+    }
+
+    protected function hex2dec(string $hex): string
+    {
+        $dec = 0;
+        $len = strlen($hex);
+
+        for ($i = 1; $i <= $len; ++$i) {
+            $dec = bcadd(
+                $dec,
+                bcmul(strval(hexdec($hex[$i - 1])), bcpow('16', strval($len - $i)))
+            );
+        }
+
+        return $dec;
     }
 }
