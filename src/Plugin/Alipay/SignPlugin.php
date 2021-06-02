@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
-use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Pay;
+use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
-class SignPlugin
+class SignPlugin implements PluginInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
@@ -21,9 +21,10 @@ class SignPlugin
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $privateKey = $this->getPrivateKey();
+        $payload = $rocket->getPayload();
+        $privateKey = $this->getPrivateKey($rocket->getParams());
 
         openssl_sign($this->getSignContent($payload), $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
@@ -33,9 +34,9 @@ class SignPlugin
 
         !is_resource($privateKey) ?: openssl_free_key($privateKey);
 
-        $payload = $payload->merge(['sign' => $sign]);
+        $rocket->mergePayload(['sign' => $sign]);
 
-        return $next($params, $payload);
+        return $next($rocket);
     }
 
     /**
@@ -46,12 +47,12 @@ class SignPlugin
      *
      * @return false|resource|string
      */
-    protected function getPrivateKey()
+    protected function getPrivateKey(array $params)
     {
-        $privateKey = Pay::get(ConfigInterface::class)->get('private_key');
+        $privateKey = get_alipay_config($params)->get('private_key');
 
         if (is_null($privateKey)) {
-            throw new InvalidConfigException('Missing Alipay Config -- [private_key]');
+            throw new InvalidConfigException(InvalidConfigException::ALIPAY_PRIVATE_KEY_ERROR, 'Missing Alipay Config -- [private_key]');
         }
 
         $privateKey = "-----BEGIN RSA PRIVATE KEY-----\n".

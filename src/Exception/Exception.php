@@ -11,7 +11,7 @@ class Exception extends \Exception
     public const UNKNOWN_ERROR = 9999;
 
     /**
-     * about container di.
+     * 关于容器.
      */
     public const CONTAINER_ERROR = 1000;
 
@@ -22,16 +22,36 @@ class Exception extends \Exception
     public const CONTAINER_NOT_FOUND_ENTRY = 1003;
 
     /**
-     * about service.
+     * 关于服务.
      */
-    public const SERVICE_EXCEPTION = 2000;
+    public const SERVICE_ERROR = 2000;
 
-    public const SERVICE_NOT_FOUND_EXCEPTION = 2001;
+    public const SERVICE_NOT_FOUND_ERROR = 2001;
 
     /*
-     * about config.
+     * 关于配置.
      */
-    public const CONFIG_EXCEPTION = 3000;
+    public const CONFIG_ERROR = 3000;
+
+    public const INVALID_PACKER = 3001;
+
+    public const ALIPAY_PRIVATE_KEY_ERROR = 3002;
+
+    /*
+     * 关于参数.
+     */
+    public const PARAMS_ERROR = 4000;
+
+    public const SHORTCUT_NOT_FOUND = 4001;
+
+    /**
+     * 关于api.
+     */
+    public const RESPONSE_ERROR = 5000;
+
+    public const REQUEST_RESPONSE_ERROR = 5001;
+
+    public const UNPACK_RESPONSE_ERROR = 5002;
 
     /**
      * raw.
@@ -43,7 +63,7 @@ class Exception extends \Exception
     /**
      * Bootstrap.
      */
-    public function __construct(string $message = 'Unknown Error', array $extra = [], int $code = self::UNKNOWN_ERROR, Throwable $previous = null)
+    public function __construct(string $message = 'Unknown Error', int $code = self::UNKNOWN_ERROR, array $extra = [], Throwable $previous = null)
     {
         $this->extra = $extra;
 

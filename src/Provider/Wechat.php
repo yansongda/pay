@@ -5,23 +5,16 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Provider;
 
 use Symfony\Component\HttpFoundation\Response;
-use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
-class Wechat implements ProviderInterface
+class Wechat
 {
     const URL = [
         Pay::MODE_NORMAL => 'https://api.mch.weixin.qq.com/',
         Pay::MODE_SANDBOX => 'https://api.mch.weixin.qq.com/sandboxnew/',
         Pay::MODE_SERVICE => 'https://api.mch.weixin.qq.com/',
     ];
-
-    public function addMiddleware(PluginInterface $middleware): ProviderInterface
-    {
-        // TODO: Implement addMiddleware() method.
-    }
 
     public function pay($order, ?array $middleware = [])
     {
