@@ -7,9 +7,7 @@ namespace Yansongda\Pay\Plugin\Alipay;
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -30,8 +28,6 @@ class SignPlugin implements PluginInterface
 
         $sign = base64_encode($sign);
 
-        Logger::debug('支付宝支付生成签名', ['params' => $payload, 'sign' => $sign]);
-
         !is_resource($privateKey) ?: openssl_free_key($privateKey);
 
         $rocket->mergePayload(['sign' => $sign]);
@@ -49,7 +45,7 @@ class SignPlugin implements PluginInterface
      */
     protected function getPrivateKey(array $params)
     {
-        $privateKey = get_alipay_config($params)->get('private_key');
+        $privateKey = get_alipay_config($params)->get('app_secret_cert');
 
         if (is_null($privateKey)) {
             throw new InvalidConfigException(InvalidConfigException::ALIPAY_PRIVATE_KEY_ERROR, 'Missing Alipay Config -- [private_key]');
@@ -70,8 +66,12 @@ class SignPlugin implements PluginInterface
 
     protected function getSignContent(Collection $payload): string
     {
-        $payload = $payload->sortKeys();
+        $result = '';
 
-        return Arr::query($payload->all());
+        foreach ($payload->sortKeys()->all() as $key => $value) {
+            $result .= $key.'='.$value.'&';
+        }
+
+        return substr($result, 0, -1);
     }
 }
