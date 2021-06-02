@@ -34,9 +34,9 @@ class SignPlugin implements PluginInterface
 
         !is_resource($privateKey) ?: openssl_free_key($privateKey);
 
-        return $next($rocket->mergePayload([
-            'sign' => $sign,
-        ]));
+        $rocket->mergePayload(['sign' => $sign]);
+
+        return $next($rocket);
     }
 
     /**

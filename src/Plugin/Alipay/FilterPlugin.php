@@ -22,6 +22,8 @@ class FilterPlugin implements PluginInterface
 
         $payload->set('biz_content', json_encode($payload->get('biz_content')));
 
-        return $next($rocket->setPayload($payload));
+        $rocket->setPayload($payload);
+
+        return $next($rocket);
     }
 }

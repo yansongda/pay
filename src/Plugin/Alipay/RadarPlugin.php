@@ -21,7 +21,9 @@ class RadarPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        return $next($rocket->setRadar($this->getResponse($rocket)));
+        $rocket->setRadar($this->getRequest($rocket));
+
+        return $next($rocket);
     }
 
     /**
@@ -29,7 +31,7 @@ class RadarPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getResponse(Rocket $rocket): RequestInterface
+    protected function getRequest(Rocket $rocket): RequestInterface
     {
         return new Request(
             $this->getMethod($rocket),

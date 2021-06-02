@@ -2,6 +2,8 @@
 
 namespace Yansongda\Pay\Tests;
 
+use PHPUnit\Framework\TestCase;
+
 class PayTest extends TestCase
 {
 //    public function testGetContainerNullConfig()

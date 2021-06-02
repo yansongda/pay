@@ -17,9 +17,9 @@ class PreparePlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        return $next(
-            $rocket->mergePayload($this->getPayload($rocket->getParams()))
-        );
+        $rocket->mergePayload($this->getPayload($rocket->getParams()));
+
+        return $next($rocket);
     }
 
     /**
