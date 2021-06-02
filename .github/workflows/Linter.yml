@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   php_cs_fixer:
-    name: php_cs_fixer-php
+    name: php_cs_fixer
     runs-on: "${{ matrix.os }}"
     strategy:
       fail-fast: true

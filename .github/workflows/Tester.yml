@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   PHPUnit:
-    name: php-${{ matrix.php }}
+    name: php-${{ matrix.php-version }}
     runs-on: "${{ matrix.os }}"
     strategy:
       fail-fast: true
