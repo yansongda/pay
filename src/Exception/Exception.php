@@ -44,6 +44,8 @@ class Exception extends \Exception
 
     public const SHORTCUT_NOT_FOUND = 4001;
 
+    public const PLUGIN_ERROR = 4002;
+
     /**
      * 关于api.
      */
