@@ -310,7 +310,7 @@ class Support
             libxml_disable_entity_loader(true);
         }
 
-        return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA), JSON_UNESCAPED_UNICODE), true);
+        return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_COMPACT), JSON_UNESCAPED_UNICODE), true);
     }
 
     /**
