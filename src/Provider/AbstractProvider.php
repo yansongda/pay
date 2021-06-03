@@ -63,6 +63,7 @@ abstract class AbstractProvider
         } catch (Throwable $e) {
             throw new InvalidResponseException(InvalidResponseException::REQUEST_RESPONSE_ERROR);
         }
+        dd($rocket, $response->getBody()->getContents());
 
         return $rocket->setDestination($response);
     }
