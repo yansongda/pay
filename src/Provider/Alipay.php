@@ -8,11 +8,11 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\FilterPlugin;
-use Yansongda\Pay\Plugin\Alipay\LandingPlugin;
+use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
-use Yansongda\Pay\Plugin\LaunchPlugin;
+use Yansongda\Pay\Plugin\LandingPlugin;
 use Yansongda\Supports\Str;
 
 class Alipay extends AbstractProvider
@@ -55,7 +55,7 @@ class Alipay extends AbstractProvider
             [PreparePlugin::class],
             $plugins,
             [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
-            [LandingPlugin::class, LaunchPlugin::class],
+            [LaunchPlugin::class, LandingPlugin::class],
         );
     }
 }

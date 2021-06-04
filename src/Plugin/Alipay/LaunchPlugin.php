@@ -9,7 +9,7 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
-class LandingPlugin implements PluginInterface
+class LaunchPlugin implements PluginInterface
 {
     /**
      * @return \Yansongda\Supports\Collection|\Symfony\Component\HttpFoundation\Response
