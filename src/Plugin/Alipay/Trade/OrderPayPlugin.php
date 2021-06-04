@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Alipay\Trade;
 
-use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
 
-class OrderPayPlugin
+class OrderPayPlugin extends GeneralPlugin
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    protected function getMethod(): string
     {
-        $payload = $payload->merge([
-            'method' => 'alipay.trade.order.pay',
-            'biz_content' => json_encode($params),
-        ]);
-
-        return $next($params, $payload);
+        return 'alipay.trade.order.pay';
     }
 }

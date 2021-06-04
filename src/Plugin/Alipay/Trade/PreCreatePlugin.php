@@ -4,19 +4,12 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Alipay\Trade;
 
-use Closure;
-use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
 
-class PreCreatePlugin implements PluginInterface
+class PreCreatePlugin extends GeneralPlugin
 {
-    public function assembly(Rocket $rocket, Closure $next): Rocket
+    protected function getMethod(): string
     {
-        $rocket->mergePayload([
-            'method' => 'alipay.trade.precreate',
-            'biz_content' => $rocket->getParams(),
-        ]);
-
-        return $next($rocket);
+        return 'alipay.trade.precreate';
     }
 }
