@@ -66,12 +66,6 @@ class SignPlugin implements PluginInterface
 
     protected function getSignContent(Collection $payload): string
     {
-        $result = '';
-
-        foreach ($payload->sortKeys()->all() as $key => $value) {
-            $result .= $key.'='.$value.'&';
-        }
-
-        return substr($result, 0, -1);
+        return $payload->sortKeys()->toString();
     }
 }

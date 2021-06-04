@@ -11,7 +11,7 @@ use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 
-class LandingPlugin implements PluginInterface
+class PackerPlugin implements PluginInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException

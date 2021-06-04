@@ -66,7 +66,7 @@ class WebShortcut implements ShortcutInterface
 
             protected function buildHtml(string $endpoint, Collection $payload): Response
             {
-                $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."?charset=utf-8' method='POST'>";
+                $sHtml = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='POST'>";
                 foreach ($payload->all() as $key => $val) {
                     $val = str_replace("'", '&apos;', $val);
                     $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";

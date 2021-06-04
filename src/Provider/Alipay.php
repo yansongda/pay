@@ -12,15 +12,15 @@ use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
-use Yansongda\Pay\Plugin\LandingPlugin;
+use Yansongda\Pay\Plugin\PackerPlugin;
 use Yansongda\Supports\Str;
 
 class Alipay extends AbstractProvider
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do',
-        Pay::MODE_SANDBOX => 'https://openapi.alipaydev.com/gateway.do',
-        Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do',
+        Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
+        Pay::MODE_SANDBOX => 'https://openapi.alipaydev.com/gateway.do?charset=utf-8',
+        Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
     ];
 
     /**
@@ -55,7 +55,7 @@ class Alipay extends AbstractProvider
             [PreparePlugin::class],
             $plugins,
             [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
-            [LaunchPlugin::class, LandingPlugin::class],
+            [LaunchPlugin::class, PackerPlugin::class],
         );
     }
 }
