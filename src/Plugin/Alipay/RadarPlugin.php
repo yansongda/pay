@@ -67,6 +67,6 @@ class RadarPlugin implements PluginInterface
 
     protected function getBody(Rocket $rocket): string
     {
-        return $rocket->getPayload()->toString();
+        return $rocket->getPayload()->query();
     }
 }

@@ -19,6 +19,10 @@ class EventServiceProvider implements ServiceProviderInterface
      */
     public function register(Pay $pay, ?array $data = null): void
     {
+        if (!class_exists(EventDispatcher::class)) {
+            return;
+        }
+
         $event = Pay::get(EventDispatcher::class);
 
         $event->addSubscriber(new KernelLogSubscriber());
