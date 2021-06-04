@@ -61,7 +61,7 @@ abstract class AbstractProvider
         try {
             $response = $http->sendRequest($rocket->getRadar());
         } catch (Throwable $e) {
-            throw new InvalidResponseException(InvalidResponseException::REQUEST_RESPONSE_ERROR);
+            throw new InvalidResponseException(InvalidResponseException::REQUEST_RESPONSE_ERROR, $e->getMessage());
         }
 
         return $rocket->setDestination($response);

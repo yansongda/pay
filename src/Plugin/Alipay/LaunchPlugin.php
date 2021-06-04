@@ -30,9 +30,7 @@ class LaunchPlugin implements PluginInterface
             return $rocket;
         }
 
-        $response = $this->getMethodResponse($rocket);
-
-        $rocket->setDestination(Collection::wrap($response));
+        $rocket->setDestination($this->getMethodResponse($rocket));
 
         return $rocket;
     }
@@ -44,11 +42,17 @@ class LaunchPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getMethodResponse(Rocket $rocket): array
+    protected function getMethodResponse(Rocket $rocket): Collection
     {
-        $response = $rocket->getDestination()->get($this->getResponseKey($rocket));
+        $response = Collection::wrap(
+            $rocket->getDestination()->get($this->getResponseKey($rocket))
+        );
 
         $this->verifySign($rocket);
+
+        if (10000 != $response->get('code')) {
+            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_CODE, 'Invalid response code', $response->all());
+        }
 
         return $response;
     }
