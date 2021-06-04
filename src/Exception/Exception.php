@@ -55,6 +55,8 @@ class Exception extends \Exception
 
     public const UNPACK_RESPONSE_ERROR = 5002;
 
+    public const INVALID_RESPONSE_SIGN = 5003;
+
     /**
      * raw.
      *

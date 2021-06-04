@@ -9,7 +9,6 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
-use Yansongda\Supports\Str;
 
 class SignPlugin implements PluginInterface
 {
@@ -51,17 +50,7 @@ class SignPlugin implements PluginInterface
             throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [app_secret_cert]');
         }
 
-        $privateKey = "-----BEGIN RSA PRIVATE KEY-----\n".
-            wordwrap($privateKey, 64, "\n", true).
-            "\n-----END RSA PRIVATE KEY-----";
-
-        if (Str::endsWith($privateKey, '.pem')) {
-            $privateKey = openssl_pkey_get_private(
-                Str::startsWith($privateKey, 'file://') ? $privateKey : 'file://'.$privateKey
-            );
-        }
-
-        return $privateKey;
+        return get_alipay_cert($privateKey);
     }
 
     protected function getSignContent(Collection $payload): string
