@@ -61,12 +61,12 @@ class RadarPlugin implements PluginInterface
     protected function getHeaders(): array
     {
         return [
-            'Content-Type' => 'application/json',
+            'Content-Type' => 'application/x-www-form-urlencoded',
         ];
     }
 
     protected function getBody(Rocket $rocket): string
     {
-        return $rocket->getPayload()->toJson();
+        return $rocket->getPayload()->toString();
     }
 }

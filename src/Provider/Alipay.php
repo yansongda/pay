@@ -8,6 +8,7 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\FilterPlugin;
+use Yansongda\Pay\Plugin\Alipay\LandingPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
@@ -43,18 +44,18 @@ class Alipay extends AbstractProvider
         $money = Pay::get($plugin);
 
         return $this->pay(
-            $this->getShortcutPlugins($money->getPlugins()),
+            $this->mergeCommonPlugins($money->getPlugins()),
             ...$params
         );
     }
 
-    protected function getShortcutPlugins(array $plugins): array
+    public function mergeCommonPlugins(array $plugins): array
     {
         return array_merge(
             [PreparePlugin::class],
             $plugins,
             [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
-            [LaunchPlugin::class],
+            [LandingPlugin::class, LaunchPlugin::class],
         );
     }
 }
