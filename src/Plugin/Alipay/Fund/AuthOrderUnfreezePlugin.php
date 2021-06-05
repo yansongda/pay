@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Alipay\Fund;
 
-use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
 
-class AuthOrderUnfreezePlugin
+class AuthOrderUnfreezePlugin extends GeneralPlugin
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    protected function getMethod(): string
     {
-        $payload = $payload->merge([
-            'method' => 'alipay.fund.auth.order.unfreeze',
-            'biz_content' => json_encode($params),
-        ]);
-
-        return $next($params, $payload);
+        return 'alipay.fund.auth.order.unfreeze';
     }
 }
