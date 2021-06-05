@@ -50,7 +50,7 @@ class LaunchPlugin implements PluginInterface
 
         $this->verifySign($rocket);
 
-        if (10000 != $response->get('code')) {
+        if (10000 != $response->get('code', 10000)) {
             throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_CODE, 'Invalid response code', $response->all());
         }
 

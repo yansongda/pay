@@ -12,7 +12,9 @@ use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
+use Yansongda\Pay\Plugin\Alipay\Trade\QueryPlugin;
 use Yansongda\Pay\Plugin\PackerPlugin;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 class Alipay extends AbstractProvider
@@ -46,6 +48,22 @@ class Alipay extends AbstractProvider
         return $this->pay(
             $this->mergeCommonPlugins($money->getPlugins()),
             ...$params
+        );
+    }
+
+    /**
+     * @param string|array $order
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    public function find($order): Collection
+    {
+        return $this->pay(
+            $this->mergeCommonPlugins([QueryPlugin::class]),
+            is_array($order) ? $order : ['out_trade_no' => $order]
         );
     }
 
