@@ -44,6 +44,8 @@ class Exception extends \Exception
 
     public const SHORTCUT_NOT_FOUND = 4001;
 
+    public const PLUGIN_ERROR = 4002;
+
     /**
      * 关于api.
      */
@@ -52,6 +54,10 @@ class Exception extends \Exception
     public const REQUEST_RESPONSE_ERROR = 5001;
 
     public const UNPACK_RESPONSE_ERROR = 5002;
+
+    public const INVALID_RESPONSE_SIGN = 5003;
+
+    public const INVALID_RESPONSE_CODE = 5004;
 
     /**
      * raw.

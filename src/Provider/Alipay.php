@@ -4,28 +4,25 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
-use Throwable;
-use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\FilterPlugin;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Plugin\Alipay\Trade\QueryPlugin;
+use Yansongda\Pay\Plugin\PackerPlugin;
 use Yansongda\Supports\Collection;
-use Yansongda\Supports\Pipeline;
 use Yansongda\Supports\Str;
 
-class Alipay
+class Alipay extends AbstractProvider
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do',
-        Pay::MODE_SANDBOX => 'https://openapi.alipaydev.com/gateway.do',
-        Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do',
+        Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
+        Pay::MODE_SANDBOX => 'https://openapi.alipaydev.com/gateway.do?charset=utf-8',
+        Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
     ];
 
     /**
@@ -42,73 +39,41 @@ class Alipay
             Str::studly($shortcut).'Shortcut';
 
         if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] not found");
+            throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
         }
 
         /* @var ShortcutInterface $money */
         $money = Pay::get($plugin);
 
         return $this->pay(
-            $this->getShortcutPlugins($money->getPlugins()),
+            $this->mergeCommonPlugins($money->getPlugins()),
             ...$params
         );
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @param string|array $order
      *
-     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
-     */
-    public function pay(array $plugins, array $params)
-    {
-        /* @var Pipeline $pipeline */
-        $pipeline = Pay::get(Pipeline::class);
-
-        /* @var Rocket $rocket */
-        $rocket = $pipeline
-            ->send((new Rocket())->setParams($params)->setPayload(new Collection()))
-            ->through($plugins)
-            ->via('assembly')
-            ->then(function ($rocket) {
-                return $this->ignite($rocket);
-            });
-
-        return $rocket->getDestination();
-    }
-
-    /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
      */
-    public function ignite(Rocket $rocket): Rocket
+    public function find($order): Collection
     {
-        if (!empty($rocket->getDestination())) {
-            return $rocket;
-        }
-
-        /* @var HttpClientInterface $http */
-        $http = Pay::get(HttpClientInterface::class);
-
-        try {
-            $response = $http->sendRequest($rocket->getRadar());
-        } catch (Throwable $e) {
-            throw new InvalidResponseException(InvalidResponseException::REQUEST_RESPONSE_ERROR);
-        }
-
-        return $rocket->setDestination($response);
+        return $this->pay(
+            $this->mergeCommonPlugins([QueryPlugin::class]),
+            is_array($order) ? $order : ['out_trade_no' => $order]
+        );
     }
 
-    protected function getShortcutPlugins(array $plugins): array
+    public function mergeCommonPlugins(array $plugins): array
     {
         return array_merge(
             [PreparePlugin::class],
             $plugins,
             [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
-            [LaunchPlugin::class],
+            [LaunchPlugin::class, PackerPlugin::class],
         );
     }
 }

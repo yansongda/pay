@@ -18,7 +18,6 @@
 
 **注意：v1.x 与 v2.x 版本不兼容**
 
-
 开发了多次支付宝与微信支付后，很自然产生一种反感，惰性又来了，想在网上找相关的轮子，可是一直没有找到一款自己觉得逞心如意的，要么使用起来太难理解，要么文件结构太杂乱，只有自己撸起袖子干了。
 
 **！！请先熟悉 支付宝/微信 说明文档！！请具有基本的 debug 能力！！**
@@ -42,11 +41,8 @@ QQ交流群：690027516
 
 
 ## 运行环境
-- PHP 7.0+ (v2.8.0 开始 >= 7.1.3)
+- PHP 7.3+
 - composer
-
-> php5 请使用 v1.x 版本[https://github.com/yansongda/pay/tree/v1.x](https://github.com/yansongda/pay/tree/v1.x)
-
 
 ## 支持的支付方法
 ### 1、支付宝
@@ -63,7 +59,7 @@ QQ交流群：690027516
 |  web      | 电脑支付     |
 |  wap      | 手机网站支付 |
 |  app      | APP 支付    |
-|  pos      | 刷卡支付  |
+|  pos      | 付款码刷卡支付  |
 |  scan     | 扫码支付  |
 |  transfer | 帐户转账  |
 |  mini     | 小程序支付 |
@@ -91,43 +87,6 @@ QQ交流群：690027516
 | redpack      | 普通红包 |
 | groupRedpack | 分裂红包 |
 
-## 支持的方法
-所有网关均支持以下方法
-
-- find(array/string $order)  
-说明：查找订单接口  
-参数：`$order` 为 `string` 类型时，请传入系统订单号，对应支付宝或微信中的 `out_trade_no`； `array` 类型时，参数请参考支付宝或微信官方文档。  
-返回：查询成功，返回 `Yansongda\Supports\Collection` 实例，可以通过 `$colletion->xxx` 或 `$collection['xxx']` 访问服务器返回的数据。  
-异常：`GatewayException` 或 `InvalidSignException`  
-
-- refund(array $order)  
-说明：退款接口  
-参数：`$order` 数组格式，退款参数。  
-返回：退款成功，返回 `Yansongda\Supports\Collection` 实例，可以通过 `$colletion->xxx` 或 `$collection['xxx']` 访问服务器返回的数据。  
-异常：`GatewayException` 或 `InvalidSignException`
-
-- cancel(array/string $order)  
-说明：取消订单接口  
-参数：`$order` 为 `string` 类型时，请传入系统订单号，对应支付宝或微信中的 `out_trade_no`； `array` 类型时，参数请参考支付宝或微信官方文档。    
-返回：取消成功，返回 `Yansongda\Supports\Collection` 实例，可以通过 `$colletion->xxx` 或 `$collection['xxx']` 访问服务器返回的数据。  
-异常：`GatewayException` 或 `InvalidSignException`
-
-- close(array/string $order)  
-说明：关闭订单接口  
-参数：`$order` 为 `string` 类型时，请传入系统订单号，对应支付宝或微信中的 `out_trade_no`； `array` 类型时，参数请参考支付宝或微信官方文档。  
-返回：关闭成功，返回 `Yansongda\Supports\Collection` 实例，可以通过 `$colletion->xxx` 或 `$collection['xxx']` 访问服务器返回的数据。  
-异常：`GatewayException` 或 `InvalidSignException`  
-
-- verify()  
-说明：验证服务器返回消息是否合法  
-返回：验证成功，返回 `Yansongda\Supports\Collection` 实例，可以通过 `$colletion->xxx` 或 `$collection['xxx']` 访问服务器返回的数据。  
-异常：`GatewayException` 或 `InvalidSignException`  
-
-- PAYMETHOD(array $order)  
-说明：进行支付；具体支付方法名称请参考「支持的支付方法」一栏  
-返回：成功，返回 `Yansongda\Supports\Collection` 实例，可以通过 `$colletion->xxx` 或 `$collection['xxx']` 访问服务器返回的数据或 `Symfony\Component\HttpFoundation\Response` 实例，可通过 `return $response->send()`(laravel 框架中直接 `return $response`) 返回，具体请参考文档。  
-异常：`GatewayException` 或 `InvalidSignException`  
-
 ## 安装
 ```shell
 composer require yansongda/pay -vvv
@@ -142,20 +101,24 @@ composer require yansongda/pay -vvv
 namespace App\Http\Controllers;
 
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Log;
 
 class PayController
 {
     protected $config = [
-        'app_id' => '2016082000295641',
-        'notify_url' => 'http://yansongda.cn/notify.php',
-        'return_url' => 'http://yansongda.cn/return.php',
-        'ali_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuWJKrQ6SWvS6niI+4vEVZiYfjkCfLQfoFI2nCp9ZLDS42QtiL4Ccyx8scgc3nhVwmVRte8f57TFvGhvJD0upT4O5O/lRxmTjechXAorirVdAODpOu0mFfQV9y/T9o9hHnU+VmO5spoVb3umqpq6D/Pt8p25Yk852/w01VTIczrXC4QlrbOEe3sr1E9auoC7rgYjjCO6lZUIDjX/oBmNXZxhRDrYx4Yf5X7y8FRBFvygIE2FgxV4Yw+SL3QAa2m5MLcbusJpxOml9YVQfP8iSurx41PvvXUMo49JG3BDVernaCYXQCoUJv9fJwbnfZd7J5YByC+5KM4sblJTq7bXZWQIDAQAB',
-        // 加密方式： **RSA2**  
-        'private_key' => 'MIIEpAIBAAKCAQEAs6+F2leOgOrvj9jTeDhb5q46GewOjqLBlGSs/bVL4Z3fMr3p+Q1Tux/6uogeVi/eHd84xvQdfpZ87A1SfoWnEGH5z15yorccxSOwWUI+q8gz51IWqjgZxhWKe31BxNZ+prnQpyeMBtE25fXp5nQZ/pftgePyUUvUZRcAUisswntobDQKbwx28VCXw5XB2A+lvYEvxmMv/QexYjwKK4M54j435TuC3UctZbnuynSPpOmCu45ZhEYXd4YMsGMdZE5/077ZU1aU7wx/gk07PiHImEOCDkzqsFo0Buc/knGcdOiUDvm2hn2y1XvwjyFOThsqCsQYi4JmwZdRa8kvOf57nwIDAQABAoIBAQCw5QCqln4VTrTvcW+msB1ReX57nJgsNfDLbV2dG8mLYQemBa9833DqDK6iynTLNq69y88ylose33o2TVtEccGp8Dqluv6yUAED14G6LexS43KtrXPgugAtsXE253ZDGUNwUggnN1i0MW2RcMqHdQ9ORDWvJUCeZj/AEafgPN8AyiLrZeL07jJz/uaRfAuNqkImCVIarKUX3HBCjl9TpuoMjcMhz/MsOmQ0agtCatO1eoH1sqv5Odvxb1i59c8Hvq/mGEXyRuoiDo05SE6IyXYXr84/Nf2xvVNHNQA6kTckj8shSi+HGM4mO1Y4Pbb7XcnxNkT0Inn6oJMSiy56P+CpAoGBAO1O+5FE1ZuVGuLb48cY+0lHCD+nhSBd66B5FrxgPYCkFOQWR7pWyfNDBlmO3SSooQ8TQXA25blrkDxzOAEGX57EPiipXr/hy5e+WNoukpy09rsO1TMsvC+v0FXLvZ+TIAkqfnYBgaT56ku7yZ8aFGMwdCPL7WJYAwUIcZX8wZ3dAoGBAMHWplAqhe4bfkGOEEpfs6VvEQxCqYMYVyR65K0rI1LiDZn6Ij8fdVtwMjGKFSZZTspmsqnbbuCE/VTyDzF4NpAxdm3cBtZACv1Lpu2Om+aTzhK2PI6WTDVTKAJBYegXaahBCqVbSxieR62IWtmOMjggTtAKWZ1P5LQcRwdkaB2rAoGAWnAPT318Kp7YcDx8whOzMGnxqtCc24jvk2iSUZgb2Dqv+3zCOTF6JUsV0Guxu5bISoZ8GdfSFKf5gBAo97sGFeuUBMsHYPkcLehM1FmLZk1Q+ljcx3P1A/ds3kWXLolTXCrlpvNMBSN5NwOKAyhdPK/qkvnUrfX8sJ5XK2H4J8ECgYAGIZ0HIiE0Y+g9eJnpUFelXvsCEUW9YNK4065SD/BBGedmPHRC3OLgbo8X5A9BNEf6vP7fwpIiRfKhcjqqzOuk6fueA/yvYD04v+Da2MzzoS8+hkcqF3T3pta4I4tORRdRfCUzD80zTSZlRc/h286Y2eTETd+By1onnFFe2X01mwKBgQDaxo4PBcLL2OyVT5DoXiIdTCJ8KNZL9+kV1aiBuOWxnRgkDjPngslzNa1bK+klGgJNYDbQqohKNn1HeFX3mYNfCUpuSnD2Yag53Dd/1DLO+NxzwvTu4D6DCUnMMMBVaF42ig31Bs0jI3JQZVqeeFzSET8fkoFopJf3G6UXlrIEAQ==',
-        // 使用公钥证书模式，请配置下面两个参数，同时修改ali_public_key为以.crt结尾的支付宝公钥证书路径，如（./cert/alipayCertPublicKey_RSA2.crt）
-        // 'app_cert_public_key' => './cert/appCertPublicKey.crt', //应用公钥证书路径
-        // 'alipay_root_cert' => './cert/alipayRootCert.crt', //支付宝根证书路径
+        'alipay' => [
+            'default' => [
+                'app_id' => '2016082000295641',
+                // 加密方式： **RSA2**; 公钥证书模式 
+                'app_secret_cert' => 'MIIEpAIBAAKCAQEAs6fsdafasfasfsafsafasfasfas',
+                //应用公钥证书路径
+                'app_public_cert_path' => '/User/yansongda/cert/app_public.crt',
+                //应用公钥证书路径
+                'alipay_root_cert_path' => '/User/yansongda/cert/alipay_root.crt',
+                'notify_url' => 'https://yansongda.cn/notify.html',
+                'return_url' => 'https://yansongda.cn/return.html',
+                'mode' => 'dev', // optional,设置此参数，将进入沙箱模式
+            ],       
+        ],   
         'log' => [ // optional
             'file' => './logs/alipay.log',
             'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
@@ -167,7 +130,6 @@ class PayController
             'connect_timeout' => 5.0,
             // 更多配置项请参考 [Guzzle](https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html)
         ],
-        'mode' => 'dev', // optional,设置此参数，将进入沙箱模式
     ];
 
     public function index()
@@ -205,8 +167,6 @@ class PayController
             // 3、校验通知中的seller_id（或者seller_email) 是否为out_trade_no这笔单据的对应的操作方（有的时候，一个商户可能有多个seller_id/seller_email）；
             // 4、验证app_id是否为该商户本身。
             // 5、其它业务逻辑情况
-
-            Log::debug('Alipay notify', $data->all());
         } catch (\Exception $e) {
             // $e->getMessage();
         }

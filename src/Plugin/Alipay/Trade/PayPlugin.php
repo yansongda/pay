@@ -5,23 +5,24 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Trade;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Rocket;
 
-class PayPlugin
+class PayPlugin implements PluginInterface
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $payload->merge([
+        $rocket->mergePayload([
             'method' => 'alipay.trade.pay',
-            'biz_content' => json_encode(array_merge(
+            'biz_content' => array_merge(
                 [
                     'product_code' => 'FACE_TO_FACE_PAYMENT',
                     'scene' => 'bar_code',
                 ],
-                $params
-            )),
+                $rocket->getParams(),
+            ),
         ]);
 
-        return $next($params, $payload);
+        return $next($rocket);
     }
 }

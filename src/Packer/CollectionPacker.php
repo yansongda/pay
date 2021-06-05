@@ -18,6 +18,8 @@ class CollectionPacker implements PackerInterface
      */
     public function unpack(ResponseInterface $response): Collection
     {
-        return new Collection(Pay::get(JsonPacker::class)->unpack($response));
+        return new Collection(
+            Pay::get(JsonPacker::class)->unpack($response)
+        );
     }
 }
