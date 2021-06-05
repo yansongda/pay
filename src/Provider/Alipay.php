@@ -65,6 +65,47 @@ class Alipay extends AbstractProvider
         return $this->__call('query', [$order]);
     }
 
+    /**
+     * @param string|array $order
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    public function cancel($order): Collection
+    {
+        $order = is_array($order) ? $order : ['out_trade_no' => $order];
+
+        return $this->__call('cancel', [$order]);
+    }
+
+    /**
+     * @param string|array $order
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    public function close($order): Collection
+    {
+        $order = is_array($order) ? $order : ['out_trade_no' => $order];
+
+        return $this->__call('close', [$order]);
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    public function refund(array $order): Collection
+    {
+        return $this->__call('refund', [$order]);
+    }
+
     public function mergeCommonPlugins(array $plugins): array
     {
         return array_merge(
