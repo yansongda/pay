@@ -6,7 +6,7 @@ namespace Yansongda\Pay\Service;
 
 use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
-use Yansongda\Pay\Packer\CollectionPacker;
+use Yansongda\Pay\Parser\CollectionPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
 
