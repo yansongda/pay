@@ -8,7 +8,7 @@ use Yansongda\Pay\Plugin\Alipay\Trade\WapPayPlugin;
 
 class WapShortcut extends WebShortcut
 {
-    public function getPlugins(): array
+    public function getPlugins(array $params): array
     {
         return [
             WapPayPlugin::class,

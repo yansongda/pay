@@ -12,7 +12,6 @@ use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
-use Yansongda\Pay\Plugin\Alipay\Trade\QueryPlugin;
 use Yansongda\Pay\Plugin\PackerPlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -46,7 +45,7 @@ class Alipay extends AbstractProvider
         $money = Pay::get($plugin);
 
         return $this->pay(
-            $this->mergeCommonPlugins($money->getPlugins()),
+            $this->mergeCommonPlugins($money->getPlugins(...$params)),
             ...$params
         );
     }
@@ -61,10 +60,9 @@ class Alipay extends AbstractProvider
      */
     public function find($order): Collection
     {
-        return $this->pay(
-            $this->mergeCommonPlugins([QueryPlugin::class]),
-            is_array($order) ? $order : ['out_trade_no' => $order]
-        );
+        $order = is_array($order) ? $order : ['out_trade_no' => $order];
+
+        return $this->__call('query', [$order]);
     }
 
     public function mergeCommonPlugins(array $plugins): array

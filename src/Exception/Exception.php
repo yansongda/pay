@@ -46,6 +46,8 @@ class Exception extends \Exception
 
     public const PLUGIN_ERROR = 4002;
 
+    public const QUERY_TYPE_ERROR = 4003;
+
     /**
      * 关于api.
      */

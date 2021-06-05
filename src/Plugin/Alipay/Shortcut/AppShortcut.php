@@ -15,7 +15,7 @@ use Yansongda\Supports\Collection;
 
 class AppShortcut implements ShortcutInterface
 {
-    public function getPlugins(): array
+    public function getPlugins(array $params): array
     {
         return [
             AppPayPlugin::class,

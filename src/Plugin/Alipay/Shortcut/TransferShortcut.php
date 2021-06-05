@@ -9,7 +9,7 @@ use Yansongda\Pay\Plugin\Alipay\Fund\TransUniTransferPlugin;
 
 class TransferShortcut implements ShortcutInterface
 {
-    public function getPlugins(): array
+    public function getPlugins(array $params): array
     {
         return [
             TransUniTransferPlugin::class,

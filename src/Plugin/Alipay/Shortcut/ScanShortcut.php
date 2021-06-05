@@ -9,7 +9,7 @@ use Yansongda\Pay\Plugin\Alipay\Trade\PreCreatePlugin;
 
 class ScanShortcut implements ShortcutInterface
 {
-    public function getPlugins(): array
+    public function getPlugins(array $params): array
     {
         return [
             PreCreatePlugin::class,
