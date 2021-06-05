@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Yansongda\Pay\Contract\LoggerInterface;
 use Yansongda\Pay\Event\ApiRequested;
 use Yansongda\Pay\Event\ApiRequesting;
 use Yansongda\Pay\Event\MethodCalled;
@@ -13,29 +12,10 @@ use Yansongda\Pay\Event\PayStarted;
 use Yansongda\Pay\Event\PayStarting;
 use Yansongda\Pay\Event\RequestReceived;
 use Yansongda\Pay\Event\SignFailed;
-use Yansongda\Pay\Pay;
+use Yansongda\Pay\Logger;
 
 class KernelLogSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * Bootstrap.
-     *
-     * @author yansongda <me@yansongda.cn>
-     *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     */
-    public function __construct()
-    {
-        $this->logger = Pay::get(LoggerInterface::class);
-    }
-
     /**
      * Returns an array of event names this subscriber wants to listen to.
      *
@@ -74,7 +54,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writePayStartingLog(PayStarting $event)
     {
-        $this->logger->debug("Starting To $event->driver", [$event->gateway, $event->params]);
+        Logger::debug("Starting To $event->driver", [$event->gateway, $event->params]);
     }
 
     /**
@@ -84,7 +64,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writePayStartedLog(PayStarted $event)
     {
-        $this->logger->info(
+        Logger::info(
             "$event->driver $event->gateway Has Started",
             [$event->endpoint, $event->payload]
         );
@@ -97,7 +77,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeApiRequestingLog(ApiRequesting $event)
     {
-        $this->logger->debug("Requesting To $event->driver Api", [$event->endpoint, $event->payload]);
+        Logger::debug("Requesting To $event->driver Api", [$event->endpoint, $event->payload]);
     }
 
     /**
@@ -107,7 +87,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeApiRequestedLog(ApiRequested $event)
     {
-        $this->logger->debug("Result Of $event->driver Api", $event->result);
+        Logger::debug("Result Of $event->driver Api", $event->result);
     }
 
     /**
@@ -117,7 +97,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeSignFailedLog(SignFailed $event)
     {
-        $this->logger->warning("$event->driver Sign Verify FAILED", $event->data);
+        Logger::warning("$event->driver Sign Verify FAILED", $event->data);
     }
 
     /**
@@ -127,7 +107,7 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeRequestReceivedLog(RequestReceived $event)
     {
-        $this->logger->info("Received $event->driver Request", $event->data);
+        Logger::info("Received $event->driver Request", $event->data);
     }
 
     /**
@@ -137,6 +117,6 @@ class KernelLogSubscriber implements EventSubscriberInterface
      */
     public function writeMethodCalledLog(MethodCalled $event)
     {
-        $this->logger->info("$event->driver $event->gateway Method Has Called", [$event->endpoint, $event->payload]);
+        Logger::info("$event->driver $event->gateway Method Has Called", [$event->endpoint, $event->payload]);
     }
 }
