@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
-use Throwable;
 use Yansongda\Pay\Contract\LoggerInterface;
 
 /**
@@ -20,13 +19,18 @@ use Yansongda\Pay\Contract\LoggerInterface;
  */
 class Logger
 {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
     public static function __callStatic(string $method, array $args): void
     {
-        try {
-            $class = Pay::get(LoggerInterface::class);
-        } catch (Throwable $e) {
+        if (!Pay::has(LoggerInterface::class)) {
             return;
         }
+
+        $class = Pay::get(LoggerInterface::class);
 
         forward_static_call_array([$class, $method], $args);
     }
