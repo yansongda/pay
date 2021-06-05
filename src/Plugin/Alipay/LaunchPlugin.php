@@ -70,13 +70,13 @@ class LaunchPlugin implements PluginInterface
         $sign = $rocket->getDestination()->get('sign', '');
 
         if ('' === $sign || is_null($response)) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN);
+            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', $response);
         }
 
         $result = openssl_verify(json_encode($response, JSON_UNESCAPED_UNICODE), base64_decode($sign), $this->getAlipayPublicKey($rocket), OPENSSL_ALGO_SHA256);
 
         if (1 !== $result) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN);
+            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', $response);
         }
     }
 
