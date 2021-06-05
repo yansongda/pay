@@ -73,7 +73,7 @@ abstract class AbstractProvider
     protected function verifyPlugin(array $plugins): void
     {
         foreach ($plugins as $plugin) {
-            if ((!is_object($plugin) && !class_exists($plugin)) ||
+            if ((!is_object($plugin) && !is_callable($plugin) && !class_exists($plugin)) ||
                 !in_array(PluginInterface::class, class_implements($plugin))) {
                 throw new InvalidParamsException(InvalidParamsException::PLUGIN_ERROR, "[$plugin] is not incompatible");
             }

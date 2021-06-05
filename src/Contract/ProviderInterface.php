@@ -14,11 +14,9 @@ interface ProviderInterface
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @param array|string $order
-     *
      * @return Collection|Response
      */
-    public function pay($order);
+    public function pay(array $plugins, array $params);
 
     /**
      * Quick road - Query an order.

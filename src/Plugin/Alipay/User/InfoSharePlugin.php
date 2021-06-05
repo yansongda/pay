@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\User;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Rocket;
 
-class InfoSharePlugin
+class InfoSharePlugin implements PluginInterface
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $payload->merge([
+        $rocket->mergePayload([
             'method' => 'alipay.user.info.share',
-            'auth_token' => $params['auth_token'] ?? '',
+            'auth_token' => $rocket->getParams()['auth_token'] ?? '',
         ]);
 
-        return $next($params, $payload);
+        return $next($rocket);
     }
 }

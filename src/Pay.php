@@ -148,6 +148,11 @@ class Pay
         }
     }
 
+    public static function has(string $service): bool
+    {
+        return Pay::getContainer()->has($service);
+    }
+
     /**
      * getContainer.
      *

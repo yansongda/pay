@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
-use Yansongda\Pay\Plugin\Alipay\Trade\PreCreatePlugin;
+use Yansongda\Pay\Plugin\Alipay\Trade\ClosePlugin;
 
-class ScanShortcut implements ShortcutInterface
+class CloseShortcut implements ShortcutInterface
 {
     public function getPlugins(array $params): array
     {
         return [
-            PreCreatePlugin::class,
+            ClosePlugin::class,
         ];
     }
 }

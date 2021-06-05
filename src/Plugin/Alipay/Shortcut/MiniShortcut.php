@@ -9,7 +9,7 @@ use Yansongda\Pay\Plugin\Alipay\Trade\CreatePlugin;
 
 class MiniShortcut implements ShortcutInterface
 {
-    public function getPlugins(): array
+    public function getPlugins(array $params): array
     {
         return [
             CreatePlugin::class,

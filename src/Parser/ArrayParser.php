@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Exception\InvalidResponseException;
 
-class ArrayPacker implements PackerInterface
+class ArrayParser implements PackerInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\InvalidResponseException

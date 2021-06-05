@@ -9,7 +9,7 @@ use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
-class CollectionPacker implements PackerInterface
+class CollectionParser implements PackerInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException

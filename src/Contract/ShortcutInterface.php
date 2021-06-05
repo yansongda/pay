@@ -11,5 +11,5 @@ interface ShortcutInterface
      *
      * @return \Yansongda\Pay\Contract\PluginInterface[]
      */
-    public function getPlugins(): array;
+    public function getPlugins(array $params): array;
 }
