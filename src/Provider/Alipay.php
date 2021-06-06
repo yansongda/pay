@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
@@ -109,10 +110,19 @@ class Alipay extends AbstractProvider
 
     /**
      * @param array|ServerRequestInterface|null $contents
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public function verify($contents = null, ?array $config = null): Collection
     {
         $response = $this->getCallbackParams($contents);
+
+        return $this->pay(
+            [CallbackPlugin::class], array_merge($response, $config ?? [])
+        );
     }
 
     public function mergeCommonPlugins(array $plugins): array

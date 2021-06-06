@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
-use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Rocket;
@@ -25,7 +24,7 @@ class LaunchPlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        if ($rocket->getDestination() instanceof ResponseInterface) {
+        if (!should_http_request($rocket)) {
             return $rocket;
         }
 

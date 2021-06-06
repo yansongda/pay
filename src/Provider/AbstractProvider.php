@@ -9,7 +9,6 @@ use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
-use Yansongda\Pay\Parser\ResponseParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
@@ -52,7 +51,7 @@ abstract class AbstractProvider
      */
     public function ignite(Rocket $rocket): Rocket
     {
-        if (ResponseParser::class == $rocket->getDirection()) {
+        if (!should_http_request($rocket)) {
             return $rocket;
         }
 

@@ -4,13 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Parser;
 
-use Psr\Http\Message\ResponseInterface;
-use Yansongda\Pay\Contract\ParserInterface;
-
-class ResponseParser implements ParserInterface
+class ResponseParser extends NoHttpRequestParser
 {
-    public function parse(ResponseInterface $response): ResponseInterface
-    {
-        return $response;
-    }
 }

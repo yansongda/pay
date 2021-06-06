@@ -13,8 +13,12 @@ class ArrayParser implements ParserInterface
     /**
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
      */
-    public function parse(ResponseInterface $response): array
+    public function parse(?ResponseInterface $response): array
     {
+        if (is_null($response)) {
+            throw new InvalidResponseException(InvalidResponseException::RESPONSE_NONE);
+        }
+
         $contents = $response->getBody()->getContents();
 
         $result = json_decode($contents, true);

@@ -16,10 +16,10 @@ class CollectionParser implements ParserInterface
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function parse(ResponseInterface $response): Collection
+    public function parse(?ResponseInterface $response): Collection
     {
         return new Collection(
-            Pay::get(JsonParser::class)->parse($response)
+            Pay::get(ArrayParser::class)->parse($response)
         );
     }
 }

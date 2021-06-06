@@ -4,9 +4,18 @@ declare(strict_types=1);
 
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
+
+if (!function_exists('should_http_request')) {
+    function should_http_request(Rocket $rocket): bool
+    {
+        return !in_array(NoHttpRequestParser::class, class_parents($rocket->getDirection()));
+    }
+}
 
 if (!function_exists('get_alipay_config')) {
     /**
