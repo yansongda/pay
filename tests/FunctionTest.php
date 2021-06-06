@@ -9,7 +9,6 @@ use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Parser\ResponseParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 class FunctionTest extends TestCase
@@ -63,12 +62,10 @@ class FunctionTest extends TestCase
 
         self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_crt_or_private_cert($alipayPublicCertPath));
         self::assertTrue(Str::contains(get_public_crt_or_private_cert($appSecretCert), 'END RSA PRIVATE KEY'));
-
-        // github action 不支持 pem
-        // self::assertIsResource(get_public_crt_or_private_cert($appSecretCertPath));
+        self::assertIsResource(get_public_crt_or_private_cert($appSecretCertPath));
     }
 
-    public function testVerifyAlipayResponse()
+    public function testVerifyAlipayResponseNoConfig()
     {
         $config1 = [
             'alipay' => [
