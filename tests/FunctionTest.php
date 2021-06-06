@@ -63,6 +63,8 @@ class FunctionTest extends TestCase
 
         self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_crt_or_private_cert($alipayPublicCertPath));
         self::assertTrue(Str::contains(get_public_crt_or_private_cert($appSecretCert), 'END RSA PRIVATE KEY'));
+
+        echo $appSecretCertPath;
         self::assertIsResource(get_public_crt_or_private_cert($appSecretCertPath));
     }
 
