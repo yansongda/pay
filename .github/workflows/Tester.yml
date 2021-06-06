@@ -19,6 +19,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          extensions: openssl
       - name: Install Dependencies
         run: composer install --no-progress
       - name: Run PHPUnit
