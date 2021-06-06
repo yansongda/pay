@@ -120,6 +120,8 @@ class Pay
      * @author yansongda <me@yansongda.cn>
      *
      * @param mixed $value
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
      */
     public static function set(string $name, $value): void
     {
@@ -148,6 +150,9 @@ class Pay
         }
     }
 
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     */
     public static function has(string $service): bool
     {
         return Pay::getContainer()->has($service);
@@ -157,10 +162,16 @@ class Pay
      * getContainer.
      *
      * @author yansongda <me@yansongda.cn>
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
      */
     public static function getContainer(): Container
     {
-        return self::$container;
+        if (self::$container) {
+            return self::$container;
+        }
+
+        throw new ContainerException('You should init/config PAY first', ContainerException::CONTAINER_NOT_FOUND);
     }
 
     /**

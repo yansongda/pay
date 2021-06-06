@@ -10,11 +10,14 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
-if (!function_exists('should_http_request')) {
-    function should_http_request(Rocket $rocket): bool
+if (!function_exists('should_do_http_request')) {
+    function should_do_http_request(Rocket $rocket): bool
     {
-        return NoHttpRequestParser::class !== $rocket->getDirection() &&
-            !in_array(NoHttpRequestParser::class, class_parents($rocket->getDirection()));
+        $direction = $rocket->getDirection();
+
+        return is_null($direction) ||
+            (NoHttpRequestParser::class !== $direction &&
+            !in_array(NoHttpRequestParser::class, class_parents($direction)));
     }
 }
 
