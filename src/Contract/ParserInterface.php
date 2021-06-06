@@ -6,10 +6,10 @@ namespace Yansongda\Pay\Contract;
 
 use Psr\Http\Message\ResponseInterface;
 
-interface PackerInterface
+interface ParserInterface
 {
     /**
      * @return mixed
      */
-    public function unpack(ResponseInterface $response);
+    public function parse(?ResponseInterface $response);
 }

@@ -51,7 +51,7 @@ abstract class AbstractProvider
      */
     public function ignite(Rocket $rocket): Rocket
     {
-        if (!empty($rocket->getDestination())) {
+        if (!should_http_request($rocket)) {
             return $rocket;
         }
 

@@ -61,6 +61,8 @@ class Exception extends \Exception
 
     public const INVALID_RESPONSE_CODE = 5004;
 
+    public const RESPONSE_NONE = 5005;
+
     /**
      * raw.
      *

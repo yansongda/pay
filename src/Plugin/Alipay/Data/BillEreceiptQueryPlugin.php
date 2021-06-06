@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Alipay\Data;
 
-use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
+use Yansongda\Pay\Plugin\Alipay\GeneralPayPlugin;
 
-class BillEreceiptQueryPlugin extends GeneralPlugin
+class BillEreceiptQueryPlugin extends GeneralPayPlugin
 {
     protected function getMethod(): string
     {

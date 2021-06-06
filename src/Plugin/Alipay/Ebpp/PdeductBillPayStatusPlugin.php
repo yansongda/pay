@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Alipay\Ebpp;
 
-use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
+use Yansongda\Pay\Plugin\Alipay\GeneralPayPlugin;
 
-class PdeductBillPayStatusPlugin extends GeneralPlugin
+class PdeductBillPayStatusPlugin extends GeneralPayPlugin
 {
     protected function getMethod(): string
     {

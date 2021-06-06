@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
+use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Alipay\FilterPlugin;
+use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
-use Yansongda\Pay\Plugin\PackerPlugin;
+use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -106,13 +108,51 @@ class Alipay extends AbstractProvider
         return $this->__call('refund', [$order]);
     }
 
+    /**
+     * @param array|ServerRequestInterface|null $contents
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    public function verify($contents = null, ?array $config = null): Collection
+    {
+        $response = $this->getCallbackParams($contents);
+
+        return $this->pay(
+            [CallbackPlugin::class], $response->merge($config)->all()
+        );
+    }
+
     public function mergeCommonPlugins(array $plugins): array
     {
         return array_merge(
             [PreparePlugin::class],
             $plugins,
-            [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
-            [LaunchPlugin::class, PackerPlugin::class],
+            [SignPlugin::class, RadarPlugin::class],
+            [LaunchPlugin::class, ParserPlugin::class],
+        );
+    }
+
+    /**
+     * @param array|ServerRequestInterface|null $contents
+     */
+    protected function getCallbackParams($contents = null): Collection
+    {
+        if (is_array($contents)) {
+            return Collection::wrap($contents);
+        }
+
+        if ($contents instanceof ServerRequestInterface) {
+            return Collection::wrap('GET' === $contents->getMethod() ? $contents->getQueryParams() :
+                $contents->getParsedBody());
+        }
+
+        $request = ServerRequest::fromGlobals();
+
+        return Collection::wrap(
+            array_merge($request->getQueryParams(), $request->getParsedBody())
         );
     }
 }

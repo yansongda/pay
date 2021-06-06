@@ -15,8 +15,6 @@ class HtmlResponsePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $rocket->setDestination(new Response());
-
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
