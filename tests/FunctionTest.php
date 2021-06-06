@@ -65,6 +65,7 @@ class FunctionTest extends TestCase
         self::assertTrue(Str::contains(get_public_crt_or_private_cert($appSecretCert), 'END RSA PRIVATE KEY'));
 
         echo $appSecretCertPath;
+        var_dump(file_get_contents($appSecretCertPath));
         self::assertIsResource(get_public_crt_or_private_cert($appSecretCertPath));
     }
 
