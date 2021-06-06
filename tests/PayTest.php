@@ -15,8 +15,10 @@ use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\Stubs\FooServiceProvider;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
+use Yansongda\Supports\Pipeline;
 
 class PayTest extends TestCase
 {
@@ -62,6 +64,12 @@ class PayTest extends TestCase
         $this->expectExceptionMessage('You should init/config PAY first');
 
         Pay::getContainer();
+    }
+
+    public function testMakeService()
+    {
+        Pay::config(['name' => 'yansongda']);
+        self::assertNotSame(Pay::make(Pipeline::class), Pay::make(Pipeline::class));
     }
 
     public function testRegisterService()

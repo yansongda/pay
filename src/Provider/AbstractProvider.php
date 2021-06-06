@@ -19,8 +19,8 @@ abstract class AbstractProvider
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
      * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
      */
@@ -29,7 +29,7 @@ abstract class AbstractProvider
         $this->verifyPlugin($plugins);
 
         /* @var Pipeline $pipeline */
-        $pipeline = Pay::get(Pipeline::class);
+        $pipeline = Pay::make(Pipeline::class);
 
         /* @var Rocket $rocket */
         $rocket = $pipeline
