@@ -130,6 +130,28 @@ class Pay
     }
 
     /**
+     * @param string $service
+     * @param array  $parameters
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @return mixed
+     */
+    public static function make(string $service, array $parameters = [])
+    {
+        try {
+            return Pay::getContainer()->make(...func_get_args());
+        } catch (NotFoundException $e) {
+            throw new ServiceNotFoundException($e->getMessage());
+        } catch (DependencyException $e) {
+            throw new ContainerDependencyException($e->getMessage());
+        } catch (Throwable $e) {
+            throw new ContainerException($e->getMessage());
+        }
+    }
+
+    /**
      * 获取服务.
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
