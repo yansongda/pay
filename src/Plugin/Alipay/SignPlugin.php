@@ -50,7 +50,7 @@ class SignPlugin implements PluginInterface
             throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [app_secret_cert]');
         }
 
-        return get_alipay_cert($privateKey);
+        return get_public_crt_or_private_cert($privateKey);
     }
 
     protected function getSignContent(Collection $payload): string

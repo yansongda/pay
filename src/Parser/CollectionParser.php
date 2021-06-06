@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Packer;
+namespace Yansongda\Pay\Parser;
 
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\PackerInterface;
@@ -19,7 +19,7 @@ class CollectionParser implements PackerInterface
     public function unpack(ResponseInterface $response): Collection
     {
         return new Collection(
-            Pay::get(JsonPacker::class)->unpack($response)
+            Pay::get(JsonParser::class)->unpack($response)
         );
     }
 }

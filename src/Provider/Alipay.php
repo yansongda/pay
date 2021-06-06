@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
+use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
@@ -106,6 +108,14 @@ class Alipay extends AbstractProvider
         return $this->__call('refund', [$order]);
     }
 
+    /**
+     * @param array|ServerRequestInterface|null $contents
+     */
+    public function verify($contents = null, ?array $config = null): Collection
+    {
+        $response = $this->getCallbackParams($contents);
+    }
+
     public function mergeCommonPlugins(array $plugins): array
     {
         return array_merge(
@@ -113,6 +123,27 @@ class Alipay extends AbstractProvider
             $plugins,
             [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
             [LaunchPlugin::class, PackerPlugin::class],
+        );
+    }
+
+    /**
+     * @param array|ServerRequestInterface|null $contents
+     */
+    protected function getCallbackParams($contents = null): Collection
+    {
+        if (is_array($contents)) {
+            return Collection::wrap($contents);
+        }
+
+        if ($contents instanceof ServerRequestInterface) {
+            return Collection::wrap('GET' === $contents->getMethod() ? $contents->getQueryParams() :
+                $contents->getParsedBody());
+        }
+
+        $request = ServerRequest::fromGlobals();
+
+        return Collection::wrap(
+            array_merge($request->getQueryParams(), $request->getParsedBody())
         );
     }
 }

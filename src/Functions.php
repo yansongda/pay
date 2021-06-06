@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
@@ -23,11 +24,11 @@ if (!function_exists('get_alipay_config')) {
     }
 }
 
-if (!function_exists('get_alipay_cert')) {
+if (!function_exists('get_public_crt_or_private_cert')) {
     /**
      * @return false|resource|string
      */
-    function get_alipay_cert(string $key)
+    function get_public_crt_or_private_cert(string $key)
     {
         if (Str::endsWith($key, '.crt')) {
             $key = file_get_contents($key);
@@ -42,6 +43,31 @@ if (!function_exists('get_alipay_cert')) {
         }
 
         return $key;
+    }
+}
+
+if (!function_exists('verify_alipay_response')) {
+    /**
+     * @param string $sign base64decode 之后的
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    function verify_alipay_response(array $params, string $contents, string $sign): bool
+    {
+        $public = get_alipay_config($params)->get('alipay_public_cert_path');
+
+        if (is_null($public)) {
+            throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_public_cert_path]');
+        }
+
+        return 1 === openssl_verify(
+            $contents,
+            base64_decode($sign),
+            get_public_crt_or_private_cert($public),
+            OPENSSL_ALGO_SHA256);
     }
 }
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Alipay\Fund;
 
-use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
+use Yansongda\Pay\Plugin\Alipay\GeneralPayPlugin;
 
-class TransOrderQueryPlugin extends GeneralPlugin
+class TransOrderQueryPlugin extends GeneralPayPlugin
 {
     protected function getMethod(): string
     {

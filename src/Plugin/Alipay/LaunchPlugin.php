@@ -7,7 +7,6 @@ namespace Yansongda\Pay\Plugin\Alipay;
 use Closure;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
@@ -73,9 +72,7 @@ class LaunchPlugin implements PluginInterface
             throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', $response);
         }
 
-        $result = openssl_verify(json_encode($response, JSON_UNESCAPED_UNICODE), base64_decode($sign), $this->getAlipayPublicKey($rocket), OPENSSL_ALGO_SHA256);
-
-        if (1 !== $result) {
+        if (!verify_alipay_response($rocket->getParams(), json_encode($response, JSON_UNESCAPED_UNICODE), base64_decode($sign))) {
             throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', $response);
         }
     }
@@ -85,22 +82,5 @@ class LaunchPlugin implements PluginInterface
         $method = $rocket->getPayload()->get('method');
 
         return str_replace('.', '_', $method).'_response';
-    }
-
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     */
-    protected function getAlipayPublicKey(Rocket $rocket)
-    {
-        $public = get_alipay_config($rocket->getParams())->get('alipay_public_cert_path');
-
-        if (is_null($public)) {
-            throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_public_cert_path]');
-        }
-
-        return get_alipay_cert($public);
     }
 }

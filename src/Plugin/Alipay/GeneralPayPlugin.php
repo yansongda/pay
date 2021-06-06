@@ -8,7 +8,7 @@ use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Rocket;
 
-abstract class GeneralPlugin implements PluginInterface
+abstract class GeneralPayPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {

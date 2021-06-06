@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Parser;
 
-class JsonParser extends ArrayPacker
+class JsonParser extends ArrayParser
 {
 }

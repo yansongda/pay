@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Packer;
+namespace Yansongda\Pay\Parser;
 
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\PackerInterface;
