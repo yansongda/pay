@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay;
 
 use Yansongda\Pay\Contract\LoggerInterface;
+use Yansongda\Pay\Exception\InvalidConfigException;
 
 /**
  * @method static void emergency($message, array $context = [])
@@ -23,6 +24,7 @@ class Logger
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
      */
     public static function __callStatic(string $method, array $args): void
     {
@@ -32,6 +34,10 @@ class Logger
 
         $class = Pay::get(LoggerInterface::class);
 
-        forward_static_call_array([$class, $method], $args);
+        if ($class instanceof \Psr\Log\LoggerInterface) {
+            $class->{$method}(...$args);
+        }
+
+        throw new InvalidConfigException(InvalidConfigException::LOGGER_CONFIG_ERROR);
     }
 }

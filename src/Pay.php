@@ -13,6 +13,7 @@ use Yansongda\Pay\Contract\ContainerInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerDependencyException;
 use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\ConfigServiceProvider;
@@ -89,7 +90,7 @@ class Pay
      */
     public static function __callStatic(string $service, array $config)
     {
-        if (!empty($config)) {
+        if (!empty($config) && !self::hasContainer()) {
             self::config(...$config);
         }
 
@@ -105,7 +106,7 @@ class Pay
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public static function config(array $config): Pay
+    public static function config(array $config = []): Pay
     {
         if (empty($config) && self::hasContainer()) {
             return self::get(Pay::class);
@@ -132,8 +133,8 @@ class Pay
      * 获取服务.
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\ContainerException
      *
      * @return mixed
      */
@@ -163,15 +164,15 @@ class Pay
      *
      * @author yansongda <me@yansongda.cn>
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      */
     public static function getContainer(): Container
     {
-        if (self::$container) {
+        if (self::hasContainer()) {
             return self::$container;
         }
 
-        throw new ContainerException('You should init/config PAY first', ContainerException::CONTAINER_NOT_FOUND);
+        throw new ContainerNotFoundException('You should init/config PAY first', ContainerException::CONTAINER_NOT_FOUND);
     }
 
     /**

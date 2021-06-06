@@ -27,7 +27,7 @@ if (!function_exists('get_alipay_config')) {
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    function get_alipay_config(array $params): Config
+    function get_alipay_config(array $params = []): Config
     {
         $alipay = Pay::get(ConfigInterface::class)->get('alipay');
 

@@ -10,6 +10,9 @@ use Yansongda\Pay\Provider\Wechat;
 
 class WechatServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     */
     public function register(Pay $pay, ?array $data = null): void
     {
         $service = function () {
