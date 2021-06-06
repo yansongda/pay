@@ -130,12 +130,10 @@ class Pay
     }
 
     /**
-     * @param string $service
-     * @param array  $parameters
-     *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
      * @return mixed
      */
     public static function make(string $service, array $parameters = [])
