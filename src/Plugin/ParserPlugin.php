@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin;
 
 use Closure;
-use Yansongda\Pay\Contract\PackerInterface;
+use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 
-class PackerPlugin implements PluginInterface
+class ParserPlugin implements PluginInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
@@ -26,7 +26,7 @@ class PackerPlugin implements PluginInterface
 
         $packer = $this->getPacker($rocket);
 
-        return $rocket->setDestination($packer->unpack($rocket->getDestination()));
+        return $rocket->setDestination($packer->parse($rocket->getDestination()));
     }
 
     /**
@@ -35,13 +35,13 @@ class PackerPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getPacker(Rocket $rocket): PackerInterface
+    protected function getPacker(Rocket $rocket): ParserInterface
     {
-        $packer = Pay::get($rocket->getDirection() ?? PackerInterface::class);
+        $packer = Pay::get($rocket->getDirection() ?? ParserInterface::class);
 
         $packer = is_string($packer) ? Pay::get($packer) : $packer;
 
-        if (!($packer instanceof PackerInterface)) {
+        if (!($packer instanceof ParserInterface)) {
             throw new InvalidConfigException(InvalidConfigException::INVALID_PACKER);
         }
 

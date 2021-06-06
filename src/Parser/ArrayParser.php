@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Parser;
 
 use Psr\Http\Message\ResponseInterface;
-use Yansongda\Pay\Contract\PackerInterface;
+use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Exception\InvalidResponseException;
 
-class ArrayParser implements PackerInterface
+class ArrayParser implements ParserInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
      */
-    public function unpack(ResponseInterface $response): array
+    public function parse(ResponseInterface $response): array
     {
         $contents = $response->getBody()->getContents();
 

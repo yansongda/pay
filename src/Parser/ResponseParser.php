@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Parser;
 
 use Psr\Http\Message\ResponseInterface;
-use Yansongda\Pay\Contract\PackerInterface;
+use Yansongda\Pay\Contract\ParserInterface;
 
-class ResponseParser implements PackerInterface
+class ResponseParser implements ParserInterface
 {
-    public function unpack(ResponseInterface $response): ResponseInterface
+    public function parse(ResponseInterface $response): ResponseInterface
     {
         return $response;
     }

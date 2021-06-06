@@ -14,7 +14,7 @@ use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
-use Yansongda\Pay\Plugin\PackerPlugin;
+use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -122,7 +122,7 @@ class Alipay extends AbstractProvider
             [PreparePlugin::class],
             $plugins,
             [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
-            [LaunchPlugin::class, PackerPlugin::class],
+            [LaunchPlugin::class, ParserPlugin::class],
         );
     }
 
