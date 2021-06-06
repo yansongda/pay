@@ -24,7 +24,7 @@ class LaunchPlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        if (!should_http_request($rocket)) {
+        if (!should_do_http_request($rocket)) {
             return $rocket;
         }
 
