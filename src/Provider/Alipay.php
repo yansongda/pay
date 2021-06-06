@@ -9,7 +9,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Alipay\FilterPlugin;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
@@ -121,7 +120,7 @@ class Alipay extends AbstractProvider
         return array_merge(
             [PreparePlugin::class],
             $plugins,
-            [FilterPlugin::class, SignPlugin::class, RadarPlugin::class],
+            [SignPlugin::class, RadarPlugin::class],
             [LaunchPlugin::class, ParserPlugin::class],
         );
     }

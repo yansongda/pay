@@ -19,7 +19,7 @@ class CollectionParser implements ParserInterface
     public function parse(ResponseInterface $response): Collection
     {
         return new Collection(
-            Pay::get(JsonParser::class)->unpack($response)
+            Pay::get(JsonParser::class)->parse($response)
         );
     }
 }

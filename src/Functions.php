@@ -65,7 +65,7 @@ if (!function_exists('verify_alipay_response')) {
 
         return 1 === openssl_verify(
             $contents,
-            base64_decode($sign),
+            $sign,
             get_public_crt_or_private_cert($public),
             OPENSSL_ALGO_SHA256);
     }

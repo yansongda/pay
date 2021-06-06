@@ -9,6 +9,7 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Str;
 
 class SignPlugin implements PluginInterface
 {
@@ -20,10 +21,11 @@ class SignPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $rocket->getPayload();
+        $this->filterPayload($rocket);
+
         $privateKey = $this->getPrivateKey($rocket->getParams());
 
-        openssl_sign($this->getSignContent($payload), $sign, $privateKey, OPENSSL_ALGO_SHA256);
+        openssl_sign($this->getSignContent($rocket->getPayload()), $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
         $sign = base64_encode($sign);
 
@@ -32,6 +34,21 @@ class SignPlugin implements PluginInterface
         $rocket->mergePayload(['sign' => $sign]);
 
         return $next($rocket);
+    }
+
+    protected function filterPayload(Rocket $rocket): void
+    {
+        $payload = $rocket->getPayload()->filter(function ($v, $k) {
+            return '' !== $v && !is_null($v) && 'sign' != $k;
+        });
+
+        $contents = array_filter($payload->get('biz_content', []), function ($v, $k) {
+            return !Str::startsWith($k, '_');
+        }, ARRAY_FILTER_USE_BOTH);
+
+        $rocket->setPayload(
+            $payload->merge(['biz_content' => json_encode($contents)])
+        );
     }
 
     /**
