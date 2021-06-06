@@ -13,7 +13,8 @@ use Yansongda\Supports\Str;
 if (!function_exists('should_http_request')) {
     function should_http_request(Rocket $rocket): bool
     {
-        return !in_array(NoHttpRequestParser::class, class_parents($rocket->getDirection()));
+        return NoHttpRequestParser::class !== $rocket->getDirection() &&
+            !in_array(NoHttpRequestParser::class, class_parents($rocket->getDirection()));
     }
 }
 

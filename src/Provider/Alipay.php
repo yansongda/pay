@@ -121,7 +121,7 @@ class Alipay extends AbstractProvider
         $response = $this->getCallbackParams($contents);
 
         return $this->pay(
-            [CallbackPlugin::class], array_merge($response, $config ?? [])
+            [CallbackPlugin::class], $response->merge($config)->all()
         );
     }
 
