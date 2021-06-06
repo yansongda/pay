@@ -12,6 +12,9 @@ use Yansongda\Pay\Provider\Alipay;
 
 class AlipayServiceProvider implements ServiceProviderInterface
 {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     */
     public function register(Pay $pay, ?array $data = null): void
     {
         Pay::set(ParserInterface::class, CollectionParser::class);

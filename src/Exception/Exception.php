@@ -37,6 +37,8 @@ class Exception extends \Exception
 
     public const ALIPAY_CONFIG_ERROR = 3002;
 
+    public const LOGGER_CONFIG_ERROR = 3003;
+
     /*
      * 关于参数.
      */

@@ -43,6 +43,5 @@ class LoggerServiceProvider implements ServiceProviderInterface
         };
 
         Pay::set(LoggerInterface::class, $logger);
-        Pay::set(\Psr\Log\LoggerInterface::class, $logger);
     }
 }
