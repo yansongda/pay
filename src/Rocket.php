@@ -27,7 +27,7 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
     /**
      * @var array
      */
-    private $params;
+    private $params = [];
 
     /**
      * @var \Yansongda\Supports\Collection
