@@ -125,7 +125,7 @@ class PreparePlugin implements PluginInterface
 
     protected function hex2dec(string $hex): string
     {
-        $dec = 0;
+        $dec = '0';
         $len = strlen($hex);
 
         for ($i = 1; $i <= $len; ++$i) {
