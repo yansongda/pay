@@ -4,6 +4,7 @@ namespace Yansongda\Pay\Tests\Provider;
 
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
@@ -13,6 +14,41 @@ use Yansongda\Pay\Plugin\ParserPlugin;
 
 class AlipayTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        $config = [
+            'alipay' => [
+                'default' => [
+                    'app_public_cert_path' => __DIR__.'/../Stubs/cert/appCertPublicKey_2016082000295641.crt',
+                    'alipay_public_cert_path' => __DIR__.'/../Stubs/cert/alipayCertPublicKey_RSA2.crt',
+                    'alipay_root_cert_path' => __DIR__.'/../Stubs/cert/alipayRootCert.crt',
+                ],
+            ]
+        ];
+        Pay::config($config);
+    }
+
+    protected function tearDown(): void
+    {
+        Pay::clear();
+    }
+
+    public function testShortcutNotFound()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(InvalidParamsException::SHORTCUT_NOT_FOUND);
+
+        Pay::alipay()->foo();
+    }
+
+    public function testShortcutIncompatible()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(InvalidParamsException::SHORTCUT_NOT_FOUND);
+
+        Pay::alipay()->foo();
+    }
+
     public function testVerifyResponse()
     {
         $config = [
@@ -50,5 +86,9 @@ class AlipayTest extends TestCase
 }
 
 class FooPluginStub
+{
+}
+
+class FooShortcut
 {
 }
