@@ -14,7 +14,7 @@ use Yansongda\Pay\Contract\LoggerInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Tests\Stubs\FooServiceProvider;
+use Yansongda\Pay\Tests\Stubs\FooServiceProviderStub;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
@@ -76,7 +76,7 @@ class PayTest extends TestCase
     {
         Pay::config(['name' => 'yansongda']);
 
-        Pay::registerService(FooServiceProvider::class, []);
+        Pay::registerService(FooServiceProviderStub::class, []);
 
         self::assertEquals('bar', Pay::get('foo'));
     }

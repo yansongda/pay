@@ -82,6 +82,10 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
 
     public function mergePayload(array $payload): Rocket
     {
+        if (empty($this->payload)) {
+            $this->payload = new Collection();
+        }
+
         $this->payload = $this->payload->merge($payload);
 
         return $this;
