@@ -5,22 +5,23 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Ebpp;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Rocket;
 
-class PdeductSignCancelPlugin
+class PdeductSignCancelPlugin implements PluginInterface
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $payload->merge([
+        $rocket->mergePayload([
             'method' => 'alipay.ebpp.pdeduct.sign.cancel',
-            'biz_content' => json_encode(array_merge(
+            'biz_content' => array_merge(
                 [
                     'agent_channel' => 'PUBLICPLATFORM',
                 ],
-                $params
-            )),
+                $rocket->getParams(),
+            ),
         ]);
 
-        return $next($params, $payload);
+        return $next($rocket);
     }
 }

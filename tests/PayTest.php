@@ -2,140 +2,153 @@
 
 namespace Yansongda\Pay\Tests;
 
+use DI\Container;
+use GuzzleHttp\Client;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Contract\EventDispatcherInterface;
+use Yansongda\Pay\Contract\HttpClientInterface;
+use Yansongda\Pay\Contract\LoggerInterface;
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Pay;
+use Yansongda\Pay\Tests\Stubs\FooServiceProvider;
+use Yansongda\Supports\Collection;
+use Yansongda\Supports\Config;
+use Yansongda\Supports\Logger;
+use Yansongda\Supports\Pipeline;
 
 class PayTest extends TestCase
 {
-//    public function testGetContainerNullConfig()
-//    {
-//        $this->expectException(ContainerNotFoundException::class);
-//        $this->expectExceptionCode(ContainerNotFoundException::CONTAINER_NOT_FOUND);
-//        $this->expectExceptionMessage('You must init the container first with config');
-//
-//        Pay::getContainer();
-//    }
-//
-//    public function testGetContainer()
-//    {
-//        self::assertInstanceOf(Container::class, Pay::getContainer([]));
-//    }
-//
-//    public function testHasContainer()
-//    {
-//        self::assertFalse(Pay::hasContainer());
-//
-//        Pay::getContainer([]);
-//
-//        self::assertTrue(Pay::hasContainer());
-//    }
-//
-//    public function testMagicCallNotFoundService()
-//    {
-//        $this->expectException(ServiceNotFoundException::class);
-//
-//        Pay::foo([]);
-//    }
-//
-//    public function testMagicCallSetAndGet()
-//    {
-//        $data = [
-//            'name' => 'yansongda',
-//            'age' => 26
-//        ];
-//
-//        Pay::getContainer([]);
-//
-//        Pay::set('profile', $data);
-//
-//        self::assertEquals($data, Pay::get('profile'));
-//    }
-//
-//    public function testCoreServiceBase()
-//    {
-//        $container = Pay::getContainer([]);
-//
-//        self::assertInstanceOf(Container::class, $container);
-//        self::assertInstanceOf(Pay::class, $container->get(ContainerInterface::class));
-//        self::assertInstanceOf(Pay::class, Pay::get(Pay::class));
-//    }
-//
-//    public function testCoreServiceConfig()
-//    {
-//        $config = [
-//            'name' => 'yansongda',
-//        ];
-//
-//        $container = Pay::getContainer($config);
-//
-//        self::assertInstanceOf(Config::class, $container->get(ConfigInterface::class));
-//        self::assertEquals($config['name'], Pay::get(ConfigInterface::class)->get('name'));
-//
-//        // 修改 config 的情况
-//        $config2 = [
-//            'name' => 'yansongda2',
-//        ];
-//        Pay::set(ConfigInterface::class, new Config($config2));
-//
-//        self::assertEquals($config2['name'], Pay::get(ConfigInterface::class)->get('name'));
-//    }
-//
-//    public function testCoreServiceLogger()
-//    {
-//        $container = Pay::getContainer([]);
-//        $otherLogger = new \Monolog\Logger('test');
-//
-//        self::assertInstanceOf(Logger::class, $container->get(\Yansongda\Pay\Contract\LoggerInterface::class));
-//        self::assertInstanceOf(\Monolog\Logger::class, $container->get(\Yansongda\Pay\Contract\LoggerInterface::class)->getLogger());
-//        self::assertInstanceOf(LoggerInterface::class, $container->get(\Yansongda\Pay\Contract\LoggerInterface::class)->getLogger());
-//        self::assertNotEquals($otherLogger, $container->get(\Yansongda\Pay\Contract\LoggerInterface::class));
-//
-//        $container->get(\Yansongda\Pay\Contract\LoggerInterface::class)->setLogger($otherLogger);
-//        self::assertEquals($otherLogger, $container->get(\Yansongda\Pay\Contract\LoggerInterface::class)->getLogger());
-//    }
-//
-//    public function testCoreServiceEvent()
-//    {
-//        $container = Pay::getContainer([]);
-//
-//        self::assertInstanceOf(EventDispatcher::class, $container->get(EventDispatcherInterface::class));
-//    }
-//
-//    public function testCoreServiceHttpClient()
-//    {
-//        $container = Pay::getContainer([]);
-//
-//        self::assertInstanceOf(Client::class, $container->get(HttpClientInterface::class));
-//    }
-//
-//    public function testCoreServiceExternalHttpClient()
-//    {
-//        Pay::getContainer([]);
-//
-//        $oldClient = Pay::get(HttpClientInterface::class);
-//
-//        $client = new Client(['timeout' => 3.0]);
-//        Pay::set(HttpClientInterface::class, $client);
-//
-//        self::assertEquals($client, Pay::get(HttpClientInterface::class));
-//        self::assertNotEquals($oldClient, Pay::get(HttpClientInterface::class));
-//    }
-//
-//    public function testSingletonContainer()
-//    {
-//        $config1 = ['name' => 'yansongda'];
-//        $config2 = ['age' => 26];
-//
-//        $container1 = Pay::getContainer($config1);
-//        $container2 = Pay::getContainer($config2);
-//
-//        self::assertEquals($container1, $container2);
-//    }
-//
-//    public function testGetNotFoundContainer()
-//    {
-//        $this->expectExceptionMessage('You must init the container first with config');
-//        $this->expectException(ContainerNotFoundException::class);
-//
-//        Pay::getContainer();
-//    }
+    protected function tearDown (): void
+    {
+        Pay::clear();
+    }
+
+    public function testConfig()
+    {
+        $result = Pay::config(['name' => 'yansongda']);
+        static::assertInstanceOf(Pay::class, $result);
+    }
+
+    public function testSetAndGet()
+    {
+        Pay::config(['name' => 'yansongda']);
+
+        Pay::set('age', 28);
+
+        self::assertEquals(28, Pay::get('age'));
+    }
+
+    public function testHas()
+    {
+        Pay::config(['name' => 'yansongda']);
+
+        Pay::set('age', 28);
+
+        self::assertFalse(Pay::has('name'));
+        self::assertTrue(Pay::has('age'));
+    }
+
+    public function testGetContainerAndClear()
+    {
+        Pay::config(['name' => 'yansongda']);
+        self::assertInstanceOf(ContainerInterface::class, Pay::getContainer());
+
+        Pay::clear();
+
+        $this->expectException(ContainerException::class);
+        $this->expectExceptionCode(ContainerException::CONTAINER_NOT_FOUND);
+        $this->expectExceptionMessage('You should init/config PAY first');
+
+        Pay::getContainer();
+    }
+
+    public function testMakeService()
+    {
+        Pay::config(['name' => 'yansongda']);
+        self::assertNotSame(Pay::make(Pipeline::class), Pay::make(Pipeline::class));
+    }
+
+    public function testRegisterService()
+    {
+        Pay::config(['name' => 'yansongda']);
+
+        Pay::registerService(FooServiceProvider::class, []);
+
+        self::assertEquals('bar', Pay::get('foo'));
+    }
+
+    public function testMagicCallNotFoundService()
+    {
+        $this->expectException(ServiceNotFoundException::class);
+
+        Pay::foo([]);
+    }
+
+    public function testCoreService()
+    {
+        Pay::config(['name' => 'yansongda']);
+
+        self::assertInstanceOf(Container::class, Pay::get(\Yansongda\Pay\Contract\ContainerInterface::class));
+        self::assertInstanceOf(Container::class, Pay::get(ContainerInterface::class));
+        self::assertInstanceOf(Pay::class, Pay::get(Pay::class));
+    }
+
+    public function testCoreServiceConfig()
+    {
+        $config = ['name' => 'yansongda'];
+        Pay::config($config);
+
+        self::assertInstanceOf(Config::class, Pay::get(ConfigInterface::class));
+        self::assertInstanceOf(Config::class, Pay::get('config'));
+        self::assertEquals($config['name'], Pay::get(ConfigInterface::class)->get('name'));
+
+        // 修改 config 的情况
+        $config2 = [
+            'name' => 'yansongda2',
+        ];
+        Pay::set(ConfigInterface::class, new Config($config2));
+
+        self::assertEquals($config2['name'], Pay::get(ConfigInterface::class)->get('name'));
+    }
+
+    public function testCoreServiceLogger()
+    {
+        $config = ['name' => 'yansongda','logger' => ['enable' => true]];
+        Pay::config($config);
+
+        self::assertInstanceOf(Logger::class, Pay::get(LoggerInterface::class));
+
+        $otherLogger = new \Monolog\Logger('test');
+        Pay::set(LoggerInterface::class, $otherLogger);
+        self::assertEquals($otherLogger, Pay::get(LoggerInterface::class));
+    }
+
+    public function testCoreServiceEvent()
+    {
+        $config = ['name' => 'yansongda'];
+        Pay::config($config);
+
+        self::assertInstanceOf(EventDispatcher::class, Pay::get(EventDispatcherInterface::class));
+    }
+
+    public function testCoreServiceHttpClient()
+    {
+        $config = ['name' => 'yansongda'];
+        Pay::config($config);
+
+        self::assertInstanceOf(Client::class, Pay::get(HttpClientInterface::class));
+
+        // 使用外部 http client
+        $oldClient = Pay::get(HttpClientInterface::class);
+
+        $client = new Client(['timeout' => 3.0]);
+        Pay::set(HttpClientInterface::class, $client);
+
+        self::assertEquals($client, Pay::get(HttpClientInterface::class));
+        self::assertNotEquals($oldClient, Pay::get(HttpClientInterface::class));
+    }
 }

@@ -5,17 +5,20 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Trade;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Parser\ResponseParser;
+use Yansongda\Pay\Rocket;
 
-class PageRefundPlugin
+class PageRefundPlugin implements PluginInterface
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $payload->merge([
-            'method' => 'alipay.trade.page.refund',
-            'biz_content' => json_encode($params),
-        ]);
+        $rocket->setDirection(ResponseParser::class)
+            ->mergePayload([
+                'method' => 'alipay.trade.page.refund',
+                'biz_content' => $rocket->getParams(),
+            ]);
 
-        return $next($params, $payload);
+        return $next($rocket);
     }
 }

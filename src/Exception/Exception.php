@@ -35,7 +35,9 @@ class Exception extends \Exception
 
     public const INVALID_PACKER = 3001;
 
-    public const ALIPAY_PRIVATE_KEY_ERROR = 3002;
+    public const ALIPAY_CONFIG_ERROR = 3002;
+
+    public const LOGGER_CONFIG_ERROR = 3003;
 
     /*
      * 关于参数.
@@ -43,6 +45,10 @@ class Exception extends \Exception
     public const PARAMS_ERROR = 4000;
 
     public const SHORTCUT_NOT_FOUND = 4001;
+
+    public const PLUGIN_ERROR = 4002;
+
+    public const QUERY_TYPE_ERROR = 4003;
 
     /**
      * 关于api.
@@ -52,6 +58,12 @@ class Exception extends \Exception
     public const REQUEST_RESPONSE_ERROR = 5001;
 
     public const UNPACK_RESPONSE_ERROR = 5002;
+
+    public const INVALID_RESPONSE_SIGN = 5003;
+
+    public const INVALID_RESPONSE_CODE = 5004;
+
+    public const RESPONSE_NONE = 5005;
 
     /**
      * raw.

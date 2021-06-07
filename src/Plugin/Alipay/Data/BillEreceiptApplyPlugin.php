@@ -5,22 +5,23 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Data;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Rocket;
 
-class BillEreceiptApplyPlugin
+class BillEreceiptApplyPlugin implements PluginInterface
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $payload->merge([
+        $rocket->mergePayload([
             'method' => 'alipay.data.bill.ereceipt.apply',
-            'biz_content' => json_encode(array_merge(
+            'biz_content' => array_merge(
                 [
                     'type' => 'FUND_DETAIL',
                 ],
-                $params
-            )),
+                $rocket->getParams(),
+            ),
         ]);
 
-        return $next($params, $payload);
+        return $next($rocket);
     }
 }

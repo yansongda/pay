@@ -5,22 +5,23 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Fund;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Rocket;
 
-class AccountQueryPlugin
+class AccountQueryPlugin implements PluginInterface
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $payload->merge([
+        $rocket->mergePayload([
             'method' => 'alipay.fund.account.query',
-            'biz_content' => json_encode(array_merge(
+            'biz_content' => array_merge(
                 [
                     'product_code' => 'TRANS_ACCOUNT_NO_PWD',
                 ],
-                $params
-            )),
+                $rocket->getParams(),
+            ),
         ]);
 
-        return $next($params, $payload);
+        return $next($rocket);
     }
 }

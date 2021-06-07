@@ -23,39 +23,25 @@ class LoggerServiceProvider implements ServiceProviderInterface
         /* @var ConfigInterface $config */
         $config = Pay::get(ConfigInterface::class);
 
-        $logger = new class($config) extends Logger {
-            /**
-             * @var array
-             */
-            private $conf;
+        if (!class_exists(\Monolog\Logger::class) || false === $config->get('logger.enable', false)) {
+            return;
+        }
 
-            /**
-             * Bootstrap.
-             */
+        $logger = new class($config) extends Logger {
             public function __construct(Config $config)
             {
-                $this->conf = $config->get('log', []);
-
-                parent::__construct($this->conf);
+                parent::__construct($config->get('logger', []));
             }
 
             /**
-             * __call.
-             *
-             * @author yansongda <me@yansongda.cn>
-             *
              * @throws \Exception
              */
             public function __call(string $method, array $args): void
             {
-                if (false === $this->conf['enable'] ?? false) {
-                    return;
-                }
-
                 parent::__call($method, $args);
             }
         };
 
-        $pay::set(LoggerInterface::class, $logger);
+        Pay::set(LoggerInterface::class, $logger);
     }
 }

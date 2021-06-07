@@ -30,6 +30,9 @@ class ConfigServiceProvider implements ServiceProviderInterface
         'mode' => Pay::MODE_NORMAL,
     ];
 
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     */
     public function register(Pay $pay, ?array $data = null): void
     {
         $config = new Config(array_replace_recursive($this->config, $data ?? []));

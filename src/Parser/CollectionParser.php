@@ -2,22 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Packer;
+namespace Yansongda\Pay\Parser;
 
 use Psr\Http\Message\ResponseInterface;
-use Yansongda\Pay\Contract\PackerInterface;
+use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
-class CollectionPacker implements PackerInterface
+class CollectionParser implements ParserInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function unpack(ResponseInterface $response): Collection
+    public function parse(?ResponseInterface $response): Collection
     {
-        return new Collection(Pay::get(JsonPacker::class)->unpack($response));
+        return new Collection(
+            Pay::get(ArrayParser::class)->parse($response)
+        );
     }
 }

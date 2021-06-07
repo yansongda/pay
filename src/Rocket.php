@@ -37,7 +37,7 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
     /**
      * @var string|null
      */
-    private $direction = Collection::class;
+    private $direction = null;
 
     /**
      * @var \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface

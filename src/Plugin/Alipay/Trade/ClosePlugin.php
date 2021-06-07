@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Alipay\Trade;
 
-use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Plugin\Alipay\GeneralPayPlugin;
 
-class ClosePlugin
+class ClosePlugin extends GeneralPayPlugin
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    protected function getMethod(): string
     {
-        $payload = $payload->merge([
-            'method' => 'alipay.trade.close',
-            'biz_content' => json_encode($params),
-        ]);
-
-        return $next($params, $payload);
+        return 'alipay.trade.close';
     }
 }

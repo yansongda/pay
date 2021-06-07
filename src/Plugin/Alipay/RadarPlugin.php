@@ -43,7 +43,7 @@ class RadarPlugin implements PluginInterface
 
     protected function getMethod(Rocket $rocket): string
     {
-        return $rocket->getParams()['_method'] ?? 'POST';
+        return strtoupper($rocket->getParams()['_method'] ?? 'POST');
     }
 
     /**
@@ -61,12 +61,12 @@ class RadarPlugin implements PluginInterface
     protected function getHeaders(): array
     {
         return [
-            'Content-Type' => 'application/json',
+            'Content-Type' => 'application/x-www-form-urlencoded',
         ];
     }
 
     protected function getBody(Rocket $rocket): string
     {
-        return $rocket->getPayload()->toJson();
+        return $rocket->getPayload()->query();
     }
 }

@@ -5,24 +5,25 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Ebpp;
 
 use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Rocket;
 
-class PdeductSignAddPlugin
+class PdeductSignAddPlugin implements PluginInterface
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $payload->merge([
+        $rocket->mergePayload([
             'method' => 'alipay.ebpp.pdeduct.sign.add',
-            'biz_content' => json_encode(array_merge(
+            'biz_content' => array_merge(
                 [
                     'charge_inst' => 'CQCENTERELECTRIC',
                     'agent_channel' => 'PUBLICPLATFORM',
                     'deduct_prod_code' => 'INST_DIRECT_DEDUCT',
                 ],
-                $params
-            )),
+                $rocket->getParams(),
+            ),
         ]);
 
-        return $next($params, $payload);
+        return $next($rocket);
     }
 }

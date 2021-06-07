@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Alipay\Data;
 
-use Closure;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Plugin\Alipay\GeneralPayPlugin;
 
-class BillEreceiptQueryPlugin
+class BillEreceiptQueryPlugin extends GeneralPayPlugin
 {
-    public function apply(array $params, Collection $payload, Closure $next): Collection
+    protected function getMethod(): string
     {
-        $payload = $payload->merge([
-            'method' => 'alipay.data.bill.ereceipt.query',
-            'biz_content' => json_encode($params),
-        ]);
-
-        return $next($params, $payload);
+        return 'alipay.data.bill.ereceipt.query';
     }
 }
