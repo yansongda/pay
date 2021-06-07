@@ -47,5 +47,10 @@
             "Yansongda\\Pay\\Tests\\": "tests"
         }
     },
+    "scripts": {
+        "test": "./vendor/bin/phpunit -c phpunit.xml --colors=always",
+        "cs-fix": "php-cs-fixer fix $1",
+        "analyse": "phpstan analyse --memory-limit 300M -l 3 -c phpstan.neon ./src"
+    },
     "license": "MIT"
 }
