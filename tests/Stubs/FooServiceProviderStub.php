@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Tests\Stubs;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
 
-class FooServiceProvider implements ServiceProviderInterface
+class FooServiceProviderStub implements ServiceProviderInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException

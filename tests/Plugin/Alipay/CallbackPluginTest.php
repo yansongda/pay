@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugins\Alipay;
+namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
@@ -12,7 +12,7 @@ use Yansongda\Pay\Rocket;
 
 class CallbackPluginTest extends TestCase
 {
-    public function testAssembly()
+    public function testReturnCallback()
     {
         $config = [
             'alipay' => [
@@ -35,6 +35,6 @@ class CallbackPluginTest extends TestCase
         $plugin = Pay::get(CallbackPlugin::class);
         $result = $plugin->assembly($rocket, function ($rocket) {return $rocket;});
 
-        self::assertNotEmpty([$result->getPayload()->all()]);
+        self::assertNotEmpty($result->getPayload()->all());
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugins;
+namespace Yansongda\Pay\Tests\Plugin;
 
 use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Contract\ParserInterface;
