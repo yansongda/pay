@@ -175,7 +175,29 @@ class AlipayTest extends TestCase
         self::assertEqualsCanonicalizing($response['alipay_trade_refund_response'], $result->all());
     }
 
-    public function testVerifyResponse()
+    public function testClose()
+    {
+        $response = [
+            "alipay_trade_close_response" => [
+                "code" => "10000",
+                "msg" => "Success",
+                "out_trade_no" => "1623161325",
+                "trade_no" => "2021060822001498120501382798",
+            ],
+            "alipay_cert_sn" => "a359aaadd01ceca03dbc07537da539b9",
+            "sign" => "tVD05vdQ8K0OOYTEcqHN6LdCeIpJkgrZGYCA4Gb4o/d4rTnmv0DHj40BGdKAfH60ZnssRPR/rWvV+BvptVUOzecA8IGNZ8re3c/Dd0OOKT5v43XM6fczzD6JLdluwNAiGwxHwqO2u/0j6zxwGeQCD/ytRM+Ee2DmNKECWWt4R9jxR2mt9vYHW6GuWT3a9TrpqOaj3cLV4siVPCK9DyKiE6TGH0qu8kRaibcMDCu11JCzAl3nCLInwk8KYtg1GSXdB7PLkcIQ8CMA/kgbMJVM5MlmRs6k0TRVKuRoJJOmEjsJgJenSo+YMl2L8sXd/ljWd1XtgbfQD4uFZHzKnylp0A==",
+        ];
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::alipay()->close('1623161325');
+
+        self::assertEqualsCanonicalizing($response['alipay_trade_close_response'], $result->all());
+    }
+
+    public function testVerifyReturnResponse()
     {
         $url = 'http://127.0.0.1:8000/alipay/verify?charset=utf-8&out_trade_no=yansongda-1622986519&method=alipay.trade.page.pay.return&total_amount=0.01&sign=oSazH3ZnzPQBGfJ8piYuri0E683D7bEKtd1NPcuYctvCEiRWP1QBVWma3hwoTLc19KdXbMGGZcOS5UvtlWwIvcK3oqkuRkFOwcRRmyF0UScmdHrTEPO9VwcaEWPK9Hy%2BTSlYrlnfCae1zlDo4vvNojFZf%2BduaaYCGS2L4Q55atloeztOPsZTNSYI7Jy0rrQcOaAWL7F9aJNqFPW6WkWL31w6HwDHcRSEQzD9C9YTsRkQ7khPHFEw8CHSYp5h8XOq%2BfE0yRDAEEw2pxYYC5QhCtbqVjLdfFXp792cTRd31IB6iAznnDvOATZVgulpC0Z6MV0k0MInL2CarbuO5SZfRg%3D%3D&trade_no=2021060622001498120501382075&auth_app_id=2016082000295641&version=1.0&app_id=2016082000295641&sign_type=RSA2&seller_id=2088102172237210&timestamp=2021-06-06+21%3A35%3A50';
         parse_str(parse_url($url)['query'], $query);
