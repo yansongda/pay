@@ -9,12 +9,14 @@ use GuzzleHttp\Psr7\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\AbstractProvider;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 class AbstractProviderTest extends TestCase
 {
@@ -92,6 +94,29 @@ class AbstractProviderTest extends TestCase
 
 class FooProviderStub extends AbstractProvider
 {
+    public function find($order): Collection
+    {
+    }
+
+    public function cancel($order): Collection
+    {
+    }
+
+    public function close($order): Collection
+    {
+    }
+
+    public function refund(array $order): Collection
+    {
+    }
+
+    public function verify($contents = null, ?array $params = null): Collection
+    {
+    }
+
+    public function success(): ResponseInterface
+    {
+    }
 }
 class FooPlugin implements PluginInterface
 {
