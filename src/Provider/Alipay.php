@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
@@ -116,13 +118,18 @@ class Alipay extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function verify($contents = null, ?array $config = null): Collection
+    public function verify($contents = null, ?array $params = null): Collection
     {
         $response = $this->getCallbackParams($contents);
 
         return $this->pay(
-            [CallbackPlugin::class], $response->merge($config)->all()
+            [CallbackPlugin::class], $response->merge($params)->all()
         );
+    }
+
+    public function success(): ResponseInterface
+    {
+        return new Response(200, [], 'success');
     }
 
     public function mergeCommonPlugins(array $plugins): array

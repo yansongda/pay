@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Provider;
 use Throwable;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Pay;
@@ -14,7 +15,7 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Pipeline;
 
-abstract class AbstractProvider
+abstract class AbstractProvider implements ProviderInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
