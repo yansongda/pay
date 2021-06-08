@@ -7,6 +7,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
@@ -76,8 +77,10 @@ class AlipayTest extends TestCase
             "alipay_cert_sn" => "a359aaadd01ceca03dbc07537da539b9",
             "sign" => "Ipp1M3pwUFJ19Tx/D+40RZstXr3VSZzGxPB1Qfj1e837UkGxOJxFFK6EZ288SeEh06dPFd4qJ7BHfP/7mvkRqF1/mezBGvhBz03XTXfDn/O6IkoA+cVwpfm+i8MFvzC/ZQB0dgtZppu5qfzVyFaaNu8ct3L/NSQCMR1RXg2lH3HiwfxmIF35+LmCoL7ZPvTxB/epm7A/XNhAjLpK5GlJffPA0qwhhtQwaIZ7DHMXo06z03fbgxlBu2eEclQUm6Fobgj3JEERWLA0MDQiV1EYNWuHSSlHCMrIxWHba+Euu0jVkKKe0IFKsU8xJQbc7GTJXx/o0NfHqGwwq8hMvtgBkg==",
         ];
+
         $http = Mockery::mock(Client::class);
         $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
+        Pay::set(HttpClientInterface::class, $http);
 
         $result = Pay::alipay()->find('yansongda-1622986519');
 
