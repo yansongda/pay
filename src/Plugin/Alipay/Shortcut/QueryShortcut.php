@@ -19,6 +19,10 @@ class QueryShortcut implements ShortcutInterface
     {
         $typeMethod = ($params['_type'] ?? 'default').'Plugins';
 
+        if (isset($params['out_request_no'])) {
+            return $this->refundPlugins();
+        }
+
         if (method_exists($this, $typeMethod)) {
             return $this->{$typeMethod}();
         }

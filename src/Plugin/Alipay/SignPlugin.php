@@ -43,7 +43,7 @@ class SignPlugin implements PluginInterface
         });
 
         $contents = array_filter($payload->get('biz_content', []), function ($v, $k) {
-            return !Str::startsWith($k, '_');
+            return !Str::startsWith(strval($k), '_');
         }, ARRAY_FILTER_USE_BOTH);
 
         $rocket->setPayload(
