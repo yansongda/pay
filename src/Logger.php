@@ -34,7 +34,7 @@ class Logger
 
         $class = Pay::get(LoggerInterface::class);
 
-        if ($class instanceof \Psr\Log\LoggerInterface) {
+        if ($class instanceof \Psr\Log\LoggerInterface || $class instanceof \Yansongda\Supports\Logger) {
             $class->{$method}(...$args);
         }
 
