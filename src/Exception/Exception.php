@@ -39,6 +39,8 @@ class Exception extends \Exception
 
     public const LOGGER_CONFIG_ERROR = 3003;
 
+    public const HTTP_CLIENT_CONFIG_ERROR = 3004;
+
     /*
      * 关于参数.
      */

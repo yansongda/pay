@@ -8,7 +8,6 @@ use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\LoggerInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
-use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
 
 class LoggerServiceProvider implements ServiceProviderInterface
@@ -23,24 +22,47 @@ class LoggerServiceProvider implements ServiceProviderInterface
         /* @var ConfigInterface $config */
         $config = Pay::get(ConfigInterface::class);
 
-        if (!class_exists(\Monolog\Logger::class) || false === $config->get('logger.enable', false)) {
-            return;
-        }
-
-        $logger = new class($config) extends Logger {
-            public function __construct(Config $config)
+        $logger = new class() implements \Psr\Log\LoggerInterface {
+            public function emergency($message, array $context = [])
             {
-                parent::__construct($config->get('logger', []));
             }
 
-            /**
-             * @throws \Exception
-             */
-            public function __call(string $method, array $args): void
+            public function alert($message, array $context = [])
             {
-                parent::__call($method, $args);
+            }
+
+            public function critical($message, array $context = [])
+            {
+            }
+
+            public function error($message, array $context = [])
+            {
+            }
+
+            public function warning($message, array $context = [])
+            {
+            }
+
+            public function notice($message, array $context = [])
+            {
+            }
+
+            public function info($message, array $context = [])
+            {
+            }
+
+            public function debug($message, array $context = [])
+            {
+            }
+
+            public function log($level, $message, array $context = [])
+            {
             }
         };
+
+        if (class_exists(\Monolog\Logger::class) && true === $config->get('logger.enable', false)) {
+            $logger = new Logger($config->get('logger', []));
+        }
 
         Pay::set(LoggerInterface::class, $logger);
     }

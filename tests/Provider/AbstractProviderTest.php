@@ -9,9 +9,9 @@ use GuzzleHttp\Psr7\Response;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\AbstractProvider;
@@ -89,6 +89,20 @@ class AbstractProviderTest extends TestCase
         $result = $provider->ignite($rocket);
 
         self::assertSame($response, $result->getDestination());
+    }
+
+    public function testIgniteWrongHttpClient()
+    {
+        $rocket = new Rocket();
+        $rocket->setRadar(new Request('get', ''));
+
+        Pay::set(HttpClientInterface::class, new Collection());
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(InvalidConfigException::HTTP_CLIENT_CONFIG_ERROR);
+
+        $provider = new FooProviderStub();
+        $provider->ignite($rocket);
     }
 }
 

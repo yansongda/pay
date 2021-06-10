@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
+use Psr\Http\Client\ClientInterface;
 use Throwable;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Pay;
@@ -49,6 +51,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
      */
     public function ignite(Rocket $rocket): Rocket
     {
@@ -58,6 +61,10 @@ abstract class AbstractProvider implements ProviderInterface
 
         /* @var HttpClientInterface $http */
         $http = Pay::get(HttpClientInterface::class);
+
+        if (!($http instanceof ClientInterface)) {
+            throw new InvalidConfigException(InvalidConfigException::HTTP_CLIENT_CONFIG_ERROR);
+        }
 
         try {
             $response = $http->sendRequest($rocket->getRadar());
