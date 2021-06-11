@@ -8,7 +8,6 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Yansongda\Pay\Contract\EventDispatcherInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
-use Yansongda\Pay\Listener\KernelLogSubscriber;
 use Yansongda\Pay\Pay;
 
 class EventServiceProvider implements ServiceProviderInterface
@@ -58,8 +57,6 @@ class EventServiceProvider implements ServiceProviderInterface
         if (class_exists(EventDispatcher::class)) {
             $event = Pay::get(EventDispatcher::class);
         }
-
-        $event->addSubscriber(new KernelLogSubscriber());
 
         Pay::set(EventDispatcherInterface::class, $event);
     }
