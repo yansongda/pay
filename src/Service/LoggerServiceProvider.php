@@ -23,7 +23,7 @@ class LoggerServiceProvider implements ServiceProviderInterface
         $config = Pay::get(ConfigInterface::class);
 
         $logger = new class() implements \Psr\Log\LoggerInterface {
-            public function emergency($message, array $context = [])
+            public function emergency($message, array $context = []): void
             {
             }
 
@@ -61,7 +61,9 @@ class LoggerServiceProvider implements ServiceProviderInterface
         };
 
         if (class_exists(\Monolog\Logger::class) && true === $config->get('logger.enable', false)) {
-            $logger = new Logger($config->get('logger', []));
+            $logger = new Logger(array_merge(
+                ['identify' => 'yansongda.pay'], $config->get('logger', [])
+            ));
         }
 
         Pay::set(LoggerInterface::class, $logger);

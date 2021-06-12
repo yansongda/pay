@@ -36,6 +36,8 @@ class Logger
 
         if ($class instanceof \Psr\Log\LoggerInterface || $class instanceof \Yansongda\Supports\Logger) {
             $class->{$method}(...$args);
+
+            return;
         }
 
         throw new InvalidConfigException(InvalidConfigException::LOGGER_CONFIG_ERROR);

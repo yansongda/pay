@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Plugin\Alipay;
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -21,6 +22,8 @@ class SignPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
+        Logger::info('[alipay][SignPlugin] 插件开始装载', ['rocket' => $rocket]);
+
         $this->filterPayload($rocket);
 
         $privateKey = $this->getPrivateKey($rocket->getParams());
@@ -32,6 +35,8 @@ class SignPlugin implements PluginInterface
         !is_resource($privateKey) ?: openssl_free_key($privateKey);
 
         $rocket->mergePayload(['sign' => $sign]);
+
+        Logger::info('[alipay][SignPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

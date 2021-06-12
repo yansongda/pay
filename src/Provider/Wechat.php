@@ -4,31 +4,21 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
-use Symfony\Component\HttpFoundation\Response;
+use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
-class Wechat
+class Wechat extends AbstractProvider
 {
-    const URL = [
+    public const URL = [
         Pay::MODE_NORMAL => 'https://api.mch.weixin.qq.com/',
         Pay::MODE_SANDBOX => 'https://api.mch.weixin.qq.com/sandboxnew/',
         Pay::MODE_SERVICE => 'https://api.mch.weixin.qq.com/',
     ];
 
-    public function pay($order, ?array $middleware = [])
-    {
-        // TODO: Implement pay() method.
-    }
-
-    public function find($order, string $type): Collection
+    public function find($order): Collection
     {
         // TODO: Implement find() method.
-    }
-
-    public function refund(array $order): Collection
-    {
-        // TODO: Implement refund() method.
     }
 
     public function cancel($order): Collection
@@ -41,12 +31,17 @@ class Wechat
         // TODO: Implement close() method.
     }
 
-    public function verify($content, bool $refund): Collection
+    public function refund(array $order): Collection
+    {
+        // TODO: Implement refund() method.
+    }
+
+    public function verify($contents = null, ?array $params = null): Collection
     {
         // TODO: Implement verify() method.
     }
 
-    public function success(): Response
+    public function success(): ResponseInterface
     {
         // TODO: Implement success() method.
     }

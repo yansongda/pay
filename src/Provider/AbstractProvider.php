@@ -12,6 +12,7 @@ use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
@@ -29,6 +30,8 @@ abstract class AbstractProvider implements ProviderInterface
      */
     public function pay(array $plugins, array $params)
     {
+        Logger::info('[AbstractProvider] 即将进行支付操作', func_get_args());
+
         $this->verifyPlugin($plugins);
 
         /* @var Pipeline $pipeline */
@@ -66,11 +69,17 @@ abstract class AbstractProvider implements ProviderInterface
             throw new InvalidConfigException(InvalidConfigException::HTTP_CLIENT_CONFIG_ERROR);
         }
 
+        Logger::info('[AbstractProvider] 准备请求支付服务商 API', $rocket->toArray());
+
         try {
             $response = $http->sendRequest($rocket->getRadar());
         } catch (Throwable $e) {
+            Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
+
             throw new InvalidResponseException(InvalidResponseException::REQUEST_RESPONSE_ERROR, $e->getMessage());
         }
+
+        Logger::info('[AbstractProvider] 请求支付服务商 API 成功', ['response' => $response, 'rocket' => $rocket->toArray()]);
 
         return $rocket->setDestination($response);
     }

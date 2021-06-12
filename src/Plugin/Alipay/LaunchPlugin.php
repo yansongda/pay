@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Plugin\Alipay;
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
@@ -21,14 +22,16 @@ class LaunchPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
+        Logger::info('[alipay][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
+
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        if (!should_do_http_request($rocket)) {
-            return $rocket;
+        if (should_do_http_request($rocket)) {
+            $rocket->setDestination($this->getMethodResponse($rocket));
         }
 
-        $rocket->setDestination($this->getMethodResponse($rocket));
+        Logger::info('[alipay][LaunchPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }
