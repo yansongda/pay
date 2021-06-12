@@ -10,7 +10,7 @@ use Yansongda\Supports\Traits\Accessable;
 use Yansongda\Supports\Traits\Arrayable;
 use Yansongda\Supports\Traits\Serializable;
 
-class Request extends \GuzzleHttp\Psr7\Request implements JsonSerializableInterface,SerializableInterface
+class Request extends \GuzzleHttp\Psr7\Request implements JsonSerializableInterface, SerializableInterface
 {
     use Accessable;
     use Arrayable;
