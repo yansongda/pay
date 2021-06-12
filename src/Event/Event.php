@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Event;
 
 use Symfony\Contracts\EventDispatcher\Event as SymfonyEvent;
+use Yansongda\Pay\Rocket;
 
 class Event extends SymfonyEvent
 {
@@ -13,30 +14,20 @@ class Event extends SymfonyEvent
      *
      * @var string
      */
-    public $driver;
+    public $provider;
 
     /**
-     * Method.
-     *
-     * @var string
+     * @var \Yansongda\Pay\Rocket|null
      */
-    public $gateway;
-
-    /**
-     * Extra attributes.
-     *
-     * @var mixed
-     */
-    public $attributes;
+    public $rocket;
 
     /**
      * Bootstrap.
      *
      * @author yansongda <me@yansongda.cn>
      */
-    public function __construct(string $driver, string $gateway)
+    public function __construct(?Rocket $rocket)
     {
-        $this->driver = $driver;
-        $this->gateway = $gateway;
+        $this->rocket = $rocket;
     }
 }

@@ -41,6 +41,8 @@ class Exception extends \Exception
 
     public const HTTP_CLIENT_CONFIG_ERROR = 3004;
 
+    public const EVENT_CONFIG_ERROR = 3005;
+
     /*
      * 关于参数.
      */

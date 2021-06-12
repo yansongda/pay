@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
+use Yansongda\Pay\Event;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
@@ -45,6 +46,8 @@ class Alipay extends AbstractProvider
             throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
         }
 
+        Event::dispatch(new Event\MethodCalled($shortcut, $params, null));
+
         /* @var ShortcutInterface $money */
         $money = Pay::get($plugin);
 
@@ -66,6 +69,8 @@ class Alipay extends AbstractProvider
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
+        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
+
         return $this->__call('query', [$order]);
     }
 
@@ -80,6 +85,8 @@ class Alipay extends AbstractProvider
     public function cancel($order): Collection
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
+
+        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
 
         return $this->__call('cancel', [$order]);
     }
@@ -96,6 +103,8 @@ class Alipay extends AbstractProvider
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
+        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
+
         return $this->__call('close', [$order]);
     }
 
@@ -107,6 +116,8 @@ class Alipay extends AbstractProvider
      */
     public function refund(array $order): Collection
     {
+        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
+
         return $this->__call('refund', [$order]);
     }
 
@@ -120,6 +131,8 @@ class Alipay extends AbstractProvider
      */
     public function verify($contents = null, ?array $params = null): Collection
     {
+        Event::dispatch(new Event\RequestReceived($contents, $params, null));
+
         $response = $this->getCallbackParams($contents);
 
         return $this->pay(

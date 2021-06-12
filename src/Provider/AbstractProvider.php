@@ -9,6 +9,7 @@ use Throwable;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Event;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
@@ -32,6 +33,8 @@ abstract class AbstractProvider implements ProviderInterface
     {
         Logger::info('[AbstractProvider] 即将进行支付操作', func_get_args());
 
+        Event::dispatch(new Event\PayStarted($plugins, $params, null));
+
         $this->verifyPlugin($plugins);
 
         /* @var Pipeline $pipeline */
@@ -45,6 +48,8 @@ abstract class AbstractProvider implements ProviderInterface
             ->then(function ($rocket) {
                 return $this->ignite($rocket);
             });
+
+        Event::dispatch(new Event\PayFinish($rocket));
 
         return $rocket->getDestination();
     }
@@ -71,8 +76,12 @@ abstract class AbstractProvider implements ProviderInterface
 
         Logger::info('[AbstractProvider] 准备请求支付服务商 API', $rocket->toArray());
 
+        Event::dispatch(new Event\ApiRequesting($rocket));
+
         try {
             $response = $http->sendRequest($rocket->getRadar());
+
+            $rocket->setDestination($response);
         } catch (Throwable $e) {
             Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
 
@@ -81,7 +90,9 @@ abstract class AbstractProvider implements ProviderInterface
 
         Logger::info('[AbstractProvider] 请求支付服务商 API 成功', ['response' => $response, 'rocket' => $rocket->toArray()]);
 
-        return $rocket->setDestination($response);
+        Event::dispatch(new Event\ApiRequested($rocket));
+
+        return $rocket;
     }
 
     /**
