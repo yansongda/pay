@@ -30,7 +30,7 @@
         "friendsofphp/php-cs-fixer": "^2.15",
         "monolog/monolog": "^2.2",
         "symfony/var-dumper": "^5.1",
-        "symfony/http-foundation": "~5.2.0",
+        "symfony/http-foundation": "~5.2.0 || ~5.3.0",
         "symfony/event-dispatcher": "^5.2.0",
         "symfony/psr-http-message-bridge": "^2.1"
     },
