@@ -18,7 +18,6 @@ class Wechat extends AbstractProvider
 
     public function find($order): Collection
     {
-
     }
 
     public function cancel($order): Collection

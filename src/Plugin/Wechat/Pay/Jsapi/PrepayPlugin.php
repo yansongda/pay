@@ -12,6 +12,5 @@ class PrepayPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-
     }
 }
