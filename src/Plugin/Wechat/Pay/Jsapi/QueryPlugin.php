@@ -7,26 +7,23 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Jsapi;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
-class PrepayPlugin extends GeneralPlugin
+class QueryPlugin extends GeneralPlugin
 {
-    protected function getUri(Rocket $rocket): string
-    {
-        return 'v3/pay/transactions/jsapi';
-    }
-
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function checkPayload(Rocket $rocket): void
+    protected function getUri(Rocket $rocket): string
     {
         $config = get_wechat_config($rocket->getParams());
 
-        $rocket->mergePayload([
-            'appid' => $config->get('mp_app_id', ''),
-            'mchid' => $config->get('mch_id', ''),
-            'notify_url' => $config->get('notify_url'),
-        ]);
+        return 'v3/pay/transactions/id/'.
+            ($rocket->getParams()['transaction_id'] ?? '').
+            '?mchid='.$config->get('mch_id', '');
+    }
+
+    protected function checkPayload(Rocket $rocket): void
+    {
     }
 }

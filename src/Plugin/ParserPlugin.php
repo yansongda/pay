@@ -26,7 +26,9 @@ class ParserPlugin implements PluginInterface
 
         $packer = $this->getPacker($rocket);
 
-        return $rocket->setDestination($packer->parse($rocket->getDestination()));
+        return $rocket->setDestination(
+            $packer->parse($rocket->getDestination())
+        );
     }
 
     /**
