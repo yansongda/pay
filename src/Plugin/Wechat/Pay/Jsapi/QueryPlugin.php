@@ -25,5 +25,6 @@ class QueryPlugin extends GeneralPlugin
 
     protected function checkPayload(Rocket $rocket): void
     {
+        $rocket->setPayload(null);
     }
 }

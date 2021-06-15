@@ -15,6 +15,8 @@ class SignPlugin implements PluginInterface
     {
         Logger::info('[wechat][SignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        // todo
+
         Logger::info('[wechat][SignPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
