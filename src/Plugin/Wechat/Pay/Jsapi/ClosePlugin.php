@@ -6,30 +6,28 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Jsapi;
 
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
-class QueryPlugin extends GeneralPlugin
+class ClosePlugin extends GeneralPlugin
 {
+    protected function getUri(Rocket $rocket): string
+    {
+        return 'v3/pay/transactions/out-trade-no/'.
+            ($rocket->getParams()['out_trade_no'] ?? '').
+            '/close';
+    }
+
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getUri(Rocket $rocket): string
+    protected function checkPayload(Rocket $rocket): void
     {
         $config = get_wechat_config($rocket->getParams());
 
-        return 'v3/pay/transactions/id/'.
-            ($rocket->getParams()['transaction_id'] ?? '').
-            '?mchid='.$config->get('mch_id', '');
-    }
-
-    protected function getMethod(): string
-    {
-        return 'GET';
-    }
-
-    protected function checkPayload(Rocket $rocket): void
-    {
-        $rocket->setPayload(null);
+        $rocket->setPayload(new Collection([
+            'mchid' => $config->get('mch_id', ''),
+        ]));
     }
 }
