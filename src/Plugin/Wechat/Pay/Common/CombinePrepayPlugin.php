@@ -8,11 +8,11 @@ use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Config;
 
-class PrepayPlugin extends GeneralPlugin
+class CombinePrepayPlugin extends GeneralPlugin
 {
     protected function getUri(Rocket $rocket): string
     {
-        return 'v3/pay/transactions/jsapi';
+        return 'v3/combine-transactions/jsapi';
     }
 
     /**
@@ -30,14 +30,18 @@ class PrepayPlugin extends GeneralPlugin
             $payload['notify_url'] = $config->get('notify_url');
         }
 
+        if (!$rocket->getPayload()->has('combine_out_trade_no')) {
+            $payload['combine_out_trade_no'] = $rocket->getParams()['out_trade_no'];
+        }
+
         $rocket->mergePayload($payload);
     }
 
     protected function getWechatId(Config $config): array
     {
         return [
-            'appid' => $config->get('mp_app_id', ''),
-            'mchid' => $config->get('mch_id', ''),
+            'combine_appid' => $config->get('combine_app_id', ''),
+            'combine_mchid' => $config->get('combine_mch_id', ''),
         ];
     }
 }
