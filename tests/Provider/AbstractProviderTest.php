@@ -110,28 +110,39 @@ class FooProviderStub extends AbstractProvider
 {
     public function find($order): Collection
     {
+        return new Collection();
     }
 
     public function cancel($order): Collection
     {
+        return new Collection();
     }
 
     public function close($order): Collection
     {
+        return new Collection();
     }
 
     public function refund(array $order): Collection
     {
+        return new Collection();
     }
 
     public function verify($contents = null, ?array $params = null): Collection
     {
+        return new Collection();
     }
 
     public function success(): ResponseInterface
     {
     }
+
+    public function mergeCommonPlugins(array $plugins): array
+    {
+        return [];
+    }
 }
+
 class FooPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket

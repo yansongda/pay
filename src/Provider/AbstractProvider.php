@@ -30,7 +30,7 @@ abstract class AbstractProvider implements ProviderInterface
      *
      * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
      */
-    public function call(string $plugin, array $params)
+    public function call(string $plugin, array $params = [])
     {
         if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
             throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
@@ -42,8 +42,7 @@ abstract class AbstractProvider implements ProviderInterface
         $money = Pay::get($plugin);
 
         return $this->pay(
-            $this->mergeCommonPlugins($money->getPlugins(...$params)),
-            ...$params
+            $this->mergeCommonPlugins($money->getPlugins($params)), $params
         );
     }
 
