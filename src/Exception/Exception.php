@@ -54,6 +54,8 @@ class Exception extends \Exception
 
     public const QUERY_TYPE_ERROR = 4003;
 
+    public const METHOD_NOT_SUPPORTED = 4004;
+
     /**
      * 关于api.
      */

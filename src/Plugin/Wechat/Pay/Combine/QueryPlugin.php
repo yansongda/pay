@@ -13,6 +13,6 @@ class QueryPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin
         $params = $rocket->getParams();
 
         return 'v3/combine-transactions/out-trade-no/'.
-            ($params['combine_out_trade_no'] ?? $params['out_trade_no'] ?? '');
+            ($params['combine_out_trade_no'] ?? $params['transaction_id'] ?? '');
     }
 }
