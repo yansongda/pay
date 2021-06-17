@@ -8,9 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Event;
-use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
@@ -42,19 +40,7 @@ class Alipay extends AbstractProvider
         $plugin = '\\Yansongda\\Pay\\Plugin\\Alipay\\Shortcut\\'.
             Str::studly($shortcut).'Shortcut';
 
-        if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
-        }
-
-        Event::dispatch(new Event\MethodCalled($shortcut, $params, null));
-
-        /* @var ShortcutInterface $money */
-        $money = Pay::get($plugin);
-
-        return $this->pay(
-            $this->mergeCommonPlugins($money->getPlugins(...$params)),
-            ...$params
-        );
+        return $this->call($plugin, ...$params);
     }
 
     /**

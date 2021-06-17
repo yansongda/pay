@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Provider;
 
 use Psr\Http\Message\ResponseInterface;
-use Yansongda\Pay\Contract\ShortcutInterface;
-use Yansongda\Pay\Event;
-use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
@@ -37,19 +34,7 @@ class Wechat extends AbstractProvider
         $plugin = '\\Yansongda\\Pay\\Plugin\\Wechat\\Shortcut\\'.
             Str::studly($shortcut).'Shortcut';
 
-        if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
-        }
-
-        Event::dispatch(new Event\MethodCalled($shortcut, $params, null));
-
-        /* @var ShortcutInterface $money */
-        $money = Pay::get($plugin);
-
-        return $this->pay(
-            $this->mergeCommonPlugins($money->getPlugins(...$params)),
-            ...$params
-        );
+        return $this->call($plugin, ...$params);
     }
 
     public function find($order): Collection
