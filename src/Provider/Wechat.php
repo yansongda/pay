@@ -103,7 +103,6 @@ class Wechat extends AbstractProvider
      */
     public function verify($contents = null, ?array $params = null): Collection
     {
-        // TODO: Implement verify() method.
     }
 
     public function success(): ResponseInterface

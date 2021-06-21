@@ -43,6 +43,8 @@ class Exception extends \Exception
 
     public const EVENT_CONFIG_ERROR = 3005;
 
+    public const WECHAT_CONFIG_ERROR = 3006;
+
     /*
      * 关于参数.
      */
@@ -52,9 +54,11 @@ class Exception extends \Exception
 
     public const PLUGIN_ERROR = 4002;
 
-    public const QUERY_TYPE_ERROR = 4003;
+    public const SHORTCUT_QUERY_TYPE_ERROR = 4003;
 
     public const METHOD_NOT_SUPPORTED = 4004;
+
+    public const REQUEST_NULL_SIGN_ERROR = 4005;
 
     /**
      * 关于api.
