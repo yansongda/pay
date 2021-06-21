@@ -84,7 +84,7 @@ class LaunchPlugin implements PluginInterface
                 $contents,
                 $sign,
                 get_public_crt_or_private_cert($public),
-                OPENSSL_ALGO_SHA256);
+                'sha256WithRSAEncryption');
     }
 
     /**
