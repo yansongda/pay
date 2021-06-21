@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Yansongda\Pay\Contract\ShortcutInterface;
-use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Event;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
@@ -39,17 +40,7 @@ class Alipay extends AbstractProvider
         $plugin = '\\Yansongda\\Pay\\Plugin\\Alipay\\Shortcut\\'.
             Str::studly($shortcut).'Shortcut';
 
-        if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
-        }
-
-        /* @var ShortcutInterface $money */
-        $money = Pay::get($plugin);
-
-        return $this->pay(
-            $this->mergeCommonPlugins($money->getPlugins(...$params)),
-            ...$params
-        );
+        return $this->call($plugin, ...$params);
     }
 
     /**
@@ -63,6 +54,8 @@ class Alipay extends AbstractProvider
     public function find($order): Collection
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
+
+        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }
@@ -79,6 +72,8 @@ class Alipay extends AbstractProvider
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
+        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
+
         return $this->__call('cancel', [$order]);
     }
 
@@ -94,6 +89,8 @@ class Alipay extends AbstractProvider
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
+        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
+
         return $this->__call('close', [$order]);
     }
 
@@ -105,6 +102,8 @@ class Alipay extends AbstractProvider
      */
     public function refund(array $order): Collection
     {
+        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
+
         return $this->__call('refund', [$order]);
     }
 
@@ -116,13 +115,20 @@ class Alipay extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function verify($contents = null, ?array $config = null): Collection
+    public function verify($contents = null, ?array $params = null): Collection
     {
+        Event::dispatch(new Event\RequestReceived($contents, $params, null));
+
         $response = $this->getCallbackParams($contents);
 
         return $this->pay(
-            [CallbackPlugin::class], $response->merge($config)->all()
+            [CallbackPlugin::class], $response->merge($params)->all()
         );
+    }
+
+    public function success(): ResponseInterface
+    {
+        return new Response(200, [], 'success');
     }
 
     public function mergeCommonPlugins(array $plugins): array

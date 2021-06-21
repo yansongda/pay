@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
 use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Parser\ResponseParser;
-use Yansongda\Pay\Plugin\Alipay\GeneralPayPlugin;
+use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
 class GeneralPayPluginTest extends TestCase
@@ -22,7 +22,7 @@ class GeneralPayPluginTest extends TestCase
     }
 }
 
-class FooPlugin extends GeneralPayPlugin
+class FooPlugin extends GeneralPlugin
 {
     protected function getMethod(): string
     {

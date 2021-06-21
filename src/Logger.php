@@ -28,14 +28,16 @@ class Logger
      */
     public static function __callStatic(string $method, array $args): void
     {
-        if (!Pay::has(LoggerInterface::class)) {
+        if (!Pay::hasContainer() || !Pay::has(LoggerInterface::class)) {
             return;
         }
 
         $class = Pay::get(LoggerInterface::class);
 
-        if ($class instanceof \Psr\Log\LoggerInterface) {
+        if ($class instanceof \Psr\Log\LoggerInterface || $class instanceof \Yansongda\Supports\Logger) {
             $class->{$method}(...$args);
+
+            return;
         }
 
         throw new InvalidConfigException(InvalidConfigException::LOGGER_CONFIG_ERROR);

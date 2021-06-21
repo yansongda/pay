@@ -4,30 +4,25 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Event;
 
+use Yansongda\Pay\Rocket;
+
 class PayStarted extends Event
 {
     /**
-     * Endpoint.
-     *
-     * @var string
+     * @var \Yansongda\Pay\Contract\PluginInterface[]
      */
-    public $endpoint;
+    public $plugins;
 
     /**
-     * Payload.
-     *
      * @var array
      */
-    public $payload;
+    public $params;
 
-    /**
-     * Bootstrap.
-     */
-    public function __construct(string $driver, string $gateway, string $endpoint, array $payload)
+    public function __construct(array $plugins, array $params, ?Rocket $rocket)
     {
-        $this->endpoint = $endpoint;
-        $this->payload = $payload;
+        $this->plugins = $plugins;
+        $this->params = $params;
 
-        parent::__construct($driver, $gateway);
+        parent::__construct($rocket);
     }
 }

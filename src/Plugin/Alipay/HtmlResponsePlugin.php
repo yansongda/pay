@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Plugin\Alipay;
 use Closure;
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
@@ -15,6 +16,8 @@ class HtmlResponsePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
+        Logger::info('[alipay][HtmlResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
+
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
@@ -24,7 +27,11 @@ class HtmlResponsePlugin implements PluginInterface
             $this->buildRedirect($radar->getUri()->__toString(), $rocket->getPayload()) :
             $this->buildHtml($radar->getUri()->__toString(), $rocket->getPayload());
 
-        return $rocket->setDestination($response);
+        $rocket->setDestination($response);
+
+        Logger::info('[alipay][HtmlResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $rocket;
     }
 
     protected function buildRedirect(string $endpoint, Collection $payload): Response

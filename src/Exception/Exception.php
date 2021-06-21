@@ -39,6 +39,10 @@ class Exception extends \Exception
 
     public const LOGGER_CONFIG_ERROR = 3003;
 
+    public const HTTP_CLIENT_CONFIG_ERROR = 3004;
+
+    public const EVENT_CONFIG_ERROR = 3005;
+
     /*
      * 关于参数.
      */
@@ -49,6 +53,8 @@ class Exception extends \Exception
     public const PLUGIN_ERROR = 4002;
 
     public const QUERY_TYPE_ERROR = 4003;
+
+    public const METHOD_NOT_SUPPORTED = 4004;
 
     /**
      * 关于api.

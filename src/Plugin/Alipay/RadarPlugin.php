@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
-use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
+use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
 
 class RadarPlugin implements PluginInterface
@@ -21,7 +22,11 @@ class RadarPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
+        Logger::info('[alipay][RadarPlugin] 插件开始装载', ['rocket' => $rocket]);
+
         $rocket->setRadar($this->getRequest($rocket));
+
+        Logger::info('[alipay][RadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

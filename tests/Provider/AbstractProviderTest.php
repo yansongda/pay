@@ -11,10 +11,12 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\AbstractProvider;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 class AbstractProviderTest extends TestCase
 {
@@ -88,11 +90,59 @@ class AbstractProviderTest extends TestCase
 
         self::assertSame($response, $result->getDestination());
     }
+
+    public function testIgniteWrongHttpClient()
+    {
+        $rocket = new Rocket();
+        $rocket->setRadar(new Request('get', ''));
+
+        Pay::set(HttpClientInterface::class, new Collection());
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(InvalidConfigException::HTTP_CLIENT_CONFIG_ERROR);
+
+        $provider = new FooProviderStub();
+        $provider->ignite($rocket);
+    }
 }
 
 class FooProviderStub extends AbstractProvider
 {
+    public function find($order): Collection
+    {
+        return new Collection();
+    }
+
+    public function cancel($order): Collection
+    {
+        return new Collection();
+    }
+
+    public function close($order): Collection
+    {
+        return new Collection();
+    }
+
+    public function refund(array $order): Collection
+    {
+        return new Collection();
+    }
+
+    public function verify($contents = null, ?array $params = null): Collection
+    {
+        return new Collection();
+    }
+
+    public function success(): ResponseInterface
+    {
+    }
+
+    public function mergeCommonPlugins(array $plugins): array
+    {
+        return [];
+    }
 }
+
 class FooPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
