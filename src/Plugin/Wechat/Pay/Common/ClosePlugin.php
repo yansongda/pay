@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 
+use Yansongda\Pay\Parser\OriginResponseParser;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
@@ -24,6 +25,8 @@ class ClosePlugin extends GeneralPlugin
      */
     protected function checkPayload(Rocket $rocket): void
     {
+        $rocket->setDirection(OriginResponseParser::class);
+
         $config = get_wechat_config($rocket->getParams());
 
         $rocket->setPayload(new Collection([

@@ -7,6 +7,7 @@ namespace Yansongda\Pay;
 use ArrayAccess;
 use JsonSerializable as JsonSerializableInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Serializable as SerializableInterface;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Traits\Accessable;
@@ -43,6 +44,11 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
      * @var \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface|null
      */
     private $destination = null;
+
+    /**
+     * @var \Psr\Http\Message\ResponseInterface|null
+     */
+    private $destinationOrigin = null;
 
     public function getRadar(): ?RequestInterface
     {
@@ -117,6 +123,18 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
     public function setDestination($destination): Rocket
     {
         $this->destination = $destination;
+
+        return $this;
+    }
+
+    public function getDestinationOrigin(): ?ResponseInterface
+    {
+        return $this->destinationOrigin;
+    }
+
+    public function setDestinationOrigin(?ResponseInterface $destinationOrigin): Rocket
+    {
+        $this->destinationOrigin = $destinationOrigin;
 
         return $this;
     }

@@ -106,7 +106,7 @@ abstract class AbstractProvider implements ProviderInterface
         try {
             $response = $http->sendRequest($rocket->getRadar());
 
-            $rocket->setDestination($response);
+            $rocket->setDestination($response)->setDestinationOrigin($response);
         } catch (Throwable $e) {
             Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
 
