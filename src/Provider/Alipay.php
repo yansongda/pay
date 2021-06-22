@@ -117,7 +117,7 @@ class Alipay extends AbstractProvider
      */
     public function verify($contents = null, ?array $params = null): Collection
     {
-        Event::dispatch(new Event\RequestReceived($contents, $params, null));
+        Event::dispatch(new Event\RequestReceived('alipay', $contents, $params, null));
 
         $response = $this->getCallbackParams($contents);
 

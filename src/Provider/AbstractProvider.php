@@ -56,7 +56,7 @@ abstract class AbstractProvider implements ProviderInterface
      */
     public function pay(array $plugins, array $params)
     {
-        Logger::info('[AbstractProvider] 即将进行支付操作', func_get_args());
+        Logger::info('[AbstractProvider] 即将进行 pay 操作', func_get_args());
 
         Event::dispatch(new Event\PayStarted($plugins, $params, null));
 

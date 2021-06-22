@@ -55,7 +55,7 @@ class SignPlugin implements PluginInterface
             $config->get('mch_id', ''),
             $random,
             $timestamp,
-            $config->get('mch_public_cert_serial_number', ''),
+            $this->getMchPublicCertSerialNumber($config->get('mch_public_cert_path')),
             $this->getSign($rocket, $timestamp, $random)
         );
 
@@ -113,5 +113,24 @@ class SignPlugin implements PluginInterface
         }
 
         return get_public_crt_or_private_cert($privateKey);
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     */
+    protected function getMchPublicCertSerialNumber(?string $path): string
+    {
+        if (is_null($path)) {
+            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_public_cert_path]');
+        }
+
+        $cert = file_get_contents($path);
+        $ssl = openssl_x509_parse($cert);
+
+        if (empty($ssl['serialNumberHex'])) {
+            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Parse [mch_public_cert_path] Serial Number Error');
+        }
+
+        return $ssl['serialNumberHex'];
     }
 }

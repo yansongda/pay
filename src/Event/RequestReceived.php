@@ -9,6 +9,11 @@ use Yansongda\Pay\Rocket;
 class RequestReceived extends Event
 {
     /**
+     * @var string
+     */
+    public $provider;
+
+    /**
      * @var array|\Psr\Http\Message\ServerRequestInterface|null
      */
     public $contents;
@@ -25,8 +30,9 @@ class RequestReceived extends Event
      *
      * @param array|\Psr\Http\Message\ServerRequestInterface|null $contents
      */
-    public function __construct($contents, ?array $params, ?Rocket $rocket)
+    public function __construct(string $provider, $contents, ?array $params, ?Rocket $rocket)
     {
+        $this->provider = $provider;
         $this->contents = $contents;
         $this->params = $params;
 

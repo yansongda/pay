@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Provider;
 
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Plugin\Wechat\CallbackPlugin;
 use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
 use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
 use Yansongda\Pay\Plugin\Wechat\SignPlugin;
@@ -103,6 +105,13 @@ class Wechat extends AbstractProvider
      */
     public function verify($contents = null, ?array $params = null): Collection
     {
+        Event::dispatch(new Event\RequestReceived('wechat', $contents, $params, null));
+
+        $response = $this->getCallbackParams($contents);
+
+        return $this->pay(
+            [CallbackPlugin::class], $response->merge($params)->all()
+        );
     }
 
     public function success(): ResponseInterface
@@ -121,6 +130,27 @@ class Wechat extends AbstractProvider
             $plugins,
             [SignPlugin::class],
             [LaunchPlugin::class, ParserPlugin::class],
+        );
+    }
+
+    /**
+     * @param array|ServerRequestInterface|null $contents
+     */
+    protected function getCallbackParams($contents = null): Collection
+    {
+        if (is_array($contents)) {
+            return Collection::wrap($contents);
+        }
+
+        if ($contents instanceof ServerRequestInterface) {
+            return Collection::wrap('GET' === $contents->getMethod() ? $contents->getQueryParams() :
+                $contents->getParsedBody());
+        }
+
+        $request = ServerRequest::fromGlobals();
+
+        return Collection::wrap(
+            array_merge($request->getQueryParams(), $request->getParsedBody())
         );
     }
 }
