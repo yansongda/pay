@@ -36,8 +36,6 @@ abstract class AbstractProvider implements ProviderInterface
             throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
         }
 
-        Event::dispatch(new Event\MethodCalled($plugin, $params, null));
-
         /* @var ShortcutInterface $money */
         $money = Pay::get($plugin);
 
