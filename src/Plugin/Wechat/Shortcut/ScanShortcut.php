@@ -12,7 +12,7 @@ class ScanShortcut implements ShortcutInterface
     public function getPlugins(array $params): array
     {
         return [
-              PrepayPlugin::class,
+            PrepayPlugin::class,
         ];
     }
 }

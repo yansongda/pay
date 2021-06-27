@@ -75,13 +75,15 @@ class Exception extends \Exception
 
     public const INVALID_RESPONSE_CODE = 5004;
 
-    public const RESPONSE_NONE = 5005;
+    public const RESPONSE_MISSING_NECESSARY_PARAMS = 5005;
 
-    public const INVALID_REQUEST_PARAMS = 5006;
+    public const RESPONSE_NONE = 5006;
 
-    public const INVALID_REQUEST_ENCRYPTED_DATA = 5007;
+    public const INVALID_REQUEST_PARAMS = 5007;
 
-    public const INVALID_REQUEST_ENCRYPTED_METHOD = 5008;
+    public const INVALID_REQUEST_ENCRYPTED_DATA = 5008;
+
+    public const INVALID_REQUEST_ENCRYPTED_METHOD = 5009;
 
     /**
      * raw.
