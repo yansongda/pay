@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
+namespace Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing;
 
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
-class QueryStockRefundFlowPlugin extends GeneralPlugin
+class QueryAmountsPlugin extends GeneralPlugin
 {
     protected function getMethod(): string
     {
@@ -27,12 +27,12 @@ class QueryStockRefundFlowPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('stock_id'))) {
+        if (is_null($payload->get('transaction_id'))) {
             throw new InvalidParamsException(InvalidParamsException::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'vv3/marketing/favor/stocks/'.
-            $payload->get('stock_id').
-            '/refund-flow';
+        return 'v3/profitsharing/transactions/'.
+            $payload->get('transaction_id').
+            '/amounts';
     }
 }

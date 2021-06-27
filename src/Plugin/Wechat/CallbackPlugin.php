@@ -87,10 +87,13 @@ class CallbackPlugin implements PluginInterface
 
         switch ($resource['algorithm'] ?? '') {
             case 'AEAD_AES_256_GCM':
-                return $this->decryptAes256Gcm($ciphertext, $secret, $resource['nonce'] ?? '', $resource['associated_data'] ?? '');
+                $resource['ciphertext'] = $this->decryptAes256Gcm($ciphertext, $secret, $resource['nonce'] ?? '', $resource['associated_data'] ?? '');
+                break;
             default:
                 throw new InvalidResponseException(InvalidResponseException::INVALID_REQUEST_ENCRYPTED_METHOD);
         }
+
+        return $resource;
     }
 
     /**

@@ -10,6 +10,11 @@ use Yansongda\Pay\Rocket;
 
 class QueryStockItemsPlugin extends GeneralPlugin
 {
+    protected function getMethod(): string
+    {
+        return 'GET';
+    }
+
     protected function doSomething(Rocket $rocket): void
     {
         $rocket->setPayload(null);
