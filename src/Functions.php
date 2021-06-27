@@ -107,6 +107,33 @@ if (!function_exists('get_wechat_config')) {
     }
 }
 
+if (!function_exists('get_wechat_sign')) {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     */
+    function get_wechat_sign(array $params, string $contents): string
+    {
+        $privateKey = get_wechat_config($params)->get('mch_secret_cert');
+
+        if (is_null($privateKey)) {
+            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [app_secret_cert]');
+        }
+
+        $privateKey = get_public_crt_or_private_cert($privateKey);
+
+        openssl_sign($contents, $sign, $privateKey, 'sha256WithRSAEncryption');
+
+        $sign = base64_encode($sign);
+
+        !is_resource($privateKey) ?: openssl_free_key($privateKey);
+
+        return $sign;
+    }
+}
+
 if (!function_exists('verify_wechat_sign')) {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException

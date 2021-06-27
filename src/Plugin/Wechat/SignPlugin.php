@@ -82,34 +82,7 @@ class SignPlugin implements PluginInterface
             $random.'\n'.
             $this->payloadToString($rocket->getPayload()).'\n';
 
-        $privateKey = $this->getPrivateKey($rocket->getParams());
-
-        openssl_sign($contents, $sign, $privateKey, 'sha256WithRSAEncryption');
-
-        $sign = base64_encode($sign);
-
-        !is_resource($privateKey) ?: openssl_free_key($privateKey);
-
-        return $sign;
-    }
-
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return false|resource|string
-     */
-    protected function getPrivateKey(array $params)
-    {
-        $privateKey = get_wechat_config($params)->get('mch_secret_cert');
-
-        if (is_null($privateKey)) {
-            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [app_secret_cert]');
-        }
-
-        return get_public_crt_or_private_cert($privateKey);
+        return get_wechat_sign($rocket->getParams(), $contents);
     }
 
     /**
