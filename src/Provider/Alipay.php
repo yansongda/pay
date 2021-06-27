@@ -33,7 +33,7 @@ class Alipay extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
+     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface
      */
     public function __call(string $shortcut, array $params)
     {
@@ -119,10 +119,10 @@ class Alipay extends AbstractProvider
     {
         Event::dispatch(new Event\RequestReceived('alipay', $contents, $params, null));
 
-        $response = $this->getCallbackParams($contents);
+        $request = $this->getCallbackParams($contents);
 
         return $this->pay(
-            [CallbackPlugin::class], $response->merge($params)->all()
+            [CallbackPlugin::class], $request->merge($params)->all()
         );
     }
 

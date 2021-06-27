@@ -74,9 +74,7 @@ class LaunchPlugin implements PluginInterface
             throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', $response);
         }
 
-        if (!verify_alipay_response($rocket->getParams(), json_encode($response, JSON_UNESCAPED_UNICODE), base64_decode($sign))) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', $response);
-        }
+        verify_alipay_sign($rocket->getParams(), json_encode($response, JSON_UNESCAPED_UNICODE), base64_decode($sign));
     }
 
     protected function getResponseKey(Rocket $rocket): string

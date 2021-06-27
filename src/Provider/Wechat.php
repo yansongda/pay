@@ -33,7 +33,7 @@ class Wechat extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
+     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface
      */
     public function __call(string $shortcut, array $params)
     {
@@ -101,16 +101,19 @@ class Wechat extends AbstractProvider
     }
 
     /**
-     * @param array|ServerRequestInterface|null $contents
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public function verify($contents = null, ?array $params = null): Collection
     {
         Event::dispatch(new Event\RequestReceived('wechat', $contents, $params, null));
 
-        $response = $this->getCallbackParams($contents);
+        $request = $this->getCallbackParams($contents);
 
         return $this->pay(
-            [CallbackPlugin::class], $response->merge($params)->all()
+            [CallbackPlugin::class], ['request' => $request, 'params' => $params]
         );
     }
 
@@ -136,21 +139,20 @@ class Wechat extends AbstractProvider
     /**
      * @param array|ServerRequestInterface|null $contents
      */
-    protected function getCallbackParams($contents = null): Collection
+    protected function getCallbackParams($contents = null): ServerRequestInterface
     {
+        if (is_array($contents) && isset($contents['body']) && isset($contents['headers'])) {
+            return new ServerRequest('POST', 'localhost', $contents['headers'], $contents['body']);
+        }
+
         if (is_array($contents)) {
-            return Collection::wrap($contents);
+            return new ServerRequest('POST', 'localhost', [], $contents);
         }
 
         if ($contents instanceof ServerRequestInterface) {
-            return Collection::wrap('GET' === $contents->getMethod() ? $contents->getQueryParams() :
-                $contents->getParsedBody());
+            return $contents;
         }
 
-        $request = ServerRequest::fromGlobals();
-
-        return Collection::wrap(
-            array_merge($request->getQueryParams(), $request->getParsedBody())
-        );
+        return ServerRequest::fromGlobals();
     }
 }

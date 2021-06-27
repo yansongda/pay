@@ -28,7 +28,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
+     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface
      */
     public function call(string $plugin, array $params = [])
     {
@@ -50,7 +50,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
+     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface
      */
     public function pay(array $plugins, array $params)
     {

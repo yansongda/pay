@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use Psr\Http\Message\MessageInterface;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
@@ -59,7 +61,7 @@ if (!function_exists('get_public_crt_or_private_cert')) {
     }
 }
 
-if (!function_exists('verify_alipay_response')) {
+if (!function_exists('verify_alipay_sign')) {
     /**
      * @param string $sign base64decode 之后的
      *
@@ -67,8 +69,9 @@ if (!function_exists('verify_alipay_response')) {
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidResponseException
      */
-    function verify_alipay_response(array $params, string $contents, string $sign): bool
+    function verify_alipay_sign(array $params, string $contents, string $sign): void
     {
         $public = get_alipay_config($params)->get('alipay_public_cert_path');
 
@@ -76,11 +79,15 @@ if (!function_exists('verify_alipay_response')) {
             throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_public_cert_path]');
         }
 
-        return 1 === openssl_verify(
+        $result = 1 === openssl_verify(
             $contents,
             $sign,
             get_public_crt_or_private_cert($public),
             OPENSSL_ALGO_SHA256);
+
+        if (!$result) {
+            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', func_get_args());
+        }
     }
 }
 
@@ -97,5 +104,44 @@ if (!function_exists('get_wechat_config')) {
         $config = $params['_config'] ?? 'default';
 
         return new Config($wechat[$config] ?? []);
+    }
+}
+
+if (!function_exists('verify_wechat_sign')) {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    function verify_wechat_sign(MessageInterface $message, array $params): void
+    {
+        $timestamp = $message->getHeaderLine('Wechatpay-Timestamp');
+        $random = $message->getHeaderLine('Wechatpay-Nonce');
+        $body = $message->getBody()->getContents();
+        $content = $timestamp.'\n'.$random.'\n'.$body.'\n';
+
+        $sign = $message->getHeaderLine('Wechatpay-Signature');
+        $public = get_wechat_config($params)->get('wechat_public_cert_path');
+
+        if (empty($sign)) {
+            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
+        }
+
+        if (is_null($public)) {
+            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [wechat_public_cert_path]');
+        }
+
+        $result = 1 === openssl_verify(
+            $content,
+            base64_decode($sign),
+            get_public_crt_or_private_cert($public),
+            'sha256WithRSAEncryption'
+        );
+
+        if (!$result) {
+            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
+        }
     }
 }

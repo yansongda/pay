@@ -58,7 +58,7 @@ class Exception extends \Exception
 
     public const METHOD_NOT_SUPPORTED = 4004;
 
-    public const REQUEST_NULL_SIGN_ERROR = 4005;
+    public const REQUEST_NULL_ERROR = 4005;
 
     /**
      * 关于api.
@@ -74,6 +74,10 @@ class Exception extends \Exception
     public const INVALID_RESPONSE_CODE = 5004;
 
     public const RESPONSE_NONE = 5005;
+
+    public const INVALID_REQUEST_PARAMS = 5006;
+
+    public const INVALID_REQUEST_ENCRYPTED_DATA = 5007;
 
     /**
      * raw.

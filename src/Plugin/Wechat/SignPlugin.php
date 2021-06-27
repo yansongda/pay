@@ -74,7 +74,7 @@ class SignPlugin implements PluginInterface
         $request = $rocket->getRadar();
 
         if (is_null($request)) {
-            throw new InvalidParamsException(InvalidParamsException::REQUEST_NULL_SIGN_ERROR);
+            throw new InvalidParamsException(InvalidParamsException::REQUEST_NULL_ERROR);
         }
 
         $uri = $request->getUri();
