@@ -60,6 +60,8 @@ class Exception extends \Exception
 
     public const REQUEST_NULL_ERROR = 4005;
 
+    public const MISSING_NECESSARY_PARAMS = 4006;
+
     /**
      * 关于api.
      */
@@ -78,6 +80,8 @@ class Exception extends \Exception
     public const INVALID_REQUEST_PARAMS = 5006;
 
     public const INVALID_REQUEST_ENCRYPTED_DATA = 5007;
+
+    public const INVALID_REQUEST_ENCRYPTED_METHOD = 5008;
 
     /**
      * raw.

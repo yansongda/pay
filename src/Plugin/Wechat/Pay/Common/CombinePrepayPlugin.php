@@ -20,7 +20,7 @@ class CombinePrepayPlugin extends GeneralPlugin
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function checkPayload(Rocket $rocket): void
+    protected function doSomething(Rocket $rocket): void
     {
         $config = get_wechat_config($rocket->getParams());
 
