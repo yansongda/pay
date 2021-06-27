@@ -85,14 +85,27 @@ class CallbackPlugin implements PluginInterface
             throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key]');
         }
 
+        switch ($resource['algorithm'] ?? '') {
+            case 'AEAD_AES_256_GCM':
+                return $this->decryptAes256Gcm($ciphertext, $secret, $resource['nonce'] ?? '', $resource['associated_data'] ?? '');
+            default:
+                throw new InvalidResponseException(InvalidResponseException::INVALID_REQUEST_ENCRYPTED_METHOD);
+        }
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     */
+    protected function decryptAes256Gcm(string $ciphertext, string $secret, string $nonce, string $associatedData): array
+    {
         $decrypted = json_decode(openssl_decrypt(
             substr($ciphertext, 0, -self::AUTH_TAG_LENGTH_BYTE),
             'aes-256-gcm',
             $secret,
             OPENSSL_RAW_DATA,
-            $resource['nonce'] ?? '',
+            $nonce,
             substr($ciphertext, -self::AUTH_TAG_LENGTH_BYTE),
-            $resource['associated_data'] ?? ''
+            $associatedData
         ), true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {

@@ -8,6 +8,7 @@ use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Str;
 
 class PreparePlugin implements PluginInterface
 {
@@ -24,6 +25,8 @@ class PreparePlugin implements PluginInterface
 
     protected function getPayload(array $params): array
     {
-        return $params;
+        return array_filter($params, function ($v, $k) {
+            return !Str::startsWith(strval($k), '_');
+        }, ARRAY_FILTER_USE_BOTH);
     }
 }

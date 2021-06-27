@@ -2,14 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
+namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
-class FindRefundPlugin extends GeneralPlugin
+class QueryUserCouponsPlugin extends GeneralPlugin
 {
+    protected function doSomething(Rocket $rocket): void
+    {
+        $rocket->setPayload(null);
+    }
+
     /**
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      */
@@ -17,20 +22,15 @@ class FindRefundPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('out_refund_no'))) {
+        if (is_null($payload->get('openid'))) {
             throw new InvalidParamsException(InvalidParamsException::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'v3/refund/domestic/refunds/'.$payload->get('out_refund_no');
-    }
+        $query = $payload->all();
+        unset($query['openid']);
 
-    protected function getMethod(): string
-    {
-        return 'GET';
-    }
-
-    protected function doSomething(Rocket $rocket): void
-    {
-        $rocket->setPayload(null);
+        return 'v3/marketing/favor/users/'.
+            $payload->get('openid').
+            '/coupons?'.http_build_query($query);
     }
 }

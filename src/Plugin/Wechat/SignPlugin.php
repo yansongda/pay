@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat;
 
 use Closure;
+use GuzzleHttp\Psr7\Utils;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 class SignPlugin implements PluginInterface
@@ -21,24 +23,19 @@ class SignPlugin implements PluginInterface
     {
         Logger::info('[wechat][SignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $this->filterPayload($rocket);
+        $body = $this->payloadToString($rocket->getPayload());
+        $radar = $rocket->getRadar()
+            ->withAddedHeader('Authorization', $this->getAuthorization($rocket));
 
-        $rocket->setRadar($rocket->getRadar()
-            ->withAddedHeader('Authorization', $this->getAuthorization($rocket))
-        );
+        if (!empty($body)) {
+            $radar->withBody(Utils::streamFor($body));
+        }
+
+        $rocket->setRadar($radar);
 
         Logger::info('[wechat][SignPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function filterPayload(Rocket $rocket): void
-    {
-        $payload = $rocket->getPayload()->filter(function ($v, $k) {
-            return !Str::startsWith(strval($k), '_');
-        });
-
-        $rocket->setPayload($payload);
     }
 
     /**
@@ -83,7 +80,7 @@ class SignPlugin implements PluginInterface
             $uri->getPath().(empty($uri->getQuery()) ? '' : '?'.$uri->getQuery()).'\n'.
             $timestamp.'\n'.
             $random.'\n'.
-            $request->getBody()->getContents().'\n';
+            $this->payloadToString($rocket->getPayload()).'\n';
 
         $privateKey = $this->getPrivateKey($rocket->getParams());
 
@@ -132,5 +129,10 @@ class SignPlugin implements PluginInterface
         }
 
         return $ssl['serialNumberHex'];
+    }
+
+    protected function payloadToString(?Collection $payload): string
+    {
+        return (is_null($payload) || 0 === $payload->count()) ? '' : $payload->toJson();
     }
 }

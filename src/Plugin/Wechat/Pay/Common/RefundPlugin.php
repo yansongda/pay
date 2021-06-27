@@ -14,7 +14,7 @@ class RefundPlugin extends GeneralPlugin
         return 'v3/refund/domestic/refunds';
     }
 
-    protected function checkPayload(Rocket $rocket): void
+    protected function doSomething(Rocket $rocket): void
     {
     }
 }
