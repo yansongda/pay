@@ -117,7 +117,7 @@ class SignPlugin implements PluginInterface
      */
     protected function getMchPublicCertSerialNumber(?string $path): string
     {
-        if (is_null($path)) {
+        if (empty($path)) {
             throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_public_cert_path]');
         }
 
