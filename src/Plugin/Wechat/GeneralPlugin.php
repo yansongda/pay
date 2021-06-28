@@ -25,7 +25,7 @@ abstract class GeneralPlugin implements PluginInterface
         Logger::info('[wechat][GeneralPlugin] 通用插件开始装载', ['rocket' => $rocket]);
 
         $rocket->setRadar($this->getRequest($rocket));
-        $this->checkPayload($rocket);
+        $this->doSomething($rocket);
 
         Logger::info('[wechat][GeneralPlugin] 通用插件装载完毕', ['rocket' => $rocket]);
 
@@ -71,7 +71,7 @@ abstract class GeneralPlugin implements PluginInterface
         ];
     }
 
-    abstract protected function checkPayload(Rocket $rocket): void;
+    abstract protected function doSomething(Rocket $rocket): void;
 
     abstract protected function getUri(Rocket $rocket): string;
 }

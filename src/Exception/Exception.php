@@ -43,6 +43,8 @@ class Exception extends \Exception
 
     public const EVENT_CONFIG_ERROR = 3005;
 
+    public const WECHAT_CONFIG_ERROR = 3006;
+
     /*
      * 关于参数.
      */
@@ -52,9 +54,13 @@ class Exception extends \Exception
 
     public const PLUGIN_ERROR = 4002;
 
-    public const QUERY_TYPE_ERROR = 4003;
+    public const SHORTCUT_QUERY_TYPE_ERROR = 4003;
 
     public const METHOD_NOT_SUPPORTED = 4004;
+
+    public const REQUEST_NULL_ERROR = 4005;
+
+    public const MISSING_NECESSARY_PARAMS = 4006;
 
     /**
      * 关于api.
@@ -69,7 +75,15 @@ class Exception extends \Exception
 
     public const INVALID_RESPONSE_CODE = 5004;
 
-    public const RESPONSE_NONE = 5005;
+    public const RESPONSE_MISSING_NECESSARY_PARAMS = 5005;
+
+    public const RESPONSE_NONE = 5006;
+
+    public const INVALID_REQUEST_PARAMS = 5007;
+
+    public const INVALID_REQUEST_ENCRYPTED_DATA = 5008;
+
+    public const INVALID_REQUEST_ENCRYPTED_METHOD = 5009;
 
     /**
      * raw.

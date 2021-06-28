@@ -9,7 +9,6 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 class SignPlugin implements PluginInterface
@@ -26,13 +25,7 @@ class SignPlugin implements PluginInterface
 
         $this->filterPayload($rocket);
 
-        $privateKey = $this->getPrivateKey($rocket->getParams());
-
-        openssl_sign($this->getSignContent($rocket->getPayload()), $sign, $privateKey, OPENSSL_ALGO_SHA256);
-
-        $sign = base64_encode($sign);
-
-        !is_resource($privateKey) ?: openssl_free_key($privateKey);
+        $sign = $this->getSign($rocket);
 
         $rocket->mergePayload(['sign' => $sign]);
 
@@ -61,6 +54,27 @@ class SignPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getSign(Rocket $rocket): string
+    {
+        $privateKey = $this->getPrivateKey($rocket->getParams());
+
+        $content = $rocket->getPayload()->sortKeys()->toString();
+
+        openssl_sign($content, $sign, $privateKey, OPENSSL_ALGO_SHA256);
+
+        $sign = base64_encode($sign);
+
+        !is_resource($privateKey) ?: openssl_free_key($privateKey);
+
+        return $sign;
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
      * @return false|resource|string
      */
@@ -73,10 +87,5 @@ class SignPlugin implements PluginInterface
         }
 
         return get_public_crt_or_private_cert($privateKey);
-    }
-
-    protected function getSignContent(Collection $payload): string
-    {
-        return $payload->sortKeys()->toString();
     }
 }

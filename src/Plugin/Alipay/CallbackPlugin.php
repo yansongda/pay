@@ -31,13 +31,7 @@ class CallbackPlugin implements PluginInterface
             throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', $rocket->getParams());
         }
 
-        if (!verify_alipay_response(
-                $rocket->getParams(),
-                $this->getSignContent($rocket->getPayload()),
-                base64_decode($rocket->getParams()['sign']))
-        ) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', $rocket->getParams());
-        }
+        verify_alipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), base64_decode($rocket->getParams()['sign']));
 
         $rocket->setDirection(NoHttpRequestParser::class)
             ->setDestination($rocket->getPayload());

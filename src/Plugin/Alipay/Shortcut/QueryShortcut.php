@@ -27,7 +27,7 @@ class QueryShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(InvalidParamsException::QUERY_TYPE_ERROR, "Query type [$typeMethod] not supported");
+        throw new InvalidParamsException(InvalidParamsException::SHORTCUT_QUERY_TYPE_ERROR, "Query type [$typeMethod] not supported");
     }
 
     protected function defaultPlugins(): array

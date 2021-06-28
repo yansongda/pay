@@ -81,6 +81,6 @@ class FunctionTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(InvalidConfigException::ALIPAY_CONFIG_ERROR);
-        verify_alipay_response([], '', '');
+        verify_alipay_sign([], '', '');
     }
 }

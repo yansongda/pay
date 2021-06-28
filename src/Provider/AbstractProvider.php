@@ -28,15 +28,13 @@ abstract class AbstractProvider implements ProviderInterface
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
+     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface
      */
     public function call(string $plugin, array $params = [])
     {
         if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
             throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
         }
-
-        Event::dispatch(new Event\MethodCalled($plugin, $params, null));
 
         /* @var ShortcutInterface $money */
         $money = Pay::get($plugin);
@@ -52,11 +50,11 @@ abstract class AbstractProvider implements ProviderInterface
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\ResponseInterface
+     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface
      */
     public function pay(array $plugins, array $params)
     {
-        Logger::info('[AbstractProvider] 即将进行支付操作', func_get_args());
+        Logger::info('[AbstractProvider] 即将进行 pay 操作', func_get_args());
 
         Event::dispatch(new Event\PayStarted($plugins, $params, null));
 
@@ -106,7 +104,7 @@ abstract class AbstractProvider implements ProviderInterface
         try {
             $response = $http->sendRequest($rocket->getRadar());
 
-            $rocket->setDestination($response);
+            $rocket->setDestination($response)->setDestinationOrigin($response);
         } catch (Throwable $e) {
             Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
 

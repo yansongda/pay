@@ -19,7 +19,7 @@ class GetFlowBillPlugin extends GeneralPlugin
         return 'GET';
     }
 
-    protected function checkPayload(Rocket $rocket): void
+    protected function doSomething(Rocket $rocket): void
     {
         $rocket->setPayload(null);
     }

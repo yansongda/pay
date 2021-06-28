@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
@@ -13,13 +14,19 @@ class QueryPlugin extends GeneralPlugin
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
      */
     protected function getUri(Rocket $rocket): string
     {
         $config = get_wechat_config($rocket->getParams());
+        $payload = $rocket->getPayload();
+
+        if (is_null($payload->get('transaction_id'))) {
+            throw new InvalidParamsException(InvalidParamsException::MISSING_NECESSARY_PARAMS);
+        }
 
         return 'v3/pay/transactions/id/'.
-            ($rocket->getParams()['transaction_id'] ?? '').
+            $payload->get('transaction_id').
             '?mchid='.$config->get('mch_id', '');
     }
 
@@ -28,7 +35,7 @@ class QueryPlugin extends GeneralPlugin
         return 'GET';
     }
 
-    protected function checkPayload(Rocket $rocket): void
+    protected function doSomething(Rocket $rocket): void
     {
         $rocket->setPayload(null);
     }

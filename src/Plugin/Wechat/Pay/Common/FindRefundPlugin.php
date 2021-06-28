@@ -4,14 +4,24 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
 class FindRefundPlugin extends GeneralPlugin
 {
+    /**
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     */
     protected function getUri(Rocket $rocket): string
     {
-        return 'v3/refund/domestic/refunds/'.($rocket->getParams()['out_refund_no'] ?? '');
+        $payload = $rocket->getPayload();
+
+        if (is_null($payload->get('out_refund_no'))) {
+            throw new InvalidParamsException(InvalidParamsException::MISSING_NECESSARY_PARAMS);
+        }
+
+        return 'v3/refund/domestic/refunds/'.$payload->get('out_refund_no');
     }
 
     protected function getMethod(): string
@@ -19,7 +29,7 @@ class FindRefundPlugin extends GeneralPlugin
         return 'GET';
     }
 
-    protected function checkPayload(Rocket $rocket): void
+    protected function doSomething(Rocket $rocket): void
     {
         $rocket->setPayload(null);
     }

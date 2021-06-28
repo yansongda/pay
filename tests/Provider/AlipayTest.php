@@ -204,10 +204,10 @@ class AlipayTest extends TestCase
         $request = new ServerRequest('GET', $url);
         $request = $request->withQueryParams($query);
 
-        $result = Pay::alipay()->verify($request);
+        $result = Pay::alipay()->callback($request);
         self::assertNotEmpty($result->all());
 
-        $result = Pay::alipay()->verify($query);
+        $result = Pay::alipay()->callback($query);
         self::assertNotEmpty($result->all());
     }
 
