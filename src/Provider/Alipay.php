@@ -115,9 +115,9 @@ class Alipay extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function verify($contents = null, ?array $params = null): Collection
+    public function callback($contents = null, ?array $params = null): Collection
     {
-        Event::dispatch(new Event\RequestReceived('alipay', $contents, $params, null));
+        Event::dispatch(new Event\CallbackReceived('alipay', $contents, $params, null));
 
         $request = $this->getCallbackParams($contents);
 

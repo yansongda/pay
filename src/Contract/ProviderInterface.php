@@ -65,7 +65,7 @@ interface ProviderInterface
      *
      * @param array|ServerRequestInterface|null $contents
      */
-    public function verify($contents = null, ?array $params = null): Collection;
+    public function callback($contents = null, ?array $params = null): Collection;
 
     /**
      * Echo success to server.

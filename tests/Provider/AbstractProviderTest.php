@@ -128,7 +128,7 @@ class FooProviderStub extends AbstractProvider
         return new Collection();
     }
 
-    public function verify($contents = null, ?array $params = null): Collection
+    public function callback($contents = null, ?array $params = null): Collection
     {
         return new Collection();
     }

@@ -6,7 +6,7 @@ namespace Yansongda\Pay\Event;
 
 use Yansongda\Pay\Rocket;
 
-class RequestReceived extends Event
+class CallbackReceived extends Event
 {
     /**
      * @var string
