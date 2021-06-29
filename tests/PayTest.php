@@ -30,7 +30,12 @@ class PayTest extends TestCase
     public function testConfig()
     {
         $result = Pay::config(['name' => 'yansongda']);
-        static::assertInstanceOf(Pay::class, $result);
+        self::assertInstanceOf(Pay::class, $result);
+        self::assertEquals('yansongda', Pay::get(ConfigInterface::class)->get('name'));
+
+        $result1 = Pay::config(['name' => 'yansongda1']);
+        self::assertInstanceOf(Pay::class, $result1);
+        self::assertEquals('yansongda1', Pay::get(ConfigInterface::class)->get('name'));
     }
 
     public function testSetAndGet()
