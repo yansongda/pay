@@ -1,6 +1,8 @@
-<h1 style="text-align: center;">Pay</h1>
+<p align="center">
+<a href="https://pay.yansongda.cn" target="_blank" rel="noopener noreferrer"><img width="200" src="https://pay.yansongda.cn/images/logo.png" alt="Logo"></a>
+</p>
 
-<p style="text-align: center;">
+<p align="center">
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yansongda/pay/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yansongda/pay/?branch=master)
 [![Linter Status](https://github.com/yansongda/pay/workflows/Linter/badge.svg)](https://github.com/yansongda/pay/actions)
@@ -14,10 +16,6 @@
 
 **当前 master 分支为正在开发的 v3 版本，如果提交 PR 请提交到 v2 分支**
 
-该文档为 v2.x 版本，如果您想找 v1.x 版本文档，请点击[https://github.com/yansongda/pay/tree/v1](https://github.com/yansongda/pay/tree/v1)
-
-**注意：v1.x 与 v2.x 版本不兼容**
-
 开发了多次支付宝与微信支付后，很自然产生一种反感，惰性又来了，想在网上找相关的轮子，可是一直没有找到一款自己觉得逞心如意的，要么使用起来太难理解，要么文件结构太杂乱，只有自己撸起袖子干了。
 
 **！！请先熟悉 支付宝/微信 说明文档！！请具有基本的 debug 能力！！**
@@ -25,11 +23,13 @@
 欢迎 Star，欢迎 PR！
 
 laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
+
 yii 扩展包请 [传送至这里](https://github.com/guanguans/yii-pay)
 
 QQ交流群：690027516
 
 ## 特点
+
 - 丰富的事件系统
 - 命名不那么乱七八糟
 - 隐藏开发者不需要关注的细节
@@ -69,27 +69,27 @@ QQ交流群：690027516
 - 小程序支付
 - H5 支付
 - 扫码支付
-- 刷卡支付
 - APP 支付
-- 企业付款
-- 普通红包
-- 分裂红包
+- ~~刷卡支付~~
+- ~~企业付款~~
+- ~~普通红包~~
+- ~~分裂红包~~
 
 | method |   描述     |
 | :-----: | :-------: |
 | mp      | 公众号支付  |
-| miniapp | 小程序支付  |
+| mini | 小程序支付  |
 | wap     | H5 支付    |
 | scan    | 扫码支付    |
-| pos     | 刷卡支付    |
 | app     | APP 支付  |
-| transfer     | 企业付款 |
-| redpack      | 普通红包 |
-| groupRedpack | 分裂红包 |
+| ~~pos~~     | 刷卡支付，v3版暂不支持    |
+| ~~transfer~~     | 企业付款，v3版暂不支持  |
+| ~~redpack~~      | 普通红包，v3版暂不支持  |
+| ~~groupRedpack~~ | 分裂红包，v3版暂不支持  |
 
 ## 安装
 ```shell
-composer require yansongda/pay -vvv
+composer require yansongda/pay:~v3.0.0 -vvv
 ```
 
 ## 使用说明
