@@ -21,6 +21,11 @@ use Yansongda\Supports\Pipeline;
 
 class PayTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        Pay::clear();
+    }
+
     protected function tearDown(): void
     {
         Pay::clear();

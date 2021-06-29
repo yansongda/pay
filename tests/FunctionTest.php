@@ -13,7 +13,12 @@ use Yansongda\Supports\Str;
 
 class FunctionTest extends TestCase
 {
-    protected function tearDown (): void
+    protected function setUp(): void
+    {
+        Pay::clear();
+    }
+
+    protected function tearDown(): void
     {
         Pay::clear();
     }
