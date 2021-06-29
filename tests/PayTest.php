@@ -15,7 +15,6 @@ use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\Stubs\FooServiceProviderStub;
-use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
 use Yansongda\Supports\Pipeline;
@@ -33,7 +32,8 @@ class PayTest extends TestCase
         self::assertInstanceOf(Pay::class, $result);
         self::assertEquals('yansongda', Pay::get(ConfigInterface::class)->get('name'));
 
-        $result1 = Pay::config(['name' => 'yansongda1']);
+        // force
+        $result1 = Pay::config(['name' => 'yansongda1', '_force' => true]);
         self::assertInstanceOf(Pay::class, $result1);
         self::assertEquals('yansongda1', Pay::get(ConfigInterface::class)->get('name'));
     }
