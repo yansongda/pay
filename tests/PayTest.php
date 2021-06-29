@@ -22,7 +22,7 @@ use Yansongda\Supports\Pipeline;
 
 class PayTest extends TestCase
 {
-    protected function tearDown (): void
+    protected function tearDown(): void
     {
         Pay::clear();
     }

@@ -90,7 +90,7 @@ class Pay
      */
     public static function __callStatic(string $service, array $config)
     {
-        if (!empty($config) && !self::hasContainer()) {
+        if (!empty($config)) {
             self::config(...$config);
         }
 
@@ -108,7 +108,7 @@ class Pay
      */
     public static function config(array $config = []): Pay
     {
-        if (empty($config) && self::hasContainer()) {
+        if (self::hasContainer() && !($config['_force'] ?? false)) {
             return self::get(Pay::class);
         }
 
