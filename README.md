@@ -14,8 +14,6 @@
 
 </p>
 
-**当前 master 分支为正在开发的 v3 版本，如果提交 PR 请提交到 v2 分支**
-
 开发了多次支付宝与微信支付后，很自然产生一种反感，惰性又来了，想在网上找相关的轮子，可是一直没有找到一款自己觉得逞心如意的，要么使用起来太难理解，要么文件结构太杂乱，只有自己撸起袖子干了。
 
 **！！请先熟悉 支付宝/微信 说明文档！！请具有基本的 debug 能力！！**
@@ -39,7 +37,6 @@ QQ交流群：690027516
 - 文件结构清晰易理解，可以随心所欲添加本项目中没有的支付网关
 - 方法使用更优雅，不必再去研究那些奇怪的的方法名或者类名是做啥用的
 
-
 ## 运行环境
 - PHP 7.3+
 - composer
@@ -54,45 +51,27 @@ QQ交流群：690027516
 - 账户转账
 - 小程序支付
 
-|  method   |   描述       |
-| :-------: | :-------:   |
-|  web      | 电脑支付     |
-|  wap      | 手机网站支付 |
-|  app      | APP 支付    |
-|  pos      | 付款码刷卡支付  |
-|  scan     | 扫码支付  |
-|  transfer | 帐户转账  |
-|  mini     | 小程序支付 |
-
 ### 2、微信
 - 公众号支付
 - 小程序支付
 - H5 支付
 - 扫码支付
 - APP 支付
-- ~~刷卡支付~~
-- ~~企业付款~~
-- ~~普通红包~~
-- ~~分裂红包~~
-
-| method |   描述     |
-| :-----: | :-------: |
-| mp      | 公众号支付  |
-| mini | 小程序支付  |
-| wap     | H5 支付    |
-| scan    | 扫码支付    |
-| app     | APP 支付  |
-| ~~pos~~     | 刷卡支付，v3版暂不支持    |
-| ~~transfer~~     | 企业付款，v3版暂不支持  |
-| ~~redpack~~      | 普通红包，v3版暂不支持  |
-| ~~groupRedpack~~ | 分裂红包，v3版暂不支持  |
+- ~~刷卡支付，v3版暂不支持~~
+- ~~企业付款，v3版暂不支持~~
+- ~~普通红包，v3版暂不支持~~
+- ~~分裂红包，v3版暂不支持~~
 
 ## 安装
 ```shell
-composer require yansongda/pay:~v3.0.0 -vvv
+composer require yansongda/pay:~3.0.0 -vvv
 ```
 
-## 使用说明
+## 详细文档
+
+[详细说明文档](http://pay.yansongda.cn)
+
+## 深情一撇
 
 ### 支付宝
 ```php
@@ -108,11 +87,13 @@ class PayController
         'alipay' => [
             'default' => [
                 'app_id' => '2016082000295641',
-                // 加密方式： **RSA2**; 公钥证书模式 
+                // 应用私钥 
                 'app_secret_cert' => 'MIIEpAIBAAKCAQEAs6fsdafasfasfsafsafasfasfas',
-                //应用公钥证书路径
+                // 应用公钥证书路径
                 'app_public_cert_path' => '/User/yansongda/cert/app_public.crt',
-                //应用公钥证书路径
+                // 支付宝公钥证书路径
+                'alipay_public_cert_path' => '/User/yansongda/cert/alipay_root.crt',
+                // 支付宝根证书路径
                 'alipay_root_cert_path' => '/User/yansongda/cert/alipay_root.crt',
                 'notify_url' => 'https://yansongda.cn/notify.html',
                 'return_url' => 'https://yansongda.cn/return.html',
@@ -120,6 +101,7 @@ class PayController
             ],       
         ],   
         'log' => [ // optional
+            'enable' => false,
             'file' => './logs/alipay.log',
             'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
             'type' => 'single', // optional, 可选 daily.
@@ -132,15 +114,17 @@ class PayController
         ],
     ];
 
-    public function index()
+    public function web()
     {
-        $order = [
-            'out_trade_no' => time(),
-            'total_amount' => '1',
-            'subject' => 'test subject - 测试',
-        ];
+        Pay::config($this->config);
 
-        $alipay = Pay::alipay($this->config)->web($order);
+        $result = Pay::alipay()->web([
+            'out_trade_no' => ''.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - refund',
+        ]);
+        
+        return $result;
 
         return $alipay->send();// laravel 框架中请直接 `return $alipay`
     }
@@ -246,23 +230,11 @@ class PayController
 ```
 
 ## 事件系统
+
 [请见详细文档](http://pay.yansongda.cn)
 
-## 详细文档
-[详细说明文档](http://pay.yansongda.cn)
-
-## 错误
-如果在调用相关支付网关 API 时有错误产生，会抛出 `GatewayException`,`InvalidSignException` 错误，可以通过 `$e->getMessage()` 查看，同时，也可通过 `$e->raw` 查看调用 API 后返回的原始数据，该值为数组格式。
-
-### 所有异常
-
-* Yansongda\Pay\Exceptions\InvalidGatewayException ，表示使用了除本 SDK 支持的支付网关。
-* Yansongda\Pay\Exceptions\InvalidSignException ，表示验签失败。
-* Yansongda\Pay\Exceptions\InvalidConfigException ，表示缺少配置参数，如，`ali_public_key`, `private_key` 等。
-* Yansongda\Pay\Exceptions\GatewayException ，表示支付宝/微信服务器返回的数据非正常结果，例如，参数错误，对账单不存在等。
-
-
 ## 代码贡献
+
 由于测试及使用环境的限制，本项目中只开发了「支付宝」和「微信支付」的相关支付网关。
 
 如果您有其它支付网关的需求，或者发现本项目中需要改进的代码，**_欢迎 Fork 并提交 PR！_**
@@ -272,4 +244,5 @@ class PayController
 ![pay](https://pay.yansongda.cn/images/pay.jpg)
 
 ## LICENSE
+
 MIT
