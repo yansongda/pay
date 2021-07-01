@@ -19,7 +19,18 @@ class EventServiceProvider implements ServiceProviderInterface
      */
     public function register(Pay $pay, ?array $data = null): void
     {
-        $event = new class() implements EventDispatcherInterface {
+        $event = $this->getDefaultDispatcher();
+
+        if (class_exists(EventDispatcher::class)) {
+            $event = Pay::get(EventDispatcher::class);
+        }
+
+        Pay::set(EventDispatcherInterface::class, $event);
+    }
+
+    protected function getDefaultDispatcher(): EventDispatcherInterface
+    {
+        return new class() implements EventDispatcherInterface {
             /**
              * Adds an event listener that listens on the specified events.
              *
@@ -96,11 +107,5 @@ class EventServiceProvider implements ServiceProviderInterface
                 return false;
             }
         };
-
-        if (class_exists(EventDispatcher::class)) {
-            $event = Pay::get(EventDispatcher::class);
-        }
-
-        Pay::set(EventDispatcherInterface::class, $event);
     }
 }

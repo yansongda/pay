@@ -14,9 +14,9 @@
 
 </p>
 
-开发了多次支付宝与微信支付后，很自然产生一种反感，惰性又来了，想在网上找相关的轮子，可是一直没有找到一款自己觉得逞心如意的，要么使用起来太难理解，要么文件结构太杂乱，只有自己撸起袖子干了。
+## 前言
 
-**！！请先熟悉 支付宝/微信 说明文档！！请具有基本的 debug 能力！！**
+开发了多次支付宝与微信支付后，很自然产生一种反感，惰性又来了，想在网上找相关的轮子，可是一直没有找到一款自己觉得逞心如意的，要么使用起来太难理解，要么文件结构太杂乱，只有自己撸起袖子干了。
 
 欢迎 Star，欢迎 PR！
 
@@ -28,6 +28,7 @@ QQ交流群：690027516
 
 ## 特点
 
+- 灵活的插件机制
 - 丰富的事件系统
 - 命名不那么乱七八糟
 - 隐藏开发者不需要关注的细节
@@ -41,8 +42,19 @@ QQ交流群：690027516
 - PHP 7.3+
 - composer
 
-## 支持的支付方法
-### 1、支付宝
+## 详细文档
+
+[https://pay.yansongda.cn](https://pay.yansongda.cn)
+
+## 直接支持的支付方法
+
+yansongda/pay 100% 兼容 支付宝/微信 所有功能，只需通过「插件机制」引入即可
+
+同时，SDK 直接支持内置了以下插件
+
+详情请查阅文档
+
+### 支付宝
 - 电脑支付
 - 手机网站支付
 - APP 支付
@@ -50,13 +62,15 @@ QQ交流群：690027516
 - 扫码支付
 - 账户转账
 - 小程序支付
+- ...
 
-### 2、微信
+### 微信
 - 公众号支付
 - 小程序支付
 - H5 支付
 - 扫码支付
 - APP 支付
+- ...
 - ~~刷卡支付，v3版暂不支持~~
 - ~~企业付款，v3版暂不支持~~
 - ~~普通红包，v3版暂不支持~~
@@ -66,10 +80,6 @@ QQ交流群：690027516
 ```shell
 composer require yansongda/pay:~3.0.0 -vvv
 ```
-
-## 详细文档
-
-[详细说明文档](http://pay.yansongda.cn)
 
 ## 深情一撇
 
@@ -81,7 +91,7 @@ namespace App\Http\Controllers;
 
 use Yansongda\Pay\Pay;
 
-class PayController
+class AlipayController
 {
     protected $config = [
         'alipay' => [
@@ -97,10 +107,10 @@ class PayController
                 'alipay_root_cert_path' => '/User/yansongda/cert/alipay_root.crt',
                 'notify_url' => 'https://yansongda.cn/notify.html',
                 'return_url' => 'https://yansongda.cn/return.html',
-                'mode' => 'dev', // optional,设置此参数，将进入沙箱模式
+                'mode' => Pay::MODE_SANDBOX, // optional,设置此参数，将进入沙箱模式
             ],       
         ],   
-        'log' => [ // optional
+        'logger' => [ // optional
             'enable' => false,
             'file' => './logs/alipay.log',
             'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
@@ -116,34 +126,30 @@ class PayController
 
     public function web()
     {
-        Pay::config($this->config);
-
-        $result = Pay::alipay()->web([
+        $result = Pay::alipay($this->config)->web([
             'out_trade_no' => ''.time(),
             'total_amount' => '0.01',
-            'subject' => 'yansongda 测试 - refund',
+            'subject' => 'yansongda 测试 - 1',
         ]);
         
         return $result;
-
-        return $alipay->send();// laravel 框架中请直接 `return $alipay`
     }
 
-    public function return()
+    public function returnCallback()
     {
-        $data = Pay::alipay($this->config)->verify(); // 是的，验签就这么简单！
+        $data = Pay::alipay($this->config)->callback(); // 是的，验签就这么简单！
 
         // 订单号：$data->out_trade_no
         // 支付宝交易号：$data->trade_no
         // 订单总金额：$data->total_amount
     }
 
-    public function notify()
+    public function notifyCallback()
     {
         $alipay = Pay::alipay($this->config);
     
         try{
-            $data = $alipay->verify(); // 是的，验签就这么简单！
+            $data = $alipay->callback(); // 是的，验签就这么简单！
 
             // 请自行对 trade_status 进行判断及其它逻辑进行判断，在支付宝的业务通知中，只有交易通知状态为 TRADE_SUCCESS 或 TRADE_FINISHED 时，支付宝才会认定为买家付款成功。
             // 1、商户需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号；
@@ -155,7 +161,7 @@ class PayController
             // $e->getMessage();
         }
 
-        return $alipay->success()->send();// laravel 框架中请直接 `return $alipay->success()`
+        return $alipay->success();
     }
 }
 ```
@@ -167,20 +173,37 @@ class PayController
 namespace App\Http\Controllers;
 
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Log;
 
-class PayController
+class WechatController
 {
     protected $config = [
-        'appid' => 'wxb3fxxxxxxxxxxx', // APP APPID
-        'app_id' => 'wxb3fxxxxxxxxxxx', // 公众号 APPID
-        'miniapp_id' => 'wxb3fxxxxxxxxxxx', // 小程序 APPID
-        'mch_id' => '14577xxxx',
-        'key' => 'mF2suE9sU6Mk1Cxxxxxxxxxxx',
-        'notify_url' => 'http://yanda.net.cn/notify.php',
-        'cert_client' => './cert/apiclient_cert.pem', // optional，退款等情况时用到
-        'cert_key' => './cert/apiclient_key.pem',// optional，退款等情况时用到
-        'log' => [ // optional
+        'wechat' => [
+            'default' => [
+                // 公众号 的 app_id
+                'mp_app_id' => '2016082000295641',
+                // 小程序 的 app_id
+                'mini_app_id' => '',
+                // app 的 app_id
+                'app_id' => '',
+                // 商户号 
+                'mch_id' => '',
+                // 合单 app_id
+                'combine_app_id' => '',
+                // 合单商户号 
+                'combine_mch_id' => '',
+                // 商户秘钥
+                'mch_secret_key' => '',
+                // 商户私钥
+                'mch_secret_cert' => '',
+                // 商户公钥证书路径
+                'mch_public_cert_path' => '',
+                // 微信公钥证书路径
+                'wechat_public_cert_path' => '',
+                'mode' => Pay::MODE_SANDBOX,
+            ]
+        ],
+        'logger' => [ // optional
+            'enable' => false,
             'file' => './logs/wechat.log',
             'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
             'type' => 'single', // optional, 可选 daily.
@@ -191,7 +214,6 @@ class PayController
             'connect_timeout' => 5.0,
             // 更多配置项请参考 [Guzzle](https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html)
         ],
-        'mode' => 'dev', // optional, dev/hk;当为 `hk` 时，为香港 gateway。
     ];
 
     public function index()
@@ -212,26 +234,20 @@ class PayController
         // $pay->signType
     }
 
-    public function notify()
+    public function notifyCallback()
     {
         $pay = Pay::wechat($this->config);
 
         try{
-            $data = $pay->verify(); // 是的，验签就这么简单！
-
-            Log::debug('Wechat notify', $data->all());
+            $data = $pay->callback(); // 是的，验签就这么简单！
         } catch (\Exception $e) {
             // $e->getMessage();
         }
         
-        return $pay->success()->send();// laravel 框架中请直接 `return $pay->success()`
+        return $pay->success();
     }
 }
 ```
-
-## 事件系统
-
-[请见详细文档](http://pay.yansongda.cn)
 
 ## 代码贡献
 

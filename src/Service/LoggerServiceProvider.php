@@ -22,7 +22,20 @@ class LoggerServiceProvider implements ServiceProviderInterface
         /* @var ConfigInterface $config */
         $config = Pay::get(ConfigInterface::class);
 
-        $logger = new class() implements \Psr\Log\LoggerInterface {
+        $logger = $this->getDefaultLogger();
+
+        if (class_exists(\Monolog\Logger::class) && true === $config->get('logger.enable', false)) {
+            $logger = new Logger(array_merge(
+                ['identify' => 'yansongda.pay'], $config->get('logger', [])
+            ));
+        }
+
+        Pay::set(LoggerInterface::class, $logger);
+    }
+
+    protected function getDefaultLogger(): \Psr\Log\LoggerInterface
+    {
+        return new class() implements \Psr\Log\LoggerInterface {
             /**
              * System is unusable.
              *
@@ -134,13 +147,5 @@ class LoggerServiceProvider implements ServiceProviderInterface
             {
             }
         };
-
-        if (class_exists(\Monolog\Logger::class) && true === $config->get('logger.enable', false)) {
-            $logger = new Logger(array_merge(
-                ['identify' => 'yansongda.pay'], $config->get('logger', [])
-            ));
-        }
-
-        Pay::set(LoggerInterface::class, $logger);
     }
 }
