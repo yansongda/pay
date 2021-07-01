@@ -46,7 +46,7 @@ QQ交流群：690027516
 
 [https://pay.yansongda.cn](https://pay.yansongda.cn)
 
-## 直接支持的支付方法
+## 支持的支付方法
 
 yansongda/pay 100% 兼容 支付宝/微信 所有功能，只需通过「插件机制」引入即可
 
