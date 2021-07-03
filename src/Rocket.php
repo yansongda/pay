@@ -41,7 +41,7 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
     private $direction = null;
 
     /**
-     * @var \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface|null
+     * @var \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface|array|null
      */
     private $destination = null;
 
@@ -110,7 +110,7 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
     }
 
     /**
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|null
+     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
      */
     public function getDestination()
     {
@@ -118,7 +118,7 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
     }
 
     /**
-     * @param \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|null $destination
+     * @param \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null $destination
      */
     public function setDestination($destination): Rocket
     {
