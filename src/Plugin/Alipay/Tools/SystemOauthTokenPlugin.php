@@ -6,10 +6,10 @@ namespace Yansongda\Pay\Plugin\Alipay\Tools;
 
 use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
 
-class OpenAuthTokenAppPlugin extends GeneralPlugin
+class SystemOauthTokenPlugin extends GeneralPlugin
 {
     protected function getMethod(): string
     {
-        return 'alipay.open.auth.token.app';
+        return 'alipay.system.oauth.token';
     }
 }

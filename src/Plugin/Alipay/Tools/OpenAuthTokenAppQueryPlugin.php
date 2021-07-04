@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\Open;
+namespace Yansongda\Pay\Plugin\Alipay\Tools;
 
 use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
 
-class AuthTokenAppQueryPlugin extends GeneralPlugin
+class OpenAuthTokenAppQueryPlugin extends GeneralPlugin
 {
     protected function getMethod(): string
     {
