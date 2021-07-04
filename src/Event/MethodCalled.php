@@ -11,6 +11,11 @@ class MethodCalled extends Event
     /**
      * @var string
      */
+    public $provider;
+
+    /**
+     * @var string
+     */
     public $name;
 
     /**
@@ -18,8 +23,9 @@ class MethodCalled extends Event
      */
     public $params;
 
-    public function __construct(string $name, array $params, ?Rocket $rocket)
+    public function __construct(string $provider, string $name, array $params, ?Rocket $rocket)
     {
+        $this->provider = $provider;
         $this->name = $name;
         $this->params = $params;
 

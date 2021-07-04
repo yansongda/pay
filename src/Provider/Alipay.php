@@ -55,7 +55,7 @@ class Alipay extends AbstractProvider
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
-        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
+        Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }
@@ -72,7 +72,7 @@ class Alipay extends AbstractProvider
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
-        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
+        Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
         return $this->__call('cancel', [$order]);
     }
@@ -89,7 +89,7 @@ class Alipay extends AbstractProvider
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
-        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
+        Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
         return $this->__call('close', [$order]);
     }
@@ -102,7 +102,7 @@ class Alipay extends AbstractProvider
      */
     public function refund(array $order): Collection
     {
-        Event::dispatch(new Event\MethodCalled(__METHOD__, $order, null));
+        Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
         return $this->__call('refund', [$order]);
     }
