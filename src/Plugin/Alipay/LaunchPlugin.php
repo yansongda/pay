@@ -28,34 +28,14 @@ class LaunchPlugin implements PluginInterface
         $rocket = $next($rocket);
 
         if (should_do_http_request($rocket)) {
+            $this->verifySign($rocket);
+
             $rocket->setDestination($this->getMethodResponse($rocket));
         }
 
         Logger::info('[alipay][LaunchPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
-    }
-
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     */
-    protected function getMethodResponse(Rocket $rocket): Collection
-    {
-        $response = Collection::wrap(
-            $rocket->getDestination()->get($this->getResponseKey($rocket))
-        );
-
-        $this->verifySign($rocket);
-
-        if (10000 != $response->get('code', 10000)) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_CODE, 'Invalid response code', $response->all());
-        }
-
-        return $response;
     }
 
     /**
@@ -75,6 +55,22 @@ class LaunchPlugin implements PluginInterface
         }
 
         verify_alipay_sign($rocket->getParams(), json_encode($response, JSON_UNESCAPED_UNICODE), base64_decode($sign));
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     */
+    protected function getMethodResponse(Rocket $rocket): Collection
+    {
+        $response = Collection::wrap(
+            $rocket->getDestination()->get($this->getResponseKey($rocket))
+        );
+
+        if (10000 != $response->get('code', 10000)) {
+            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_CODE, 'Invalid response code', $response->all());
+        }
+
+        return $response;
     }
 
     protected function getResponseKey(Rocket $rocket): string
