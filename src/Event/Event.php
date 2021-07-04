@@ -10,13 +10,6 @@ use Yansongda\Pay\Rocket;
 class Event extends SymfonyEvent
 {
     /**
-     * Driver.
-     *
-     * @var string
-     */
-    public $provider;
-
-    /**
      * @var \Yansongda\Pay\Rocket|null
      */
     public $rocket;
