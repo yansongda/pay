@@ -61,9 +61,9 @@ class FunctionTest extends TestCase
 
     public function testGetPublicCrtOrPrivateCert()
     {
-        $alipayPublicCertPath = __DIR__.'/Stubs/cert/alipayCertPublicKey_RSA2.crt';
-        $appSecretCert = file_get_contents( __DIR__.'/Stubs/cert/appSecretKey_RSA2_PKCS1.txt');
-        $appSecretCertPath = __DIR__.'/Stubs/cert/appSecretKey_RSA2_PKCS1.pem';
+        $alipayPublicCertPath = __DIR__ . '/Cert/alipayCertPublicKey_RSA2.crt';
+        $appSecretCert = file_get_contents(__DIR__ . '/Cert/alipayAppSecretKey_RSA2_PKCS1.txt');
+        $appSecretCertPath = __DIR__ . '/Cert/alipayAppSecretKey_RSA2_PKCS1.pem';
 
         self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_crt_or_private_cert($alipayPublicCertPath));
         self::assertTrue(Str::contains(get_public_crt_or_private_cert($appSecretCert), 'END RSA PRIVATE KEY'));

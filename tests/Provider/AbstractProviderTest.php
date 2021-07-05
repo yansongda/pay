@@ -25,9 +25,9 @@ class AbstractProviderTest extends TestCase
         $config = [
             'alipay' => [
                 'default' => [
-                    'app_public_cert_path' => __DIR__.'/../Stubs/cert/appCertPublicKey_2016082000295641.crt',
-                    'alipay_public_cert_path' => __DIR__.'/../Stubs/cert/alipayCertPublicKey_RSA2.crt',
-                    'alipay_root_cert_path' => __DIR__.'/../Stubs/cert/alipayRootCert.crt',
+                    'app_public_cert_path' => __DIR__ . '/../Stubs/cert/appCertPublicKey_2016082000295641.crt',
+                    'alipay_public_cert_path' => __DIR__ . '/../Stubs/cert/alipayCertPublicKey_RSA2.crt',
+                    'alipay_root_cert_path' => __DIR__ . '/../Stubs/cert/alipayRootCert.crt',
                 ],
             ]
         ];
