@@ -146,7 +146,7 @@ class Wechat extends AbstractProvider
         }
 
         if (is_array($contents)) {
-            return new ServerRequest('POST', 'localhost', [], $contents);
+            return new ServerRequest('POST', 'localhost', [], json_encode($contents));
         }
 
         if ($contents instanceof ServerRequestInterface) {

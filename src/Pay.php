@@ -58,7 +58,7 @@ class Pay
     ];
 
     /**
-     * @var \DI\Container
+     * @var \DI\Container|null
      */
     private static $container = null;
 
