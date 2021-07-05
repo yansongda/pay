@@ -34,8 +34,6 @@ class QueryPlugin extends GeneralPlugin
         }
 
         throw new InvalidParamsException(InvalidParamsException::MISSING_NECESSARY_PARAMS);
-
-
     }
 
     protected function getMethod(): string
