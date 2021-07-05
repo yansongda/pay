@@ -9,6 +9,7 @@ use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
 use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
 use Yansongda\Pay\Plugin\Wechat\SignPlugin;
+use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 
 class WechatTest extends TestCase
 {

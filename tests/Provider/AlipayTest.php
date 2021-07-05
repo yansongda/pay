@@ -15,6 +15,7 @@ use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 
 class AlipayTest extends TestCase
 {
@@ -223,12 +224,4 @@ class AlipayTest extends TestCase
             [LaunchPlugin::class, ParserPlugin::class],
         ), Pay::alipay()->mergeCommonPlugins($plugins));
     }
-}
-
-class FooPluginStub
-{
-}
-
-class FooShortcut
-{
 }

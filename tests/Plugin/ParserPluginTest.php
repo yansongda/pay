@@ -9,6 +9,7 @@ use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Tests\Stubs\FooPackerStub;
 
 class ParserPluginTest extends TestCase
 {
@@ -51,8 +52,4 @@ class ParserPluginTest extends TestCase
 
         self::assertSame($rocket, $result);
     }
-}
-
-class FooPackerStub
-{
 }

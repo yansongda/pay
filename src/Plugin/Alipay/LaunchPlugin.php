@@ -22,10 +22,10 @@ class LaunchPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
-
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
+
+        Logger::info('[alipay][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         if (should_do_http_request($rocket)) {
             $this->verifySign($rocket);
