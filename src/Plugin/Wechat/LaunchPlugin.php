@@ -22,10 +22,10 @@ class LaunchPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[wechat][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
-
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
+
+        Logger::info('[wechat][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         if (should_do_http_request($rocket)) {
             verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());

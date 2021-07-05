@@ -3,9 +3,8 @@
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
 use PHPUnit\Framework\TestCase;
-use Yansongda\Pay\Parser\ResponseParser;
-use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Tests\Stubs\Plugin\AlipayGeneralPluginStub;
 
 class GeneralPayPluginTest extends TestCase
 {
@@ -14,7 +13,7 @@ class GeneralPayPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([]);
 
-        $plugin = new FooPlugin();
+        $plugin = new AlipayGeneralPluginStub();
 
         $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
@@ -22,10 +21,3 @@ class GeneralPayPluginTest extends TestCase
     }
 }
 
-class FooPlugin extends GeneralPlugin
-{
-    protected function getMethod(): string
-    {
-        return 'yansongda';
-    }
-}

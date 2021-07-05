@@ -17,7 +17,7 @@ class LaunchPluginTest extends TestCase
         $config = [
             'alipay' => [
                 'default' => [
-                    'alipay_public_cert_path' => __DIR__.'/../../Stubs/cert/alipayCertPublicKey_RSA2.crt'
+                    'alipay_public_cert_path' => __DIR__ . '/../../Cert/alipayCertPublicKey_RSA2.crt'
                 ],
             ]
         ];
