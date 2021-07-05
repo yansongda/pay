@@ -1,0 +1,3 @@
+parameters:
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:

@@ -23,4 +23,4 @@ jobs:
       - name: Install Dependencies
         run: composer install --no-progress
       - name: Run PHPUnit
-        run: ./vendor/bin/phpunit
+        run: composer test
