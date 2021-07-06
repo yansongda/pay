@@ -24,10 +24,11 @@ class ParserPlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        $packer = $this->getPacker($rocket);
+        /* @var \Psr\Http\Message\ResponseInterface $response */
+        $response = $rocket->getDestination();
 
         return $rocket->setDestination(
-            $packer->parse($rocket->getDestination())
+            $this->getPacker($rocket)->parse($response)
         );
     }
 
