@@ -65,8 +65,6 @@ class Pay
     /**
      * Bootstrap.
      *
-     * @author yansongda <me@yansongda.cn>
-     *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
@@ -79,8 +77,6 @@ class Pay
 
     /**
      * __callStatic.
-     *
-     * @author yansongda <me@yansongda.cn>
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
@@ -100,8 +96,6 @@ class Pay
     /**
      * 初始化容器、配置等信息.
      *
-     * @author yansongda <me@yansongda.cn>
-     *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
@@ -117,8 +111,6 @@ class Pay
 
     /**
      * 定义.
-     *
-     * @author yansongda <me@yansongda.cn>
      *
      * @param mixed $value
      *
@@ -182,8 +174,6 @@ class Pay
     /**
      * getContainer.
      *
-     * @author yansongda <me@yansongda.cn>
-     *
      * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      */
     public static function getContainer(): Container
@@ -197,8 +187,6 @@ class Pay
 
     /**
      * has Container.
-     *
-     * @author yansongda <me@yansongda.cn>
      */
     public static function hasContainer(): bool
     {
@@ -207,8 +195,6 @@ class Pay
 
     /**
      * clear.
-     *
-     * @author yansongda <me@yansongda.cn>
      */
     public static function clear(): void
     {
@@ -217,8 +203,6 @@ class Pay
 
     /**
      * 注册服务.
-     *
-     * @author yansongda <me@yansongda.cn>
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
@@ -235,8 +219,6 @@ class Pay
 
     /**
      * initContainer.
-     *
-     * @author yansongda <me@yansongda.cn>
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
@@ -259,8 +241,6 @@ class Pay
 
     /**
      * register services.
-     *
-     * @author yansongda <me@yansongda.cn>
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException

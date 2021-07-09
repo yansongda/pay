@@ -10,8 +10,6 @@ interface ServiceProviderInterface
 {
     /**
      * register the service.
-     *
-     * @author yansongda <me@yansongda.cn>
      */
     public function register(Pay $pay, ?array $data = null): void;
 }

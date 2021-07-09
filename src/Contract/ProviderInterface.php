@@ -13,8 +13,6 @@ interface ProviderInterface
     /**
      * pay.
      *
-     * @author yansongda <me@yansongda.cn>
-     *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
@@ -27,16 +25,12 @@ interface ProviderInterface
     /**
      * Quick road - Query an order.
      *
-     * @author yansongda <me@yansongda.cn>
-     *
      * @param string|array $order
      */
     public function find($order): Collection;
 
     /**
      * Quick road - Cancel an order.
-     *
-     * @author yansongda <me@yansongda.cn>
      *
      * @param string|array $order
      */
@@ -45,23 +39,17 @@ interface ProviderInterface
     /**
      * Quick road - Close an order.
      *
-     * @author yansongda <me@yansongda.cn>
-     *
      * @param string|array $order
      */
     public function close($order): Collection;
 
     /**
      * Quick road - Refund an order.
-     *
-     * @author yansongda <me@yansongda.cn>
      */
     public function refund(array $order): Collection;
 
     /**
      * Verify a request.
-     *
-     * @author yansongda <me@yansongda.cn>
      *
      * @param array|ServerRequestInterface|null $contents
      */
@@ -69,8 +57,6 @@ interface ProviderInterface
 
     /**
      * Echo success to server.
-     *
-     * @author yansongda <me@yansongda.cn>
      */
     public function success(): ResponseInterface;
 }

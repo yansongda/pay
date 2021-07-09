@@ -26,8 +26,6 @@ class CallbackReceived extends Event
     /**
      * Bootstrap.
      *
-     * @author yansongda <me@yansongda.cn>
-     *
      * @param array|\Psr\Http\Message\ServerRequestInterface|null $contents
      */
     public function __construct(string $provider, $contents, ?array $params, ?Rocket $rocket)
