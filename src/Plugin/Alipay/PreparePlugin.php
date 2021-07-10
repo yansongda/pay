@@ -122,7 +122,7 @@ class PreparePlugin implements PluginInterface
     protected function formatCert(array $ssl): array
     {
         if (0 === strpos($ssl['serialNumber'], '0x')) {
-            $ssl['serialNumber'] = $this->hex2dec($ssl['serialNumber']);
+            $ssl['serialNumber'] = $this->hex2dec($ssl['serialNumberHex']);
         }
 
         return $ssl;
