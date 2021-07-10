@@ -22,6 +22,8 @@ v3 版与 v2 版在底层有很大的不同，基础架构做了重新的设计�
 
 欢迎 Star，欢迎 PR！
 
+hyperf 扩展包请 [传送至这里](https://github.com/yansongda/hyperf-pay)
+
 laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 
 yii 扩展包请 [传送至这里](https://github.com/guanguans/yii-pay)
