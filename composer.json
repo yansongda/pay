@@ -20,6 +20,11 @@
         "ext-simplexml":"*",
         "ext-libxml": "*",
         "ext-json": "*",
+        "psr/event-dispatcher": "^1.0",
+        "psr/log": "^1.1",
+        "psr/container": "^1.1 | ^2.0",
+        "psr/http-client": "^1.0",
+        "psr/http-message": "^1.0",
         "php-di/php-di": "~6.3.0",
         "yansongda/supports": "~3.1.0",
         "guzzlehttp/guzzle": "~7.3.0"

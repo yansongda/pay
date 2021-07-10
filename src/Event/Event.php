@@ -15,8 +15,6 @@ class Event
 
     /**
      * Bootstrap.
-     *
-     * @author yansongda <me@yansongda.cn>
      */
     public function __construct(?Rocket $rocket)
     {
