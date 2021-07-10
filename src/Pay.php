@@ -15,6 +15,8 @@ use Yansongda\Pay\Exception\ContainerDependencyException;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Provider\Alipay;
+use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\ConfigServiceProvider;
 use Yansongda\Pay\Service\EventServiceProvider;
@@ -22,6 +24,10 @@ use Yansongda\Pay\Service\HttpServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
 
+/**
+ * @method static Alipay alipay(array $config = [])
+ * @method static Wechat wechat(array $config = [])
+ */
 class Pay
 {
     /**
