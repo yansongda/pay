@@ -90,7 +90,7 @@ class PreparePlugin implements PluginInterface
         }
 
         $sn = '';
-        $exploded = explode("-----END CERTIFICATE-----", file_get_contents($path));
+        $exploded = explode('-----END CERTIFICATE-----', file_get_contents($path));
 
         foreach ($exploded as $cert) {
             if (empty($cert)) {
