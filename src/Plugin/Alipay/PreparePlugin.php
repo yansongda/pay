@@ -90,8 +90,14 @@ class PreparePlugin implements PluginInterface
         }
 
         $sn = '';
-        foreach (explode("\r\n\r\n", file_get_contents($path)) as $cert) {
-            $detail = $this->formatCert(openssl_x509_parse($cert));
+        $exploded = explode('-----END CERTIFICATE-----', file_get_contents($path));
+
+        foreach ($exploded as $cert) {
+            if (empty($cert)) {
+                continue;
+            }
+
+            $detail = $this->formatCert(openssl_x509_parse($cert.'-----END CERTIFICATE-----'));
 
             if ('sha1WithRSAEncryption' == $detail['signatureTypeLN'] || 'sha256WithRSAEncryption' == $detail['signatureTypeLN']) {
                 $sn .= $this->getCertSn($detail['issuer'], $detail['serialNumber']).'_';
