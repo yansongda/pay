@@ -67,7 +67,9 @@ abstract class GeneralPlugin implements PluginInterface
     protected function getHeaders(): array
     {
         return [
-            'Content-Type' => 'application/json',
+            'Accept' => 'application/json, text/plain, application/x-gzip',
+            'User-Agent' => 'yansongda/pay-v3.0.0',
+            'Content-Type' => 'application/json; charset=utf-8',
         ];
     }
 
