@@ -8,10 +8,11 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ ubuntu-latest ]
+        os: [ ubuntu-latest, windows-latest ]
         php-version:
           - 7.3
           - 7.4
+          - 8.0
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
