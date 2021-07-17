@@ -7,9 +7,7 @@ namespace Yansongda\Pay\Plugin\Wechat;
 use Closure;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Rocket;
@@ -17,10 +15,6 @@ use Yansongda\Supports\Collection;
 
 class CallbackPlugin implements PluginInterface
 {
-    protected const AUTH_TAG_LENGTH_BYTE = 16;
-
-    protected const KEY_LENGTH_BYTE = 32;
-
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
@@ -38,7 +32,7 @@ class CallbackPlugin implements PluginInterface
         verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());
 
         $body = json_decode($rocket->getDestination()->getBody()->getContents(), true);
-        $destination = $this->decrypt($body['resource'] ?? [], $rocket->getParams());
+        $destination = decrypt_wechat_resource($body['resource'] ?? [], $rocket->getParams());
 
         $rocket->setDirection(NoHttpRequestParser::class)
             ->setPayload($body)
@@ -63,58 +57,5 @@ class CallbackPlugin implements PluginInterface
         $rocket->setDestinationOrigin($request);
         $rocket->setDestination($request);
         $rocket->setParams($rocket->getParams()['params'] ?? []);
-    }
-
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     */
-    protected function decrypt(array $resource, array $params): array
-    {
-        $ciphertext = base64_decode($resource['ciphertext']);
-        $secret = get_wechat_config($params)->get('mch_secret_key');
-
-        if (strlen($ciphertext) <= self::AUTH_TAG_LENGTH_BYTE) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_REQUEST_PARAMS);
-        }
-
-        if (is_null($secret) || self::KEY_LENGTH_BYTE != strlen($secret)) {
-            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key]');
-        }
-
-        switch ($resource['algorithm'] ?? '') {
-            case 'AEAD_AES_256_GCM':
-                $resource['ciphertext'] = $this->decryptAes256Gcm($ciphertext, $secret, $resource['nonce'] ?? '', $resource['associated_data'] ?? '');
-                break;
-            default:
-                throw new InvalidResponseException(InvalidResponseException::INVALID_REQUEST_ENCRYPTED_METHOD);
-        }
-
-        return $resource;
-    }
-
-    /**
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     */
-    protected function decryptAes256Gcm(string $ciphertext, string $secret, string $nonce, string $associatedData): array
-    {
-        $decrypted = json_decode(openssl_decrypt(
-            substr($ciphertext, 0, -self::AUTH_TAG_LENGTH_BYTE),
-            'aes-256-gcm',
-            $secret,
-            OPENSSL_RAW_DATA,
-            $nonce,
-            substr($ciphertext, -self::AUTH_TAG_LENGTH_BYTE),
-            $associatedData
-        ), true);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_REQUEST_ENCRYPTED_DATA);
-        }
-
-        return $decrypted;
     }
 }

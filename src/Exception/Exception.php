@@ -79,7 +79,7 @@ class Exception extends \Exception
 
     public const RESPONSE_NONE = 5006;
 
-    public const INVALID_REQUEST_PARAMS = 5007;
+    public const INVALID_CIPHERTEXT_PARAMS = 5007;
 
     public const INVALID_REQUEST_ENCRYPTED_DATA = 5008;
 

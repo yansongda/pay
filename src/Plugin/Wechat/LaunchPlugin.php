@@ -19,6 +19,7 @@ class LaunchPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
