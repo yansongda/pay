@@ -224,6 +224,7 @@ class FunctionTest extends TestCase
 
         self::assertTrue(false !== strpos($result, '-----BEGIN CERTIFICATE-----'));
         self::assertTrue(Pay::get(ConfigInterface::class)->has('wechat.default.wechat_public_cert_path.45F59D4DABF31918AFCEC556D5D2C6E376675D57'));
+        self::assertIsArray(Pay::get(ConfigInterface::class)->get('wechat.default'));
     }
 
     public function testDecryptWechatResource()
