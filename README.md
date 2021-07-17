@@ -42,6 +42,7 @@ QQ交流群：690027516
 - 高度抽象的类，免去各种拼json与xml的痛苦
 - 文件结构清晰易理解，可以随心所欲添加本项目中没有的支付网关
 - 方法使用更优雅，不必再去研究那些奇怪的的方法名或者类名是做啥用的
+- 内置自动获取微信公共证书方法，再也不用再费劲去考虑第一次获取证书的的问题了
 - 符合 PSR2、PSR3、PSR4、PSR7、PSR11、PSR14 等各项标准，你可以各种方便的与你的框架集成
 
 ## 运行环境
@@ -203,8 +204,10 @@ class WechatController
                 'mch_secret_cert' => '',
                 // 商户公钥证书路径
                 'mch_public_cert_path' => '',
-                // 微信公钥证书路径
-                'wechat_public_cert_path' => '',
+                // 微信公钥证书路径, optional
+                'wechat_public_cert_path' => [
+                    '' => '',
+                ],
                 'mode' => Pay::MODE_SANDBOX,
             ]
         ],
