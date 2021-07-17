@@ -12,6 +12,7 @@ use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 class InvokePrepayPlugin implements PluginInterface
@@ -31,20 +32,13 @@ class InvokePrepayPlugin implements PluginInterface
         Logger::info('[wechat][InvokePrepayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $prepayId = $rocket->getDestination()->get('prepay_id');
-        $data = new Collection([
-            'appid' => $this->getAppid($rocket),
-            'timeStamp' => time().'',
-            'nonceStr' => Str::random(32),
-            'package' => 'prepay_id='.$prepayId,
-            'signType' => 'RSA',
-        ]);
-        $data->set('sign', $this->getSign($data, $rocket->getParams()));
+        $config = $this->getInvokeConfig($rocket, $prepayId);
 
         if (is_null($prepayId)) {
             throw new InvalidResponseException(InvalidResponseException::RESPONSE_MISSING_NECESSARY_PARAMS);
         }
 
-        $rocket->setDestination($this->transToResponse($data));
+        $rocket->setDestination($this->transToResponse($config));
 
         Logger::info('[wechat][InvokePrepayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -57,23 +51,44 @@ class InvokePrepayPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getSign(Collection $destination, array $params): string
+    protected function getSign(Collection $invokeConfig, array $params): string
     {
-        $contents = $destination->get('appid', '')."\n".
-            $destination->get('timeStamp', '')."\n".
-            $destination->get('nonceStr', '')."\n".
-            $destination->get('package', '')."\n";
+        $contents = $invokeConfig->get('appid', $invokeConfig->get('appId'))."\n".
+            $invokeConfig->get('timeStamp', '')."\n".
+            $invokeConfig->get('nonceStr', '')."\n".
+            $invokeConfig->get('package', '')."\n";
 
         return get_wechat_sign($params, $contents);
     }
 
-    protected function transToResponse(Collection $data): ResponseInterface
+    protected function transToResponse(Config $data): ResponseInterface
     {
         return new Response(
             200,
             ['Content-Type' => 'application/json'],
             $data->toJson()
         );
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Exception
+     */
+    protected function getInvokeConfig(Rocket $rocket, string $prepayId): Config
+    {
+        $config = new Config([
+            'appId' => $this->getAppid($rocket),
+            'timeStamp' => time().'',
+            'nonceStr' => Str::random(32),
+            'package' => 'prepay_id='.$prepayId,
+            'signType' => 'RSA',
+        ]);
+
+        $config->set('paySign', $this->getSign($config, $rocket->getParams()));
+
+        return $config;
     }
 
     /**

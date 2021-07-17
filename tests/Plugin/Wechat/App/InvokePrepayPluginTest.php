@@ -1,8 +1,8 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Common;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\App;
 
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokePrepayPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\App\InvokePrepayPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -17,8 +17,10 @@ class InvokePrepayPluginTest extends TestCase
 
         $contents = $result->getDestination()->getBody()->getContents();
 
-        self::assertStringContainsString('appId', $contents);
+        self::assertStringContainsString('appid', $contents);
+        self::assertStringContainsString('partnerid', $contents);
         self::assertStringContainsString('package', $contents);
-        self::assertStringContainsString('paySign', $contents);
+        self::assertStringContainsString('Sign=WXPay', $contents);
+        self::assertStringContainsString('sign', $contents);
     }
 }
