@@ -57,20 +57,11 @@ class LaunchPlugin implements PluginInterface
         verify_alipay_sign($rocket->getParams(), json_encode($response, JSON_UNESCAPED_UNICODE), base64_decode($sign));
     }
 
-    /**
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     */
     protected function getMethodResponse(Rocket $rocket): Collection
     {
-        $response = Collection::wrap(
+        return Collection::wrap(
             $rocket->getDestination()->get($this->getResponseKey($rocket))
         );
-
-        if (10000 != $response->get('code', 10000)) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_CODE, 'Invalid response code', $response->all());
-        }
-
-        return $response;
     }
 
     protected function getResponseKey(Rocket $rocket): string
