@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Client\ClientInterface;
 use Throwable;
 use Yansongda\Pay\Contract\HttpClientInterface;
@@ -104,7 +105,10 @@ abstract class AbstractProvider implements ProviderInterface
         try {
             $response = $http->sendRequest($rocket->getRadar());
 
-            $rocket->setDestination($response)->setDestinationOrigin($response);
+            $contents = $response->getBody()->getContents();
+
+            $rocket->setDestination($response->withBody(Utils::streamFor($contents)))
+                ->setDestinationOrigin($response->withBody(Utils::streamFor($contents)));
         } catch (Throwable $e) {
             Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
 

@@ -8,8 +8,6 @@ use Closure;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Pay;
-use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
 
@@ -58,9 +56,7 @@ abstract class GeneralPlugin implements PluginInterface
      */
     protected function getUrl(Rocket $rocket): string
     {
-        $config = get_wechat_config($rocket->getParams());
-
-        return Wechat::URL[$config->get('mode', Pay::MODE_NORMAL)].
+        return get_wechat_base_uri($rocket->getParams()).
             $this->getUri($rocket);
     }
 

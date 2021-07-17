@@ -24,7 +24,7 @@ class ArrayParser implements ParserInterface
         $result = json_decode($contents, true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new InvalidResponseException(InvalidResponseException::UNPACK_RESPONSE_ERROR, 'Unpack Response Error', [$contents]);
+            throw new InvalidResponseException(InvalidResponseException::UNPACK_RESPONSE_ERROR, 'Unpack Response Error', ['contents' => $contents, 'response' => $response]);
         }
 
         return $result;

@@ -76,7 +76,7 @@ class AbstractProviderTest extends TestCase
 
     public function testIgnite()
     {
-        $response = new Response();
+        $response = new Response(200, [], 'yansongda/pay');
         $rocket = new Rocket();
         $rocket->setRadar(new Request('get', ''));
 
@@ -88,7 +88,7 @@ class AbstractProviderTest extends TestCase
         $provider = new FooProviderStub();
         $result = $provider->ignite($rocket);
 
-        self::assertSame($response, $result->getDestination());
+        self::assertEquals('yansongda/pay', $result->getDestination()->getBody()->getContents());
     }
 
     public function testIgniteWrongHttpClient()
