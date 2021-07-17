@@ -15,6 +15,6 @@ class InvokePrepayPluginTest extends TestCase
 
         $result = (new InvokePrepayPlugin())->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertArrayHasKey('package', $result->getDestination()->all());
+        self::assertStringContainsString('package', $result->getDestination()->getBody()->getContents());
     }
 }
