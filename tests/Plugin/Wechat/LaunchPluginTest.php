@@ -2,10 +2,10 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
-use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Tests\TestCase;
 
 class LaunchPluginTest extends TestCase
 {

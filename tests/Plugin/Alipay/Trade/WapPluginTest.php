@@ -2,10 +2,10 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\Trade;
 
-use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Parser\ResponseParser;
 use Yansongda\Pay\Plugin\Alipay\Trade\WapPayPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Tests\TestCase;
 
 class WapPluginTest extends TestCase
 {

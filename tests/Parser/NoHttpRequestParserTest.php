@@ -3,8 +3,8 @@
 namespace Yansongda\Pay\Tests\Parser;
 
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
+use Yansongda\Pay\Tests\TestCase;
 
 class NoHttpRequestParserTest extends TestCase
 {

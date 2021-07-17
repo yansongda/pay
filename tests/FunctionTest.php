@@ -5,7 +5,6 @@ namespace Yansongda\Pay\Tests;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
-use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
@@ -15,21 +14,10 @@ use Yansongda\Pay\Parser\ResponseParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 class FunctionTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        Pay::clear();
-    }
-
-    protected function tearDown(): void
-    {
-        Pay::clear();
-    }
-
     public function testShouldDoHttpRequest()
     {
         $rocket = new Rocket();
@@ -48,9 +36,7 @@ class FunctionTest extends TestCase
 
     public function testGetAlipayConfig()
     {
-        $config1 = [];
-        Pay::config($config1);
-        self::assertEquals([], get_alipay_config([])->all());
+        self::assertArrayHasKey('app_id', get_alipay_config([])->all());
 
         Pay::clear();
 
@@ -82,15 +68,6 @@ class FunctionTest extends TestCase
 
     public function testVerifyAlipaySign()
     {
-        $config = [
-            'alipay' => [
-                'default' => [
-                    'alipay_public_cert_path' => __DIR__.'/Cert/alipayCertPublicKey_RSA2.crt'
-                ],
-            ]
-        ];
-        Pay::config($config);
-
         verify_alipay_sign([], json_encode([
             "code" => "10000",
             "msg" => "Success",
@@ -126,9 +103,7 @@ class FunctionTest extends TestCase
 
     public function testGetWechatConfig()
     {
-        $config1 = [];
-        Pay::config($config1);
-        self::assertEquals([], get_wechat_config([])->all());
+        self::assertArrayHasKey('mp_app_id', get_wechat_config([])->all());
 
         $config2 = [
             'wechat' => [
@@ -144,9 +119,6 @@ class FunctionTest extends TestCase
 
     public function testGetWechatBaseUri()
     {
-        $config1 = [];
-        Pay::config($config1);
-
         self::assertEquals(Wechat::URL[Pay::MODE_NORMAL], get_wechat_base_uri([]));
 
         $config2 = ['_force' => true, 'wechat' => [
@@ -159,19 +131,6 @@ class FunctionTest extends TestCase
 
     public function testGetWechatAuthorization()
     {
-        $config = [
-            'wechat' => [
-                'default' => [
-                    'mp_app_id' => 'wx55955316af4ef13',
-                    'mch_id' => '1600314069',
-                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E3',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
-                ]
-            ]
-        ];
-        Pay::config($config);
-
         $params = [
             'out_trade_no' => 1626493236,
             'description' => 'yansongda 测试 - 1626493236',
@@ -196,19 +155,6 @@ class FunctionTest extends TestCase
 
     public function testGetWechatSign()
     {
-        $config = [
-            'wechat' => [
-                'default' => [
-                    'mp_app_id' => 'wx55955316af4ef13',
-                    'mch_id' => '1600314069',
-                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E3',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
-                ]
-            ]
-        ];
-        Pay::config($config);
-
         $params = [
             'out_trade_no' => 1626493236,
             'description' => 'yansongda 测试 - 1626493236',
@@ -231,22 +177,6 @@ class FunctionTest extends TestCase
 
     public function testVerifyWechatSign()
     {
-        $config = [
-            'wechat' => [
-                'default' => [
-                    'mp_app_id' => 'wx55955316af4ef13',
-                    'mch_id' => '1600314069',
-                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E3',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
-                    'wechat_public_cert_path' => [
-                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
-                    ],
-                ]
-            ]
-        ];
-        Pay::config($config);
-
         $response = new Response(
             200,
             [
@@ -265,19 +195,6 @@ class FunctionTest extends TestCase
 
     public function testReloadWechatPublicCerts()
     {
-        $config = [
-            'wechat' => [
-                'default' => [
-                    'mp_app_id' => 'wx55955316af4ef13',
-                    'mch_id' => '1600314069',
-                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
-                ]
-            ]
-        ];
-        Pay::config($config);
-
         $response = new Response(
             200,
             [],
@@ -311,19 +228,6 @@ class FunctionTest extends TestCase
 
     public function testDecryptWechatResource()
     {
-        $config = [
-            'wechat' => [
-                'default' => [
-                    'mp_app_id' => 'wx55955316af4ef13',
-                    'mch_id' => '1600314069',
-                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
-                ]
-            ]
-        ];
-        Pay::config($config);
-
         $resource = [
             'algorithm' => 'AEAD_AES_256_GCM',
             'associated_data' => 'certificate',

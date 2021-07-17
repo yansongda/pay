@@ -28,23 +28,21 @@ class InvokePrepayPlugin implements PluginInterface
 
         Logger::info('[wechat][InvokePrepayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $prepayId = $rocket->getPayload()->get('prepay_id');
-
-        if (is_null($prepayId)) {
-            throw new InvalidResponseException(InvalidResponseException::RESPONSE_MISSING_NECESSARY_PARAMS);
-        }
-
-        $rocket->setPayload(new Collection([
+        $prepayId = $rocket->getDestination()->get('prepay_id');
+        $destination = new Collection([
             'appid' => $this->getAppid($rocket),
             'timeStamp' => time().'',
             'nonceStr' => Str::random(32),
             'package' => 'prepay_id='.$prepayId,
             'signType' => 'RSA',
-        ]));
-
-        $rocket->mergePayload([
-            'sign' => $this->getSign($rocket),
         ]);
+        $destination->set('sign', $this->getSign($destination, $rocket->getParams()));
+
+        if (is_null($prepayId)) {
+            throw new InvalidResponseException(InvalidResponseException::RESPONSE_MISSING_NECESSARY_PARAMS);
+        }
+
+        $rocket->setDestination($destination);
 
         Logger::info('[wechat][InvokePrepayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -57,16 +55,14 @@ class InvokePrepayPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getSign(Rocket $rocket): string
+    protected function getSign(Collection $destination, array $params): string
     {
-        $payload = $rocket->getPayload();
+        $contents = $destination->get('appid', '')."\n".
+            $destination->get('timeStamp', '')."\n".
+            $destination->get('nonceStr', '')."\n".
+            $destination->get('package', '')."\n";
 
-        $contents = $payload->get('appid', '').'\n'.
-            $payload->get('timeStamp', '').'\n'.
-            $payload->get('nonceStr', '').'\n'.
-            $payload->get('package', '').'\n';
-
-        return get_wechat_sign($rocket->getParams(), $contents);
+        return get_wechat_sign($params, $contents);
     }
 
     /**

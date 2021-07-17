@@ -2,10 +2,10 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\Fund;
 
-use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Parser\ResponseParser;
 use Yansongda\Pay\Plugin\Alipay\Fund\AuthOrderFreezePlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Tests\TestCase;
 
 class AuthOrderFreezePluginTest extends TestCase
 {

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
 use GuzzleHttp\Psr7\ServerRequest;
-use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Tests\TestCase;
 
 class CallbackPluginTest extends TestCase
 {

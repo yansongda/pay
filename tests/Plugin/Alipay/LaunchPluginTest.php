@@ -2,33 +2,15 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
-use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
 class LaunchPluginTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $config = [
-            'alipay' => [
-                'default' => [
-                    'alipay_public_cert_path' => __DIR__ . '/../../Cert/alipayCertPublicKey_RSA2.crt'
-                ],
-            ]
-        ];
-        Pay::config($config);
-    }
-
-    protected function tearDown(): void
-    {
-        Pay::clear();
-    }
-
     public function testNoHttpRequest()
     {
         $rocket = new Rocket();

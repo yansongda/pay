@@ -7,7 +7,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
@@ -16,29 +15,11 @@ use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\AbstractProvider;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
 class AbstractProviderTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        $config = [
-            'alipay' => [
-                'default' => [
-                    'app_public_cert_path' => __DIR__ . '/../Stubs/cert/appCertPublicKey_2016082000295641.crt',
-                    'alipay_public_cert_path' => __DIR__ . '/../Stubs/cert/alipayCertPublicKey_RSA2.crt',
-                    'alipay_root_cert_path' => __DIR__ . '/../Stubs/cert/alipayRootCert.crt',
-                ],
-            ]
-        ];
-        Pay::config($config);
-    }
-
-    protected function tearDown(): void
-    {
-        Pay::clear();
-    }
-
     public function testVerifyObjectPlugin()
     {
         $plugin = [new FooPlugin()];

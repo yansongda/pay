@@ -175,7 +175,7 @@ if (!function_exists('get_wechat_sign')) {
         $privateKey = get_wechat_config($params)->get('mch_secret_cert');
 
         if (is_null($privateKey)) {
-            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [app_secret_cert]');
+            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_cert]');
         }
 
         $privateKey = get_public_or_private_cert($privateKey);

@@ -3,9 +3,9 @@
 namespace Yansongda\Pay\Tests\Parser;
 
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Parser\ArrayParser;
+use Yansongda\Pay\Tests\TestCase;
 
 class ArrayParserTest extends TestCase
 {

@@ -3,10 +3,10 @@
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
 use GuzzleHttp\Psr7\Request;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Plugin\Alipay\HtmlResponsePlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
 class HtmlResponsePluginTest extends TestCase

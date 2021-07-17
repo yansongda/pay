@@ -4,7 +4,6 @@ namespace Yansongda\Pay\Tests;
 
 use DI\Container;
 use GuzzleHttp\Client;
-use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Yansongda\Pay\Contract\ConfigInterface;

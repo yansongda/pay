@@ -3,12 +3,12 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
 use GuzzleHttp\Psr7\Uri;
-use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\Stubs\Plugin\WechatGeneralPluginStub;
+use Yansongda\Pay\Tests\TestCase;
 
 class GeneralPluginTest extends TestCase
 {

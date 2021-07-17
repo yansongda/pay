@@ -2,9 +2,9 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
-use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\Stubs\Plugin\AlipayGeneralPluginStub;
+use Yansongda\Pay\Tests\TestCase;
 
 class GeneralPayPluginTest extends TestCase
 {

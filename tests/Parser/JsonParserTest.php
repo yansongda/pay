@@ -3,9 +3,9 @@
 namespace Yansongda\Pay\Tests\Parser;
 
 use GuzzleHttp\Psr7\Response;
-use PHPUnit\Framework\TestCase;
 use Yansongda\Pay\Parser\JsonParser;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Tests\TestCase;
 
 class JsonParserTest extends TestCase
 {
