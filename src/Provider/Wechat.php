@@ -112,6 +112,8 @@ class Wechat extends AbstractProvider
     }
 
     /**
+     * @param array|\Psr\Http\Message\ServerRequestInterface|null $contents
+     *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
