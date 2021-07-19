@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Contract;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Supports\Collection;
 
 interface ProviderInterface
@@ -51,7 +50,7 @@ interface ProviderInterface
     /**
      * Verify a request.
      *
-     * @param array|ServerRequestInterface|null $contents
+     * @param array|\Psr\Http\Message\ServerRequestInterface|null $contents
      */
     public function callback($contents = null, ?array $params = null): Collection;
 

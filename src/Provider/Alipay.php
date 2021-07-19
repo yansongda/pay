@@ -117,7 +117,7 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @param array|ServerRequestInterface|null $contents
+     * @param array|\Psr\Http\Message\ServerRequestInterface|null $contents
      *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
