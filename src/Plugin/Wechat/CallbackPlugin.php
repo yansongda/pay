@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat;
 
 use Closure;
+use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
@@ -32,11 +33,12 @@ class CallbackPlugin implements PluginInterface
         verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());
 
         $body = json_decode($rocket->getDestination()->getBody()->getContents(), true);
-        $destination = decrypt_wechat_resource($body['resource'] ?? [], $rocket->getParams());
 
-        $rocket->setDirection(NoHttpRequestParser::class)
-            ->setPayload($body)
-            ->setDestination(new Collection($destination));
+        $rocket->setDirection(NoHttpRequestParser::class)->setPayload($body);
+
+        $body['resource'] = decrypt_wechat_resource($body['resource'] ?? [], $rocket->getParams());
+
+        $rocket->setDestination(new Collection($body));
 
         Logger::info('[wechat][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -54,8 +56,10 @@ class CallbackPlugin implements PluginInterface
             throw new InvalidParamsException(InvalidParamsException::REQUEST_NULL_ERROR);
         }
 
-        $rocket->setDestinationOrigin($request);
-        $rocket->setDestination($request);
-        $rocket->setParams($rocket->getParams()['params'] ?? []);
+        $contents = $request->getBody()->getContents();
+
+        $rocket->setDestination($request->withBody(Utils::streamFor($contents)))
+            ->setDestinationOrigin($request->withBody(Utils::streamFor($contents)))
+            ->setParams($rocket->getParams()['params'] ?? []);
     }
 }
