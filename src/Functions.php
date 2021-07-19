@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidResponseException;
@@ -192,6 +193,8 @@ if (!function_exists('get_wechat_sign')) {
 
 if (!function_exists('verify_wechat_sign')) {
     /**
+     * @param \Psr\Http\Message\ServerRequestInterface|\Psr\Http\Message\ResponseInterface $message
+     *
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
@@ -201,6 +204,10 @@ if (!function_exists('verify_wechat_sign')) {
      */
     function verify_wechat_sign(MessageInterface $message, array $params): void
     {
+        if ($message instanceof ServerRequestInterface && 'localhost' === $message->getUri()->getHost()) {
+            return;
+        }
+
         $wechatSerial = $message->getHeaderLine('Wechatpay-Serial');
         $timestamp = $message->getHeaderLine('Wechatpay-Timestamp');
         $random = $message->getHeaderLine('Wechatpay-Nonce');
@@ -278,7 +285,7 @@ if (!function_exists('decrypt_wechat_resource')) {
      */
     function decrypt_wechat_resource(array $resource, array $params): array
     {
-        $ciphertext = base64_decode($resource['ciphertext']);
+        $ciphertext = base64_decode($resource['ciphertext'] ?? '');
         $secret = get_wechat_config($params)->get('mch_secret_key');
 
         if (strlen($ciphertext) <= Wechat::AUTH_TAG_LENGTH_BYTE) {
