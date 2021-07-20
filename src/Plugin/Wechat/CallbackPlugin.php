@@ -28,7 +28,7 @@ class CallbackPlugin implements PluginInterface
     {
         Logger::info('[wechat][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $this->assertRequestAndParams($rocket);
+        $this->formatRequestAndParams($rocket);
 
         /* @phpstan-ignore-next-line */
         verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());
@@ -49,7 +49,7 @@ class CallbackPlugin implements PluginInterface
     /**
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      */
-    protected function assertRequestAndParams(Rocket $rocket): void
+    protected function formatRequestAndParams(Rocket $rocket): void
     {
         $request = $rocket->getParams()['request'] ?? null;
 

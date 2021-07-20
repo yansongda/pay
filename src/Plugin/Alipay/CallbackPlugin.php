@@ -11,6 +11,7 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Str;
 
 class CallbackPlugin implements PluginInterface
 {
@@ -25,7 +26,7 @@ class CallbackPlugin implements PluginInterface
     {
         Logger::info('[alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $this->filterPayload($rocket);
+        $this->formatPayload($rocket);
 
         if (!($rocket->getParams()['sign'] ?? false)) {
             throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', $rocket->getParams());
@@ -41,10 +42,10 @@ class CallbackPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function filterPayload(Rocket $rocket): void
+    protected function formatPayload(Rocket $rocket): void
     {
         $payload = (new Collection($rocket->getParams()))->filter(function ($v, $k) {
-            return '' !== $v && !is_null($v) && 'sign' != $k && 'sign_type' != $k;
+            return '' !== $v && !is_null($v) && 'sign' != $k && 'sign_type' != $k && !Str::startsWith($k, '_');
         });
 
         $rocket->setPayload($payload);
