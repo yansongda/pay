@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 
 use Closure;
-use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
@@ -38,7 +36,7 @@ class InvokePrepayPlugin implements PluginInterface
             throw new InvalidResponseException(InvalidResponseException::RESPONSE_MISSING_NECESSARY_PARAMS);
         }
 
-        $rocket->setDestination($this->transToResponse($config));
+        $rocket->setDestination($config);
 
         Logger::info('[wechat][InvokePrepayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -59,15 +57,6 @@ class InvokePrepayPlugin implements PluginInterface
             $invokeConfig->get('package', '')."\n";
 
         return get_wechat_sign($params, $contents);
-    }
-
-    protected function transToResponse(Config $data): ResponseInterface
-    {
-        return new Response(
-            200,
-            ['Content-Type' => 'application/json'],
-            $data->toJson()
-        );
     }
 
     /**

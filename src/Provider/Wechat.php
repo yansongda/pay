@@ -155,11 +155,11 @@ class Wechat extends AbstractProvider
     protected function getCallbackParams($contents = null): ServerRequestInterface
     {
         if (is_array($contents) && isset($contents['body']) && isset($contents['headers'])) {
-            return new ServerRequest('POST', 'localhost', $contents['headers'], $contents['body']);
+            return new ServerRequest('POST', 'http://localhost', $contents['headers'], $contents['body']);
         }
 
         if (is_array($contents)) {
-            return new ServerRequest('POST', 'localhost', [], json_encode($contents));
+            return new ServerRequest('POST', 'http://localhost', [], json_encode($contents));
         }
 
         if ($contents instanceof ServerRequestInterface) {

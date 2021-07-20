@@ -4,6 +4,7 @@ namespace Yansongda\Pay\Tests;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
@@ -187,9 +188,11 @@ class FunctionTest extends TestCase
             ],
             json_encode(['h5_url' => 'https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx16220223998099f898c5b24eed5c320000&package=4049184564'], JSON_UNESCAPED_SLASHES),
         );
-
         verify_wechat_sign($response, []);
+        self::assertTrue(true);
 
+        $serverRequest = new ServerRequest('POST', 'http://localhost');
+        verify_wechat_sign($serverRequest, []);
         self::assertTrue(true);
     }
 

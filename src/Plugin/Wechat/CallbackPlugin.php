@@ -30,6 +30,7 @@ class CallbackPlugin implements PluginInterface
 
         $this->assertRequestAndParams($rocket);
 
+        /* @phpstan-ignore-next-line */
         verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());
 
         $body = json_decode($rocket->getDestination()->getBody()->getContents(), true);
