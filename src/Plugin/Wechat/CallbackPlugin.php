@@ -35,7 +35,7 @@ class CallbackPlugin implements PluginInterface
 
         $body = json_decode($rocket->getDestination()->getBody()->getContents(), true);
 
-        $rocket->setDirection(NoHttpRequestParser::class)->setPayload($body);
+        $rocket->setDirection(NoHttpRequestParser::class)->setPayload(new Collection($body));
 
         $body['resource'] = decrypt_wechat_resource($body['resource'] ?? [], $rocket->getParams());
 
