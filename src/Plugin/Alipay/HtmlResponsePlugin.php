@@ -16,10 +16,10 @@ class HtmlResponsePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][HtmlResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
-
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
+
+        Logger::info('[alipay][HtmlResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $radar = $rocket->getRadar();
 
