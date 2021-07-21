@@ -18,10 +18,15 @@ class InvalidResponseException extends Exception
      */
     public $response = [];
 
+    /**
+     * Bootstrap.
+     *
+     * @param mixed $extra
+     */
     public function __construct(
         int $code = self::RESPONSE_ERROR,
         string $message = 'Provider response Error',
-        array $extra = [],
+        $extra = [],
         ?Throwable $exception = null,
         Throwable $previous = null)
     {
