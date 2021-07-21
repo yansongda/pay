@@ -91,7 +91,7 @@ class FunctionTest extends TestCase
         $config1 = [
             'alipay' => [
                 'default' => [
-                    // 'alipay_public_cert_path' => __DIR__.'/Cert/alipayCertPublicKey_RSA2.crt'
+                    'alipay_public_cert_path' => ''
                 ],
             ]
         ];
@@ -174,6 +174,20 @@ class FunctionTest extends TestCase
             'KzIgMgiop3nQJNdBVR2Xah/JUwVBLDFFajyXPiSN8b8YAYEA4FuWfaCgFJ52+WFed+PhOYWx/ZPih4RaEuuSdYB8eZwYUx7RZGMQZk0bKCctAjjPuf4pJN+f/WsXKjPIy3diqF5x7gyxwSCaKWP4/KjsHNqgQpiC8q1uC5xmElzuhzSwj88LIoLtkAuSmtUVvdAt0Nz41ECHZgHWSGR32TfBo902r8afdaVKkFde8IoqcEJJcp6sMxdDO5l9R5KEWxrJ1SjsXVrb0IPH8Nj7e6hfhq7pucxojPpzsC+ZWAYvufZkAQx3kTiFmY87T+QhkP9FesOfWvkIRL4E6MP6ug==',
             get_wechat_sign($params, $contents)
         );
+
+        // test config error
+        $config1 = [
+            'wechat' => [
+                'default' => [
+                    'mch_secret_cert' => ''
+                ],
+            ]
+        ];
+        Pay::config(array_merge($config1, ['_force' => true]));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(InvalidConfigException::WECHAT_CONFIG_ERROR);
+        get_wechat_sign([], '', '');
     }
 
     public function testVerifyWechatSign()

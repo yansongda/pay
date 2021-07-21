@@ -83,7 +83,7 @@ if (!function_exists('verify_alipay_sign')) {
     {
         $public = get_alipay_config($params)->get('alipay_public_cert_path');
 
-        if (is_null($public)) {
+        if (empty($public)) {
             throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_public_cert_path]');
         }
 
@@ -175,7 +175,7 @@ if (!function_exists('get_wechat_sign')) {
     {
         $privateKey = get_wechat_config($params)->get('mch_secret_cert');
 
-        if (is_null($privateKey)) {
+        if (empty($privateKey)) {
             throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_cert]');
         }
 
