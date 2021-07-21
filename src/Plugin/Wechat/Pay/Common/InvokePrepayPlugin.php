@@ -30,11 +30,14 @@ class InvokePrepayPlugin implements PluginInterface
         Logger::info('[wechat][InvokePrepayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $prepayId = $rocket->getDestination()->get('prepay_id');
-        $config = $this->getInvokeConfig($rocket, $prepayId);
 
         if (is_null($prepayId)) {
-            throw new InvalidResponseException(InvalidResponseException::RESPONSE_MISSING_NECESSARY_PARAMS);
+            Logger::error('[wechat][InvokePrepayPlugin] 预下单失败：响应缺少 prepay_id 参数', $rocket->getDestination()->all());
+
+            throw new InvalidResponseException(InvalidResponseException::RESPONSE_MISSING_NECESSARY_PARAMS, 'Prepay Response Error: Missing PrepayId', $rocket->getDestination()->all());
         }
+
+        $config = $this->getInvokeConfig($rocket, $prepayId);
 
         $rocket->setDestination($config);
 

@@ -88,14 +88,16 @@ class Exception extends \Exception
     /**
      * raw.
      *
-     * @var array
+     * @var mixed
      */
-    public $extra = [];
+    public $extra = null;
 
     /**
      * Bootstrap.
+     *
+     * @param mixed $extra
      */
-    public function __construct(string $message = 'Unknown Error', int $code = self::UNKNOWN_ERROR, array $extra = [], Throwable $previous = null)
+    public function __construct(string $message = 'Unknown Error', int $code = self::UNKNOWN_ERROR, $extra = null, Throwable $previous = null)
     {
         $this->extra = $extra;
 

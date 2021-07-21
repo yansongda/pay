@@ -11,8 +11,10 @@ class ServiceNotFoundException extends Exception implements NotFoundExceptionInt
 {
     /**
      * Bootstrap.
+     *
+     * @param mixed $extra
      */
-    public function __construct(string $message = 'Service Not Found', int $code = self::SERVICE_NOT_FOUND_ERROR, array $extra = [], Throwable $previous = null)
+    public function __construct(string $message = 'Service Not Found', int $code = self::SERVICE_NOT_FOUND_ERROR, $extra = null, Throwable $previous = null)
     {
         parent::__construct($message, $code, $extra, $previous);
     }
