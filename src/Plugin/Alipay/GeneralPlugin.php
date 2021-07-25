@@ -15,19 +15,19 @@ abstract class GeneralPlugin implements PluginInterface
     {
         Logger::info('[alipay][GeneralPlugin] 通用插件开始装载', ['rocket' => $rocket]);
 
+        $this->doSomethingBefore($rocket);
+
         $rocket->mergePayload([
             'method' => $this->getMethod(),
             'biz_content' => $rocket->getParams(),
         ]);
-
-        $this->doSomething($rocket);
 
         Logger::info('[alipay][GeneralPlugin] 通用插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
 
-    protected function doSomething(Rocket $rocket): void
+    protected function doSomethingBefore(Rocket $rocket): void
     {
     }
 

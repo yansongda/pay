@@ -74,6 +74,13 @@ class Rocket implements JsonSerializableInterface, SerializableInterface, ArrayA
         return $this;
     }
 
+    public function mergeParams(array $params): Rocket
+    {
+        $this->params = array_merge($this->params, $params);
+
+        return $this;
+    }
+
     public function getPayload(): ?Collection
     {
         return $this->payload;

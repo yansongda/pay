@@ -18,8 +18,6 @@ class ParserPluginTest extends TestCase
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(InvalidConfigException::INVALID_PACKER);
 
-        Pay::config([]);
-
         $rocket = new Rocket();
         $rocket->setDirection(FooPackerStub::class);
 
@@ -29,7 +27,6 @@ class ParserPluginTest extends TestCase
 
     public function testPackerDefault()
     {
-        Pay::config([]);
         Pay::set(ParserInterface::class, NoHttpRequestParser::class);
 
         $rocket = new Rocket();
@@ -42,7 +39,6 @@ class ParserPluginTest extends TestCase
 
     public function testPackerObject()
     {
-        Pay::config([]);
         Pay::set(ParserInterface::class, new NoHttpRequestParser());
 
         $rocket = new Rocket();

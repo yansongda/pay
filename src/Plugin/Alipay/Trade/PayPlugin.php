@@ -8,12 +8,22 @@ use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Traits\SupportServiceProviderTrait;
 
 class PayPlugin implements PluginInterface
 {
+    use SupportServiceProviderTrait;
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::info('[alipay][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
+
+        $this->loadServiceProvider($rocket);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.pay',

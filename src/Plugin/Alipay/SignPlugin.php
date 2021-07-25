@@ -23,7 +23,7 @@ class SignPlugin implements PluginInterface
     {
         Logger::info('[alipay][SignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $this->filterPayload($rocket);
+        $this->formatPayload($rocket);
 
         $sign = $this->getSign($rocket);
 
@@ -34,7 +34,7 @@ class SignPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function filterPayload(Rocket $rocket): void
+    protected function formatPayload(Rocket $rocket): void
     {
         $payload = $rocket->getPayload()->filter(function ($v, $k) {
             return '' !== $v && !is_null($v) && 'sign' != $k;

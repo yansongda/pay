@@ -41,18 +41,46 @@ class PreparePlugin implements PluginInterface
             'app_id' => get_alipay_config($params)->get('app_id', ''),
             'method' => '',
             'format' => 'JSON',
-            'return_url' => get_alipay_config($params)->get('return_url', ''),
+            'return_url' => $this->getReturnUrl($params),
             'charset' => 'utf-8',
             'sign_type' => 'RSA2',
             'sign' => '',
             'timestamp' => date('Y-m-d H:i:s'),
             'version' => '1.0',
-            'notify_url' => get_alipay_config($params)->get('notify_url', ''),
+            'notify_url' => $this->getNotifyUrl($params),
             'app_auth_token' => '',
             'app_cert_sn' => $this->getAppCertSn($params),
             'alipay_root_cert_sn' => $this->getAlipayRootCertSn($params),
             'biz_content' => [],
         ];
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getReturnUrl(array $params): string
+    {
+        if (!empty($params['_return_url'])) {
+            return $params['_return_url'];
+        }
+
+        return get_alipay_config($params)->get('return_url', '');
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getNotifyUrl(array $params): string
+    {
+        if (!empty($params['_notify_url'])) {
+            return $params['_notify_url'];
+        }
+
+        return get_alipay_config($params)->get('notify_url', '');
     }
 
     /**
