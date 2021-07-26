@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
+use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\LoggerInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 
@@ -28,7 +29,8 @@ class Logger
      */
     public static function __callStatic(string $method, array $args): void
     {
-        if (!Pay::hasContainer() || !Pay::has(LoggerInterface::class)) {
+        if (!Pay::hasContainer() || !Pay::has(LoggerInterface::class) ||
+            false === Pay::get(ConfigInterface::class)->get('logger.enable', false)) {
             return;
         }
 

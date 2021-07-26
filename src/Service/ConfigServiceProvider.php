@@ -15,8 +15,8 @@ class ConfigServiceProvider implements ServiceProviderInterface
      * @var array
      */
     private $config = [
-        'log' => [
-            'enable' => true,
+        'logger' => [
+            'enable' => false,
             'file' => null,
             'identify' => 'yansongda.pay',
             'level' => 'debug',
