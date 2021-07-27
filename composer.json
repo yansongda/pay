@@ -1,6 +1,6 @@
 {
     "name": "yansongda/pay",
-    "description": "专注 Alipay 和 WeChat 的支付扩展包",
+    "description": "可能是我用过的最优雅的 Alipay 和 WeChat 的支付 SDK 扩展包了",
     "keywords": ["alipay", "wechat", "pay"],
     "type": "library",
     "support": {
