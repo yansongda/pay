@@ -3,6 +3,7 @@
     "description": "可能是我用过的最优雅的 Alipay 和 WeChat 的支付 SDK 扩展包了",
     "keywords": ["alipay", "wechat", "pay"],
     "type": "library",
+    "license": "MIT",
     "support": {
         "issues": "https://github.com/yansongda/pay/issues",
         "source": "https://github.com/yansongda/pay",
@@ -58,5 +59,9 @@
         "cs-fix": "php-cs-fixer fix --dry-run --diff 1>&2",
         "analyse": "phpstan analyse --memory-limit 300M -l 5 -c phpstan.neon ./src"
     },
-    "license": "MIT"
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0-dev"
+        }
+    }
 }
