@@ -45,7 +45,7 @@ class SignPlugin implements PluginInterface
         }, ARRAY_FILTER_USE_BOTH);
 
         $rocket->setPayload(
-            $payload->merge(['biz_content' => json_encode($contents, JSON_UNESCAPED_UNICODE)])
+            $payload->merge(['biz_content' => json_encode($contents)])
         );
     }
 
