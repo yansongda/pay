@@ -125,7 +125,13 @@ class PreparePlugin implements PluginInterface
                 continue;
             }
 
-            $detail = $this->formatCert(openssl_x509_parse($cert.'-----END CERTIFICATE-----'));
+            $ssl = openssl_x509_parse($cert . '-----END CERTIFICATE-----');
+
+            if (false === $ssl) {
+                throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Invalid alipay_root_cert');
+            }
+
+            $detail = $this->formatCert($ssl);
 
             if ('sha1WithRSAEncryption' == $detail['signatureTypeLN'] || 'sha256WithRSAEncryption' == $detail['signatureTypeLN']) {
                 $sn .= $this->getCertSn($detail['issuer'], $detail['serialNumber']).'_';
