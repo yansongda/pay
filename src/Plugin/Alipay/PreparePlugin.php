@@ -125,7 +125,7 @@ class PreparePlugin implements PluginInterface
                 continue;
             }
 
-            $ssl = openssl_x509_parse($cert . '-----END CERTIFICATE-----');
+            $ssl = openssl_x509_parse($cert.'-----END CERTIFICATE-----');
 
             if (false === $ssl) {
                 throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Invalid alipay_root_cert');
