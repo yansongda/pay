@@ -121,7 +121,7 @@ class PreparePlugin implements PluginInterface
         $exploded = explode('-----END CERTIFICATE-----', file_get_contents($path));
 
         foreach ($exploded as $cert) {
-            if (empty($cert)) {
+            if (empty(trim($cert))) {
                 continue;
             }
 
