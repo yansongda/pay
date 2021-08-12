@@ -9,8 +9,6 @@ use Yansongda\Pay\Rocket;
 class InvokePrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokePrepayPlugin
 {
     /**
-     * @param Rocket $rocket
-     * @return string
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
