@@ -22,6 +22,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                 'default' => [
                     'mp_app_id' => 'wx55955316af4ef13',
                     'mch_id' => '1600314069',
+                    'mini_app_id' => 'wx55955316af4ef14',
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
                     'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
                     'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
