@@ -18,6 +18,7 @@ class InvokePrepayPluginTest extends TestCase
         $contents = $result->getDestination();
 
         self::assertArrayHasKey('appId', $contents->all());
+        self::assertEquals('wx55955316af4ef14', $contents->get('appId'));
         self::assertArrayHasKey('nonceStr', $contents->all());
         self::assertArrayHasKey('package', $contents->all());
         self::assertArrayHasKey('signType', $contents->all());
