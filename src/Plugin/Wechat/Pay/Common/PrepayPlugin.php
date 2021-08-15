@@ -12,7 +12,9 @@ class PrepayPlugin extends GeneralPlugin
 {
     protected function getUri(Rocket $rocket): string
     {
-        return 'v3/pay/transactions/jsapi';
+        return $this->isServicePartnerMode(get_wechat_config($rocket->getParams())) 
+                ? 'v3/pay/partner/transactions/jsapi' 
+                : 'v3/pay/transactions/jsapi';
     }
 
     /**
@@ -35,6 +37,13 @@ class PrepayPlugin extends GeneralPlugin
 
     protected function getWechatId(Config $config): array
     {
+        if ($this->isServicePartnerMode($config)) {
+            return [
+                'sp_appid' => $config->get('mp_app_id', ''),
+                'sp_mchid' => $config->get('mch_id', ''),
+            ];
+        }
+        
         return [
             'appid' => $config->get('mp_app_id', ''),
             'mchid' => $config->get('mch_id', ''),

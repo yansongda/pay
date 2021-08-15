@@ -22,10 +22,14 @@ class ClosePlugin extends GeneralPlugin
         if (is_null($payload->get('out_trade_no'))) {
             throw new InvalidParamsException(InvalidParamsException::MISSING_NECESSARY_PARAMS);
         }
+        
+        //服务商模式-接口uri及参数
+        $baseUriPath = 'v3/pay/transactions/out-trade-no/';
+        if ($this->isServicePartnerMode(get_wechat_config($rocket->getParams()))) {
+            $baseUriPath = 'v3/pay/partner/transactions/out-trade-no/';
+        }
 
-        return 'v3/pay/transactions/out-trade-no/'.
-            $payload->get('out_trade_no').
-            '/close';
+        return $baseUriPath . $payload->get('out_trade_no'). '/close';
     }
 
     /**
@@ -39,8 +43,18 @@ class ClosePlugin extends GeneralPlugin
 
         $config = get_wechat_config($rocket->getParams());
 
-        $rocket->setPayload(new Collection([
-            'mchid' => $config->get('mch_id', ''),
-        ]));
+        //服务商模式-body参数
+        $body = [ 'mchid' => $config->get('mch_id', '') ];
+        if ($this->isServicePartnerMode($config)) {
+            //子商户支持配置文件定义和传参
+            $payload = $rocket->getPayload();
+            $subMchid = $config->get('sub_mchid', '');
+            $body = [
+                'sp_mchid' => $config->get('mch_id', ''),
+                'sub_mchid' => !empty($subMchid) ? $subMchid : $payload->get('sub_mchid', '')
+            ];
+        }
+
+        $rocket->setPayload(new Collection($body));
     }
 }

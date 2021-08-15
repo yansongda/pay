@@ -8,6 +8,7 @@ use Closure;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
 
@@ -67,6 +68,18 @@ abstract class GeneralPlugin implements PluginInterface
             'User-Agent' => 'yansongda/pay-v3.0.0',
             'Content-Type' => 'application/json; charset=utf-8',
         ];
+    }
+
+    /**
+     * 判断是否是服务商模式
+     */
+    protected function isServicePartnerMode($config)
+    {
+        //服务商自收款模式
+        if(isset($config['mode']) && $config['mode'] == Pay::MODE_SERVICE) {
+            return true; 
+        }
+        return false;
     }
 
     abstract protected function doSomething(Rocket $rocket): void;
