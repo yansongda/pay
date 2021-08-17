@@ -4,13 +4,12 @@
 
 <p align="center">
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yansongda/pay/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yansongda/pay/?branch=master)
-[![Linter Status](https://github.com/yansongda/pay/workflows/Linter/badge.svg)](https://github.com/yansongda/pay/actions)
-[![Tester Status](https://github.com/yansongda/pay/workflows/Tester/badge.svg)](https://github.com/yansongda/pay/actions)
-[![Latest Stable Version](https://poser.pugx.org/yansongda/pay/v/stable)](https://packagist.org/packages/yansongda/pay)
-[![Total Downloads](https://poser.pugx.org/yansongda/pay/downloads)](https://packagist.org/packages/yansongda/pay)
-[![License](https://poser.pugx.org/yansongda/pay/license)](https://packagist.org/packages/yansongda/pay)
-
+<a href="https://scrutinizer-ci.com/g/yansongda/pay/?branch=master"><img src="https://scrutinizer-ci.com/g/yansongda/pay/badges/quality-score.png?b=master" alt="scrutinizer"></a>
+<a href="https://github.com/yansongda/pay/actions"><img src="https://github.com/yansongda/pay/workflows/Linter/badge.svg" alt="Linter Status"></a>
+<a href="https://github.com/yansongda/pay/actions"><img src="https://github.com/yansongda/pay/workflows/Tester/badge.svg" alt="Tester Status"></a>
+<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/v/stable" alt="Stable Version"></a>
+<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/downloads" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/yansongda/pay"><img src="https://poser.pugx.org/yansongda/pay/license" alt="License"></a>
 </p>
 
 ## 前言
