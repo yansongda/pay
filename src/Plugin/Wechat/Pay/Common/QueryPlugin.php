@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
@@ -33,7 +34,7 @@ class QueryPlugin extends GeneralPlugin
                 '?mchid='.$config->get('mch_id', '');
         }
 
-        throw new InvalidParamsException(InvalidParamsException::MISSING_NECESSARY_PARAMS);
+        throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
     }
 
     protected function getMethod(): string

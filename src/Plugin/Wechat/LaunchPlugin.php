@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Wechat;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
@@ -49,7 +50,7 @@ class LaunchPlugin implements PluginInterface
         $code = $response->get('code');
 
         if (!is_null($code) && 0 != $code) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_CODE);
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_CODE);
         }
 
         return $response;

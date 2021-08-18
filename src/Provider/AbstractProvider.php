@@ -12,6 +12,7 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Event;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
@@ -34,7 +35,7 @@ abstract class AbstractProvider implements ProviderInterface
     public function call(string $plugin, array $params = [])
     {
         if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException(InvalidParamsException::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
+            throw new InvalidParamsException(Exception::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
         }
 
         /* @var ShortcutInterface $money */
@@ -95,7 +96,7 @@ abstract class AbstractProvider implements ProviderInterface
         $http = Pay::get(HttpClientInterface::class);
 
         if (!($http instanceof ClientInterface)) {
-            throw new InvalidConfigException(InvalidConfigException::HTTP_CLIENT_CONFIG_ERROR);
+            throw new InvalidConfigException(Exception::HTTP_CLIENT_CONFIG_ERROR);
         }
 
         Logger::info('[AbstractProvider] 准备请求支付服务商 API', $rocket->toArray());
@@ -112,7 +113,7 @@ abstract class AbstractProvider implements ProviderInterface
         } catch (Throwable $e) {
             Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
 
-            throw new InvalidResponseException(InvalidResponseException::REQUEST_RESPONSE_ERROR, $e->getMessage(), [], $e);
+            throw new InvalidResponseException(Exception::REQUEST_RESPONSE_ERROR, $e->getMessage(), [], $e);
         }
 
         Logger::info('[AbstractProvider] 请求支付服务商 API 成功', ['response' => $response, 'rocket' => $rocket->toArray()]);
@@ -140,7 +141,7 @@ abstract class AbstractProvider implements ProviderInterface
                 continue;
             }
 
-            throw new InvalidParamsException(InvalidParamsException::PLUGIN_ERROR, "[$plugin] is not incompatible");
+            throw new InvalidParamsException(Exception::PLUGIN_ERROR, "[$plugin] is not incompatible");
         }
     }
 }

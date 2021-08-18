@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Plugin\Wechat;
 use Closure;
 use GuzzleHttp\Psr7\Utils;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Logger;
@@ -54,7 +55,7 @@ class SignPlugin implements PluginInterface
         $request = $rocket->getRadar();
 
         if (is_null($request)) {
-            throw new InvalidParamsException(InvalidParamsException::REQUEST_NULL_ERROR);
+            throw new InvalidParamsException(Exception::REQUEST_NULL_ERROR);
         }
 
         $uri = $request->getUri();
@@ -72,14 +73,14 @@ class SignPlugin implements PluginInterface
     protected function getMchPublicCertSerialNumber(?string $path): string
     {
         if (empty($path)) {
-            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_public_cert_path]');
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_public_cert_path]');
         }
 
         $cert = file_get_contents($path);
         $ssl = openssl_x509_parse($cert);
 
         if (empty($ssl['serialNumberHex'])) {
-            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Parse [mch_public_cert_path] Serial Number Error');
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Parse [mch_public_cert_path] Serial Number Error');
         }
 
         return $ssl['serialNumberHex'];

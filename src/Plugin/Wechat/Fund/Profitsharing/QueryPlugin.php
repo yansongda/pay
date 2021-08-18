@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing;
 
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
@@ -29,7 +30,7 @@ class QueryPlugin extends GeneralPlugin
 
         if (is_null($payload->get('out_order_no')) ||
             is_null($payload->get('transaction_id'))) {
-            throw new InvalidParamsException(InvalidParamsException::MISSING_NECESSARY_PARAMS);
+            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
         return '/v3/profitsharing/orders/'.

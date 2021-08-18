@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Event;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
@@ -78,7 +79,7 @@ class Wechat extends AbstractProvider
      */
     public function cancel($order): Collection
     {
-        throw new InvalidParamsException(InvalidParamsException::METHOD_NOT_SUPPORTED, 'Wechat does not support cancel api');
+        throw new InvalidParamsException(Exception::METHOD_NOT_SUPPORTED, 'Wechat does not support cancel api');
     }
 
     /**

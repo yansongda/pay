@@ -17,9 +17,9 @@ class AlipayServiceProvider implements ServiceProviderInterface
      */
     public function register(Pay $pay, ?array $data = null): void
     {
-        Pay::set(ParserInterface::class, CollectionParser::class);
-
         $service = function () {
+            Pay::set(ParserInterface::class, CollectionParser::class);
+
             return new Alipay();
         };
 

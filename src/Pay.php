@@ -188,7 +188,7 @@ class Pay
             return self::$container;
         }
 
-        throw new ContainerNotFoundException('You should init/config PAY first', ContainerException::CONTAINER_NOT_FOUND);
+        throw new ContainerNotFoundException('You should init/config PAY first', Exception\Exception::CONTAINER_NOT_FOUND);
     }
 
     /**

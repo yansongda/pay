@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
@@ -94,7 +95,7 @@ class PreparePlugin implements PluginInterface
         $path = get_alipay_config($params)->get('app_public_cert_path');
 
         if (is_null($path)) {
-            throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [app_public_cert_path]');
+            throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [app_public_cert_path]');
         }
 
         $cert = file_get_contents($path);
@@ -114,7 +115,7 @@ class PreparePlugin implements PluginInterface
         $path = get_alipay_config($params)->get('alipay_root_cert_path');
 
         if (is_null($path)) {
-            throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_root_cert_path]');
+            throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_root_cert_path]');
         }
 
         $sn = '';
@@ -128,7 +129,7 @@ class PreparePlugin implements PluginInterface
             $ssl = openssl_x509_parse($cert.'-----END CERTIFICATE-----');
 
             if (false === $ssl) {
-                throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Invalid alipay_root_cert');
+                throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Invalid alipay_root_cert');
             }
 
             $detail = $this->formatCert($ssl);

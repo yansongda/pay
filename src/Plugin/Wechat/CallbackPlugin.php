@@ -8,6 +8,7 @@ use Closure;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
@@ -53,8 +54,8 @@ class CallbackPlugin implements PluginInterface
     {
         $request = $rocket->getParams()['request'] ?? null;
 
-        if (is_null($request) || !($request instanceof ServerRequestInterface)) {
-            throw new InvalidParamsException(InvalidParamsException::REQUEST_NULL_ERROR);
+        if (!($request instanceof ServerRequestInterface)) {
+            throw new InvalidParamsException(Exception::REQUEST_NULL_ERROR);
         }
 
         $contents = $request->getBody()->getContents();
