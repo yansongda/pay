@@ -42,7 +42,7 @@ class Alipay extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface
+     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
      */
     public function __call(string $shortcut, array $params)
     {
@@ -59,8 +59,10 @@ class Alipay extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return array|\Yansongda\Supports\Collection
      */
-    public function find($order): Collection
+    public function find($order)
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
@@ -76,8 +78,10 @@ class Alipay extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return array|\Yansongda\Supports\Collection
      */
-    public function cancel($order): Collection
+    public function cancel($order)
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
@@ -93,8 +97,10 @@ class Alipay extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return array|\Yansongda\Supports\Collection
      */
-    public function close($order): Collection
+    public function close($order)
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
@@ -108,8 +114,10 @@ class Alipay extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return array|\Yansongda\Supports\Collection
      */
-    public function refund(array $order): Collection
+    public function refund(array $order)
     {
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
