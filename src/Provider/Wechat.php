@@ -45,7 +45,7 @@ class Wechat extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface
+     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
      */
     public function __call(string $shortcut, array $params)
     {
@@ -62,8 +62,10 @@ class Wechat extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return array|\Yansongda\Supports\Collection
      */
-    public function find($order): Collection
+    public function find($order)
     {
         $order = is_array($order) ? $order : ['transaction_id' => $order];
 
@@ -77,7 +79,7 @@ class Wechat extends AbstractProvider
      *
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      */
-    public function cancel($order): Collection
+    public function cancel($order): void
     {
         throw new InvalidParamsException(Exception::METHOD_NOT_SUPPORTED, 'Wechat does not support cancel api');
     }
@@ -90,13 +92,13 @@ class Wechat extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function close($order): Collection
+    public function close($order): void
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
-        return $this->__call('close', [$order]);
+        $this->__call('close', [$order]);
     }
 
     /**
@@ -104,8 +106,10 @@ class Wechat extends AbstractProvider
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     *
+     * @return array|\Yansongda\Supports\Collection
      */
-    public function refund(array $order): Collection
+    public function refund(array $order)
     {
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 

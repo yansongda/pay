@@ -251,8 +251,7 @@ if (!function_exists('reload_wechat_public_certs')) {
      */
     function reload_wechat_public_certs(array $params, string $serialNo): string
     {
-        $wechat = Pay::wechat();
-        $data = $wechat->pay(
+        $data = Pay::wechat()->pay(
             [PreparePlugin::class, WechatPublicCertsPlugin::class, SignPlugin::class, ParserPlugin::class],
             $params
         )->get('data', []);
