@@ -55,7 +55,7 @@ if (!function_exists('get_public_or_private_cert')) {
     function get_public_or_private_cert(string $key, bool $publicKey = false)
     {
         if ($publicKey) {
-            return Str::endsWith($key, ['.crt', '.pem']) ? file_get_contents($key) : $key;
+            return Str::endsWith($key, ['.cer', '.crt', '.pem']) ? file_get_contents($key) : $key;
         }
 
         if (Str::endsWith($key, ['.crt', '.pem'])) {
