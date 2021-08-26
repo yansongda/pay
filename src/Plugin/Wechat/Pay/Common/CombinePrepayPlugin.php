@@ -24,7 +24,7 @@ class CombinePrepayPlugin extends GeneralPlugin
     {
         $config = get_wechat_config($rocket->getParams());
 
-        $payload = $this->getWechatId($config);
+        $payload = $this->getWechatId($config, $rocket);
 
         if (!$rocket->getPayload()->has('notify_url')) {
             $payload['notify_url'] = $config->get('notify_url');
