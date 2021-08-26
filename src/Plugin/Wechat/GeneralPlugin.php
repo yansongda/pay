@@ -57,8 +57,12 @@ abstract class GeneralPlugin implements PluginInterface
      */
     protected function getUrl(Rocket $rocket): string
     {
-        return get_wechat_base_uri($rocket->getParams()).
-            $this->getUri($rocket);
+        //服务商模式与普通商户区分uri
+        $uri = Pay::MODE_SERVICE == get_wechat_config($rocket->getParams())->get('mode')
+            ? $this->getPartnerUri($rocket)
+            : $this->getUri($rocket);
+
+        return get_wechat_base_uri($rocket->getParams()).$uri;
     }
 
     protected function getHeaders(): array
@@ -70,19 +74,13 @@ abstract class GeneralPlugin implements PluginInterface
         ];
     }
 
-    /**
-     * 判断是否是服务商模式
-     */
-    protected function isServicePartnerMode($config)
-    {
-        //服务商自收款模式
-        if(isset($config['mode']) && $config['mode'] == Pay::MODE_SERVICE) {
-            return true; 
-        }
-        return false;
-    }
-
     abstract protected function doSomething(Rocket $rocket): void;
 
     abstract protected function getUri(Rocket $rocket): string;
+
+    protected function getPartnerUri(Rocket $rocket): string
+    {
+        //兼容服务商模式uri无变化的情况
+        return $this->getUri($rocket);
+    }
 }

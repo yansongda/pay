@@ -37,7 +37,7 @@ class CombinePrepayPlugin extends GeneralPlugin
         $rocket->mergePayload($payload);
     }
 
-    protected function getWechatId(Config $config): array
+    protected function getWechatId(Config $config, Rocket $rocket): array
     {
         return [
             'combine_appid' => $config->get('combine_app_id', ''),
