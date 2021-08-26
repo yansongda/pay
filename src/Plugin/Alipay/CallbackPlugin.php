@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
@@ -29,7 +30,7 @@ class CallbackPlugin implements PluginInterface
         $this->formatPayload($rocket);
 
         if (!($rocket->getParams()['sign'] ?? false)) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', $rocket->getParams());
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', $rocket->getParams());
         }
 
         verify_alipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), base64_decode($rocket->getParams()['sign']));

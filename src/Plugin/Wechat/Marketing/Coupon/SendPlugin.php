@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
@@ -26,7 +27,7 @@ class SendPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (is_null($payload->get('openid'))) {
-            throw new InvalidParamsException(InvalidParamsException::MISSING_NECESSARY_PARAMS);
+            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
         return 'v3/marketing/favor/users/'.$payload->get('openid').'/coupons';

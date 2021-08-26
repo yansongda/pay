@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;

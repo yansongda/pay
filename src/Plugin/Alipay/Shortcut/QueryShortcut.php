@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Alipay\Fund\TransOrderQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Trade\FastRefundQueryPlugin;
@@ -27,7 +28,7 @@ class QueryShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(InvalidParamsException::SHORTCUT_QUERY_TYPE_ERROR, "Query type [$typeMethod] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_QUERY_TYPE_ERROR, "Query type [$typeMethod] not supported");
     }
 
     protected function defaultPlugins(): array

@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat;
 
 use Closure;
+use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 
 class LaunchPlugin implements PluginInterface
 {
@@ -31,7 +32,7 @@ class LaunchPlugin implements PluginInterface
         if (should_do_http_request($rocket)) {
             verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());
 
-            $rocket->setDestination($this->formatResponse($rocket));
+            $rocket->setDestination($this->validateResponse($rocket));
         }
 
         Logger::info('[wechat][LaunchPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -41,15 +42,16 @@ class LaunchPlugin implements PluginInterface
 
     /**
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     *
+     * @return array|\Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|null
      */
-    protected function formatResponse(Rocket $rocket): Collection
+    protected function validateResponse(Rocket $rocket)
     {
         $response = $rocket->getDestination();
 
-        $code = $response->get('code');
-
-        if (!is_null($code) && 0 != $code) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_CODE);
+        if ($response instanceof ResponseInterface &&
+            ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300)) {
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_CODE);
         }
 
         return $response;

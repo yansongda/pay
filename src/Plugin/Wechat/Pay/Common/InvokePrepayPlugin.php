@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
@@ -34,7 +35,7 @@ class InvokePrepayPlugin implements PluginInterface
         if (is_null($prepayId)) {
             Logger::error('[wechat][InvokePrepayPlugin] 预下单失败：响应缺少 prepay_id 参数', $rocket->getDestination()->all());
 
-            throw new InvalidResponseException(InvalidResponseException::RESPONSE_MISSING_NECESSARY_PARAMS, 'Prepay Response Error: Missing PrepayId', $rocket->getDestination()->all());
+            throw new InvalidResponseException(Exception::RESPONSE_MISSING_NECESSARY_PARAMS, 'Prepay Response Error: Missing PrepayId', $rocket->getDestination()->all());
         }
 
         $config = $this->getInvokeConfig($rocket, $prepayId);

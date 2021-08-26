@@ -17,7 +17,7 @@ interface ProviderInterface
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
-     * @return \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface
+     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
      */
     public function pay(array $plugins, array $params);
 
@@ -25,27 +25,35 @@ interface ProviderInterface
      * Quick road - Query an order.
      *
      * @param string|array $order
+     *
+     * @return array|\Yansongda\Supports\Collection
      */
-    public function find($order): Collection;
+    public function find($order);
 
     /**
      * Quick road - Cancel an order.
      *
      * @param string|array $order
+     *
+     * @return array|\Yansongda\Supports\Collection|void
      */
-    public function cancel($order): Collection;
+    public function cancel($order);
 
     /**
      * Quick road - Close an order.
      *
      * @param string|array $order
+     *
+     * @return array|\Yansongda\Supports\Collection|void
      */
-    public function close($order): Collection;
+    public function close($order);
 
     /**
      * Quick road - Refund an order.
+     *
+     * @return array|\Yansongda\Supports\Collection
      */
-    public function refund(array $order): Collection;
+    public function refund(array $order);
 
     /**
      * Verify a request.

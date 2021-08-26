@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
@@ -54,7 +55,7 @@ if (!function_exists('get_public_or_private_cert')) {
     function get_public_or_private_cert(string $key, bool $publicKey = false)
     {
         if ($publicKey) {
-            return Str::endsWith($key, ['.crt', '.pem']) ? file_get_contents($key) : $key;
+            return Str::endsWith($key, ['.cer', '.crt', '.pem']) ? file_get_contents($key) : $key;
         }
 
         if (Str::endsWith($key, ['.crt', '.pem'])) {
@@ -84,7 +85,7 @@ if (!function_exists('verify_alipay_sign')) {
         $public = get_alipay_config($params)->get('alipay_public_cert_path');
 
         if (empty($public)) {
-            throw new InvalidConfigException(InvalidConfigException::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_public_cert_path]');
+            throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_public_cert_path]');
         }
 
         $result = 1 === openssl_verify(
@@ -94,7 +95,7 @@ if (!function_exists('verify_alipay_sign')) {
             OPENSSL_ALGO_SHA256);
 
         if (!$result) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', func_get_args());
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', func_get_args());
         }
     }
 }
@@ -142,13 +143,13 @@ if (!function_exists('get_wechat_authorization')) {
         $mchPublicCertPath = $config->get('mch_public_cert_path');
 
         if (empty($mchPublicCertPath)) {
-            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_public_cert_path]');
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_public_cert_path]');
         }
 
         $ssl = openssl_x509_parse(get_public_or_private_cert($mchPublicCertPath, true));
 
         if (empty($ssl['serialNumberHex'])) {
-            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Parse [mch_public_cert_path] Serial Number Error');
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Parse [mch_public_cert_path] Serial Number Error');
         }
 
         $auth = sprintf(
@@ -176,7 +177,7 @@ if (!function_exists('get_wechat_sign')) {
         $privateKey = get_wechat_config($params)->get('mch_secret_cert');
 
         if (empty($privateKey)) {
-            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_cert]');
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_cert]');
         }
 
         $privateKey = get_public_or_private_cert($privateKey);
@@ -218,7 +219,7 @@ if (!function_exists('verify_wechat_sign')) {
         $public = get_wechat_config($params)->get('wechat_public_cert_path.'.$wechatSerial);
 
         if (empty($sign)) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
         }
 
         $public = get_public_or_private_cert(
@@ -234,7 +235,7 @@ if (!function_exists('verify_wechat_sign')) {
         );
 
         if (!$result) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
         }
     }
 }
@@ -250,8 +251,7 @@ if (!function_exists('reload_wechat_public_certs')) {
      */
     function reload_wechat_public_certs(array $params, string $serialNo): string
     {
-        $wechat = Pay::wechat();
-        $data = $wechat->pay(
+        $data = Pay::wechat()->pay(
             [PreparePlugin::class, WechatPublicCertsPlugin::class, SignPlugin::class, ParserPlugin::class],
             $params
         )->get('data', []);
@@ -268,7 +268,7 @@ if (!function_exists('reload_wechat_public_certs')) {
         ]));
 
         if (empty($certs[$serialNo])) {
-            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Get Wechat Public Cert Error');
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Get Wechat Public Cert Error');
         }
 
         return $certs[$serialNo];
@@ -289,11 +289,11 @@ if (!function_exists('decrypt_wechat_resource')) {
         $secret = get_wechat_config($params)->get('mch_secret_key');
 
         if (strlen($ciphertext) <= Wechat::AUTH_TAG_LENGTH_BYTE) {
-            throw new InvalidResponseException(InvalidResponseException::INVALID_CIPHERTEXT_PARAMS);
+            throw new InvalidResponseException(Exception::INVALID_CIPHERTEXT_PARAMS);
         }
 
         if (is_null($secret) || Wechat::MCH_SECRET_KEY_LENGTH_BYTE != strlen($secret)) {
-            throw new InvalidConfigException(InvalidConfigException::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key]');
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key]');
         }
 
         switch ($resource['algorithm'] ?? '') {
@@ -301,7 +301,7 @@ if (!function_exists('decrypt_wechat_resource')) {
                 $resource['ciphertext'] = decrypt_wechat_resource_aes_256_gcm($ciphertext, $secret, $resource['nonce'] ?? '', $resource['associated_data'] ?? '');
                 break;
             default:
-                throw new InvalidResponseException(InvalidResponseException::INVALID_REQUEST_ENCRYPTED_METHOD);
+                throw new InvalidResponseException(Exception::INVALID_REQUEST_ENCRYPTED_METHOD);
         }
 
         return $resource;
@@ -330,7 +330,7 @@ if (!function_exists('decrypt_wechat_resource_aes_256_gcm')) {
             $decrypted = json_decode($decrypted, true);
 
             if (JSON_ERROR_NONE !== json_last_error()) {
-                throw new InvalidResponseException(InvalidResponseException::INVALID_REQUEST_ENCRYPTED_DATA);
+                throw new InvalidResponseException(Exception::INVALID_REQUEST_ENCRYPTED_DATA);
             }
         }
 

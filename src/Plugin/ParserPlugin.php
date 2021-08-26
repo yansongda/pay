@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Plugin;
 use Closure;
 use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
@@ -45,7 +46,7 @@ class ParserPlugin implements PluginInterface
         $packer = is_string($packer) ? Pay::get($packer) : $packer;
 
         if (!($packer instanceof ParserInterface)) {
-            throw new InvalidConfigException(InvalidConfigException::INVALID_PACKER);
+            throw new InvalidConfigException(Exception::INVALID_PACKER);
         }
 
         return $packer;
