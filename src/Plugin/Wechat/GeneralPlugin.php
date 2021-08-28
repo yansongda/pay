@@ -8,6 +8,7 @@ use Closure;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
 
@@ -56,15 +57,18 @@ abstract class GeneralPlugin implements PluginInterface
      */
     protected function getUrl(Rocket $rocket): string
     {
-        return get_wechat_base_uri($rocket->getParams()).
-            $this->getUri($rocket);
+        $params = $rocket->getParams();
+        $mode = get_wechat_config($params)->get('mode');
+
+        return get_wechat_base_uri($params).
+            (Pay::MODE_SERVICE == $mode ? $this->getPartnerUri($rocket) : $this->getUri($rocket));
     }
 
     protected function getHeaders(): array
     {
         return [
             'Accept' => 'application/json, text/plain, application/x-gzip',
-            'User-Agent' => 'yansongda/pay-v3.0.0',
+            'User-Agent' => 'yansongda/pay-v3.0',
             'Content-Type' => 'application/json; charset=utf-8',
         ];
     }
@@ -72,4 +76,9 @@ abstract class GeneralPlugin implements PluginInterface
     abstract protected function doSomething(Rocket $rocket): void;
 
     abstract protected function getUri(Rocket $rocket): string;
+
+    protected function getPartnerUri(Rocket $rocket): string
+    {
+        return $this->getUri($rocket);
+    }
 }

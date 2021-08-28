@@ -15,4 +15,9 @@ class WechatGeneralPluginStub extends GeneralPlugin
     {
         return 'yansongda/pay';
     }
+
+    protected function getPartnerUri(Rocket $rocket): string
+    {
+        return 'yansongda/pay/partner';
+    }
 }

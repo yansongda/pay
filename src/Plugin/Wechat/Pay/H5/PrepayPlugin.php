@@ -12,4 +12,9 @@ class PrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\PrepayPlugin
     {
         return 'v3/pay/transactions/h5';
     }
+
+    protected function getPartnerUri(Rocket $rocket): string
+    {
+        return 'v3/pay/partner/transactions/h5';
+    }
 }
