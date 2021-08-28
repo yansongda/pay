@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Common;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\Common;
 
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokePrepayPlugin;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\App;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\App;
 
 use Yansongda\Pay\Plugin\Wechat\Pay\App\InvokePrepayPlugin;
 use Yansongda\Pay\Rocket;

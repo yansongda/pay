@@ -20,6 +20,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
             ],
             'wechat' => [
                 'default' => [
+                    'app_id' => 'yansongda',
                     'mp_app_id' => 'wx55955316af4ef13',
                     'mch_id' => '1600314069',
                     'mini_app_id' => 'wx55955316af4ef14',
@@ -43,7 +44,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     ],
                     'sub_mp_app_id' => 'wx55955316af4ef15',
                     'sub_app_id' => 'wx55955316af4ef16',
-                    'sub_mini_appid' => 'wx55955316af4ef17',
+                    'sub_mini_app_id' => 'wx55955316af4ef17',
                     'sub_mch_id' => '1600314070',
                     'mode' => Pay::MODE_SERVICE,
                 ]
