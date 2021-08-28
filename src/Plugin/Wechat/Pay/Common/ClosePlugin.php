@@ -57,15 +57,14 @@ class ClosePlugin extends GeneralPlugin
 
         $config = get_wechat_config($rocket->getParams());
 
-        //服务商模式-body参数
-        $body = ['mchid' => $config->get('mch_id', '')];
+        $body = [
+            'mchid' => $config->get('mch_id', ''),
+        ];
+
         if (Pay::MODE_SERVICE == $config->get('mode')) {
-            //子商户支持配置文件定义和传参
-            $payload = $rocket->getPayload();
-            $subMchid = $config->get('sub_mchid', '');
             $body = [
                 'sp_mchid' => $config->get('mch_id', ''),
-                'sub_mchid' => !empty($subMchid) ? $subMchid : $payload->get('sub_mchid', ''),
+                'sub_mchid' => $rocket->getPayload()->get('sub_mchid', $config->get('sub_mch_id', '')),
             ];
         }
 

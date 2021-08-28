@@ -57,19 +57,18 @@ abstract class GeneralPlugin implements PluginInterface
      */
     protected function getUrl(Rocket $rocket): string
     {
-        //服务商模式与普通商户区分uri
-        $uri = Pay::MODE_SERVICE == get_wechat_config($rocket->getParams())->get('mode')
-            ? $this->getPartnerUri($rocket)
-            : $this->getUri($rocket);
+        $params = $rocket->getParams();
+        $mode = get_wechat_config($params)->get('mode');
 
-        return get_wechat_base_uri($rocket->getParams()).$uri;
+        return get_wechat_base_uri($params).
+            (Pay::MODE_SERVICE == $mode ? $this->getPartnerUri($rocket) : $this->getUri($rocket));
     }
 
     protected function getHeaders(): array
     {
         return [
             'Accept' => 'application/json, text/plain, application/x-gzip',
-            'User-Agent' => 'yansongda/pay-v3.0.0',
+            'User-Agent' => 'yansongda/pay-v3.0',
             'Content-Type' => 'application/json; charset=utf-8',
         ];
     }
@@ -80,7 +79,6 @@ abstract class GeneralPlugin implements PluginInterface
 
     protected function getPartnerUri(Rocket $rocket): string
     {
-        //兼容服务商模式uri无变化的情况
         return $this->getUri($rocket);
     }
 }

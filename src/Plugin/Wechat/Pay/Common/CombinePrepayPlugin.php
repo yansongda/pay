@@ -24,10 +24,10 @@ class CombinePrepayPlugin extends GeneralPlugin
     {
         $config = get_wechat_config($rocket->getParams());
 
-        $payload = $this->getWechatId($config, $rocket);
+        $payload = $this->getWechatId($config);
 
         if (!$rocket->getPayload()->has('notify_url')) {
-            $payload['notify_url'] = $config->get('notify_url');
+            $payload['notify_url'] = $config->get('notify_url', '');
         }
 
         if (!$rocket->getPayload()->has('combine_out_trade_no')) {
@@ -37,7 +37,7 @@ class CombinePrepayPlugin extends GeneralPlugin
         $rocket->mergePayload($payload);
     }
 
-    protected function getWechatId(Config $config, Rocket $rocket): array
+    protected function getWechatId(Config $config): array
     {
         return [
             'combine_appid' => $config->get('combine_app_id', ''),

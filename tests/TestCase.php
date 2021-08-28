@@ -41,10 +41,10 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'wechat_public_cert_path' => [
                         '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
                     ],
-                    'sub_mp_appid' => 'wx55955316af4ef15',
-                    'sub_appid' => 'wx55955316af4ef16',
+                    'sub_mp_app_id' => 'wx55955316af4ef15',
+                    'sub_app_id' => 'wx55955316af4ef16',
                     'sub_mini_appid' => 'wx55955316af4ef17',
-                    'sub_mchid' => '1600314070',
+                    'sub_mch_id' => '1600314070',
                     'mode' => Pay::MODE_SERVICE,
                 ]
             ]
