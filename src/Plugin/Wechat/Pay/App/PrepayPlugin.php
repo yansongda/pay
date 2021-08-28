@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\App;
 
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 
 class PrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\PrepayPlugin
@@ -20,14 +21,14 @@ class PrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\PrepayPlugin
         return 'v3/pay/partner/transactions/app';
     }
 
-    protected function getWechatId(Config $config, Rocket $rocket): array
+    protected function getWechatId(Config $config, Collection $payload): array
     {
         if (Pay::MODE_SERVICE == $config->get('mode')) {
             return [
                 'sp_appid' => $config->get('app_id', ''),
                 'sp_mchid' => $config->get('mch_id', ''),
-                'sub_appid' => $rocket->getParams()['sub_appid'] ?? $config->get('sub_app_id'),
-                'sub_mchid' => $rocket->getParams()['sub_mchid'] ?? $config->get('sub_mch_id'),
+                'sub_appid' => $payload->get('sub_appid', $config->get('sub_app_id')),
+                'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id')),
             ];
         }
 

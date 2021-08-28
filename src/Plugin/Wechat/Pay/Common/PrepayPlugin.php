@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 
 class PrepayPlugin extends GeneralPlugin
@@ -29,24 +30,25 @@ class PrepayPlugin extends GeneralPlugin
     protected function doSomething(Rocket $rocket): void
     {
         $config = get_wechat_config($rocket->getParams());
+        $payload = $rocket->getPayload();
 
-        $payload = $this->getWechatId($config, $rocket);
+        $wechatId = $this->getWechatId($config, $payload);
 
-        if (!$rocket->getPayload()->has('notify_url')) {
-            $payload['notify_url'] = $config->get('notify_url');
+        if (!$payload->has('notify_url')) {
+            $wechatId['notify_url'] = $config->get('notify_url');
         }
 
-        $rocket->mergePayload($payload);
+        $rocket->mergePayload($wechatId);
     }
 
-    protected function getWechatId(Config $config, Rocket $rocket): array
+    protected function getWechatId(Config $config, Collection $payload): array
     {
         if (Pay::MODE_SERVICE == $config->get('mode')) {
             return [
                 'sp_appid' => $config->get('mp_app_id', ''),
                 'sp_mchid' => $config->get('mch_id', ''),
-                'sub_appid' => $rocket->getParams()['sub_appid'] ?? $config->get('sub_mp_app_id'),
-                'sub_mchid' => $rocket->getParams()['sub_mchid'] ?? $config->get('sub_mch_id'),
+                'sub_appid' => $payload->get('sub_appid', $config->get('sub_mp_app_id')),
+                'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id')),
             ];
         }
 
