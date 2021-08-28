@@ -27,6 +27,7 @@ class ClosePluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/pay/transactions/out-trade-no/123/close'), $radar->getUri());
+        self::assertEquals('POST', $radar->getMethod());
         self::assertEquals('1600314069', $payload->get('mchid'));
         self::assertArrayNotHasKey('sp_mchid', $payload->all());
         self::assertArrayNotHasKey('sub_mchid', $payload->all());

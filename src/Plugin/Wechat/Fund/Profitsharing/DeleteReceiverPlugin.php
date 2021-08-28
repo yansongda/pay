@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing;
 
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
@@ -18,9 +19,16 @@ class DeleteReceiverPlugin extends GeneralPlugin
     {
         $config = get_wechat_config($rocket->getParams());
 
-        $rocket->mergePayload([
+        $wechatId = [
             'appid' => $config->get('mp_app_id'),
-        ]);
+        ];
+
+        if (Pay::MODE_SERVICE == $config->get('mode')) {
+            $wechatId['sub_mchid'] = $rocket->getPayload()
+                ->get('sub_mchid', $config->get('sub_mch_id', ''));
+        }
+
+        $rocket->mergePayload($wechatId);
     }
 
     protected function getUri(Rocket $rocket): string
