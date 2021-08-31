@@ -51,13 +51,15 @@ class QueryPlugin extends GeneralPlugin
         if (!is_null($payload->get('transaction_id'))) {
             return 'v3/pay/partner/transactions/id/'.
                 $payload->get('transaction_id').
-                '?mchid='.$config->get('mch_id', '');
+                '?sp_mchid='.$config->get('mch_id', '').
+                '&sub_mchid='.$payload->get('sub_mchid', $config->get('sub_mch_id'));
         }
 
         if (!is_null($payload->get('out_trade_no'))) {
             return 'v3/pay/partner/transactions/out-trade-no/'.
                 $payload->get('out_trade_no').
-                '?mchid='.$config->get('mch_id', '');
+                '?sp_mchid='.$config->get('mch_id', '').
+                '&sub_mchid='.$payload->get('sub_mchid', $config->get('sub_mch_id'));
         }
 
         throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
