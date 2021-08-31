@@ -2,13 +2,10 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\Common;
 
-use GuzzleHttp\Psr7\Uri;
-use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
-use Yansongda\Pay\Exception\InvalidParamsException;
 class QueryPluginTest extends TestCase
 {
     public function testNormalTransactionId()
@@ -80,17 +77,4 @@ class QueryPluginTest extends TestCase
         self::assertStringContainsString('sub_mchid=1600314099', $radar->getUri()->getQuery());
         self::assertStringContainsString('sp_mchid=1600314069', $radar->getUri()->getQuery());
     }
-
-//    public function testPartner()
-//    {
-//        $rocket = new Rocket();
-//        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['sub_mchid' => '1600314071']));
-//
-//        $plugin = new RefundPlugin();
-//
-//        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-//        $payload = $result->getPayload();
-//
-//        self::assertEquals('1600314071', $payload->get('sub_mchid'));
-//    }
 }
