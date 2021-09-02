@@ -53,4 +53,21 @@ class PrepayPluginTest extends TestCase
         self::assertEquals('123', $payload->get('sub_appid'));
         self::assertEquals('1600314070', $payload->get('sub_mchid'));
     }
+
+    public function testWechatIdPartnerDirect2()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'service_provider2'])->setPayload(new Collection(['sub_appid' => '123']));
+
+        $plugin = new PrepayPlugin();
+
+        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $payload = $result->getPayload();
+
+        self::assertEquals('123', $payload->get('sub_appid'));
+        self::assertEquals('wx55955316af4ef18', $payload->get('sp_appid'));
+        self::assertEquals('1600314072', $payload->get('sub_mchid'));
+        self::assertEquals('1600314071', $payload->get('sp_mchid'));
+    }
 }

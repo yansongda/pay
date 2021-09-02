@@ -14,7 +14,7 @@ class PrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\PrepayPlugin
     {
         if (Pay::MODE_SERVICE == $config->get('mode')) {
             return [
-                'sp_appid' => $config->get('app_id', ''),
+                'sp_appid' => $config->get('mini_app_id', '') ?: $config->get('mp_app_id', ''),
                 'sp_mchid' => $config->get('mch_id', ''),
                 'sub_appid' => $payload->get('sub_appid', $config->get('sub_mini_app_id')),
                 'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id')),
