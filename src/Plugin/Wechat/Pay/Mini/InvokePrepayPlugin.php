@@ -19,7 +19,7 @@ class InvokePrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokeP
         $config = get_wechat_config($rocket->getParams());
 
         if (Pay::MODE_SERVICE == $config->get('mode')) {
-            return $rocket->getPayload()->get('sub_appid') ?? $config->get('mini_app_id');
+            return $rocket->getPayload()->get('sub_appid', $config->get('mini_app_id', ''));
         }
 
         return $config->get('mini_app_id', '');
