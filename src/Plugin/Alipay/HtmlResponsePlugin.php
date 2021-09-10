@@ -36,7 +36,7 @@ class HtmlResponsePlugin implements PluginInterface
 
     protected function buildRedirect(string $endpoint, Collection $payload): Response
     {
-        $url = $endpoint.'&'.Arr::query($payload->all());
+        $url = $endpoint.(false === strpos($endpoint, '?') ? '?' : '&').$payload->query();
 
         $content = sprintf('<!DOCTYPE html>
                     <html lang="en">
