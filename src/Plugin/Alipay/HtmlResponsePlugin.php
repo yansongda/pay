@@ -9,7 +9,6 @@ use GuzzleHttp\Psr7\Response;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 
 class HtmlResponsePlugin implements PluginInterface
@@ -36,7 +35,7 @@ class HtmlResponsePlugin implements PluginInterface
 
     protected function buildRedirect(string $endpoint, Collection $payload): Response
     {
-        $url = $endpoint.'?'.Arr::query($payload->all());
+        $url = $endpoint.(false === strpos($endpoint, '?') ? '?' : '&').$payload->query();
 
         $content = sprintf('<!DOCTYPE html>
                     <html lang="en">

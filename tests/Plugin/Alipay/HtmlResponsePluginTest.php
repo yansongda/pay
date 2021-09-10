@@ -25,6 +25,20 @@ class HtmlResponsePluginTest extends TestCase
         self::assertEquals('https://yansongda.cn?name=yansongda', $result->getDestination()->getHeaderLine('Location'));
     }
 
+    public function testRedirectIncludeMark()
+    {
+        $rocket = new Rocket();
+        $rocket->setRadar(new Request('GET', 'https://yansongda.cn?charset=utf8'))
+            ->setPayload(new Collection(['name' => 'yansongda']));
+
+        $plugin = new HtmlResponsePlugin();
+        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
+        self::assertArrayHasKey('Location', $result->getDestination()->getHeaders());
+        self::assertEquals('https://yansongda.cn?charset=utf8&name=yansongda', $result->getDestination()->getHeaderLine('Location'));
+    }
+
     public function testHtml()
     {
         $rocket = new Rocket();
