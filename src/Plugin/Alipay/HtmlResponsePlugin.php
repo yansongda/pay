@@ -9,7 +9,6 @@ use GuzzleHttp\Psr7\Response;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 
 class HtmlResponsePlugin implements PluginInterface
