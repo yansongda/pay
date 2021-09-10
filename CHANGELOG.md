@@ -1,3 +1,9 @@
+## v3.0.7
+
+## fixed
+
+- fix: 支付宝 wap/web 支付 get 方法时url拼接问题 (#488)
+
 ## v3.0.6
 
 ## optimized
