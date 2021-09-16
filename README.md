@@ -25,8 +25,6 @@ laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 
 yii 扩展包请 [传送至这里](https://github.com/guanguans/yii-pay)
 
-QQ交流群：690027516
-
 ## 特点
 
 - 多租户支持
