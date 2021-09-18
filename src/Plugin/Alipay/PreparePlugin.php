@@ -177,7 +177,7 @@ class PreparePlugin implements PluginInterface
         for ($i = 1; $i <= $len; ++$i) {
             $dec = bcadd(
                 $dec,
-                bcmul(strval(hexdec($hex[$i - 1])), bcpow('16', strval($len - $i)), 0),
+                bcmul(strval(hexdec($hex[$i - 1])), bcpow('16', strval($len - $i), 0), 0),
                 0
             );
         }
