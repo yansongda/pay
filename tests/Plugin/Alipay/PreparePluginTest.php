@@ -22,6 +22,18 @@ class PreparePluginTest extends TestCase
         self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $result->getPayload()->get('alipay_root_cert_sn'));
     }
 
+    public function testGlobalBcscale()
+    {
+        bcscale(2);
+
+        $rocket = new Rocket();
+        $rocket->setParams([]);
+
+        $result = (new PreparePlugin())->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $result->getPayload()->get('alipay_root_cert_sn'));
+    }
+
     public function testCustomizedReturnUrl()
     {
         $rocket = new Rocket();
