@@ -58,10 +58,10 @@ abstract class GeneralPlugin implements PluginInterface
     protected function getUrl(Rocket $rocket): string
     {
         $params = $rocket->getParams();
-        $mode = get_wechat_config($params)->get('mode');
 
-        return get_wechat_base_uri($params).
-            (Pay::MODE_SERVICE == $mode ? $this->getPartnerUri($rocket) : $this->getUri($rocket));
+        $url = Pay::MODE_SERVICE == get_wechat_config($params)->get('mode') ? $this->getPartnerUri($rocket) : $this->getUri($rocket);
+
+        return 0 === strpos($url, 'http') ? $url : (get_wechat_base_uri($params).$url);
     }
 
     protected function getHeaders(): array
