@@ -18,6 +18,7 @@ class QueryBatchIdPlugin extends GeneralPlugin
 
     protected function doSomething(Rocket $rocket): void
     {
+        $rocket->setPayload(null);
     }
 
     /**
@@ -27,10 +28,11 @@ class QueryBatchIdPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('batch_id'))) {
+        if (is_null($payload->get('batch_id')) || is_null($payload->get('need_query_detail'))) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'v3/transfer/batches/batch-id/'.$payload->get('batch_id');
+        return 'v3/transfer/batches/batch-id/'.$payload->get('batch_id').
+            '?'.$payload->query();
     }
 }

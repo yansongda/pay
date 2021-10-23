@@ -26,10 +26,12 @@ class QueryDetailReceiptPlugin extends GeneralPlugin
         if (is_null($payload->get('out_detail_no')) || is_null($payload->get('accept_type'))) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
+
+        $rocket->setPayload(null);
     }
 
     protected function getUri(Rocket $rocket): string
     {
-        return 'v3/transfer-detail/electronic-receipts';
+        return 'v3/transfer-detail/electronic-receipts?'.$rocket->getPayload()->query();
     }
 }

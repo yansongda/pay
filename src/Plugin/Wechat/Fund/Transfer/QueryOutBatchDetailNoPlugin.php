@@ -18,6 +18,7 @@ class QueryOutBatchDetailNoPlugin extends GeneralPlugin
 
     protected function doSomething(Rocket $rocket): void
     {
+        $rocket->setPayload(null);
     }
 
     /**

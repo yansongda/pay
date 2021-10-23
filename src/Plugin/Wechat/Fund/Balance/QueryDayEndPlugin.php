@@ -32,6 +32,7 @@ class QueryDayEndPlugin extends GeneralPlugin
         }
 
         return 'v3/merchant/fund/dayendbalance/'.
-            $payload->get('account_type');
+            $payload->get('account_type').
+            '?date='.$payload->get('date');
     }
 }
