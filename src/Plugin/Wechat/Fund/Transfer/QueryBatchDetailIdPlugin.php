@@ -37,4 +37,18 @@ class QueryBatchDetailIdPlugin extends GeneralPlugin
             '/details/detail-id/'.
             $payload->get('detail_id');
     }
+
+    protected function getPartnerUri(Rocket $rocket): string
+    {
+        $payload = $rocket->getPayload();
+
+        if (is_null($payload->get('batch_id')) || is_null($payload->get('detail_id'))) {
+            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+        }
+
+        return 'v3/partner-transfer/batches/batch-id/'.
+            $payload->get('batch_id').
+            '/details/detail-id/'.
+            $payload->get('detail_id');
+    }
 }
