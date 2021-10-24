@@ -35,4 +35,19 @@ class QueryBatchIdPlugin extends GeneralPlugin
         return 'v3/transfer/batches/batch-id/'.$payload->get('batch_id').
             '?'.$payload->query();
     }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     */
+    protected function getPartnerUri(Rocket $rocket): string
+    {
+        $payload = $rocket->getPayload();
+
+        if (is_null($payload->get('batch_id')) || is_null($payload->get('need_query_detail'))) {
+            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+        }
+
+        return 'v3/partner-transfer/batches/batch-id/'.$payload->get('batch_id').
+            '?'.$payload->query();
+    }
 }
