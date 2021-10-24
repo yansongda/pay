@@ -18,13 +18,12 @@ class CreatePlugin extends GeneralPlugin
     protected function doSomething(Rocket $rocket): void
     {
         $config = get_wechat_config($rocket->getParams());
-        $payload = $rocket->getPayload();
 
         $extra = [
             'appid' => $config->get('mp_app_id'),
         ];
 
-        if (Pay::MODE_SERVICE == $config->get('mode') && !$payload->has('sub_mchid')) {
+        if (Pay::MODE_SERVICE == $config->get('mode')) {
             $extra = [
                 'sub_mchid' => $config->get('sub_mch_id', ''),
             ];
