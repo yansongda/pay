@@ -35,4 +35,19 @@ class QueryOutBatchNoPlugin extends GeneralPlugin
         return 'v3/transfer/batches/out-batch-no/'.$payload->get('out_batch_no').
             '?'.$payload->query();
     }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     */
+    protected function getPartnerUri(Rocket $rocket): string
+    {
+        $payload = $rocket->getPayload();
+
+        if (is_null($payload->get('out_batch_no')) || is_null($payload->get('need_query_detail'))) {
+            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+        }
+
+        return 'v3/partner-transfer/batches/out-batch-no/'.$payload->get('out_batch_no').
+            '?'.$payload->query();
+    }
 }

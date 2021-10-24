@@ -56,4 +56,21 @@ class CreateDetailReceiptPluginTest extends TestCase
 
         $plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
+
+    public function testPartner()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['out_detail_no' => '123', 'accept_type' => '456']));
+
+        $plugin = new CreateDetailReceiptPlugin();
+
+        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $radar = $result->getRadar();
+        $payload = $result->getPayload();
+
+        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/transfer-detail/electronic-receipts'), $radar->getUri());
+        self::assertEquals('123', $payload->get('out_detail_no'));
+        self::assertEquals('456', $payload->get('accept_type'));
+    }
 }

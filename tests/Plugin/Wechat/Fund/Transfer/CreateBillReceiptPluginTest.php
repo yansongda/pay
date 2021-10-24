@@ -42,4 +42,20 @@ class CreateBillReceiptPluginTest extends TestCase
 
         $plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
+
+    public function testPartner()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['out_batch_no' => '123']));
+
+        $plugin = new CreateBillReceiptPlugin();
+
+        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $radar = $result->getRadar();
+        $payload = $result->getPayload();
+
+        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/transfer/bill-receipt'), $radar->getUri());
+        self::assertEquals('123', $payload->get('out_batch_no'));
+    }
 }
