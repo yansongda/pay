@@ -7,7 +7,6 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 
 class PrepayPlugin extends GeneralPlugin
@@ -30,19 +29,20 @@ class PrepayPlugin extends GeneralPlugin
     protected function doSomething(Rocket $rocket): void
     {
         $config = get_wechat_config($rocket->getParams());
-        $payload = $rocket->getPayload();
 
-        $wechatId = $this->getWechatId($config, $payload);
+        $wechatId = $this->getWechatId($config, $rocket);
 
-        if (!$payload->has('notify_url')) {
+        if (!$rocket->getPayload()->has('notify_url')) {
             $wechatId['notify_url'] = $config->get('notify_url');
         }
 
         $rocket->mergePayload($wechatId);
     }
 
-    protected function getWechatId(Config $config, Collection $payload): array
+    protected function getWechatId(Config $config, Rocket $rocket): array
     {
+        $payload = $rocket->getPayload();
+
         if (Pay::MODE_SERVICE == $config->get('mode')) {
             return [
                 'sp_appid' => $config->get('mp_app_id', ''),

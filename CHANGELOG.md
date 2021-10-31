@@ -1,3 +1,9 @@
+## v3.0.11
+
+### added
+
+- feat: 微信 h5 支付支持关联 mini_app_id (#506)
+
 ## v3.0.10
 
 ### added
