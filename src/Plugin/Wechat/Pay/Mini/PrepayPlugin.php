@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat\Pay\Mini;
 
 use Yansongda\Pay\Pay;
-use Yansongda\Supports\Collection;
+use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Config;
 
 class PrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\PrepayPlugin
 {
-    protected function getWechatId(Config $config, Collection $payload): array
+    protected function getWechatId(Config $config, Rocket $rocket): array
     {
+        $payload = $rocket->getPayload();
+
         if (Pay::MODE_SERVICE == $config->get('mode')) {
             return [
                 'sp_appid' => $config->get('mini_app_id', $config->get('mp_app_id', '')),
