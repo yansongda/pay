@@ -35,7 +35,7 @@
         "phpunit/phpunit": "^9.0",
         "mockery/mockery": "^1.4",
         "friendsofphp/php-cs-fixer": "^3.0",
-        "phpstan/phpstan": "^0.12.91 || ^1.0.0",
+        "phpstan/phpstan": "^1.0.0",
         "monolog/monolog": "^2.2",
         "symfony/var-dumper": "^5.1",
         "symfony/http-foundation": "^5.2.0",

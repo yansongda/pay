@@ -14,18 +14,24 @@ class PrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\PrepayPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
-            return [
-                'sp_appid' => $config->get('mini_app_id', $config->get('mp_app_id', '')),
-                'sp_mchid' => $config->get('mch_id', ''),
-                'sub_appid' => $payload->get('sub_appid', $config->get('sub_mini_app_id')),
-                'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id')),
-            ];
-        }
-
-        return [
+        $result = [
             'appid' => $config->get('mini_app_id', ''),
             'mchid' => $config->get('mch_id', ''),
         ];
+
+        if (Pay::MODE_SERVICE == $config->get('mode')) {
+            $result = [
+                'sp_appid' => $config->get('mini_app_id', $config->get('mp_app_id', '')),
+                'sp_mchid' => $config->get('mch_id', ''),
+                'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id')),
+            ];
+
+            $subAppId = $payload->get('sub_appid', $config->get('sub_mini_app_id'));
+            if (!empty($subAppId)) {
+                $result['sub_appid'] = $subAppId;
+            }
+        }
+
+        return $result;
     }
 }
