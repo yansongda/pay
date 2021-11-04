@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Parser\OriginResponseParser;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
@@ -32,6 +33,8 @@ class DownloadBillPlugin extends GeneralPlugin
 
     protected function doSomething(Rocket $rocket): void
     {
+        $rocket->setDirection(OriginResponseParser::class);
+
         $rocket->setPayload(null);
     }
 }

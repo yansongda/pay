@@ -1,24 +1,24 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Fund\Transfer;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\Common;
 
 use GuzzleHttp\Psr7\Uri;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Parser\OriginResponseParser;
-use Yansongda\Pay\Plugin\Wechat\Fund\Transfer\DownloadReceiptPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Common\DownloadBillPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class DownloadReceiptPluginTest extends TestCase
+class DownloadBillPluginTest extends TestCase
 {
     public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection(['download_url' => 'https://yansongda.cn']));
 
-        $plugin = new DownloadReceiptPlugin();
+        $plugin = new DownloadBillPlugin();
 
         $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
@@ -34,7 +34,7 @@ class DownloadReceiptPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
 
-        $plugin = new DownloadReceiptPlugin();
+        $plugin = new DownloadBillPlugin();
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
