@@ -22,5 +22,6 @@ class InvokePrepayPluginTest extends TestCase
         self::assertArrayHasKey('package', $contents->all());
         self::assertEquals('Sign=WXPay', $contents->get('package'));
         self::assertArrayHasKey('sign', $contents->all());
+        self::assertArrayHasKey('timestamp', $contents->all());
     }
 }

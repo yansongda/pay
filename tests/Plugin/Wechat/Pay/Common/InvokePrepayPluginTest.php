@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\Common;
 
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokePrepayPlugin;
 use Yansongda\Pay\Rocket;
@@ -21,6 +22,7 @@ class InvokePrepayPluginTest extends TestCase
         self::assertArrayHasKey('appId', $contents->all());
         self::assertArrayHasKey('package', $contents->all());
         self::assertArrayHasKey('paySign', $contents->all());
+        self::assertArrayHasKey('timeStamp', $contents->all());
     }
 
     public function testWrongPrepayId()
@@ -28,7 +30,7 @@ class InvokePrepayPluginTest extends TestCase
         $rocket = (new Rocket())->setDestination(new Collection([]));
 
         self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(InvalidResponseException::RESPONSE_MISSING_NECESSARY_PARAMS);
+        self::expectExceptionCode(Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
 
         (new InvokePrepayPlugin())->assembly($rocket, function ($rocket) { return $rocket; });
     }
