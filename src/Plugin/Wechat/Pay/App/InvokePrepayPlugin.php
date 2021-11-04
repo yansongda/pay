@@ -43,7 +43,7 @@ class InvokePrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokeP
     {
         $contents = $invokeConfig->get('appid', '')."\n".
             $invokeConfig->get('timestamp', '')."\n".
-            $invokeConfig->get('nonceStr', '')."\n".
+            $invokeConfig->get('noncestr', '')."\n".
             $invokeConfig->get('package', '')."\n";
 
         return get_wechat_sign($params, $contents);

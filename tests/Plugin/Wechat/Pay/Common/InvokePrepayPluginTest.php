@@ -23,6 +23,7 @@ class InvokePrepayPluginTest extends TestCase
         self::assertArrayHasKey('package', $contents->all());
         self::assertArrayHasKey('paySign', $contents->all());
         self::assertArrayHasKey('timeStamp', $contents->all());
+        self::assertArrayHasKey('nonceStr', $contents->all());
     }
 
     public function testWrongPrepayId()
