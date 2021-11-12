@@ -18,7 +18,7 @@ class FindReturnAdvancePlugin extends GeneralPlugin
         if (is_null($payload->get('refund_id'))) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
-        
+
         $config = get_wechat_config($rocket->getParams());
 
         $query = [

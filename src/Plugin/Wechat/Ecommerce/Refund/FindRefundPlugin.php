@@ -14,7 +14,7 @@ class FindRefundPlugin extends GeneralPlugin
     protected function getUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
-        
+
         $config = get_wechat_config($rocket->getParams());
 
         $query = [
