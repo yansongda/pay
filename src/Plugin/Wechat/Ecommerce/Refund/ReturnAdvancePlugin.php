@@ -10,7 +10,7 @@ use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
-class ReturnAdvancelugin extends GeneralPlugin
+class ReturnAdvancePlugin extends GeneralPlugin
 {
     protected function getUri(Rocket $rocket): string
     {
