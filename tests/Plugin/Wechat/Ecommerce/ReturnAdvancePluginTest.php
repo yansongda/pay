@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Fund\Balance;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Ecommerce;
 
 use GuzzleHttp\Psr7\Uri;
 use Yansongda\Pay\Pay;
