@@ -15,7 +15,7 @@ class FindRefundPluginTest extends TestCase
     public function testRefundId()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['refund_id' => '123', 'sub_mchid' => '1610028543']));
 
         $plugin = new FindRefundPlugin();
 
@@ -30,7 +30,7 @@ class FindRefundPluginTest extends TestCase
     public function testOutRefundNo()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['out_refund_no' => '123', 'sub_mchid' => '1610028543']));
 
         $plugin = new FindRefundPlugin();
 
