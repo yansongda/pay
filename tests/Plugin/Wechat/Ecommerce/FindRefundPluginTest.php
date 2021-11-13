@@ -51,7 +51,7 @@ class FindRefundPluginTest extends TestCase
 
         $radar = $result->getRadar();
 
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_SERVICE] . 'v3/ecommerce/refunds/id/123?sub_mchid=1600314070'), $radar->getUri());
+        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_SERVICE].'v3/ecommerce/refunds/id/123?sub_mchid=1600314070'), $radar->getUri());
         self::assertEquals('GET', $radar->getMethod());
     }
 
@@ -66,7 +66,7 @@ class FindRefundPluginTest extends TestCase
 
         $radar = $result->getRadar();
 
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_SERVICE] . 'v3/ecommerce/refunds/out-refund-no/123?sub_mchid=1600314070'), $radar->getUri());
+        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_SERVICE].'v3/ecommerce/refunds/out-refund-no/123?sub_mchid=1600314070'), $radar->getUri());
         self::assertEquals('GET', $radar->getMethod());
     }
 }

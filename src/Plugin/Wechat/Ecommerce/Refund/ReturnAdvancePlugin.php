@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare (strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund;
 
@@ -25,7 +25,7 @@ class ReturnAdvancePlugin extends GeneralPlugin
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'v3/ecommerce/refunds/' . $payload->get('refund_id') . '/return-advance';
+        return 'v3/ecommerce/refunds/'.$payload->get('refund_id').'/return-advance';
     }
 
     protected function doSomething(Rocket $rocket): void

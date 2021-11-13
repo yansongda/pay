@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare (strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund;
 
@@ -27,9 +27,9 @@ class FindRefundPlugin extends GeneralPlugin
         ];
 
         if (!is_null($payload->get('refund_id'))) {
-            return 'v3/ecommerce/refunds/id/' . $payload->get('refund_id') . '?' . http_build_query($query);
+            return 'v3/ecommerce/refunds/id/'.$payload->get('refund_id').'?'.http_build_query($query);
         } elseif (!is_null($payload->get('out_refund_no'))) {
-            return 'v3/ecommerce/refunds/out-refund-no/' . $payload->get('out_refund_no') . '?' . http_build_query($query);
+            return 'v3/ecommerce/refunds/out-refund-no/'.$payload->get('out_refund_no').'?'.http_build_query($query);
         } else {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
