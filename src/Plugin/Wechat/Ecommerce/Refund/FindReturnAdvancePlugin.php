@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare (strict_types = 1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund;
 
@@ -12,6 +12,11 @@ use Yansongda\Pay\Rocket;
 class FindReturnAdvancePlugin extends GeneralPlugin
 {
     protected function getUri(Rocket $rocket): string
+    {
+        throw new InvalidParamsException(Exception::SERVICE_NOT_FOUND_ERROR);
+    }
+
+    protected function getPartnerUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
 
@@ -25,7 +30,7 @@ class FindReturnAdvancePlugin extends GeneralPlugin
             'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id', '')),
         ];
 
-        return 'v3/ecommerce/refunds/'.$payload->get('refund_id').'/return-advance?'.http_build_query($query);
+        return 'v3/ecommerce/refunds/' . $payload->get('refund_id') . '/return-advance?' . http_build_query($query);
     }
 
     protected function getMethod(): string
