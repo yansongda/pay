@@ -26,7 +26,7 @@ class RefundPlugin extends GeneralPlugin
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
         $amount = $payload->get('amount');
-        if (is_null($amount) || is_null($amount['refund']) || is_null($amount['total']) || is_null($amount['currency'])) {
+        if (is_null($amount) || !isset($amount['refund']) || !isset($amount['total']) || !isset($amount['currency'])) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
