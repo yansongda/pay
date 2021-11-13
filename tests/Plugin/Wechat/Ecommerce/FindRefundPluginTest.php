@@ -24,7 +24,7 @@ class FindRefundPluginTest extends TestCase
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::SERVICE_NOT_FOUND_ERROR);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartner()
@@ -37,7 +37,7 @@ class FindRefundPluginTest extends TestCase
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartnerRefundIdDirectPayload()
@@ -47,7 +47,7 @@ class FindRefundPluginTest extends TestCase
 
         $plugin = new FindRefundPlugin();
 
-        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         $radar = $result->getRadar();
 
@@ -62,7 +62,7 @@ class FindRefundPluginTest extends TestCase
 
         $plugin = new FindRefundPlugin();
 
-        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         $radar = $result->getRadar();
 

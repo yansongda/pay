@@ -21,7 +21,7 @@ class RefundPluginTest extends TestCase
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::SERVICE_NOT_FOUND_ERROR);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartner()
@@ -34,7 +34,7 @@ class RefundPluginTest extends TestCase
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartnerNoTransactionId()
@@ -46,14 +46,14 @@ class RefundPluginTest extends TestCase
                 'refund' => 1,
                 'total' => 1,
                 'currency' => 'CNY',
-            ]]));
+            ], ]));
 
         $plugin = new RefundPlugin();
 
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartnerNoOutRefundNo()
@@ -73,7 +73,7 @@ class RefundPluginTest extends TestCase
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartnerNoAmount()
@@ -89,7 +89,7 @@ class RefundPluginTest extends TestCase
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartnerNoAmountRefund()
@@ -109,7 +109,7 @@ class RefundPluginTest extends TestCase
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartnerNoAmountTotal()
@@ -129,7 +129,7 @@ class RefundPluginTest extends TestCase
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartnerNoAmountCurrency()
@@ -149,7 +149,7 @@ class RefundPluginTest extends TestCase
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartnerDirectPayload()
@@ -167,7 +167,7 @@ class RefundPluginTest extends TestCase
 
         $plugin = new RefundPlugin();
 
-        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         $payload = $result->getPayload();
 
