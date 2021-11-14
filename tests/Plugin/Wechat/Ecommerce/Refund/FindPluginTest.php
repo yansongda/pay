@@ -1,38 +1,38 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Ecommerce;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Ecommerce\Refund;
 
 use GuzzleHttp\Psr7\Uri;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\FindRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\FindPlugin;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class FindRefundPluginTest extends TestCase
+class FindPluginTest extends TestCase
 {
-    public function testNormal()
+    public function testNotInServiceMode()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
 
-        $plugin = new FindRefundPlugin();
+        $plugin = new FindPlugin();
 
         $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionCode(Exception::SERVICE_NOT_FOUND_ERROR);
+        $this->expectExceptionCode(Exception::NOT_IN_SERVICE_MODE);
 
         $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
-    public function testPartner()
+    public function testMissingParams()
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
 
-        $plugin = new FindRefundPlugin();
+        $plugin = new FindPlugin();
 
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
@@ -40,12 +40,12 @@ class FindRefundPluginTest extends TestCase
         $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
-    public function testPartnerRefundIdDirectPayload()
+    public function testPartnerRefundId()
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['refund_id' => '123']));
 
-        $plugin = new FindRefundPlugin();
+        $plugin = new FindPlugin();
 
         $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
@@ -55,12 +55,12 @@ class FindRefundPluginTest extends TestCase
         self::assertEquals('GET', $radar->getMethod());
     }
 
-    public function testPartnerOutRefundNoDirectPayload()
+    public function testPartnerOutRefundNo()
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['out_refund_no' => '123']));
 
-        $plugin = new FindRefundPlugin();
+        $plugin = new FindPlugin();
 
         $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 

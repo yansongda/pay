@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Ecommerce;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Ecommerce\Refund;
 
 use GuzzleHttp\Psr7\Uri;
 use Yansongda\Pay\Exception\Exception;
@@ -14,7 +14,7 @@ use Yansongda\Supports\Collection;
 
 class ReturnAdvancePluginTest extends TestCase
 {
-    public function testNormal()
+    public function testNotInServiceMode()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
@@ -22,12 +22,12 @@ class ReturnAdvancePluginTest extends TestCase
         $plugin = new ReturnAdvancePlugin();
 
         $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionCode(Exception::SERVICE_NOT_FOUND_ERROR);
+        $this->expectExceptionCode(Exception::NOT_IN_SERVICE_MODE);
 
         $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
-    public function testPartner()
+    public function testMissingParams()
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
@@ -40,7 +40,7 @@ class ReturnAdvancePluginTest extends TestCase
         $plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
-    public function testPartnerDirectPayload()
+    public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['refund_id' => '123']));

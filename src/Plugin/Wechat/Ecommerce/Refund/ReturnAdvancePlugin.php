@@ -12,11 +12,17 @@ use Yansongda\Supports\Collection;
 
 class ReturnAdvancePlugin extends GeneralPlugin
 {
+    /**
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     */
     protected function getUri(Rocket $rocket): string
     {
-        throw new InvalidParamsException(Exception::SERVICE_NOT_FOUND_ERROR);
+        throw new InvalidParamsException(Exception::NOT_IN_SERVICE_MODE);
     }
 
+    /**
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     */
     protected function getPartnerUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
@@ -28,6 +34,11 @@ class ReturnAdvancePlugin extends GeneralPlugin
         return 'v3/ecommerce/refunds/'.$payload->get('refund_id').'/return-advance';
     }
 
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
     protected function doSomething(Rocket $rocket): void
     {
         $config = get_wechat_config($rocket->getParams());
