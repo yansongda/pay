@@ -32,11 +32,11 @@ class FindPlugin extends GeneralPlugin
         $subMchId = $payload->get('sub_mchid', $config->get('sub_mch_id', ''));
 
         if (!is_null($payload->get('refund_id'))) {
-            return 'v3/ecommerce/refunds/id/'.$payload->get('refund_id').'?sub_mchid='. $subMchId;
+            return 'v3/ecommerce/refunds/id/'.$payload->get('refund_id').'?sub_mchid='.$subMchId;
         }
 
         if (!is_null($payload->get('out_refund_no'))) {
-            return 'v3/ecommerce/refunds/out-refund-no/'.$payload->get('out_refund_no').'?sub_mchid='. $subMchId;
+            return 'v3/ecommerce/refunds/out-refund-no/'.$payload->get('out_refund_no').'?sub_mchid='.$subMchId;
         }
 
         throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);

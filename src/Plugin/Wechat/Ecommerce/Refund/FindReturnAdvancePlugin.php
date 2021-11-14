@@ -35,7 +35,7 @@ class FindReturnAdvancePlugin extends GeneralPlugin
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'v3/ecommerce/refunds/'.$payload->get('refund_id').'/return-advance?sub_mchid='. $subMchId;
+        return 'v3/ecommerce/refunds/'.$payload->get('refund_id').'/return-advance?sub_mchid='.$subMchId;
     }
 
     protected function getMethod(): string
