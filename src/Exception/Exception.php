@@ -22,7 +22,7 @@ class Exception extends \Exception
     public const CONTAINER_NOT_FOUND_ENTRY = 1003;
 
     /**
-     * 关于服务.
+     * 关于容器的服务.
      */
     public const SERVICE_ERROR = 2000;
 
@@ -61,6 +61,8 @@ class Exception extends \Exception
     public const REQUEST_NULL_ERROR = 4005;
 
     public const MISSING_NECESSARY_PARAMS = 4006;
+
+    public const NOT_IN_SERVICE_MODE = 4007;
 
     /**
      * 关于api.
