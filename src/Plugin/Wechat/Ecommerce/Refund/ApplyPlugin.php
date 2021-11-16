@@ -34,9 +34,14 @@ class ApplyPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
         $payload = $rocket->getPayload();
 
+        $key = ($rocket->getParams()['_type'] ?? 'mp').'_app_id';
+        if ('app_app_id' === $key) {
+            $key = 'app_id';
+        }
+
         $wechatId = [
             'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id', '')),
-            'sp_appid' => $config->get('mp_app_id', ''),
+            'sp_appid' => $payload->get('sp_appid', $config->get($key, '')),
         ];
 
         if (!$payload->has('notify_url')) {
