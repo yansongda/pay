@@ -25,6 +25,9 @@ class PrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\PrepayPlugin
         $payload = $rocket->getPayload();
 
         $key = ($rocket->getParams()['_type'] ?? 'mp').'_app_id';
+        if ('app_app_id' === $key) {
+            $key = 'app_id';
+        }
 
         if (Pay::MODE_SERVICE == $config->get('mode')) {
             return [
