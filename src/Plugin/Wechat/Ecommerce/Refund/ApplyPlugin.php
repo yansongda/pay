@@ -36,7 +36,7 @@ class ApplyPlugin extends GeneralPlugin
 
         $wechatId = [
             'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id', '')),
-            'sp_appid' => $config->get('mp_app_id', ''),
+            'sp_appid' => $payload->get('sp_appid', $config->get('mp_app_id', '')),
         ];
 
         if (!$payload->has('notify_url')) {
