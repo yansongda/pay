@@ -1,3 +1,9 @@
+## v3.0.19
+
+### fixed
+
+- fix: 支付宝 system.oauth.token 请求参数错误 (#528)
+
 ## v3.0.18
 
 ### added
