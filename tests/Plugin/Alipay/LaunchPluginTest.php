@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
@@ -11,14 +12,21 @@ use Yansongda\Supports\Collection;
 
 class LaunchPluginTest extends TestCase
 {
+    private $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new LaunchPlugin();
+    }
+
     public function testNoHttpRequest()
     {
         $rocket = new Rocket();
         $rocket->setDirection(NoHttpRequestParser::class);
 
-        $plugin = new LaunchPlugin();
-
-        self::assertSame($rocket, $plugin->assembly($rocket, function ($rocket) { return $rocket; }));
+        self::assertSame($rocket, $this->plugin->assembly($rocket, function ($rocket) { return $rocket; }));
     }
 
     public function testNormal()
@@ -49,9 +57,7 @@ class LaunchPluginTest extends TestCase
             ->setDestination(new Collection($response))
             ->setParams([]);
 
-        $plugin = new LaunchPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEqualsCanonicalizing($response['alipay_trade_query_response'], $result->getDestination()->all());
     }
@@ -79,12 +85,12 @@ class LaunchPluginTest extends TestCase
             ->setDestination(new Collection($response))
             ->setParams([]);
 
-        $result = (new LaunchPlugin())->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('40004', $result->getDestination()->get('code'));
     }
 
-    public function testWrongSing()
+    public function testWrongSign()
     {
         $response = [
             "alipay_trade_query_response" => [
@@ -112,10 +118,33 @@ class LaunchPluginTest extends TestCase
             ->setDestination(new Collection($response))
             ->setParams([]);
 
-        $plugin = new LaunchPlugin();
-
         self::expectException(InvalidResponseException::class);
         self::expectExceptionCode(InvalidResponseException::INVALID_RESPONSE_SIGN);
-        $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testErrorResponseWithNoMethodKey()
+    {
+        $response = [
+            'error_response' => [
+                "code" => "40004",
+                "msg" => "Invalid Arguments",
+                "sub_code" => "isv.code-invalid",
+                "sub_msg" => "授权码code无效",
+            ],
+            'alipay_cert_sn' => 'a359aaadd01ceca03dbc07537da539b9',
+            'sign' => 'OaQiIXuxZeMWccI/gV0/f0YFKmR0zUsUSA+pOUghMJjsbL7W+mNw4Wvk8NFJzlk0EcwV+BpvT/NFl5oSPN2NTn4JbHheVkN9DvYDK8UacvUjnDLO4vZ2Z828he8CF77ktieTjrzxo5b6dguMnOFeew+YAzSCZaiV2sSUSc6K42yiSC290B80jBUbNKE10sUDWR8OKPYqHxMlbtPyGv2jSxNoDIIP7VIGKNzU8i7dbNOYCrAviBXcDrR/m9ncYfIJfhn1yHPtLCGUUcJKToPsvE0+4Q3gS4n+wMHhCcbq02qnwhPSRbmsPS0E7D5JNqVmiXIc2XeEffKYFy1kQKvGGQ==',
+        ];
+
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection(['method' => 'alipay.trade.query']))
+            ->setDestination(new Collection($response))
+            ->setParams([]);
+
+        try {
+            $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        } catch (InvalidResponseException $e) {
+            self::assertEquals($response, $e->response->all());
+        }
     }
 }
