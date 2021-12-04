@@ -31,7 +31,11 @@ class LaunchPlugin implements PluginInterface
         if (should_do_http_request($rocket)) {
             $this->verifySign($rocket);
 
-            $rocket->setDestination($this->getMethodResponse($rocket));
+            $rocket->setDestination(
+                Collection::wrap(
+                    $rocket->getDestination()->get($this->getResultKey($rocket->getPayload()))
+                )
+            );
         }
 
         Logger::info('[alipay][LaunchPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -48,26 +52,20 @@ class LaunchPlugin implements PluginInterface
      */
     protected function verifySign(Rocket $rocket): void
     {
-        $response = $rocket->getDestination()->get($this->getResponseKey($rocket));
-        $sign = $rocket->getDestination()->get('sign', '');
+        $response = $rocket->getDestination();
+        $result = $response->get($this->getResultKey($rocket->getPayload()));
+        $sign = $response->get('sign', '');
 
-        if ('' === $sign || is_null($response)) {
-            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', $response);
+        if ('' === $sign || is_null($result)) {
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Alipay Response Sign Failed', $response);
         }
 
-        verify_alipay_sign($rocket->getParams(), json_encode($response, JSON_UNESCAPED_UNICODE), base64_decode($sign));
+        verify_alipay_sign($rocket->getParams(), json_encode($result, JSON_UNESCAPED_UNICODE), base64_decode($sign));
     }
 
-    protected function getMethodResponse(Rocket $rocket): Collection
+    protected function getResultKey(Collection $payload): string
     {
-        return Collection::wrap(
-            $rocket->getDestination()->get($this->getResponseKey($rocket))
-        );
-    }
-
-    protected function getResponseKey(Rocket $rocket): string
-    {
-        $method = $rocket->getPayload()->get('method');
+        $method = $payload->get('method');
 
         return str_replace('.', '_', $method).'_response';
     }

@@ -14,9 +14,9 @@ class InvalidResponseException extends Exception
     public $exception = null;
 
     /**
-     * @var array
+     * @var mixed
      */
-    public $response = [];
+    public $response = null;
 
     /**
      * Bootstrap.
@@ -26,7 +26,7 @@ class InvalidResponseException extends Exception
     public function __construct(
         int $code = self::RESPONSE_ERROR,
         string $message = 'Provider response Error',
-        $extra = [],
+        $extra = null,
         ?Throwable $exception = null,
         Throwable $previous = null)
     {
