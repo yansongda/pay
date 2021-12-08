@@ -171,6 +171,8 @@ class PreparePlugin implements PluginInterface
 
     protected function hex2dec(string $hex): string
     {
+        $oldBcScale = bcscale(null);
+        bcscale(0);
         $dec = '0';
         $len = strlen($hex);
 
@@ -181,7 +183,7 @@ class PreparePlugin implements PluginInterface
                 0
             );
         }
-
+        bcscale($oldBcScale);
         return $dec;
     }
 }
