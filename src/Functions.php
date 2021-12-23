@@ -249,7 +249,7 @@ if (!function_exists('reload_wechat_public_certs')) {
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
      */
-    function reload_wechat_public_certs(array $params, string $serialNo): string
+    function reload_wechat_public_certs(array $params, ?string $serialNo = null): string
     {
         $data = Pay::wechat()->pay(
             [PreparePlugin::class, WechatPublicCertsPlugin::class, SignPlugin::class, ParserPlugin::class],
@@ -267,11 +267,11 @@ if (!function_exists('reload_wechat_public_certs')) {
             'wechat' => [$params['_config'] ?? 'default' => $wechatConfig->all()],
         ]));
 
-        if (empty($certs[$serialNo])) {
+        if (!is_null($serialNo) && empty($certs[$serialNo])) {
             throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Get Wechat Public Cert Error');
         }
 
-        return $certs[$serialNo];
+        return $certs[$serialNo] ?? '';
     }
 }
 
