@@ -36,34 +36,6 @@ class QueryShortcut implements ShortcutInterface
         throw new InvalidParamsException(Exception::SHORTCUT_QUERY_TYPE_ERROR, "Query type [$typeMethod] not supported");
     }
 
-    protected function defaultPlugins(): array
-    {
-        return [
-            QueryPlugin::class,
-        ];
-    }
-
-    protected function refundPlugins(): array
-    {
-        return [
-            FindRefundPlugin::class,
-        ];
-    }
-
-    protected function combinePlugins(): array
-    {
-        return [
-            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin::class,
-        ];
-    }
-
-    protected function transferBatchDetailId(): array
-    {
-        return [
-            QueryBatchDetailIdPlugin::class,
-        ];
-    }
-
     public function transferBatchId(): array
     {
         return [
@@ -96,6 +68,34 @@ class QueryShortcut implements ShortcutInterface
     {
         return [
             QueryOutBatchNoPlugin::class,
+        ];
+    }
+
+    protected function defaultPlugins(): array
+    {
+        return [
+            QueryPlugin::class,
+        ];
+    }
+
+    protected function refundPlugins(): array
+    {
+        return [
+            FindRefundPlugin::class,
+        ];
+    }
+
+    protected function combinePlugins(): array
+    {
+        return [
+            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin::class,
+        ];
+    }
+
+    protected function transferBatchDetailId(): array
+    {
+        return [
+            QueryBatchDetailIdPlugin::class,
         ];
     }
 }
