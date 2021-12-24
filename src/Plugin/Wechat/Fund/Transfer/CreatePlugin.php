@@ -38,7 +38,7 @@ class CreatePlugin extends GeneralPlugin
 
         $rocket->mergePayload($this->mergeAppId($config));
         $rocket->mergePayload([
-            'transfer_detail_list' => $this->mergeEncryptUserName($params, $params['_serial_no'])
+            'transfer_detail_list' => $this->mergeEncryptUserName($params, $params['_serial_no']),
         ]);
     }
 
