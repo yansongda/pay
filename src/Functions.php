@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Pay;
@@ -237,6 +238,31 @@ if (!function_exists('verify_wechat_sign')) {
         if (!$result) {
             throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
         }
+    }
+}
+
+if (!function_exists('encrypt_wechat_contents')) {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    function encrypt_wechat_contents(array $params, string $contents, string $serialNo): ?string
+    {
+        $config = get_wechat_config($params);
+
+        $publicKey = $config->get('wechat_public_cert_path.'.$serialNo);
+
+        if (empty($publicKey)) {
+            throw new InvalidParamsException(Exception::WECHAT_SERIAL_NO_NOT_FOUND, 'Wechat serial no not found: '.$serialNo);
+        }
+
+        if (openssl_public_encrypt($contents, $encrypted, get_public_or_private_cert($publicKey, true), OPENSSL_PKCS1_OAEP_PADDING)) {
+            return base64_encode($encrypted);
+        }
+
+        return null;
     }
 }
 

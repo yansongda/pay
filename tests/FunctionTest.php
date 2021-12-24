@@ -8,7 +8,9 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Parser\CollectionParser;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Parser\ResponseParser;
@@ -212,6 +214,21 @@ class FunctionTest extends TestCase
         self::assertTrue(true);
     }
 
+    public function testEncryptWechatContents()
+    {
+        $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
+        $contents = 'yansongda';
+        $result = encrypt_wechat_contents([], $contents, $serialNo);
+        self::assertIsString($result);
+
+        $serialNo = 'non-exist';
+        $contents = 'yansongda';
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::WECHAT_SERIAL_NO_NOT_FOUND);
+        encrypt_wechat_contents([], $contents, $serialNo);
+    }
+
     public function testReloadWechatPublicCerts()
     {
         $response = new Response(
@@ -228,7 +245,7 @@ class FunctionTest extends TestCase
                             'nonce' => '4196a5b75276',
                         ],
                         'expire_time' => '2026-07-15T17:51:10+08:00',
-                        'serial_no' => '45F59D4DABF31918AFCEC556D5D2C6E376675D57',
+                        'serial_no' => 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57',
                     ]
                 ]
             ])
@@ -239,10 +256,10 @@ class FunctionTest extends TestCase
 
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = reload_wechat_public_certs([], '45F59D4DABF31918AFCEC556D5D2C6E376675D57');
+        $result = reload_wechat_public_certs([], 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57');
 
         self::assertTrue(false !== strpos($result, '-----BEGIN CERTIFICATE-----'));
-        self::assertTrue(Pay::get(ConfigInterface::class)->has('wechat.default.wechat_public_cert_path.45F59D4DABF31918AFCEC556D5D2C6E376675D57'));
+        self::assertTrue(Pay::get(ConfigInterface::class)->has('wechat.default.wechat_public_cert_path.test-45F59D4DABF31918AFCEC556D5D2C6E376675D57'));
         self::assertIsArray(Pay::get(ConfigInterface::class)->get('wechat.default'));
     }
 
