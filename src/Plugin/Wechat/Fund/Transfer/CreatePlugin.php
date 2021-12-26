@@ -24,22 +24,23 @@ class CreatePlugin extends GeneralPlugin
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
 
-        if (empty($config->get('wechat_public_cert_path'))) {
-            reload_wechat_public_certs($params);
+        $extra = $this->getWechatId($config);
+
+        if (!empty($params['transfer_detail_list'][0]['user_name'] ?? '')) {
+            if (empty($config->get('wechat_public_cert_path'))) {
+                reload_wechat_public_certs($params);
+            }
+
+            if (empty($params['_serial_no'])) {
+                mt_srand();
+                $params['_serial_no'] = strval(array_rand($config->get('wechat_public_cert_path')));
+                $rocket->setParams($params);
+            }
+
+            $extra['transfer_detail_list'] = $this->getEncryptUserName($params);
         }
 
-        $certs = $config->get('wechat_public_cert_path');
-
-        if (empty($params['_serial_no'])) {
-            mt_srand();
-            $params['_serial_no'] = array_rand($certs);
-            $rocket->setParams($params);
-        }
-
-        $rocket->mergePayload($this->mergeAppId($config));
-        $rocket->mergePayload([
-            'transfer_detail_list' => $this->mergeEncryptUserName($params, $params['_serial_no']),
-        ]);
+        $rocket->mergePayload($extra);
     }
 
     protected function getUri(Rocket $rocket): string
@@ -52,7 +53,7 @@ class CreatePlugin extends GeneralPlugin
         return 'v3/partner-transfer/batches';
     }
 
-    protected function mergeAppId(Config $config): array
+    protected function getWechatId(Config $config): array
     {
         $appId = [
             'appid' => $config->get('mp_app_id'),
@@ -73,13 +74,10 @@ class CreatePlugin extends GeneralPlugin
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function mergeEncryptUserName(array $params, string $serialNo): array
+    protected function getEncryptUserName(array $params): array
     {
+        $serialNo = $params['__serial_no'];
         $lists = $params['transfer_detail_list'] ?? [];
-
-        if (empty(reset($lists)['user_name'])) {
-            return $lists;
-        }
 
         foreach ($lists as $key => $list) {
             $lists[$key]['user_name'] = encrypt_wechat_contents($params, $list['user_name'], $serialNo);
