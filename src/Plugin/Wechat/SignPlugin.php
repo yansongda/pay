@@ -36,6 +36,10 @@ class SignPlugin implements PluginInterface
             $rocket->getParams(), $timestamp, $random, $this->getContents($rocket, $timestamp, $random))
         );
 
+        if (!empty($rocket->getParams()['_serial_no'])) {
+            $radar->withHeader('Wechatpay-Serial', $rocket->getParams()['_serial_no']);
+        }
+
         if (!empty($body)) {
             $radar = $radar->withBody(Utils::streamFor($body));
         }

@@ -76,7 +76,7 @@ class CreatePlugin extends GeneralPlugin
      */
     protected function getEncryptUserName(array $params): array
     {
-        $serialNo = $params['__serial_no'];
+        $serialNo = $params['_serial_no'] ?? '';
         $lists = $params['transfer_detail_list'] ?? [];
 
         foreach ($lists as $key => $list) {
