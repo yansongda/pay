@@ -74,7 +74,6 @@ yansongda/pay 100% 兼容 支付宝/微信 所有功能（包括服务商功能�
 - APP 支付
 - ...
 - ~~刷卡支付，微信v3版暂不支持，计划后续内置支持v2版，或直接使用 Pay v2 版本~~
-- ~~企业付款，微信v3版暂不支持，计划后续内置支持v2版，或直接使用 Pay v2 版本~~
 - ~~普通红包，微信v3版暂不支持，计划后续内置支持v2版，或直接使用 Pay v2 版本~~
 - ~~分裂红包，微信v3版暂不支持，计划后续内置支持v2版，或直接使用 Pay v2 版本~~
 
@@ -98,18 +97,22 @@ class AlipayController
     protected $config = [
         'alipay' => [
             'default' => [
+                // 必填-支付宝分配的 app_id
                 'app_id' => '2016082000295641',
-                // 应用私钥 
-                'app_secret_cert' => 'MIIEpAIBAAKCAQEAs6fsdafasfasfsafsafasfasfas',
-                // 应用公钥证书路径
-                'app_public_cert_path' => '/User/yansongda/cert/app_public.crt',
-                // 支付宝公钥证书路径
-                'alipay_public_cert_path' => '/User/yansongda/cert/alipay_root.crt',
-                // 支付宝根证书路径
-                'alipay_root_cert_path' => '/User/yansongda/cert/alipay_root.crt',
-                'notify_url' => 'https://yansongda.cn/notify.html',
-                'return_url' => 'https://yansongda.cn/return.html',
-                'mode' => Pay::MODE_SANDBOX, // optional,设置此参数，将进入沙箱模式
+                // 必填-应用私钥 字符串或路径
+                'app_secret_cert' => '89iZ2iC16H6/6a3YcP+hDZUjiNGQx9cuwi9eJyykvcwhD...',
+                // 必填-应用公钥证书 路径
+                'app_public_cert_path' => '/Users/yansongda/pay/cert/appCertPublicKey_2016082000295641.crt',
+                // 必填-支付宝公钥证书 路径
+                'alipay_public_cert_path' => '/Users/yansongda/pay/cert/alipayCertPublicKey_RSA2.crt',
+                // 必填-支付宝根证书 路径
+                'alipay_root_cert_path' => '/Users/yansongda/pay/cert/alipayRootCert.crt',
+                'return_url' => 'https://yansongda.cn/alipay/return',
+                'notify_url' => 'https://yansongda.cn/alipay/notify',
+                // 选填-服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数
+                'service_provider_id' => '',
+                // 选填-默认为正常模式。可选为： MODE_NORMAL, MODE_SANDBOX, MODE_SERVICE
+                'mode' => Pay::MODE_NORMAL,
             ],       
         ],   
         'logger' => [ // optional
@@ -181,29 +184,40 @@ class WechatController
     protected $config = [
         'wechat' => [
             'default' => [
-                // 公众号 的 app_id
-                'mp_app_id' => '2016082000295641',
-                // 小程序 的 app_id
-                'mini_app_id' => '',
-                // app 的 app_id
-                'app_id' => '',
-                // 商户号 
+                // 必填-商户号，服务商模式下为服务商商户号
                 'mch_id' => '',
-                // 合单 app_id
-                'combine_app_id' => '',
-                // 合单商户号 
-                'combine_mch_id' => '',
-                // 商户秘钥
+                // 必填-商户秘钥
                 'mch_secret_key' => '',
-                // 商户私钥
+                // 必填-商户私钥 字符串或路径
                 'mch_secret_cert' => '',
-                // 商户公钥证书路径
+                // 必填-商户公钥证书路径
                 'mch_public_cert_path' => '',
-                // 微信公钥证书路径, optional
+                // 必填
+                'notify_url' => 'https://yansongda.cn/wechat/notify',
+                // 选填-公众号 的 app_id
+                'mp_app_id' => '2016082000291234',
+                // 选填-小程序 的 app_id
+                'mini_app_id' => '',
+                // 选填-app 的 app_id
+                'app_id' => '',
+                // 选填-合单 app_id
+                'combine_app_id' => '',
+                // 选填-合单商户号 
+                'combine_mch_id' => '',
+                // 选填-服务商模式下，子公众号 的 app_id
+                'sub_mp_app_id' => '',
+                // 选填-服务商模式下，子 app 的 app_id
+                'sub_app_id' => '',
+                // 选填-服务商模式下，子小程序 的 app_id
+                'sub_mini_app_id' => '',
+                // 选填-服务商模式下，子商户id
+                'sub_mch_id' => '',
+                // 选填-微信公钥证书路径, optional，强烈建议 php-fpm 模式下配置此参数
                 'wechat_public_cert_path' => [
-                    '' => '',
+                    '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
                 ],
-                'mode' => Pay::MODE_SANDBOX,
+                // 选填-默认为正常模式。可选为： MODE_NORMAL, MODE_SERVICE
+                'mode' => Pay::MODE_NORMAL,
             ]
         ],
         'logger' => [ // optional

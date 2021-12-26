@@ -64,6 +64,8 @@ class Exception extends \Exception
 
     public const NOT_IN_SERVICE_MODE = 4007;
 
+    public const WECHAT_SERIAL_NO_NOT_FOUND = 4008;
+
     /**
      * 关于api.
      */
