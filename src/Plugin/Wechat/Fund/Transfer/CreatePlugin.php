@@ -7,10 +7,13 @@ namespace Yansongda\Pay\Plugin\Wechat\Fund\Transfer;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Traits\HasWechatEncryption;
 use Yansongda\Supports\Config;
 
 class CreatePlugin extends GeneralPlugin
 {
+    use HasWechatEncryption;
+
     /**
      * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
@@ -27,15 +30,9 @@ class CreatePlugin extends GeneralPlugin
         $extra = $this->getWechatId($config);
 
         if (!empty($params['transfer_detail_list'][0]['user_name'] ?? '')) {
-            if (empty($config->get('wechat_public_cert_path'))) {
-                reload_wechat_public_certs($params);
-            }
+            $params = $this->loadSerialNo($params);
 
-            if (empty($params['_serial_no'])) {
-                mt_srand();
-                $params['_serial_no'] = strval(array_rand($config->get('wechat_public_cert_path')));
-                $rocket->setParams($params);
-            }
+            $rocket->setParams($params);
 
             $extra['transfer_detail_list'] = $this->getEncryptUserName($params);
         }
@@ -76,11 +73,11 @@ class CreatePlugin extends GeneralPlugin
      */
     protected function getEncryptUserName(array $params): array
     {
-        $serialNo = $params['_serial_no'] ?? '';
         $lists = $params['transfer_detail_list'] ?? [];
+        $publicKey = $this->getPublicKey($params, $params['_serial_no'] ?? '');
 
         foreach ($lists as $key => $list) {
-            $lists[$key]['user_name'] = encrypt_wechat_contents($params, $list['user_name'], $serialNo);
+            $lists[$key]['user_name'] = encrypt_wechat_contents($list['user_name'], $publicKey);
         }
 
         return $lists;

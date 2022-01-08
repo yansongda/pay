@@ -19,7 +19,7 @@ class PreCreatePlugin extends GeneralPlugin
      */
     protected function doSomethingBefore(Rocket $rocket): void
     {
-        $this->loadServiceProvider($rocket);
+        $this->loadAlipayServiceProvider($rocket);
     }
 
     protected function getMethod(): string

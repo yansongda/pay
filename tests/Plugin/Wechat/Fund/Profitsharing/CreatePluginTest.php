@@ -60,4 +60,26 @@ class CreatePluginTest extends TestCase
         self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
         self::assertEquals('123', $payload->get('sub_mchid'));
     }
+
+    public function testEncryptName()
+    {
+        $params = [
+            'receivers' => [
+                [
+                    'name' => 'yansongda'
+                ]
+            ]
+        ];
+
+        $rocket = new Rocket();
+        $rocket->setParams($params)->setPayload(new Collection());
+
+        $plugin = new CreatePlugin();
+
+        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $payload = $result->getPayload();
+
+        self::assertNotEquals('yansongda', $payload->get('receivers.0.name'));
+        self::assertStringContainsString('==', $payload->get('receivers.0.name'));
+    }
 }

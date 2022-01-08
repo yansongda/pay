@@ -28,7 +28,7 @@ class LaunchPlugin implements PluginInterface
 
         Logger::info('[alipay][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        if (should_do_http_request($rocket)) {
+        if (should_do_http_request($rocket->getDirection())) {
             $this->verifySign($rocket);
 
             $rocket->setDestination(

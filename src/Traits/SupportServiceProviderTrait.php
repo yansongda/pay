@@ -14,7 +14,7 @@ trait SupportServiceProviderTrait
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function loadServiceProvider(Rocket $rocket): void
+    protected function loadAlipayServiceProvider(Rocket $rocket): void
     {
         $params = $rocket->getParams();
         $config = get_alipay_config($params);

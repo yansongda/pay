@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Stubs\Plugin;
+namespace Yansongda\Pay\Tests\Stubs\Traits;
 
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Traits\SupportServiceProviderTrait;
@@ -11,6 +11,6 @@ class SupportServiceProviderPluginStub
 
     public function assembly(Rocket $rocket)
     {
-        $this->loadServiceProvider($rocket);
+        $this->loadAlipayServiceProvider($rocket);
     }
 }

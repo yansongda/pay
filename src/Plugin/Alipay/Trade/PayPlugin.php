@@ -23,7 +23,7 @@ class PayPlugin implements PluginInterface
     {
         Logger::info('[alipay][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $this->loadServiceProvider($rocket);
+        $this->loadAlipayServiceProvider($rocket);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.pay',
