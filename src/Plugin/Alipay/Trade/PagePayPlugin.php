@@ -24,7 +24,7 @@ class PagePayPlugin implements PluginInterface
     {
         Logger::info('[alipay][PagePayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $this->loadServiceProvider($rocket);
+        $this->loadAlipayServiceProvider($rocket);
 
         $rocket->setDirection(ResponseParser::class)
             ->mergePayload([

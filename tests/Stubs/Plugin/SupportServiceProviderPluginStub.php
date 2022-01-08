@@ -11,6 +11,6 @@ class SupportServiceProviderPluginStub
 
     public function assembly(Rocket $rocket)
     {
-        $this->loadServiceProvider($rocket);
+        $this->loadAlipayServiceProvider($rocket);
     }
 }

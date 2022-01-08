@@ -88,7 +88,7 @@ abstract class AbstractProvider implements ProviderInterface
      */
     public function ignite(Rocket $rocket): Rocket
     {
-        if (!should_do_http_request($rocket)) {
+        if (!should_do_http_request($rocket->getDirection())) {
             return $rocket;
         }
 

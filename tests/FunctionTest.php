@@ -25,16 +25,16 @@ class FunctionTest extends TestCase
     {
         $rocket = new Rocket();
 
-        self::assertTrue(should_do_http_request($rocket));
+        self::assertTrue(should_do_http_request($rocket->getDirection()));
 
         $rocket->setDirection(CollectionParser::class);
-        self::assertTrue(should_do_http_request($rocket));
+        self::assertTrue(should_do_http_request($rocket->getDirection()));
 
         $rocket->setDirection(ResponseParser::class);
-        self::assertFalse(should_do_http_request($rocket));
+        self::assertFalse(should_do_http_request($rocket->getDirection()));
 
         $rocket->setDirection(NoHttpRequestParser::class);
-        self::assertFalse(should_do_http_request($rocket));
+        self::assertFalse(should_do_http_request($rocket->getDirection()));
     }
 
     public function testGetAlipayConfig()
@@ -218,15 +218,8 @@ class FunctionTest extends TestCase
     {
         $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
         $contents = 'yansongda';
-        $result = encrypt_wechat_contents([], $contents, $serialNo);
+        $result = encrypt_wechat_contents($contents, get_wechat_config([])['wechat_public_cert_path.'.$serialNo]);
         self::assertIsString($result);
-
-        $serialNo = 'non-exist';
-        $contents = 'yansongda';
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::WECHAT_SERIAL_NO_NOT_FOUND);
-        encrypt_wechat_contents([], $contents, $serialNo);
     }
 
     public function testReloadWechatPublicCerts()
