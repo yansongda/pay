@@ -101,4 +101,18 @@ class CreatePluginTest extends TestCase
         self::assertEquals('yansongda', $result->getParams()['_serial_no']);
         self::assertStringContainsString('==', $userName);
     }
+
+    public function testNormalOtherType()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_type' => 'mini'])->setPayload(new Collection());
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $radar = $result->getRadar();
+        $payload = $result->getPayload();
+
+        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/transfer/batches'), $radar->getUri());
+        self::assertEquals('wx55955316af4ef14', $payload->get('appid'));
+    }
 }

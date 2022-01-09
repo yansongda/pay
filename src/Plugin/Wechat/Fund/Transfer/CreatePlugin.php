@@ -8,7 +8,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Traits\HasWechatEncryption;
-use Yansongda\Supports\Config;
+use Yansongda\Supports\Collection;
 
 class CreatePlugin extends GeneralPlugin
 {
@@ -25,9 +25,7 @@ class CreatePlugin extends GeneralPlugin
     protected function doSomething(Rocket $rocket): void
     {
         $params = $rocket->getParams();
-        $config = get_wechat_config($params);
-
-        $extra = $this->getWechatId($config);
+        $extra = $this->getWechatId($params, $rocket->getPayload());
 
         if (!empty($params['transfer_detail_list'][0]['user_name'] ?? '')) {
             $params = $this->loadSerialNo($params);
@@ -50,15 +48,27 @@ class CreatePlugin extends GeneralPlugin
         return 'v3/partner-transfer/batches';
     }
 
-    protected function getWechatId(Config $config): array
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getWechatId(array $params, Collection $payload): array
     {
+        $config = get_wechat_config($params);
+        $key = ($params['_type'] ?? 'mp').'_app_id';
+
+        if ('app_app_id' === $key) {
+            $key = 'app_id';
+        }
+
         $appId = [
-            'appid' => $config->get('mp_app_id'),
+            'appid' => $payload->get('appid', $config->get($key, '')),
         ];
 
         if (Pay::MODE_SERVICE == $config->get('mode')) {
             $appId = [
-                'sub_mchid' => $config->get('sub_mch_id', ''),
+                'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id', '')),
             ];
         }
 
