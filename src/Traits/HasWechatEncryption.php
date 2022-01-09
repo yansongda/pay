@@ -23,6 +23,8 @@ trait HasWechatEncryption
 
         if (empty($config->get('wechat_public_cert_path'))) {
             reload_wechat_public_certs($params);
+
+            $config = get_wechat_config($params);
         }
 
         if (empty($params['_serial_no'])) {
