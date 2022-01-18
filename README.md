@@ -237,10 +237,14 @@ class WechatController
     public function index()
     {
         $order = [
-            'out_trade_no' => time(),
-            'total_fee' => '1', // **单位：分**
-            'body' => 'test body - 测试',
-            'openid' => 'onkVf1FjWS5SBIixxxxxxx',
+            'out_trade_no' => time().'',
+            'description' => 'subject-测试',
+            'amount' => [
+                 'total' => 1,
+            ],
+            'payer' => [
+                 'openid' => 'onkVf1FjWS5SBxxxxxxxx',
+            ],
         ];
 
         $pay = Pay::wechat($this->config)->mp($order);
