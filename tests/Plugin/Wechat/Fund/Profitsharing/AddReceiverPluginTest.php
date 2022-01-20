@@ -12,14 +12,24 @@ use Yansongda\Supports\Collection;
 
 class AddReceiverPluginTest extends TestCase
 {
+    /**
+     * @var AddReceiverPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new AddReceiverPlugin();
+    }
+
     public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
 
-        $plugin = new AddReceiverPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
         $payload = $result->getPayload();
@@ -34,9 +44,7 @@ class AddReceiverPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
 
-        $plugin = new AddReceiverPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
         $payload = $result->getPayload();
@@ -51,13 +59,31 @@ class AddReceiverPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['sub_mchid' => '123']));
 
-        $plugin = new AddReceiverPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
         self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
         self::assertEquals('123', $payload->get('sub_mchid'));
+    }
+
+    public function testEncryptName()
+    {
+        $params = [
+            'receivers' => [
+                [
+                    'name' => 'yansongda'
+                ]
+            ]
+        ];
+
+        $rocket = new Rocket();
+        $rocket->setParams($params)->setPayload(new Collection());
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $payload = $result->getPayload();
+
+        self::assertNotEquals('yansongda', $payload->get('receivers.0.name'));
+        self::assertStringContainsString('==', $payload->get('receivers.0.name'));
     }
 }
