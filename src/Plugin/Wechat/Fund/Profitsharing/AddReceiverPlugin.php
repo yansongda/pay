@@ -1,6 +1,6 @@
 <?php
 
-declare (strict_types = 1);
+declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing;
 
@@ -35,7 +35,6 @@ class AddReceiverPlugin extends GeneralPlugin
             $params['name'] = $name;
             $extra['name'] = $name;
             $rocket->setParams($params);
-
         }
 
         $rocket->mergePayload($extra);
