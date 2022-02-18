@@ -28,12 +28,13 @@ class AddReceiverPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
         $extra = $this->getWechatId($config, $rocket->getPayload());
 
-        if (!empty($params['receivers'][0]['name'] ?? '')) {
+        if (!empty($params['name'] ?? '')) {
             $params = $this->loadSerialNo($params);
 
+            $name = $this->getEncryptUserName($params);
+            $params['name'] = $name;
+            $extra['name'] = $name;
             $rocket->setParams($params);
-
-            $extra['receivers'] = $this->getEncryptUserName($params);
         }
 
         $rocket->mergePayload($extra);
@@ -63,15 +64,13 @@ class AddReceiverPlugin extends GeneralPlugin
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getEncryptUserName(array $params): array
+    protected function getEncryptUserName(array $params): string
     {
-        $lists = $params['receivers'] ?? [];
+        $name = $params['name'] ?? '';
         $publicKey = $this->getPublicKey($params, $params['_serial_no'] ?? '');
 
-        foreach ($lists as $key => $list) {
-            $lists[$key]['name'] = encrypt_wechat_contents($list['name'], $publicKey);
-        }
+        $name = encrypt_wechat_contents($name, $publicKey);
 
-        return $lists;
+        return $name;
     }
 }
