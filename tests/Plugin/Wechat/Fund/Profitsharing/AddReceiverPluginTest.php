@@ -29,12 +29,12 @@ class AddReceiverPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
 
         $radar = $result->getRadar();
         $payload = $result->getPayload();
 
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/profitsharing/receivers/add'), $radar->getUri());
+        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL] . 'v3/profitsharing/receivers/add'), $radar->getUri());
         self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
         self::assertArrayNotHasKey('sub_mchid', $payload->all());
     }
@@ -44,12 +44,12 @@ class AddReceiverPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
 
         $radar = $result->getRadar();
         $payload = $result->getPayload();
 
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_SERVICE].'v3/profitsharing/receivers/add'), $radar->getUri());
+        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_SERVICE] . 'v3/profitsharing/receivers/add'), $radar->getUri());
         self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
         self::assertEquals('1600314070', $payload->get('sub_mchid'));
     }
@@ -59,7 +59,7 @@ class AddReceiverPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['sub_mchid' => '123']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
 
         $payload = $result->getPayload();
 
@@ -70,20 +70,16 @@ class AddReceiverPluginTest extends TestCase
     public function testEncryptName()
     {
         $params = [
-            'receivers' => [
-                [
-                    'name' => 'yansongda'
-                ]
-            ]
+            'name' => 'yansongda',
         ];
 
         $rocket = new Rocket();
         $rocket->setParams($params)->setPayload(new Collection());
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
         $payload = $result->getPayload();
 
-        self::assertNotEquals('yansongda', $payload->get('receivers.0.name'));
-        self::assertStringContainsString('==', $payload->get('receivers.0.name'));
+        self::assertNotEquals('yansongda', $payload->get('name'));
+        self::assertStringContainsString('==', $payload->get('name'));
     }
 }
