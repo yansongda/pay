@@ -153,13 +153,22 @@ class Support
     {
         Events::dispatch(new Events\ApiRequesting('Wechat', '', self::$instance->getBaseUri().$endpoint, $data));
 
+        //xmlData需增加headers配置，否则微信方无法接收到参数
+        $options = [
+            'headers' => [
+                'Content-Type' => 'application/xml',
+            ],
+        ];
+
+        $certOptions = $cert ? [
+            'cert' => self::$instance->cert_client,
+            'ssl_key' => self::$instance->cert_key,
+        ] : [];
+
         $result = self::$instance->post(
             $endpoint,
             self::toXml($data),
-            $cert ? [
-                'cert' => self::$instance->cert_client,
-                'ssl_key' => self::$instance->cert_key,
-            ] : []
+            array_merge($options, $certOptions)
         );
         $result = is_array($result) ? $result : self::fromXml($result);
 
