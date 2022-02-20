@@ -212,7 +212,7 @@ class Wechat implements GatewayApplicationInterface
 
         //TODO 临时注释，$order 需传入数组，且包含type字段，否则后面无法根据type获取对应的appid
         //$config = call_user_func([new $gateway(), 'find'], $order);
-        $config = call_user_func([new $gateway(), 'find'], ['out_trade_no' => $order,'type' => $type]);
+        $config = call_user_func([new $gateway(), 'find'], ['out_trade_no' => $order, 'type' => $type]);
 
         $this->payload = Support::filterPayload($this->payload, $config['order']);
 

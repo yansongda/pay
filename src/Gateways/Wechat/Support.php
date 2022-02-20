@@ -156,12 +156,12 @@ class Support
         //xmlData需增加headers配置，否则微信方无法接收到参数
         $options = [
             'headers' => [
-                "Content-Type" => "application/xml"
-            ]
+                'Content-Type' => 'application/xml',
+            ],
         ];
 
         $certOptions = $cert ? [
-            'cert'    => self::$instance->cert_client,
+            'cert' => self::$instance->cert_client,
             'ssl_key' => self::$instance->cert_key,
         ] : [];
 
