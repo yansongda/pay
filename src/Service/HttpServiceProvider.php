@@ -22,8 +22,10 @@ class HttpServiceProvider implements ServiceProviderInterface
         /* @var \Yansongda\Supports\Config $config */
         $config = Pay::get(ConfigInterface::class);
 
-        $service = new Client($config->get('http', []));
+        if (class_exists(Client::class)) {
+            $service = new Client($config->get('http', []));
 
-        Pay::set(HttpClientInterface::class, $service);
+            Pay::set(HttpClientInterface::class, $service);
+        }
     }
 }

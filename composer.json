@@ -27,9 +27,7 @@
         "psr/container": "^1.1 | ^2.0",
         "psr/http-client": "^1.0",
         "psr/http-message": "^1.0",
-        "php-di/php-di": "~6.3.0",
-        "yansongda/supports": "~3.1.0",
-        "guzzlehttp/guzzle": "^7.0"
+        "yansongda/supports": "~3.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
@@ -40,7 +38,9 @@
         "symfony/var-dumper": "^5.1",
         "symfony/http-foundation": "^5.2.0",
         "symfony/event-dispatcher": "^5.2.0",
-        "symfony/psr-http-message-bridge": "^2.1"
+        "symfony/psr-http-message-bridge": "^2.1",
+        "php-di/php-di": "~6.3.0",
+        "guzzlehttp/guzzle": "^7.0"
     },
     "autoload": {
         "psr-4": {

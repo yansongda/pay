@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
-use DI\Container;
-use DI\ContainerBuilder;
-use DI\DependencyException;
-use DI\NotFoundException;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
-use Yansongda\Pay\Contract\ContainerInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
-use Yansongda\Pay\Exception\ContainerDependencyException;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
@@ -64,27 +60,24 @@ class Pay
     ];
 
     /**
-     * @var \DI\Container|null
+     * @var \Psr\Container\ContainerInterface|null
      */
     private static $container = null;
 
     /**
      * Bootstrap.
      *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    private function __construct(array $config)
+    private function __construct(array $config, ?Contract\ContainerInterface $container = null)
     {
-        $this->initContainer();
         $this->registerServices($config);
     }
 
     /**
      * __callStatic.
      *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
@@ -102,17 +95,16 @@ class Pay
     /**
      * 初始化容器、配置等信息.
      *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public static function config(array $config = []): Pay
+    public static function config(array $config = [], ?Contract\ContainerInterface $container = null): Pay
     {
         if (self::hasContainer() && !($config['_force'] ?? false)) {
             return self::get(Pay::class);
         }
 
-        return new self($config);
+        return new self($config, $container);
     }
 
     /**
@@ -124,33 +116,46 @@ class Pay
      */
     public static function set(string $name, $value): void
     {
-        Pay::getContainer()->set($name, $value);
-    }
-
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return mixed
-     */
-    public static function make(string $service, array $parameters = [])
-    {
         try {
-            return Pay::getContainer()->make(...func_get_args());
-        } catch (NotFoundException $e) {
-            throw new ServiceNotFoundException($e->getMessage());
-        } catch (DependencyException $e) {
-            throw new ContainerDependencyException($e->getMessage());
+            $container = Pay::getContainer();
+
+            if ($container instanceof Contract\ContainerInterface || method_exists($container, 'set')) {
+                $container->set(...func_get_args());
+            }
+        } catch (ContainerNotFoundException $e) {
+            throw $e;
         } catch (Throwable $e) {
             throw new ContainerException($e->getMessage());
         }
     }
 
     /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     *
+     * @return mixed
+     */
+    public static function make(string $service, array $parameters = [])
+    {
+        try {
+            $container = Pay::getContainer();
+
+            if ($container instanceof Contract\ContainerInterface || method_exists($container, 'make')) {
+                return $container->make(...func_get_args());
+            }
+        } catch (ContainerNotFoundException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            throw new ContainerException($e->getMessage());
+        }
+
+        $parameters = array_values($parameters);
+
+        return new $service(...$parameters);
+    }
+
+    /**
      * 获取服务.
      *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\ContainerException
      *
@@ -160,10 +165,8 @@ class Pay
     {
         try {
             return Pay::getContainer()->get($service);
-        } catch (NotFoundException $e) {
+        } catch (NotFoundExceptionInterface $e) {
             throw new ServiceNotFoundException($e->getMessage());
-        } catch (DependencyException $e) {
-            throw new ContainerDependencyException($e->getMessage());
         } catch (Throwable $e) {
             throw new ContainerException($e->getMessage());
         }
@@ -182,7 +185,7 @@ class Pay
      *
      * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      */
-    public static function getContainer(): Container
+    public static function getContainer(): ContainerInterface
     {
         if (self::hasContainer()) {
             return self::$container;
@@ -196,7 +199,7 @@ class Pay
      */
     public static function hasContainer(): bool
     {
-        return isset(self::$container) && self::$container instanceof Container;
+        return isset(self::$container) && self::$container instanceof ContainerInterface;
     }
 
     /**
@@ -210,7 +213,6 @@ class Pay
     /**
      * 注册服务.
      *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
@@ -224,31 +226,8 @@ class Pay
     }
 
     /**
-     * initContainer.
-     *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     */
-    private function initContainer(): void
-    {
-        $builder = new ContainerBuilder();
-        $builder->useAnnotations(false);
-
-        try {
-            $container = $builder->build();
-            $container->set(ContainerInterface::class, $container);
-            $container->set(\Psr\Container\ContainerInterface::class, $container);
-            $container->set(Pay::class, $this);
-
-            self::$container = $container;
-        } catch (Throwable $e) {
-            throw new ContainerException($e->getMessage());
-        }
-    }
-
-    /**
      * register services.
      *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
