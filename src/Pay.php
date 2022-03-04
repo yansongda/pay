@@ -99,13 +99,15 @@ class Pay
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public static function config(array $config = [], $container = null): Pay
+    public static function config(array $config = [], $container = null): bool
     {
         if (self::hasContainer() && !($config['_force'] ?? false)) {
-            return self::get(Pay::class);
+            return false;
         }
 
-        return new self($config, $container);
+        new self($config, $container);
+
+        return true;
     }
 
     /**
@@ -235,7 +237,7 @@ class Pay
      */
     private function registerContainer($container = null): void
     {
-        if (self::$container instanceof ContainerInterface || self::$container instanceof Closure) {
+        if ($container instanceof ContainerInterface || $container instanceof Closure) {
             self::$container = $container;
 
             return;
