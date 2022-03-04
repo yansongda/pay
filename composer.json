@@ -39,8 +39,11 @@
         "symfony/http-foundation": "^5.2.0",
         "symfony/event-dispatcher": "^5.2.0",
         "symfony/psr-http-message-bridge": "^2.1",
-        "php-di/php-di": "~6.3.0",
-        "guzzlehttp/guzzle": "^7.0"
+        "php-di/php-di": "^6.3.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "illuminate/container": "^9.3",
+        "topthink/think-container": "^2.0",
+        "hyperf/utils": "^2.2"
     },
     "autoload": {
         "psr-4": {

@@ -16,6 +16,7 @@ use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\ConfigServiceProvider;
+use Yansongda\Pay\Service\ContainerServiceProvider;
 use Yansongda\Pay\Service\EventServiceProvider;
 use Yansongda\Pay\Service\HttpServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
@@ -61,28 +62,23 @@ class Pay
     ];
 
     /**
-     * @var \Closure|\Psr\Container\ContainerInterface|\Yansongda\Pay\Contract\ContainerInterface|null
+     * @var \Closure|\Psr\Container\ContainerInterface|null
      */
     private static $container = null;
 
     /**
-     * Bootstrap.
-     *
-     * @param \Closure|\Psr\Container\ContainerInterface|\Yansongda\Pay\Contract\ContainerInterface|null $container
+     * @param \Closure|\Psr\Container\ContainerInterface|null $container
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     private function __construct(array $config, $container = null)
     {
-        self::$container = $container;
-
+        $this->registerContainer($container);
         $this->registerServices($config);
     }
 
     /**
-     * __callStatic.
-     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
@@ -98,25 +94,21 @@ class Pay
     }
 
     /**
-     * 初始化容器、配置等信息.
-     *
-     * @param \Closure|\Psr\Container\ContainerInterface|\Yansongda\Pay\Contract\ContainerInterface|null $container
+     * @param \Closure|\Psr\Container\ContainerInterface|null $container
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public static function config(array $config = [], $container = null): Pay
     {
-        if ($config['_force'] ?? false) {
-            return new self($config, $container);
+        if (Pay::hasContainer() && !($config['_force'] ?? false)) {
+            return self::get(Pay::class);
         }
 
-        return self::get(Pay::class);
+        return new self($config, $container);
     }
 
     /**
-     * 定义.
-     *
      * @param mixed $value
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
@@ -161,8 +153,6 @@ class Pay
     }
 
     /**
-     * 获取服务.
-     *
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\ContainerException
      *
@@ -188,7 +178,7 @@ class Pay
     }
 
     /**
-     * @param \Closure|\Psr\Container\ContainerInterface|\Yansongda\Pay\Contract\ContainerInterface|null $container
+     * @param \Closure|\Psr\Container\ContainerInterface|null $container
      */
     public static function setContainer($container): void
     {
@@ -196,8 +186,6 @@ class Pay
     }
 
     /**
-     * getContainer.
-     *
      * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      */
     public static function getContainer(): ContainerInterface
@@ -210,20 +198,20 @@ class Pay
             return (self::$container)();
         }
 
-        throw new ContainerNotFoundException('You should init/config PAY first', Exception\Exception::CONTAINER_NOT_FOUND);
+        throw new ContainerNotFoundException('Init failed! Maybe you should install `php-di/php-di` first', Exception\Exception::CONTAINER_NOT_FOUND);
     }
 
-    /**
-     * clear.
-     */
+    public static function hasContainer(): bool
+    {
+        return self::$container instanceof ContainerInterface || self::$container instanceof Closure;
+    }
+
     public static function clear(): void
     {
         self::$container = null;
     }
 
     /**
-     * 注册服务.
-     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
@@ -232,13 +220,27 @@ class Pay
         $var = self::get($service);
 
         if ($var instanceof ServiceProviderInterface) {
-            $var->register(self::get(Pay::class), $config);
+            $var->register($config);
         }
     }
 
     /**
-     * register services.
+     * @param \Closure|\Psr\Container\ContainerInterface|null $container
      *
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     */
+    private function registerContainer($container = null): void
+    {
+        if (self::$container instanceof ContainerInterface || self::$container instanceof Closure) {
+            self::$container = $container;
+
+            return;
+        }
+
+        $this->tryRegisterContainer();
+    }
+
+    /**
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
@@ -247,5 +249,15 @@ class Pay
         foreach (array_merge($this->coreService, $this->service) as $service) {
             self::registerService($service, $config);
         }
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     */
+    private function tryRegisterContainer(): void
+    {
+        $cs = new ContainerServiceProvider();
+
+        $cs->register();
     }
 }

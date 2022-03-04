@@ -28,7 +28,7 @@ class Logger
      */
     public static function __callStatic(string $method, array $args): void
     {
-        if (!Pay::has(LoggerInterface::class) ||
+        if (!Pay::hasContainer() || !Pay::has(LoggerInterface::class) ||
             false === Pay::get(ConfigInterface::class)->get('logger.enable', false)) {
             return;
         }

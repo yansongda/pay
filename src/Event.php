@@ -19,7 +19,7 @@ class Event
      */
     public static function __callStatic(string $method, array $args): void
     {
-        if (!Pay::has(EventDispatcherInterface::class)) {
+        if (!Pay::hasContainer() || !Pay::has(EventDispatcherInterface::class)) {
             return;
         }
 

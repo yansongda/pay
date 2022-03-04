@@ -58,15 +58,10 @@ class FunctionTest extends TestCase
         $alipayPublicCertPath = __DIR__ . '/Cert/alipayCertPublicKey_RSA2.crt';
         $alipayPublicCertCerPath = __DIR__ . '/Cert/alipayCertPublicKey_RSA2.cer';
         $appSecretCert = file_get_contents(__DIR__ . '/Cert/alipayAppSecretKey_RSA2_PKCS1.txt');
-        // $appSecretCertPath = __DIR__ . '/Cert/alipayAppSecretKey_RSA2_PKCS1.pem';
 
-        self::assertEquals(file_get_contents($alipayPublicCertCerPath), get_public_or_private_cert($alipayPublicCertCerPath, true));
-        self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_or_private_cert($alipayPublicCertPath, true));
-        self::assertTrue(Str::contains(get_public_or_private_cert($appSecretCert), 'END RSA PRIVATE KEY'));
-
-        // Github 不知道是不是有什么限制，获取不到 RSA PRIVATE KEY
-        // var_dump(file_get_contents($appSecretCertPath));
-        // self::assertIsResource(get_public_or_private_cert($appSecretCertPath));
+        self::assertEquals(file_get_contents($alipayPublicCertCerPath), get_public_cert($alipayPublicCertCerPath));
+        self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_cert($alipayPublicCertPath));
+        self::assertTrue(Str::contains(get_private_cert($appSecretCert), 'END RSA PRIVATE KEY'));
     }
 
     public function testVerifyAlipaySign()

@@ -15,7 +15,7 @@ class EventServiceProvider implements ServiceProviderInterface
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function register(Pay $pay, ?array $data = null): void
+    public function register(?array $data = null): void
     {
         if (class_exists(EventDispatcher::class)) {
             $event = Pay::get(EventDispatcher::class);

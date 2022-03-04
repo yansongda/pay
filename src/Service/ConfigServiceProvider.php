@@ -33,7 +33,7 @@ class ConfigServiceProvider implements ServiceProviderInterface
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    public function register(Pay $pay, ?array $data = null): void
+    public function register(?array $data = null): void
     {
         $config = new Config(array_replace_recursive($this->config, $data ?? []));
 

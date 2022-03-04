@@ -73,10 +73,8 @@ class SignPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return resource|string
      */
-    protected function getPrivateKey(array $params)
+    protected function getPrivateKey(array $params): string
     {
         $privateKey = get_alipay_config($params)->get('app_secret_cert');
 
@@ -84,6 +82,6 @@ class SignPlugin implements PluginInterface
             throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [app_secret_cert]');
         }
 
-        return get_public_or_private_cert($privateKey);
+        return get_private_cert($privateKey);
     }
 }
