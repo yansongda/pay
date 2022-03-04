@@ -53,7 +53,7 @@ if (!function_exists('get_private_cert')) {
     function get_private_cert(string $key): string
     {
         if (Str::endsWith($key, ['.crt', '.pem'])) {
-            $key = file_get_contents($key);
+            return file_get_contents($key);
         }
 
         return "-----BEGIN RSA PRIVATE KEY-----\n".

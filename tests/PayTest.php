@@ -3,9 +3,7 @@
 namespace Yansongda\Pay\Tests;
 
 use DI\Container;
-use DI\ContainerBuilder;
 use GuzzleHttp\Client;
-use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Yansongda\Pay\Contract\ConfigInterface;
@@ -100,13 +98,16 @@ class PayTest extends TestCase
         Pay::foo([]);
     }
 
-    public function testCoreService()
+    public function testCoreServiceContainer()
     {
         Pay::config(['name' => 'yansongda']);
 
-        self::assertInstanceOf(Container::class, Pay::get(\Yansongda\Pay\Contract\ContainerInterface::class));
-        self::assertInstanceOf(Container::class, Pay::get(ContainerInterface::class));
-        self::assertInstanceOf(Pay::class, Pay::get(Pay::class));
+        if (class_exists(Container::class)) {
+            self::assertInstanceOf(Container::class, Pay::get(\Yansongda\Pay\Contract\ContainerInterface::class));
+            self::assertInstanceOf(Container::class, Pay::get(ContainerInterface::class));
+        }
+
+        self::assertTrue(true);
     }
 
     public function testCoreServiceConfig()

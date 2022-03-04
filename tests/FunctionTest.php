@@ -61,7 +61,7 @@ class FunctionTest extends TestCase
 
         self::assertEquals(file_get_contents($alipayPublicCertCerPath), get_public_cert($alipayPublicCertCerPath));
         self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_cert($alipayPublicCertPath));
-        self::assertTrue(Str::contains(get_private_cert($appSecretCert), 'END RSA PRIVATE KEY'));
+        self::assertTrue(Str::contains(get_private_cert($appSecretCert), 'PRIVATE KEY'));
     }
 
     public function testVerifyAlipaySign()
