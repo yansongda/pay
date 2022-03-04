@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
+use Closure;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
@@ -60,17 +61,19 @@ class Pay
     ];
 
     /**
-     * @var \Psr\Container\ContainerInterface|null
+     * @var \Closure|\Psr\Container\ContainerInterface|\Yansongda\Pay\Contract\ContainerInterface|null
      */
     private static $container = null;
 
     /**
      * Bootstrap.
      *
+     * @param \Closure|\Psr\Container\ContainerInterface|\Yansongda\Pay\Contract\ContainerInterface|null $container
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    private function __construct(array $config, ?Contract\ContainerInterface $container = null)
+    private function __construct(array $config, $container = null)
     {
         self::$container = $container;
 
@@ -97,10 +100,12 @@ class Pay
     /**
      * 初始化容器、配置等信息.
      *
+     * @param \Closure|\Psr\Container\ContainerInterface|\Yansongda\Pay\Contract\ContainerInterface|null $container
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public static function config(array $config = [], ?Contract\ContainerInterface $container = null): Pay
+    public static function config(array $config = [], $container = null): Pay
     {
         if ($config['_force'] ?? false) {
             return new self($config, $container);
@@ -183,17 +188,27 @@ class Pay
     }
 
     /**
+     * @param \Closure|\Psr\Container\ContainerInterface|\Yansongda\Pay\Contract\ContainerInterface|null $container
+     */
+    public static function setContainer($container): void
+    {
+        self::$container = $container;
+    }
+
+    /**
      * getContainer.
      *
      * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      */
     public static function getContainer(): ContainerInterface
     {
-        if (!is_null(self::$container) && self::$container instanceof ContainerInterface) {
+        if (self::$container instanceof ContainerInterface) {
             return self::$container;
         }
 
-
+        if (self::$container instanceof Closure) {
+            return (self::$container)();
+        }
 
         throw new ContainerNotFoundException('You should init/config PAY first', Exception\Exception::CONTAINER_NOT_FOUND);
     }
