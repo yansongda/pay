@@ -17,7 +17,6 @@ abstract class GeneralPlugin implements PluginInterface
     /**
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -32,7 +31,6 @@ abstract class GeneralPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
@@ -51,7 +49,6 @@ abstract class GeneralPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */

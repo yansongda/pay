@@ -72,6 +72,8 @@ class Pay
      */
     private function __construct(array $config, ?Contract\ContainerInterface $container = null)
     {
+        self::$container = $container;
+
         $this->registerServices($config);
     }
 
@@ -100,11 +102,11 @@ class Pay
      */
     public static function config(array $config = [], ?Contract\ContainerInterface $container = null): Pay
     {
-        if (self::hasContainer() && !($config['_force'] ?? false)) {
-            return self::get(Pay::class);
+        if ($config['_force'] ?? false) {
+            return new self($config, $container);
         }
 
-        return new self($config, $container);
+        return self::get(Pay::class);
     }
 
     /**
@@ -187,19 +189,13 @@ class Pay
      */
     public static function getContainer(): ContainerInterface
     {
-        if (self::hasContainer()) {
+        if (!is_null(self::$container) && self::$container instanceof ContainerInterface) {
             return self::$container;
         }
 
-        throw new ContainerNotFoundException('You should init/config PAY first', Exception\Exception::CONTAINER_NOT_FOUND);
-    }
 
-    /**
-     * has Container.
-     */
-    public static function hasContainer(): bool
-    {
-        return isset(self::$container) && self::$container instanceof ContainerInterface;
+
+        throw new ContainerNotFoundException('You should init/config PAY first', Exception\Exception::CONTAINER_NOT_FOUND);
     }
 
     /**

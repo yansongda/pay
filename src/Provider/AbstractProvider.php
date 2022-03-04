@@ -25,7 +25,6 @@ use Yansongda\Supports\Pipeline;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
@@ -47,10 +46,8 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      *
      * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
      */
@@ -80,7 +77,6 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\InvalidResponseException

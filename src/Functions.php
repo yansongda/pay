@@ -29,7 +29,6 @@ if (!function_exists('should_do_http_request')) {
 
 if (!function_exists('get_alipay_config')) {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
@@ -71,7 +70,6 @@ if (!function_exists('verify_alipay_sign')) {
     /**
      * @param string $sign base64decode 之后的
      *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
@@ -99,7 +97,6 @@ if (!function_exists('verify_alipay_sign')) {
 
 if (!function_exists('get_wechat_config')) {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
@@ -115,7 +112,6 @@ if (!function_exists('get_wechat_config')) {
 
 if (!function_exists('get_wechat_base_uri')) {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
@@ -129,7 +125,6 @@ if (!function_exists('get_wechat_base_uri')) {
 
 if (!function_exists('get_wechat_authorization')) {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
@@ -164,7 +159,6 @@ if (!function_exists('get_wechat_authorization')) {
 
 if (!function_exists('get_wechat_sign')) {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
@@ -193,7 +187,6 @@ if (!function_exists('verify_wechat_sign')) {
     /**
      * @param \Psr\Http\Message\ServerRequestInterface|\Psr\Http\Message\ResponseInterface $message
      *
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
@@ -250,7 +243,6 @@ if (!function_exists('encrypt_wechat_contents')) {
 
 if (!function_exists('reload_wechat_public_certs')) {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
@@ -285,7 +277,6 @@ if (!function_exists('reload_wechat_public_certs')) {
 
 if (!function_exists('decrypt_wechat_resource')) {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\InvalidResponseException

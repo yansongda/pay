@@ -12,7 +12,6 @@ use Yansongda\Pay\Rocket;
 class QueryPlugin extends GeneralPlugin
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
@@ -38,7 +37,6 @@ class QueryPlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException

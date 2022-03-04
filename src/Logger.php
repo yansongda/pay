@@ -22,14 +22,13 @@ use Yansongda\Pay\Exception\InvalidConfigException;
 class Logger
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      */
     public static function __callStatic(string $method, array $args): void
     {
-        if (!Pay::hasContainer() || !Pay::has(LoggerInterface::class) ||
+        if (!Pay::has(LoggerInterface::class) ||
             false === Pay::get(ConfigInterface::class)->get('logger.enable', false)) {
             return;
         }
