@@ -3,16 +3,21 @@ on: [push, pull_request]
 
 jobs:
   PHPUnit:
-    name: ${{ matrix.os }}-php-${{ matrix.php-version }}
+    name: ${{ matrix.os }}-php-v${{ matrix.php-version }}-${{ matrix.framework }}
     runs-on: "${{ matrix.os }}"
     strategy:
       fail-fast: true
       matrix:
         os: [ ubuntu-latest, windows-latest ]
+        framework:
+          - default
+          - laravel
+          - thinkphp
+          - hyperf
         php-version:
-          - 7.3
           - 7.4
           - 8.0
+          - 8.1
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -23,5 +28,17 @@ jobs:
           extensions: openssl
       - name: Install Dependencies
         run: composer install --no-progress
+      - name: Laravel Framework
+        if: matrix.framework == 'laravel'
+        run: composer require illuminate/container
+      - name: ThinkPHP Framework
+        if: matrix.framework == 'thinkphp'
+        run: composer require topthink/think-container
+      - name: Hyperf Framework
+        if: matrix.framework == 'hyperf'
+        run: composer require hyperf/utils
+      - name: Other/No Framework
+        if: matrix.framework == 'default'
+        run: composer require php-di/php-di
       - name: Run PHPUnit
         run: composer test

@@ -3,7 +3,9 @@
 namespace Yansongda\Pay\Tests;
 
 use DI\Container;
+use DI\ContainerBuilder;
 use GuzzleHttp\Client;
+use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Yansongda\Pay\Contract\ConfigInterface;
@@ -11,6 +13,7 @@ use Yansongda\Pay\Contract\EventDispatcherInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\LoggerInterface;
 use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\Stubs\FooServiceProviderStub;
@@ -69,8 +72,8 @@ class PayTest extends TestCase
         Pay::clear();
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionCode(ContainerException::CONTAINER_NOT_FOUND);
-        $this->expectExceptionMessage('You should init/config PAY first');
+        $this->expectExceptionCode(Exception::CONTAINER_NOT_FOUND);
+        $this->expectExceptionMessage('`getContainer()` failed! Maybe you should `setContainer()` first');
 
         Pay::getContainer();
     }

@@ -26,6 +26,9 @@ class ConfigServiceProvider implements ServiceProviderInterface
         'http' => [
             'timeout' => 5.0,
             'connect_timeout' => 3.0,
+            'headers' => [
+                'User-Agent' => 'yansongda/pay-v3',
+            ],
         ],
         'mode' => Pay::MODE_NORMAL,
     ];

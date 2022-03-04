@@ -10,7 +10,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php-version:
-          - 8.0
+          - 8.1
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -19,19 +19,20 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
       - name: Install Dependencies
-        run: composer install --no-progress
+        run: composer install --no-dev --no-progress
       - name: Run PHP-CS-Fixer
         run: composer cs-fix
   php_stan:
-    name: php_stan
+    name: php_stan-php-v${{ matrix.php-version }}
     runs-on: "${{ matrix.os }}"
     strategy:
       fail-fast: true
       matrix:
         os: [ ubuntu-latest ]
         php-version:
-          - 7.3
           - 7.4
+          - 8.0
+          - 8.1
     steps:
       -   name: Checkout Code
           uses: actions/checkout@v2
@@ -40,6 +41,6 @@ jobs:
           with:
             php-version: ${{ matrix.php-version }}
       -   name: Install Dependencies
-          run: composer install --no-progress
+          run: composer install --no-dev --no-progress
       -   name: Run PHP-Stan
           run: composer analyse

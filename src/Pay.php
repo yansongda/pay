@@ -101,7 +101,7 @@ class Pay
      */
     public static function config(array $config = [], $container = null): Pay
     {
-        if (Pay::hasContainer() && !($config['_force'] ?? false)) {
+        if (self::hasContainer() && !($config['_force'] ?? false)) {
             return self::get(Pay::class);
         }
 
@@ -120,12 +120,16 @@ class Pay
 
             if ($container instanceof Contract\ContainerInterface || method_exists($container, 'set')) {
                 $container->set(...func_get_args());
+
+                return;
             }
         } catch (ContainerNotFoundException $e) {
             throw $e;
         } catch (Throwable $e) {
             throw new ContainerException($e->getMessage());
         }
+
+        throw new ContainerException('Current container does NOT support `set` method');
     }
 
     /**
@@ -170,7 +174,7 @@ class Pay
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
      */
     public static function has(string $service): bool
     {
@@ -198,7 +202,7 @@ class Pay
             return (self::$container)();
         }
 
-        throw new ContainerNotFoundException('Init failed! Maybe you should install `php-di/php-di` first', Exception\Exception::CONTAINER_NOT_FOUND);
+        throw new ContainerNotFoundException('`getContainer()` failed! Maybe you should `setContainer()` first', Exception\Exception::CONTAINER_NOT_FOUND);
     }
 
     public static function hasContainer(): bool

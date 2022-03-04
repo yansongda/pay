@@ -2,6 +2,8 @@
 
 namespace Yansongda\Pay\Tests;
 
+use DI\ContainerBuilder;
+use Hyperf\Utils\ApplicationContext;
 use Yansongda\Pay\Pay;
 
 class TestCase extends \PHPUnit\Framework\TestCase
@@ -92,6 +94,11 @@ class TestCase extends \PHPUnit\Framework\TestCase
                 ],
             ]
         ];
+
+        if (class_exists(ApplicationContext::class) && class_exists(ContainerBuilder::class)) {
+            ApplicationContext::setContainer((new ContainerBuilder())->build());
+        }
+
         Pay::config($config);
     }
 
