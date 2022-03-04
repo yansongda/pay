@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   PHPUnit:
-    name: ${{ matrix.os }}-php-v${{ matrix.php-version }}-${{ matrix.framework }}
+    name: ${{ matrix.os }}-php${{ matrix.php-version }}-${{ matrix.framework }}
     runs-on: "${{ matrix.os }}"
     strategy:
       fail-fast: true
@@ -30,15 +30,15 @@ jobs:
         run: composer install --no-progress
       - name: Laravel Framework
         if: matrix.framework == 'laravel'
-        run: composer require illuminate/container
+        run: rm -rf composer.lock && composer require illuminate/container -W
       - name: ThinkPHP Framework
         if: matrix.framework == 'thinkphp'
-        run: composer require topthink/think-container -W
+        run: rm -rf composer.lock && composer require topthink/think-container -W
       - name: Hyperf Framework
         if: matrix.framework == 'hyperf'
-        run: composer require hyperf/utils
+        run: rm -rf composer.lock && composer require hyperf/utils -W
       - name: Other/No Framework
         if: matrix.framework == 'default'
-        run: composer require php-di/php-di -W
+        run: rm -rf composer.lock && composer require php-di/php-di -W
       - name: Run PHPUnit
         run: composer test

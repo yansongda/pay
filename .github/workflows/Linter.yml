@@ -23,7 +23,7 @@ jobs:
       - name: Run PHP-CS-Fixer
         run: composer cs-fix
   php_stan:
-    name: php_stan-php-v${{ matrix.php-version }}
+    name: php_stan-php${{ matrix.php-version }}
     runs-on: "${{ matrix.os }}"
     strategy:
       fail-fast: true
