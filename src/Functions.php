@@ -171,11 +171,7 @@ if (!function_exists('get_wechat_sign')) {
 
         openssl_sign($contents, $sign, $privateKey, 'sha256WithRSAEncryption');
 
-        $sign = base64_encode($sign);
-
-        !is_resource($privateKey) ?: openssl_free_key($privateKey);
-
-        return $sign;
+        return base64_encode($sign);
     }
 }
 

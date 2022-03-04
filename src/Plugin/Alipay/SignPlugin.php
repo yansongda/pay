@@ -62,11 +62,7 @@ class SignPlugin implements PluginInterface
 
         openssl_sign($content, $sign, $privateKey, OPENSSL_ALGO_SHA256);
 
-        $sign = base64_encode($sign);
-
-        !is_resource($privateKey) ?: openssl_free_key($privateKey);
-
-        return $sign;
+        return base64_encode($sign);
     }
 
     /**
