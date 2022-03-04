@@ -33,12 +33,12 @@ jobs:
         run: composer require illuminate/container
       - name: ThinkPHP Framework
         if: matrix.framework == 'thinkphp'
-        run: composer require topthink/think-container
+        run: composer require topthink/think-container -W
       - name: Hyperf Framework
         if: matrix.framework == 'hyperf'
         run: composer require hyperf/utils
       - name: Other/No Framework
         if: matrix.framework == 'default'
-        run: composer require php-di/php-di
+        run: composer require php-di/php-di -W
       - name: Run PHPUnit
         run: composer test

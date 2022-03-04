@@ -29,8 +29,8 @@ class ContainerServiceProvider implements ServiceProviderInterface
      */
     public function register(?array $data = null): void
     {
-        foreach ($this->detectApplication as $application) {
-            if (class_exists($application) && $this->{$application.'Application'}()) {
+        foreach ($this->detectApplication as $framework => $application) {
+            if (class_exists($application) && $this->{$framework.'Application'}()) {
                 return;
             }
         }
