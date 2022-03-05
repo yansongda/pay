@@ -2,8 +2,8 @@
 
 namespace Yansongda\Pay\Tests;
 
-use _PHPStan_156cb69be\Nette\DI\ContainerBuilder;
 use DI\Container;
+use DI\ContainerBuilder;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
