@@ -12,7 +12,6 @@ jobs:
         framework:
           - default
           - laravel
-          - thinkphp
           - hyperf
         php-version:
           - 7.4
@@ -31,9 +30,6 @@ jobs:
       - name: Laravel Framework
         if: matrix.framework == 'laravel'
         run: rm -rf composer.lock && composer require illuminate/container -W
-      - name: ThinkPHP Framework
-        if: matrix.framework == 'thinkphp'
-        run: rm -rf composer.lock && composer require topthink/think-container -W
       - name: Hyperf Framework
         if: matrix.framework == 'hyperf'
         run: rm -rf composer.lock && composer require hyperf/utils -W && rm -rf composer.lock && composer require php-di/php-di -W

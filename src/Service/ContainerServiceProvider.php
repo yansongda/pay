@@ -9,7 +9,6 @@ use DI\ContainerBuilder;
 use Hyperf\Utils\ApplicationContext as HyperfApplication;
 use Illuminate\Container\Container as LaravelContainer;
 use Psr\Container\ContainerInterface;
-use think\Container as ThinkContainer;
 use Throwable;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerException;
@@ -21,7 +20,6 @@ class ContainerServiceProvider implements ServiceProviderInterface
 {
     private $detectApplication = [
         'laravel' => LaravelContainer::class,
-        'think' => ThinkContainer::class,
         'hyperf' => HyperfApplication::class,
     ];
 
@@ -37,7 +35,9 @@ class ContainerServiceProvider implements ServiceProviderInterface
         }
 
         foreach ($this->detectApplication as $framework => $application) {
-            if (class_exists($application) && $this->{$framework.'Application'}()) {
+            $method = $framework.'Application';
+
+            if (class_exists($application) && method_exists($this, $method) && $this->{$method}()) {
                 return;
             }
         }
@@ -57,23 +57,6 @@ class ContainerServiceProvider implements ServiceProviderInterface
 
         if (!Pay::has(ContainerInterface::class)) {
             Pay::set(ContainerInterface::class, LaravelContainer::getInstance());
-        }
-
-        return true;
-    }
-
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
-     */
-    protected function thinkApplication(): bool
-    {
-        Pay::setContainer(static function () {
-            return ThinkContainer::getInstance();
-        });
-
-        if (!Pay::has(ContainerInterface::class)) {
-            Pay::set(ContainerInterface::class, ThinkContainer::getInstance());
         }
 
         return true;

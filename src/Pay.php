@@ -132,13 +132,6 @@ class Pay
 
                 return;
             }
-
-            // thinkphp
-            if (method_exists($container, 'bind')) {
-                $container->bind(...func_get_args());
-
-                return;
-            }
         } catch (ContainerNotFoundException $e) {
             throw $e;
         } catch (Throwable $e) {
@@ -158,7 +151,7 @@ class Pay
         try {
             $container = Pay::getContainer();
 
-            if ($container instanceof Contract\ContainerInterface || method_exists($container, 'make')) {
+            if (method_exists($container, 'make')) {
                 return $container->make(...func_get_args());
             }
         } catch (ContainerNotFoundException $e) {
