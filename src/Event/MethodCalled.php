@@ -14,7 +14,7 @@ class MethodCalled extends Event
 
     public array $params;
 
-    public function __construct(string $provider, string $name, array $params, ?Rocket $rocket)
+    public function __construct(string $provider, string $name, array $params, ?Rocket $rocket = null)
     {
         $this->provider = $provider;
         $this->name = $name;

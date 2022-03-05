@@ -8,9 +8,9 @@ use Yansongda\Pay\Rocket;
 
 class Event
 {
-    public ?Rocket $rocket;
+    public ?Rocket $rocket = null;
 
-    public function __construct(?Rocket $rocket)
+    public function __construct(?Rocket $rocket = null)
     {
         $this->rocket = $rocket;
     }

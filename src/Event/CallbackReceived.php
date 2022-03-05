@@ -10,7 +10,7 @@ class CallbackReceived extends Event
 {
     public string $provider;
 
-    public ?array $params;
+    public ?array $params = null;
 
     /**
      * @var array|\Psr\Http\Message\ServerRequestInterface|null
@@ -20,7 +20,7 @@ class CallbackReceived extends Event
     /**
      * @param array|\Psr\Http\Message\ServerRequestInterface|null $contents
      */
-    public function __construct(string $provider, $contents, ?array $params, ?Rocket $rocket)
+    public function __construct(string $provider, $contents, ?array $params = null, ?Rocket $rocket = null)
     {
         $this->provider = $provider;
         $this->contents = $contents;
