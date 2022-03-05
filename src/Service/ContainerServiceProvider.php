@@ -78,10 +78,10 @@ class ContainerServiceProvider implements ServiceProviderInterface
             return HyperfApplication::getContainer();
         });
 
-        Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, HyperfApplication::getInstance());
+        Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, HyperfApplication::getContainer());
 
         if (!Pay::has(ContainerInterface::class)) {
-            Pay::set(ContainerInterface::class, HyperfApplication::getInstance());
+            Pay::set(ContainerInterface::class, HyperfApplication::getContainer());
         }
 
         return true;
