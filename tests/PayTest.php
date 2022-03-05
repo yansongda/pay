@@ -155,7 +155,6 @@ class PayTest extends TestCase
         Pay::config($config);
 
         self::assertInstanceOf(Config::class, Pay::get(ConfigInterface::class));
-        self::assertInstanceOf(Config::class, Pay::get('config'));
         self::assertEquals($config['name'], Pay::get(ConfigInterface::class)->get('name'));
 
         // 修改 config 的情况
