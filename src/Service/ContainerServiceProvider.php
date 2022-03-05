@@ -55,6 +55,8 @@ class ContainerServiceProvider implements ServiceProviderInterface
             return LaravelContainer::getInstance();
         });
 
+        Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, LaravelContainer::getInstance());
+
         if (!Pay::has(ContainerInterface::class)) {
             Pay::set(ContainerInterface::class, LaravelContainer::getInstance());
         }
@@ -75,6 +77,8 @@ class ContainerServiceProvider implements ServiceProviderInterface
         Pay::setContainer(static function () {
             return HyperfApplication::getContainer();
         });
+
+        Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, HyperfApplication::getInstance());
 
         if (!Pay::has(ContainerInterface::class)) {
             Pay::set(ContainerInterface::class, HyperfApplication::getInstance());

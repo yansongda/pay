@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Tests;
 
+use _PHPStan_156cb69be\Nette\DI\ContainerBuilder;
 use DI\Container;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
@@ -100,9 +101,14 @@ class PayTest extends TestCase
 
     public function testCoreServiceContainer()
     {
-        Pay::config(['name' => 'yansongda']);
-
         if (class_exists(Container::class)) {
+            Pay::config(['name' => 'yansongda']);
+
+            // 未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个
+            if (class_exists(ApplicationContext::class)) {
+                ApplicationContext::setContainer((new ContainerBuilder())->build());
+            }
+
             self::assertInstanceOf(Container::class, Pay::get(\Yansongda\Pay\Contract\ContainerInterface::class));
             self::assertInstanceOf(Container::class, Pay::get(ContainerInterface::class));
         }
