@@ -46,7 +46,7 @@ class Pay
     /**
      * @var string[]
      */
-    protected $service = [
+    protected array $service = [
         AlipayServiceProvider::class,
         WechatServiceProvider::class,
     ];
@@ -54,7 +54,7 @@ class Pay
     /**
      * @var string[]
      */
-    private $coreService = [
+    private array $coreService = [
         ContainerServiceProvider::class,
         ConfigServiceProvider::class,
         LoggerServiceProvider::class,

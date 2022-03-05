@@ -8,20 +8,11 @@ use Yansongda\Pay\Rocket;
 
 class MethodCalled extends Event
 {
-    /**
-     * @var string
-     */
-    public $provider;
+    public string $provider;
 
-    /**
-     * @var string
-     */
-    public $name;
+    public string $name;
 
-    /**
-     * @var array
-     */
-    public $params;
+    public array $params;
 
     public function __construct(string $provider, string $name, array $params, ?Rocket $rocket)
     {

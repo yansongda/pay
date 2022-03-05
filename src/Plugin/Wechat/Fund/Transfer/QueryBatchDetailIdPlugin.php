@@ -38,6 +38,9 @@ class QueryBatchDetailIdPlugin extends GeneralPlugin
             $payload->get('detail_id');
     }
 
+    /**
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     */
     protected function getPartnerUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
