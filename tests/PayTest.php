@@ -95,7 +95,7 @@ class PayTest extends TestCase
     {
         $this->expectException(ServiceNotFoundException::class);
 
-        Pay::foo([]);
+        Pay::foo1([]);
     }
 
     public function testCoreServiceContainer()

@@ -12,7 +12,7 @@ class FooServiceProviderStub implements ServiceProviderInterface
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    public function register(?array $data = null): void
+    public function register($data = null): void
     {
         Pay::set('foo', 'bar');
     }

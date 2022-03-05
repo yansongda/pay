@@ -55,6 +55,7 @@ class Pay
      * @var string[]
      */
     private $coreService = [
+        ContainerServiceProvider::class,
         ConfigServiceProvider::class,
         LoggerServiceProvider::class,
         EventServiceProvider::class,
@@ -70,12 +71,10 @@ class Pay
      * @param \Closure|\Psr\Container\ContainerInterface|null $container
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     private function __construct(array $config, $container = null)
     {
-        $this->registerContainer($container);
-        $this->registerServices($config);
+        $this->registerServices($config, $container);
     }
 
     /**
@@ -97,7 +96,6 @@ class Pay
      * @param \Closure|\Psr\Container\ContainerInterface|null $container
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public static function config(array $config = [], $container = null): bool
     {
@@ -120,8 +118,24 @@ class Pay
         try {
             $container = Pay::getContainer();
 
-            if ($container instanceof Contract\ContainerInterface || method_exists($container, 'set')) {
+            if (method_exists($container, 'set')) {
                 $container->set(...func_get_args());
+
+                return;
+            }
+
+            // laravel
+            if (method_exists($container, 'singleton')) {
+                $container->singleton($name, $value instanceof Closure ? $value : static function () use ($value) {
+                    return $value;
+                });
+
+                return;
+            }
+
+            // thinkphp
+            if (method_exists($container, 'bind')) {
+                $container->bind(...func_get_args());
 
                 return;
             }
@@ -218,15 +232,16 @@ class Pay
     }
 
     /**
+     * @param mixed $data
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public static function registerService(string $service, array $config): void
+    public static function registerService(string $service, $data): void
     {
-        $var = self::get($service);
+        $var = new $service();
 
         if ($var instanceof ServiceProviderInterface) {
-            $var->register($config);
+            $var->register($data);
         }
     }
 
@@ -235,35 +250,10 @@ class Pay
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    private function registerContainer($container = null): void
-    {
-        if ($container instanceof ContainerInterface || $container instanceof Closure) {
-            self::$container = $container;
-
-            return;
-        }
-
-        $this->tryRegisterContainer();
-    }
-
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     */
-    private function registerServices(array $config): void
+    private function registerServices(array $config, $container = null): void
     {
         foreach (array_merge($this->coreService, $this->service) as $service) {
-            self::registerService($service, $config);
+            self::registerService($service, ContainerServiceProvider::class == $service ? $container : $config);
         }
-    }
-
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     */
-    private function tryRegisterContainer(): void
-    {
-        $cs = new ContainerServiceProvider();
-
-        $cs->register();
     }
 }

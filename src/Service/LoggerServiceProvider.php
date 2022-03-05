@@ -16,7 +16,7 @@ class LoggerServiceProvider implements ServiceProviderInterface
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    public function register(?array $data = null): void
+    public function register($data = null): void
     {
         /* @var ConfigInterface $config */
         $config = Pay::get(ConfigInterface::class);

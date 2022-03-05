@@ -6,5 +6,10 @@ namespace Yansongda\Pay\Contract;
 
 interface ServiceProviderInterface
 {
-    public function register(?array $data = null): void;
+    /**
+     * @param mixed $data
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     */
+    public function register($data = null): void;
 }
