@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Tests;
 
 use DI\Container;
+use DI\ContainerBuilder;
 use GuzzleHttp\Client;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -11,8 +12,10 @@ use Yansongda\Pay\Contract\EventDispatcherInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\LoggerInterface;
 use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Tests\Stubs\FooServiceProviderStub;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
@@ -33,13 +36,45 @@ class PayTest extends TestCase
     public function testConfig()
     {
         $result = Pay::config(['name' => 'yansongda']);
-        self::assertInstanceOf(Pay::class, $result);
+        self::assertTrue($result);
         self::assertEquals('yansongda', Pay::get(ConfigInterface::class)->get('name'));
 
         // force
         $result1 = Pay::config(['name' => 'yansongda1', '_force' => true]);
-        self::assertInstanceOf(Pay::class, $result1);
+        self::assertTrue($result1);
         self::assertEquals('yansongda1', Pay::get(ConfigInterface::class)->get('name'));
+
+        if (class_exists(Container::class)) {
+            // container - closure
+            Pay::clear();
+            $container2 = (new ContainerBuilder())->build();
+            $result2 = Pay::config(['name' => 'yansongda2'], function () use ($container2) {
+                return $container2;
+            });
+            self::assertTrue($result2);
+            self::assertSame($container2, Pay::getContainer());
+
+            // container - object
+            Pay::clear();
+            $container3 = (new ContainerBuilder())->build();
+            $result3 = Pay::config(['name' => 'yansongda2'], $container3);
+            self::assertTrue($result3);
+            self::assertSame($container3, Pay::getContainer());
+        }
+    }
+
+    public function testDirectCallStatic()
+    {
+        $pay = Pay::alipay([]);
+        self::assertInstanceOf(Alipay::class, $pay);
+
+        if (class_exists(Container::class)) {
+            Pay::clear();
+            $container3 = (new ContainerBuilder())->build();
+            $pay = Pay::alipay([], $container3);
+
+            self::assertInstanceOf(Alipay::class, $pay);
+        }
     }
 
     public function testSetAndGet()
@@ -69,8 +104,8 @@ class PayTest extends TestCase
         Pay::clear();
 
         $this->expectException(ContainerException::class);
-        $this->expectExceptionCode(ContainerException::CONTAINER_NOT_FOUND);
-        $this->expectExceptionMessage('You should init/config PAY first');
+        $this->expectExceptionCode(Exception::CONTAINER_NOT_FOUND);
+        $this->expectExceptionMessage('`getContainer()` failed! Maybe you should `setContainer()` first');
 
         Pay::getContainer();
     }
@@ -94,16 +129,24 @@ class PayTest extends TestCase
     {
         $this->expectException(ServiceNotFoundException::class);
 
-        Pay::foo([]);
+        Pay::foo1([]);
     }
 
-    public function testCoreService()
+    public function testCoreServiceContainer()
     {
-        Pay::config(['name' => 'yansongda']);
+        if (class_exists(Container::class)) {
+            Pay::config(['name' => 'yansongda']);
 
-        self::assertInstanceOf(Container::class, Pay::get(\Yansongda\Pay\Contract\ContainerInterface::class));
-        self::assertInstanceOf(Container::class, Pay::get(ContainerInterface::class));
-        self::assertInstanceOf(Pay::class, Pay::get(Pay::class));
+            // 未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个
+            if (class_exists(ApplicationContext::class)) {
+                ApplicationContext::setContainer((new ContainerBuilder())->build());
+            }
+
+            self::assertInstanceOf(Container::class, Pay::get(\Yansongda\Pay\Contract\ContainerInterface::class));
+            self::assertInstanceOf(Container::class, Pay::get(ContainerInterface::class));
+        }
+
+        self::assertTrue(true);
     }
 
     public function testCoreServiceConfig()
@@ -112,7 +155,6 @@ class PayTest extends TestCase
         Pay::config($config);
 
         self::assertInstanceOf(Config::class, Pay::get(ConfigInterface::class));
-        self::assertInstanceOf(Config::class, Pay::get('config'));
         self::assertEquals($config['name'], Pay::get(ConfigInterface::class)->get('name'));
 
         // 修改 config 的情况

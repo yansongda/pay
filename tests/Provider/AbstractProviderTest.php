@@ -10,6 +10,7 @@ use Mockery;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Pay;
@@ -80,7 +81,7 @@ class AbstractProviderTest extends TestCase
         Pay::set(HttpClientInterface::class, new Collection());
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(InvalidConfigException::HTTP_CLIENT_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::HTTP_CLIENT_CONFIG_ERROR);
 
         $provider = new FooProviderStub();
         $provider->ignite($rocket);

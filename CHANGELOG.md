@@ -1,6 +1,27 @@
+## v3.1.0
+
+兼容 v3.0 版本，推荐升级(#579)
+
+### dependency
+
+- delete: 移除 `php-di/php-di` 依赖。如果您使用的框架非 `hyperf`, `laravel` 或 没有指定 `ContainerInterface`，仍需手动安装 `composer require php-di/php-di`
+- delete: 移除 `guzzlehttp/guzzle` 依赖。如果没有指定 `\Yansongda\Pay\Contract\HttpClientInterface` 仍需手动安装 `composer require guzzlehttp/guzzle`
+- upgrade: 升级 `yansongda/supports` 到 `~v3.2.0`
+- upgrade: 升级 `php` 最低版本到 `7.4.0`
+
+### fixed
+
+- fix: 解决 php8.1 下 deprecated 的提示
+
+### kernel
+
+- refactor: 自动识别 `hyperf`, `laravel` 框架，使用相应的 `container` 减少内存占用
+- refactor: 完全支持 `psr11`，可手动传入 `ContainerInterface` 使用
+- changed: `Pay::config(array $config = [], $container = null)` 方法第二个参数增加为 $container，可手动传入 `ContainerInterface`/`Closure`。注意 `Closure` 需最终返回一个 `ContainerInterface` 的实例。
+
 ## v3.0.27
 
-### fix
+### fixed
 
 - fix: 添加分账接受人姓名加密字段错误 (#566)
 

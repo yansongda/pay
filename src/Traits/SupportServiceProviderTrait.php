@@ -10,7 +10,6 @@ use Yansongda\Pay\Rocket;
 trait SupportServiceProviderTrait
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */

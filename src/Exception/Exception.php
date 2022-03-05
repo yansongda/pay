@@ -17,9 +17,7 @@ class Exception extends \Exception
 
     public const CONTAINER_NOT_FOUND = 1001;
 
-    public const CONTAINER_DEPENDENCY_ERROR = 1002;
-
-    public const CONTAINER_NOT_FOUND_ENTRY = 1003;
+    public const CONTAINER_NOT_FOUND_ENTRY = 1002;
 
     /**
      * 关于容器的服务.

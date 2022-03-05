@@ -1,3 +1,5 @@
 parameters:
     reportUnmatchedIgnoredErrors: false
+    excludePaths:
+        - src/Service/ContainerServiceProvider.php
     ignoreErrors:

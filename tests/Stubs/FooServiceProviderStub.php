@@ -12,8 +12,8 @@ class FooServiceProviderStub implements ServiceProviderInterface
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    public function register(Pay $pay, ?array $data = null): void
+    public function register($data = null): void
     {
-        $pay::set('foo', 'bar');
+        Pay::set('foo', 'bar');
     }
 }

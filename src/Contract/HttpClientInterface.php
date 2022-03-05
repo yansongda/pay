@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Contract;
 
-use GuzzleHttp\ClientInterface;
+use Psr\Http\Client\ClientInterface;
 
-interface HttpClientInterface extends ClientInterface, \Psr\Http\Client\ClientInterface
+interface HttpClientInterface extends ClientInterface
 {
 }

@@ -8,10 +8,9 @@ use Yansongda\Pay\Rocket;
 
 class CallbackReceived extends Event
 {
-    /**
-     * @var string
-     */
-    public $provider;
+    public string $provider;
+
+    public ?array $params = null;
 
     /**
      * @var array|\Psr\Http\Message\ServerRequestInterface|null
@@ -19,16 +18,9 @@ class CallbackReceived extends Event
     public $contents;
 
     /**
-     * @var array|null
-     */
-    public $params;
-
-    /**
-     * Bootstrap.
-     *
      * @param array|\Psr\Http\Message\ServerRequestInterface|null $contents
      */
-    public function __construct(string $provider, $contents, ?array $params, ?Rocket $rocket)
+    public function __construct(string $provider, $contents, ?array $params = null, ?Rocket $rocket = null)
     {
         $this->provider = $provider;
         $this->contents = $contents;

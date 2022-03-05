@@ -53,20 +53,20 @@ class FunctionTest extends TestCase
         self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1'])->all());
     }
 
-    public function testGetPublicOrPrivateCert()
+    public function testGetPublicCert()
     {
         $alipayPublicCertPath = __DIR__ . '/Cert/alipayCertPublicKey_RSA2.crt';
         $alipayPublicCertCerPath = __DIR__ . '/Cert/alipayCertPublicKey_RSA2.cer';
+
+        self::assertEquals(file_get_contents($alipayPublicCertCerPath), get_public_cert($alipayPublicCertCerPath));
+        self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_cert($alipayPublicCertPath));
+    }
+
+    public function testGetPrivateCert()
+    {
         $appSecretCert = file_get_contents(__DIR__ . '/Cert/alipayAppSecretKey_RSA2_PKCS1.txt');
-        // $appSecretCertPath = __DIR__ . '/Cert/alipayAppSecretKey_RSA2_PKCS1.pem';
 
-        self::assertEquals(file_get_contents($alipayPublicCertCerPath), get_public_or_private_cert($alipayPublicCertCerPath, true));
-        self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_or_private_cert($alipayPublicCertPath, true));
-        self::assertTrue(Str::contains(get_public_or_private_cert($appSecretCert), 'END RSA PRIVATE KEY'));
-
-        // Github 不知道是不是有什么限制，获取不到 RSA PRIVATE KEY
-        // var_dump(file_get_contents($appSecretCertPath));
-        // self::assertIsResource(get_public_or_private_cert($appSecretCertPath));
+        self::assertTrue(Str::contains(get_private_cert($appSecretCert), 'PRIVATE KEY'));
     }
 
     public function testVerifyAlipaySign()

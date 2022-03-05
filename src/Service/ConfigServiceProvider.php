@@ -26,6 +26,9 @@ class ConfigServiceProvider implements ServiceProviderInterface
         'http' => [
             'timeout' => 5.0,
             'connect_timeout' => 3.0,
+            'headers' => [
+                'User-Agent' => 'yansongda/pay-v3',
+            ],
         ],
         'mode' => Pay::MODE_NORMAL,
     ];
@@ -33,11 +36,10 @@ class ConfigServiceProvider implements ServiceProviderInterface
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
-    public function register(Pay $pay, ?array $data = null): void
+    public function register($data = null): void
     {
         $config = new Config(array_replace_recursive($this->config, $data ?? []));
 
         Pay::set(ConfigInterface::class, $config);
-        Pay::set('config', $config);
     }
 }

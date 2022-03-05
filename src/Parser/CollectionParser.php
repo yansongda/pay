@@ -12,7 +12,6 @@ use Yansongda\Supports\Collection;
 class CollectionParser implements ParserInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerDependencyException
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
