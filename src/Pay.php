@@ -23,8 +23,8 @@ use Yansongda\Pay\Service\LoggerServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
 
 /**
- * @method static Alipay alipay(array $config = [])
- * @method static Wechat wechat(array $config = [])
+ * @method static Alipay alipay(array $config = [], $container = null)
+ * @method static Wechat wechat(array $config = [], $container = null)
  */
 class Pay
 {

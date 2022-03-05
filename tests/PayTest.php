@@ -15,6 +15,7 @@ use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Tests\Stubs\FooServiceProviderStub;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Logger;
@@ -42,6 +43,38 @@ class PayTest extends TestCase
         $result1 = Pay::config(['name' => 'yansongda1', '_force' => true]);
         self::assertTrue($result1);
         self::assertEquals('yansongda1', Pay::get(ConfigInterface::class)->get('name'));
+
+        if (class_exists(Container::class)) {
+            // container - closure
+            Pay::clear();
+            $container2 = (new ContainerBuilder())->build();
+            $result2 = Pay::config(['name' => 'yansongda2'], function () use ($container2) {
+                return $container2;
+            });
+            self::assertTrue($result2);
+            self::assertSame($container2, Pay::getContainer());
+
+            // container - object
+            Pay::clear();
+            $container3 = (new ContainerBuilder())->build();
+            $result3 = Pay::config(['name' => 'yansongda2'], $container3);
+            self::assertTrue($result3);
+            self::assertSame($container3, Pay::getContainer());
+        }
+    }
+
+    public function testDirectCallStatic()
+    {
+        $pay = Pay::alipay([]);
+        self::assertInstanceOf(Alipay::class, $pay);
+
+        if (class_exists(Container::class)) {
+            Pay::clear();
+            $container3 = (new ContainerBuilder())->build();
+            $pay = Pay::alipay([], $container3);
+
+            self::assertInstanceOf(Alipay::class, $pay);
+        }
     }
 
     public function testSetAndGet()
