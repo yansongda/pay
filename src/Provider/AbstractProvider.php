@@ -67,9 +67,7 @@ abstract class AbstractProvider implements ProviderInterface
             ->send((new Rocket())->setParams($params)->setPayload(new Collection()))
             ->through($plugins)
             ->via('assembly')
-            ->then(function ($rocket) {
-                return $this->ignite($rocket);
-            });
+            ->then(fn ($rocket) => $this->ignite($rocket));
 
         Event::dispatch(new Event\PayFinish($rocket));
 

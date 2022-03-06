@@ -17,12 +17,9 @@ class WechatServiceProvider implements ServiceProviderInterface
      */
     public function register($data = null): void
     {
-        $service = static function () {
-            Pay::set(ParserInterface::class, CollectionParser::class);
+        $service = new Wechat();
 
-            return new Wechat();
-        };
-
+        Pay::set(ParserInterface::class, CollectionParser::class);
         Pay::set(Wechat::class, $service);
         Pay::set('wechat', $service);
     }

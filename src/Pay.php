@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay;
 
 use Closure;
+use Illuminate\Container\Container as LaravelContainer;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
@@ -118,17 +119,17 @@ class Pay
         try {
             $container = Pay::getContainer();
 
-            if (method_exists($container, 'set')) {
-                $container->set(...func_get_args());
+            // laravel
+            // @phpstan-ignore-next-line
+            if ($container instanceof LaravelContainer) {
+                // @phpstan-ignore-next-line
+                $container->singleton($name, $value instanceof Closure ? $value : static fn () => $value);
 
                 return;
             }
 
-            // laravel
-            if (method_exists($container, 'singleton')) {
-                $container->singleton($name, $value instanceof Closure ? $value : static function () use ($value) {
-                    return $value;
-                });
+            if (method_exists($container, 'set')) {
+                $container->set(...func_get_args());
 
                 return;
             }

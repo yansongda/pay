@@ -51,9 +51,7 @@ class ContainerServiceProvider implements ServiceProviderInterface
      */
     protected function laravelApplication(): bool
     {
-        Pay::setContainer(static function () {
-            return LaravelContainer::getInstance();
-        });
+        Pay::setContainer(static fn () => LaravelContainer::getInstance());
 
         Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, LaravelContainer::getInstance());
 
@@ -74,9 +72,7 @@ class ContainerServiceProvider implements ServiceProviderInterface
             return false;
         }
 
-        Pay::setContainer(static function () {
-            return HyperfApplication::getContainer();
-        });
+        Pay::setContainer(static fn () => HyperfApplication::getContainer());
 
         Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, HyperfApplication::getContainer());
 
