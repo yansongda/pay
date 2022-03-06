@@ -36,13 +36,9 @@ class SignPlugin implements PluginInterface
 
     protected function formatPayload(Rocket $rocket): void
     {
-        $payload = $rocket->getPayload()->filter(function ($v, $k) {
-            return '' !== $v && !is_null($v) && 'sign' != $k;
-        });
+        $payload = $rocket->getPayload()->filter(fn ($v, $k) => '' !== $v && !is_null($v) && 'sign' != $k);
 
-        $contents = array_filter($payload->get('biz_content', []), function ($v, $k) {
-            return !Str::startsWith(strval($k), '_');
-        }, ARRAY_FILTER_USE_BOTH);
+        $contents = array_filter($payload->get('biz_content', []), fn ($v, $k) => !Str::startsWith(strval($k), '_'), ARRAY_FILTER_USE_BOTH);
 
         $rocket->setPayload(
             $payload->merge(['biz_content' => json_encode($contents)])
