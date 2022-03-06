@@ -178,6 +178,8 @@ class Pay
             return Pay::getContainer()->get($service);
         } catch (NotFoundExceptionInterface $e) {
             throw new ServiceNotFoundException($e->getMessage());
+        } catch (ContainerNotFoundException $e) {
+            throw $e;
         } catch (Throwable $e) {
             throw new ContainerException($e->getMessage());
         }
