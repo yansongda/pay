@@ -28,7 +28,7 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
     private ?string $direction = null;
 
     /**
-     * @var \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface|array|null
+     * @var Collection|MessageInterface|array|null
      */
     private $destination = null;
 
