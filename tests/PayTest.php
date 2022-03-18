@@ -143,13 +143,11 @@ class PayTest extends TestCase
 
     public function testCoreServiceContainer()
     {
-        if (class_exists(Container::class)) {
-            Pay::config(['name' => 'yansongda']);
+        Pay::config(['name' => 'yansongda']);
 
-            // 单在 hyperf 框架内没有 container，所以手动设置一个
-            if (class_exists(ApplicationContext::class)) {
-                ApplicationContext::setContainer((new ContainerBuilder())->build());
-            }
+        // 单在 hyperf 框架内没有 container，所以手动设置一个
+        if (class_exists(Container::class) && class_exists(ApplicationContext::class)) {
+            ApplicationContext::setContainer((new ContainerBuilder())->build());
         }
 
         self::assertInstanceOf(ContainerInterface::class, Pay::getContainer());
