@@ -34,6 +34,10 @@ class ContainerServiceProvider implements ServiceProviderInterface
             return;
         }
 
+        if (Pay::hasContainer()) {
+            return;
+        }
+
         foreach ($this->detectApplication as $framework => $application) {
             $method = $framework.'Application';
 

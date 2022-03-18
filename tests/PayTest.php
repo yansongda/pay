@@ -44,6 +44,7 @@ class PayTest extends TestCase
         self::assertTrue($result1);
         self::assertEquals('yansongda1', Pay::get(ConfigInterface::class)->get('name'));
 
+        // 直接使用 config 去设置 container
         if (class_exists(Container::class)) {
             // container - closure
             Pay::clear();
@@ -60,6 +61,14 @@ class PayTest extends TestCase
             $result3 = Pay::config(['name' => 'yansongda2'], $container3);
             self::assertTrue($result3);
             self::assertSame($container3, Pay::getContainer());
+
+            // container - object force
+            Pay::clear();
+            $container4 = (new ContainerBuilder())->build();
+            Pay::setContainer($container4);
+            $result4 = Pay::config(['name' => 'yansongda2', '_force' => true]);
+            self::assertTrue($result4);
+            self::assertSame($container4, Pay::getContainer());
         }
     }
 
@@ -134,19 +143,14 @@ class PayTest extends TestCase
 
     public function testCoreServiceContainer()
     {
-        if (class_exists(Container::class)) {
-            Pay::config(['name' => 'yansongda']);
+        Pay::config(['name' => 'yansongda']);
 
-            // 未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个
-            if (class_exists(ApplicationContext::class)) {
-                ApplicationContext::setContainer((new ContainerBuilder())->build());
-            }
-
-            self::assertInstanceOf(Container::class, Pay::get(\Yansongda\Pay\Contract\ContainerInterface::class));
-            self::assertInstanceOf(Container::class, Pay::get(ContainerInterface::class));
+        // 单在 hyperf 框架内没有 container，所以手动设置一个
+        if (class_exists(Container::class) && class_exists(ApplicationContext::class)) {
+            ApplicationContext::setContainer((new ContainerBuilder())->build());
         }
 
-        self::assertTrue(true);
+        self::assertInstanceOf(ContainerInterface::class, Pay::getContainer());
     }
 
     public function testCoreServiceConfig()
