@@ -150,12 +150,9 @@ class PayTest extends TestCase
             if (class_exists(ApplicationContext::class)) {
                 ApplicationContext::setContainer((new ContainerBuilder())->build());
             }
-
-            self::assertInstanceOf(Container::class, Pay::get(\Yansongda\Pay\Contract\ContainerInterface::class));
-            self::assertInstanceOf(Container::class, Pay::get(ContainerInterface::class));
         }
 
-        self::assertTrue(true);
+        self::assertInstanceOf(ContainerInterface::class, Pay::getContainer());
     }
 
     public function testCoreServiceConfig()

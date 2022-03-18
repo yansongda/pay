@@ -28,13 +28,13 @@ class ContainerServiceProvider implements ServiceProviderInterface
      */
     public function register($data = null): void
     {
-        if (Pay::hasContainer()) {
-            return;
-        }
-
         if ($data instanceof ContainerInterface || $data instanceof Closure) {
             Pay::setContainer($data);
 
+            return;
+        }
+
+        if (Pay::hasContainer()) {
             return;
         }
 
