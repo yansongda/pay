@@ -1,3 +1,15 @@
+## v3.1.2
+
+### fixed
+
+- fix: alipay 中 event dispatch provider 是 wechat 的问题 #595
+
+## v3.1.1
+
+### fixed
+
+- fix: 设置 container，强制更新 config 后 container 不是设置的 container 的问题 #591
+
 ## v3.1.0
 
 兼容 v3.0 版本，推荐升级(#579)
