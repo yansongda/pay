@@ -47,7 +47,7 @@ class PreparePlugin implements PluginInterface
             'timestamp' => date('Y-m-d H:i:s'),
             'version' => '1.0',
             'notify_url' => $this->getNotifyUrl($params),
-            'app_auth_token' => '',
+            'app_auth_token' => $params['app_auth_token'] ?? '',
             'app_cert_sn' => $this->getAppCertSn($params),
             'alipay_root_cert_sn' => $this->getAlipayRootCertSn($params),
             'biz_content' => [],
