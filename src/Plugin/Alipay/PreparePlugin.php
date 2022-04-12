@@ -47,7 +47,7 @@ class PreparePlugin implements PluginInterface
             'timestamp' => date('Y-m-d H:i:s'),
             'version' => '1.0',
             'notify_url' => $this->getNotifyUrl($params),
-            'app_auth_token' => $params['app_auth_token'] ?? '',
+            'app_auth_token' => $this->getAppAuthToken($params),
             'app_cert_sn' => $this->getAppCertSn($params),
             'alipay_root_cert_sn' => $this->getAlipayRootCertSn($params),
             'biz_content' => [],
@@ -78,6 +78,19 @@ class PreparePlugin implements PluginInterface
         }
 
         return get_alipay_config($params)->get('notify_url', '');
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getAppAuthToken(array $params): string
+    {
+        if (!empty($params['_app_auth_token'])) {
+            return $params['_app_auth_token'];
+        }
+
+        return get_alipay_config($params)->get('app_auth_token', '');
     }
 
     /**

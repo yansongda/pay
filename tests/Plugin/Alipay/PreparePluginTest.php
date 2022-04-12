@@ -16,10 +16,12 @@ class PreparePluginTest extends TestCase
         $plugin = new PreparePlugin();
 
         $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $payload = $result->getPayload();
 
-        self::assertTrue($result->getPayload()->has('app_cert_sn'));
-        self::assertEquals('fb5e86cfb784de936dd3594e32381cf8', $result->getPayload()->get('app_cert_sn'));
-        self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $result->getPayload()->get('alipay_root_cert_sn'));
+        self::assertTrue($payload->has('app_cert_sn'));
+        self::assertEquals('fb5e86cfb784de936dd3594e32381cf8', $payload->get('app_cert_sn'));
+        self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
+        self::assertEquals('yansongda_token', $payload->get('app_auth_token'));
     }
 
     public function testGlobalBcscale()
@@ -78,5 +80,19 @@ class PreparePluginTest extends TestCase
 
         self::assertEquals('https://yansongda.cn', $result->getPayload()->get('return_url'));
         self::assertEquals('https://yansongda.cn', $result->getPayload()->get('notify_url'));
+    }
+
+    public function testCustomizedAppAuthToken()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams([
+            '_app_auth_token' => 'yansongda.cn',
+        ]);
+
+        $plugin = new PreparePlugin();
+
+        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertEquals('yansongda.cn', $result->getPayload()->get('app_auth_token'));
     }
 }
