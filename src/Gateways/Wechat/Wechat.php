@@ -30,6 +30,11 @@ abstract class Wechat implements GatewayInterface
     /**
      * @var string
      */
+    protected $gateway_query_trans = 'mmpaymkttransfers/gettransferinfo';
+
+    /**
+     * @var string
+     */
     protected $gateway_close = 'pay/closeorder';
 
     /**
@@ -136,6 +141,21 @@ abstract class Wechat implements GatewayInterface
         $this->unsetTradeTypeAndNotifyUrl();
 
         return $this->getResult($this->gateway_query);
+    }
+    /**
+     * find a trans order.
+     *
+     * @param string $out_trade_no
+     *
+     * @return array|bool
+     */
+    public function trans_find($out_trade_no = '')
+    {
+        $this->config['partner_trade_no'] = $out_trade_no;
+        unset($this->config['sign_type']);
+        $this->unsetTradeTypeAndNotifyUrl();
+
+        return $this->getResult($this->gateway_query_trans, true);
     }
 
     /**
