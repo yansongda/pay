@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing;
+namespace Yansongda\Pay\Plugin\Wechat\Risk\Complaints;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
@@ -10,18 +10,13 @@ use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_1_6.shtml
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_14.shtml
  */
-class QueryAmountsPlugin extends GeneralPlugin
+class ResponseComplaintPlugin extends GeneralPlugin
 {
-    protected function getMethod(): string
-    {
-        return 'GET';
-    }
-
     protected function doSomething(Rocket $rocket): void
     {
-        $rocket->setPayload(null);
+        $rocket->getPayload()->forget('complaint_id');
     }
 
     /**
@@ -31,12 +26,12 @@ class QueryAmountsPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('transaction_id'))) {
+        if (is_null($payload->get('complaint_id'))) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'v3/profitsharing/transactions/'.
-            $payload->get('transaction_id').
-            '/amounts';
+        return 'v3/merchant-service/complaints-v2/'.
+            $payload->get('complaint_id').
+            '/response';
     }
 }

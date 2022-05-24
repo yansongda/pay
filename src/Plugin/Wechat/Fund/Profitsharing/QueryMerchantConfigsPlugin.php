@@ -10,6 +10,9 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter8_1_7.shtml
+ */
 class QueryMerchantConfigsPlugin extends GeneralPlugin
 {
     protected function getMethod(): string
