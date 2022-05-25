@@ -14,14 +14,24 @@ use Yansongda\Supports\Collection;
 
 class ClosePluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Pay\Common\ClosePlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new ClosePlugin();
+    }
+
     public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection(['out_trade_no' => '123']));
 
-        $plugin = new ClosePlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
         $payload = $result->getPayload();
@@ -38,12 +48,10 @@ class ClosePluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
 
-        $plugin = new ClosePlugin();
-
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
     public function testPartner()
@@ -51,9 +59,7 @@ class ClosePluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['out_trade_no' => '123']));
 
-        $plugin = new ClosePlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
         $payload = $result->getPayload();
@@ -69,9 +75,7 @@ class ClosePluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['out_trade_no' => '123', 'sub_mchid' => '123']));
 
-        $plugin = new ClosePlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 

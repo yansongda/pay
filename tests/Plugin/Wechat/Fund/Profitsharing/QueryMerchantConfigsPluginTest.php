@@ -12,14 +12,24 @@ use Yansongda\Supports\Collection;
 
 class QueryMerchantConfigsPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing\QueryMerchantConfigsPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new QueryMerchantConfigsPlugin();
+    }
+
     public function testPartner()
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
 
-        $plugin = new QueryMerchantConfigsPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
 
@@ -32,9 +42,7 @@ class QueryMerchantConfigsPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['sub_mchid' => '123']));
 
-        $plugin = new QueryMerchantConfigsPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
 

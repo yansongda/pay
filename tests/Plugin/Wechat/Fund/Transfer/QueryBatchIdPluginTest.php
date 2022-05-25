@@ -11,14 +11,24 @@ use Yansongda\Supports\Collection;
 
 class QueryBatchIdPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Fund\Transfer\QueryBatchIdPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new QueryBatchIdPlugin();
+    }
+
     public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection(['batch_id' => '123', 'need_query_detail' => false]));
 
-        $plugin = new QueryBatchIdPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
         $url = $radar->getUri();
@@ -33,12 +43,10 @@ class QueryBatchIdPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection(['need_query_detail' => false]));
 
-        $plugin = new QueryBatchIdPlugin();
-
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
     public function testNormalNoNeedQueryDetail()
@@ -46,12 +54,10 @@ class QueryBatchIdPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection(['batch_id' => '123']));
 
-        $plugin = new QueryBatchIdPlugin();
-
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
     public function testPartner()
@@ -59,9 +65,7 @@ class QueryBatchIdPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['batch_id' => '123', 'need_query_detail' => false]));
 
-        $plugin = new QueryBatchIdPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
         $url = $radar->getUri();
@@ -76,12 +80,10 @@ class QueryBatchIdPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['need_query_detail' => false]));
 
-        $plugin = new QueryBatchIdPlugin();
-
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
     public function testPartnerNoNeedQueryDetail()
@@ -89,11 +91,9 @@ class QueryBatchIdPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['batch_id' => '123']));
 
-        $plugin = new QueryBatchIdPlugin();
-
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 }

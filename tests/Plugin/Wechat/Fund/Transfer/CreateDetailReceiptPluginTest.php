@@ -14,14 +14,24 @@ use Yansongda\Supports\Collection;
 
 class CreateDetailReceiptPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Fund\Transfer\CreateDetailReceiptPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new CreateDetailReceiptPlugin();
+    }
+
     public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection(['out_detail_no' => '123', 'accept_type' => '456']));
 
-        $plugin = new CreateDetailReceiptPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
         $payload = $result->getPayload();
@@ -36,12 +46,10 @@ class CreateDetailReceiptPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection(['accept_type' => '456']));
 
-        $plugin = new CreateDetailReceiptPlugin();
-
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
     public function testNormalNoAcceptType()
@@ -49,12 +57,10 @@ class CreateDetailReceiptPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection(['out_detail_no' => '123']));
 
-        $plugin = new CreateDetailReceiptPlugin();
-
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
     public function testPartner()
@@ -62,9 +68,7 @@ class CreateDetailReceiptPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['out_detail_no' => '123', 'accept_type' => '456']));
 
-        $plugin = new CreateDetailReceiptPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
         $payload = $result->getPayload();

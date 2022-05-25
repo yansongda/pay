@@ -14,9 +14,22 @@ use Yansongda\Pay\Rocket;
  */
 class ResponseComplaintPlugin extends GeneralPlugin
 {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
     protected function doSomething(Rocket $rocket): void
     {
-        $rocket->getPayload()->forget('complaint_id');
+        $config = get_wechat_config($rocket->getParams());
+        $payload = $rocket->getPayload();
+
+        $payload->forget('complaint_id');
+
+        if (is_null($payload->get('complainted_mchid'))) {
+            $rocket->mergePayload([
+                'complainted_mchid' => $config->get('mch_id', ''),
+            ]);
+        }
     }
 
     /**

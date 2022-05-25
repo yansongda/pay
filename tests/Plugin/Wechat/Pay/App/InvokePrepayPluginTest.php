@@ -9,11 +9,23 @@ use Yansongda\Supports\Collection;
 
 class InvokePrepayPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Pay\App\InvokePrepayPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new InvokePrepayPlugin();
+    }
+
     public function testNormal()
     {
         $rocket = (new Rocket())->setDestination(new Collection(['prepay_id' => 'yansongda']));
 
-        $result = (new InvokePrepayPlugin())->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $contents = $result->getDestination();
 

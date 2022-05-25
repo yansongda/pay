@@ -30,16 +30,16 @@ class QueryComplaintNegotiationPlugin extends GeneralPlugin
     protected function getUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
+        $complaintId = $payload->get('complaint_id');
 
-        if (is_null($payload->get('complaint_id'))) {
+        if (is_null($complaintId)) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        $query = $payload->all();
-        unset($query['complaint_id']);
+        $payload->forget('complaint_id');
 
         return 'v3/merchant-service/complaints-v2/'.
-            $payload->get('complaint_id').
-            '/negotiation-historys?'.http_build_query($query);
+            $complaintId.
+            '/negotiation-historys?'.$payload->query();
     }
 }

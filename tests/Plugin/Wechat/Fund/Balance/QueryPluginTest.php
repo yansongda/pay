@@ -14,14 +14,24 @@ use Yansongda\Supports\Collection;
 
 class QueryPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Fund\Balance\QueryPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new QueryPlugin();
+    }
+
     public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection(['account_type' => '123']));
 
-        $plugin = new QueryPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
 
@@ -34,11 +44,9 @@ class QueryPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
 
-        $plugin = new QueryPlugin();
-
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 }

@@ -14,17 +14,27 @@ use Yansongda\Supports\Collection;
 
 class FindPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\FindPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new FindPlugin();
+    }
+
     public function testNotInServiceMode()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
 
-        $plugin = new FindPlugin();
-
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::NOT_IN_SERVICE_MODE);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testMissingParams()
@@ -32,12 +42,10 @@ class FindPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
 
-        $plugin = new FindPlugin();
-
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testPartnerRefundId()
@@ -45,9 +53,7 @@ class FindPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['refund_id' => '123']));
 
-        $plugin = new FindPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         $radar = $result->getRadar();
 
@@ -60,9 +66,7 @@ class FindPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['out_refund_no' => '123']));
 
-        $plugin = new FindPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         $radar = $result->getRadar();
 

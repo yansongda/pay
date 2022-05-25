@@ -8,15 +8,25 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_15.shtml
  */
 class CompleteComplaintPlugin extends GeneralPlugin
 {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
     protected function doSomething(Rocket $rocket): void
     {
-        $rocket->getPayload()->forget('complaint_id');
+        $payload = $rocket->getPayload();
+        $config = get_wechat_config($rocket->getParams());
+
+        $rocket->setPayload(new Collection([
+            'complainted_mchid' => $payload->get('complainted_mchid', $config->get('mch_id', '')),
+        ]));
     }
 
     /**

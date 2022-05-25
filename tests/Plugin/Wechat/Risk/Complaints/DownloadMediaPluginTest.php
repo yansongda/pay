@@ -1,20 +1,20 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Fund\Profitsharing;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Risk\Complaints;
 
 use GuzzleHttp\Psr7\Uri;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Parser\OriginResponseParser;
-use Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing\DownloadBillPlugin;
+use Yansongda\Pay\Plugin\Wechat\Risk\Complaints\DownloadMediaPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class DownloadBillPluginTest extends TestCase
+class DownloadMediaPluginTest extends TestCase
 {
     /**
-     * @var \Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing\DownloadBillPlugin
+     * @var \Yansongda\Pay\Plugin\Wechat\Risk\Complaints\DownloadMediaPlugin
      */
     protected $plugin;
 
@@ -22,13 +22,13 @@ class DownloadBillPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new DownloadBillPlugin();
+        $this->plugin = new DownloadMediaPlugin();
     }
 
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection(['download_url' => 'https://yansongda.cn']));
+        $rocket->setParams([])->setPayload(new Collection(['media_url' => 'https://yansongda.cn']));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 

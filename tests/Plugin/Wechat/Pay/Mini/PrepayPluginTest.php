@@ -9,14 +9,24 @@ use Yansongda\Supports\Collection;
 
 class PrepayPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Pay\Mini\PrepayPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new PrepayPlugin();
+    }
+
     public function testWechatIdNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
 
-        $plugin = new PrepayPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
@@ -29,9 +39,7 @@ class PrepayPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
 
-        $plugin = new PrepayPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
@@ -44,9 +52,7 @@ class PrepayPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['sub_appid' => '123']));
 
-        $plugin = new PrepayPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
@@ -61,9 +67,7 @@ class PrepayPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider2'])->setPayload(new Collection(['sub_appid' => '123']));
 
-        $plugin = new PrepayPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
@@ -78,9 +82,7 @@ class PrepayPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider3'])->setPayload(new Collection());
 
-        $plugin = new PrepayPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 

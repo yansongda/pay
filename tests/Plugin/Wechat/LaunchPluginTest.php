@@ -15,14 +15,24 @@ use Yansongda\Supports\Collection;
 
 class LaunchPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\LaunchPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new LaunchPlugin();
+    }
+
     public function testShouldNotDoRequest()
     {
         $rocket = new Rocket();
         $rocket->setDirection(NoHttpRequestParser::class);
 
-        $plugin = new LaunchPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertSame($rocket, $result);
     }
@@ -36,9 +46,7 @@ class LaunchPluginTest extends TestCase
         $rocket->setDestination($destination);
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 
-        $plugin = new LaunchPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertSame($destination, $result->getDestination());
     }
@@ -52,12 +60,10 @@ class LaunchPluginTest extends TestCase
         $rocket->setDestination($destination);
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 
-        $plugin = new LaunchPlugin();
-
         self::expectException(InvalidResponseException::class);
         self::expectExceptionCode(Exception::INVALID_RESPONSE_CODE);
 
-        $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
     public function testArrayDestination()
@@ -69,9 +75,7 @@ class LaunchPluginTest extends TestCase
         $rocket->setDestination($destination);
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 
-        $plugin = new LaunchPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals($destination, $result->getDestination());
     }
@@ -85,9 +89,7 @@ class LaunchPluginTest extends TestCase
         $rocket->setDestination($destination);
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 
-        $plugin = new LaunchPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertSame($destination, $result->getDestination());
     }

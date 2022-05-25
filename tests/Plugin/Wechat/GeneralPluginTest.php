@@ -12,14 +12,24 @@ use Yansongda\Pay\Tests\TestCase;
 
 class GeneralPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Tests\Stubs\Plugin\WechatGeneralPluginStub
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new WechatGeneralPluginStub();
+    }
+
     public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([]);
 
-        $plugin = new WechatGeneralPluginStub();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
 
@@ -33,9 +43,7 @@ class GeneralPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider']);
 
-        $plugin = new WechatGeneralPluginStub();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
 
