@@ -9,6 +9,18 @@ use Yansongda\Supports\Collection;
 
 class QueryPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new QueryPlugin();
+    }
+
     public function testNormalTransactionId()
     {
         $rocket = new Rocket();
@@ -16,9 +28,7 @@ class QueryPluginTest extends TestCase
 
         $rocket->setPayload(new Collection(['transaction_id'=>'121212']));
 
-        $plugin = new QueryPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         $radar = $result->getRadar();
 
         self::assertEquals('1600314069', $config->get('mch_id'));
@@ -34,9 +44,7 @@ class QueryPluginTest extends TestCase
 
         $rocket->setPayload(new Collection(['out_trade_no'=>'121212']));
 
-        $plugin = new QueryPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         $radar = $result->getRadar();
 
         self::assertEquals('/v3/pay/transactions/out-trade-no/121212', $radar->getUri()->getPath());
@@ -51,9 +59,7 @@ class QueryPluginTest extends TestCase
         $rocket->setParams(['_config' => 'service_provider']);
         $rocket->setPayload(new Collection(['transaction_id'=>'121212','sub_mchid' => '1600314077']));
 
-        $plugin = new QueryPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         $radar = $result->getRadar();
 
         self::assertEquals('/v3/pay/partner/transactions/id/121212', $radar->getUri()->getPath());
@@ -68,9 +74,7 @@ class QueryPluginTest extends TestCase
         $rocket->setParams(['_config' => 'service_provider']);
         $rocket->setPayload(new Collection(['out_trade_no'=>'121218','sub_mchid' => '1600314099']));
 
-        $plugin = new QueryPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         $radar = $result->getRadar();
 
         self::assertEquals('/v3/pay/partner/transactions/out-trade-no/121218', $radar->getUri()->getPath());

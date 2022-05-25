@@ -14,17 +14,27 @@ use Yansongda\Supports\Collection;
 
 class ApplyPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\ApplyPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new ApplyPlugin();
+    }
+
     public function testNotInServiceMode()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
 
-        $plugin = new ApplyPlugin();
-
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::NOT_IN_SERVICE_MODE);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testNormal()
@@ -40,9 +50,7 @@ class ApplyPluginTest extends TestCase
             ],
         ]));
 
-        $plugin = new ApplyPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         $payload = $result->getPayload();
         $radar = $result->getRadar();
@@ -69,9 +77,7 @@ class ApplyPluginTest extends TestCase
             'sp_appid' => '456',
         ]));
 
-        $plugin = new ApplyPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         $payload = $result->getPayload();
         $radar = $result->getRadar();
@@ -91,9 +97,7 @@ class ApplyPluginTest extends TestCase
             'test' => 'yansongda',
         ]));
 
-        $plugin = new ApplyPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         $payload = $result->getPayload();
         $radar = $result->getRadar();

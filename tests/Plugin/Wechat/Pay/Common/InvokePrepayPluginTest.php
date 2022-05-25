@@ -11,11 +11,23 @@ use Yansongda\Supports\Collection;
 
 class InvokePrepayPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokePrepayPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new InvokePrepayPlugin();
+    }
+
     public function testNormal()
     {
         $rocket = (new Rocket())->setDestination(new Collection(['prepay_id' => 'yansongda']));
 
-        $result = (new InvokePrepayPlugin())->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $contents = $result->getDestination();
 
@@ -33,6 +45,6 @@ class InvokePrepayPluginTest extends TestCase
         self::expectException(InvalidResponseException::class);
         self::expectExceptionCode(Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
 
-        (new InvokePrepayPlugin())->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 }

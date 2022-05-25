@@ -10,6 +10,9 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Traits\HasWechatEncryption;
 use Yansongda\Supports\Collection;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_1_8.shtml
+ */
 class AddReceiverPlugin extends GeneralPlugin
 {
     use HasWechatEncryption;

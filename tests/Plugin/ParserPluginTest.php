@@ -13,6 +13,18 @@ use Yansongda\Pay\Tests\TestCase;
 
 class ParserPluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\ParserPlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new ParserPlugin();
+    }
+
     public function testPackerWrong()
     {
         self::expectException(InvalidConfigException::class);
@@ -21,8 +33,7 @@ class ParserPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setDirection(FooPackerStub::class);
 
-        $parser = new ParserPlugin();
-        $parser->assembly($rocket, function ($rocket) { return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
     public function testPackerDefault()
@@ -31,8 +42,7 @@ class ParserPluginTest extends TestCase
 
         $rocket = new Rocket();
 
-        $parser = new ParserPlugin();
-        $result = $parser->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertSame($rocket, $result);
     }
@@ -43,8 +53,7 @@ class ParserPluginTest extends TestCase
 
         $rocket = new Rocket();
 
-        $parser = new ParserPlugin();
-        $result = $parser->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertSame($rocket, $result);
     }

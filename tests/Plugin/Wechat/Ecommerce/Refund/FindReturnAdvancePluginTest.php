@@ -14,17 +14,27 @@ use Yansongda\Supports\Collection;
 
 class FindReturnAdvancePluginTest extends TestCase
 {
+    /**
+     * @var \Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\FindReturnAdvancePlugin
+     */
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new FindReturnAdvancePlugin();
+    }
+
     public function testNotInServiceMode()
     {
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection());
 
-        $plugin = new FindReturnAdvancePlugin();
-
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::NOT_IN_SERVICE_MODE);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testMissingRefundId()
@@ -32,12 +42,10 @@ class FindReturnAdvancePluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
 
-        $plugin = new FindReturnAdvancePlugin();
-
         $this->expectException(InvalidParamsException::class);
         $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
 
-        $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
     public function testNormal()
@@ -45,9 +53,7 @@ class FindReturnAdvancePluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['refund_id' => '123']));
 
-        $plugin = new FindReturnAdvancePlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $radar = $result->getRadar();
 
