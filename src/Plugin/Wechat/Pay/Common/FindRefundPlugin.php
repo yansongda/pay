@@ -25,6 +25,19 @@ class FindRefundPlugin extends GeneralPlugin
         return 'v3/refund/domestic/refunds/'.$payload->get('out_refund_no');
     }
 
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getPartnerUri(Rocket $rocket): string
+    {
+        $params = $rocket->getParams();
+        $config = get_wechat_config($params);
+        $url = parent::getPartnerUri($rocket);
+
+        return $url.'?sub_mchid='.($params['sub_mchid'] ?? $config->get('sub_mch_id'));
+    }
+
     protected function getMethod(): string
     {
         return 'GET';
