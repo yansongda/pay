@@ -34,7 +34,7 @@ class FindRefundPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
         $url = parent::getPartnerUri($rocket);
 
-        return $url.'?sub_mchid='.($rocket->getPayload()->get('sub_mchid', $config->get('sub_mch_id')));
+        return $url.'?sub_mchid='.$rocket->getPayload()->get('sub_mchid', $config->get('sub_mch_id'));
     }
 
     protected function getMethod(): string
