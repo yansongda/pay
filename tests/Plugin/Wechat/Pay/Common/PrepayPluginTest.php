@@ -81,4 +81,17 @@ class PrepayPluginTest extends TestCase
         self::assertEquals('123', $payload->get('sub_appid'));
         self::assertEquals('1600314070', $payload->get('sub_mchid'));
     }
+
+    public function testPartnerDirectPayloadWithoutSubAppId()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'service_provider4'])->setPayload(new Collection());
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $payload = $result->getPayload();
+
+        self::assertArrayNotHasKey('sub_appid', $payload->all());
+        self::assertEquals('1600314070', $payload->get('sub_mchid'));
+    }
 }
