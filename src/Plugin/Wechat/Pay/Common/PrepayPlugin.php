@@ -41,19 +41,31 @@ class PrepayPlugin extends GeneralPlugin
     protected function getWechatId(Config $config, Rocket $rocket): array
     {
         $payload = $rocket->getPayload();
+        $configKey = $this->getConfigKey($rocket->getParams());
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
-            return [
-                'sp_appid' => $config->get('mp_app_id', ''),
-                'sp_mchid' => $config->get('mch_id', ''),
-                'sub_appid' => $payload->get('sub_appid', $config->get('sub_mp_app_id')),
-                'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id')),
-            ];
-        }
-
-        return [
-            'appid' => $config->get('mp_app_id', ''),
+        $result = [
+            'appid' => $config->get($configKey, ''),
             'mchid' => $config->get('mch_id', ''),
         ];
+
+        if (Pay::MODE_SERVICE == $config->get('mode')) {
+            $result = [
+                'sp_appid' => $config->get($configKey, ''),
+                'sp_mchid' => $config->get('mch_id', ''),
+                'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id')),
+            ];
+
+            $subAppId = $payload->get('sub_appid', $config->get('sub_'.$configKey));
+            if (!empty($subAppId)) {
+                $result['sub_appid'] = $subAppId;
+            }
+        }
+
+        return $result;
+    }
+
+    protected function getConfigKey(array $params): string
+    {
+        return 'mp_app_id';
     }
 }
