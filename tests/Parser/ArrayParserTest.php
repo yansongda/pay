@@ -38,4 +38,16 @@ class ArrayParserTest extends TestCase
 
         self::assertEquals(['name' => 'yansongda'], $result);
     }
+
+    public function testReadContents()
+    {
+        $response = new Response(200, [], '{"name": "yansongda"}');
+
+        $response->getBody()->read(2);
+
+        $parser = new ArrayParser();
+        $result = $parser->parse($response);
+
+        self::assertEquals(['name' => 'yansongda'], $result);
+    }
 }

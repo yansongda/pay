@@ -100,7 +100,7 @@ abstract class AbstractProvider implements ProviderInterface
         try {
             $response = $http->sendRequest($rocket->getRadar());
 
-            $contents = $response->getBody()->getContents();
+            $contents = (string) $response->getBody();
 
             $rocket->setDestination($response->withBody(Utils::streamFor($contents)))
                 ->setDestinationOrigin($response->withBody(Utils::streamFor($contents)));

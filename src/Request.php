@@ -21,7 +21,7 @@ class Request extends \GuzzleHttp\Psr7\Request implements JsonSerializableInterf
             'url' => $this->getUri()->__toString(),
             'method' => $this->getMethod(),
             'headers' => $this->getHeaders(),
-            'body' => $this->getBody()->getContents(),
+            'body' => (string) $this->getBody(),
         ];
     }
 }
