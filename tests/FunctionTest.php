@@ -210,6 +210,20 @@ class FunctionTest extends TestCase
         $serverRequest = new ServerRequest('POST', 'http://localhost');
         verify_wechat_sign($serverRequest, []);
         self::assertTrue(true);
+
+        $response = new Response(
+            200,
+            [
+                'Wechatpay-Nonce' => 'e59e78a6c3f7dfd7e84aabee71be0452',
+                'Wechatpay-Signature' => 'Bb10ZUsON47E/qLjecjk6ESLt7obZCvCCAXAEoD1Q+K548fz9h6YBgR3PZzviTmjsA3/r22qEC3r/yelFAn4pl4rJBGqrjo4ODJkOPlaDnHZwYotDvf6RcASpKB9ExCb33hAijHCiMzr9V9skNrj5F9eXc96lNZN3R5MVLsTF97nV922JIzyCrZ668khYPrn1jl5pCBpYDQ3rskgmZ+nnjg7M9vRAfTowEydSEGtsKjXUSaaKui2RDUuX8ZwxVcBTRng978Gh9s4mdRxs+mlv3gP1xQHdpa0mYMG0yGzLcWOTgrkt27sAwFnuXj9WtlEAgz/1DYntujKPxilMVGRow==',
+                'Wechatpay-Timestamp' => '1626444144',
+                'Wechatpay-Serial' => '45F59D4DABF31918AFCEC556D5D2C6E376675D57',
+            ],
+            json_encode(['h5_url' => 'https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx16220223998099f898c5b24eed5c320000&package=4049184564'], JSON_UNESCAPED_SLASHES),
+        );
+        $response->getBody()->read(10);
+        verify_wechat_sign($response, []);
+        self::assertTrue(true);
     }
 
     public function testEncryptWechatContents()

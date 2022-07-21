@@ -195,7 +195,7 @@ if (!function_exists('verify_wechat_sign')) {
         $timestamp = $message->getHeaderLine('Wechatpay-Timestamp');
         $random = $message->getHeaderLine('Wechatpay-Nonce');
         $sign = $message->getHeaderLine('Wechatpay-Signature');
-        $body = $message->getBody()->getContents();
+        $body = (string) $message->getBody();
 
         $content = $timestamp."\n".$random."\n".$body."\n";
         $public = get_wechat_config($params)->get('wechat_public_cert_path.'.$wechatSerial);
