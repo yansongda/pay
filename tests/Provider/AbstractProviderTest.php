@@ -70,7 +70,26 @@ class AbstractProviderTest extends TestCase
         $provider = new FooProviderStub();
         $result = $provider->ignite($rocket);
 
-        self::assertEquals('yansongda/pay', $result->getDestination()->getBody()->getContents());
+        self::assertEquals('yansongda/pay', (string) $result->getDestination()->getBody());
+    }
+
+    public function testIgnitePreRead()
+    {
+        $response = new Response(200, [], 'yansongda/pay');
+        $response->getBody()->read(1);
+
+        $rocket = new Rocket();
+        $rocket->setRadar(new Request('get', ''));
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($response);
+
+        Pay::set(HttpClientInterface::class, $http);
+
+        $provider = new FooProviderStub();
+        $result = $provider->ignite($rocket);
+
+        self::assertEquals('yansongda/pay', (string) $result->getDestination()->getBody());
     }
 
     public function testIgniteWrongHttpClient()
@@ -117,6 +136,11 @@ class FooProviderStub extends AbstractProvider
 
     public function success(): ResponseInterface
     {
+        return new Response(
+            200,
+            ['Content-Type' => 'application/json'],
+            json_encode(['code' => 'SUCCESS', 'message' => '成功']),
+        );
     }
 
     public function mergeCommonPlugins(array $plugins): array

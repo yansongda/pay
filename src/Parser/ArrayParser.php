@@ -20,7 +20,7 @@ class ArrayParser implements ParserInterface
             throw new InvalidResponseException(Exception::RESPONSE_NONE);
         }
 
-        $contents = $response->getBody()->getContents();
+        $contents = (string) $response->getBody();
 
         $result = json_decode($contents, true);
 
