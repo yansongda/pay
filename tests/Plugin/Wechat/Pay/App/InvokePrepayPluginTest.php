@@ -36,5 +36,21 @@ class InvokePrepayPluginTest extends TestCase
         self::assertArrayHasKey('sign', $contents->all());
         self::assertArrayHasKey('timestamp', $contents->all());
         self::assertArrayHasKey('noncestr', $contents->all());
+        self::assertEquals('yansongda', $contents->get('appid'));
+    }
+
+    public function testPartner()
+    {
+        $rocket = (new Rocket())
+            ->setParams(['_config' => 'service_provider4'])
+            ->setPayload(new Collection(['sub_appid' => '123']))
+            ->setDestination(new Collection(['prepay_id' => 'yansongda']));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $contents = $result->getDestination();
+
+        self::assertArrayHasKey('appid', $contents->all());
+        self::assertEquals('123', $contents->get('appid'));
     }
 }
