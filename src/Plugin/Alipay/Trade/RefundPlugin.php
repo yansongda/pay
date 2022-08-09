@@ -6,6 +6,9 @@ namespace Yansongda\Pay\Plugin\Alipay\Trade;
 
 use Yansongda\Pay\Plugin\Alipay\GeneralPlugin;
 
+/**
+ * @see https://opendocs.alipay.com/open/02ekfk
+ */
 class RefundPlugin extends GeneralPlugin
 {
     protected function getMethod(): string

@@ -11,6 +11,9 @@ use Yansongda\Pay\Parser\ResponseParser;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Traits\SupportServiceProviderTrait;
 
+/**
+ * @see https://opendocs.alipay.com/open/028r8t?scene=22
+ */
 class PagePayPlugin implements PluginInterface
 {
     use SupportServiceProviderTrait;
