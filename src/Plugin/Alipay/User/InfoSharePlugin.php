@@ -9,6 +9,9 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
+/**
+ * @see https://opendocs.alipay.com/open/02aild
+ */
 class InfoSharePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
