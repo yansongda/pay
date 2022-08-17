@@ -1,0 +1,22 @@
+name: Code Coverage
+on: [push, pull_request]
+
+jobs:
+  coverage:
+    name: Code Coverage
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          extensions: openssl
+          coverage: xdebug
+      - name: Install Dependencies
+        run: composer install --no-progress
+      - name: Run Coverage
+        run: vendor/bin/phpunit --coverage-clover coverage.xml
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v3

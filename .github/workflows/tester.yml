@@ -19,12 +19,13 @@ jobs:
           - 8.1
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           extensions: openssl
+          coverage: none
       - name: Install Dependencies
         run: composer install --no-progress
       - name: Laravel Framework
