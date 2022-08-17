@@ -15,7 +15,7 @@ jobs:
           extensions: openssl
           coverage: xdebug
       - name: Install Dependencies
-        run: composer install --no-progress
+        run: composer require php-di/php-di
       - name: Run Coverage
         run: vendor/bin/phpunit --coverage-clover coverage.xml
       - name: Upload Coverage
