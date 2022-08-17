@@ -1,8 +1,9 @@
 <p align="center">
-      <a href="https://pay.yansongda.cn" target="_blank" rel="noopener noreferrer"><img width="200" src="https://cdn.jsdelivr.net/gh/yansongda/pay-site/.vuepress/public/images/logo.png" alt="Logo"></a>
+      <a href="https://pay.yansongda.cn" target="_blank" rel="noopener noreferrer"><img width="200" src="https://pay.yansongda.cn/images/logo.png" alt="Logo"></a>
 </p>
 
 <p align="center">
+    <a href="https://codecov.io/gh/yansongda/pay" ><img src="https://codecov.io/gh/yansongda/pay/branch/master/graph/badge.svg?token=tYMV0YT5jj"/></a>
     <a href="https://scrutinizer-ci.com/g/yansongda/pay/?branch=master"><img src="https://scrutinizer-ci.com/g/yansongda/pay/badges/quality-score.png?b=master" alt="scrutinizer"></a>
     <a href="https://github.com/yansongda/pay/actions"><img src="https://github.com/yansongda/pay/workflows/Linter/badge.svg" alt="Linter Status"></a>
     <a href="https://github.com/yansongda/pay/actions"><img src="https://github.com/yansongda/pay/workflows/Tester/badge.svg" alt="Tester Status"></a>
