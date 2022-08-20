@@ -40,9 +40,9 @@ class LaunchPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     *
      * @return array|\Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|null
+     *
+     * @throws \Yansongda\Pay\Exception\InvalidResponseException
      */
     protected function validateResponse(Rocket $rocket)
     {

@@ -25,11 +25,11 @@ use Yansongda\Supports\Pipeline;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
+     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
      */
     public function call(string $plugin, array $params = [])
     {
@@ -46,10 +46,10 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     *
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
      */
     public function pay(array $plugins, array $params)
     {

@@ -37,11 +37,11 @@ class Alipay extends AbstractProvider
     ];
 
     /**
+     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
      */
     public function __call(string $shortcut, array $params)
     {
@@ -54,11 +54,11 @@ class Alipay extends AbstractProvider
     /**
      * @param string|array $order
      *
+     * @return array|\Yansongda\Supports\Collection
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return array|\Yansongda\Supports\Collection
      */
     public function find($order)
     {
@@ -72,11 +72,11 @@ class Alipay extends AbstractProvider
     /**
      * @param string|array $order
      *
+     * @return array|\Yansongda\Supports\Collection
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return array|\Yansongda\Supports\Collection
      */
     public function cancel($order)
     {
@@ -90,11 +90,11 @@ class Alipay extends AbstractProvider
     /**
      * @param string|array $order
      *
+     * @return array|\Yansongda\Supports\Collection
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return array|\Yansongda\Supports\Collection
      */
     public function close($order)
     {
@@ -106,11 +106,11 @@ class Alipay extends AbstractProvider
     }
 
     /**
+     * @return array|\Yansongda\Supports\Collection
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return array|\Yansongda\Supports\Collection
      */
     public function refund(array $order)
     {

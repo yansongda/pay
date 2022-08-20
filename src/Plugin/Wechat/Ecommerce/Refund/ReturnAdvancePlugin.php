@@ -10,6 +10,9 @@ use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_6_4.shtml
+ */
 class ReturnAdvancePlugin extends GeneralPlugin
 {
     /**

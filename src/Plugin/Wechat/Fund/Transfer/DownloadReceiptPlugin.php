@@ -10,6 +10,9 @@ use Yansongda\Pay\Parser\OriginResponseParser;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_3_11.shtml
+ */
 class DownloadReceiptPlugin extends GeneralPlugin
 {
     /**
