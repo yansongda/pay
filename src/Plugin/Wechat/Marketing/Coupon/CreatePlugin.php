@@ -7,6 +7,9 @@ namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter9_1_1.shtml
+ */
 class CreatePlugin extends GeneralPlugin
 {
     protected function doSomething(Rocket $rocket): void

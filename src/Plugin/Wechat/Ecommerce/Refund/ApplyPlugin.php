@@ -9,6 +9,9 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_6_1.shtml
+ */
 class ApplyPlugin extends GeneralPlugin
 {
     /**

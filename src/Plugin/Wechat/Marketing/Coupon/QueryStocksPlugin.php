@@ -7,6 +7,9 @@ namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter9_1_4.shtml
+ */
 class QueryStocksPlugin extends GeneralPlugin
 {
     protected function getMethod(): string

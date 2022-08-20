@@ -8,6 +8,9 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Config;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_1.shtml
+ */
 class PrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\PrepayPlugin
 {
     protected function getWechatId(Config $config, Rocket $rocket): array

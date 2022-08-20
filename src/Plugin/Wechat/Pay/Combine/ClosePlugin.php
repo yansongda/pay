@@ -9,6 +9,9 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_12.shtml
+ */
 class ClosePlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\ClosePlugin
 {
     protected function getUri(Rocket $rocket): string

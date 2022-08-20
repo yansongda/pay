@@ -9,6 +9,9 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter9_1_10.shtml
+ */
 class QueryStockUseFlowPlugin extends GeneralPlugin
 {
     protected function getMethod(): string

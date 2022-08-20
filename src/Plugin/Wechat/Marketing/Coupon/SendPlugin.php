@@ -10,6 +10,9 @@ use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter9_1_2.shtml
+ */
 class SendPlugin extends GeneralPlugin
 {
     protected function doSomething(Rocket $rocket): void
