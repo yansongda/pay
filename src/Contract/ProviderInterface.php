@@ -12,11 +12,11 @@ interface ProviderInterface
     /**
      * pay.
      *
+     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
      */
     public function pay(array $plugins, array $params);
 

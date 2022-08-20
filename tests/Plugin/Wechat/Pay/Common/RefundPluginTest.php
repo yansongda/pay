@@ -66,4 +66,17 @@ class RefundPluginTest extends TestCase
 
         self::assertEquals('123', $payload->get('sub_mchid'));
     }
+
+    public function testNormalNotifyUrl()
+    {
+        $rocket = (new Rocket())
+            ->setParams([])->setPayload(new Collection());
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        self::assertEquals('pay.yansongda.cn', $result->getPayload()->get('notify_url'));
+
+        $rocket = (new Rocket())
+            ->setParams([])->setPayload(new Collection(['notify_url' => 'yansongda.cn']));
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        self::assertEquals('yansongda.cn', $result->getPayload()->get('notify_url'));
+    }
 }

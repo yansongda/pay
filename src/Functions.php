@@ -300,9 +300,9 @@ if (!function_exists('decrypt_wechat_resource')) {
 
 if (!function_exists('decrypt_wechat_resource_aes_256_gcm')) {
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     *
      * @return array|string
+     *
+     * @throws \Yansongda\Pay\Exception\InvalidResponseException
      */
     function decrypt_wechat_resource_aes_256_gcm(string $ciphertext, string $secret, string $nonce, string $associatedData)
     {

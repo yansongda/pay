@@ -79,10 +79,10 @@ class Pay
     }
 
     /**
+     * @return mixed
+     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     *
-     * @return mixed
      */
     public static function __callStatic(string $service, array $config)
     {
@@ -143,9 +143,9 @@ class Pay
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     *
      * @return mixed
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
      */
     public static function make(string $service, array $parameters = [])
     {
@@ -167,10 +167,10 @@ class Pay
     }
 
     /**
+     * @return mixed
+     *
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\ContainerException
-     *
-     * @return mixed
      */
     public static function get(string $service)
     {
