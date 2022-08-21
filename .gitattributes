@@ -1,6 +1,7 @@
 /tests export-ignore
 /.github export-ignore
-/.phpunit.cache
+/.phpunit.cache export-ignore
+/docs export-ignore
 .gitattributes export-ignore
 .gitignore export-ignore
 phpunit.php export-ignore
