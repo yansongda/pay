@@ -86,7 +86,7 @@ $config = [
 
 ## 初始化方式
 
-### 方式一 <Badge type="tip" text="推荐" vertical="top" />
+### 方式一
 
 直接调用 `config` 方法初始化
 
