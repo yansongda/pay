@@ -18,7 +18,7 @@ export default defineConfig({
             { icon: 'github', link: 'https://github.com/yansongda/pay' },
         ],
         editLink: {
-            pattern: 'https://github.com/yansongda/pay/edit/master/docs/:path',
+            pattern: 'https://github.com/yansongda/pay/edit/master/web/:path',
             text: 'Edit this page on GitHub'
         },
         footer: {
