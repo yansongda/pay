@@ -16,45 +16,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@media (min-width: 640px) {
-  .home {
-    padding: 0 48px;
-  }
-}
-@media (min-width: 960px) {
-  .home {
-    padding: 0 64px;
-  }
-}
+@import '../css/home';
 
 .home {
-  margin-bottom: 50px;
-  padding: 0 24px;
-}
+  .container {
+    margin-bottom: 50px;
+    text-align: center;
 
-.container {
-  max-width: 1152px;
-  text-align: center;
-  margin: 0 auto;
+    img {
+      display: inline-block;
+    }
 
-  img {
-    display: inline-block;
-  }
+    .action .action-button {
+      display: inline-block;
+      font-size: 1.2rem;
+      padding: .8rem 1.6rem;
+      border-width: 2px;
+      border-style: solid;
+      border-radius: 4px;
+      box-sizing: border-box;
 
-  .action .action-button {
-    display: inline-block;
-    font-size: 1.2rem;
-    padding: .8rem 1.6rem;
-    border-width: 2px;
-    border-style: solid;
-    border-radius: 4px;
-    transition: background-color var(--t-color);
-    box-sizing: border-box;
-
-    &.primary {
-      color: #fff;
-      background-color: #3eaf7c;
-      border-color: #3eaf7c;
+      &.primary {
+        color: #fff;
+        background-color: #3eaf7c;
+        border-color: #3eaf7c;
+      }
     }
   }
 }
