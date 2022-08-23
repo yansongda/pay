@@ -1,5 +1,5 @@
 <template>
-  <div class="authorize">
+  <div class="home">
     <div class="container">
       <h2>授权</h2>
       <h3>类库</h3>
@@ -21,59 +21,46 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@media (min-width: 640px) {
-  .authorize {
-    padding: 0 48px;
-  }
-}
-@media (min-width: 960px) {
-  .authorize {
-    padding: 0 64px;
-  }
-}
+@import '../css/home';
 
-.authorize {
+.home {
   margin-top: 50px;
-  padding: 0 24px;
-}
 
-.container {
-  max-width: 1152px;
-  margin: 0 auto;
+  .container {
+    p {
+      display: block;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+      margin-inline-start: 0;
+      margin-inline-end: 0;
+    }
 
-  p {
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0;
-    margin-inline-end: 0;
-  }
+    a {
+      font-weight: 500;
+      color: #3eaf7c;
+      text-decoration: none;
+      overflow-wrap: break-word;
+    }
 
-  a {
-    font-weight: 500;
-    color: #3eaf7c;
-    text-decoration: none;
-    overflow-wrap: break-word;
-  }
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+      line-height: 1.25;
+    }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
-    line-height: 1.25;
-  }
+    h2 {
+      font-size: 1.65rem;
+      padding-bottom: .3rem;
+      border-bottom: 1px solid #eaecef;
+    }
 
-  h2 {
-    font-size: 1.65rem;
-    padding-bottom: .3rem;
-    border-bottom: 1px solid #eaecef;
-  }
-
-  h3 {
-    font-size: 1.35rem;
-    display: block;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0;
-    margin-inline-end: 0;
+    h3 {
+      font-size: 1.35rem;
+      display: block;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+      margin-inline-start: 0;
+      margin-inline-end: 0;
+    }
   }
 }
 </style>
