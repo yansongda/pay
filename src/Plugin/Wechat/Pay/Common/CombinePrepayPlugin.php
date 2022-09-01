@@ -22,14 +22,15 @@ class CombinePrepayPlugin extends GeneralPlugin
     protected function doSomething(Rocket $rocket): void
     {
         $config = get_wechat_config($rocket->getParams());
+        $collection = $rocket->getPayload();
 
         $payload = $this->getWechatId($config);
 
-        if (!$rocket->getPayload()->has('notify_url')) {
+        if (!$collection->has('notify_url')) {
             $payload['notify_url'] = $config->get('notify_url', '');
         }
 
-        if (!$rocket->getPayload()->has('combine_out_trade_no')) {
+        if (!$collection->has('combine_out_trade_no')) {
             $payload['combine_out_trade_no'] = $rocket->getParams()['out_trade_no'];
         }
 
