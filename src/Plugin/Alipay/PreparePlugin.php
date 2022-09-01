@@ -109,7 +109,11 @@ class PreparePlugin implements PluginInterface
         $cert = file_get_contents($path);
         $ssl = openssl_x509_parse($cert);
 
-        return $this->getCertSn($ssl['issuer'], $ssl['serialNumber']);
+        if (false === $ssl) {
+            throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Parse `app_public_cert_path` Error');
+        }
+
+        return $this->getCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
     }
 
     /**
@@ -169,8 +173,8 @@ class PreparePlugin implements PluginInterface
 
     protected function formatCert(array $ssl): array
     {
-        if (0 === strpos($ssl['serialNumber'], '0x')) {
-            $ssl['serialNumber'] = $this->hex2dec($ssl['serialNumberHex']);
+        if (0 === strpos($ssl['serialNumber'] ?? '', '0x')) {
+            $ssl['serialNumber'] = $this->hex2dec($ssl['serialNumberHex'] ?? '');
         }
 
         return $ssl;
