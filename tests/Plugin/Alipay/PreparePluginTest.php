@@ -116,14 +116,15 @@ class PreparePluginTest extends TestCase
     public function testWrongAppPublicCertPath()
     {
         $rocket = new Rocket();
+        $config = Pay::get(ConfigInterface::class);
 
-        Pay::set(ConfigInterface::class, new Config([
-            'default' => [
-                'alipay' => [
+        Pay::set(ConfigInterface::class, new Config(array_merge_recursive($config->all(), [
+            'alipay' => [
+                'default' => [
                     'app_public_cert_path' => __DIR__.'../../Cert/foo',
                 ]
             ]
-        ]));
+        ])));
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
@@ -135,8 +136,15 @@ class PreparePluginTest extends TestCase
     public function testMissingAlipayRootPath()
     {
         $rocket = new Rocket();
+        $config = Pay::get(ConfigInterface::class);
 
-        Pay::set(ConfigInterface::class, new Config());
+        Pay::set(ConfigInterface::class, new Config(array_merge_recursive($config->all(), [
+            'alipay' => [
+                'default' => [
+                    'alipay_root_cert_path' => null,
+                ]
+            ]
+        ])));
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
@@ -148,14 +156,15 @@ class PreparePluginTest extends TestCase
     public function testWrongAlipayRootPath()
     {
         $rocket = new Rocket();
+        $config = Pay::get(ConfigInterface::class);
 
-        Pay::set(ConfigInterface::class, new Config([
-            'default' => [
-                'alipay' => [
-                    'app_public_cert_path' => __DIR__.'../../Cert/foo',
+        Pay::set(ConfigInterface::class, new Config(array_merge_recursive($config->all(), [
+            'alipay' => [
+                'default' => [
+                    'alipay_root_cert_path' => __DIR__.'../../Cert/foo',
                 ]
             ]
-        ]));
+        ])));
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
