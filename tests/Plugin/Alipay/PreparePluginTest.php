@@ -117,14 +117,9 @@ class PreparePluginTest extends TestCase
     {
         $rocket = new Rocket();
         $config = Pay::get(ConfigInterface::class);
+        $config->set('alipay.default.app_public_cert_path', __DIR__.'/../../Cert/foo');
 
-        Pay::set(ConfigInterface::class, new Config(array_merge_recursive($config->all(), [
-            'alipay' => [
-                'default' => [
-                    'app_public_cert_path' => __DIR__.'../../Cert/foo',
-                ]
-            ]
-        ])));
+        Pay::set(ConfigInterface::class, $config);
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
@@ -138,13 +133,7 @@ class PreparePluginTest extends TestCase
         $rocket = new Rocket();
         $config = Pay::get(ConfigInterface::class);
 
-        Pay::set(ConfigInterface::class, new Config(array_merge_recursive($config->all(), [
-            'alipay' => [
-                'default' => [
-                    'alipay_root_cert_path' => null,
-                ]
-            ]
-        ])));
+        $config->set('alipay.default.alipay_root_cert_path', null);
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
@@ -158,13 +147,7 @@ class PreparePluginTest extends TestCase
         $rocket = new Rocket();
         $config = Pay::get(ConfigInterface::class);
 
-        Pay::set(ConfigInterface::class, new Config(array_merge_recursive($config->all(), [
-            'alipay' => [
-                'default' => [
-                    'alipay_root_cert_path' => __DIR__.'../../Cert/foo',
-                ]
-            ]
-        ])));
+        $config->set('alipay.default.alipay_root_cert_path', __DIR__.'/../../Cert/foo');
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
