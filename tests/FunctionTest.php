@@ -19,6 +19,16 @@ use Yansongda\Supports\Str;
 
 class FunctionTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+    }
+
     public function testShouldDoHttpRequest()
     {
         $rocket = new Rocket();

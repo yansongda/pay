@@ -327,3 +327,16 @@ if (!function_exists('decrypt_wechat_resource_aes_256_gcm')) {
         return $decrypted;
     }
 }
+
+if (!function_exists('get_unipay_config')) {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    function get_unipay_config(array $params): array
+    {
+        $config = Pay::get(ConfigInterface::class);
+
+        return $config->get('unipay.'.$params['_config'] ?? 'default');
+    }
+}

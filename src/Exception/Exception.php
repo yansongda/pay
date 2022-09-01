@@ -43,6 +43,8 @@ class Exception extends \Exception
 
     public const WECHAT_CONFIG_ERROR = 3006;
 
+    public const UNIPAY_CONFIG_ERROR = 3007;
+
     /*
      * 关于参数.
      */
@@ -63,6 +65,10 @@ class Exception extends \Exception
     public const NOT_IN_SERVICE_MODE = 4007;
 
     public const WECHAT_SERIAL_NO_NOT_FOUND = 4008;
+
+    public const UNIPAY_FIND_STRING_NOT_SUPPORTED = 4009;
+
+    public const UNIPAY_CANCEL_STRING_NOT_SUPPORTED = 4010;
 
     /**
      * 关于api.

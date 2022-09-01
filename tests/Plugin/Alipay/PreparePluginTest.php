@@ -2,20 +2,32 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
+use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
+use Yansongda\Supports\Config;
 
 class PreparePluginTest extends TestCase
 {
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new PreparePlugin();
+    }
+
     public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([]);
 
-        $plugin = new PreparePlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
 
         self::assertTrue($payload->has('app_cert_sn'));
@@ -31,7 +43,7 @@ class PreparePluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([]);
 
-        $result = (new PreparePlugin())->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $result->getPayload()->get('alipay_root_cert_sn'));
     }
@@ -43,9 +55,7 @@ class PreparePluginTest extends TestCase
             '_return_url' => 'https://yansongda.cn',
         ]);
 
-        $plugin = new PreparePlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('', $result->getPayload()->get('notify_url'));
         self::assertEquals('https://yansongda.cn', $result->getPayload()->get('return_url'));
@@ -58,9 +68,7 @@ class PreparePluginTest extends TestCase
             '_notify_url' => 'https://yansongda.cn',
         ]);
 
-        $plugin = new PreparePlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('', $result->getPayload()->get('return_url'));
         self::assertEquals('https://yansongda.cn', $result->getPayload()->get('notify_url'));
@@ -74,9 +82,7 @@ class PreparePluginTest extends TestCase
             '_notify_url' => 'https://yansongda.cn',
         ]);
 
-        $plugin = new PreparePlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('https://yansongda.cn', $result->getPayload()->get('return_url'));
         self::assertEquals('https://yansongda.cn', $result->getPayload()->get('notify_url'));
@@ -89,10 +95,72 @@ class PreparePluginTest extends TestCase
             '_app_auth_token' => 'yansongda.cn',
         ]);
 
-        $plugin = new PreparePlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('yansongda.cn', $result->getPayload()->get('app_auth_token'));
+    }
+
+    public function testMissingAppPublicCertPath()
+    {
+        $rocket = new Rocket();
+
+        Pay::set(ConfigInterface::class, new Config());
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
+        self::expectExceptionMessage('Missing Alipay Config -- [app_public_cert_path]');
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testWrongAppPublicCertPath()
+    {
+        $rocket = new Rocket();
+
+        Pay::set(ConfigInterface::class, new Config([
+            'default' => [
+                'alipay' => [
+                    'app_public_cert_path' => __DIR__.'../../Cert/foo',
+                ]
+            ]
+        ]));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
+        self::expectExceptionMessage('Parse `app_public_cert_path` Error');
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testMissingAlipayRootPath()
+    {
+        $rocket = new Rocket();
+
+        Pay::set(ConfigInterface::class, new Config());
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
+        self::expectExceptionMessage('Missing Alipay Config -- [alipay_root_cert_path]');
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testWrongAlipayRootPath()
+    {
+        $rocket = new Rocket();
+
+        Pay::set(ConfigInterface::class, new Config([
+            'default' => [
+                'alipay' => [
+                    'app_public_cert_path' => __DIR__.'../../Cert/foo',
+                ]
+            ]
+        ]));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
+        self::expectExceptionMessage('Invalid alipay_root_cert');
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 }
