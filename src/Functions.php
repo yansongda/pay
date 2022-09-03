@@ -119,40 +119,6 @@ if (!function_exists('get_wechat_base_uri')) {
     }
 }
 
-if (!function_exists('get_wechat_authorization')) {
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     */
-    function get_wechat_authorization(array $params, int $timestamp, string $random, string $contents): string
-    {
-        $config = get_wechat_config($params);
-        $mchPublicCertPath = $config->get('mch_public_cert_path');
-
-        if (empty($mchPublicCertPath)) {
-            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_public_cert_path]');
-        }
-
-        $ssl = openssl_x509_parse(get_public_cert($mchPublicCertPath));
-
-        if (empty($ssl['serialNumberHex'])) {
-            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Parse [mch_public_cert_path] Serial Number Error');
-        }
-
-        $auth = sprintf(
-            'mchid="%s",nonce_str="%s",timestamp="%d",serial_no="%s",signature="%s"',
-            $config->get('mch_id', ''),
-            $random,
-            $timestamp,
-            $ssl['serialNumberHex'],
-            get_wechat_sign($params, $contents),
-        );
-
-        return 'WECHATPAY2-SHA256-RSA2048 '.$auth;
-    }
-}
-
 if (!function_exists('get_wechat_sign')) {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException

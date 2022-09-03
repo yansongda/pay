@@ -132,30 +132,6 @@ class FunctionTest extends TestCase
         self::assertEquals(Wechat::URL[Pay::MODE_SANDBOX], get_wechat_base_uri(['_config' => 'yansongda']));
     }
 
-    public function testGetWechatAuthorization()
-    {
-        $params = [
-            'out_trade_no' => 1626493236,
-            'description' => 'yansongda 测试 - 1626493236',
-            'amount' => [
-                'total' => 1,
-            ],
-            'scene_info' => [
-                'payer_client_ip' => '127.0.0.1',
-                'h5_info' => [
-                    'type' => 'Wap',
-                ]
-            ]];
-        $timestamp = 1626493236;
-        $random = 'QqtzdVzxavZeXag9G5mtfzbfzFMf89p6';
-        $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\/\/127.0.0.1:8000\/wechat\/notify\"}\n";
-
-        self::assertEquals(
-            'WECHATPAY2-SHA256-RSA2048 mchid="1600314069",nonce_str="QqtzdVzxavZeXag9G5mtfzbfzFMf89p6",timestamp="1626493236",serial_no="25F8AA5452D55497C24BA57DC81B1E5915DC2E77",signature="KzIgMgiop3nQJNdBVR2Xah/JUwVBLDFFajyXPiSN8b8YAYEA4FuWfaCgFJ52+WFed+PhOYWx/ZPih4RaEuuSdYB8eZwYUx7RZGMQZk0bKCctAjjPuf4pJN+f/WsXKjPIy3diqF5x7gyxwSCaKWP4/KjsHNqgQpiC8q1uC5xmElzuhzSwj88LIoLtkAuSmtUVvdAt0Nz41ECHZgHWSGR32TfBo902r8afdaVKkFde8IoqcEJJcp6sMxdDO5l9R5KEWxrJ1SjsXVrb0IPH8Nj7e6hfhq7pucxojPpzsC+ZWAYvufZkAQx3kTiFmY87T+QhkP9FesOfWvkIRL4E6MP6ug=="',
-            get_wechat_authorization($params, $timestamp, $random, $contents)
-        );
-    }
-
     public function testGetWechatSign()
     {
         $params = [
