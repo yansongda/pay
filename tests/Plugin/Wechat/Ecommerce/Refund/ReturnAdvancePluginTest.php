@@ -60,5 +60,6 @@ class ReturnAdvancePluginTest extends TestCase
 
         self::assertEquals(new Uri(Wechat::URL[Pay::MODE_SERVICE].'v3/ecommerce/refunds/123/return-advance'), $radar->getUri());
         self::assertEquals('1600314070', $payload->get('sub_mchid'));
+        self::assertArrayNotHasKey('refund_id', $payload->all());
     }
 }
