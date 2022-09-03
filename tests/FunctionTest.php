@@ -305,4 +305,22 @@ class FunctionTest extends TestCase
 
         self::assertTrue(false !== strpos($result, '-----BEGIN CERTIFICATE-----'));
     }
+
+    public function testGetUnipayConfig()
+    {
+        self::assertArrayHasKey('mch_id', get_unipay_config([]));
+
+        Pay::clear();
+
+        $config2 = [
+            'unipay' => [
+                'default' => ['name' => 'yansongda'],
+                'c1' => ['age' => 28]
+            ]
+        ];
+        Pay::config($config2);
+        self::assertEquals(['name' => 'yansongda'], get_unipay_config([]));
+
+        self::assertEquals(['age' => 28], get_unipay_config(['_config' => 'c1']));
+    }
 }
