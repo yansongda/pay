@@ -77,7 +77,7 @@ class SignPlugin implements PluginInterface
 
         $auth = sprintf(
             'mchid="%s",nonce_str="%s",timestamp="%d",serial_no="%s",signature="%s"',
-            $config->get('mch_id', ''),
+            $config['mch_id'] ?? '',
             $random,
             $timestamp,
             $ssl['serialNumberHex'],
