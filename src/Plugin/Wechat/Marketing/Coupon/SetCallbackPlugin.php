@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 

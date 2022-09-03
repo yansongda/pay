@@ -7,6 +7,9 @@ namespace Yansongda\Pay\Plugin\Alipay;
 use Closure;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+
+use function Yansongda\Pay\get_alipay_config;
+
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;

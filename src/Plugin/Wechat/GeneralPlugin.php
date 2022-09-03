@@ -7,6 +7,10 @@ namespace Yansongda\Pay\Plugin\Wechat;
 use Closure;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+
+use function Yansongda\Pay\get_wechat_base_uri;
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Request;

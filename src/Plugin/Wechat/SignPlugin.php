@@ -10,6 +10,11 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
+
+use function Yansongda\Pay\get_public_cert;
+use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_wechat_sign;
+
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;

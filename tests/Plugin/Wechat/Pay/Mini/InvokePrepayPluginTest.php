@@ -6,6 +6,7 @@ use Yansongda\Pay\Plugin\Wechat\Pay\Mini\InvokePrepayPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
+use function Yansongda\Pay\get_wechat_config;
 
 class InvokePrepayPluginTest extends TestCase
 {

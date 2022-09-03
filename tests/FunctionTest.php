@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Parser\CollectionParser;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
@@ -16,6 +17,19 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Str;
+use function Yansongda\Pay\decrypt_wechat_resource;
+use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
+use function Yansongda\Pay\encrypt_wechat_contents;
+use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_private_cert;
+use function Yansongda\Pay\get_public_cert;
+use function Yansongda\Pay\get_wechat_base_uri;
+use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_wechat_sign;
+use function Yansongda\Pay\reload_wechat_public_certs;
+use function Yansongda\Pay\should_do_http_request;
+use function Yansongda\Pay\verify_alipay_sign;
+use function Yansongda\Pay\verify_wechat_sign;
 
 class FunctionTest extends TestCase
 {
@@ -164,7 +178,7 @@ class FunctionTest extends TestCase
         Pay::config(array_merge($config1, ['_force' => true]));
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(InvalidConfigException::WECHAT_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::WECHAT_CONFIG_ERROR);
         get_wechat_sign([], '', '');
     }
 
