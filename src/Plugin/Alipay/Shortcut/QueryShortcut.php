@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Alipay\Fund\TransOrderQueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\Fund\TransCommonQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Trade\FastRefundQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Trade\QueryPlugin;
 
@@ -48,7 +48,7 @@ class QueryShortcut implements ShortcutInterface
     protected function transferPlugins(): array
     {
         return [
-            TransOrderQueryPlugin::class,
+            TransCommonQueryPlugin::class,
         ];
     }
 }
