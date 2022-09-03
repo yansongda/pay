@@ -4,7 +4,7 @@
 
 - change: Function 增加命名空间(#665)
 - change: `get_alipay_config`，`get_wechat_config` 返回类型由 `Config` 改为 `array`()
-- change: 支付宝转账查询接口由老版本改为为新版本()
+- change: 支付宝转账查询接口由老版本改为为新版本(#666)
 
 ### deleted
 

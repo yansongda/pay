@@ -87,7 +87,7 @@ if (!function_exists('verify_alipay_sign')) {
             OPENSSL_ALGO_SHA256);
 
         if (!$result) {
-            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', func_get_args());
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Alipay Response Sign Failed', func_get_args());
         }
     }
 }

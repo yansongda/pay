@@ -9,14 +9,21 @@ use Yansongda\Pay\Tests\TestCase;
 
 class AccountQueryPluginTest extends TestCase
 {
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new AccountQueryPlugin();
+    }
+
     public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([]);
 
-        $plugin = new AccountQueryPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertNotEquals(ResponseParser::class, $result->getDirection());
         self::assertStringContainsString('alipay.fund.account.query', $result->getPayload()->toJson());

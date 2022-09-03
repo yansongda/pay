@@ -37,7 +37,7 @@ $result = Pay::alipay()->find($order);
 Pay::config($this->config);
 
 $order = [
-    'out_trade_no' => '1514027114',
+    'out_biz_no' => '202209032319',
     '_type' => 'transfer'
 ];
 
@@ -50,5 +50,5 @@ $result = Pay::alipay()->find($order);
 
 - 支付订单：[这里](https://opendocs.alipay.com/apis/api_1/alipay.trade.query)
 - 退款订单：[这里](https://opendocs.alipay.com/apis/api_1/alipay.trade.fastpay.refund.query)
-- 转账订单：[这里](https://opendocs.alipay.com/apis/api_28/alipay.fund.trans.order.query)
+- 转账订单：[这里](https://opendocs.alipay.com/open/02byup)
     
