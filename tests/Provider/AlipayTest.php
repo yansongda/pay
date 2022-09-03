@@ -70,25 +70,26 @@ class AlipayTest extends TestCase
     public function testFindTransfer()
     {
         $response = [
-            "alipay_fund_trans_order_query_response" => [
+            "alipay_fund_trans_common_query_response" => [
                 "code" => "10000",
                 "msg" => "Success",
-                "order_fee" => "0.00",
-                "order_id" => "20210605110070001506210013918943",
-                "out_biz_no" => "202106051432",
-                "pay_date" => "2021-06-05 14:32:08",
+                "order_id" => "20220903110070000006210024965252",
+                "out_biz_no" => "202209032319",
+                "pay_date" => "2022-09-03 23:26:58",
+                'pay_fund_order_id' => '20220903110070001506210025020488',
+                'alipay_cert_sn' => 'a359aaadd01ceca03dbc07537da539b9',
                 "status" => "SUCCESS",
             ],
             "alipay_cert_sn" => "a359aaadd01ceca03dbc07537da539b9",
-            "sign" => "cihCFfEPKsNClEvyaf4s99WzvyVPUhbfgk4dXcZBnWZZ69Ng1Z9YekQd4Bt3WopXIkkCK96Rcd1jHPErBrN2V+XC9sDG/LkQbh8eTF6Hh1QYZl8ERpkjdb7H0xN77LmaUZwq82zVo57AT3B01HkMV4n8TTazVbzNdd8v8w/URQknZfo89H2YFiCMe78HJVSurza8kT2kIineUBy4CWA+9uZTEKOrntZLnggK/gtwm6nu7z0i5EptjoypBMfZflyC8AQqdXKGQXnrS8mC7eq7Y2HTm4pkFggmU4vvnVN0RbuwBMENBV5X3JuYs1hs3mKIAgvXZclHaVPMPJwhAel4rA==",
+            "sign" => "BD0RLfVXU/xx4c9oGcMIC+cb6kMqGVa4zCgjuFP1XnzWUqTG9eSo74YtAjI2BUFQXQEnW9ZJQZLJ0MpddsW7UJSAGWj7Yn7hGUUx3/P0b7bgqRgR2nJNak381wOcwgcyj7Iwx/wnfeFZh55dy824e1VvuSEz5izLvRfsGAwQVUACJFdoCC/J2A/uw9QaYSQ3n9ibJnQ9sPV6lXA+4oRKse7pEsbrI4YXnB7xJE8bTCW3E/YbsBDuRKE4Ja4ZcXD81a1tDMCRMSudSz8k/oazCHa0TZC4bzqm4oZUQZvu2VetnzFFUaydMX4tIIu/Xgs527j5qWjV8reM8BL19plBSg==",
         ];
 
         $http = Mockery::mock(Client::class);
         $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::alipay()->find(['out_biz_no' => '202106051432', '_type' => 'transfer']);
-        self::assertEqualsCanonicalizing($response['alipay_fund_trans_order_query_response'], $result->all());
+        $result = Pay::alipay()->find(['out_biz_no' => '202209032319', '_type' => 'transfer']);
+        self::assertEqualsCanonicalizing($response['alipay_fund_trans_common_query_response'], $result->all());
     }
 
     public function testFindRefund()

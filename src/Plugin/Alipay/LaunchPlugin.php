@@ -59,7 +59,7 @@ class LaunchPlugin implements PluginInterface
         $sign = $response->get('sign', '');
 
         if ('' === $sign || is_null($result)) {
-            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Alipay Response Sign Failed', $response);
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Alipay Response Sign Failed: sign is empty', $response);
         }
 
         verify_alipay_sign($rocket->getParams(), json_encode($result, JSON_UNESCAPED_UNICODE), base64_decode($sign));

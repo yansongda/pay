@@ -3,11 +3,11 @@
 namespace Yansongda\Pay\Tests\Plugin\Alipay\Fund;
 
 use Yansongda\Pay\Parser\ResponseParser;
-use Yansongda\Pay\Plugin\Alipay\Fund\TransUniTransferPlugin;
+use Yansongda\Pay\Plugin\Alipay\Fund\TransCommonQueryPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
-class TransUniTransferPluginTest extends TestCase
+class TransCommonQueryPluginTest extends TestCase
 {
     protected $plugin;
 
@@ -15,7 +15,7 @@ class TransUniTransferPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new TransUniTransferPlugin();
+        $this->plugin = new TransCommonQueryPlugin();
     }
 
     public function testNormal()
@@ -24,10 +24,10 @@ class TransUniTransferPluginTest extends TestCase
         $rocket->setParams([]);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $payloadString = $result->getPayload()->toJson();
 
         self::assertNotEquals(ResponseParser::class, $result->getDirection());
-        self::assertStringContainsString('alipay.fund.trans.uni.transfer', $result->getPayload()->toJson());
-        self::assertStringContainsString('DIRECT_TRANSFER', $result->getPayload()->toJson());
-        self::assertStringContainsString('TRANS_ACCOUNT_NO_PWD', $result->getPayload()->toJson());
+        self::assertStringContainsString('alipay.fund.trans.common.query', $payloadString);
+        self::assertStringContainsString('TRANS_ACCOUNT_NO_PWD', $payloadString);
     }
 }
