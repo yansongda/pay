@@ -21,6 +21,7 @@ use Yansongda\Pay\Service\ContainerServiceProvider;
 use Yansongda\Pay\Service\EventServiceProvider;
 use Yansongda\Pay\Service\HttpServiceProvider;
 use Yansongda\Pay\Service\LoggerServiceProvider;
+use Yansongda\Pay\Service\UnipayServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
 
 /**
@@ -50,6 +51,7 @@ class Pay
     protected array $service = [
         AlipayServiceProvider::class,
         WechatServiceProvider::class,
+        UnipayServiceProvider::class,
     ];
 
     /**

@@ -35,7 +35,7 @@ class SignPlugin implements PluginInterface
     {
         $content = $payload->sortKeys()->toString();
 
-        openssl_sign(sha1($content), $sign, $config['certs']['pkey'] ?? '');
+        openssl_sign(hash('sha256', $content), $sign, $config['certs']['pkey'] ?? '', 'sha256');
 
         return base64_encode($sign);
     }

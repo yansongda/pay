@@ -107,7 +107,7 @@ class PreparePlugin implements PluginInterface
             throw new InvalidConfigException(Exception::UNIPAY_CONFIG_ERROR, 'Missing Unipay Config -- [mch_cert_path] or [mch_cert_password]');
         }
 
-        if(false === openssl_pkcs12_read(file_get_contents($path), $certs, $password)){
+        if (false === openssl_pkcs12_read(file_get_contents($path), $certs, $password)) {
             throw new InvalidConfigException(Exception::UNIPAY_CONFIG_ERROR, 'Read `mch_cert_path` Error');
         }
 

@@ -12,22 +12,22 @@ use Yansongda\Pay\Event;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Unipay\SignPlugin;
-use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method ResponseInterface web(array $order)      电脑支付
+ * @method ResponseInterface web(array $order) 电脑支付
  */
 class Unipay extends AbstractProvider
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://gateway.95516.com',
-        Pay::MODE_SANDBOX => 'https://gateway.test.95516.com',
+        Pay::MODE_NORMAL => 'https://gateway.95516.com/',
+        Pay::MODE_SANDBOX => 'https://gateway.test.95516.com/',
         Pay::MODE_SERVICE => 'https://gateway.95516.com',
     ];
 

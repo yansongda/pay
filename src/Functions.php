@@ -337,6 +337,6 @@ if (!function_exists('get_unipay_config')) {
     {
         $config = Pay::get(ConfigInterface::class);
 
-        return $config->get('unipay.'.$params['_config'] ?? 'default');
+        return $config->get('unipay.'.($params['_config'] ?? 'default'));
     }
 }
