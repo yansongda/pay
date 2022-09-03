@@ -6,6 +6,9 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Combine;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 

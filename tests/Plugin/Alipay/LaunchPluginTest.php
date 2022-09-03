@@ -119,7 +119,7 @@ class LaunchPluginTest extends TestCase
             ->setParams([]);
 
         self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(InvalidResponseException::INVALID_RESPONSE_SIGN);
+        self::expectExceptionCode(Exception::INVALID_RESPONSE_SIGN);
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 

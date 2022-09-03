@@ -8,6 +8,9 @@ use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
+
+use function Yansongda\Pay\get_alipay_config;
+
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 

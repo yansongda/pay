@@ -7,6 +7,9 @@ namespace Yansongda\Pay\Traits;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 
+use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\reload_wechat_public_certs;
+
 trait HasWechatEncryption
 {
     /**

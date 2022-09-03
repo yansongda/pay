@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Traits;
 
+use function Yansongda\Pay\get_alipay_config;
+
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 

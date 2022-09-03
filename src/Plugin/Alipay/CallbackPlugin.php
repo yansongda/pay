@@ -11,6 +11,9 @@ use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Rocket;
+
+use function Yansongda\Pay\verify_alipay_sign;
+
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
