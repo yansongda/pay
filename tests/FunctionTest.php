@@ -220,7 +220,7 @@ class FunctionTest extends TestCase
     {
         $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
         $contents = 'yansongda';
-        $result = encrypt_wechat_contents($contents, get_wechat_config([])['wechat_public_cert_path.'.$serialNo]);
+        $result = encrypt_wechat_contents($contents, get_wechat_config([])['wechat_public_cert_path'][$serialNo]);
         self::assertIsString($result);
     }
 

@@ -160,7 +160,7 @@ if (!function_exists('verify_wechat_sign')) {
         $body = (string) $message->getBody();
 
         $content = $timestamp."\n".$random."\n".$body."\n";
-        $public = get_wechat_config($params)['wechat_public_cert_path.'.$wechatSerial] ?? null;
+        $public = get_wechat_config($params)['wechat_public_cert_path'][$wechatSerial] ?? null;
 
         if (empty($sign)) {
             throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
