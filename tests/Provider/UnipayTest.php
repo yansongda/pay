@@ -48,6 +48,6 @@ class UnipayTest extends TestCase
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::METHOD_NOT_SUPPORTED);
 
-        Pay::unipay()->close();
+        Pay::unipay()->close('foo');
     }
 }
