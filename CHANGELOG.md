@@ -7,7 +7,7 @@
 
 ### deleted
 
-- delete: Function 中将 `get_wechat_authorization` 方法移除()
+- delete: Function 中将 `get_wechat_authorization` 方法移除(#664)
 
 ### performance
 
