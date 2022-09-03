@@ -16,3 +16,15 @@ class UnipayGeneralPluginStub extends GeneralPlugin
         return 'yansongda/pay';
     }
 }
+
+class UnipayGeneralPluginStub1 extends GeneralPlugin
+{
+    protected function doSomething(Rocket $rocket): void
+    {
+    }
+
+    protected function getUri(Rocket $rocket): string
+    {
+        return 'https://yansongda.cn/pay';
+    }
+}

@@ -47,7 +47,7 @@ class WechatTest extends TestCase
         ), Pay::wechat()->mergeCommonPlugins($plugins));
     }
 
-    public function testCancel()
+    public function testClose()
     {
         $response = new Response(
             200,
