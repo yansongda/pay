@@ -8,22 +8,34 @@ use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Traits\GetUnipayCerts;
 use Yansongda\Supports\Collection;
 
 class SignPlugin implements PluginInterface
 {
+    use GetUnipayCerts;
+
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::info('[unipay][PreparePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload()->filter(fn ($v, $k) => 'signature' != $k);
+        $params = $rocket->getParams();
+        $config = get_unipay_config($params);
+
+        if (empty($config['certs']['pkey'])) {
+            $this->getCertId($params['_config'] ?? 'default', $config);
+
+            $config = get_unipay_config($params);
+        }
 
         $rocket->mergePayload([
-            'signature' => $this->getSign(get_unipay_config($rocket->getParams()), $payload),
+            'signature' => $this->getSign($config['certs']['pkey'] ?? '', $payload),
         ]);
 
         Logger::info('[unipay][PreparePlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -31,11 +43,11 @@ class SignPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function getSign(array $config, Collection $payload): string
+    protected function getSign(string $pkey, Collection $payload): string
     {
         $content = $payload->sortKeys()->toString();
 
-        openssl_sign(hash('sha256', $content), $sign, $config['certs']['pkey'] ?? '', 'sha256');
+        openssl_sign(hash('sha256', $content), $sign, $pkey, 'sha256');
 
         return base64_encode($sign);
     }

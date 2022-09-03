@@ -39,7 +39,7 @@ class SignPluginTest extends TestCase
             'signMethod' => '01',
             'channelType' => '07',
             'merId' => '777290058167151',
-            'frontUrl' => 'https://yansongda.cn/unipay/return','',
+            'frontUrl' => 'https://yansongda.cn/unipay/return',
             'certId' => '69903319369',
         ];
 

@@ -28,6 +28,8 @@ class PreparePluginTest extends TestCase
             'txnTime' => '20220903065448',
             'txnAmt' => 1,
             'orderId' => 'yansongda20220903065448',
+        ];
+        $payload = array_merge($params, [
             'version' => '5.1.0',
             'encoding' => 'utf-8',
             'bizType' => '000201',
@@ -40,22 +42,22 @@ class PreparePluginTest extends TestCase
             'signMethod' => '01',
             'channelType' => '07',
             'merId' => '777290058167151',
-            'frontUrl' => 'https://yansongda.cn/unipay/return','',
+            'frontUrl' => 'https://yansongda.cn/unipay/return',
             'certId' => '69903319369',
-        ];
+        ]);
 
-        $rocket = new Rocket();
+        $rocket = (new Rocket())->setParams($params);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
         $config = get_unipay_config([]);
 
-        self::assertEqualsCanonicalizing($params, $payload->all());
-        self::assertArrayHasKey('certs', $config);
+        self::assertEquals($payload, $result->getPayload()->all());
+        self::assertArrayHasKey('cert', $config['certs']);
+        self::assertArrayHasKey('pkey', $config['certs']);
         self::assertEquals('69903319369', $config['certs']['cert_id']);
 
         Pay::set(ConfigInterface::class, Pay::get(ConfigInterface::class)->merge([
-            'unipay' => ['default' => ['mch_cert_path' => null]],
+            'unipay' => ['default' => array_merge($config, ['mch_cert_path' => null])],
         ]));
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
