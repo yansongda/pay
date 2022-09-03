@@ -51,7 +51,7 @@ class FunctionTest extends TestCase
 
     public function testGetAlipayConfig()
     {
-        self::assertArrayHasKey('app_id', get_alipay_config([])->all());
+        self::assertArrayHasKey('app_id', get_alipay_config([]));
 
         Pay::clear();
 
@@ -62,9 +62,9 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config($config2);
-        self::assertEquals(['name' => 'yansongda'], get_alipay_config([])->all());
+        self::assertEquals(['name' => 'yansongda'], get_alipay_config([]));
 
-        self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1'])->all());
+        self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1']));
     }
 
     public function testGetPublicCert()

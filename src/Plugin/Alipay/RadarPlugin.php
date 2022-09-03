@@ -60,7 +60,7 @@ class RadarPlugin implements PluginInterface
     {
         $config = get_alipay_config($rocket->getParams());
 
-        return Alipay::URL[$config->get('mode', Pay::MODE_NORMAL)];
+        return Alipay::URL[$config['mode'] ?? Pay::MODE_NORMAL];
     }
 
     protected function getHeaders(): array

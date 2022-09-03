@@ -39,71 +39,59 @@ class PreparePlugin implements PluginInterface
      */
     protected function getPayload(array $params): array
     {
+        $config = get_alipay_config($params);
+
         return [
-            'app_id' => get_alipay_config($params)->get('app_id', ''),
+            'app_id' => $config['app_id'] ?? '',
             'method' => '',
             'format' => 'JSON',
-            'return_url' => $this->getReturnUrl($params),
+            'return_url' => $this->getReturnUrl($params, $config),
             'charset' => 'utf-8',
             'sign_type' => 'RSA2',
             'sign' => '',
             'timestamp' => date('Y-m-d H:i:s'),
             'version' => '1.0',
-            'notify_url' => $this->getNotifyUrl($params),
-            'app_auth_token' => $this->getAppAuthToken($params),
-            'app_cert_sn' => $this->getAppCertSn($params),
-            'alipay_root_cert_sn' => $this->getAlipayRootCertSn($params),
+            'notify_url' => $this->getNotifyUrl($params, $config),
+            'app_auth_token' => $this->getAppAuthToken($params, $config),
+            'app_cert_sn' => $this->getAppCertSn($config),
+            'alipay_root_cert_sn' => $this->getAlipayRootCertSn($config),
             'biz_content' => [],
         ];
     }
 
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     */
-    protected function getReturnUrl(array $params): string
+    protected function getReturnUrl(array $params, array $config): string
     {
         if (!empty($params['_return_url'])) {
             return $params['_return_url'];
         }
 
-        return get_alipay_config($params)->get('return_url', '');
+        return $config['return_url'] ?? '';
     }
 
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     */
-    protected function getNotifyUrl(array $params): string
+    protected function getNotifyUrl(array $params, array $config): string
     {
         if (!empty($params['_notify_url'])) {
             return $params['_notify_url'];
         }
 
-        return get_alipay_config($params)->get('notify_url', '');
+        return $config['notify_url'] ?? '';
     }
 
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     */
-    protected function getAppAuthToken(array $params): string
+    protected function getAppAuthToken(array $params, array $config): string
     {
         if (!empty($params['_app_auth_token'])) {
             return $params['_app_auth_token'];
         }
 
-        return get_alipay_config($params)->get('app_auth_token', '');
+        return $config['app_auth_token'] ?? '';
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      */
-    protected function getAppCertSn(array $params): string
+    protected function getAppCertSn(array $config): string
     {
-        $path = get_alipay_config($params)->get('app_public_cert_path');
+        $path = $config['app_public_cert_path'] ?? null;
 
         if (is_null($path)) {
             throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [app_public_cert_path]');
@@ -120,13 +108,11 @@ class PreparePlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getAlipayRootCertSn(array $params): string
+    protected function getAlipayRootCertSn(array $config): string
     {
-        $path = get_alipay_config($params)->get('alipay_root_cert_path');
+        $path = $config['alipay_root_cert_path'] ?? null;
 
         if (is_null($path)) {
             throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_root_cert_path]');

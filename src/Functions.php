@@ -33,13 +33,11 @@ if (!function_exists('get_alipay_config')) {
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    function get_alipay_config(array $params = []): Config
+    function get_alipay_config(array $params = []): array
     {
         $alipay = Pay::get(ConfigInterface::class)->get('alipay');
 
-        $config = $params['_config'] ?? 'default';
-
-        return new Config($alipay[$config] ?? []);
+        return $alipay[$params['_config'] ?? 'default'] ?? [];
     }
 }
 
@@ -74,7 +72,7 @@ if (!function_exists('verify_alipay_sign')) {
      */
     function verify_alipay_sign(array $params, string $contents, string $sign): void
     {
-        $public = get_alipay_config($params)->get('alipay_public_cert_path');
+        $public = get_alipay_config($params)['alipay_public_cert_path'] ?? null;
 
         if (empty($public)) {
             throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_public_cert_path]');

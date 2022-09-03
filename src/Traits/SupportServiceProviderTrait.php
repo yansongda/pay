@@ -19,10 +19,10 @@ trait SupportServiceProviderTrait
     {
         $params = $rocket->getParams();
         $config = get_alipay_config($params);
-        $serviceProviderId = $config->get('service_provider_id');
+        $serviceProviderId = $config['service_provider_id'];
 
-        if (Pay::MODE_SERVICE !== $config->get('mode', Pay::MODE_NORMAL) ||
-            empty($serviceProviderId)) {
+        if (Pay::MODE_SERVICE !== $config['mode'] ?? Pay::MODE_NORMAL
+            || empty($serviceProviderId)) {
             return;
         }
 
