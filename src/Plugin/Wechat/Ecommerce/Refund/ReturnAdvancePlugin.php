@@ -48,10 +48,10 @@ class ReturnAdvancePlugin extends GeneralPlugin
     {
         $config = get_wechat_config($rocket->getParams());
 
-        $body = [
-            'sub_mchid' => $rocket->getPayload()->get('sub_mchid', $config->get('sub_mch_id', '')),
-        ];
-
-        $rocket->setPayload(new Collection($body));
+        if (!$rocket->getPayload()->has('sub_mchid')) {
+            $rocket->setPayload(new Collection([
+                'sub_mchid' => $config['sub_mch_id'] ?? '',
+            ]));
+        }
     }
 }

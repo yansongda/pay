@@ -32,7 +32,7 @@ class QueryPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         $radar = $result->getRadar();
 
-        self::assertEquals('1600314069', $config->get('mch_id'));
+        self::assertEquals('1600314069', $config['mch_id']);
         self::assertEquals('/v3/pay/transactions/id/121212', $radar->getUri()->getPath());
         self::assertEquals('mchid=1600314069', $radar->getUri()->getQuery());
         self::assertEquals('GET', $radar->getMethod());

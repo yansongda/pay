@@ -34,7 +34,7 @@ class FindPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
         $config = get_wechat_config($rocket->getParams());
-        $subMchId = $payload->get('sub_mchid', $config->get('sub_mch_id', ''));
+        $subMchId = $payload->get('sub_mchid', $config['sub_mch_id'] ?? '');
 
         if (!is_null($payload->get('refund_id'))) {
             return 'v3/ecommerce/refunds/id/'.$payload->get('refund_id').'?sub_mchid='.$subMchId;

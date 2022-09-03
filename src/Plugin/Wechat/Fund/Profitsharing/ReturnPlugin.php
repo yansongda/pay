@@ -23,10 +23,10 @@ class ReturnPlugin extends GeneralPlugin
     {
         $config = get_wechat_config($rocket->getParams());
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
             $rocket->mergePayload([
                 'sub_mchid' => $rocket->getPayload()
-                    ->get('sub_mchid', $config->get('sub_mch_id', '')),
+                    ->get('sub_mchid', $config['sub_mch_id'] ?? ''),
             ]);
         }
     }

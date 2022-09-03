@@ -67,12 +67,12 @@ class CreatePlugin extends GeneralPlugin
         }
 
         $appId = [
-            'appid' => $payload->get('appid', $config->get($key, '')),
+            'appid' => $payload->get('appid', $config[$key] ?? ''),
         ];
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
             $appId = [
-                'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id', '')),
+                'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
             ];
         }
 

@@ -16,7 +16,6 @@ use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
 use Yansongda\Pay\Plugin\Wechat\SignPlugin;
 use Yansongda\Pay\Plugin\Wechat\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Wechat;
-use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 if (!function_exists('should_do_http_request')) {
@@ -33,13 +32,11 @@ if (!function_exists('get_alipay_config')) {
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    function get_alipay_config(array $params = []): Config
+    function get_alipay_config(array $params = []): array
     {
         $alipay = Pay::get(ConfigInterface::class)->get('alipay');
 
-        $config = $params['_config'] ?? 'default';
-
-        return new Config($alipay[$config] ?? []);
+        return $alipay[$params['_config'] ?? 'default'] ?? [];
     }
 }
 
@@ -74,7 +71,7 @@ if (!function_exists('verify_alipay_sign')) {
      */
     function verify_alipay_sign(array $params, string $contents, string $sign): void
     {
-        $public = get_alipay_config($params)->get('alipay_public_cert_path');
+        $public = get_alipay_config($params)['alipay_public_cert_path'] ?? null;
 
         if (empty($public)) {
             throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_public_cert_path]');
@@ -97,13 +94,11 @@ if (!function_exists('get_wechat_config')) {
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    function get_wechat_config(array $params): Config
+    function get_wechat_config(array $params): array
     {
         $wechat = Pay::get(ConfigInterface::class)->get('wechat');
 
-        $config = $params['_config'] ?? 'default';
-
-        return new Config($wechat[$config] ?? []);
+        return $wechat[$params['_config'] ?? 'default'] ?? [];
     }
 }
 
@@ -116,7 +111,7 @@ if (!function_exists('get_wechat_base_uri')) {
     {
         $config = get_wechat_config($params);
 
-        return Wechat::URL[$config->get('mode', Pay::MODE_NORMAL)];
+        return Wechat::URL[$config['mode'] ?? Pay::MODE_NORMAL];
     }
 }
 
@@ -128,7 +123,7 @@ if (!function_exists('get_wechat_sign')) {
      */
     function get_wechat_sign(array $params, string $contents): string
     {
-        $privateKey = get_wechat_config($params)->get('mch_secret_cert');
+        $privateKey = get_wechat_config($params)['mch_secret_cert'] ?? null;
 
         if (empty($privateKey)) {
             throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_cert]');
@@ -165,7 +160,7 @@ if (!function_exists('verify_wechat_sign')) {
         $body = (string) $message->getBody();
 
         $content = $timestamp."\n".$random."\n".$body."\n";
-        $public = get_wechat_config($params)->get('wechat_public_cert_path.'.$wechatSerial);
+        $public = get_wechat_config($params)['wechat_public_cert_path'][$wechatSerial] ?? null;
 
         if (empty($sign)) {
             throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
@@ -222,7 +217,7 @@ if (!function_exists('reload_wechat_public_certs')) {
         $wechatConfig['wechat_public_cert_path'] = ((array) $wechatConfig['wechat_public_cert_path']) + ($certs ?? []);
 
         Pay::set(ConfigInterface::class, Pay::get(ConfigInterface::class)->merge([
-            'wechat' => [$params['_config'] ?? 'default' => $wechatConfig->all()],
+            'wechat' => [$params['_config'] ?? 'default' => $wechatConfig],
         ]));
 
         if (!is_null($serialNo) && empty($certs[$serialNo])) {
@@ -243,7 +238,7 @@ if (!function_exists('decrypt_wechat_resource')) {
     function decrypt_wechat_resource(array $resource, array $params): array
     {
         $ciphertext = base64_decode($resource['ciphertext'] ?? '');
-        $secret = get_wechat_config($params)->get('mch_secret_key');
+        $secret = get_wechat_config($params)['mch_secret_key'] ?? null;
 
         if (strlen($ciphertext) <= Wechat::AUTH_TAG_LENGTH_BYTE) {
             throw new InvalidResponseException(Exception::INVALID_CIPHERTEXT_PARAMS);

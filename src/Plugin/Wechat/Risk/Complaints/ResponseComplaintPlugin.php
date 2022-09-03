@@ -30,7 +30,7 @@ class ResponseComplaintPlugin extends GeneralPlugin
 
         if (is_null($payload->get('complainted_mchid'))) {
             $rocket->mergePayload([
-                'complainted_mchid' => $config->get('mch_id', ''),
+                'complainted_mchid' => $config['mch_id'] ?? '',
             ]);
         }
     }

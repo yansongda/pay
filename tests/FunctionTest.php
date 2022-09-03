@@ -51,7 +51,7 @@ class FunctionTest extends TestCase
 
     public function testGetAlipayConfig()
     {
-        self::assertArrayHasKey('app_id', get_alipay_config([])->all());
+        self::assertArrayHasKey('app_id', get_alipay_config([]));
 
         Pay::clear();
 
@@ -62,9 +62,9 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config($config2);
-        self::assertEquals(['name' => 'yansongda'], get_alipay_config([])->all());
+        self::assertEquals(['name' => 'yansongda'], get_alipay_config([]));
 
-        self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1'])->all());
+        self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1']));
     }
 
     public function testGetPublicCert()
@@ -120,7 +120,7 @@ class FunctionTest extends TestCase
 
     public function testGetWechatConfig()
     {
-        self::assertArrayHasKey('mp_app_id', get_wechat_config([])->all());
+        self::assertArrayHasKey('mp_app_id', get_wechat_config([]));
 
         $config2 = [
             'wechat' => [
@@ -129,9 +129,9 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config(array_merge($config2, ['_force' => true]));
-        self::assertEquals(['name' => 'yansongda'], get_wechat_config([])->all());
+        self::assertEquals(['name' => 'yansongda'], get_wechat_config([]));
 
-        self::assertEquals(['age' => 28], get_wechat_config(['_config' => 'c1'])->all());
+        self::assertEquals(['age' => 28], get_wechat_config(['_config' => 'c1']));
     }
 
     public function testGetWechatBaseUri()
@@ -220,7 +220,7 @@ class FunctionTest extends TestCase
     {
         $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
         $contents = 'yansongda';
-        $result = encrypt_wechat_contents($contents, get_wechat_config([])['wechat_public_cert_path.'.$serialNo]);
+        $result = encrypt_wechat_contents($contents, get_wechat_config([])['wechat_public_cert_path'][$serialNo]);
         self::assertIsString($result);
     }
 

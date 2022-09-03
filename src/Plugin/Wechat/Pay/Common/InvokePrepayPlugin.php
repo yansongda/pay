@@ -95,11 +95,11 @@ class InvokePrepayPlugin implements PluginInterface
         $config = get_wechat_config($rocket->getParams());
         $payload = $rocket->getPayload();
 
-        if (Pay::MODE_SERVICE == $config->get('mode') && $payload->has('sub_appid')) {
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? null) && $payload->has('sub_appid')) {
             return $payload->get('sub_appid', '');
         }
 
-        return $config->get($this->getConfigKey(), '');
+        return $config[$this->getConfigKey()] ?? '';
     }
 
     protected function getConfigKey(): string

@@ -8,7 +8,6 @@ use function Yansongda\Pay\get_wechat_config;
 
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Config;
 
 class CombinePrepayPlugin extends GeneralPlugin
 {
@@ -29,7 +28,7 @@ class CombinePrepayPlugin extends GeneralPlugin
         $payload = $this->getWechatId($config);
 
         if (!$collection->has('notify_url')) {
-            $payload['notify_url'] = $config->get('notify_url', '');
+            $payload['notify_url'] = $config['notify_url'] ?? '';
         }
 
         if (!$collection->has('combine_out_trade_no')) {
@@ -39,11 +38,11 @@ class CombinePrepayPlugin extends GeneralPlugin
         $rocket->mergePayload($payload);
     }
 
-    protected function getWechatId(Config $config): array
+    protected function getWechatId(array $config): array
     {
         return [
-            'combine_appid' => $config->get('combine_app_id', ''),
-            'combine_mchid' => $config->get('combine_mch_id', ''),
+            'combine_appid' => $config['combine_app_id'] ?? '',
+            'combine_mchid' => $config['combine_mch_id'] ?? '',
         ];
     }
 }

@@ -32,7 +32,7 @@ class InvokePrepayPluginTest extends TestCase
         $config = get_wechat_config($rocket->getParams());
 
         self::assertArrayHasKey('appId', $contents->all());
-        self::assertEquals($config->get('mini_app_id'), $contents->get('appId'));
+        self::assertEquals($config['mini_app_id'], $contents->get('appId'));
         self::assertArrayHasKey('nonceStr', $contents->all());
         self::assertArrayHasKey('package', $contents->all());
         self::assertArrayHasKey('signType', $contents->all());
@@ -51,7 +51,7 @@ class InvokePrepayPluginTest extends TestCase
         $config = get_wechat_config($rocket->getParams());
 
         self::assertArrayHasKey('appId', $contents->all());
-        self::assertEquals($config->get('mini_app_id'), $contents->get('appId'));
+        self::assertEquals($config['mini_app_id'], $contents->get('appId'));
         self::assertArrayHasKey('nonceStr', $contents->all());
         self::assertArrayHasKey('package', $contents->all());
         self::assertArrayHasKey('signType', $contents->all());
