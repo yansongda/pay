@@ -8,6 +8,7 @@ use Closure;
 use GuzzleHttp\Psr7\Utils;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
@@ -30,9 +31,9 @@ class SignPlugin implements PluginInterface
         $timestamp = time();
         $random = Str::random(32);
         $body = $this->payloadToString($rocket->getPayload());
-        $radar = $rocket->getRadar()->withHeader('Authorization', get_wechat_authorization(
-            $rocket->getParams(), $timestamp, $random, $this->getContents($rocket, $timestamp, $random))
-        );
+        $contents = $this->getContents($rocket, $timestamp, $random);
+        $authorization = $this->getWechatAuthorization($rocket->getParams(), $timestamp, $random, $contents);
+        $radar = $rocket->getRadar()->withHeader('Authorization', $authorization);
 
         if (!empty($rocket->getParams()['_serial_no'])) {
             $radar = $radar->withHeader('Wechatpay-Serial', $rocket->getParams()['_serial_no']);
@@ -47,6 +48,38 @@ class SignPlugin implements PluginInterface
         Logger::info('[wechat][SignPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getWechatAuthorization(array $params, int $timestamp, string $random, string $contents): string
+    {
+        $config = get_wechat_config($params);
+        $mchPublicCertPath = $config->get('mch_public_cert_path');
+
+        if (empty($mchPublicCertPath)) {
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_public_cert_path]');
+        }
+
+        $ssl = openssl_x509_parse(get_public_cert($mchPublicCertPath));
+
+        if (empty($ssl['serialNumberHex'])) {
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Parse [mch_public_cert_path] Serial Number Error');
+        }
+
+        $auth = sprintf(
+            'mchid="%s",nonce_str="%s",timestamp="%d",serial_no="%s",signature="%s"',
+            $config->get('mch_id', ''),
+            $random,
+            $timestamp,
+            $ssl['serialNumberHex'],
+            get_wechat_sign($params, $contents),
+        );
+
+        return 'WECHATPAY2-SHA256-RSA2048 '.$auth;
     }
 
     /**
