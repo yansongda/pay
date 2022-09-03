@@ -23,7 +23,7 @@ trait HasWechatEncryption
     {
         $config = get_wechat_config($params);
 
-        if (empty($config->get('wechat_public_cert_path'))) {
+        if (empty($config['wechat_public_cert_path'])) {
             reload_wechat_public_certs($params);
 
             $config = get_wechat_config($params);
@@ -31,7 +31,7 @@ trait HasWechatEncryption
 
         if (empty($params['_serial_no'])) {
             mt_srand();
-            $params['_serial_no'] = strval(array_rand($config->get('wechat_public_cert_path')));
+            $params['_serial_no'] = strval(array_rand($config['wechat_public_cert_path']));
         }
 
         return $params;
@@ -46,7 +46,7 @@ trait HasWechatEncryption
     {
         $config = get_wechat_config($params);
 
-        $publicKey = $config->get('wechat_public_cert_path.'.$serialNo);
+        $publicKey = $config['wechat_public_cert_path.'.$serialNo] ?? null;
 
         if (empty($publicKey)) {
             throw new InvalidParamsException(Exception::WECHAT_SERIAL_NO_NOT_FOUND, 'Wechat serial no not found: '.$serialNo);

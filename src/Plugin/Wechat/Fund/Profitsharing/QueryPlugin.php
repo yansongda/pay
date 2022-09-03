@@ -47,8 +47,8 @@ class QueryPlugin extends GeneralPlugin
             $payload->get('out_order_no').
             '?transaction_id='.$payload->get('transaction_id');
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
-            $url .= '&sub_mchid='.$payload->get('sub_mchid', $config->get('sub_mch_id', ''));
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
+            $url .= '&sub_mchid='.$payload->get('sub_mchid', $config['sub_mch_id'] ?? '');
         }
 
         return $url;

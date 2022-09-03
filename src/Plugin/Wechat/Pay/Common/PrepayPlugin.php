@@ -34,30 +34,30 @@ class PrepayPlugin extends GeneralPlugin
         $wechatId = $this->getWechatId($config, $rocket);
 
         if (!$rocket->getPayload()->has('notify_url')) {
-            $wechatId['notify_url'] = $config->get('notify_url');
+            $wechatId['notify_url'] = $config['notify_url'] ?? null;
         }
 
         $rocket->mergePayload($wechatId);
     }
 
-    protected function getWechatId(Config $config, Rocket $rocket): array
+    protected function getWechatId(array $config, Rocket $rocket): array
     {
         $payload = $rocket->getPayload();
         $configKey = $this->getConfigKey($rocket->getParams());
 
         $result = [
-            'appid' => $config->get($configKey, ''),
-            'mchid' => $config->get('mch_id', ''),
+            'appid' => $config[$configKey] ?? '',
+            'mchid' => $config['mch_id'] ?? '',
         ];
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
             $result = [
-                'sp_appid' => $config->get($configKey, ''),
-                'sp_mchid' => $config->get('mch_id', ''),
-                'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id')),
+                'sp_appid' => $config[$configKey] ?? '',
+                'sp_mchid' => $config['mch_id'] ?? '',
+                'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? null),
             ];
 
-            $subAppId = $payload->get('sub_appid', $config->get('sub_'.$configKey));
+            $subAppId = $payload->get('sub_appid', $config['sub_'.$configKey] ?? null);
             if (!empty($subAppId)) {
                 $result['sub_appid'] = $subAppId;
             }

@@ -45,12 +45,12 @@ class ApplyPlugin extends GeneralPlugin
         }
 
         $wechatId = [
-            'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id', '')),
-            'sp_appid' => $payload->get('sp_appid', $config->get($key, '')),
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
+            'sp_appid' => $payload->get('sp_appid', $config[$key] ?? ''),
         ];
 
         if (!$payload->has('notify_url')) {
-            $wechatId['notify_url'] = $config->get('notify_url');
+            $wechatId['notify_url'] = $config['notify_url'] ?? null;
         }
 
         $rocket->mergePayload($wechatId);

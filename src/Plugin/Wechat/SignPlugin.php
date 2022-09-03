@@ -63,7 +63,7 @@ class SignPlugin implements PluginInterface
     protected function getWechatAuthorization(array $params, int $timestamp, string $random, string $contents): string
     {
         $config = get_wechat_config($params);
-        $mchPublicCertPath = $config->get('mch_public_cert_path');
+        $mchPublicCertPath = $config['mch_public_cert_path'] ?? null;
 
         if (empty($mchPublicCertPath)) {
             throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_public_cert_path]');

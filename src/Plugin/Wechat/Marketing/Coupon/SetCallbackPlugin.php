@@ -23,7 +23,7 @@ class SetCallbackPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
 
         $rocket->mergePayload([
-            'mchid' => $config->get('mch_id', ''),
+            'mchid' => $config['mch_id'] ?? '',
         ]);
     }
 

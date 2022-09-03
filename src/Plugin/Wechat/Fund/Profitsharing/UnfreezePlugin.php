@@ -24,9 +24,9 @@ class UnfreezePlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
         $config = get_wechat_config($rocket->getParams());
 
-        if (Pay::MODE_SERVICE == $config->get('mode') && !$payload->has('sub_mchid')) {
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? null) && !$payload->has('sub_mchid')) {
             $rocket->mergePayload([
-                'sub_mchid' => $config->get('sub_mch_id', ''),
+                'sub_mchid' => $config['sub_mch_id'] ?? '',
             ]);
         }
     }

@@ -50,14 +50,14 @@ class AddReceiverPlugin extends GeneralPlugin
         return 'v3/profitsharing/receivers/add';
     }
 
-    protected function getWechatId(Collection $config, Collection $payload): array
+    protected function getWechatId(array $config, Collection $payload): array
     {
         $wechatId = [
-            'appid' => $config->get('mp_app_id'),
+            'appid' => $config['mp_app_id'] ?? null,
         ];
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
-            $wechatId['sub_mchid'] = $payload->get('sub_mchid', $config->get('sub_mch_id', ''));
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
+            $wechatId['sub_mchid'] = $payload->get('sub_mchid', $config['sub_mch_id'] ?? '');
         }
 
         return $wechatId;

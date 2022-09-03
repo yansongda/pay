@@ -27,9 +27,11 @@ class CompleteComplaintPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
         $config = get_wechat_config($rocket->getParams());
 
-        $rocket->setPayload(new Collection([
-            'complainted_mchid' => $payload->get('complainted_mchid', $config->get('mch_id', '')),
-        ]));
+        if (is_null($payload->get('complainted_mchid'))) {
+            $rocket->setPayload(new Collection([
+                'complainted_mchid' => $config['mch_id'] ?? '',
+            ]));
+        }
     }
 
     /**
