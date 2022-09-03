@@ -77,7 +77,6 @@ class AlipayTest extends TestCase
                 "out_biz_no" => "202209032319",
                 "pay_date" => "2022-09-03 23:26:58",
                 'pay_fund_order_id' => '20220903110070001506210025020488',
-                'alipay_cert_sn' => 'a359aaadd01ceca03dbc07537da539b9',
                 "status" => "SUCCESS",
             ],
             "alipay_cert_sn" => "a359aaadd01ceca03dbc07537da539b9",

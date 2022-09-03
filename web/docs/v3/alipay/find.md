@@ -37,7 +37,7 @@ $result = Pay::alipay()->find($order);
 Pay::config($this->config);
 
 $order = [
-    'pay_fund_order_id' => '20190801110070001506380000251556',
+    'out_biz_no' => '202209032319',
     '_type' => 'transfer'
 ];
 
