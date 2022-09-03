@@ -50,7 +50,7 @@ class ReturnAdvancePlugin extends GeneralPlugin
 
         if (!$rocket->getPayload()->has('sub_mchid')) {
             $rocket->setPayload(new Collection([
-                'sub_mchid' => $config['sub_mch_id'] ?? ''
+                'sub_mchid' => $config['sub_mch_id'] ?? '',
             ]));
         }
     }

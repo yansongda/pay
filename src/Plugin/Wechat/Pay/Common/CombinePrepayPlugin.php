@@ -8,7 +8,6 @@ use function Yansongda\Pay\get_wechat_config;
 
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Config;
 
 class CombinePrepayPlugin extends GeneralPlugin
 {
