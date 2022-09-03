@@ -41,7 +41,7 @@ class QueryCouponDetailPlugin extends GeneralPlugin
 
         return 'v3/marketing/favor/users/'.
             $payload->get('openid').
-            'coupons/'.$payload->get('coupon_id').
+            '/coupons/'.$payload->get('coupon_id').
             '?appid='.$appid;
     }
 }
