@@ -71,8 +71,8 @@ class PreparePlugin implements PluginInterface
      */
     protected function getCertId(string $tenant, array $config): string
     {
-        if (!empty($config['cert_id'])) {
-            return $config['cert_id'];
+        if (!empty($config['certs']['cert_id'])) {
+            return $config['certs']['cert_id'];
         }
 
         $certs = $this->getCerts($config);

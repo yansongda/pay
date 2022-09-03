@@ -48,7 +48,7 @@ class HtmlResponsePluginTest extends TestCase
         $plugin = new HtmlResponsePlugin();
         $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $contents = $result->getDestination()->getBody()->getContents();
+        $contents = (string) $result->getDestination()->getBody();
 
         self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
         self::assertStringContainsString('alipay_submit', $contents);
