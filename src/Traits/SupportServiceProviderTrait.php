@@ -21,7 +21,7 @@ trait SupportServiceProviderTrait
         $config = get_alipay_config($params);
         $serviceProviderId = $config['service_provider_id'] ?? null;
 
-        if (Pay::MODE_SERVICE !== $config['mode'] ?? Pay::MODE_NORMAL
+        if (Pay::MODE_SERVICE !== ($config['mode'] ?? Pay::MODE_NORMAL)
             || empty($serviceProviderId)) {
             return;
         }
