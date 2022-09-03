@@ -1,3 +1,13 @@
+## v3.1.12
+
+### fixed
+
+- fix: 微信代金券详情 url 不正确(#663)
+
+### refactor
+
+- refactor: 优化代码 (#661)
+
 ## v3.1.11
 
 ### added
