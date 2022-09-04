@@ -23,6 +23,7 @@ use function Yansongda\Pay\encrypt_wechat_contents;
 use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_private_cert;
 use function Yansongda\Pay\get_public_cert;
+use function Yansongda\Pay\get_tenant;
 use function Yansongda\Pay\get_wechat_base_uri;
 use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_sign;
@@ -47,6 +48,12 @@ class FunctionTest extends TestCase
 
         $rocket->setDirection(NoHttpRequestParser::class);
         self::assertFalse(should_do_http_request($rocket->getDirection()));
+    }
+
+    public function testGetTenant()
+    {
+        self::assertEquals('default', get_tenant([]));
+        self::assertEquals('yansongda', get_tenant(['_config' => 'yansongda']));
     }
 
     public function testGetAlipayConfig()

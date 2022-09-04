@@ -5,13 +5,16 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
+use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 
 use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_tenant;
 
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 
 class PreparePlugin implements PluginInterface
@@ -39,6 +42,7 @@ class PreparePlugin implements PluginInterface
      */
     protected function getPayload(array $params): array
     {
+        $tenant = get_tenant($params);
         $config = get_alipay_config($params);
 
         return [
@@ -53,8 +57,8 @@ class PreparePlugin implements PluginInterface
             'version' => '1.0',
             'notify_url' => $this->getNotifyUrl($params, $config),
             'app_auth_token' => $this->getAppAuthToken($params, $config),
-            'app_cert_sn' => $this->getAppCertSn($config),
-            'alipay_root_cert_sn' => $this->getAlipayRootCertSn($config),
+            'app_cert_sn' => $this->getAppCertSn($tenant, $config),
+            'alipay_root_cert_sn' => $this->getAlipayRootCertSn($tenant, $config),
             'biz_content' => [],
         ];
     }
@@ -87,10 +91,16 @@ class PreparePlugin implements PluginInterface
     }
 
     /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getAppCertSn(array $config): string
+    protected function getAppCertSn(string $tenant, array $config): string
     {
+        if (!empty($config['app_public_cert_sn'])) {
+            return $config['app_public_cert_sn'];
+        }
+
         $path = $config['app_public_cert_path'] ?? null;
 
         if (is_null($path)) {
@@ -104,14 +114,24 @@ class PreparePlugin implements PluginInterface
             throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Parse `app_public_cert_path` Error');
         }
 
-        return $this->getCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
+        $result = $this->getCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
+
+        Pay::get(ConfigInterface::class)->set('alipay.'.$tenant.'.app_public_cert_sn', $result);
+
+        return $result;
     }
 
     /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getAlipayRootCertSn(array $config): string
+    protected function getAlipayRootCertSn(string $tenant, array $config): string
     {
+        if (!empty($config['alipay_root_cert_sn'])) {
+            return $config['alipay_root_cert_sn'];
+        }
+
         $path = $config['alipay_root_cert_path'] ?? null;
 
         if (is_null($path)) {
@@ -139,7 +159,11 @@ class PreparePlugin implements PluginInterface
             }
         }
 
-        return substr($sn, 0, -1);
+        $result = substr($sn, 0, -1);
+
+        Pay::get(ConfigInterface::class)->set('alipay.'.$tenant.'.alipay_root_cert_sn', $result);
+
+        return $result;
     }
 
     protected function getCertSn(array $issuer, string $serialNumber): string
