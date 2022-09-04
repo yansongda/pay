@@ -10,12 +10,12 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 
-use Yansongda\Pay\Pay;
 use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_tenant;
 
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
-use function Yansongda\Pay\get_tenant;
 
 class PreparePlugin implements PluginInterface
 {
