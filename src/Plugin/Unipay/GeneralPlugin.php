@@ -12,6 +12,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
+use function Yansongda\Pay\get_unipay_config;
 
 abstract class GeneralPlugin implements PluginInterface
 {

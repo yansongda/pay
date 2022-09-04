@@ -8,6 +8,7 @@ use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\Stubs\Traits\GetUnipayCertsStub;
 use Yansongda\Pay\Tests\TestCase;
+use function Yansongda\Pay\get_unipay_config;
 
 class GetUnipayCertsTest extends TestCase
 {
@@ -69,5 +70,22 @@ class GetUnipayCertsTest extends TestCase
         self::expectExceptionMessage('Read `mch_cert_path` Error');
 
         $this->trait->getCertId('default', get_unipay_config([]));
+    }
+
+    public function testNormalCached()
+    {
+        $certId = $this->trait->getCertId('default', get_unipay_config([]));
+
+        $config = get_unipay_config([]);
+
+        self::assertEquals('69903319369', $certId);
+        self::assertArrayHasKey('cert', $config['certs']);
+        self::assertArrayHasKey('pkey', $config['certs']);
+
+        Pay::get(ConfigInterface::class)->set('unipay.default.mch_cert_path', null);
+
+        $this->trait->getCertId('default', get_unipay_config([]));
+
+        self::assertTrue(true);
     }
 }

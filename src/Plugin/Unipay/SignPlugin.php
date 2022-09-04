@@ -10,6 +10,7 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Traits\GetUnipayCerts;
 use Yansongda\Supports\Collection;
+use function Yansongda\Pay\get_unipay_config;
 
 class SignPlugin implements PluginInterface
 {

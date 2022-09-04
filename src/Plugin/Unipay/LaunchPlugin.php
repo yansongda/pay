@@ -11,15 +11,12 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use function Yansongda\Pay\should_do_http_request;
 
 class LaunchPlugin implements PluginInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -29,7 +26,7 @@ class LaunchPlugin implements PluginInterface
         Logger::info('[unipay][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         if (should_do_http_request($rocket->getDirection())) {
-            verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());
+            // todo: 验证签名
 
             $rocket->setDestination($this->validateResponse($rocket));
         }

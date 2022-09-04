@@ -24,6 +24,7 @@ use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_private_cert;
 use function Yansongda\Pay\get_public_cert;
 use function Yansongda\Pay\get_tenant;
+use function Yansongda\Pay\get_unipay_config;
 use function Yansongda\Pay\get_wechat_base_uri;
 use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_sign;

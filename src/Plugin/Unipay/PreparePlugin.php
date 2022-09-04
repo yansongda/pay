@@ -10,6 +10,8 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Traits\GetUnipayCerts;
 use Yansongda\Supports\Str;
+use function Yansongda\Pay\get_tenant;
+use function Yansongda\Pay\get_unipay_config;
 
 class PreparePlugin implements PluginInterface
 {
@@ -38,6 +40,7 @@ class PreparePlugin implements PluginInterface
      */
     protected function getPayload(array $params): array
     {
+        $tenant = get_tenant($params);
         $config = get_unipay_config($params);
 
         $init = [
@@ -54,7 +57,7 @@ class PreparePlugin implements PluginInterface
             'channelType' => '07',
             'merId' => $config['mch_id'] ?? '',
             'frontUrl' => $config['return_url'] ?? '',
-            'certId' => $this->getCertId($params['_config'] ?? 'default', $config),
+            'certId' => $this->getCertId($tenant, $config),
         ];
 
         return array_merge(

@@ -7,6 +7,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
+use function Yansongda\Pay\get_unipay_config;
 
 class PreparePluginTest extends TestCase
 {
@@ -56,9 +57,7 @@ class PreparePluginTest extends TestCase
         self::assertArrayHasKey('pkey', $config['certs']);
         self::assertEquals('69903319369', $config['certs']['cert_id']);
 
-        Pay::set(ConfigInterface::class, Pay::get(ConfigInterface::class)->merge([
-            'unipay' => ['default' => array_merge($config, ['mch_cert_path' => null])],
-        ]));
+        Pay::get(ConfigInterface::class)->set('unipay.default.mch_cert_path', null);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 

@@ -31,11 +31,7 @@ trait GetUnipayCerts
 
         $certs['cert_id'] = $ssl['serialNumber'] ?? '';
 
-        $unipay = array_merge($config, ['certs' => $certs]);
-
-        Pay::set(ConfigInterface::class, Pay::get(ConfigInterface::class)->merge([
-            'unipay' => [$tenant => $unipay],
-        ]));
+        Pay::get(ConfigInterface::class)->set('unipay.'.$tenant.'.certs', $certs);
 
         return $certs['cert_id'];
     }
