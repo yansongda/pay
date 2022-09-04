@@ -11,6 +11,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+
 use function Yansongda\Pay\should_do_http_request;
 
 class LaunchPlugin implements PluginInterface
