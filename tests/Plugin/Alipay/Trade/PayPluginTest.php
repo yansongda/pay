@@ -9,14 +9,21 @@ use Yansongda\Pay\Tests\TestCase;
 
 class PayPluginTest extends TestCase
 {
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new PayPlugin();
+    }
+
     public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setParams([]);
 
-        $plugin = new PayPlugin();
-
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertNotEquals(ResponseParser::class, $result->getDirection());
         self::assertStringContainsString('alipay.trade.pay', $result->getPayload()->toJson());

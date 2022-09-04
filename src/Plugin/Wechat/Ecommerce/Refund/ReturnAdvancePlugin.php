@@ -6,6 +6,9 @@ namespace Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
@@ -45,10 +48,8 @@ class ReturnAdvancePlugin extends GeneralPlugin
     {
         $config = get_wechat_config($rocket->getParams());
 
-        $body = [
-            'sub_mchid' => $rocket->getPayload()->get('sub_mchid', $config->get('sub_mch_id', '')),
-        ];
-
-        $rocket->setPayload(new Collection($body));
+        $rocket->setPayload(new Collection([
+            'sub_mchid' => $rocket->getPayload()->get('sub_mchid', $config['sub_mch_id'] ?? ''),
+        ]));
     }
 }

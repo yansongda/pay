@@ -6,6 +6,9 @@ namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
@@ -32,7 +35,7 @@ class QueryCouponDetailPlugin extends GeneralPlugin
     protected function getUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
-        $appid = get_wechat_config($rocket->getParams())->get('mp_app_id');
+        $appid = get_wechat_config($rocket->getParams())['mp_app_id'] ?? '';
 
         if (is_null($payload->get('coupon_id')) ||
             is_null($payload->get('openid'))) {

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing;
 
+use function Yansongda\Pay\encrypt_wechat_contents;
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
@@ -50,11 +53,11 @@ class CreatePlugin extends GeneralPlugin
         $config = get_wechat_config($params);
 
         $extra = [
-            'appid' => $config->get('mp_app_id'),
+            'appid' => $config['mp_app_id'] ?? null,
         ];
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
-            $extra['sub_mchid'] = $payload->get('sub_mchid', $config->get('sub_mch_id', ''));
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
+            $extra['sub_mchid'] = $payload->get('sub_mchid', $config['sub_mch_id'] ?? '');
         }
 
         return $extra;

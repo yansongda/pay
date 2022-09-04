@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Parser\CollectionParser;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
@@ -16,6 +17,20 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Str;
+use function Yansongda\Pay\decrypt_wechat_resource;
+use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
+use function Yansongda\Pay\encrypt_wechat_contents;
+use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_private_cert;
+use function Yansongda\Pay\get_public_cert;
+use function Yansongda\Pay\get_tenant;
+use function Yansongda\Pay\get_wechat_base_uri;
+use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_wechat_sign;
+use function Yansongda\Pay\reload_wechat_public_certs;
+use function Yansongda\Pay\should_do_http_request;
+use function Yansongda\Pay\verify_alipay_sign;
+use function Yansongda\Pay\verify_wechat_sign;
 
 class FunctionTest extends TestCase
 {
@@ -45,9 +60,15 @@ class FunctionTest extends TestCase
         self::assertFalse(should_do_http_request($rocket->getDirection()));
     }
 
+    public function testGetTenant()
+    {
+        self::assertEquals('default', get_tenant([]));
+        self::assertEquals('yansongda', get_tenant(['_config' => 'yansongda']));
+    }
+
     public function testGetAlipayConfig()
     {
-        self::assertArrayHasKey('app_id', get_alipay_config([])->all());
+        self::assertArrayHasKey('app_id', get_alipay_config([]));
 
         Pay::clear();
 
@@ -58,9 +79,9 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config($config2);
-        self::assertEquals(['name' => 'yansongda'], get_alipay_config([])->all());
+        self::assertEquals(['name' => 'yansongda'], get_alipay_config([]));
 
-        self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1'])->all());
+        self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1']));
     }
 
     public function testGetPublicCert()
@@ -116,7 +137,7 @@ class FunctionTest extends TestCase
 
     public function testGetWechatConfig()
     {
-        self::assertArrayHasKey('mp_app_id', get_wechat_config([])->all());
+        self::assertArrayHasKey('mp_app_id', get_wechat_config([]));
 
         $config2 = [
             'wechat' => [
@@ -125,9 +146,9 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config(array_merge($config2, ['_force' => true]));
-        self::assertEquals(['name' => 'yansongda'], get_wechat_config([])->all());
+        self::assertEquals(['name' => 'yansongda'], get_wechat_config([]));
 
-        self::assertEquals(['age' => 28], get_wechat_config(['_config' => 'c1'])->all());
+        self::assertEquals(['age' => 28], get_wechat_config(['_config' => 'c1']));
     }
 
     public function testGetWechatBaseUri()
@@ -140,30 +161,6 @@ class FunctionTest extends TestCase
         Pay::config($config2);
 
         self::assertEquals(Wechat::URL[Pay::MODE_SANDBOX], get_wechat_base_uri(['_config' => 'yansongda']));
-    }
-
-    public function testGetWechatAuthorization()
-    {
-        $params = [
-            'out_trade_no' => 1626493236,
-            'description' => 'yansongda 测试 - 1626493236',
-            'amount' => [
-                'total' => 1,
-            ],
-            'scene_info' => [
-                'payer_client_ip' => '127.0.0.1',
-                'h5_info' => [
-                    'type' => 'Wap',
-                ]
-            ]];
-        $timestamp = 1626493236;
-        $random = 'QqtzdVzxavZeXag9G5mtfzbfzFMf89p6';
-        $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\/\/127.0.0.1:8000\/wechat\/notify\"}\n";
-
-        self::assertEquals(
-            'WECHATPAY2-SHA256-RSA2048 mchid="1600314069",nonce_str="QqtzdVzxavZeXag9G5mtfzbfzFMf89p6",timestamp="1626493236",serial_no="25F8AA5452D55497C24BA57DC81B1E5915DC2E77",signature="KzIgMgiop3nQJNdBVR2Xah/JUwVBLDFFajyXPiSN8b8YAYEA4FuWfaCgFJ52+WFed+PhOYWx/ZPih4RaEuuSdYB8eZwYUx7RZGMQZk0bKCctAjjPuf4pJN+f/WsXKjPIy3diqF5x7gyxwSCaKWP4/KjsHNqgQpiC8q1uC5xmElzuhzSwj88LIoLtkAuSmtUVvdAt0Nz41ECHZgHWSGR32TfBo902r8afdaVKkFde8IoqcEJJcp6sMxdDO5l9R5KEWxrJ1SjsXVrb0IPH8Nj7e6hfhq7pucxojPpzsC+ZWAYvufZkAQx3kTiFmY87T+QhkP9FesOfWvkIRL4E6MP6ug=="',
-            get_wechat_authorization($params, $timestamp, $random, $contents)
-        );
     }
 
     public function testGetWechatSign()
@@ -198,7 +195,7 @@ class FunctionTest extends TestCase
         Pay::config(array_merge($config1, ['_force' => true]));
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(InvalidConfigException::WECHAT_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::WECHAT_CONFIG_ERROR);
         get_wechat_sign([], '', '');
     }
 
@@ -240,7 +237,7 @@ class FunctionTest extends TestCase
     {
         $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
         $contents = 'yansongda';
-        $result = encrypt_wechat_contents($contents, get_wechat_config([])['wechat_public_cert_path.'.$serialNo]);
+        $result = encrypt_wechat_contents($contents, get_wechat_config([])['wechat_public_cert_path'][$serialNo]);
         self::assertIsString($result);
     }
 

@@ -7,6 +7,9 @@ namespace Yansongda\Pay\Plugin\Alipay;
 use Closure;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+
+use function Yansongda\Pay\get_alipay_config;
+
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
@@ -57,7 +60,7 @@ class RadarPlugin implements PluginInterface
     {
         $config = get_alipay_config($rocket->getParams());
 
-        return Alipay::URL[$config->get('mode', Pay::MODE_NORMAL)];
+        return Alipay::URL[$config['mode'] ?? Pay::MODE_NORMAL];
     }
 
     protected function getHeaders(): array

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Fund\Transfer;
 
+use function Yansongda\Pay\encrypt_wechat_contents;
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
@@ -64,12 +67,12 @@ class CreatePlugin extends GeneralPlugin
         }
 
         $appId = [
-            'appid' => $payload->get('appid', $config->get($key, '')),
+            'appid' => $payload->get('appid', $config[$key] ?? ''),
         ];
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
             $appId = [
-                'sub_mchid' => $payload->get('sub_mchid', $config->get('sub_mch_id', '')),
+                'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
             ];
         }
 

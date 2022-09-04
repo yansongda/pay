@@ -8,6 +8,10 @@ use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
+
+use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_private_cert;
+
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Str;
@@ -68,7 +72,7 @@ class SignPlugin implements PluginInterface
      */
     protected function getPrivateKey(array $params): string
     {
-        $privateKey = get_alipay_config($params)->get('app_secret_cert');
+        $privateKey = get_alipay_config($params)['app_secret_cert'] ?? null;
 
         if (is_null($privateKey)) {
             throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [app_secret_cert]');

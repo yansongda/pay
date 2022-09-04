@@ -6,6 +6,9 @@ namespace Yansongda\Pay\Plugin\Wechat\Risk\Complaints;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
@@ -27,7 +30,7 @@ class ResponseComplaintPlugin extends GeneralPlugin
 
         if (is_null($payload->get('complainted_mchid'))) {
             $rocket->mergePayload([
-                'complainted_mchid' => $config->get('mch_id', ''),
+                'complainted_mchid' => $config['mch_id'] ?? '',
             ]);
         }
     }

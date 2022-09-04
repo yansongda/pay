@@ -10,6 +10,10 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+
+use function Yansongda\Pay\should_do_http_request;
+use function Yansongda\Pay\verify_alipay_sign;
+
 use Yansongda\Supports\Collection;
 
 class LaunchPlugin implements PluginInterface
@@ -55,7 +59,7 @@ class LaunchPlugin implements PluginInterface
         $sign = $response->get('sign', '');
 
         if ('' === $sign || is_null($result)) {
-            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Alipay Response Sign Failed', $response);
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Alipay Response Sign Failed: sign is empty', $response);
         }
 
         verify_alipay_sign($rocket->getParams(), json_encode($result, JSON_UNESCAPED_UNICODE), base64_decode($sign));

@@ -1,3 +1,19 @@
+## v3.2.0
+
+### changed
+
+- change: Function 增加命名空间(#665)
+- change: `get_alipay_config`，`get_wechat_config` 返回类型由 `Config` 改为 `array`(#667)
+- change: 支付宝转账查询接口由老版本改为为新版本(#666)
+
+### deleted
+
+- delete: Function 中将 `get_wechat_authorization` 方法移除(#664)
+
+### performance
+
+- perf: 支付宝中支付宝根证书、应用证书序列号在常驻进程中缓存(#668)
+
 ## v3.1.12
 
 ### fixed

@@ -6,6 +6,9 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Combine;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
@@ -37,7 +40,7 @@ class ClosePlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\ClosePlugin
         $config = get_wechat_config($rocket->getParams());
 
         $rocket->setPayload(new Collection([
-            'combine_appid' => $config->get('combine_appid', ''),
+            'combine_appid' => $config['combine_appid'] ?? '',
             'sub_orders' => $rocket->getParams()['sub_orders'] ?? [],
         ]));
     }

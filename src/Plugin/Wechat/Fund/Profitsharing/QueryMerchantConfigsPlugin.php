@@ -6,6 +6,9 @@ namespace Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
@@ -35,11 +38,11 @@ class QueryMerchantConfigsPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
         $payload = $rocket->getPayload();
 
-        if (Pay::MODE_SERVICE !== $config->get('mode', Pay::MODE_NORMAL)) {
+        if (Pay::MODE_SERVICE !== ($config['mode'] ?? Pay::MODE_NORMAL)) {
             throw new InvalidParamsException(Exception::METHOD_NOT_SUPPORTED);
         }
 
         return 'v3/profitsharing/merchant-configs/'.
-            $payload->get('sub_mchid', $config->get('sub_mch_id', ''));
+            $payload->get('sub_mchid', $config['sub_mch_id'] ?? '');
     }
 }

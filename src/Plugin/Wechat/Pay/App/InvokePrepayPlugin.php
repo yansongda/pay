@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Pay\App;
 
+use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_wechat_sign;
+
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
@@ -23,7 +26,7 @@ class InvokePrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokeP
     {
         $config = new Config([
             'appid' => $this->getAppId($rocket),
-            'partnerid' => get_wechat_config($rocket->getParams())->get('mch_id'),
+            'partnerid' => get_wechat_config($rocket->getParams())['mch_id'] ?? null,
             'prepayid' => $prepayId,
             'package' => 'Sign=WXPay',
             'noncestr' => Str::random(32),

@@ -6,6 +6,9 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Parser\OriginResponseParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
@@ -57,13 +60,13 @@ class ClosePlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
 
         $body = [
-            'mchid' => $config->get('mch_id', ''),
+            'mchid' => $config['mch_id'] ?? '',
         ];
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
+        if (Pay::MODE_SERVICE == ($config['mode'] ?? null)) {
             $body = [
-                'sp_mchid' => $config->get('mch_id', ''),
-                'sub_mchid' => $rocket->getPayload()->get('sub_mchid', $config->get('sub_mch_id', '')),
+                'sp_mchid' => $config['mch_id'] ?? '',
+                'sub_mchid' => $rocket->getPayload()->get('sub_mchid', $config['sub_mch_id'] ?? ''),
             ];
         }
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
@@ -21,7 +23,7 @@ class SetCallbackPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
 
         $rocket->mergePayload([
-            'mchid' => $config->get('mch_id', ''),
+            'mchid' => $config['mch_id'] ?? '',
         ]);
     }
 

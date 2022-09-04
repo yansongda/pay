@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Pay\Common;
 
+use function Yansongda\Pay\get_wechat_config;
+
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
@@ -25,11 +27,11 @@ class RefundPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (empty($payload->get('notify_url'))) {
-            $merge['notify_url'] = $config->get('notify_url', '');
+            $merge['notify_url'] = $config['notify_url'] ?? '';
         }
 
-        if (Pay::MODE_SERVICE == $config->get('mode')) {
-            $merge['sub_mchid'] = $payload->get('sub_mchid', $config->get('sub_mch_id'));
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
+            $merge['sub_mchid'] = $payload->get('sub_mchid', $config['sub_mch_id'] ?? null);
         }
 
         $rocket->mergePayload($merge ?? []);
