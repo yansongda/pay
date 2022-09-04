@@ -27,6 +27,13 @@ if (!function_exists('should_do_http_request')) {
     }
 }
 
+if (!function_exists('get_tenant')) {
+    function get_tenant(array $params = []): string
+    {
+        return strval($params['_config'] ?? 'default');
+    }
+}
+
 if (!function_exists('get_alipay_config')) {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
@@ -36,7 +43,7 @@ if (!function_exists('get_alipay_config')) {
     {
         $alipay = Pay::get(ConfigInterface::class)->get('alipay');
 
-        return $alipay[$params['_config'] ?? 'default'] ?? [];
+        return $alipay[get_tenant($params)] ?? [];
     }
 }
 
@@ -98,7 +105,7 @@ if (!function_exists('get_wechat_config')) {
     {
         $wechat = Pay::get(ConfigInterface::class)->get('wechat');
 
-        return $wechat[$params['_config'] ?? 'default'] ?? [];
+        return $wechat[get_tenant($params)] ?? [];
     }
 }
 

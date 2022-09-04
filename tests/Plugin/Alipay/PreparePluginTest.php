@@ -155,4 +155,36 @@ class PreparePluginTest extends TestCase
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
+
+    public function testAppCertSnCached()
+    {
+        $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
+        $payload = $result->getPayload();
+
+        self::assertEquals('fb5e86cfb784de936dd3594e32381cf8', $payload->get('app_cert_sn'));
+
+        $config = Pay::get(ConfigInterface::class);
+        $config->set('alipay.default.app_public_cert_path', null);
+
+        $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
+        $payload = $result->getPayload();
+
+        self::assertEquals('fb5e86cfb784de936dd3594e32381cf8', $payload->get('app_cert_sn'));
+    }
+
+    public function testAlipayRootCertSnCached()
+    {
+        $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
+        $payload = $result->getPayload();
+
+        self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
+
+        $config = Pay::get(ConfigInterface::class);
+        $config->set('alipay.default.alipay_root_cert_path', null);
+
+        $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
+        $payload = $result->getPayload();
+
+        self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
+    }
 }
