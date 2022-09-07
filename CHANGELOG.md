@@ -1,3 +1,13 @@
+## v3.2.1
+
+### fixed
+
+- fix: `wechat_public_cert_path` 未配置时报错的问题(#674)
+
+### refactor
+
+- refactor: 优化 `wechat_public_cert_path` 配置(#674)
+
 ## v3.2.0
 
 ### changed
