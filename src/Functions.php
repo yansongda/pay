@@ -221,7 +221,7 @@ if (!function_exists('reload_wechat_public_certs')) {
         }
 
         $wechatConfig = get_wechat_config($params);
-        $wechatConfig['wechat_public_cert_path'] = ((array) $wechatConfig['wechat_public_cert_path']) + ($certs ?? []);
+        $wechatConfig['wechat_public_cert_path'] = ((array) ($wechatConfig['wechat_public_cert_path'] ?? [])) + ($certs ?? []);
 
         Pay::set(ConfigInterface::class, Pay::get(ConfigInterface::class)->merge([
             'wechat' => [$params['_config'] ?? 'default' => $wechatConfig],
