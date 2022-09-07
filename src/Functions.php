@@ -223,7 +223,7 @@ if (!function_exists('reload_wechat_public_certs')) {
         $wechatConfig = get_wechat_config($params);
 
         Pay::get(ConfigInterface::class)->set(
-            'alipay.'.get_tenant($params).'.wechat_public_cert_path',
+            'wechat.'.get_tenant($params).'.wechat_public_cert_path',
             ((array) ($wechatConfig['wechat_public_cert_path'] ?? [])) + ($certs ?? []),
         );
 
