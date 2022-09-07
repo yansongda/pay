@@ -39,7 +39,8 @@
         "symfony/http-foundation": "^5.2.0",
         "symfony/event-dispatcher": "^5.2.0",
         "symfony/psr-http-message-bridge": "^2.1",
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "topthink/framework": "^6.0"
     },
     "autoload": {
         "psr-4": {
