@@ -8,6 +8,7 @@ use Closure;
 use Illuminate\Container\Container as LaravelContainer;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use think\Container as ThinkPHPContainer;
 use Throwable;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerException;
@@ -119,24 +120,26 @@ class Pay
         try {
             $container = Pay::getContainer();
 
-            if ($container instanceof LaravelContainer) { // @phpstan-ignore-line
-                $container->singleton($name, $value instanceof Closure ? $value : static fn () => $value); // @phpstan-ignore-line
+            switch (true) {
+                case $container instanceof LaravelContainer: // @phpstan-ignore-line
+                    $container->singleton($name, $value instanceof Closure ? $value : static fn () => $value); // @phpstan-ignore-line
+                    break;
+                case $container instanceof ThinkPHPContainer: // @phpstan-ignore-line
+                    $container->delete($name);
+                    $container->bind($name, $value instanceof Closure ? $value : static fn () => $value); // @phpstan-ignore-line
+                    break;
+                default:
+                    if (!method_exists($container, 'set')) {
+                        throw new ContainerException('Current container does NOT support `set` method');
+                    }
 
-                return;
-            }
-
-            if (method_exists($container, 'set')) {
-                $container->set(...func_get_args());
-
-                return;
+                    $container->set($name, $value);
             }
         } catch (ContainerNotFoundException $e) {
             throw $e;
         } catch (Throwable $e) {
             throw new ContainerException($e->getMessage());
         }
-
-        throw new ContainerException('Current container does NOT support `set` method');
     }
 
     /**
@@ -172,7 +175,15 @@ class Pay
     public static function get(string $service)
     {
         try {
-            return Pay::getContainer()->get($service);
+            $container = Pay::getContainer();
+
+            // thinkphp 在 `get` 中必须是已经 bind 的，否则会报错，所以这里用其 make 替代
+            switch (true) {
+                case $container instanceof ThinkPHPContainer: // @phpstan-ignore-line
+                    return $container->make($service);
+                default:
+                    return $container->get($service);
+            }
         } catch (NotFoundExceptionInterface $e) {
             throw new ServiceNotFoundException($e->getMessage());
         } catch (ContainerNotFoundException $e) {

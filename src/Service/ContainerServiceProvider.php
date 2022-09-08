@@ -7,8 +7,9 @@ namespace Yansongda\Pay\Service;
 use Closure;
 use DI\ContainerBuilder;
 use Hyperf\Utils\ApplicationContext as HyperfApplication;
-use Illuminate\Container\Container as LaravelContainer;
+use Illuminate\Container\Container as LaravelApplication;
 use Psr\Container\ContainerInterface;
+use think\Container as ThinkPHPApplication;
 use Throwable;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerException;
@@ -19,8 +20,9 @@ use Yansongda\Pay\Pay;
 class ContainerServiceProvider implements ServiceProviderInterface
 {
     private $detectApplication = [
-        'laravel' => LaravelContainer::class,
+        'laravel' => LaravelApplication::class,
         'hyperf' => HyperfApplication::class,
+        'thinkphp' => ThinkPHPApplication::class,
     ];
 
     /**
@@ -55,13 +57,11 @@ class ContainerServiceProvider implements ServiceProviderInterface
      */
     protected function laravelApplication(): bool
     {
-        Pay::setContainer(static fn () => LaravelContainer::getInstance());
+        Pay::setContainer(static fn () => LaravelApplication::getInstance());
 
-        Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, LaravelContainer::getInstance());
+        Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, LaravelApplication::getInstance());
+        Pay::set(ContainerInterface::class, LaravelApplication::getInstance());
 
-        if (!Pay::has(ContainerInterface::class)) {
-            Pay::set(ContainerInterface::class, LaravelContainer::getInstance());
-        }
 
         return true;
     }
@@ -79,10 +79,21 @@ class ContainerServiceProvider implements ServiceProviderInterface
         Pay::setContainer(static fn () => HyperfApplication::getContainer());
 
         Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, HyperfApplication::getContainer());
+        Pay::set(ContainerInterface::class, HyperfApplication::getContainer());
 
-        if (!Pay::has(ContainerInterface::class)) {
-            Pay::set(ContainerInterface::class, HyperfApplication::getContainer());
-        }
+        return true;
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     */
+    protected function thinkphpApplication(): bool
+    {
+        Pay::setContainer(static fn () => ThinkPHPApplication::getInstance());
+
+        Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, ThinkPHPApplication::getInstance());
+        Pay::set(ContainerInterface::class, ThinkPHPApplication::getInstance());
 
         return true;
     }
