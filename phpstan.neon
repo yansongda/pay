@@ -1,5 +1,6 @@
 parameters:
     reportUnmatchedIgnoredErrors: false
-    excludePaths:
-        - src/Service/ContainerServiceProvider.php
     ignoreErrors:
+        - '#.* Illuminate\\Container\\Container.*#'
+        - '#.* Hyperf\\Utils\\ApplicationContext.*#'
+        - '#.* think\\Container.*#'
