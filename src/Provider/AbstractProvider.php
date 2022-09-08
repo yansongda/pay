@@ -20,9 +20,11 @@ use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
+
+use function Yansongda\Pay\should_do_http_request;
+
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Pipeline;
-use function Yansongda\Pay\should_do_http_request;
 
 abstract class AbstractProvider implements ProviderInterface
 {
