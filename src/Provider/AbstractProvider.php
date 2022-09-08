@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Provider;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Client\ClientInterface;
 use Throwable;
+use Yansongda\Pay\Contract\ContainerInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ProviderInterface;
@@ -19,11 +20,9 @@ use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
-
-use function Yansongda\Pay\should_do_http_request;
-
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Pipeline;
+use function Yansongda\Pay\should_do_http_request;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -53,6 +52,7 @@ abstract class AbstractProvider implements ProviderInterface
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
     public function pay(array $plugins, array $params)
     {
@@ -63,7 +63,7 @@ abstract class AbstractProvider implements ProviderInterface
         $this->verifyPlugin($plugins);
 
         /* @var Pipeline $pipeline */
-        $pipeline = Pay::make(Pipeline::class);
+        $pipeline = Pay::make(Pipeline::class, [Pay::get(ContainerInterface::class)]);
 
         /* @var Rocket $rocket */
         $rocket = $pipeline

@@ -17,6 +17,9 @@ use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ContainerServiceProvider implements ServiceProviderInterface
 {
     private $detectApplication = [
@@ -60,7 +63,10 @@ class ContainerServiceProvider implements ServiceProviderInterface
         Pay::setContainer(static fn () => LaravelApplication::getInstance());
 
         Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, LaravelApplication::getInstance());
-        Pay::set(ContainerInterface::class, LaravelApplication::getInstance());
+
+        if (!Pay::has(ContainerInterface::class)) {
+            Pay::set(ContainerInterface::class, LaravelApplication::getInstance());
+        }
 
         return true;
     }
@@ -78,7 +84,10 @@ class ContainerServiceProvider implements ServiceProviderInterface
         Pay::setContainer(static fn () => HyperfApplication::getContainer());
 
         Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, HyperfApplication::getContainer());
-        Pay::set(ContainerInterface::class, HyperfApplication::getContainer());
+
+        if (!Pay::has(ContainerInterface::class)) {
+            Pay::set(ContainerInterface::class, HyperfApplication::getInstance());
+        }
 
         return true;
     }
@@ -92,7 +101,10 @@ class ContainerServiceProvider implements ServiceProviderInterface
         Pay::setContainer(static fn () => ThinkPHPApplication::getInstance());
 
         Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, ThinkPHPApplication::getInstance());
-        Pay::set(ContainerInterface::class, ThinkPHPApplication::getInstance());
+
+        if (!Pay::has(ContainerInterface::class)) {
+            Pay::set(ContainerInterface::class, ThinkPHPApplication::getInstance());
+        }
 
         return true;
     }

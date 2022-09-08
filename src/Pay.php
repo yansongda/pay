@@ -111,6 +111,8 @@ class Pay
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @param mixed $value
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
@@ -167,6 +169,8 @@ class Pay
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return mixed
      *
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
