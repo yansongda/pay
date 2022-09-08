@@ -62,7 +62,6 @@ class ContainerServiceProvider implements ServiceProviderInterface
         Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, LaravelApplication::getInstance());
         Pay::set(ContainerInterface::class, LaravelApplication::getInstance());
 
-
         return true;
     }
 

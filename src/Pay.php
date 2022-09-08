@@ -121,12 +121,12 @@ class Pay
             $container = Pay::getContainer();
 
             switch (true) {
-                case $container instanceof LaravelContainer: // @phpstan-ignore-line
-                    $container->singleton($name, $value instanceof Closure ? $value : static fn () => $value); // @phpstan-ignore-line
+                case $container instanceof LaravelContainer:
+                    $container->singleton($name, $value instanceof Closure ? $value : static fn () => $value);
                     break;
-                case $container instanceof ThinkPHPContainer: // @phpstan-ignore-line
+                case $container instanceof ThinkPHPContainer:
                     $container->delete($name);
-                    $container->bind($name, $value instanceof Closure ? $value : static fn () => $value); // @phpstan-ignore-line
+                    $container->bind($name, $value instanceof Closure ? $value : static fn () => $value);
                     break;
                 default:
                     if (!method_exists($container, 'set')) {
@@ -179,7 +179,7 @@ class Pay
 
             // thinkphp 在 `get` 中必须是已经 bind 的，否则会报错，所以这里用其 make 替代
             switch (true) {
-                case $container instanceof ThinkPHPContainer: // @phpstan-ignore-line
+                case $container instanceof ThinkPHPContainer:
                     return $container->make($service);
                 default:
                     return $container->get($service);
