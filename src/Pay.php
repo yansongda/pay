@@ -121,8 +121,8 @@ class Pay
         try {
             $container = Pay::getContainer();
 
-            if ($container instanceof LaravelContainer) { // @phpstan-ignore-line
-                $container->singleton($name, $value instanceof Closure ? $value : static fn () => $value); // @phpstan-ignore-line
+            if ($container instanceof LaravelContainer) {
+                $container->singleton($name, $value instanceof Closure ? $value : static fn () => $value);
 
                 return;
             }

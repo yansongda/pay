@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay;
+namespace Yansongda\Pay\Plugin\Unipay;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
@@ -12,7 +12,7 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Rocket;
 
-use function Yansongda\Pay\verify_alipay_sign;
+use function Yansongda\Pay\verify_unipay_sign;
 
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -27,21 +27,21 @@ class CallbackPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::info('[unipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->formatPayload($rocket);
-        $sign = $rocket->getParams()['sign'] ?? false;
+        $signature = $rocket->getParams()['signature'] ?? false;
 
-        if (!$sign) {
+        if (!$signature) {
             throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', $rocket->getParams());
         }
 
-        verify_alipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), base64_decode($rocket->getParams()['sign']));
+        verify_unipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), base64_decode($signature));
 
         $rocket->setDirection(NoHttpRequestParser::class)
             ->setDestination($rocket->getPayload());
 
-        Logger::info('[alipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[unipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
@@ -49,13 +49,13 @@ class CallbackPlugin implements PluginInterface
     protected function formatPayload(Rocket $rocket): void
     {
         $payload = (new Collection($rocket->getParams()))
-            ->filter(fn ($v, $k) => '' !== $v && !is_null($v) && 'sign' != $k && 'sign_type' != $k && !Str::startsWith($k, '_'));
+            ->filter(fn ($v, $k) => 'signature' != $k && !Str::startsWith($k, '_'));
 
         $rocket->setPayload($payload);
     }
 
     protected function getSignContent(Collection $payload): string
     {
-        return urldecode($payload->sortKeys()->toString());
+        return $payload->sortKeys()->toString();
     }
 }

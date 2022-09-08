@@ -309,3 +309,31 @@ if (!function_exists('get_unipay_config')) {
         return $unipay[get_tenant($params)] ?? [];
     }
 }
+
+if (!function_exists('verify_unipay_sign')) {
+    /**
+     * @param string $sign base64decode 之后的
+     *
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    function verify_unipay_sign(array $params, string $contents, string $sign): void
+    {
+        if (empty($params['signPubKeyCert'])
+            && empty($public = get_unipay_config($params)['unipay_public_cert_path'] ?? null)) {
+            throw new InvalidConfigException(Exception::UNIPAY_CONFIG_ERROR, 'Missing Unipay Config -- [unipay_public_cert_path]');
+        }
+
+        $result = 1 === openssl_verify(
+            hash('sha256', $contents),
+            $sign,
+            get_public_cert($params['signPubKeyCert'] ?? $public ?? ''),
+            'sha256');
+
+        if (!$result) {
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Unipay Response Sign Failed', func_get_args());
+        }
+    }
+}

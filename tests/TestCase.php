@@ -116,6 +116,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_id' => '777290058167151',
                     'mch_cert_path' => __DIR__.'/Cert/unipayAppCert.pfx',
                     'mch_cert_password' => '000000',
+                    'unipay_public_cert_path' => __DIR__.'/Cert/unipayCertPublicKey.cer',
                     'return_url' => 'https://yansongda.cn/unipay/return',
                     'notify_url' => 'https://yansongda.cn/unipay/notify',
                 ]
