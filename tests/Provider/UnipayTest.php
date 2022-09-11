@@ -8,7 +8,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Unipay\SignPlugin;
+use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -38,7 +38,7 @@ class UnipayTest extends TestCase
         self::assertEquals(array_merge(
             [PreparePlugin::class],
             $plugins,
-            [SignPlugin::class],
+            [RadarSignPlugin::class],
             [LaunchPlugin::class, ParserPlugin::class],
         ), Pay::unipay()->mergeCommonPlugins($plugins));
     }

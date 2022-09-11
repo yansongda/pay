@@ -30,13 +30,15 @@ class CallbackPlugin implements PluginInterface
         Logger::info('[unipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->formatPayload($rocket);
-        $signature = $rocket->getParams()['signature'] ?? false;
+
+        $params = $rocket->getParams();
+        $signature = $params['signature'] ?? false;
 
         if (!$signature) {
-            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', $rocket->getParams());
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', $params);
         }
 
-        verify_unipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), base64_decode($signature));
+        verify_unipay_sign($params, $rocket->getPayload()->sortKeys()->toString(), $signature);
 
         $rocket->setDirection(NoHttpRequestParser::class)
             ->setDestination($rocket->getPayload());
@@ -52,10 +54,5 @@ class CallbackPlugin implements PluginInterface
             ->filter(fn ($v, $k) => 'signature' != $k && !Str::startsWith($k, '_'));
 
         $rocket->setPayload($payload);
-    }
-
-    protected function getSignContent(Collection $payload): string
-    {
-        return $payload->sortKeys()->toString();
     }
 }

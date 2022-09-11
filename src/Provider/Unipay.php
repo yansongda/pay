@@ -16,7 +16,7 @@ use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Unipay\SignPlugin;
+use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -139,7 +139,7 @@ class Unipay extends AbstractProvider
         return array_merge(
             [PreparePlugin::class],
             $plugins,
-            [SignPlugin::class],
+            [RadarSignPlugin::class],
             [LaunchPlugin::class, ParserPlugin::class],
         );
     }

@@ -6,14 +6,14 @@ namespace Yansongda\Pay\Plugin\Unipay\Shortcut;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\Unipay\HtmlResponsePlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\PagePayPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\WapPayPlugin;
 
-class WebShortcut implements ShortcutInterface
+class WapShortcut implements ShortcutInterface
 {
     public function getPlugins(array $params): array
     {
         return [
-            PagePayPlugin::class,
+            WapPayPlugin::class,
             HtmlResponsePlugin::class,
         ];
     }

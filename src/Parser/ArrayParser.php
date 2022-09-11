@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Supports\Str;
 
 class ArrayParser implements ParserInterface
 {
@@ -20,12 +21,29 @@ class ArrayParser implements ParserInterface
             throw new InvalidResponseException(Exception::RESPONSE_NONE);
         }
 
-        $contents = (string) $response->getBody();
+        $body = (string) $response->getBody();
 
-        $result = json_decode($contents, true);
+        if (Str::contains($body, '&')) {
+            return $this->query($body);
+        }
+
+        $result = json_decode($body, true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new InvalidResponseException(Exception::UNPACK_RESPONSE_ERROR, 'Unpack Response Error', ['contents' => $contents, 'response' => $response]);
+            throw new InvalidResponseException(Exception::UNPACK_RESPONSE_ERROR, 'Unpack Response Error', ['body' => $body, 'response' => $response]);
+        }
+
+        return $result;
+    }
+
+    protected function query(string $body): array
+    {
+        $result = [];
+
+        foreach (explode('&', $body) as $item) {
+            $pos = strpos($item, '=');
+
+            $result[substr($item, 0, $pos)] = substr($item, $pos + 1);
         }
 
         return $result;

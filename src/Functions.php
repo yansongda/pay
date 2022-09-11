@@ -86,7 +86,7 @@ if (!function_exists('verify_alipay_sign')) {
 
         $result = 1 === openssl_verify(
             $contents,
-            $sign,
+            base64_decode($sign),
             get_public_cert($public),
             OPENSSL_ALGO_SHA256);
 
@@ -312,8 +312,6 @@ if (!function_exists('get_unipay_config')) {
 
 if (!function_exists('verify_unipay_sign')) {
     /**
-     * @param string $sign base64decode 之后的
-     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
@@ -328,7 +326,7 @@ if (!function_exists('verify_unipay_sign')) {
 
         $result = 1 === openssl_verify(
             hash('sha256', $contents),
-            $sign,
+            base64_decode($sign),
             get_public_cert($params['signPubKeyCert'] ?? $public ?? ''),
             'sha256');
 

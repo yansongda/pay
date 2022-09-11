@@ -32,13 +32,12 @@ class LaunchPlugin implements PluginInterface
         Logger::info('[alipay][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         if (should_do_http_request($rocket->getDirection())) {
-            $this->verifySign($rocket);
+            $response = Collection::wrap($rocket->getDestination());
+            $result = $response->get($this->getResultKey($rocket->getPayload()));
 
-            $rocket->setDestination(
-                Collection::wrap(
-                    $rocket->getDestination()->get($this->getResultKey($rocket->getPayload()))
-                )
-            );
+            $this->verifySign($rocket->getParams(), $response, $result);
+
+            $rocket->setDestination(Collection::wrap($result));
         }
 
         Logger::info('[alipay][LaunchPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -52,17 +51,15 @@ class LaunchPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\InvalidResponseException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function verifySign(Rocket $rocket): void
+    protected function verifySign(array $params, Collection $response, ?array $result): void
     {
-        $response = $rocket->getDestination();
-        $result = $response->get($this->getResultKey($rocket->getPayload()));
         $sign = $response->get('sign', '');
 
         if ('' === $sign || is_null($result)) {
             throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Alipay Response Sign Failed: sign is empty', $response);
         }
 
-        verify_alipay_sign($rocket->getParams(), json_encode($result, JSON_UNESCAPED_UNICODE), base64_decode($sign));
+        verify_alipay_sign($params, json_encode($result, JSON_UNESCAPED_UNICODE), $sign);
     }
 
     protected function getResultKey(Collection $payload): string

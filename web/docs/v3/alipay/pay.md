@@ -1,6 +1,6 @@
 # 支付宝支付
 
-支付宝支付目前直接内置支持 7 种快捷方式支付方法，对应的支付 method 如下：
+支付宝支付目前直接内置支持以下快捷方式支付方法，对应的支付 method 如下：
 
 |  method  |   说明   |      参数      |    返回值     |
 |:--------:|:------:|:------------:|:----------:|
@@ -133,7 +133,7 @@ return $result->get('trade_no');  // 支付宝交易号
 小程序支付接入文档：[https://docs.alipay.com/mini/introduce/pay](https://opendocs.alipay.com/mini/introduce/pay)。
 
 
-## 刷卡支付
+## 刷卡支付（被扫码）
 
 ### 例子
 

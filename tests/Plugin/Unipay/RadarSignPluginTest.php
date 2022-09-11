@@ -2,15 +2,15 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay;
 
-use Yansongda\Pay\Plugin\Unipay\SignPlugin;
+use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class SignPluginTest extends TestCase
+class RadarSignPluginTest extends TestCase
 {
     /**
-     * @var \Yansongda\Pay\Plugin\Unipay\SignPlugin
+     * @var \Yansongda\Pay\Plugin\Unipay\RadarSignPlugin
      */
     protected $plugin;
 
@@ -18,7 +18,7 @@ class SignPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new SignPlugin();
+        $this->plugin = new RadarSignPlugin();
     }
 
     public function testNormal()

@@ -73,6 +73,7 @@ abstract class GeneralPlugin implements PluginInterface
     {
         return [
             'User-Agent' => 'yansongda/pay-v3',
+            'Content-Type' => 'application/x-www-form-urlencoded;charset=utf-8',
         ];
     }
 
