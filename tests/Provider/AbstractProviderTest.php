@@ -12,6 +12,7 @@ use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Parser\ArrayParser;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\AbstractProvider;
@@ -105,6 +106,23 @@ class AbstractProviderTest extends TestCase
         $provider = new FooProviderStub();
         $provider->ignite($rocket);
     }
+
+    public function testArrayDirection()
+    {
+        $response = new Response(200, [], '{"name":"yansongda"}');
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($response);
+
+        Pay::set(HttpClientInterface::class, $http);
+
+        $plugin = [BarPlugin::class];
+
+        $provider = new FooProviderStub();
+        $result = $provider->pay($plugin, []);
+
+        self::assertIsArray($result);
+    }
 }
 
 class FooProviderStub extends AbstractProvider
@@ -157,5 +175,21 @@ class FooPlugin implements PluginInterface
             ->setDestination(new Response());
 
         return $next($rocket);
+    }
+}
+
+
+class BarPlugin implements PluginInterface
+{
+    public function assembly(Rocket $rocket, Closure $next): Rocket
+    {
+        $rocket->setDirection(ArrayParser::class)
+            ->setRadar(new Request('get', ''));
+
+        $rocket = $next($rocket);
+
+        $rocket->setDestination(new Collection(['name' => 'yansongda']));
+
+        return $rocket;
     }
 }
