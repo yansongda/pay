@@ -17,7 +17,7 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Str;
 
 /**
- * @deprecated use RadarSignPlugin instead.
+ * @deprecated use RadarSignPlugin instead
  */
 class SignPlugin implements PluginInterface
 {

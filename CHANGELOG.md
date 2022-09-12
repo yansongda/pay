@@ -1,3 +1,14 @@
+## v3.2.2
+
+### refactor
+
+- refactor: 优化支付宝 launch 插件代码(#678)
+
+### deprecated
+
+- deprecated: 支付宝 `RadarPlugin`, `SignPlugin` 已废弃，使用 `RadarSignPlugin` 代替(#678)
+- deprecated: 微信 `SignPlugin` 已废弃，使用 `RadarSignPlugin` 代替(#678)
+
 ## v3.2.1
 
 ### fixed
