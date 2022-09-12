@@ -30,7 +30,7 @@ class RadarSignPlugin implements PluginInterface
 
         $this->sign($rocket);
 
-        $this->ignite($rocket);
+        $this->reRadar($rocket);
 
         Logger::info('[unipay][PreparePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -52,7 +52,7 @@ class RadarSignPlugin implements PluginInterface
         ]);
     }
 
-    protected function ignite(Rocket $rocket): void
+    protected function reRadar(Rocket $rocket): void
     {
         $body = $this->getBody($rocket->getPayload());
         $radar = $rocket->getRadar();

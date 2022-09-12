@@ -51,4 +51,14 @@ class ArrayParserTest extends TestCase
 
         self::assertEquals(['name' => 'yansongda'], $result);
     }
+
+    public function testQueryBody()
+    {
+        $response = new Response(200, [], 'name=yansongda&age=29');
+
+        $parser = new ArrayParser();
+        $result = $parser->parse($response);
+
+        self::assertEqualsCanonicalizing(['name' => 'yansongda', 'age' => '29'], $result);
+    }
 }

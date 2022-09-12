@@ -20,13 +20,18 @@ class PagePayPlugin extends GeneralPlugin
 
     protected function doSomething(Rocket $rocket): void
     {
+        $payload = [
+            'bizType' => '000201',
+            'txnType' => '01',
+            'txnSubType' => '01',
+            'channelType' => '07',
+        ];
+
+        if (is_null($rocket->getPayload()) || !$rocket->getPayload()->has('currencyCode')) {
+            $payload['currencyCode'] = '156';
+        }
+
         $rocket->setDirection(ResponseParser::class)
-            ->mergePayload([
-                'currencyCode' => '156',
-                'bizType' => '000201',
-                'txnType' => '01',
-                'txnSubType' => '01',
-                'channelType' => '07',
-            ]);
+            ->mergePayload($payload);
     }
 }
