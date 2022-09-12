@@ -50,6 +50,20 @@ exports = module.exports = [
         ]
     },
     {
+        text: '银联',
+        collapsible: false,
+        items: [
+            { text: '支付', link: '/docs/v3/unipay/pay'},
+            { text: '查询', link: '/docs/v3/unipay/find'},
+            { text: '退款', link: '/docs/v3/wechat/refund'},
+            { text: '关闭', link: '/docs/v3/wechat/close'},
+            { text: '取消', link: '/docs/v3/wechat/cancel'},
+            { text: '接收回调', link: '/docs/v3/wechat/callback'},
+            { text: '确认回调', link: '/docs/v3/wechat/response'},
+            { text: '更多便捷插件', link: '/docs/v3/wechat/more'}
+        ]
+    },
+    {
         text: '核心架构',
         collapsible: true,
         items: [
