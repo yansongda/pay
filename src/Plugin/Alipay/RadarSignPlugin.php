@@ -13,13 +13,14 @@ use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_private_cert;
 
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Pay;
+use Yansongda\Pay\Provider\Alipay;
+use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
-/**
- * @deprecated use RadarSignPlugin instead
- */
-class SignPlugin implements PluginInterface
+class RadarSignPlugin implements PluginInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
@@ -28,17 +29,45 @@ class SignPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][SignPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::info('[alipay][RadarSignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $this->sign($rocket);
+
+        $this->reRadar($rocket);
+
+        Logger::info('[alipay][RadarSignPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function sign(Rocket $rocket): void
+    {
         $this->formatPayload($rocket);
 
         $sign = $this->getSign($rocket);
 
         $rocket->mergePayload(['sign' => $sign]);
+    }
 
-        Logger::info('[alipay][SignPlugin] 插件装载完毕', ['rocket' => $rocket]);
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function reRadar(Rocket $rocket): void
+    {
+        $params = $rocket->getParams();
 
-        return $next($rocket);
+        $rocket->setRadar(new Request(
+            $this->getMethod($params),
+            $this->getUrl($params),
+            $this->getHeaders(),
+            $this->getBody($rocket->getPayload()),
+        ));
     }
 
     protected function formatPayload(Rocket $rocket): void
@@ -82,5 +111,33 @@ class SignPlugin implements PluginInterface
         }
 
         return get_private_cert($privateKey);
+    }
+
+    protected function getMethod(array $params): string
+    {
+        return strtoupper($params['_method'] ?? 'POST');
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getUrl(array $params): string
+    {
+        $config = get_alipay_config($params);
+
+        return Alipay::URL[$config['mode'] ?? Pay::MODE_NORMAL];
+    }
+
+    protected function getHeaders(): array
+    {
+        return [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+        ];
+    }
+
+    protected function getBody(Collection $payload): string
+    {
+        return $payload->query();
     }
 }

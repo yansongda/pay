@@ -12,6 +12,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Alipay\RadarPlugin;
+use Yansongda\Pay\Plugin\Alipay\RadarSignPlugin;
 use Yansongda\Pay\Plugin\Alipay\SignPlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
@@ -199,7 +200,7 @@ class AlipayTest extends TestCase
         self::assertEquals(array_merge(
             [PreparePlugin::class],
             $plugins,
-            [SignPlugin::class, RadarPlugin::class],
+            [RadarSignPlugin::class],
             [LaunchPlugin::class, ParserPlugin::class],
         ), Pay::alipay()->mergeCommonPlugins($plugins));
     }

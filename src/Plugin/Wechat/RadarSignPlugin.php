@@ -20,10 +20,7 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
-/**
- * @deprecated use RadarSignPlugin instead
- */
-class SignPlugin implements PluginInterface
+class RadarSignPlugin implements PluginInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException

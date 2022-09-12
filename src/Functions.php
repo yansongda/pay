@@ -69,8 +69,6 @@ if (!function_exists('get_private_cert')) {
 
 if (!function_exists('verify_alipay_sign')) {
     /**
-     * @param string $sign base64decode 之后的
-     *
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException

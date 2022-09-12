@@ -16,6 +16,9 @@ use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
 
+/**
+ * @deprecated use RadarSignPlugin instead
+ */
 class RadarPlugin implements PluginInterface
 {
     /**
