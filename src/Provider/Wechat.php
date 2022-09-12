@@ -16,7 +16,7 @@ use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\CallbackPlugin;
 use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
 use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\SignPlugin;
+use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -143,7 +143,7 @@ class Wechat extends AbstractProvider
         return array_merge(
             [PreparePlugin::class],
             $plugins,
-            [SignPlugin::class],
+            [RadarSignPlugin::class],
             [LaunchPlugin::class, ParserPlugin::class],
         );
     }

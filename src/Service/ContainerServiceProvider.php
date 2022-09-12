@@ -16,6 +16,9 @@ use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ContainerServiceProvider implements ServiceProviderInterface
 {
     private $detectApplication = [

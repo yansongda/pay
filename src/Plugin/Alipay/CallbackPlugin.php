@@ -30,12 +30,13 @@ class CallbackPlugin implements PluginInterface
         Logger::info('[alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->formatPayload($rocket);
+        $sign = $rocket->getParams()['sign'] ?? false;
 
-        if (!($rocket->getParams()['sign'] ?? false)) {
+        if (!$sign) {
             throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', $rocket->getParams());
         }
 
-        verify_alipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), base64_decode($rocket->getParams()['sign']));
+        verify_alipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), $sign);
 
         $rocket->setDirection(NoHttpRequestParser::class)
             ->setDestination($rocket->getPayload());

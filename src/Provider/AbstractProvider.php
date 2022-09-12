@@ -17,6 +17,7 @@ use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Parser\ArrayParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 
@@ -74,7 +75,13 @@ abstract class AbstractProvider implements ProviderInterface
 
         Event::dispatch(new Event\PayFinish($rocket));
 
-        return $rocket->getDestination();
+        $destination = $rocket->getDestination();
+
+        if (ArrayParser::class === $rocket->getDirection() && $destination instanceof Collection) {
+            return $destination->toArray();
+        }
+
+        return $destination;
     }
 
     /**
