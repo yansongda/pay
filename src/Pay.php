@@ -110,6 +110,8 @@ class Pay
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @param mixed $value
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
@@ -119,8 +121,8 @@ class Pay
         try {
             $container = Pay::getContainer();
 
-            if ($container instanceof LaravelContainer) { // @phpstan-ignore-line
-                $container->singleton($name, $value instanceof Closure ? $value : static fn () => $value); // @phpstan-ignore-line
+            if ($container instanceof LaravelContainer) {
+                $container->singleton($name, $value instanceof Closure ? $value : static fn () => $value);
 
                 return;
             }
@@ -140,6 +142,8 @@ class Pay
     }
 
     /**
+     * @codeCoverageIgnore
+     *
      * @return mixed
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
