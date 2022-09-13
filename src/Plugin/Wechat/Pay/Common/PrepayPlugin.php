@@ -67,6 +67,11 @@ class PrepayPlugin extends GeneralPlugin
 
     protected function getConfigKey(array $params): string
     {
-        return 'mp_app_id';
+        $key = ($params['_type'] ?? 'mp').'_app_id';
+        if ('app_app_id' === $key) {
+            $key = 'app_id';
+        }
+
+        return $key;
     }
 }
