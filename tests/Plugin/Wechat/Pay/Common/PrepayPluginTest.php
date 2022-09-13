@@ -46,6 +46,27 @@ class PrepayPluginTest extends TestCase
         self::assertEquals('1600314069', $payload->get('mchid'));
     }
 
+    public function testNormalType()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_type' => 'mini'])->setPayload(new Collection());
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $radar = $result->getRadar();
+        $payload = $result->getPayload();
+
+        self::assertInstanceOf(RequestInterface::class, $radar);
+        self::assertEquals('POST', $radar->getMethod());
+        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/pay/transactions/jsapi'), $radar->getUri());
+        self::assertArrayNotHasKey('sp_appid', $payload->all());
+        self::assertArrayNotHasKey('sp_mchid', $payload->all());
+        self::assertArrayNotHasKey('sub_appid', $payload->all());
+        self::assertArrayNotHasKey('sub_mchid', $payload->all());
+        self::assertEquals('wx55955316af4ef14', $payload->get('appid'));
+        self::assertEquals('1600314069', $payload->get('mchid'));
+    }
+
     public function testPartner()
     {
         $rocket = new Rocket();
