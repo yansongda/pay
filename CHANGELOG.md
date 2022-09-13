@@ -1,3 +1,9 @@
+## v3.2.3
+
+### added
+
+- feat: 微信 Native 支付支持关联其它类型 appid(#680)
+
 ## v3.2.2
 
 ### refactor

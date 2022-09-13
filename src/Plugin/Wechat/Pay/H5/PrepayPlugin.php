@@ -20,14 +20,4 @@ class PrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\PrepayPlugin
     {
         return 'v3/pay/partner/transactions/h5';
     }
-
-    protected function getConfigKey(array $params): string
-    {
-        $key = ($params['_type'] ?? 'mp').'_app_id';
-        if ('app_app_id' === $key) {
-            $key = 'app_id';
-        }
-
-        return $key;
-    }
 }

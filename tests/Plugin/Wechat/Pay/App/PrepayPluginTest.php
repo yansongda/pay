@@ -34,6 +34,19 @@ class PrepayPluginTest extends TestCase
         self::assertEquals('1600314069', $payload->get('mchid'));
     }
 
+    public function testWechatIdNormalWithType()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_type' => 'mini'])->setPayload(new Collection());
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $payload = $result->getPayload();
+
+        self::assertEquals('yansongda', $payload->get('appid'));
+        self::assertEquals('1600314069', $payload->get('mchid'));
+    }
+
     public function testWechatIdPartner()
     {
         $rocket = new Rocket();
