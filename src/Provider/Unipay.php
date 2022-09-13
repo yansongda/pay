@@ -159,8 +159,6 @@ class Unipay extends AbstractProvider
 
         $request = ServerRequest::fromGlobals();
 
-        return Collection::wrap(
-            array_merge($request->getQueryParams(), $request->getParsedBody())
-        );
+        return Collection::wrap($request->getParsedBody());
     }
 }

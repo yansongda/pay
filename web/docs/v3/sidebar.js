@@ -52,7 +52,6 @@ exports = module.exports = [
     {
         text: '银联',
         collapsible: true,
-        collapsed: true,
         items: [
             { text: '支付', link: '/docs/v3/unipay/pay'},
             { text: '查询', link: '/docs/v3/unipay/find'},

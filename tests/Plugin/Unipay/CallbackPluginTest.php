@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay;
 
-use GuzzleHttp\Psr7\ServerRequest;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\CallbackPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class CallbackPluginTest extends TestCase
 {
+    protected $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new CallbackPlugin();
+    }
+
     public function testReturnCallback()
     {
         $input = [
@@ -69,9 +76,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         $rocket = new Rocket();
         $rocket->setParams($input);
 
-        /* @var CallbackPlugin $plugin */
-        $plugin = Pay::get(CallbackPlugin::class);
-        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
 
         self::assertNotEmpty($result->getPayload()->all());
     }
@@ -134,9 +139,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         $rocket = new Rocket();
         $rocket->setParams($input);
 
-        /* @var CallbackPlugin $plugin */
-        $plugin = Pay::get(CallbackPlugin::class);
-        $result = $plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
 
         self::assertNotEmpty($result->getPayload()->all());
     }

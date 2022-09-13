@@ -7,12 +7,6 @@ namespace Yansongda\Pay\Plugin\Wechat\Shortcut;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\Fund\Transfer\QueryBatchDetailIdPlugin;
-use Yansongda\Pay\Plugin\Wechat\Fund\Transfer\QueryBatchIdPlugin;
-use Yansongda\Pay\Plugin\Wechat\Fund\Transfer\QueryBillReceiptPlugin;
-use Yansongda\Pay\Plugin\Wechat\Fund\Transfer\QueryDetailReceiptPlugin;
-use Yansongda\Pay\Plugin\Wechat\Fund\Transfer\QueryOutBatchDetailNoPlugin;
-use Yansongda\Pay\Plugin\Wechat\Fund\Transfer\QueryOutBatchNoPlugin;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\FindRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin;
 
@@ -36,41 +30,6 @@ class QueryShortcut implements ShortcutInterface
         throw new InvalidParamsException(Exception::SHORTCUT_QUERY_TYPE_ERROR, "Query type [$typeMethod] not supported");
     }
 
-    public function transferBatchId(): array
-    {
-        return [
-            QueryBatchIdPlugin::class,
-        ];
-    }
-
-    public function transferBillReceipt(): array
-    {
-        return [
-            QueryBillReceiptPlugin::class,
-        ];
-    }
-
-    public function transferDetailReceipt(): array
-    {
-        return [
-            QueryDetailReceiptPlugin::class,
-        ];
-    }
-
-    public function transferOutBatchDetailNo(): array
-    {
-        return [
-            QueryOutBatchDetailNoPlugin::class,
-        ];
-    }
-
-    public function transferOutBatchNo(): array
-    {
-        return [
-            QueryOutBatchNoPlugin::class,
-        ];
-    }
-
     protected function defaultPlugins(): array
     {
         return [
@@ -89,13 +48,6 @@ class QueryShortcut implements ShortcutInterface
     {
         return [
             \Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin::class,
-        ];
-    }
-
-    protected function transferBatchDetailId(): array
-    {
-        return [
-            QueryBatchDetailIdPlugin::class,
         ];
     }
 }
