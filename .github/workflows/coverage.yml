@@ -24,3 +24,5 @@ jobs:
         run: vendor/bin/phpunit --coverage-clover coverage.xml
       - name: Upload Coverage
         uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
