@@ -48,14 +48,6 @@ class UnipayTest extends TestCase
         ), Pay::unipay()->mergeCommonPlugins($plugins));
     }
 
-    public function testClose()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::METHOD_NOT_SUPPORTED);
-
-        Pay::unipay()->close('foo');
-    }
-
     public function testFind()
     {
         $response = [
@@ -122,6 +114,136 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         ]);
 
         self::assertArrayHasKey('origRespMsg', $result->all());
+    }
+
+    public function testCancel()
+    {
+        $response = [
+            "accessType" => "0",
+            "bizType" => "000000",
+            "encoding" => "utf-8",
+            "merId" => "777290058167151",
+            "orderId" => "cancel20220914130301",
+            "origQryId" => "652209141301523979028",
+            "queryId" => "652209141303013346508",
+            "respCode" => "00",
+            "respMsg" => "成功[0000000]",
+            "signMethod" => "01",
+            "txnAmt" => "1",
+            "txnSubType" => "00",
+            "txnTime" => "20220914130301",
+            "txnType" => "31",
+            "version" => "5.1.0",
+            "signPubKeyCert" => "-----BEGIN CERTIFICATE-----\r
+MIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r
+Q04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r
+cml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMjAwNzMxMDExOTE2WhcN\r
+MjUwNzMxMDExOTE2WjCBljELMAkGA1UEBhMCY24xEjAQBgNVBAoTCUNGQ0EgT0NB\r
+MTEWMBQGA1UECxMNTG9jYWwgUkEgT0NBMTEUMBIGA1UECxMLRW50ZXJwcmlzZXMx\r
+RTBDBgNVBAMMPDA0MUA4MzEwMDAwMDAwMDgzMDQwQOS4reWbvemTtuiBlOiCoeS7\r
+veaciemZkOWFrOWPuEAwMDAxNjQ5NTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC\r
+AQoCggEBAMHNa81t44KBfUWUgZhb1YTx3nO9DeagzBO5ZEE9UZkdK5+2IpuYi48w\r
+eYisCaLpLuhrwTced19w2UR5hVrc29aa2TxMvQH9s74bsAy7mqUJX+mPd6KThmCr\r
+t5LriSQ7rDlD0MALq3yimLvkEdwYJnvyzA6CpHntP728HIGTXZH6zOL0OAvTnP8u\r
+RCHZ8sXJPFUkZcbG3oVpdXQTJVlISZUUUhsfSsNdvRDrcKYY+bDWTMEcG8ZuMZzL\r
+g0N+/spSwB8eWz+4P87nGFVlBMviBmJJX8u05oOXPyIcZu+CWybFQVcS2sMWDVZy\r
+sPeT3tPuBDbFWmKQYuu+gT83PM3G6zMCAwEAAaOB9DCB8TAfBgNVHSMEGDAWgBTP\r
+cJ1h6518Lrj3ywJA9wmd/jN0gDBIBgNVHSAEQTA/MD0GCGCBHIbvKgEBMDEwLwYI\r
+KwYBBQUHAgEWI2h0dHA6Ly93d3cuY2ZjYS5jb20uY24vdXMvdXMtMTQuaHRtMDkG\r
+A1UdHwQyMDAwLqAsoCqGKGh0dHA6Ly91Y3JsLmNmY2EuY29tLmNuL1JTQS9jcmw3\r
+NTAwMy5jcmwwCwYDVR0PBAQDAgPoMB0GA1UdDgQWBBTmzk7XEM/J/sd+wPrMils3\r
+9rJ2/DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQEF\r
+BQADggEBAJLbXxbJaFngROADdNmNUyVxPtbAvK32Ia0EjgDh/vjn1hpRNgvL4flH\r
+NsGNttCy8afLJcH8UnFJyGLas8v/P3UKXTJtgrOj1mtothv7CQa4LUYhzrVw3UhL\r
+4L1CTtmE6D1Kf3+c2Fj6TneK+MoK9AuckySjK5at6a2GQi18Y27gVF88Nk8bp1lJ\r
+vzOwPKd8R7iGFotuF4/8GGhBKR4k46EYnKCodyIhNpPdQfpaN5AKeS7xeLSbFvPJ\r
+HYrtBsI48jUK/WKtWBJWhFH+Gty+GWX0e5n2QHXHW6qH62M0lDo7OYeyBvG1mh9u\r
+Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
+-----END CERTIFICATE-----",
+            "signature" => "wRei4yocbmovkTW72STiApiuUGbYY9Nnz2ypuUPp+qjg2YwYDhDQqnAqYuUKawtbPdgg7IBiMasn32+v++kZgORsbwtVQXnynenQNxQBeZx3NpmaycZKM5phwnYEs7EF8JDGATREHbpHexOge44BsjUIQ/9DyPcM17wHYPxlwa8RaFi4nO3Pcm7CwGX0PuspOkfqy4IH2WuxhZ0B7KQISQobaXAGsqIrol5WHkb3fsAUNweUfcjWXYzhnqqOrrGojoAE1Q/0vGpGXj1oMHphClYwYwGdOQIx/CJzeK3qyTSsbReNPTFZW0u45ItaPzrMsJ4Q5C+rDX1reLCy6KiHQw==",
+            ];
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::unipay()->cancel([
+            'txnTime' => date('YmdHis'),
+            'txnAmt' => 1,
+            'orderId' => 'cancel'.date('YmdHis'),
+            'origQryId' => '652209141301523979028'
+        ]);
+
+        self::assertArrayHasKey('respMsg', $result->all());
+    }
+
+    public function testClose()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::METHOD_NOT_SUPPORTED);
+
+        Pay::unipay()->close('foo');
+    }
+
+    public function testRefund()
+    {
+        $response = [
+            "accessType" => "0",
+            "bizType" => "000000",
+            "encoding" => "utf-8",
+            "merId" => "777290058167151",
+            "orderId" => "refund20220914130757",
+            "origQryId" => "052209141307102430268",
+            "queryId" => "052209141307573008998",
+            "respCode" => "00",
+            "respMsg" => "成功[0000000]",
+            "signMethod" => "01",
+            "txnAmt" => "1",
+            "txnSubType" => "00",
+            "txnTime" => "20220914130757",
+            "txnType" => "04",
+            "version" => "5.1.0",
+            "signPubKeyCert" => "-----BEGIN CERTIFICATE-----\r
+MIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r
+Q04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r
+cml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMjAwNzMxMDExOTE2WhcN\r
+MjUwNzMxMDExOTE2WjCBljELMAkGA1UEBhMCY24xEjAQBgNVBAoTCUNGQ0EgT0NB\r
+MTEWMBQGA1UECxMNTG9jYWwgUkEgT0NBMTEUMBIGA1UECxMLRW50ZXJwcmlzZXMx\r
+RTBDBgNVBAMMPDA0MUA4MzEwMDAwMDAwMDgzMDQwQOS4reWbvemTtuiBlOiCoeS7\r
+veaciemZkOWFrOWPuEAwMDAxNjQ5NTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC\r
+AQoCggEBAMHNa81t44KBfUWUgZhb1YTx3nO9DeagzBO5ZEE9UZkdK5+2IpuYi48w\r
+eYisCaLpLuhrwTced19w2UR5hVrc29aa2TxMvQH9s74bsAy7mqUJX+mPd6KThmCr\r
+t5LriSQ7rDlD0MALq3yimLvkEdwYJnvyzA6CpHntP728HIGTXZH6zOL0OAvTnP8u\r
+RCHZ8sXJPFUkZcbG3oVpdXQTJVlISZUUUhsfSsNdvRDrcKYY+bDWTMEcG8ZuMZzL\r
+g0N+/spSwB8eWz+4P87nGFVlBMviBmJJX8u05oOXPyIcZu+CWybFQVcS2sMWDVZy\r
+sPeT3tPuBDbFWmKQYuu+gT83PM3G6zMCAwEAAaOB9DCB8TAfBgNVHSMEGDAWgBTP\r
+cJ1h6518Lrj3ywJA9wmd/jN0gDBIBgNVHSAEQTA/MD0GCGCBHIbvKgEBMDEwLwYI\r
+KwYBBQUHAgEWI2h0dHA6Ly93d3cuY2ZjYS5jb20uY24vdXMvdXMtMTQuaHRtMDkG\r
+A1UdHwQyMDAwLqAsoCqGKGh0dHA6Ly91Y3JsLmNmY2EuY29tLmNuL1JTQS9jcmw3\r
+NTAwMy5jcmwwCwYDVR0PBAQDAgPoMB0GA1UdDgQWBBTmzk7XEM/J/sd+wPrMils3\r
+9rJ2/DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQEF\r
+BQADggEBAJLbXxbJaFngROADdNmNUyVxPtbAvK32Ia0EjgDh/vjn1hpRNgvL4flH\r
+NsGNttCy8afLJcH8UnFJyGLas8v/P3UKXTJtgrOj1mtothv7CQa4LUYhzrVw3UhL\r
+4L1CTtmE6D1Kf3+c2Fj6TneK+MoK9AuckySjK5at6a2GQi18Y27gVF88Nk8bp1lJ\r
+vzOwPKd8R7iGFotuF4/8GGhBKR4k46EYnKCodyIhNpPdQfpaN5AKeS7xeLSbFvPJ\r
+HYrtBsI48jUK/WKtWBJWhFH+Gty+GWX0e5n2QHXHW6qH62M0lDo7OYeyBvG1mh9u\r
+Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
+-----END CERTIFICATE-----",
+            "signature" => "JLP38lt6Na0vInK735sHczfsuny3GhUqLPjTMpweNMINCDfZvbo/qiusbNiqfZ4WU8if5Z+xdgKX5i90rhw5rmHmRIf7U6PJmJuy6hOMbwF04y8IrOGQQVrLRY51/ih19/uMOOMdCXgxRJRbMu/WiTLHSpxwIW54RI0R4D8SWhKBw1B3aeeBahh3tblvDBW+geNgIX9GQOV8+u1nJS/muaPai246bwKa0NcAA0KESlpqCuY2H7KIAzK3e47Q0au/ZHLClzb9MJBnZqPK6ieVMCgXIXjSyVv/31ClPghqsflNYRIjdXhuxsbzQ0gXC9gL6G3cDcle9BvEp/101owqzw==",
+        ];
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::unipay()->refund([
+            'txnTime' => date('YmdHis'),
+            'txnAmt' => 1,
+            'orderId' => 'refund'.date('YmdHis'),
+            'origQryId' => '052209141307102430268'
+        ]);
+
+        self::assertArrayHasKey('respMsg', $result->all());
     }
 
     public function testCallback()
