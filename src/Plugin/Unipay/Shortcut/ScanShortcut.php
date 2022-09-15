@@ -7,10 +7,10 @@ namespace Yansongda\Pay\Plugin\Unipay\Shortcut;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\ScanNormalPlugin;
 use Yansongda\Supports\Str;
 
-class QueryShortcut implements ShortcutInterface
+class ScanShortcut implements ShortcutInterface
 {
     /**
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
@@ -23,20 +23,13 @@ class QueryShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Query type [$typeMethod] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Scan type [$typeMethod] not supported");
     }
 
     public function defaultPlugins(): array
     {
         return [
-            QueryPlugin::class,
-        ];
-    }
-
-    protected function qrCodePlugins(): array
-    {
-        return [
-            \Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin::class,
+            ScanNormalPlugin::class,
         ];
     }
 }

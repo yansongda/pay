@@ -40,6 +40,7 @@ class PreparePluginTest extends TestCase
             'merId' => '777290058167151',
             'frontUrl' => 'https://yansongda.cn/unipay/return',
             'certId' => '69903319369',
+            'currencyCode' => '156',
         ]);
 
         $rocket = (new Rocket())->setParams($params);

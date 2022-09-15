@@ -39,7 +39,6 @@ class PagePayPluginTest extends TestCase
         self::assertEquals('POST', $radar->getMethod());
         self::assertEquals(new Uri(Unipay::URL[Pay::MODE_NORMAL].'gateway/api/frontTransReq.do'), $radar->getUri());
         self::assertEquals(ResponseParser::class, $result->getDirection());
-        self::assertEquals('156', $payload['currencyCode']);
         self::assertEquals('000201', $payload['bizType']);
         self::assertEquals('01', $payload['txnType']);
         self::assertEquals('01', $payload['txnSubType']);

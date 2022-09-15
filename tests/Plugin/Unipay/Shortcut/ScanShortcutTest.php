@@ -6,11 +6,11 @@ namespace Yansongda\Pay\Tests\Plugin\Unipay\Shortcut;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin;
-use Yansongda\Pay\Plugin\Unipay\Shortcut\QueryShortcut;
+use Yansongda\Pay\Plugin\Unipay\QrCode\ScanNormalPlugin;
+use Yansongda\Pay\Plugin\Unipay\Shortcut\ScanShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class QueryShortcutTest extends TestCase
+class ScanShortcutTest extends TestCase
 {
     protected $plugin;
 
@@ -18,28 +18,21 @@ class QueryShortcutTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new QueryShortcut();
+        $this->plugin = new ScanShortcut();
     }
 
     public function testDefault()
     {
         self::assertEquals([
-            QueryPlugin::class,
+            ScanNormalPlugin::class,
         ], $this->plugin->getPlugins([]));
-    }
-
-    public function testQrCode()
-    {
-        self::assertEquals([
-            \Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'qr_code']));
     }
 
     public function testFoo()
     {
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::SHORTCUT_MULTI_TYPE_ERROR);
-        self::expectExceptionMessage('Query type [FooPlugins] not supported');
+        self::expectExceptionMessage('Scan type [FooPlugins] not supported');
 
         $this->plugin->getPlugins(['_type' => 'foo']);
     }

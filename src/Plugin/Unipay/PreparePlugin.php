@@ -49,6 +49,7 @@ class PreparePlugin implements PluginInterface
             'version' => '5.1.0',
             'encoding' => 'utf-8',
             'backUrl' => $config['notify_url'] ?? '',
+            'currencyCode' => '156',
             'accessType' => '0',
             'signature' => '',
             'signMethod' => '01',

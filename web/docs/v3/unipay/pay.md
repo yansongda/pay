@@ -6,8 +6,8 @@
 |:--------:|:------:|:------------:|:----------:|
 |   web    |  电脑支付  | array $order |  Response  |
 |   wap    | 手机网站支付 | array $order |  Response  |
-|   pos    |  刷卡支付  | array $order | Collection |
 |   scan   |  扫码支付  | array $order | Collection |
+|   pos    |  刷卡支付  | array $order | Collection |
 
 更多接口调用请参考后续文档
 
@@ -38,7 +38,7 @@ return Pay::unipay()->web([
 ```php
 Pay::config($this->config);
 
-return Pay::alipay()->wap([
+return Pay::unipay()->wap([
     'txnTime' => date('YmdHis'),
     'txnAmt' => 1,
     'orderId' => 'yansongda'.date('YmdHis'),
@@ -51,6 +51,27 @@ return Pay::alipay()->wap([
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://open.unionpay.com/tjweb/acproduct/APIList?acpAPIId=754&apiservId=448&version=V2.2&bussType=0)，查看「请求参数」一栏。
 
+## 扫码支付（主扫码）
+
+### 例子
+
+```php
+Pay::config($this->config);
+
+$result = Pay::unipay()->scan([
+    'txnTime' => date('YmdHis'),
+    'txnAmt' => 1,
+    'orderId' => 'pay'.date('YmdHis'),
+]);
+
+return $result->qrCode; // 二维码 url
+```
+
+### 订单配置参数
+
+**所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**，比如，`version`，`bizType` 等参数。
+
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://open.unionpay.com/tjweb/acproduct/APIList?acpAPIId=793&apiservId=468&version=V2.2&bussType=0)，查看「请求参数」一栏。
 
 ## 刷卡支付（被扫码）
 
@@ -69,28 +90,6 @@ $result = Pay::unipay()->pos([
 
 ### 订单配置参数
 
-**所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**，比如，`product_code` 等参数。
+**所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**，比如，`version`，`bizType` 等参数。
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/apis/api_1/alipay.trade.pay)，查看「请求参数」一栏。
-
-## 扫码支付
-
-### 例子
-
-```php
-Pay::config($this->config);
-
-$result = Pay::alipay()->scan([
-    'out_trade_no' => time(),
-    'total_amount' => '0.01',
-    'subject' => 'yansongda 测试 - 01',
-]);
-
-return $result->qr_code; // 二维码 url
-```
-
-### 订单配置参数
-
-**所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**，比如，`product_code` 等参数。
-
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/apis/api_1/alipay.trade.precreate)，查看「请求参数」一栏。

@@ -1,20 +1,19 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\OnlineGateway;
+namespace Yansongda\Pay\Tests\Plugin\Unipay\QrCode;
 
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
-use Yansongda\Pay\Parser\ResponseParser;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\WapPayPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\ScanNormalPlugin;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
-class WapPayPluginTest extends TestCase
+class ScanNormalPluginTest extends TestCase
 {
     /**
-     * @var \Yansongda\Pay\Plugin\Unipay\OnlineGateway\WapPayPlugin
+     * @var \Yansongda\Pay\Plugin\Unipay\QrCode\ScanNormalPlugin
      */
     protected $plugin;
 
@@ -22,7 +21,7 @@ class WapPayPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new WapPayPlugin();
+        $this->plugin = new ScanNormalPlugin();
     }
 
     public function testNormal()
@@ -37,11 +36,10 @@ class WapPayPluginTest extends TestCase
 
         self::assertInstanceOf(RequestInterface::class, $radar);
         self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals(new Uri(Unipay::URL[Pay::MODE_NORMAL].'gateway/api/frontTransReq.do'), $radar->getUri());
-        self::assertEquals(ResponseParser::class, $result->getDirection());
-        self::assertEquals('000201', $payload['bizType']);
+        self::assertEquals(new Uri(Unipay::URL[Pay::MODE_NORMAL].'gateway/api/backTransReq.do'), $radar->getUri());
+        self::assertEquals('000000', $payload['bizType']);
         self::assertEquals('01', $payload['txnType']);
-        self::assertEquals('01', $payload['txnSubType']);
+        self::assertEquals('07', $payload['txnSubType']);
         self::assertEquals('08', $payload['channelType']);
     }
 }
