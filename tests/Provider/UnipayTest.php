@@ -114,6 +114,10 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         ]);
 
         self::assertArrayHasKey('origRespMsg', $result->all());
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::UNIPAY_FIND_STRING_NOT_SUPPORTED);
+        Pay::unipay()->find('123');
     }
 
     public function testCancel()
@@ -175,6 +179,10 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         ]);
 
         self::assertArrayHasKey('respMsg', $result->all());
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::UNIPAY_CANCEL_STRING_NOT_SUPPORTED);
+        Pay::unipay()->cancel('123');
     }
 
     public function testClose()
