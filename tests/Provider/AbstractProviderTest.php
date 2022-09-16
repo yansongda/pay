@@ -178,7 +178,6 @@ class FooPlugin implements PluginInterface
     }
 }
 
-
 class BarPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket

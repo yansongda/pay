@@ -8,6 +8,7 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\ClosePlugin;
+use Yansongda\Supports\Str;
 
 class CloseShortcut implements ShortcutInterface
 {
@@ -16,17 +17,17 @@ class CloseShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $typeMethod = ($params['_type'] ?? 'default').'Plugins';
-
         if (isset($params['combine_out_trade_no']) || isset($params['sub_orders'])) {
             return $this->combinePlugins();
         }
+
+        $typeMethod = Str::camel($params['_type'] ?? 'default').'Plugins';
 
         if (method_exists($this, $typeMethod)) {
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_QUERY_TYPE_ERROR, "Query type [$typeMethod] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Query type [$typeMethod] not supported");
     }
 
     protected function defaultPlugins(): array

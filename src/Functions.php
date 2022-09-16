@@ -294,3 +294,42 @@ if (!function_exists('decrypt_wechat_resource_aes_256_gcm')) {
         return $decrypted;
     }
 }
+
+if (!function_exists('get_unipay_config')) {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    function get_unipay_config(array $params): array
+    {
+        $unipay = Pay::get(ConfigInterface::class)->get('unipay');
+
+        return $unipay[get_tenant($params)] ?? [];
+    }
+}
+
+if (!function_exists('verify_unipay_sign')) {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    function verify_unipay_sign(array $params, string $contents, string $sign): void
+    {
+        if (empty($params['signPubKeyCert'])
+            && empty($public = get_unipay_config($params)['unipay_public_cert_path'] ?? null)) {
+            throw new InvalidConfigException(Exception::UNIPAY_CONFIG_ERROR, 'Missing Unipay Config -- [unipay_public_cert_path]');
+        }
+
+        $result = 1 === openssl_verify(
+            hash('sha256', $contents),
+            base64_decode($sign),
+            get_public_cert($params['signPubKeyCert'] ?? $public ?? ''),
+            'sha256');
+
+        if (!$result) {
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Unipay Response Sign Failed', func_get_args());
+        }
+    }
+}
