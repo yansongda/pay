@@ -19,10 +19,17 @@ class CancelShortcutTest extends TestCase
         $this->plugin = new CancelShortcut();
     }
 
-    public function test()
+    public function testDefault()
     {
         self::assertEquals([
             CancelPlugin::class,
         ], $this->plugin->getPlugins([]));
+    }
+
+    public function testQrCode()
+    {
+        self::assertEquals([
+            \Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin::class,
+        ], $this->plugin->getPlugins(['_type' => 'qr_code']));
     }
 }

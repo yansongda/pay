@@ -61,7 +61,10 @@ Pay::config($this->config);
 $result = Pay::unipay()->scan([
     'txnTime' => date('YmdHis'),
     'txnAmt' => 1,
-    'orderId' => 'pay'.date('YmdHis'),
+    'orderId' => 'scan'.date('YmdHis'),
+    // '_type' => 'pre_auth', // 预授权
+    // '_type' => 'pre_order', // 统一下单
+    // '_type' => 'fee', // 缴费二维码
 ]);
 
 return $result->qrCode; // 二维码 url
@@ -81,10 +84,11 @@ return $result->qrCode; // 二维码 url
 Pay::config($this->config);
 
 $result = Pay::unipay()->pos([
-    'out_trade_no' => time(),
-    'auth_code' => '284776044441477959',
-    'total_amount' => '0.01',
-    'subject' => 'yansongda 测试 - 01',
+    'qrNo' => '123456789012345678',
+    'txnTime' => date('YmdHis'),
+    'txnAmt' => 1,
+    'orderId' => 'pos'.date('YmdHis'),
+    // '_type' => 'pre_auth', // 预授权
 ]);
 ```
 

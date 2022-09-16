@@ -17,6 +17,10 @@ $order = [
 $result = Pay::alipay()->find($order);
 ```
 
+### 配置参数
+
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/apis/api_1/alipay.trade.query)，查看「请求参数」一栏。
+
 ## 查询退款订单
 
 ```php
@@ -31,6 +35,10 @@ $order = [
 $result = Pay::alipay()->find($order);
 ```
 
+### 配置参数
+
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/apis/api_1/alipay.trade.fastpay.refund.query)，查看「请求参数」一栏。
+
 ## 查询转账订单
 
 ```php
@@ -44,11 +52,6 @@ $order = [
 $result = Pay::alipay()->find($order);
 ```
 
-## 配置参数
+### 配置参数
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考以下地址，查看「请求参数」一节。
-
-- 支付订单：[这里](https://opendocs.alipay.com/apis/api_1/alipay.trade.query)
-- 退款订单：[这里](https://opendocs.alipay.com/apis/api_1/alipay.trade.fastpay.refund.query)
-- 转账订单：[这里](https://opendocs.alipay.com/open/02byup)
-    
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open/02byup)，查看「请求参数」一栏。
