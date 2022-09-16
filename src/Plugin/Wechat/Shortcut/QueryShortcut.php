@@ -9,6 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\FindRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin;
+use Yansongda\Supports\Str;
 
 class QueryShortcut implements ShortcutInterface
 {
@@ -17,11 +18,11 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $typeMethod = ($params['_type'] ?? 'default').'Plugins';
-
         if (isset($params['combine_out_trade_no'])) {
             return $this->combinePlugins();
         }
+
+        $typeMethod = Str::camel($params['_type'] ?? 'default').'Plugins';
 
         if (method_exists($this, $typeMethod)) {
             return $this->{$typeMethod}();

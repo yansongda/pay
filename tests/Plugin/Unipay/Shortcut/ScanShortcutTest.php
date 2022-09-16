@@ -56,7 +56,7 @@ class ScanShortcutTest extends TestCase
     {
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::SHORTCUT_MULTI_TYPE_ERROR);
-        self::expectExceptionMessage('Scan type [FooPlugins] not supported');
+        self::expectExceptionMessage('Scan type [fooPlugins] not supported');
 
         $this->plugin->getPlugins(['_type' => 'foo']);
     }

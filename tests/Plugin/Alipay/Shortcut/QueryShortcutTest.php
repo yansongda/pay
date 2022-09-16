@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Shortcut;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\Shortcut;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin;
-use Yansongda\Pay\Plugin\Unipay\Shortcut\QueryShortcut;
+use Yansongda\Pay\Plugin\Alipay\Fund\TransCommonQueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\Shortcut\QueryShortcut;
+use Yansongda\Pay\Plugin\Alipay\Trade\FastRefundQueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\Trade\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
 class QueryShortcutTest extends TestCase
@@ -28,11 +30,18 @@ class QueryShortcutTest extends TestCase
         ], $this->plugin->getPlugins([]));
     }
 
-    public function testQrCode()
+    public function testRefund()
     {
         self::assertEquals([
-            \Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'qr_code']));
+            FastRefundQueryPlugin::class,
+        ], $this->plugin->getPlugins(['_type' => 'refund']));
+    }
+
+    public function testTransfer()
+    {
+        self::assertEquals([
+            TransCommonQueryPlugin::class,
+        ], $this->plugin->getPlugins(['_type' => 'transfer']));
     }
 
     public function testFoo()

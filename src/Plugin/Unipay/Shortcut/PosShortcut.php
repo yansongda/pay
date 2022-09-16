@@ -18,7 +18,7 @@ class PosShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $typeMethod = Str::studly($params['_type'] ?? 'default').'Plugins';
+        $typeMethod = Str::camel($params['_type'] ?? 'default').'Plugins';
 
         if (method_exists($this, $typeMethod)) {
             return $this->{$typeMethod}();

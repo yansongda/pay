@@ -34,11 +34,11 @@ class RefundShortcutTest extends TestCase
         ], $this->plugin->getPlugins(['_type' => 'qr_code']));
     }
 
-    public function testInvalidType()
+    public function testFoo()
     {
         $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionMessage('Refund type [InvalidTypePlugins] not supported');
+        $this->expectExceptionMessage('Refund type [fooPlugins] not supported');
 
-        $this->plugin->getPlugins(['_type' => 'invalid_type']);
+        $this->plugin->getPlugins(['_type' => 'foo']);
     }
 }

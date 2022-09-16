@@ -40,7 +40,7 @@ class PosShortcutTest extends TestCase
     {
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::SHORTCUT_MULTI_TYPE_ERROR);
-        self::expectExceptionMessage('Pos type [FooPlugins] not supported');
+        self::expectExceptionMessage('Pos type [fooPlugins] not supported');
 
         $this->plugin->getPlugins(['_type' => 'foo']);
     }

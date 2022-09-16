@@ -10,6 +10,7 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Alipay\Fund\TransCommonQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Trade\FastRefundQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Trade\QueryPlugin;
+use Yansongda\Supports\Str;
 
 class QueryShortcut implements ShortcutInterface
 {
@@ -18,7 +19,7 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $typeMethod = ($params['_type'] ?? 'default').'Plugins';
+        $typeMethod = Str::camel($params['_type'] ?? 'default').'Plugins';
 
         if (isset($params['out_request_no'])) {
             return $this->refundPlugins();
