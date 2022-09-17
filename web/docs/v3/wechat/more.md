@@ -22,6 +22,60 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
 关于插件的详细介绍，如果您感兴趣，可以参考 [这篇说明文档](/docs/v3/kernel/plugin.md)
 
+## 基础支付-合单支付
+
+### 合单APP下单
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\AppPrepayPlugin`
+
+### 合单H5下单
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\H5PrepayPlugin`
+
+### 合单JSAPI下单
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\JsapiPrepayPlugin`
+
+### 合单小程序下单
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\MiniPrepayPlugin`
+
+### 合单Native下单
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\NativePrepayPlugin`
+
+### APP调起支付
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\InvokeAppPrepayPlugin`
+
+### JSAPI调起支付
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\InvokeJsapiPrepayPlugin`
+
+### 小程序调起支付
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\InvokeMiniPrepayPlugin`
+
+### 申请退款
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\RefundPlugin`
+
+### 查询退款
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\FindRefundPlugin`
+
+### 申请交易账单
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\GetTradeBillPlugin`
+
+### 申请资金账单
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\GetFlowBillPlugin`
+
+### 下载账单
+
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\DownloadBillPlugin`
+
 ## 资金应用-分账
 
 ### 添加分账接收方
