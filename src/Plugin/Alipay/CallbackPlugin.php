@@ -56,6 +56,6 @@ class CallbackPlugin implements PluginInterface
 
     protected function getSignContent(Collection $payload): string
     {
-        return urldecode($payload->sortKeys()->toString());
+        return $payload->sortKeys()->toString();
     }
 }
