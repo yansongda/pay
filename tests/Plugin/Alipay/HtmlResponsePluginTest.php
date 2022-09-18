@@ -11,14 +11,22 @@ use Yansongda\Supports\Collection;
 
 class HtmlResponsePluginTest extends TestCase
 {
+    private $plugin;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->plugin = new HtmlResponsePlugin();
+    }
+
     public function testRedirect()
     {
         $rocket = new Rocket();
         $rocket->setRadar(new Request('GET', 'https://yansongda.cn'))
                 ->setPayload(new Collection(['name' => 'yansongda']));
 
-        $plugin = new HtmlResponsePlugin();
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
         self::assertArrayHasKey('Location', $result->getDestination()->getHeaders());
@@ -31,8 +39,7 @@ class HtmlResponsePluginTest extends TestCase
         $rocket->setRadar(new Request('GET', 'https://yansongda.cn?charset=utf8'))
             ->setPayload(new Collection(['name' => 'yansongda']));
 
-        $plugin = new HtmlResponsePlugin();
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
         self::assertArrayHasKey('Location', $result->getDestination()->getHeaders());
@@ -45,8 +52,7 @@ class HtmlResponsePluginTest extends TestCase
         $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))
             ->setPayload(new Collection(['name' => 'yansongda']));
 
-        $plugin = new HtmlResponsePlugin();
-        $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $contents = (string) $result->getDestination()->getBody();
 
