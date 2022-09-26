@@ -61,4 +61,16 @@ class ArrayParserTest extends TestCase
 
         self::assertEqualsCanonicalizing(['name' => 'yansongda', 'age' => '29'], $result);
     }
+
+    public function testJsonWith()
+    {
+        $url = 'https://yansongda.cn?name=yansongda&age=29';
+
+        $response = new Response(200, [], json_encode(['h5_url' => $url]));
+
+        $parser = new ArrayParser();
+        $result = $parser->parse($response);
+
+        self::assertEquals('https://yansongda.cn?name=yansongda&age=29', $result['h5_url']);
+    }
 }

@@ -23,17 +23,16 @@ class ArrayParser implements ParserInterface
 
         $body = (string) $response->getBody();
 
+        $result = json_decode($body, true);
+        if (JSON_ERROR_NONE === json_last_error()) {
+            return $result;
+        }
+
         if (Str::contains($body, '&')) {
             return $this->query($body);
         }
 
-        $result = json_decode($body, true);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new InvalidResponseException(Exception::UNPACK_RESPONSE_ERROR, 'Unpack Response Error', ['body' => $body, 'response' => $response]);
-        }
-
-        return $result;
+        throw new InvalidResponseException(Exception::UNPACK_RESPONSE_ERROR, 'Unpack Response Error', ['body' => $body, 'response' => $response]);
     }
 
     protected function query(string $body): array
