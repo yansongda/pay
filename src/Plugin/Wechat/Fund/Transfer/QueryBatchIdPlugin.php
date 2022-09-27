@@ -35,7 +35,11 @@ class QueryBatchIdPlugin extends GeneralPlugin
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'v3/transfer/batches/batch-id/'.$payload->get('batch_id').
+        $batchId = $payload->get('batch_id');
+
+        $payload->forget('batch_id');
+
+        return 'v3/transfer/batches/batch-id/'.$batchId.
             '?'.$payload->query();
     }
 
@@ -50,7 +54,11 @@ class QueryBatchIdPlugin extends GeneralPlugin
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'v3/partner-transfer/batches/batch-id/'.$payload->get('batch_id').
+        $batchId = $payload->get('batch_id');
+
+        $payload->forget('batch_id');
+
+        return 'v3/partner-transfer/batches/batch-id/'.$batchId.
             '?'.$payload->query();
     }
 }
