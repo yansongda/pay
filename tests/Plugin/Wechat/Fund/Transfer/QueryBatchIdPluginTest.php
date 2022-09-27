@@ -34,7 +34,7 @@ class QueryBatchIdPluginTest extends TestCase
         $url = $radar->getUri();
 
         self::assertEquals('/v3/transfer/batches/batch-id/123', $url->getPath());
-        self::assertStringContainsString('need_query_detail=0', $url->getQuery());
+        self::assertEquals('need_query_detail=0', $url->getQuery());
         self::assertEquals('GET', $radar->getMethod());
     }
 
@@ -71,7 +71,7 @@ class QueryBatchIdPluginTest extends TestCase
         $url = $radar->getUri();
 
         self::assertEquals('/v3/partner-transfer/batches/batch-id/123', $url->getPath());
-        self::assertStringContainsString('need_query_detail=0', $url->getQuery());
+        self::assertEquals('need_query_detail=0', $url->getQuery());
         self::assertEquals('GET', $radar->getMethod());
     }
 
