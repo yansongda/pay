@@ -35,7 +35,11 @@ class QueryOutBatchNoPlugin extends GeneralPlugin
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'v3/transfer/batches/out-batch-no/'.$payload->get('out_batch_no').
+        $outBatchNo = $payload->get('out_batch_no');
+
+        $payload->forget('out_batch_no');
+
+        return 'v3/transfer/batches/out-batch-no/'.$outBatchNo.
             '?'.$payload->query();
     }
 
@@ -50,7 +54,11 @@ class QueryOutBatchNoPlugin extends GeneralPlugin
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'v3/partner-transfer/batches/out-batch-no/'.$payload->get('out_batch_no').
+        $outBatchNo = $payload->get('out_batch_no');
+
+        $payload->forget('out_batch_no');
+
+        return 'v3/partner-transfer/batches/out-batch-no/'.$outBatchNo.
             '?'.$payload->query();
     }
 }
