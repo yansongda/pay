@@ -53,7 +53,7 @@ class QueryOutBatchNoPlugin extends GeneralPlugin
         if (is_null($payload->get('out_batch_no')) || is_null($payload->get('need_query_detail'))) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
-        
+
         $outBatchNo = $payload->get('out_batch_no');
 
         $payload->forget('out_batch_no');
