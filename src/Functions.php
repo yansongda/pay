@@ -13,7 +13,7 @@ use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\SignPlugin;
+use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
 use Yansongda\Pay\Plugin\Wechat\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Str;
@@ -210,7 +210,7 @@ if (!function_exists('reload_wechat_public_certs')) {
     function reload_wechat_public_certs(array $params, ?string $serialNo = null): string
     {
         $data = Pay::wechat()->pay(
-            [PreparePlugin::class, WechatPublicCertsPlugin::class, SignPlugin::class, ParserPlugin::class],
+            [PreparePlugin::class, WechatPublicCertsPlugin::class, RadarSignPlugin::class, ParserPlugin::class],
             $params
         )->get('data', []);
 
@@ -284,7 +284,7 @@ if (!function_exists('decrypt_wechat_resource_aes_256_gcm')) {
         );
 
         if ('certificate' !== $associatedData) {
-            $decrypted = json_decode($decrypted, true);
+            $decrypted = json_decode(strval($decrypted), true);
 
             if (JSON_ERROR_NONE !== json_last_error()) {
                 throw new InvalidResponseException(Exception::INVALID_REQUEST_ENCRYPTED_DATA);
