@@ -31,7 +31,7 @@ class RadarSignPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[wechat][SignPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::info('[wechat][RadarSignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $timestamp = time();
         $random = Str::random(32);
@@ -50,7 +50,7 @@ class RadarSignPlugin implements PluginInterface
 
         $rocket->setRadar($radar);
 
-        Logger::info('[wechat][SignPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[wechat][RadarSignPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
