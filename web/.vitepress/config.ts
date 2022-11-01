@@ -5,7 +5,7 @@ import sidebar from "./sidebar";
 export default defineConfig({
     lang: 'zh-CN',
     title: 'Pay',
-    description: '可能是我用过的最优雅的支付宝SDK、微信支付SDK 了; yansongda pay 让支付开发更简单',
+    description: '可能是我用过的最优雅的支付宝SDK、微信支付SDK、银联支付SDK 了; yansongda pay 让支付开发更简单',
     lastUpdated: true,
     head: [
         ['link', { rel: 'icon', href: '/images/icon.png' }]
