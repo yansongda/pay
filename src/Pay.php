@@ -68,12 +68,12 @@ class Pay
     ];
 
     /**
-     * @var \Closure|\Psr\Container\ContainerInterface|null
+     * @var Closure|\Psr\Container\ContainerInterface|null
      */
     private static $container = null;
 
     /**
-     * @param \Closure|\Psr\Container\ContainerInterface|null $container
+     * @param Closure|\Psr\Container\ContainerInterface|null $container
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
@@ -98,7 +98,7 @@ class Pay
     }
 
     /**
-     * @param \Closure|\Psr\Container\ContainerInterface|null $container
+     * @param Closure|\Psr\Container\ContainerInterface|null $container
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */
@@ -199,7 +199,7 @@ class Pay
     }
 
     /**
-     * @param \Closure|\Psr\Container\ContainerInterface|null $container
+     * @param Closure|\Psr\Container\ContainerInterface|null $container
      */
     public static function setContainer($container): void
     {
@@ -247,7 +247,7 @@ class Pay
     }
 
     /**
-     * @param \Closure|\Psr\Container\ContainerInterface|null $container
+     * @param Closure|\Psr\Container\ContainerInterface|null $container
      *
      * @throws \Yansongda\Pay\Exception\ContainerException
      */

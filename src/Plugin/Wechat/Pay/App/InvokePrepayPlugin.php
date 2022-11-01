@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Pay\App;
 
+use Exception;
+
 use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_sign;
 
@@ -20,7 +22,7 @@ class InvokePrepayPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokeP
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getInvokeConfig(Rocket $rocket, string $prepayId): Config
     {
