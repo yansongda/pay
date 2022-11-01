@@ -15,6 +15,11 @@ return (new PhpCsFixer\Config())
         'line_ending' => true,
         'single_quote' => true,
         'array_syntax' => ['syntax' => 'short'],
+        'global_namespace_import' => [
+            'import_classes' => true,
+            'import_constants' => true,
+            'import_functions' => null,
+        ],
         'general_phpdoc_annotation_remove' => [
             'annotations' => [
                 'author'
