@@ -108,9 +108,9 @@ class AlipayController
             'default' => [
                 // 必填-支付宝分配的 app_id
                 'app_id' => '2016082000295641',
-                // 必填-应用私钥 字符串或路径
+                // 必填-应用私钥 字符串或路径，在 https://open.alipay.com/develop/manage 《应用详情->开发设置->接口加签方式》中设置
                 'app_secret_cert' => '89iZ2iC16H6/6a3YcP+hDZUjiNGQx9cuwi9eJyykvcwhD...',
-                // 必填-应用公钥证书 路径
+                // 必填-应用公钥证书 路径，设置应用私钥后，即可下载得到以下3个证书
                 'app_public_cert_path' => '/Users/yansongda/pay/cert/appCertPublicKey_2016082000295641.crt',
                 // 必填-支付宝公钥证书 路径
                 'alipay_public_cert_path' => '/Users/yansongda/pay/cert/alipayCertPublicKey_RSA2.crt',
@@ -118,6 +118,8 @@ class AlipayController
                 'alipay_root_cert_path' => '/Users/yansongda/pay/cert/alipayRootCert.crt',
                 'return_url' => 'https://yansongda.cn/alipay/return',
                 'notify_url' => 'https://yansongda.cn/alipay/notify',
+                // 选填-第三方应用授权token
+                'app_auth_token'          => '',
                 // 选填-服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数
                 'service_provider_id' => '',
                 // 选填-默认为正常模式。可选为： MODE_NORMAL, MODE_SANDBOX, MODE_SERVICE
@@ -147,6 +149,8 @@ class AlipayController
         ]);
         
         return $result;
+        //如需直接返回生成的 form 跳转表单，可使用以下方法
+        //return $result->getBody()->getContents();
     }
 
     public function returnCallback()
@@ -175,7 +179,18 @@ class AlipayController
             // $e->getMessage();
         }
 
-        return $alipay->success();
+        return $alipay->success(); //向支付宝服务器返回确认,内容为 success ，如未确认，支付宝会间隔多次发送回调
+    }
+
+    //查询普通支付订单 trade_status = TRADE_SUCCESS 交易支付成功; trade_status = TRADE_FINISHED 交易结束，不可退款(交易结束12个月后不可退款)。
+    public function find($orderno)
+    {
+        $alipay = Pay::alipay($this->config);
+
+        $order = array(
+            'out_trade_no' => $orderno,
+        );
+        return $alipay->find($order);
     }
 }
 ```
@@ -193,22 +208,22 @@ class WechatController
     protected $config = [
         'wechat' => [
             'default' => [
-                // 必填-商户号，服务商模式下为服务商商户号
+                // 必填-商户号，服务商模式下为服务商商户号，可在 https://pay.weixin.qq.com/ 账户中心->商户信息 查看
                 'mch_id' => '',
-                // 必填-商户秘钥
+                // 必填-商户秘钥，即 API v3 密钥(32字节，形如md5值)，可在 账户中心->API安全 中设置
                 'mch_secret_key' => '',
-                // 必填-商户私钥 字符串或路径
-                'mch_secret_cert' => '',
-                // 必填-商户公钥证书路径
-                'mch_public_cert_path' => '',
+                // 必填-商户私钥 字符串或路径，即 API证书 PRIVATE KEY，可在 账户中心->API安全->申请API证书 里获得
+                'mch_secret_cert' => '', //文件名形如：apiclient_key.pem
+                // 必填-商户公钥证书路径，即 API证书 CERTIFICATE，可在 账户中心->API安全->申请API证书 里获得
+                'mch_public_cert_path' => '', //文件名形如：apiclient_cert.pem
                 // 必填
-                'notify_url' => 'https://yansongda.cn/wechat/notify',
-                // 选填-公众号 的 app_id
-                'mp_app_id' => '2016082000291234',
+                'notify_url' => 'https://yansongda.cn/wechat/notify', //微信回调url不能有参数，如?号，空格等，否则会无法正确回调
+                // 选填-公众号 的 app_id，可在 mp.weixin.qq.com 设置与开发->基本配置->开发者ID(AppID) 查看
+                'mp_app_id' => '', //形如 wx56**********0a21
                 // 选填-小程序 的 app_id
-                'mini_app_id' => '',
+                'mini_app_id' => '', //形如 wx56**********0a21
                 // 选填-app 的 app_id
-                'app_id' => '',
+                'app_id' => '', //形如 wx56**********0a21
                 // 选填-合单 app_id
                 'combine_app_id' => '',
                 // 选填-合单商户号 
@@ -221,9 +236,10 @@ class WechatController
                 'sub_mini_app_id' => '',
                 // 选填-服务商模式下，子商户id
                 'sub_mch_id' => '',
-                // 选填-微信公钥证书路径, optional，强烈建议 php-fpm 模式下配置此参数
+                // 选填-微信平台公钥证书路径, optional，强烈建议 php-fpm 模式下配置此参数
+                // 推荐使用官方工具 CertificateDownloader.jar，在传入 商户秘钥、商户号、商户私钥证书、证书序列号 后获得，工具地址：https://github.com/wechatpay-apiv3/CertificateDownloader/
                 'wechat_public_cert_path' => [
-                    '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
+                    '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatpay_45F***D57.pem',
                 ],
                 // 选填-默认为正常模式。可选为： MODE_NORMAL, MODE_SERVICE
                 'mode' => Pay::MODE_NORMAL,
@@ -239,6 +255,7 @@ class WechatController
         'http' => [ // optional
             'timeout' => 5.0,
             'connect_timeout' => 5.0,
+            //'verify'        => false, //如未配置curl证书，可开启此项（不推荐），证书下载：https://curl.haxx.se/ca/cacert.pem, 写在 php.ini 中 curl.cainfo = 后面，需使用cacert.pem的绝对路径
             // 更多配置项请参考 [Guzzle](https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html)
         ],
     ];
@@ -246,7 +263,7 @@ class WechatController
     public function index()
     {
         $order = [
-            'out_trade_no' => time().'',
+            'out_trade_no' => time().'', //微信订单号必须转为string类型，int类型将导致报错
             'description' => 'subject-测试',
             'amount' => [
                  'total' => 1,
@@ -275,7 +292,19 @@ class WechatController
             // $e->getMessage();
         }
         
-        return $pay->success();
+        return $pay->success(); //向微信服务器返回确认,http 200 状态即可，内容可以为空，这里为 success ，如未确认，微信会间隔多次发送回调
+    }
+
+    //查询普通支付订单 交易成功判断条件： trade_state 为 SUCCESS
+    public function find($out_trade_no)
+    {
+        $pay = Pay::wechat($this->config);
+
+        $order = array(
+            'out_trade_no' => strval($out_trade_no),
+        );
+
+        return $pay->find($order);
     }
 }
 ```

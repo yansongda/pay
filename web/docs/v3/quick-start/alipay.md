@@ -27,6 +27,18 @@ return Pay::alipay()->wap([
  ]);
 ```
 
+支付宝 web 和 wap 方式中，如直接返回跳转代码（表单形式），可使用以下 ->getBody()->getContents() 方法
+
+```php
+Pay::config($this->config);
+
+return Pay::alipay()->web([
+    'out_trade_no' => ''.time(),
+    'total_amount' => '0.01',
+    'subject' => 'yansongda 测试 - 1',
+])->getBody()->getContents();
+```
+
 ## APP 支付
 
 ```php
