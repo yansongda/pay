@@ -118,6 +118,8 @@ class AlipayController
                 'alipay_root_cert_path' => '/Users/yansongda/pay/cert/alipayRootCert.crt',
                 'return_url' => 'https://yansongda.cn/alipay/return',
                 'notify_url' => 'https://yansongda.cn/alipay/notify',
+                // 选填-第三方应用授权token
+                'app_auth_token' => '',
                 // 选填-服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数
                 'service_provider_id' => '',
                 // 选填-默认为正常模式。可选为： MODE_NORMAL, MODE_SANDBOX, MODE_SERVICE
@@ -193,7 +195,7 @@ class WechatController
     protected $config = [
         'wechat' => [
             'default' => [
-                // 必填-商户号，服务商模式下为服务商商户号
+                // 必填-商户号
                 'mch_id' => '',
                 // 必填-商户秘钥
                 'mch_secret_key' => '',
@@ -204,7 +206,7 @@ class WechatController
                 // 必填
                 'notify_url' => 'https://yansongda.cn/wechat/notify',
                 // 选填-公众号 的 app_id
-                'mp_app_id' => '2016082000291234',
+                'mp_app_id' => '',
                 // 选填-小程序 的 app_id
                 'mini_app_id' => '',
                 // 选填-app 的 app_id
@@ -221,9 +223,9 @@ class WechatController
                 'sub_mini_app_id' => '',
                 // 选填-服务商模式下，子商户id
                 'sub_mch_id' => '',
-                // 选填-微信公钥证书路径, optional，强烈建议 php-fpm 模式下配置此参数
+                // 选填-微信平台公钥证书路径, optional，强烈建议 php-fpm 模式下配置此参数
                 'wechat_public_cert_path' => [
-                    '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
+                    '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatpay_45F***D57.pem',
                 ],
                 // 选填-默认为正常模式。可选为： MODE_NORMAL, MODE_SERVICE
                 'mode' => Pay::MODE_NORMAL,

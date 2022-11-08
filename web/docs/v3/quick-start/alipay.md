@@ -7,11 +7,21 @@
 ```php
 Pay::config($this->config);
 
+// 注意返回类型为 Response，具体见详细文档
 return Pay::alipay()->web([
     'out_trade_no' => ''.time(),
     'total_amount' => '0.01',
     'subject' => 'yansongda 测试 - 1',
 ]);
+
+// 如果想获取跳转代码（表单形式），可以使用如下代码（详情请自行了解 PSR 规范）
+// $web = Pay::alipay()->web([
+//     'out_trade_no' => ''.time(),
+//     'total_amount' => '0.01',
+//     'subject' => 'yansongda 测试 - 1',
+// ]);
+
+// return (string) $web->getBody();
 ```
 
 ## H5支付
@@ -19,6 +29,7 @@ return Pay::alipay()->web([
 ```php
 Pay::config($this->config);
 
+// 注意返回类型为 Response，具体见详细文档
 return Pay::alipay()->wap([
     'out_trade_no' => time(),
     'total_amount' => '0.01',
@@ -32,6 +43,7 @@ return Pay::alipay()->wap([
 ```php
 Pay::config($this->config);
 
+// 注意返回类型为 Response，具体见详细文档
 return Pay::alipay()->app([
     'out_trade_no' => time(),
     'total_amount' => '0.01',

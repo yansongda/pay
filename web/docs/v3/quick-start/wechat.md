@@ -12,7 +12,7 @@
 Pay::config($config);
 
 $order = [
-    'out_trade_no' => time().'',
+    'out_trade_no' => time().'', //需为 string 类型
     'description' => 'subject-测试',
     'amount' => [
         'total' => 1,
