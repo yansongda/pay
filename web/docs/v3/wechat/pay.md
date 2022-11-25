@@ -230,7 +230,7 @@ $result = Pay::wechat()->transfer($order);
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/apiv3/wxpay/pay/transfer/chapter3_1.shtml)，查看「请求参数」一节。
 
 
-## 刷卡支付
+## 刷卡支付（付款码，被扫码）
 
 :::warning
 微信支付 v3 版 api 并不支持刷卡支付，后续将接入微信支付 v2 版 API，敬请期待。如果确实有此需求，可以使用 [Pay 的 v2 版](/docs/v2/wechat/)

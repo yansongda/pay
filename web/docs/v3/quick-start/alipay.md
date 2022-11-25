@@ -67,7 +67,7 @@ return $result->get('trade_no');  // 支付宝交易号
 // return $result->trade_no;
 ```
 
-## 刷卡支付
+## 刷卡支付（付款码，被扫码）
 
 ```php
 Pay::config($this->config);
