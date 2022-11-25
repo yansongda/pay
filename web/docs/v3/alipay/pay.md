@@ -132,7 +132,7 @@ return $result->get('trade_no');  // 支付宝交易号
 
 小程序支付接入文档：[https://docs.alipay.com/mini/introduce/pay](https://opendocs.alipay.com/mini/introduce/pay)。
 
-## 刷卡支付（被扫码）
+## 刷卡支付（付款码，被扫码）
 
 ### 例子
 

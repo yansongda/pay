@@ -18,6 +18,7 @@ exports = module.exports = [
             { text: '初始化', link: '/docs/v3/quick-start/init'},
             { text: '支付宝', link: '/docs/v3/quick-start/alipay'},
             { text: '微信', link: '/docs/v3/quick-start/wechat'},
+            { text: '银联', link: '/docs/v3/quick-start/unipay'},
             { text: '返回格式', link: '/docs/v3/quick-start/return-format'}
         ]
     },

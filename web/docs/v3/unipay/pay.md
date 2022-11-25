@@ -51,7 +51,7 @@ return Pay::unipay()->wap([
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://open.unionpay.com/tjweb/acproduct/APIList?acpAPIId=754&apiservId=448&version=V2.2&bussType=0)，查看「请求参数」一栏。
 
-## 扫码支付（主扫码）
+## 扫码支付
 
 ### 例子
 
@@ -76,7 +76,7 @@ return $result->qrCode; // 二维码 url
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://open.unionpay.com/tjweb/acproduct/APIList?acpAPIId=793&apiservId=468&version=V2.2&bussType=0)，查看「请求参数」一栏。
 
-## 刷卡支付（被扫码）
+## 刷卡支付（付款码，被扫码）
 
 ### 例子
 
