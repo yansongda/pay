@@ -50,5 +50,6 @@ class CallbackPluginTest extends TestCase
 
         self::assertInstanceOf(Collection::class, $result->getDestination());
         self::assertNotEmpty($result->getDestination()->get('resource.ciphertext'));
+        self::assertStringContainsString("AEAD_AES_256_GCM", (string) $result->getDestinationOrigin()->getBody());
     }
 }

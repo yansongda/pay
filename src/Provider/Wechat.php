@@ -120,9 +120,9 @@ class Wechat extends AbstractProvider
      */
     public function callback($contents = null, ?array $params = null): Collection
     {
-        Event::dispatch(new Event\CallbackReceived('wechat', $contents, $params, null));
-
         $request = $this->getCallbackParams($contents);
+
+        Event::dispatch(new Event\CallbackReceived('wechat', clone $request, $params, null));
 
         return $this->pay(
             [CallbackPlugin::class], ['request' => $request, 'params' => $params]
