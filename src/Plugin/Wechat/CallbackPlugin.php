@@ -5,21 +5,16 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat;
 
 use Closure;
-use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
-
-use function Yansongda\Pay\decrypt_wechat_resource;
-
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Rocket;
-
-use function Yansongda\Pay\verify_wechat_sign;
-
 use Yansongda\Supports\Collection;
+use function Yansongda\Pay\decrypt_wechat_resource;
+use function Yansongda\Pay\verify_wechat_sign;
 
 class CallbackPlugin implements PluginInterface
 {
@@ -63,10 +58,8 @@ class CallbackPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::REQUEST_NULL_ERROR);
         }
 
-        $contents = (string) $request->getBody();
-
-        $rocket->setDestination($request->withBody(Utils::streamFor($contents)))
-            ->setDestinationOrigin($request->withBody(Utils::streamFor($contents)))
+        $rocket->setDestination(clone $request)
+            ->setDestinationOrigin($request)
             ->setParams($rocket->getParams()['params'] ?? []);
     }
 }
