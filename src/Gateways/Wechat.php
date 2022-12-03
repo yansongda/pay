@@ -200,9 +200,9 @@ class Wechat implements GatewayApplicationInterface
      */
     public function find($order, string $type = 'wap'): Collection
     {
-        if ('wap' != $type) {
+//        if ('wap' != $type) {
             unset($this->payload['spbill_create_ip']);
-        }
+//        }
 
         $gateway = get_class($this).'\\'.Str::studly($type).'Gateway';
 
