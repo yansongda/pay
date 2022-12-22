@@ -2,13 +2,14 @@
 
 微信支付目前直接内置支持以下快捷方式支付方法，对应的支付 method 如下：
 
-| method |   说明   |      参数      |    返回值     |
-|:------:|:------:|:------------:|:----------:|
-|   mp   | 公众号支付  | array $order | Collection |
-|  wap   | 手机网站支付 | array $order | Collection |
-|  app   | APP 支付 | array $order | Collection |
-|  scan  |  扫码支付  | array $order | Collection |
-|  mini  | 小程序支付  | array $order | Collection |
+|  method  |   说明   |      参数      |    返回值     |
+|:--------:|:------:|:------------:|:----------:|
+|    mp    | 公众号支付  | array $order | Collection |
+|   wap    | 手机网站支付 | array $order | Collection |
+|   app    | APP 支付 | array $order | Collection |
+|   scan   |  扫码支付  | array $order | Collection |
+|   mini   | 小程序支付  | array $order | Collection |
+| transfer |   转账   | array $order | Collection |
 
 ## 公众号支付
 
