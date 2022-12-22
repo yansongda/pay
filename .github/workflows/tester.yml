@@ -30,16 +30,14 @@ jobs:
           php-version: ${{ matrix.php-version }}
           extensions: openssl
           coverage: none
-      - name: Install Dependencies
-        run: composer install --no-progress
       - name: Laravel Framework
         if: matrix.framework == 'laravel'
-        run: rm -rf composer.lock && composer require illuminate/container -W
+        run: composer require illuminate/container
       - name: Hyperf Framework
         if: matrix.framework == 'hyperf'
-        run: rm -rf composer.lock && composer require hyperf/utils -W && rm -rf composer.lock && composer require php-di/php-di -W
+        run: composer require hyperf/utils php-di/php-di -W
       - name: Other/No Framework
         if: matrix.framework == 'default'
-        run: rm -rf composer.lock && composer require php-di/php-di -W
+        run: composer require php-di/php-di
       - name: Run PHPUnit
         run: composer test
