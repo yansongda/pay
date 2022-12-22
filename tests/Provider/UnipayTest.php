@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
+use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
@@ -313,5 +314,13 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
         $result = Pay::unipay()->callback((new ServerRequest('POST', 'https://pay.yansongda.cn'))->withParsedBody($input));
         self::assertNotEmpty($result->all());
+    }
+
+    public function testSuccess()
+    {
+        $result = Pay::unipay()->success();
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertEquals('success', (string) $result->getBody());
     }
 }
