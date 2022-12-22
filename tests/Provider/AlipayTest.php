@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
+use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
@@ -203,5 +204,13 @@ class AlipayTest extends TestCase
             [RadarSignPlugin::class],
             [LaunchPlugin::class, ParserPlugin::class],
         ), Pay::alipay()->mergeCommonPlugins($plugins));
+    }
+
+    public function testSuccess()
+    {
+        $result = Pay::alipay()->success();
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertEquals('success', (string) $result->getBody());
     }
 }

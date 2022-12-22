@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
+use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
@@ -94,5 +95,13 @@ class WechatTest extends TestCase
         $result = Pay::wechat()->callback($request);
 
         self::assertNotEmpty($result->get('resource.ciphertext'));
+    }
+
+    public function testSuccess()
+    {
+        $result = Pay::wechat()->success();
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertStringContainsString('SUCCESS', (string) $result->getBody());
     }
 }
