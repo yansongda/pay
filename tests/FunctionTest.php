@@ -306,6 +306,9 @@ class FunctionTest extends TestCase
 
         Pay::set(HttpClientInterface::class, $http);
 
+        get_wechat_public_certs();
+        self::assertTrue(true);
+
         $path = sys_get_temp_dir();
 
         get_wechat_public_certs([], $path);

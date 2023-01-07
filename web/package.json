@@ -7,7 +7,6 @@
   "devDependencies": {
     "@types/node": "^18.7.8",
     "sass": "^1.54.5",
-    "vitepress": "^1.0.0-alpha.27",
-    "vue": "^3.2.37"
+    "vitepress": "^1.0.0"
   }
 }
