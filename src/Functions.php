@@ -233,6 +233,32 @@ if (!function_exists('reload_wechat_public_certs')) {
     }
 }
 
+if (!function_exists('get_wechat_public_certs')) {
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     */
+    function get_wechat_public_certs(array $params = [], ?string $path = null): void
+    {
+        reload_wechat_public_certs($params);
+
+        $config = get_wechat_config($params);
+
+        if (empty($path)) {
+            var_dump($config['wechat_public_cert_path']);
+
+            return;
+        }
+
+        foreach ($config['wechat_public_cert_path'] as $serialNo => $cert) {
+            file_put_contents($path.'/'.$serialNo.'.crt', $cert);
+        }
+    }
+}
+
 if (!function_exists('decrypt_wechat_resource')) {
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
