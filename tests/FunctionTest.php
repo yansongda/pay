@@ -306,9 +306,6 @@ class FunctionTest extends TestCase
 
         Pay::set(HttpClientInterface::class, $http);
 
-        get_wechat_public_certs();
-        self::assertTrue(true);
-
         $path = sys_get_temp_dir();
 
         get_wechat_public_certs([], $path);
@@ -317,6 +314,9 @@ class FunctionTest extends TestCase
 
         self::assertFileExists($crtPathName);
         self::assertTrue(false !== strpos(file_get_contents($crtPathName), '-----BEGIN CERTIFICATE-----'));
+
+        self::expectOutputRegex('/.*-----BEGIN CERTIFICATE-----/');
+        get_wechat_public_certs();
     }
 
     public function testDecryptWechatResource()
