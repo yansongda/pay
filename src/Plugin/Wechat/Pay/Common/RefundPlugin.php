@@ -26,8 +26,8 @@ class RefundPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
         $payload = $rocket->getPayload();
 
-        if (empty($payload->get('notify_url'))) {
-            $merge['notify_url'] = $config['notify_url'] ?? '';
+        if (empty($payload->get('notify_url')) && !empty($config['notify_url'])) {
+            $merge['notify_url'] = $config['notify_url'];
         }
 
         if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
