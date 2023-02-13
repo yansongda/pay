@@ -1,3 +1,9 @@
+## v3.2.13
+
+### optimized
+
+- optimize: 微信退款可取消 notify_url(#741)
+
 ## v3.2.12
 
 ### added

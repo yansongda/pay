@@ -79,4 +79,13 @@ class RefundPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         self::assertEquals('yansongda.cn', $result->getPayload()->get('notify_url'));
     }
+
+    public function testEmptyNotifyUrl()
+    {
+        $rocket = (new Rocket())
+            ->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection());
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertArrayNotHasKey('notify_url', $result->getPayload()->all());
+    }
 }
