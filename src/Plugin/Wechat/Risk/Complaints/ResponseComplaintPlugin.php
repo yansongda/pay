@@ -9,6 +9,7 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 
 use function Yansongda\Pay\get_wechat_config;
 
+use Yansongda\Pay\Parser\OriginResponseParser;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
@@ -23,6 +24,8 @@ class ResponseComplaintPlugin extends GeneralPlugin
      */
     protected function doSomething(Rocket $rocket): void
     {
+        $rocket->setDirection(OriginResponseParser::class);
+
         $config = get_wechat_config($rocket->getParams());
         $payload = $rocket->getPayload();
 
