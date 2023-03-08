@@ -177,7 +177,7 @@ $result = Pay::alipay()->find($order);
 
 ### 获取方式
 
-::: tip 注意
+::: warning 注意
 此方法需要版本 >=3.2.12 才能使用
 :::
 
