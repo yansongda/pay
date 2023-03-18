@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
+use const PHP_VERSION_ID;
+
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ConfigInterface;
@@ -357,5 +359,38 @@ if (!function_exists('verify_unipay_sign')) {
         if (!$result) {
             throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Unipay Response Sign Failed', func_get_args());
         }
+    }
+}
+
+if (!function_exists('to_xml')) {
+    function to_xml(array $data, string $root = 'xml'): string
+    {
+        $xml = '<'.$root.'>';
+
+        foreach ($data as $key => $val) {
+            $xml .= is_numeric($val) ? '<'.$key.'>'.$val.'</'.$key.'>' :
+                                       '<'.$key.'><![CDATA['.$val.']]></'.$key.'>';
+        }
+
+        $xml .= '</'.$root.'>';
+
+        return $xml;
+    }
+}
+
+if (!function_exists('from_xml')) {
+    function from_xml(string $xml): array
+    {
+        if (empty($xml)) {
+            return [];
+        }
+
+        if (PHP_VERSION_ID < 80000) {
+            libxml_disable_entity_loader();
+        }
+
+        return json_decode(json_encode(
+            simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA), JSON_UNESCAPED_UNICODE
+        ), true);
     }
 }
