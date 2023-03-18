@@ -9,7 +9,7 @@ class WechatGeneralPluginStub extends GeneralPlugin
 {
     protected function doSomething(Rocket $rocket): void
     {
-        $rocket->mergePayload(['app_id' => $this->getConfigKey($rocket->getParams())]);
+        $rocket->mergePayload(['config_key' => $this->getConfigKey($rocket->getParams())]);
     }
 
     protected function getUri(Rocket $rocket): string

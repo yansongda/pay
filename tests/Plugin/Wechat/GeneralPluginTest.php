@@ -33,7 +33,7 @@ class GeneralPluginTest extends TestCase
         self::assertInstanceOf(RequestInterface::class, $radar);
         self::assertEquals('POST', $radar->getMethod());
         self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'yansongda/pay'), $radar->getUri());
-        self::assertEquals('wx55955316af4ef13', $result->getPayload()['app_id']);
+        self::assertEquals('mp_app_id', $result->getPayload()['config_key']);
     }
 
     public function testPartner()
@@ -62,6 +62,6 @@ class GeneralPluginTest extends TestCase
         self::assertInstanceOf(RequestInterface::class, $radar);
         self::assertEquals('POST', $radar->getMethod());
         self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'yansongda/pay'), $radar->getUri());
-        self::assertEquals('wx55955316af4ef14', $result->getPayload()['app_id']);
+        self::assertEquals('mini_app_id', $result->getPayload()['config_key']);
     }
 }
