@@ -74,6 +74,17 @@ abstract class GeneralPlugin implements PluginInterface
         ];
     }
 
+    protected function getConfigKey(array $params): string
+    {
+        $key = ($params['_type'] ?? 'mp').'_app_id';
+
+        if ('app_app_id' === $key) {
+            $key = 'app_id';
+        }
+
+        return $key;
+    }
+
     abstract protected function doSomething(Rocket $rocket): void;
 
     abstract protected function getUri(Rocket $rocket): string;
