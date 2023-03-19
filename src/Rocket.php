@@ -8,6 +8,8 @@ use ArrayAccess;
 use JsonSerializable as JsonSerializableInterface;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
+use Yansongda\Pay\Contract\PackerInterface;
+use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Traits\Accessable;
 use Yansongda\Supports\Traits\Arrayable;
@@ -25,7 +27,9 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
 
     private ?Collection $payload = null;
 
-    private ?string $direction = null;
+    private string $packer = PackerInterface::class;
+
+    private string $direction = ParserInterface::class;
 
     /**
      * @var \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface|array|null
@@ -88,12 +92,24 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
         return $this;
     }
 
-    public function getDirection(): ?string
+    public function getPacker(): string
+    {
+        return $this->packer;
+    }
+
+    public function setPacker(string $packer): Rocket
+    {
+        $this->packer = $packer;
+
+        return $this;
+    }
+
+    public function getDirection(): string
     {
         return $this->direction;
     }
 
-    public function setDirection(?string $direction): Rocket
+    public function setDirection(string $direction): Rocket
     {
         $this->direction = $direction;
 

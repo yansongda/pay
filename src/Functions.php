@@ -19,11 +19,10 @@ use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Str;
 
 if (!function_exists('should_do_http_request')) {
-    function should_do_http_request(?string $direction): bool
+    function should_do_http_request(string $direction): bool
     {
-        return is_null($direction) ||
-            (NoHttpRequestParser::class !== $direction &&
-            !in_array(NoHttpRequestParser::class, class_parents($direction)));
+        return NoHttpRequestParser::class !== $direction &&
+            !in_array(NoHttpRequestParser::class, class_parents($direction));
     }
 }
 
