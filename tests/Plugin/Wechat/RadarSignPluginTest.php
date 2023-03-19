@@ -7,6 +7,8 @@ use ReflectionClass;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Packer\JsonPacker;
+use Yansongda\Pay\Packer\XmlPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
 use Yansongda\Pay\Rocket;
@@ -15,16 +17,13 @@ use Yansongda\Supports\Collection;
 
 class RadarSignPluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Wechat\RadarSignPlugin
-     */
-    protected $plugin;
+    protected RadarSignPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new RadarSignPlugin();
+        $this->plugin = new RadarSignPlugin(new JsonPacker(), new XmlPacker());
     }
 
     public function testNormal()
