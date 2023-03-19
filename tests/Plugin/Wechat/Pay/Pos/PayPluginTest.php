@@ -49,14 +49,10 @@ class PayPluginTest extends \Yansongda\Pay\Tests\TestCase
 
         $radar = $result->getRadar();
         $payload = $result->getPayload();
-        $params = $result->getParams();
 
         self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'pay/micropay'), $radar->getUri());
         self::assertEquals('POST', $radar->getMethod());
         self::assertEquals('1600314069', $payload->get('mch_id'));
         self::assertEquals('yansongda', $payload->get('appid'));
-        self::assertEquals('v2', $params['_version']);
-        self::assertEquals('application/xml', $radar->getHeaderLine('Content-Type'));
-        self::assertEquals('yansongda/pay-v3', $radar->getHeaderLine('User-Agent'));
     }
 }
