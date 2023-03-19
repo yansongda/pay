@@ -415,19 +415,4 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         Pay::get(ConfigInterface::class)->set('unipay.default.unipay_public_cert_path', null);
         verify_unipay_sign([], $contents, $sign);
     }
-
-    public function testToXml()
-    {
-        $expect = '<xml><name><![CDATA[yansongda]]></name><age>29</age></xml>';
-        $array = ['name' => 'yansongda', 'age' => 29];
-
-        self::assertEquals($expect, to_xml($array));
-    }
-
-    public function testFromXml()
-    {
-        $xml = '<xml><name><![CDATA[yansongda]]></name><age>29</age></xml>';
-        $array = ['name' => 'yansongda', 'age' => 29];
-        self::assertEquals($array, from_xml($xml));
-    }
 }

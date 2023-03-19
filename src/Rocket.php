@@ -8,6 +8,7 @@ use ArrayAccess;
 use JsonSerializable as JsonSerializableInterface;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
+use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Traits\Accessable;
 use Yansongda\Supports\Traits\Arrayable;
@@ -24,6 +25,8 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
     private array $params = [];
 
     private ?Collection $payload = null;
+
+    private string $packer = PackerInterface::class;
 
     private ?string $direction = null;
 
@@ -85,6 +88,24 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
 
         $this->payload = $this->payload->merge($payload);
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPacker(): string
+    {
+        return $this->packer;
+    }
+
+    /**
+     * @param string $packer
+     * @return Rocket
+     */
+    public function setPacker(string $packer): Rocket
+    {
+        $this->packer = $packer;
         return $this;
     }
 
