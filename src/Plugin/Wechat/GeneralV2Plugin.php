@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat;
 
-use Yansongda\Pay\Rocket;
 use function Yansongda\Pay\get_wechat_config;
+
+use Yansongda\Pay\Rocket;
 
 abstract class GeneralV2Plugin extends GeneralPlugin
 {
