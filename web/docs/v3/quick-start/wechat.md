@@ -134,9 +134,19 @@ $result = Pay::wechat()->transfer($order);
 
 ## 刷卡支付（付款码，被扫码）
 
-:::warning
-微信支付 v3 版 api 并不支持刷卡支付，后续将接入微信支付 v2 版 API，敬请期待。如果确实有此需求，可以使用 [Pay 的 v2 版](/docs/v2/wechat/)
-:::
+```php
+Pay::config($config);
+
+$order = [
+    'out_trade_no' => time().'',
+    'body' => 'subject-测试',
+    'total_fee' => 1,
+    'spbill_create_ip' => '1.2.4.8',
+    'auth_code' => '134567890123456789',
+];
+
+$result = Pay::wechat()->pos($order);
+```
 
 ## 普通红包
 
