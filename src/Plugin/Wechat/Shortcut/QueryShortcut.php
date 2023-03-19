@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Plugin\Wechat\Shortcut;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\FindRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin;
 use Yansongda\Supports\Str;
 
@@ -41,7 +41,7 @@ class QueryShortcut implements ShortcutInterface
     protected function refundPlugins(): array
     {
         return [
-            FindRefundPlugin::class,
+            QueryRefundPlugin::class,
         ];
     }
 
