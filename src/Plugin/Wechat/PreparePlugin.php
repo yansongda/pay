@@ -14,7 +14,7 @@ class PreparePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[wechat][PreparePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[wechat][PreparePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload($this->getPayload($rocket->getParams()));
 

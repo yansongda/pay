@@ -16,7 +16,7 @@ class BillEreceiptApplyPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][BillEreceiptApplyPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][BillEreceiptApplyPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.data.bill.ereceipt.apply',

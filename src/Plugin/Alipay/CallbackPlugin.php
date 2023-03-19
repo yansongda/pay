@@ -27,7 +27,7 @@ class CallbackPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->formatPayload($rocket);
         $sign = $rocket->getParams()['sign'] ?? false;
