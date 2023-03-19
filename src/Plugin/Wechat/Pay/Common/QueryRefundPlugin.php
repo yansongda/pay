@@ -12,7 +12,7 @@ use function Yansongda\Pay\get_wechat_config;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
-class FindRefundPlugin extends GeneralPlugin
+class QueryRefundPlugin extends GeneralPlugin
 {
     /**
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
