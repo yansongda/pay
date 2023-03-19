@@ -11,5 +11,5 @@ interface ParserInterface
     /**
      * @return mixed
      */
-    public function parse(?ResponseInterface $response);
+    public function parse(PackerInterface $packer, ?ResponseInterface $response);
 }
