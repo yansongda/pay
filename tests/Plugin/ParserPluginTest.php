@@ -40,7 +40,7 @@ class ParserPluginTest extends TestCase
         self::expectExceptionCode(InvalidConfigException::INVALID_PACKER);
 
         $rocket = new Rocket();
-        $rocket->setDirection(FooPackerStub::class);
+        $rocket->setPacker(FooPackerStub::class);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
