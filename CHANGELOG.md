@@ -8,6 +8,10 @@
 
 - refactor: 重构 ArrayParser 类(#754)
 
+### changed
+
+- change: ParserInterface 签名由 `?ResponseInterface $response` 变更为 `PackerInterface $packer, ?ResponseInterface $response`(#754)
+
 ## v3.2.14
 
 ### fixed
