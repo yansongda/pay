@@ -62,7 +62,7 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
 ### 查询退款
 
-- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\FindRefundPlugin`
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryRefundPlugin`
 
 ### 申请交易账单
 
@@ -287,11 +287,11 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
 #### 查询退款
 
-- `Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\FindPlugin`
+- `Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\QueryPlugin`
 
 #### 查询垫付回补结果
 
-- `Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\FindReturnAdvancePlugin`
+- `Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\QueryReturnAdvancePlugin`
 
 #### 垫付退款回补
 
