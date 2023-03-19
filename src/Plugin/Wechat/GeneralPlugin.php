@@ -24,7 +24,7 @@ abstract class GeneralPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[wechat][GeneralPlugin] 通用插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[wechat][GeneralPlugin] 通用插件开始装载', ['rocket' => $rocket]);
 
         $rocket->setRadar($this->getRequest($rocket));
         $this->doSomething($rocket);

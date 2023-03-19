@@ -29,7 +29,7 @@ class LaunchPlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::info('[alipay][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         if (should_do_http_request($rocket->getDirection())) {
             $response = Collection::wrap($rocket->getDestination());

@@ -29,7 +29,7 @@ class LaunchPlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::info('[wechat][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[wechat][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         if (should_do_http_request($rocket->getDirection())) {
             verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());

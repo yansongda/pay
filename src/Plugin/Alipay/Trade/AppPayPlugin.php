@@ -24,7 +24,7 @@ class AppPayPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][AppPayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][AppPayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->loadAlipayServiceProvider($rocket);
 

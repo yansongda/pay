@@ -10,6 +10,7 @@
 
 ### changed
 
+- change: 插件开始装载日志由 `info` 调整为 `debug`(#755)
 - change: ParserInterface 签名由 `?ResponseInterface $response` 变更为 `PackerInterface $packer, ?ResponseInterface $response`(#754)
 
 ## v3.2.14

@@ -16,7 +16,7 @@ class TransUniTransferPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][TransUniTransferPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][TransUniTransferPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.fund.trans.uni.transfer',
