@@ -14,10 +14,7 @@ use Yansongda\Supports\Collection;
 
 class ClosePluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Wechat\Pay\Common\ClosePlugin
-     */
-    protected $plugin;
+    protected ClosePlugin $plugin;
 
     protected function setUp(): void
     {

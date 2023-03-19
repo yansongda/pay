@@ -14,6 +14,7 @@ use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Str;
 
 class RadarSignPluginTest extends TestCase
 {
@@ -41,7 +42,7 @@ class RadarSignPluginTest extends TestCase
 
         self::assertTrue($radar->hasHeader('Authorization'));
         self::assertFalse($radar->hasHeader('Wechatpay-Serial'));
-        self::assertEquals(json_encode($params), $radar->getBody()->getContents());
+        self::assertEquals(json_encode($params), (string) $radar->getBody());
     }
 
     public function testNormalWithWechatSerial()
@@ -152,5 +153,25 @@ class RadarSignPluginTest extends TestCase
         $method = $class->getMethod('v3GetWechatAuthorization');
         $method->setAccessible(true);
         $method->invokeArgs($this->plugin, [$params, $timestamp, $random, $contents]);
+    }
+
+    public function testV2Normal()
+    {
+        $params = [
+            'name' => 'yansongda',
+            'age' => 28,
+        ];
+        $rocket = (new Rocket())->setParams(array_merge($params, ['_version' => 'v2']))
+                                ->setPayload(new Collection($params))
+                                ->setRadar(new Request('POST', '127.0.0.1'));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $radar = $result->getRadar();
+        $payload = $result->getPayload();
+
+        self::assertTrue($payload->has('sign'));
+        self::assertTrue(Str::contains((string) $radar->getBody(), '<xml>'));
+        self::assertTrue(Str::contains((string) $radar->getBody(), '<sign>'));
     }
 }

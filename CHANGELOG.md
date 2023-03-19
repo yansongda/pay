@@ -15,6 +15,7 @@
 ### changed
 
 - change: ParserInterface 签名由 `?ResponseInterface $response` 变更为 `PackerInterface $packer, ?ResponseInterface $response`(#754)
+- change: \Yansongda\Pay\Plugin\Wechat\RadarSignPlugin 增加 `__construct(JsonPacker $jsonPacker, XmlPacker $xmlPacker)` 方法(#753)
 
 ## v3.2.14
 
