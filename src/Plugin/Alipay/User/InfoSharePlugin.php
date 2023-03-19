@@ -16,7 +16,7 @@ class InfoSharePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][InfoSharePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][InfoSharePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.user.info.share',

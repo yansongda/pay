@@ -5,16 +5,16 @@ namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\Common;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\FindRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryRefundPlugin;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class FindRefundPluginTest extends TestCase
+class QueryRefundPluginTest extends TestCase
 {
     /**
-     * @var \Yansongda\Pay\Plugin\Wechat\Pay\Common\FindRefundPlugin
+     * @var \Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryRefundPlugin
      */
     protected $plugin;
 
@@ -22,7 +22,7 @@ class FindRefundPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new FindRefundPlugin();
+        $this->plugin = new QueryRefundPlugin();
     }
 
     public function testNormal()

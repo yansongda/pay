@@ -27,7 +27,7 @@ class CallbackPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[unipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[unipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->formatPayload($rocket);
 

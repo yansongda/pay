@@ -26,7 +26,7 @@ class PreparePlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][PreparePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][PreparePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload($this->getPayload($rocket->getParams()));
 

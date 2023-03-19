@@ -18,7 +18,7 @@ class HtmlResponsePlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::info('[unipay][HtmlResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[unipay][HtmlResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $radar = $rocket->getRadar();
 

@@ -32,7 +32,7 @@ class InvokePrepayPlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::info('[wechat][InvokePrepayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[wechat][InvokePrepayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $prepayId = $rocket->getDestination()->get('prepay_id');
 

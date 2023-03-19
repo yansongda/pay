@@ -16,7 +16,7 @@ class AuthOrderFreezePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][AuthOrderFreezePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][AuthOrderFreezePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.fund.auth.order.freeze',

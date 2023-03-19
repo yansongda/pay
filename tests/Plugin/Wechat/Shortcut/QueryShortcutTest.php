@@ -6,7 +6,7 @@ namespace Yansongda\Pay\Tests\Plugin\Wechat\Shortcut;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\FindRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\Shortcut\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
@@ -32,7 +32,7 @@ class QueryShortcutTest extends TestCase
     public function testRefund()
     {
         self::assertEquals([
-            FindRefundPlugin::class,
+            QueryRefundPlugin::class,
         ], $this->plugin->getPlugins(['_type' => 'refund']));
     }
 

@@ -16,7 +16,7 @@ class PdeductSignCancelPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][PdeductSignCancelPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][PdeductSignCancelPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.ebpp.pdeduct.sign.cancel',
