@@ -9,14 +9,12 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\Stubs\FooPackerStub;
+use Yansongda\Pay\Tests\Stubs\FooParserStub;
 use Yansongda\Pay\Tests\TestCase;
 
 class ParserPluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\ParserPlugin
-     */
-    protected $plugin;
+    protected ParserPlugin $plugin;
 
     protected function setUp(): void
     {
@@ -25,10 +23,21 @@ class ParserPluginTest extends TestCase
         $this->plugin = new ParserPlugin();
     }
 
-    public function testPackerWrong()
+    public function testWrongParser()
     {
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(InvalidConfigException::INVALID_PARSER);
+
+        $rocket = new Rocket();
+        $rocket->setDirection(FooParserStub::class);
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testWrongPacker()
+    {
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(InvalidConfigException::INVALID_PACKER);
 
         $rocket = new Rocket();
         $rocket->setDirection(FooPackerStub::class);
@@ -36,7 +45,7 @@ class ParserPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testPackerDefault()
+    public function testDefaultParser()
     {
         Pay::set(ParserInterface::class, NoHttpRequestParser::class);
 
@@ -47,7 +56,7 @@ class ParserPluginTest extends TestCase
         self::assertSame($rocket, $result);
     }
 
-    public function testPackerObject()
+    public function testObjectParser()
     {
         Pay::set(ParserInterface::class, new NoHttpRequestParser());
 
