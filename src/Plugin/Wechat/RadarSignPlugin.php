@@ -17,15 +17,24 @@ use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_sign;
 
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Packer\JsonPacker;
+use Yansongda\Pay\Packer\XmlPacker;
 use Yansongda\Pay\Rocket;
-
-use function Yansongda\Pay\to_xml;
-
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 class RadarSignPlugin implements PluginInterface
 {
+    protected JsonPacker $jsonPacker;
+
+    protected XmlPacker $xmlPacker;
+
+    public function __construct(JsonPacker $jsonPacker, XmlPacker $xmlPacker)
+    {
+        $this->jsonPacker = $jsonPacker;
+        $this->xmlPacker = $xmlPacker;
+    }
+
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
@@ -66,7 +75,7 @@ class RadarSignPlugin implements PluginInterface
         $body = $payload->all();
         $body['sign'] = $this->v2GetSign($config['mch_secret_key_v2'] ?? '', $payload);
 
-        return $rocket->getRadar()->withBody(Utils::streamFor(to_xml($body)));
+        return $rocket->getRadar()->withBody(Utils::streamFor($this->xmlPacker->pack($body)));
     }
 
     /**
@@ -179,6 +188,6 @@ class RadarSignPlugin implements PluginInterface
 
     protected function v3PayloadToString(?Collection $payload): string
     {
-        return (is_null($payload) || 0 === $payload->count()) ? '' : $payload->toJson();
+        return (is_null($payload) || 0 === $payload->count()) ? '' : $this->jsonPacker->pack($payload->all());
     }
 }

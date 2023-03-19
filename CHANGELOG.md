@@ -1,5 +1,9 @@
 ## TBD-v3.3.0
 
+### added
+
+- feat: 支持微信 v2 版本(#753)
+
 ### deleted
 
 - delete: 移除废弃的类(#752)
