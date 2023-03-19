@@ -6,16 +6,16 @@ use GuzzleHttp\Psr7\Uri;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\FindReturnAdvancePlugin;
+use Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\QueryPlugin;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class FindReturnAdvancePluginTest extends TestCase
+class QueryPluginTest extends TestCase
 {
     /**
-     * @var \Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\FindReturnAdvancePlugin
+     * @var \Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\QueryPlugin
      */
     protected $plugin;
 
@@ -23,7 +23,7 @@ class FindReturnAdvancePluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new FindReturnAdvancePlugin();
+        $this->plugin = new QueryPlugin();
     }
 
     public function testNotInServiceMode()
@@ -37,7 +37,7 @@ class FindReturnAdvancePluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
-    public function testMissingRefundId()
+    public function testMissingParams()
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
@@ -48,16 +48,29 @@ class FindReturnAdvancePluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 
-    public function testNormal()
+    public function testPartnerRefundId()
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['refund_id' => '123']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         $radar = $result->getRadar();
 
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_SERVICE].'v3/ecommerce/refunds/123/return-advance?sub_mchid=1600314070'), $radar->getUri());
+        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_SERVICE].'v3/ecommerce/refunds/id/123?sub_mchid=1600314070'), $radar->getUri());
+        self::assertEquals('GET', $radar->getMethod());
+    }
+
+    public function testPartnerOutRefundNo()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['out_refund_no' => '123']));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+
+        $radar = $result->getRadar();
+
+        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_SERVICE].'v3/ecommerce/refunds/out-refund-no/123?sub_mchid=1600314070'), $radar->getUri());
         self::assertEquals('GET', $radar->getMethod());
     }
 }

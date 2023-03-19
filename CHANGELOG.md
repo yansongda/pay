@@ -14,6 +14,7 @@
 
 ### changed
 
+- change: 所有的 `Find*Plugin` 调整为 `Query*Plugin`(#756)
 - change: 插件开始装载日志由 `info` 调整为 `debug`(#755)
 - change: ParserInterface 签名由 `?ResponseInterface $response` 变更为 `PackerInterface $packer, ?ResponseInterface $response`(#754)
 - change: \Yansongda\Pay\Plugin\Wechat\RadarSignPlugin 增加 `__construct(JsonPacker $jsonPacker, XmlPacker $xmlPacker)` 方法(#753)

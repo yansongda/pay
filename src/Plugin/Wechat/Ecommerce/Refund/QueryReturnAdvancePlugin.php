@@ -15,7 +15,7 @@ use Yansongda\Pay\Rocket;
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_6_5.shtml
  */
-class FindReturnAdvancePlugin extends GeneralPlugin
+class QueryReturnAdvancePlugin extends GeneralPlugin
 {
     /**
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
