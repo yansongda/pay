@@ -57,21 +57,12 @@ class PrepayPlugin extends GeneralPlugin
             ];
 
             $subAppId = $payload->get('sub_appid', $config['sub_'.$configKey] ?? null);
+
             if (!empty($subAppId)) {
                 $result['sub_appid'] = $subAppId;
             }
         }
 
         return $result;
-    }
-
-    protected function getConfigKey(array $params): string
-    {
-        $key = ($params['_type'] ?? 'mp').'_app_id';
-        if ('app_app_id' === $key) {
-            $key = 'app_id';
-        }
-
-        return $key;
     }
 }
