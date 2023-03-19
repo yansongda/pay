@@ -17,7 +17,7 @@ class AgreementPageSignPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][AgreementPageSignPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][AgreementPageSignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->setDirection(ResponseParser::class)
             ->mergePayload([

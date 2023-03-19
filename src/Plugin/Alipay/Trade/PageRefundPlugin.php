@@ -14,7 +14,7 @@ class PageRefundPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][PageRefundPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][PageRefundPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->setDirection(ResponseParser::class)
             ->mergePayload([

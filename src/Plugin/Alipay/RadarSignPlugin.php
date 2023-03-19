@@ -29,7 +29,7 @@ class RadarSignPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][RadarSignPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][RadarSignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->sign($rocket);
 

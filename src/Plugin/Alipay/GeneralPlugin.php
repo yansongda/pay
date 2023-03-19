@@ -13,7 +13,7 @@ abstract class GeneralPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][GeneralPlugin] 通用插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][GeneralPlugin] 通用插件开始装载', ['rocket' => $rocket]);
 
         $this->doSomethingBefore($rocket);
 

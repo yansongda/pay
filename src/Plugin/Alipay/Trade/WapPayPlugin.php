@@ -24,7 +24,7 @@ class WapPayPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][WapPayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][WapPayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->loadAlipayServiceProvider($rocket);
 
