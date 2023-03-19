@@ -171,7 +171,9 @@ class RadarSignPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertTrue($payload->has('sign'));
+        self::assertTrue($payload->has('nonce_str'));
         self::assertTrue(Str::contains((string) $radar->getBody(), '<xml>'));
         self::assertTrue(Str::contains((string) $radar->getBody(), '<sign>'));
+        self::assertTrue(Str::contains((string) $radar->getBody(), '<nonce_str>'));
     }
 }

@@ -66,13 +66,15 @@ class RadarSignPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Exception
      */
     protected function v2(Rocket $rocket): RequestInterface
     {
         $config = get_wechat_config($rocket->getParams());
 
+        $rocket->mergePayload(['nonce_str' => Str::random(32)]);
         $rocket->mergePayload([
-            'sign' => $this->v2GetSign($config['mch_secret_key_v2'] ?? '', $rocket->getPayload()),
+            'sign' => $this->v2GetSign($config['mch_secret_key_v2'] ?? '', $rocket->getPayload()->all()),
         ]);
 
         return $rocket->getRadar()->withBody(
@@ -83,7 +85,7 @@ class RadarSignPlugin implements PluginInterface
     /**
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      */
-    protected function v2GetSign(?string $secret, Collection $payload): string
+    protected function v2GetSign(?string $secret, array $payload): string
     {
         if (empty($secret)) {
             throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key_v2]');
@@ -94,15 +96,13 @@ class RadarSignPlugin implements PluginInterface
         return strtoupper($string);
     }
 
-    protected function v2PayloadToString(Collection $payload): string
+    protected function v2PayloadToString(array $payload): string
     {
-        $data = $payload->all();
-
-        ksort($data);
+        ksort($payload);
 
         $buff = '';
 
-        foreach ($data as $k => $v) {
+        foreach ($payload as $k => $v) {
             $buff .= ('sign' != $k && '' != $v && !is_array($v)) ? $k.'='.$v.'&' : '';
         }
 
