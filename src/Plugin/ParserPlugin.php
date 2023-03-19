@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin;
 
 use Closure;
+use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
@@ -28,7 +29,7 @@ class ParserPlugin implements PluginInterface
         $response = $rocket->getDestination();
 
         return $rocket->setDestination(
-            $this->getPacker($rocket)->parse($response)
+            $this->getParser($rocket)->parse($this->getPacker($rocket), $response)
         );
     }
 
@@ -37,13 +38,31 @@ class ParserPlugin implements PluginInterface
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getPacker(Rocket $rocket): ParserInterface
+    protected function getParser(Rocket $rocket): ParserInterface
     {
-        $packer = Pay::get($rocket->getDirection() ?? ParserInterface::class);
+        $packer = Pay::get($rocket->getDirection());
 
         $packer = is_string($packer) ? Pay::get($packer) : $packer;
 
         if (!($packer instanceof ParserInterface)) {
+            throw new InvalidConfigException(Exception::INVALID_PARSER);
+        }
+
+        return $packer;
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     */
+    protected function getPacker(Rocket $rocket): PackerInterface
+    {
+        $packer = Pay::get($rocket->getPacker());
+
+        $packer = is_string($packer) ? Pay::get($packer) : $packer;
+
+        if (!($packer instanceof PackerInterface)) {
             throw new InvalidConfigException(Exception::INVALID_PACKER);
         }
 

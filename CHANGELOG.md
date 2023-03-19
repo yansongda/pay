@@ -4,6 +4,10 @@
 
 - delete: 移除废弃的类(#752)
 
+### refactor
+
+- refactor: 重构 ArrayParser 类(#754)
+
 ## v3.2.14
 
 ### fixed

@@ -31,7 +31,7 @@ class Exception extends \Exception
      */
     public const CONFIG_ERROR = 3000;
 
-    public const INVALID_PACKER = 3001;
+    public const INVALID_PARSER = 3001;
 
     public const ALIPAY_CONFIG_ERROR = 3002;
 
@@ -44,6 +44,8 @@ class Exception extends \Exception
     public const WECHAT_CONFIG_ERROR = 3006;
 
     public const UNIPAY_CONFIG_ERROR = 3007;
+
+    public const INVALID_PACKER = 3008;
 
     /*
      * 关于参数.

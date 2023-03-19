@@ -9,10 +9,14 @@ use Illuminate\Container\Container as LaravelContainer;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
+use Yansongda\Pay\Contract\PackerInterface;
+use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Packer\JsonPacker;
+use Yansongda\Pay\Parser\CollectionParser;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
@@ -80,6 +84,9 @@ class Pay
     private function __construct(array $config, $container = null)
     {
         $this->registerServices($config, $container);
+
+        Pay::set(ParserInterface::class, CollectionParser::class);
+        Pay::set(PackerInterface::class, JsonPacker::class);
     }
 
     /**
