@@ -70,12 +70,14 @@ class RadarSignPlugin implements PluginInterface
     protected function v2(Rocket $rocket): RequestInterface
     {
         $config = get_wechat_config($rocket->getParams());
-        $payload = $rocket->getPayload();
 
-        $body = $payload->all();
-        $body['sign'] = $this->v2GetSign($config['mch_secret_key_v2'] ?? '', $payload);
+        $rocket->mergePayload([
+            'sign' => $this->v2GetSign($config['mch_secret_key_v2'] ?? '', $rocket->getPayload()),
+        ]);
 
-        return $rocket->getRadar()->withBody(Utils::streamFor($this->xmlPacker->pack($body)));
+        return $rocket->getRadar()->withBody(
+            Utils::streamFor($this->xmlPacker->pack($rocket->getPayload()->all()))
+        );
     }
 
     /**

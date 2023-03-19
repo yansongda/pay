@@ -36,10 +36,8 @@ class PayPluginTest extends \Yansongda\Pay\Tests\TestCase
         self::assertEquals('1600314069', $payload->get('mch_id'));
         self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
         self::assertEquals('v2', $params['_version']);
-        self::assertEquals([
-            'Content-Type' => 'application/xml',
-            'User-Agent' => 'yansongda/pay-v3',
-        ], $radar->getHeaders());
+        self::assertEquals('application/xml', $radar->getHeaderLine('Content-Type'));
+        self::assertEquals('yansongda/pay-v3', $radar->getHeaderLine('User-Agent'));
     }
 
     public function testMultiType()
@@ -58,9 +56,7 @@ class PayPluginTest extends \Yansongda\Pay\Tests\TestCase
         self::assertEquals('1600314069', $payload->get('mch_id'));
         self::assertEquals('yansongda', $payload->get('appid'));
         self::assertEquals('v2', $params['_version']);
-        self::assertEquals([
-            'Content-Type' => 'application/xml',
-            'User-Agent' => 'yansongda/pay-v3',
-        ], $radar->getHeaders());
+        self::assertEquals('application/xml', $radar->getHeaderLine('Content-Type'));
+        self::assertEquals('yansongda/pay-v3', $radar->getHeaderLine('User-Agent'));
     }
 }
