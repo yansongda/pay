@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Wechat;
 
 use Closure;
 use GuzzleHttp\Psr7\Utils;
+use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
@@ -16,12 +17,24 @@ use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_sign;
 
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Packer\JsonPacker;
+use Yansongda\Pay\Packer\XmlPacker;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 class RadarSignPlugin implements PluginInterface
 {
+    protected JsonPacker $jsonPacker;
+
+    protected XmlPacker $xmlPacker;
+
+    public function __construct(JsonPacker $jsonPacker, XmlPacker $xmlPacker)
+    {
+        $this->jsonPacker = $jsonPacker;
+        $this->xmlPacker = $xmlPacker;
+    }
+
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
@@ -33,19 +46,13 @@ class RadarSignPlugin implements PluginInterface
     {
         Logger::debug('[wechat][RadarSignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $timestamp = time();
-        $random = Str::random(32);
-        $body = $this->payloadToString($rocket->getPayload());
-        $contents = $this->getContents($rocket, $timestamp, $random);
-        $authorization = $this->getWechatAuthorization($rocket->getParams(), $timestamp, $random, $contents);
-        $radar = $rocket->getRadar()->withHeader('Authorization', $authorization);
-
-        if (!empty($rocket->getParams()['_serial_no'])) {
-            $radar = $radar->withHeader('Wechatpay-Serial', $rocket->getParams()['_serial_no']);
-        }
-
-        if (!empty($body)) {
-            $radar = $radar->withBody(Utils::streamFor($body));
+        switch ($rocket->getParams()['_version'] ?? 'default') {
+            case 'v2':
+                $radar = $this->v2($rocket);
+                break;
+            default:
+                $radar = $this->v3($rocket);
+                break;
         }
 
         $rocket->setRadar($radar);
@@ -57,10 +64,84 @@ class RadarSignPlugin implements PluginInterface
 
     /**
      * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Exception
+     */
+    protected function v2(Rocket $rocket): RequestInterface
+    {
+        $config = get_wechat_config($rocket->getParams());
+
+        $rocket->mergePayload(['nonce_str' => Str::random(32)]);
+        $rocket->mergePayload([
+            'sign' => $this->v2GetSign($config['mch_secret_key_v2'] ?? '', $rocket->getPayload()->all()),
+        ]);
+
+        return $rocket->getRadar()->withBody(
+            Utils::streamFor($this->xmlPacker->pack($rocket->getPayload()->all()))
+        );
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     */
+    protected function v2GetSign(?string $secret, array $payload): string
+    {
+        if (empty($secret)) {
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key_v2]');
+        }
+
+        $string = md5($this->v2PayloadToString($payload).'&key='.$secret);
+
+        return strtoupper($string);
+    }
+
+    protected function v2PayloadToString(array $payload): string
+    {
+        ksort($payload);
+
+        $buff = '';
+
+        foreach ($payload as $k => $v) {
+            $buff .= ('sign' != $k && '' != $v && !is_array($v)) ? $k.'='.$v.'&' : '';
+        }
+
+        return trim($buff, '&');
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws \Exception
+     */
+    protected function v3(Rocket $rocket): RequestInterface
+    {
+        $timestamp = time();
+        $random = Str::random(32);
+        $body = $this->v3PayloadToString($rocket->getPayload());
+        $contents = $this->v3GetContents($rocket, $timestamp, $random);
+        $authorization = $this->v3GetWechatAuthorization($rocket->getParams(), $timestamp, $random, $contents);
+        $radar = $rocket->getRadar()->withHeader('Authorization', $authorization);
+
+        if (!empty($rocket->getParams()['_serial_no'])) {
+            $radar = $radar->withHeader('Wechatpay-Serial', $rocket->getParams()['_serial_no']);
+        }
+
+        if (!empty($body)) {
+            $radar = $radar->withBody(Utils::streamFor($body));
+        }
+
+        return $radar;
+    }
+
+    /**
+     * @throws \Yansongda\Pay\Exception\ContainerException
      * @throws \Yansongda\Pay\Exception\InvalidConfigException
      * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
      */
-    protected function getWechatAuthorization(array $params, int $timestamp, string $random, string $contents): string
+    protected function v3GetWechatAuthorization(array $params, int $timestamp, string $random, string $contents): string
     {
         $config = get_wechat_config($params);
         $mchPublicCertPath = $config['mch_public_cert_path'] ?? null;
@@ -90,7 +171,7 @@ class RadarSignPlugin implements PluginInterface
     /**
      * @throws \Yansongda\Pay\Exception\InvalidParamsException
      */
-    protected function getContents(Rocket $rocket, int $timestamp, string $random): string
+    protected function v3GetContents(Rocket $rocket, int $timestamp, string $random): string
     {
         $request = $rocket->getRadar();
 
@@ -104,11 +185,11 @@ class RadarSignPlugin implements PluginInterface
             $uri->getPath().(empty($uri->getQuery()) ? '' : '?'.$uri->getQuery())."\n".
             $timestamp."\n".
             $random."\n".
-            $this->payloadToString($rocket->getPayload())."\n";
+            $this->v3PayloadToString($rocket->getPayload())."\n";
     }
 
-    protected function payloadToString(?Collection $payload): string
+    protected function v3PayloadToString(?Collection $payload): string
     {
-        return (is_null($payload) || 0 === $payload->count()) ? '' : $payload->toJson();
+        return (is_null($payload) || 0 === $payload->count()) ? '' : $this->jsonPacker->pack($payload->all());
     }
 }

@@ -13,7 +13,7 @@ use Yansongda\Pay\Tests\TestCase;
 
 class QueryShortcutTest extends TestCase
 {
-    protected $plugin;
+    protected QueryShortcut $plugin;
 
     protected function setUp(): void
     {

@@ -21,6 +21,7 @@ use Yansongda\Supports\Str;
 use function Yansongda\Pay\decrypt_wechat_resource;
 use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
 use function Yansongda\Pay\encrypt_wechat_contents;
+use function Yansongda\Pay\from_xml;
 use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_private_cert;
 use function Yansongda\Pay\get_public_cert;
@@ -35,6 +36,7 @@ use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
 use function Yansongda\Pay\verify_unipay_sign;
 use function Yansongda\Pay\verify_wechat_sign;
+use function Yansongda\Pay\to_xml;
 
 class FunctionTest extends TestCase
 {
