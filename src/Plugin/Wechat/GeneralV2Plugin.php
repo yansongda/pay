@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Wechat;
 
 use function Yansongda\Pay\get_wechat_config;
 
+use Yansongda\Pay\Packer\XmlPacker;
 use Yansongda\Pay\Rocket;
 
 abstract class GeneralV2Plugin extends GeneralPlugin
@@ -27,7 +28,7 @@ abstract class GeneralV2Plugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
         $configKey = $this->getConfigKey($rocket->getParams());
 
-        $rocket->mergeParams(['_version' => 'v2']);
+        $rocket->setPacker(XmlPacker::class)->mergeParams(['_version' => 'v2']);
 
         $rocket->mergePayload([
             'appid' => $config[$configKey] ?? '',
