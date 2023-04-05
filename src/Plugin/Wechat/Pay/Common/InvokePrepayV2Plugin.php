@@ -65,7 +65,7 @@ class InvokePrepayV2Plugin implements PluginInterface
 
         $data = $invokeConfig->toArray();
         ksort($data);
-        $contents = implode('&', $data).'&key='.$secret;
+        $contents = http_build_query($data) . '&key=' . $secret;
 
         return md5($contents);
     }
