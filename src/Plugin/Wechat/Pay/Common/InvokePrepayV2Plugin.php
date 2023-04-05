@@ -112,8 +112,8 @@ class InvokePrepayV2Plugin implements PluginInterface
 
     protected function getConfigKey(array $params): string
     {
-        $type = $params['_type'] ?? 'mp_';
+        $type = $params['_type'] ?? 'mp';
 
-        return $type.'app_id';
+        return $type.'_app_id';
     }
 }
