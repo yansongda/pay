@@ -5,7 +5,7 @@ namespace Yansongda\Pay\Plugin\Wechat\Shortcut;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\Papay\PayContractOrderPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Mini\InvokePrepayPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokePrepayV2Plugin;
 use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
 use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
 
@@ -20,7 +20,7 @@ class PapayShortcut implements ShortcutInterface
             PreparePlugin::class,
             PayContractOrderPlugin::class,
             RadarSignPlugin::class,
-            InvokePrepayPlugin::class,
+            InvokePrepayV2Plugin::class,
             ParserPlugin::class,
         ];
     }
