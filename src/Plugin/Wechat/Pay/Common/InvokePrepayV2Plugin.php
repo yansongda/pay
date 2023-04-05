@@ -65,7 +65,11 @@ class InvokePrepayV2Plugin implements PluginInterface
 
         $data = $invokeConfig->toArray();
         ksort($data);
-        $contents = http_build_query($data) . '&key=' . $secret;
+        $contents = '';
+        foreach ($data as $key => $datum) {
+            $contents .= $key.'='.$datum.'&';
+        }
+        $contents .= 'key='.$secret;
 
         return md5($contents);
     }
@@ -103,11 +107,13 @@ class InvokePrepayV2Plugin implements PluginInterface
             return $payload->get('sub_appid', '');
         }
 
-        return $config[$this->getConfigKey()] ?? '';
+        return $config[$this->getConfigKey($rocket->getParams())] ?? '';
     }
 
-    protected function getConfigKey(): string
+    protected function getConfigKey(array $params): string
     {
-        return 'mp_app_id';
+        $type = $params['_type'] ?? 'mp_';
+
+        return $type.'app_id';
     }
 }
