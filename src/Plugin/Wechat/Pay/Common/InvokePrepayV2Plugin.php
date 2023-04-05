@@ -63,11 +63,9 @@ class InvokePrepayV2Plugin implements PluginInterface
             throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key_v2]');
         }
 
-        $contents = $invokeConfig->get('appId', '').
-            $invokeConfig->get('timeStamp', '').
-            $invokeConfig->get('nonceStr', '').
-            $invokeConfig->get('package', '').
-            $secret;
+        $data = $invokeConfig->toArray();
+        ksort($data);
+        $contents = implode('&', $data).'&key='.$secret;
 
         return md5($contents);
     }
