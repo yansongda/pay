@@ -6,12 +6,12 @@ use Yansongda\Pay\Plugin\Wechat\GeneralV2Plugin;
 use Yansongda\Pay\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/wiki/doc/api/wxpay_v2/papay/chapter3_5.shtml
+ * @see https://pay.weixin.qq.com/wiki/doc/api/wxpay_v2/papay/chapter3_8.shtml
  */
-class PayContractOrderPlugin extends GeneralV2Plugin
+class ApplyPlugin extends GeneralV2Plugin
 {
     protected function getUri(Rocket $rocket): string
     {
-        return 'pay/contractorder';
+        return 'pay/pappayapply';
     }
 }
