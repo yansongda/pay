@@ -31,6 +31,7 @@ use function Yansongda\Pay\get_wechat_base_uri;
 use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_public_certs;
 use function Yansongda\Pay\get_wechat_sign;
+use function Yansongda\Pay\get_wechat_sign_v2;
 use function Yansongda\Pay\reload_wechat_public_certs;
 use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
@@ -205,6 +206,26 @@ class FunctionTest extends TestCase
         get_wechat_sign([], '', '');
     }
 
+    public function testGetWechatSignV2()
+    {
+        $params = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
+        self::assertEquals('3213848AED2C380749FD1D559555881D', get_wechat_sign_v2([], $params));
+
+        // test config error
+        $config1 = [
+            'wechat' => [
+                'default' => [
+                    'mch_secret_key_v2' => ''
+                ],
+            ]
+        ];
+        Pay::config(array_merge($config1, ['_force' => true]));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::WECHAT_CONFIG_ERROR);
+        get_wechat_sign_v2([], []);
+    }
+    
     public function testVerifyWechatSign()
     {
         $response = new Response(

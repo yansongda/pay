@@ -146,6 +146,34 @@ if (!function_exists('get_wechat_sign')) {
     }
 }
 
+if (!function_exists('get_wechat_sign_v2')) {
+    /**
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     * @throws InvalidConfigException
+     */
+    function get_wechat_sign_v2(array $params, array $payload, bool $upper = true): string
+    {
+        $key = get_wechat_config($params)['mch_secret_key_v2'] ?? null;
+
+        if (empty($key)) {
+            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key_v2]');
+        }
+
+        ksort($payload);
+
+        $buff = '';
+
+        foreach ($payload as $k => $v) {
+            $buff .= ('sign' != $k && '' != $v && !is_array($v)) ? $k.'='.$v.'&' : '';
+        }
+
+        $sign = md5($buff.'key='.$key);
+
+        return $upper ? strtoupper($sign) : $sign;
+    }
+}
+
 if (!function_exists('verify_wechat_sign')) {
     /**
      * @param ResponseInterface|ServerRequestInterface $message
