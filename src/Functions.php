@@ -168,7 +168,7 @@ if (!function_exists('get_wechat_sign_v2')) {
             $buff .= ('sign' != $k && '' != $v && !is_array($v)) ? $k.'='.$v.'&' : '';
         }
 
-        $sign = md5(trim($buff, '&').'&key='.$key);
+        $sign = md5($buff.'key='.$key);
 
         return $upper ? strtoupper($sign) : $sign;
     }
