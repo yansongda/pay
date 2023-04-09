@@ -12,6 +12,8 @@ use Yansongda\Pay\Rocket;
 
 /**
  * 返回只签约（委托代扣）参数.
+ *
+ * @see https://pay.weixin.qq.com/wiki/doc/api/wxpay_v2/papay/chapter3_3.shtml
  */
 class OnlyContractPlugin extends RadarSignPlugin
 {
