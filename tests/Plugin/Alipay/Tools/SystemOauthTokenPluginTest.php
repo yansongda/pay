@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\Tools;
 
-use Yansongda\Pay\Parser\ResponseParser;
+use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Plugin\Alipay\Tools\SystemOauthTokenPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;

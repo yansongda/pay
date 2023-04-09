@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Plugin\Wechat\Papay;
 
 use Closure;
-use Yansongda\Pay\Parser\NoHttpRequestParser;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
 use Yansongda\Pay\Rocket;
 
@@ -34,7 +34,7 @@ class OnlyContractPlugin extends RadarSignPlugin
 
         $rocket->setDestination($rocket->getPayload());
 
-        $rocket->setDirection(NoHttpRequestParser::class);
+        $rocket->setDirection(NoHttpRequestDirection::class);
 
         return $next($rocket);
     }

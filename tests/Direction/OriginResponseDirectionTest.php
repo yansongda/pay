@@ -1,22 +1,22 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Parser;
+namespace Yansongda\Pay\Tests\Direction;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Packer\JsonPacker;
-use Yansongda\Pay\Parser\OriginResponseParser;
+use Yansongda\Pay\Direction\OriginResponseDirection;
 use Yansongda\Pay\Tests\TestCase;
 
-class OriginResponseParserTest extends TestCase
+class OriginResponseDirectionTest extends TestCase
 {
-    protected OriginResponseParser $parser;
+    protected OriginResponseDirection $parser;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->parser = new OriginResponseParser();
+        $this->parser = new OriginResponseDirection();
     }
 
     public function testResponseNull()

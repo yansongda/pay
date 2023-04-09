@@ -1,24 +1,24 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Parser;
+namespace Yansongda\Pay\Tests\Direction;
 
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Packer\QueryPacker;
-use Yansongda\Pay\Parser\ArrayParser;
+use Yansongda\Pay\Direction\ArrayDirection;
 use Yansongda\Pay\Tests\TestCase;
 
-class ArrayParserTest extends TestCase
+class ArrayDirectionTest extends TestCase
 {
-    protected ArrayParser $parser;
+    protected ArrayDirection $parser;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->parser = new ArrayParser();
+        $this->parser = new ArrayDirection();
     }
 
     public function testResponseNull()

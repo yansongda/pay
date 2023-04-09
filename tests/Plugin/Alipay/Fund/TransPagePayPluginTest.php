@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\Fund;
 
-use Yansongda\Pay\Parser\ResponseParser;
+use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Plugin\Alipay\Fund\TransPagePayPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -25,7 +25,7 @@ class TransPagePayPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals(ResponseParser::class, $result->getDirection());
+        self::assertEquals(ResponseDirection::class, $result->getDirection());
         self::assertStringContainsString('alipay.fund.trans.page.pay', $result->getPayload()->toJson());
     }
 }

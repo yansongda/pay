@@ -12,11 +12,11 @@ use Throwable;
 use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
+use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Packer\JsonPacker;
-use Yansongda\Pay\Parser\CollectionParser;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
@@ -85,7 +85,7 @@ class Pay
     {
         $this->registerServices($config, $container);
 
-        Pay::set(ParserInterface::class, CollectionParser::class);
+        Pay::set(ParserInterface::class, CollectionDirection::class);
         Pay::set(PackerInterface::class, JsonPacker::class);
     }
 

@@ -54,9 +54,9 @@ API 调用场景下的返回类型，`array` 和 `Collection` 是可以自定义
 
 ```php
 use Yansongda\Pay\Contract\ParserInterface;
-use Yansongda\Pay\Parser\ArrayParser;
+use Yansongda\Pay\Direction\ArrayDirection;
 
-Pay::set(ParserInterface::class, ArrayParser::class);
+Pay::set(ParserInterface::class, ArrayDirection::class);
 ```
 
 是不是很简单方便？

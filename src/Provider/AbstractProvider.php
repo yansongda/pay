@@ -12,6 +12,7 @@ use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
+use Yansongda\Pay\Direction\ArrayDirection;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
@@ -20,7 +21,6 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Parser\ArrayParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
@@ -81,7 +81,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         $destination = $rocket->getDestination();
 
-        if (ArrayParser::class === $rocket->getDirection() && $destination instanceof Collection) {
+        if (ArrayDirection::class === $rocket->getDirection() && $destination instanceof Collection) {
             return $destination->toArray();
         }
 

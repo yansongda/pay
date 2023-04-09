@@ -1,22 +1,22 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Parser;
+namespace Yansongda\Pay\Tests\Direction;
 
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Pay\Packer\JsonPacker;
-use Yansongda\Pay\Parser\CollectionParser;
+use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
-class CollectionParserTest extends TestCase
+class CollectionDirectionTest extends TestCase
 {
-    protected CollectionParser $parser;
+    protected CollectionDirection $parser;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->parser = new CollectionParser();
+        $this->parser = new CollectionDirection();
     }
 
     public function testNormal()

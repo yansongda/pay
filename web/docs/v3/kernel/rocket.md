@@ -47,7 +47,7 @@ Pay 项目中，将所有以 _下划线_ 开始的参数都定义为 `特殊参�
 实际的作用为：把控最终请求需要解包的类型
 
 例如，支付宝电脑支付中，其最终返回的是一个 `Response` 对象，不需要直接后端 http 请求支付宝接口的，
-所以当使用支付宝电脑支付时，其 Direction 为 `Yansongda\Pay\Parser\ResponseParser::class`。
+所以当使用支付宝电脑支付时，其 Direction 为 `Yansongda\Pay\Parser\ResponseDirection::class`。
 
 绝大多数情况下，均默认为：`Yansongda\Pay\Parser\CollectionParser::class`
 
@@ -63,7 +63,7 @@ Pay 项目中，将所有以 _下划线_ 开始的参数都定义为 `特殊参�
   
     Destination 最终返回的是 Collection 对象
 
-- 当 Direction 为 ResponseParser 时
+- 当 Direction 为 ResponseDirection 时
   
     Destination 最终返回的是 Response 对象
   
@@ -75,11 +75,11 @@ Pay 项目中，将所有以 _下划线_ 开始的参数都定义为 `特殊参�
   
     Destination 最终返回的是 string
 
-- 当 Direction 为 NoHttpRequestParser 时
+- 当 Direction 为 NoHttpRequestDirection 时
 
     Destination 最终返回的是 原样的 Radar
 
-- 当 Direction 为 OriginResponseParser 时
+- 当 Direction 为 OriginResponseDirection 时
 
   Destination 最终返回的是 Rocket 中的 DestinationOrigin
 

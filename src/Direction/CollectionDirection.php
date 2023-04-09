@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Parser;
+namespace Yansongda\Pay\Direction;
 
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\PackerInterface;
@@ -12,7 +12,7 @@ use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
-class CollectionParser implements ParserInterface
+class CollectionDirection implements ParserInterface
 {
     /**
      * @throws ContainerException
@@ -21,7 +21,7 @@ class CollectionParser implements ParserInterface
     public function parse(PackerInterface $packer, ?ResponseInterface $response): Collection
     {
         return new Collection(
-            Pay::get(ArrayParser::class)->parse($packer, $response)
+            Pay::get(ArrayDirection::class)->parse($packer, $response)
         );
     }
 }

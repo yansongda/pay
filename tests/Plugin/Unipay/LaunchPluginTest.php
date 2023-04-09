@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay;
 
-use Yansongda\Pay\Parser\NoHttpRequestParser;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -25,7 +25,7 @@ class LaunchPluginTest extends TestCase
     public function testShouldNotDoRequest()
     {
         $rocket = new Rocket();
-        $rocket->setDirection(NoHttpRequestParser::class);
+        $rocket->setDirection(NoHttpRequestDirection::class);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Unipay\OnlineGateway;
 
-use Yansongda\Pay\Parser\ResponseParser;
+use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Plugin\Unipay\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
@@ -20,7 +20,7 @@ class WapPayPlugin extends GeneralPlugin
 
     protected function doSomething(Rocket $rocket): void
     {
-        $rocket->setDirection(ResponseParser::class)
+        $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
                 'bizType' => '000201',
                 'txnType' => '01',

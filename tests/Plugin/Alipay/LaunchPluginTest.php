@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
-use Yansongda\Pay\Parser\NoHttpRequestParser;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -24,7 +24,7 @@ class LaunchPluginTest extends TestCase
     public function testNoHttpRequest()
     {
         $rocket = new Rocket();
-        $rocket->setDirection(NoHttpRequestParser::class);
+        $rocket->setDirection(NoHttpRequestDirection::class);
 
         self::assertSame($rocket, $this->plugin->assembly($rocket, function ($rocket) { return $rocket; }));
     }
