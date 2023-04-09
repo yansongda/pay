@@ -33,7 +33,8 @@ class XmlPacker implements PackerInterface
         }
 
         $data = json_decode(json_encode(
-            simplexml_load_string($payload, 'SimpleXMLElement', LIBXML_NOCDATA), JSON_UNESCAPED_UNICODE
+            simplexml_load_string($payload, 'SimpleXMLElement', LIBXML_NOCDATA),
+            JSON_UNESCAPED_UNICODE
         ), true);
 
         if (JSON_ERROR_NONE === json_last_error()) {

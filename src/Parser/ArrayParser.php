@@ -13,7 +13,7 @@ use Yansongda\Pay\Exception\InvalidResponseException;
 class ArrayParser implements ParserInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     * @throws InvalidResponseException
      */
     public function parse(PackerInterface $packer, ?ResponseInterface $response): array
     {

@@ -9,8 +9,6 @@ use Throwable;
 class ContainerNotFoundException extends ContainerException
 {
     /**
-     * Bootstrap.
-     *
      * @param mixed $extra
      */
     public function __construct(string $message = 'Container Not Found', int $code = self::CONTAINER_NOT_FOUND, $extra = null, Throwable $previous = null)

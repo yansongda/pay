@@ -26,6 +26,7 @@ class WapPayPlugin extends GeneralPlugin
                 'txnType' => '01',
                 'txnSubType' => '01',
                 'channelType' => '08',
-            ]);
+            ])
+        ;
     }
 }

@@ -20,7 +20,8 @@ class PageRefundPlugin implements PluginInterface
             ->mergePayload([
                 'method' => 'alipay.trade.page.refund',
                 'biz_content' => $rocket->getParams(),
-            ]);
+            ])
+        ;
 
         Logger::info('[alipay][PageRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

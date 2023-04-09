@@ -6,54 +6,57 @@ namespace Yansongda\Pay\Provider;
 
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\MessageInterface;
 use Throwable;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Event;
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\ArrayParser;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
-
-use function Yansongda\Pay\should_do_http_request;
-
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Pipeline;
+
+use function Yansongda\Pay\should_do_http_request;
 
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
+     * @return null|array|Collection|MessageInterface
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function call(string $plugin, array $params = [])
     {
         if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException(Exception::SHORTCUT_NOT_FOUND, "[$plugin] is not incompatible");
+            throw new InvalidParamsException(Exception::SHORTCUT_NOT_FOUND, "[{$plugin}] is not incompatible");
         }
 
         /* @var ShortcutInterface $money */
         $money = Pay::get($plugin);
 
         return $this->pay(
-            $this->mergeCommonPlugins($money->getPlugins($params)), $params
+            $this->mergeCommonPlugins($money->getPlugins($params)),
+            $params
         );
     }
 
     /**
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
+     * @return null|array|Collection|MessageInterface
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws ContainerException
+     * @throws InvalidParamsException
      */
     public function pay(array $plugins, array $params)
     {
@@ -71,7 +74,8 @@ abstract class AbstractProvider implements ProviderInterface
             ->send((new Rocket())->setParams($params)->setPayload(new Collection()))
             ->through($plugins)
             ->via('assembly')
-            ->then(fn ($rocket) => $this->ignite($rocket));
+            ->then(fn ($rocket) => $this->ignite($rocket))
+        ;
 
         Event::dispatch(new Event\PayFinish($rocket));
 
@@ -85,10 +89,10 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     * @throws InvalidResponseException
+     * @throws InvalidConfigException
      */
     public function ignite(Rocket $rocket): Rocket
     {
@@ -99,7 +103,7 @@ abstract class AbstractProvider implements ProviderInterface
         /* @var HttpClientInterface $http */
         $http = Pay::get(HttpClientInterface::class);
 
-        if (!($http instanceof ClientInterface)) {
+        if (!$http instanceof ClientInterface) {
             throw new InvalidConfigException(Exception::HTTP_CLIENT_CONFIG_ERROR);
         }
 
@@ -113,7 +117,8 @@ abstract class AbstractProvider implements ProviderInterface
             $contents = (string) $response->getBody();
 
             $rocket->setDestination($response->withBody(Utils::streamFor($contents)))
-                ->setDestinationOrigin($response->withBody(Utils::streamFor($contents)));
+                ->setDestinationOrigin($response->withBody(Utils::streamFor($contents)))
+            ;
         } catch (Throwable $e) {
             Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
 
@@ -130,7 +135,7 @@ abstract class AbstractProvider implements ProviderInterface
     abstract public function mergeCommonPlugins(array $plugins): array;
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function verifyPlugin(array $plugins): void
     {
@@ -139,13 +144,13 @@ abstract class AbstractProvider implements ProviderInterface
                 continue;
             }
 
-            if ((is_object($plugin) ||
-                    (is_string($plugin) && class_exists($plugin))) &&
-                in_array(PluginInterface::class, class_implements($plugin))) {
+            if ((is_object($plugin)
+                    || (is_string($plugin) && class_exists($plugin)))
+                && in_array(PluginInterface::class, class_implements($plugin))) {
                 continue;
             }
 
-            throw new InvalidParamsException(Exception::PLUGIN_ERROR, "[$plugin] is not incompatible");
+            throw new InvalidParamsException(Exception::PLUGIN_ERROR, "[{$plugin}] is not incompatible");
         }
     }
 }

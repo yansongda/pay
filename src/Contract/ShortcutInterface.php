@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Contract;
 interface ShortcutInterface
 {
     /**
-     * @return \Yansongda\Pay\Contract\PluginInterface[]|string[]
+     * @return PluginInterface[]|string[]
      */
     public function getPlugins(array $params): array;
 }

@@ -15,7 +15,7 @@ use Yansongda\Pay\Rocket;
 class CreateDetailReceiptPlugin extends GeneralPlugin
 {
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function doSomething(Rocket $rocket): void
     {

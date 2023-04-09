@@ -37,7 +37,8 @@ class HtmlResponsePlugin implements PluginInterface
     {
         $url = $endpoint.(false === strpos($endpoint, '?') ? '?' : '&').$payload->query();
 
-        $content = sprintf('<!DOCTYPE html>
+        $content = sprintf(
+            '<!DOCTYPE html>
                     <html lang="en">
                         <head>
                             <meta charset="UTF-8" />
@@ -48,7 +49,8 @@ class HtmlResponsePlugin implements PluginInterface
                         <body>
                             Redirecting to %1$s.
                         </body>
-                    </html>', htmlspecialchars($url, ENT_QUOTES)
+                    </html>',
+            htmlspecialchars($url, ENT_QUOTES)
         );
 
         return new Response(302, ['Location' => $url], $content);

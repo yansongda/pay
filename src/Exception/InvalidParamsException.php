@@ -9,8 +9,6 @@ use Throwable;
 class InvalidParamsException extends Exception
 {
     /**
-     * Bootstrap.
-     *
      * @param mixed $extra
      */
     public function __construct(int $code = self::PARAMS_ERROR, string $message = 'Params Error', $extra = null, Throwable $previous = null)

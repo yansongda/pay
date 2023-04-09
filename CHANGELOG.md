@@ -3,6 +3,9 @@
 ### added
 
 - feat: 支持微信 v2 版本刷卡支付(#753)
+- feat: 增加申请代扣协议插件(#767)
+- feat: 增加支付中签约插件(#763)
+- feat: 增加只签约插件(#765)
 
 ### deleted
 
@@ -11,6 +14,7 @@
 ### refactor
 
 - refactor: 重构 ArrayParser 类(#754)
+- refactor: coding style(#769)
 
 ### changed
 

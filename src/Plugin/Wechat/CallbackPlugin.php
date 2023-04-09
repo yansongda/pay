@@ -7,27 +7,28 @@ namespace Yansongda\Pay\Plugin\Wechat;
 use Closure;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
-
-use function Yansongda\Pay\decrypt_wechat_resource;
-
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Rocket;
-
-use function Yansongda\Pay\verify_wechat_sign;
-
 use Yansongda\Supports\Collection;
+
+use function Yansongda\Pay\decrypt_wechat_resource;
+use function Yansongda\Pay\verify_wechat_sign;
 
 class CallbackPlugin implements PluginInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
+     * @throws InvalidResponseException
+     * @throws InvalidParamsException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -52,18 +53,19 @@ class CallbackPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function formatRequestAndParams(Rocket $rocket): void
     {
         $request = $rocket->getParams()['request'] ?? null;
 
-        if (!($request instanceof ServerRequestInterface)) {
+        if (!$request instanceof ServerRequestInterface) {
             throw new InvalidParamsException(Exception::REQUEST_NULL_ERROR);
         }
 
         $rocket->setDestination(clone $request)
             ->setDestinationOrigin($request)
-            ->setParams($rocket->getParams()['params'] ?? []);
+            ->setParams($rocket->getParams()['params'] ?? [])
+        ;
     }
 }

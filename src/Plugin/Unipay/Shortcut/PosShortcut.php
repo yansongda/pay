@@ -14,7 +14,7 @@ use Yansongda\Supports\Str;
 class PosShortcut implements ShortcutInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     public function getPlugins(array $params): array
     {
@@ -24,7 +24,7 @@ class PosShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Pos type [$typeMethod] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Pos type [{$typeMethod}] not supported");
     }
 
     public function defaultPlugins(): array

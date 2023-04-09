@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Fund\Profitsharing;
 
-use function Yansongda\Pay\get_wechat_config;
-
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
+
+use function Yansongda\Pay\get_wechat_config;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter8_1_9.shtml
@@ -16,8 +18,8 @@ use Yansongda\Pay\Rocket;
 class DeleteReceiverPlugin extends GeneralPlugin
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     protected function doSomething(Rocket $rocket): void
     {
@@ -29,7 +31,8 @@ class DeleteReceiverPlugin extends GeneralPlugin
 
         if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
             $wechatId['sub_mchid'] = $rocket->getPayload()
-                ->get('sub_mchid', $config['sub_mch_id'] ?? '');
+                ->get('sub_mchid', $config['sub_mch_id'] ?? '')
+            ;
         }
 
         $rocket->mergePayload($wechatId);

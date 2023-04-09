@@ -6,6 +6,8 @@ namespace Yansongda\Pay\Plugin\Alipay\Trade;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\ResponseParser;
 use Yansongda\Pay\Rocket;
@@ -19,8 +21,8 @@ class PagePayPlugin implements PluginInterface
     use SupportServiceProviderTrait;
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -35,7 +37,8 @@ class PagePayPlugin implements PluginInterface
                     ['product_code' => 'FAST_INSTANT_TRADE_PAY'],
                     $rocket->getParams()
                 ),
-            ]);
+            ])
+        ;
 
         Logger::info('[alipay][PagePayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

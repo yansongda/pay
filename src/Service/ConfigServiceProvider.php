@@ -6,15 +6,13 @@ namespace Yansongda\Pay\Service;
 
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Config;
 
 class ConfigServiceProvider implements ServiceProviderInterface
 {
-    /**
-     * @var array
-     */
-    private $config = [
+    private array $config = [
         'logger' => [
             'enable' => false,
             'file' => null,
@@ -34,7 +32,9 @@ class ConfigServiceProvider implements ServiceProviderInterface
     ];
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @param mixed $data
+     *
+     * @throws ContainerException
      */
     public function register($data = null): void
     {
