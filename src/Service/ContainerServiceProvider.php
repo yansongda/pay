@@ -21,13 +21,15 @@ use Yansongda\Pay\Pay;
  */
 class ContainerServiceProvider implements ServiceProviderInterface
 {
-    private $detectApplication = [
+    private array $detectApplication = [
         'laravel' => LaravelContainer::class,
         'hyperf' => HyperfApplication::class,
     ];
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @param mixed $data
+     *
+     * @throws ContainerException
      */
     public function register($data = null): void
     {
@@ -53,8 +55,8 @@ class ContainerServiceProvider implements ServiceProviderInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws ContainerException
+     * @throws ContainerNotFoundException
      */
     protected function laravelApplication(): bool
     {
@@ -70,8 +72,8 @@ class ContainerServiceProvider implements ServiceProviderInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws ContainerException
+     * @throws ContainerNotFoundException
      */
     protected function hyperfApplication(): bool
     {
@@ -91,7 +93,7 @@ class ContainerServiceProvider implements ServiceProviderInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws ContainerException
      */
     protected function defaultApplication(): void
     {

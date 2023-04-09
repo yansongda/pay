@@ -3,12 +3,11 @@
 namespace Yansongda\Pay\Plugin\Wechat\Papay;
 
 use Closure;
-
-use function Yansongda\Pay\get_wechat_config;
-
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
 use Yansongda\Pay\Rocket;
+
+use function Yansongda\Pay\get_wechat_config;
 
 /**
  * 返回只签约（委托代扣）参数.
@@ -44,12 +43,10 @@ class OnlyContractPlugin extends RadarSignPlugin
     {
         $configKey = $this->getConfigKey($rocket->getParams());
 
-        $result = [
+        return [
             'appid' => $config[$configKey] ?? '',
             'mch_id' => $config['mch_id'] ?? '',
         ];
-
-        return $result;
     }
 
     protected function getConfigKey(array $params): string

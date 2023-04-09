@@ -6,24 +6,26 @@ namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Rocket;
-
-use function Yansongda\Pay\verify_alipay_sign;
-
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
+
+use function Yansongda\Pay\verify_alipay_sign;
 
 class CallbackPlugin implements PluginInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
+     * @throws InvalidResponseException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -39,7 +41,8 @@ class CallbackPlugin implements PluginInterface
         verify_alipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), $sign);
 
         $rocket->setDirection(NoHttpRequestParser::class)
-            ->setDestination($rocket->getPayload());
+            ->setDestination($rocket->getPayload())
+        ;
 
         Logger::info('[alipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -49,7 +52,8 @@ class CallbackPlugin implements PluginInterface
     protected function formatPayload(Rocket $rocket): void
     {
         $payload = (new Collection($rocket->getParams()))
-            ->filter(fn ($v, $k) => '' !== $v && !is_null($v) && 'sign' != $k && 'sign_type' != $k && !Str::startsWith($k, '_'));
+            ->filter(fn ($v, $k) => '' !== $v && !is_null($v) && 'sign' != $k && 'sign_type' != $k && !Str::startsWith($k, '_'))
+        ;
 
         $rocket->setPayload($payload);
     }

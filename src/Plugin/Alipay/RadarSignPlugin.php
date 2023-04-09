@@ -6,12 +6,10 @@ namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
-
-use function Yansongda\Pay\get_alipay_config;
-use function Yansongda\Pay\get_private_cert;
-
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
@@ -20,12 +18,15 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
+use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_private_cert;
+
 class RadarSignPlugin implements PluginInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -41,9 +42,9 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
      */
     protected function sign(Rocket $rocket): void
     {
@@ -55,8 +56,8 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     protected function reRadar(Rocket $rocket): void
     {
@@ -82,9 +83,9 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
      */
     protected function getSign(Rocket $rocket): string
     {
@@ -98,9 +99,9 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
      */
     protected function getPrivateKey(array $params): string
     {
@@ -119,8 +120,8 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     protected function getUrl(array $params): string
     {

@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Risk\Complaints;
 
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-
-use function Yansongda\Pay\get_wechat_config;
-
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Parser\OriginResponseParser;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
+
+use function Yansongda\Pay\get_wechat_config;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_14.shtml
@@ -19,8 +20,8 @@ use Yansongda\Pay\Rocket;
 class ResponseComplaintPlugin extends GeneralPlugin
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     protected function doSomething(Rocket $rocket): void
     {
@@ -39,7 +40,7 @@ class ResponseComplaintPlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function getUri(Rocket $rocket): string
     {

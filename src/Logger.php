@@ -6,7 +6,9 @@ namespace Yansongda\Pay;
 
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\LoggerInterface;
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 
 /**
  * @method static void emergency($message, array $context = [])
@@ -22,14 +24,14 @@ use Yansongda\Pay\Exception\InvalidConfigException;
 class Logger
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     * @throws InvalidConfigException
      */
     public static function __callStatic(string $method, array $args): void
     {
-        if (!Pay::hasContainer() || !Pay::has(LoggerInterface::class) ||
-            false === Pay::get(ConfigInterface::class)->get('logger.enable', false)) {
+        if (!Pay::hasContainer() || !Pay::has(LoggerInterface::class)
+            || false === Pay::get(ConfigInterface::class)->get('logger.enable', false)) {
             return;
         }
 

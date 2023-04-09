@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Traits;
 
 use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 
 trait GetUnipayCerts
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
      */
     public function getCertId(string $tenant, array $config): string
     {
@@ -39,7 +41,7 @@ trait GetUnipayCerts
     /**
      * @return array ['cert' => 公钥, 'pkey' => 私钥, 'extracerts' => array]
      *
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function getCerts(array $config): array
     {

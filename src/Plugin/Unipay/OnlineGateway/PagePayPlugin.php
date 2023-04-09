@@ -26,6 +26,7 @@ class PagePayPlugin extends GeneralPlugin
                 'txnType' => '01',
                 'txnSubType' => '01',
                 'channelType' => '07',
-            ]);
+            ])
+        ;
     }
 }

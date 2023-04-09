@@ -100,11 +100,9 @@ class Exception extends \Exception
      *
      * @var mixed
      */
-    public $extra = null;
+    public $extra;
 
     /**
-     * Bootstrap.
-     *
      * @param mixed $extra
      */
     public function __construct(string $message = 'Unknown Error', int $code = self::UNKNOWN_ERROR, $extra = null, Throwable $previous = null)

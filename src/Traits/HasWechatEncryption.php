@@ -4,20 +4,24 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Traits;
 
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 
+use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\reload_wechat_public_certs;
 
 trait HasWechatEncryption
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws InvalidParamsException
+     * @throws InvalidResponseException
+     * @throws ServiceNotFoundException
      */
     public function loadSerialNo(array $params): array
     {
@@ -38,9 +42,9 @@ trait HasWechatEncryption
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function getPublicKey(array $params, string $serialNo): string
     {

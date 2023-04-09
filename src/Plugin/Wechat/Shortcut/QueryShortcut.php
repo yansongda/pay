@@ -14,7 +14,7 @@ use Yansongda\Supports\Str;
 class QueryShortcut implements ShortcutInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     public function getPlugins(array $params): array
     {
@@ -28,7 +28,7 @@ class QueryShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Query type [$typeMethod] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Query type [{$typeMethod}] not supported");
     }
 
     protected function defaultPlugins(): array

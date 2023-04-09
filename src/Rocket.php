@@ -32,9 +32,9 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
     private string $direction = ParserInterface::class;
 
     /**
-     * @var \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface|array|null
+     * @var null|array|MessageInterface|Collection
      */
-    private $destination = null;
+    private $destination;
 
     private ?MessageInterface $destinationOrigin = null;
 
@@ -117,7 +117,7 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
     }
 
     /**
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
+     * @return null|array|MessageInterface|Collection
      */
     public function getDestination()
     {
@@ -125,7 +125,7 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
     }
 
     /**
-     * @param \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null $destination
+     * @param null|array|MessageInterface|Collection $destination
      */
     public function setDestination($destination): Rocket
     {

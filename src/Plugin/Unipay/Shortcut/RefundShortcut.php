@@ -13,7 +13,7 @@ use Yansongda\Supports\Str;
 class RefundShortcut implements ShortcutInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     public function getPlugins(array $params): array
     {
@@ -23,7 +23,7 @@ class RefundShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Refund type [$typeMethod] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Refund type [{$typeMethod}] not supported");
     }
 
     public function defaultPlugins(): array

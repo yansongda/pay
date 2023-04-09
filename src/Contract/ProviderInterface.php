@@ -4,65 +4,55 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Contract;
 
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Supports\Collection;
 
 interface ProviderInterface
 {
     /**
-     * pay.
+     * @return null|array|Collection|MessageInterface
      *
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
-     *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function pay(array $plugins, array $params);
 
     /**
-     * Quick road - Query an order.
+     * @param array|string $order
      *
-     * @param string|array $order
-     *
-     * @return array|\Yansongda\Supports\Collection
+     * @return array|Collection
      */
     public function find($order);
 
     /**
-     * Quick road - Cancel an order.
+     * @param array|string $order
      *
-     * @param string|array $order
-     *
-     * @return array|\Yansongda\Supports\Collection|void
+     * @return array|Collection|void
      */
     public function cancel($order);
 
     /**
-     * Quick road - Close an order.
+     * @param array|string $order
      *
-     * @param string|array $order
-     *
-     * @return array|\Yansongda\Supports\Collection|void
+     * @return array|Collection|void
      */
     public function close($order);
 
     /**
-     * Quick road - Refund an order.
-     *
-     * @return array|\Yansongda\Supports\Collection
+     * @return array|Collection
      */
     public function refund(array $order);
 
     /**
-     * Verify a request.
-     *
-     * @param array|\Psr\Http\Message\ServerRequestInterface|null $contents
+     * @param null|array|ServerRequestInterface $contents
      */
     public function callback($contents = null, ?array $params = null): Collection;
 
-    /**
-     * Echo success to server.
-     */
     public function success(): ResponseInterface;
 }

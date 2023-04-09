@@ -6,9 +6,13 @@ namespace Yansongda\Pay\Provider;
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Event;
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
@@ -36,11 +40,11 @@ class Alipay extends AbstractProvider
     ];
 
     /**
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
+     * @return null|array|MessageInterface|Collection
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function __call(string $shortcut, array $params)
     {
@@ -51,13 +55,13 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @param string|array $order
+     * @param array|string $order
      *
-     * @return array|\Yansongda\Supports\Collection
+     * @return array|Collection
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function find($order)
     {
@@ -69,13 +73,13 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @param string|array $order
+     * @param array|string $order
      *
-     * @return array|\Yansongda\Supports\Collection
+     * @return array|Collection
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function cancel($order)
     {
@@ -87,13 +91,13 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @param string|array $order
+     * @param array|string $order
      *
-     * @return array|\Yansongda\Supports\Collection
+     * @return array|Collection
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function close($order)
     {
@@ -105,11 +109,11 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @return array|\Yansongda\Supports\Collection
+     * @return array|Collection
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function refund(array $order)
     {
@@ -119,10 +123,10 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @param array|\Psr\Http\Message\ServerRequestInterface|null $contents
+     * @param null|array|ServerRequestInterface $contents
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws ContainerException
+     * @throws InvalidParamsException
      */
     public function callback($contents = null, ?array $params = null): Collection
     {
@@ -131,7 +135,8 @@ class Alipay extends AbstractProvider
         Event::dispatch(new Event\CallbackReceived('alipay', $request->all(), $params, null));
 
         return $this->pay(
-            [CallbackPlugin::class], $request->merge($params)->all()
+            [CallbackPlugin::class],
+            $request->merge($params)->all()
         );
     }
 
@@ -151,7 +156,7 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @param array|ServerRequestInterface|null $contents
+     * @param null|array|ServerRequestInterface $contents
      */
     protected function getCallbackParams($contents = null): Collection
     {

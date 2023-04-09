@@ -7,22 +7,24 @@ namespace Yansongda\Pay\Plugin\Unipay;
 use Closure;
 use GuzzleHttp\Psr7\Utils;
 use Yansongda\Pay\Contract\PluginInterface;
-
-use function Yansongda\Pay\get_unipay_config;
-
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Traits\GetUnipayCerts;
 use Yansongda\Supports\Collection;
+
+use function Yansongda\Pay\get_unipay_config;
 
 class RadarSignPlugin implements PluginInterface
 {
     use GetUnipayCerts;
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     * @throws InvalidConfigException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -38,9 +40,9 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
      */
     protected function sign(Rocket $rocket): void
     {
@@ -65,9 +67,9 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
      */
     protected function getConfig(array $params): array
     {
