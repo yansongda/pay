@@ -16,8 +16,8 @@ use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
-
 use Yansongda\Supports\Collection;
+
 use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_wechat_sign;
 
@@ -49,7 +49,7 @@ class LaunchPlugin implements PluginInterface
     }
 
     /**
-     * @return null|array|MessageInterface|Collection
+     * @return null|array|Collection|MessageInterface
      *
      * @throws InvalidResponseException
      */

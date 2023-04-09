@@ -31,7 +31,7 @@ use function Yansongda\Pay\should_do_http_request;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
-     * @return null|array|MessageInterface|Collection
+     * @return null|array|Collection|MessageInterface
      *
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -53,7 +53,7 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @return null|array|MessageInterface|Collection
+     * @return null|array|Collection|MessageInterface
      *
      * @throws ContainerException
      * @throws InvalidParamsException

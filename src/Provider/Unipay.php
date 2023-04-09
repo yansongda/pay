@@ -35,7 +35,7 @@ class Unipay extends AbstractProvider
     ];
 
     /**
-     * @return null|array|MessageInterface|Collection
+     * @return null|array|Collection|MessageInterface
      *
      * @throws ContainerException
      * @throws InvalidParamsException
