@@ -36,7 +36,7 @@ class OnlyContractPlugin implements PluginInterface
 
         $rocket->mergePayload($wechatId);
         $rocket->mergePayload([
-            'sign' => get_wechat_sign_v2($config['mch_secret_key_v2'] ?? '', $rocket->getPayload()->all()),
+            'sign' => get_wechat_sign_v2($rocket->getParams(), $rocket->getPayload()->all()),
         ]);
 
         $rocket->setDestination($rocket->getPayload());

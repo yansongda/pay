@@ -31,6 +31,7 @@ use function Yansongda\Pay\get_wechat_base_uri;
 use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_public_certs;
 use function Yansongda\Pay\get_wechat_sign;
+use function Yansongda\Pay\get_wechat_sign_v2;
 use function Yansongda\Pay\reload_wechat_public_certs;
 use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
@@ -222,7 +223,7 @@ class FunctionTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::WECHAT_CONFIG_ERROR);
-        get_wechat_sign([], '', '');
+        get_wechat_sign_v2([], []);
     }
     
     public function testVerifyWechatSign()
