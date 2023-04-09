@@ -42,7 +42,7 @@ class PapayShortcutTest extends TestCase
             RadarSignPlugin::class,
             \Yansongda\Pay\Plugin\Wechat\Pay\Mini\InvokePrepayV2Plugin::class,
             ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
+        ], $this->plugin->getPlugins(['_type' => 'mini']));
     }
 
     public function testApp()
@@ -53,6 +53,6 @@ class PapayShortcutTest extends TestCase
             RadarSignPlugin::class,
             \Yansongda\Pay\Plugin\Wechat\Pay\App\InvokePrepayV2Plugin::class,
             ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
+        ], $this->plugin->getPlugins(['_type' => 'app']));
     }
 }
