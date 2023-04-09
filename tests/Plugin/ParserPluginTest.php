@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin;
 
-use Yansongda\Pay\Contract\ParserInterface;
+use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Pay;
@@ -47,7 +47,7 @@ class ParserPluginTest extends TestCase
 
     public function testDefaultParser()
     {
-        Pay::set(ParserInterface::class, NoHttpRequestDirection::class);
+        Pay::set(DirectionInterface::class, NoHttpRequestDirection::class);
 
         $rocket = new Rocket();
 
@@ -58,7 +58,7 @@ class ParserPluginTest extends TestCase
 
     public function testObjectParser()
     {
-        Pay::set(ParserInterface::class, new NoHttpRequestDirection());
+        Pay::set(DirectionInterface::class, new NoHttpRequestDirection());
 
         $rocket = new Rocket();
 

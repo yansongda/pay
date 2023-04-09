@@ -9,8 +9,8 @@ use Illuminate\Container\Container as LaravelContainer;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
+use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\PackerInterface;
-use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Exception\ContainerException;
@@ -85,7 +85,7 @@ class Pay
     {
         $this->registerServices($config, $container);
 
-        Pay::set(ParserInterface::class, CollectionDirection::class);
+        Pay::set(DirectionInterface::class, CollectionDirection::class);
         Pay::set(PackerInterface::class, JsonPacker::class);
     }
 

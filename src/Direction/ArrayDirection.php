@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Direction;
 
 use Psr\Http\Message\ResponseInterface;
+use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\PackerInterface;
-use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 
-class ArrayDirection implements ParserInterface
+class ArrayDirection implements DirectionInterface
 {
     /**
      * @throws InvalidResponseException

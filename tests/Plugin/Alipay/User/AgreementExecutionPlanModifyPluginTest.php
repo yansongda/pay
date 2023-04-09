@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\User;
 
-use Yansongda\Pay\Contract\ParserInterface;
+use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Plugin\Alipay\User\AgreementExecutionPlanModifyPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -25,7 +25,7 @@ class AgreementExecutionPlanModifyPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals(ParserInterface::class, $result->getDirection());
+        self::assertEquals(DirectionInterface::class, $result->getDirection());
         self::assertStringContainsString('alipay.user.agreement.executionplan.modify', $result->getPayload()->toJson());
     }
 }
