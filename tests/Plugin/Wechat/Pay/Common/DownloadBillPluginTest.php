@@ -5,7 +5,7 @@ namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\Common;
 use GuzzleHttp\Psr7\Uri;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Parser\OriginResponseParser;
+use Yansongda\Pay\Direction\OriginResponseDirection;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\DownloadBillPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -34,7 +34,7 @@ class DownloadBillPluginTest extends TestCase
 
         $radar = $result->getRadar();
 
-        self::assertEquals(OriginResponseParser::class, $result->getDirection());
+        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
         self::assertEquals('GET', $radar->getMethod());
         self::assertEquals(new Uri('https://yansongda.cn'), $radar->getUri());
     }

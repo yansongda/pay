@@ -12,8 +12,8 @@ use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Parser\ArrayParser;
-use Yansongda\Pay\Parser\NoHttpRequestParser;
+use Yansongda\Pay\Direction\ArrayDirection;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\AbstractProvider;
 use Yansongda\Pay\Rocket;
@@ -35,7 +35,7 @@ class AbstractProviderTest extends TestCase
     public function testVerifyCallablePlugin()
     {
         $plugin = [function ($rocket, $next) {
-            $rocket->setDirection(NoHttpRequestParser::class)
+            $rocket->setDirection(NoHttpRequestDirection::class)
                 ->setDestination(new Response());
 
             return $next($rocket);
@@ -171,7 +171,7 @@ class FooPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $rocket->setDirection(NoHttpRequestParser::class)
+        $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination(new Response());
 
         return $next($rocket);
@@ -182,7 +182,7 @@ class BarPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $rocket->setDirection(ArrayParser::class)
+        $rocket->setDirection(ArrayDirection::class)
             ->setRadar(new Request('get', ''));
 
         $rocket = $next($rocket);

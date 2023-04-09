@@ -6,8 +6,8 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
-use Yansongda\Pay\Parser\NoHttpRequestParser;
-use Yansongda\Pay\Parser\OriginResponseParser;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Pay\Direction\OriginResponseDirection;
 use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -30,7 +30,7 @@ class LaunchPluginTest extends TestCase
     public function testShouldNotDoRequest()
     {
         $rocket = new Rocket();
-        $rocket->setDirection(NoHttpRequestParser::class);
+        $rocket->setDirection(NoHttpRequestDirection::class);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
@@ -42,7 +42,7 @@ class LaunchPluginTest extends TestCase
         $destination = new Response();
 
         $rocket = new Rocket();
-        $rocket->setDirection(OriginResponseParser::class);
+        $rocket->setDirection(OriginResponseDirection::class);
         $rocket->setDestination($destination);
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 
@@ -56,7 +56,7 @@ class LaunchPluginTest extends TestCase
         $destination = new Response(500);
 
         $rocket = new Rocket();
-        $rocket->setDirection(OriginResponseParser::class);
+        $rocket->setDirection(OriginResponseDirection::class);
         $rocket->setDestination($destination);
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 
@@ -71,7 +71,7 @@ class LaunchPluginTest extends TestCase
         $destination = [];
 
         $rocket = new Rocket();
-        $rocket->setDirection(OriginResponseParser::class);
+        $rocket->setDirection(OriginResponseDirection::class);
         $rocket->setDestination($destination);
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 
@@ -85,7 +85,7 @@ class LaunchPluginTest extends TestCase
         $destination = new Collection();
 
         $rocket = new Rocket();
-        $rocket->setDirection(OriginResponseParser::class);
+        $rocket->setDirection(OriginResponseDirection::class);
         $rocket->setDestination($destination);
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 

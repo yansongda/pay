@@ -1,21 +1,21 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Parser;
+namespace Yansongda\Pay\Tests\Direction;
 
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Pay\Packer\JsonPacker;
-use Yansongda\Pay\Parser\NoHttpRequestParser;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Tests\TestCase;
 
-class NoHttpRequestParserTest extends TestCase
+class NoHttpRequestDirectionTest extends TestCase
 {
-    protected NoHttpRequestParser $parser;
+    protected NoHttpRequestDirection $parser;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->parser = new NoHttpRequestParser();
+        $this->parser = new NoHttpRequestDirection();
     }
 
     public function testNormal()

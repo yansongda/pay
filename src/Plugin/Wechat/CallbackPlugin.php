@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Plugin\Wechat;
 use Closure;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
@@ -14,7 +15,6 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
@@ -41,7 +41,7 @@ class CallbackPlugin implements PluginInterface
 
         $body = json_decode((string) $rocket->getDestination()->getBody(), true);
 
-        $rocket->setDirection(NoHttpRequestParser::class)->setPayload(new Collection($body));
+        $rocket->setDirection(NoHttpRequestDirection::class)->setPayload(new Collection($body));
 
         $body['resource'] = decrypt_wechat_resource($body['resource'] ?? [], $rocket->getParams());
 

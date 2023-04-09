@@ -8,13 +8,13 @@ use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
-use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
 use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
@@ -25,8 +25,8 @@ use Yansongda\Supports\Str;
 if (!function_exists('should_do_http_request')) {
     function should_do_http_request(string $direction): bool
     {
-        return NoHttpRequestParser::class !== $direction
-            && !in_array(NoHttpRequestParser::class, class_parents($direction));
+        return NoHttpRequestDirection::class !== $direction
+            && !in_array(NoHttpRequestDirection::class, class_parents($direction));
     }
 }
 

@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\Trade;
 
-use Yansongda\Pay\Parser\ResponseParser;
+use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Plugin\Alipay\Trade\AppPayPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -25,7 +25,7 @@ class AppPayPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals(ResponseParser::class, $result->getDirection());
+        self::assertEquals(ResponseDirection::class, $result->getDirection());
         self::assertStringContainsString('alipay.trade.app.pay', $result->getPayload()->toJson());
         self::assertStringContainsString('QUICK_MSECURITY_PAY', $result->getPayload()->toJson());
     }

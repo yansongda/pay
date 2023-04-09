@@ -44,7 +44,7 @@ namespace Yansongda\Pay\Plugin\Alipay\Trade;
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Parser\ResponseParser;
+use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Rocket;
 
 class PagePayPlugin implements PluginInterface
@@ -53,7 +53,7 @@ class PagePayPlugin implements PluginInterface
     {
         Logger::info('[alipay][PagePayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $rocket->setDirection(ResponseParser::class)
+        $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
                 'method' => 'alipay.trade.page.pay',
                 'biz_content' => array_merge(
@@ -70,7 +70,7 @@ class PagePayPlugin implements PluginInterface
 ```
 
 这个 Plugin 的目的就是为了组装一系列支付宝所需要的参数，同时，由于电脑支付是不需要后端 http 调用支付宝接口的，
-只需要一个浏览器的响应，所以，我们把 🚀 的 `Direction` 设置成了 `ResponseParser::class`。
+只需要一个浏览器的响应，所以，我们把 🚀 的 `Direction` 设置成了 `ResponseDirection::class`。
 
 - 跳转响应 Plugin
 

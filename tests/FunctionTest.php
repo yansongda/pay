@@ -11,9 +11,9 @@ use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidResponseException;
-use Yansongda\Pay\Parser\CollectionParser;
-use Yansongda\Pay\Parser\NoHttpRequestParser;
-use Yansongda\Pay\Parser\ResponseParser;
+use Yansongda\Pay\Direction\CollectionDirection;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
@@ -56,13 +56,13 @@ class FunctionTest extends TestCase
 
         self::assertTrue(should_do_http_request($rocket->getDirection()));
 
-        $rocket->setDirection(CollectionParser::class);
+        $rocket->setDirection(CollectionDirection::class);
         self::assertTrue(should_do_http_request($rocket->getDirection()));
 
-        $rocket->setDirection(ResponseParser::class);
+        $rocket->setDirection(ResponseDirection::class);
         self::assertFalse(should_do_http_request($rocket->getDirection()));
 
-        $rocket->setDirection(NoHttpRequestParser::class);
+        $rocket->setDirection(NoHttpRequestDirection::class);
         self::assertFalse(should_do_http_request($rocket->getDirection()));
     }
 

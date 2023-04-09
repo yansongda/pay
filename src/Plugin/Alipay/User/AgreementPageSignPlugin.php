@@ -6,8 +6,8 @@ namespace Yansongda\Pay\Plugin\Alipay\User;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Parser\ResponseParser;
 use Yansongda\Pay\Rocket;
 
 /**
@@ -19,7 +19,7 @@ class AgreementPageSignPlugin implements PluginInterface
     {
         Logger::debug('[alipay][AgreementPageSignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $rocket->setDirection(ResponseParser::class)
+        $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
                 'method' => 'alipay.user.agreement.page.sign',
                 'biz_content' => array_merge(

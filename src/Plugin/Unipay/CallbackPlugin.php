@@ -6,13 +6,13 @@ namespace Yansongda\Pay\Plugin\Unipay;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Parser\NoHttpRequestParser;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -42,7 +42,7 @@ class CallbackPlugin implements PluginInterface
 
         verify_unipay_sign($params, $rocket->getPayload()->sortKeys()->toString(), $signature);
 
-        $rocket->setDirection(NoHttpRequestParser::class)
+        $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload())
         ;
 

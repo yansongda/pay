@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\Risk\Complaints;
 
 use GuzzleHttp\Psr7\Uri;
-use Yansongda\Pay\Parser\OriginResponseParser;
+use Yansongda\Pay\Direction\OriginResponseDirection;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\Risk\Complaints\DeleteCallbackPlugin;
 use Yansongda\Pay\Provider\Wechat;
@@ -37,6 +37,6 @@ class DeleteCallbackPluginTest extends TestCase
         self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/merchant-service/complaint-notifications'), $radar->getUri());
         self::assertNull($rocket->getPayload());
         self::assertEquals('DELETE', $radar->getMethod());
-        self::assertEquals(OriginResponseParser::class, $rocket->getDirection());
+        self::assertEquals(OriginResponseDirection::class, $rocket->getDirection());
     }
 }
