@@ -46,10 +46,13 @@ abstract class AbstractProvider implements ProviderInterface
         /* @var ShortcutInterface $money */
         $money = Pay::get($plugin);
 
-        return $this->pay(
-            $this->mergeCommonPlugins($money->getPlugins($params)),
-            $params
-        );
+        $plugins = $money->getPlugins($params);
+
+        if (empty($params['_no_common_plugins'])) {
+            $plugins = $this->mergeCommonPlugins($plugins);
+        }
+
+        return $this->pay($plugins, $params);
     }
 
     /**

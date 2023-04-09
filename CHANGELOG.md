@@ -6,6 +6,7 @@
 - feat: 增加申请代扣协议插件(#767)
 - feat: 增加支付中签约插件(#763)
 - feat: 增加只签约插件(#765)
+- feat: `shortcut` 支持 `_no_common_plugins` 参数不使用通用插件(#771)
 
 ### deleted
 

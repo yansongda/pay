@@ -10,6 +10,7 @@ use Mockery;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Direction\ArrayDirection;
@@ -123,6 +124,14 @@ class AbstractProviderTest extends TestCase
 
         self::assertIsArray($result);
     }
+
+    public function testNoCommonPlugins()
+    {
+        $provider = new Foo2ProviderStub();
+        $result = $provider->call(FooShortcut::class, ['_no_common_plugins' => true]);
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+    }
 }
 
 class FooProviderStub extends AbstractProvider
@@ -167,6 +176,14 @@ class FooProviderStub extends AbstractProvider
     }
 }
 
+class Foo2ProviderStub extends FooProviderStub
+{
+    public function mergeCommonPlugins(array $plugins): array
+    {
+        return [new BarPlugin()];
+    }
+}
+
 class FooPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
@@ -190,5 +207,13 @@ class BarPlugin implements PluginInterface
         $rocket->setDestination(new Collection(['name' => 'yansongda']));
 
         return $rocket;
+    }
+}
+
+class FooShortcut implements ShortcutInterface
+{
+    public function getPlugins(array $params): array
+    {
+        return [FooPlugin::class];
     }
 }
