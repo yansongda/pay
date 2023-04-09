@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Tests\Plugin\Wechat\Papay;
 use Yansongda\Pay\Plugin\Wechat\Papay\OnlyContractPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
+use Yansongda\Supports\Collection;
 
 class OnlyContractPluginTest extends TestCase
 {
@@ -19,8 +20,7 @@ class OnlyContractPluginTest extends TestCase
 
     public function testNormal()
     {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
+        $rocket = (new Rocket())->setParams([])->setPayload(new Collection());
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
@@ -35,8 +35,7 @@ class OnlyContractPluginTest extends TestCase
     public function testGetConfigKey()
     {
         // mini
-        $rocket = new Rocket();
-        $rocket->setParams(['_type' => 'mini']);
+        $rocket = (new Rocket())->setParams(['_type' => 'mini'])->setPayload(new Collection());
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
@@ -48,8 +47,7 @@ class OnlyContractPluginTest extends TestCase
         self::assertArrayHasKey('sign', $payload->all());
 
         // app
-        $rocket = new Rocket();
-        $rocket->setParams(['_type' => 'app']);
+        $rocket = (new Rocket())->setParams(['_type' => 'app'])->setPayload(new Collection());
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
