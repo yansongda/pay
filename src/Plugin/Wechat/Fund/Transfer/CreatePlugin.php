@@ -65,11 +65,7 @@ class CreatePlugin extends GeneralPlugin
     protected function getWechatId(array $params, Collection $payload): array
     {
         $config = get_wechat_config($params);
-        $key = ($params['_type'] ?? 'mp').'_app_id';
-
-        if ('app_app_id' === $key) {
-            $key = 'app_id';
-        }
+        $key = $this->getConfigKey($params);
 
         $appId = [
             'appid' => $payload->get('appid', $config[$key] ?? ''),

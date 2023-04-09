@@ -54,21 +54,6 @@ class InvokePrepayPlugin implements PluginInterface
 
     /**
      * @throws ContainerException
-     * @throws InvalidConfigException
-     * @throws ServiceNotFoundException
-     */
-    protected function getSign(Collection $invokeConfig, array $params): string
-    {
-        $contents = $invokeConfig->get('appId', '')."\n".
-            $invokeConfig->get('timeStamp', '')."\n".
-            $invokeConfig->get('nonceStr', '')."\n".
-            $invokeConfig->get('package', '')."\n";
-
-        return get_wechat_sign($params, $contents);
-    }
-
-    /**
-     * @throws ContainerException
      * @throws ServiceNotFoundException
      * @throws \Exception
      */
@@ -85,6 +70,21 @@ class InvokePrepayPlugin implements PluginInterface
         $config->set('paySign', $this->getSign($config, $rocket->getParams()));
 
         return $config;
+    }
+
+    /**
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
+     */
+    protected function getSign(Collection $invokeConfig, array $params): string
+    {
+        $contents = $invokeConfig->get('appId', '')."\n".
+            $invokeConfig->get('timeStamp', '')."\n".
+            $invokeConfig->get('nonceStr', '')."\n".
+            $invokeConfig->get('package', '')."\n";
+
+        return get_wechat_sign($params, $contents);
     }
 
     /**

@@ -205,6 +205,26 @@ class FunctionTest extends TestCase
         get_wechat_sign([], '', '');
     }
 
+    public function testGetWechatSignV2()
+    {
+        $params = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
+        self::assertEquals('3213848AED2C380749FD1D559555881D', get_wechat_sign_v2($params, []));
+
+        // test config error
+        $config1 = [
+            'wechat' => [
+                'default' => [
+                    'mch_secret_key_v2' => ''
+                ],
+            ]
+        ];
+        Pay::config(array_merge($config1, ['_force' => true]));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::WECHAT_CONFIG_ERROR);
+        get_wechat_sign([], '', '');
+    }
+    
     public function testVerifyWechatSign()
     {
         $response = new Response(

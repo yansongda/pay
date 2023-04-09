@@ -23,6 +23,7 @@ use Yansongda\Supports\Str;
 use function Yansongda\Pay\get_public_cert;
 use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_sign;
+use function Yansongda\Pay\get_wechat_sign_v2;
 
 class RadarSignPlugin implements PluginInterface
 {
@@ -77,39 +78,12 @@ class RadarSignPlugin implements PluginInterface
 
         $rocket->mergePayload(['nonce_str' => Str::random(32)]);
         $rocket->mergePayload([
-            'sign' => $this->v2GetSign($config['mch_secret_key_v2'] ?? '', $rocket->getPayload()->all()),
+            'sign' => get_wechat_sign_v2($config['mch_secret_key_v2'] ?? '', $rocket->getPayload()->all()),
         ]);
 
         return $rocket->getRadar()->withBody(
             Utils::streamFor($this->xmlPacker->pack($rocket->getPayload()->all()))
         );
-    }
-
-    /**
-     * @throws InvalidConfigException
-     */
-    protected function v2GetSign(?string $secret, array $payload): string
-    {
-        if (empty($secret)) {
-            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key_v2]');
-        }
-
-        $string = md5($this->v2PayloadToString($payload).'&key='.$secret);
-
-        return strtoupper($string);
-    }
-
-    protected function v2PayloadToString(array $payload): string
-    {
-        ksort($payload);
-
-        $buff = '';
-
-        foreach ($payload as $k => $v) {
-            $buff .= ('sign' != $k && '' != $v && !is_array($v)) ? $k.'='.$v.'&' : '';
-        }
-
-        return trim($buff, '&');
     }
 
     /**
