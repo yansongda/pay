@@ -6,7 +6,7 @@ namespace Yansongda\Pay\Contract;
 
 use Psr\Http\Message\ResponseInterface;
 
-interface ParserInterface
+interface DirectionInterface
 {
     /**
      * @return mixed
