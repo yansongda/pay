@@ -7,6 +7,7 @@
 - feat: 增加支付中签约插件(#763)
 - feat: 增加只签约插件(#765)
 - feat: `shortcut` 支持 `_no_common_plugins` 参数不使用通用插件(#771)
+- feat: 增加委托代扣 shortcut(#773)
 
 ### deleted
 
