@@ -10,10 +10,7 @@ use function Yansongda\Pay\get_wechat_config;
 
 class InvokePrepayPluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Wechat\Pay\Mini\InvokePrepayPlugin
-     */
-    protected $plugin;
+    protected InvokePrepayPlugin $plugin;
 
     protected function setUp(): void
     {

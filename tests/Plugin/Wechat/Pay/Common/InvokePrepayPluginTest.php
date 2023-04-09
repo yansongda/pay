@@ -11,10 +11,7 @@ use Yansongda\Supports\Collection;
 
 class InvokePrepayPluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokePrepayPlugin
-     */
-    protected $plugin;
+    protected InvokePrepayPlugin $plugin;
 
     protected function setUp(): void
     {

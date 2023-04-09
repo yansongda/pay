@@ -13,6 +13,9 @@ use Yansongda\Supports\Str;
 
 use function Yansongda\Pay\get_wechat_sign_v2;
 
+/**
+ * @see https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&index=6
+ */
 class InvokePrepayV2Plugin extends InvokePrepayPlugin
 {
     /**

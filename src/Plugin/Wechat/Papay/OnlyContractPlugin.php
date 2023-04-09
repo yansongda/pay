@@ -31,7 +31,7 @@ class OnlyContractPlugin implements PluginInterface
         $wechatId = $this->getWechatId($config, $rocket->getParams());
 
         if (!$rocket->getPayload()->has('notify_url')) {
-            $wechatId['notify_url'] = $config['notify_url'] ?? null;
+            $wechatId['notify_url'] = $config['notify_url'] ?? '';
         }
 
         $rocket->mergePayload($wechatId);
