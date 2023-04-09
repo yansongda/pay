@@ -288,7 +288,7 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 use Yansongda\Pay\Plugin\Wechat\Papay\OnlyContractPlugin;
 use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
 
-$result = Pay::wechat()->pay([
+$result = Pay::wechat()->payContract([
     '_no_common_plugins' => true,
     '_type' => 'mini', // 通过小程序签约
     'contract_code' => '我方签约号',
