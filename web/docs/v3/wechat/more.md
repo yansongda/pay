@@ -276,6 +276,102 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
 - `Yansongda\Pay\Plugin\Wechat\Risk\Complaints\DownloadMediaPlugin`
 
+## 委托代扣
+
+[文档](https://pay.weixin.qq.com/wiki/doc/api/wxpay_v2/papay/chapter1_1.shtml)
+
+### 只签约
+
+> 具体签约相关参数，请参阅委托代扣的文档
+
+```php
+use Yansongda\Pay\Plugin\Wechat\Papay\OnlyContractPlugin;
+use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
+
+$result = Pay::wechat()->pay([
+    PreparePlugin::class,
+    OnlyContractPlugin::class,
+], [
+    '_type' => 'mini', // 通过小程序签约
+    'contract_code' => '我方签约号',
+    'contract_display_account' => '签约人',
+    'mch_id' => '商户号',
+    'notify_url' => '签约成功回调地址',
+    'plan_id' => '委托代扣后台创建的模板ID',
+    'request_serial' => '请求序列号',
+    'timestamp' => time(),
+    'outerid' => '我方用户ID',
+])->toArray();
+```
+
+### 支付中签约
+
+> 具体签约相关参数，请参阅委托代扣的文档
+
+```php
+
+use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Plugin\Wechat\Papay\PayContractOrderPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokePrepayV2Plugin;
+use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
+use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
+
+$result = Pay::wechat()->pay(
+    [
+        PreparePlugin::class,
+        PayContractorderPlugin::class,
+        RadarSignPlugin::class,
+        InvokePrepayV2Plugin::class,
+        ParserPlugin::class,
+    ],
+    [
+        '_type' => 'mini',
+        'contract_mchid' => '签约商户ID',
+        'contract_appid' => '签约AppID',
+        'out_trade_no' => '我方订单号',
+        'body' => '委托代扣',
+        'notify_url' => '支付回调地址',
+        'total_fee' => 1000,
+        'spbill_create_ip' => '127.0.0.1',
+        'trade_type' => 'JSAPI',
+        'plan_id' => '委托代扣后台创建的模板ID',
+        'openid' => '用户OpenID',
+        'contract_code' => "我方签约号",
+        'request_serial' => '请求序列号',
+        'contract_display_account' => '签约人',
+        'contract_notify_url' => '签约成功回调地址',
+    ]
+)->toArray();
+```
+
+### 代扣
+
+> 具体代扣相关参数，请参阅委托代扣的文档
+
+```php
+use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Plugin\Wechat\Papay\ApplyPlugin;
+use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
+use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
+
+$result = Pay::wechat()->pay(
+    [
+        PreparePlugin::class,
+        ApplyPlugin::class,
+        RadarSignPlugin::class,
+        ParserPlugin::class,
+    ],
+    [
+        '_type' => 'mini',
+        'body' => '委托代扣',
+        'out_trade_no' => '我方订单号',
+        'total_fee' => 1000,
+        'spbill_create_ip' => '127.0.0.1',
+        'notify_url' => '代扣成功回调地址',
+        'contract_id' => '签约ID',
+    ]
+)->toArray();
+```
 
 ## 服务商-行业方案
 
