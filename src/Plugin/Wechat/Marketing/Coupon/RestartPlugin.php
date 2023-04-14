@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
+
+use function Yansongda\Pay\get_wechat_config;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter9_1_14.shtml
@@ -16,19 +19,20 @@ use Yansongda\Supports\Collection;
 class RestartPlugin extends GeneralPlugin
 {
     /**
-     * @throws InvalidParamsException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     protected function doSomething(Rocket $rocket): void
     {
         $payload = $rocket->getPayload();
+        $params = $rocket->getParams();
+        $config = get_wechat_config($params);
 
-        if (is_null($payload->get('stock_creator_mchid'))) {
-            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+        if (!$payload->has('stock_creator_mchid')) {
+            $rocket->mergePayload(['stock_creator_mchid' => $config['mch_id']]);
         }
 
-        $rocket->setPayload(new Collection([
-            'stock_creator_mchid' => $payload->get('stock_creator_mchid'),
-        ]));
+        $rocket->getPayload()->forget('stock_id');
     }
 
     /**
@@ -38,7 +42,7 @@ class RestartPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('stock_id'))) {
+        if (!$payload->has('stock_id')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
