@@ -13,6 +13,10 @@
 
 - delete: 移除废弃的类(#752)
 
+### fixed
+
+- fix: 微信代金券 api 参数错误问题(#777)
+
 ### refactor
 
 - refactor: 重构 ArrayParser 类(#754)
