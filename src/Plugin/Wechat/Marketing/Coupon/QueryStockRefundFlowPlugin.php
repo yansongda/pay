@@ -31,11 +31,11 @@ class QueryStockRefundFlowPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('stock_id'))) {
+        if (!$payload->has('stock_id')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'vv3/marketing/favor/stocks/'.
+        return 'v3/marketing/favor/stocks/'.
             $payload->get('stock_id').
             '/refund-flow';
     }
