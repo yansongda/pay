@@ -19,7 +19,7 @@ class DownloadBillPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('download_url'))) {
+        if (!$payload->has('download_url')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

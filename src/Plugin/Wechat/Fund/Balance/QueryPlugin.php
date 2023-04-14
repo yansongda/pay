@@ -27,7 +27,7 @@ class QueryPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('account_type'))) {
+        if (!$payload->has('account_type')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

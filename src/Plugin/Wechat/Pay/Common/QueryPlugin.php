@@ -25,13 +25,13 @@ class QueryPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
         $payload = $rocket->getPayload();
 
-        if (!is_null($payload->get('transaction_id'))) {
+        if ($payload->has('transaction_id')) {
             return 'v3/pay/transactions/id/'.
                 $payload->get('transaction_id').
                 '?mchid='.($config['mch_id'] ?? '');
         }
 
-        if (!is_null($payload->get('out_trade_no'))) {
+        if ($payload->has('out_trade_no')) {
             return 'v3/pay/transactions/out-trade-no/'.
                 $payload->get('out_trade_no').
                 '?mchid='.($config['mch_id'] ?? '');
@@ -50,14 +50,14 @@ class QueryPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
         $payload = $rocket->getPayload();
 
-        if (!is_null($payload->get('transaction_id'))) {
+        if ($payload->has('transaction_id')) {
             return 'v3/pay/partner/transactions/id/'.
                 $payload->get('transaction_id').
                 '?sp_mchid='.($config['mch_id'] ?? '').
                 '&sub_mchid='.$payload->get('sub_mchid', $config['sub_mch_id'] ?? null);
         }
 
-        if (!is_null($payload->get('out_trade_no'))) {
+        if ($payload->has('out_trade_no')) {
             return 'v3/pay/partner/transactions/out-trade-no/'.
                 $payload->get('out_trade_no').
                 '?sp_mchid='.($config['mch_id'] ?? '').

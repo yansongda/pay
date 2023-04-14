@@ -34,7 +34,7 @@ class ReturnAdvancePlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('refund_id'))) {
+        if (!$payload->has('refund_id')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

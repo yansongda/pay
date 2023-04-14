@@ -31,7 +31,7 @@ class QueryAmountsPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('transaction_id'))) {
+        if (!$payload->has('transaction_id')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

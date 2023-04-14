@@ -22,7 +22,7 @@ class DownloadMediaPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('media_url'))) {
+        if (!$payload->has('media_url')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
