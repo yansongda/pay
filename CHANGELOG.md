@@ -22,6 +22,7 @@
 - refactor: 重构 ArrayParser 类(#754)
 - refactor: coding style(#769)
 - refactor: 优化现有微信v2插件代码(#772)
+- refactor: 所有参数判断使用 `$payload->has()` 判断是否存在(#778)
 
 ### changed
 

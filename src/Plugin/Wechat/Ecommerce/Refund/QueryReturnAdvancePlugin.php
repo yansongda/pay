@@ -37,7 +37,7 @@ class QueryReturnAdvancePlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
         $subMchId = $payload->get('sub_mchid', $config['sub_mch_id'] ?? '');
 
-        if (is_null($payload->get('refund_id'))) {
+        if (!$payload->has('refund_id')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

@@ -27,7 +27,7 @@ class QueryDayEndPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('account_type')) || is_null($payload->get('date'))) {
+        if (!$payload->has('account_type') || !$payload->has('date')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

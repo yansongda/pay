@@ -39,8 +39,7 @@ class QueryReturnPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
         $config = get_wechat_config($rocket->getParams());
 
-        if (is_null($payload->get('out_return_no'))
-            || is_null($payload->get('out_order_no'))) {
+        if (!$payload->has('out_return_no') || !$payload->has('out_order_no')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

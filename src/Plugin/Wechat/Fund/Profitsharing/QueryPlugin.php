@@ -39,8 +39,7 @@ class QueryPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
         $config = get_wechat_config($rocket->getParams());
 
-        if (is_null($payload->get('out_order_no'))
-            || is_null($payload->get('transaction_id'))) {
+        if (!$payload->has('out_order_no') || !$payload->has('transaction_id')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

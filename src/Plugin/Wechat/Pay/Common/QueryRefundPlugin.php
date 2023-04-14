@@ -22,7 +22,7 @@ class QueryRefundPlugin extends GeneralPlugin
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('out_refund_no'))) {
+        if (!$payload->has('out_refund_no')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
