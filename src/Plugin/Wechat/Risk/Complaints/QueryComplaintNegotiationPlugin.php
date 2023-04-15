@@ -25,7 +25,7 @@ class QueryComplaintNegotiationPlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function getUri(Rocket $rocket): string
     {

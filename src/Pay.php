@@ -9,14 +9,14 @@ use Illuminate\Container\Container as LaravelContainer;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Throwable;
+use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\PackerInterface;
-use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
+use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ContainerNotFoundException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Packer\JsonPacker;
-use Yansongda\Pay\Parser\CollectionParser;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
@@ -72,28 +72,28 @@ class Pay
     ];
 
     /**
-     * @var Closure|\Psr\Container\ContainerInterface|null
+     * @var null|Closure|ContainerInterface
      */
-    private static $container = null;
+    private static $container;
 
     /**
-     * @param Closure|\Psr\Container\ContainerInterface|null $container
+     * @param null|Closure|ContainerInterface $container
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws ContainerException
      */
     private function __construct(array $config, $container = null)
     {
         $this->registerServices($config, $container);
 
-        Pay::set(ParserInterface::class, CollectionParser::class);
+        Pay::set(DirectionInterface::class, CollectionDirection::class);
         Pay::set(PackerInterface::class, JsonPacker::class);
     }
 
     /**
      * @return mixed
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     public static function __callStatic(string $service, array $config)
     {
@@ -105,9 +105,9 @@ class Pay
     }
 
     /**
-     * @param Closure|\Psr\Container\ContainerInterface|null $container
+     * @param null|Closure|ContainerInterface $container
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws ContainerException
      */
     public static function config(array $config = [], $container = null): bool
     {
@@ -125,7 +125,7 @@ class Pay
      *
      * @param mixed $value
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws ContainerException
      */
     public static function set(string $name, $value): void
     {
@@ -157,7 +157,7 @@ class Pay
      *
      * @return mixed
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws ContainerException
      */
     public static function make(string $service, array $parameters = [])
     {
@@ -181,8 +181,8 @@ class Pay
     /**
      * @return mixed
      *
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws ServiceNotFoundException
+     * @throws ContainerException
      */
     public static function get(string $service)
     {
@@ -198,7 +198,7 @@ class Pay
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws ContainerNotFoundException
      */
     public static function has(string $service): bool
     {
@@ -206,7 +206,7 @@ class Pay
     }
 
     /**
-     * @param Closure|\Psr\Container\ContainerInterface|null $container
+     * @param null|Closure|ContainerInterface $container
      */
     public static function setContainer($container): void
     {
@@ -214,7 +214,7 @@ class Pay
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerNotFoundException
+     * @throws ContainerNotFoundException
      */
     public static function getContainer(): ContainerInterface
     {
@@ -242,7 +242,7 @@ class Pay
     /**
      * @param mixed $data
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws ContainerException
      */
     public static function registerService(string $service, $data): void
     {
@@ -254,9 +254,9 @@ class Pay
     }
 
     /**
-     * @param Closure|\Psr\Container\ContainerInterface|null $container
+     * @param null|Closure|ContainerInterface $container
      *
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws ContainerException
      */
     private function registerServices(array $config, $container = null): void
     {

@@ -10,10 +10,11 @@ use Mockery;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Parser\ArrayParser;
-use Yansongda\Pay\Parser\NoHttpRequestParser;
+use Yansongda\Pay\Direction\ArrayDirection;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\AbstractProvider;
 use Yansongda\Pay\Rocket;
@@ -35,7 +36,7 @@ class AbstractProviderTest extends TestCase
     public function testVerifyCallablePlugin()
     {
         $plugin = [function ($rocket, $next) {
-            $rocket->setDirection(NoHttpRequestParser::class)
+            $rocket->setDirection(NoHttpRequestDirection::class)
                 ->setDestination(new Response());
 
             return $next($rocket);
@@ -123,6 +124,14 @@ class AbstractProviderTest extends TestCase
 
         self::assertIsArray($result);
     }
+
+    public function testNoCommonPlugins()
+    {
+        $provider = new Foo2ProviderStub();
+        $result = $provider->call(FooShortcut::class, ['_no_common_plugins' => true]);
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+    }
 }
 
 class FooProviderStub extends AbstractProvider
@@ -167,11 +176,19 @@ class FooProviderStub extends AbstractProvider
     }
 }
 
+class Foo2ProviderStub extends FooProviderStub
+{
+    public function mergeCommonPlugins(array $plugins): array
+    {
+        return [new BarPlugin()];
+    }
+}
+
 class FooPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $rocket->setDirection(NoHttpRequestParser::class)
+        $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination(new Response());
 
         return $next($rocket);
@@ -182,7 +199,7 @@ class BarPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $rocket->setDirection(ArrayParser::class)
+        $rocket->setDirection(ArrayDirection::class)
             ->setRadar(new Request('get', ''));
 
         $rocket = $next($rocket);
@@ -190,5 +207,13 @@ class BarPlugin implements PluginInterface
         $rocket->setDestination(new Collection(['name' => 'yansongda']));
 
         return $rocket;
+    }
+}
+
+class FooShortcut implements ShortcutInterface
+{
+    public function getPlugins(array $params): array
+    {
+        return [FooPlugin::class];
     }
 }

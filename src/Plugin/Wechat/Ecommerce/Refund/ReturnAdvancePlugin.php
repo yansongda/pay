@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund;
 
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-
-use function Yansongda\Pay\get_wechat_config;
-
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
+
+use function Yansongda\Pay\get_wechat_config;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_6_4.shtml
@@ -19,7 +20,7 @@ use Yansongda\Supports\Collection;
 class ReturnAdvancePlugin extends GeneralPlugin
 {
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function getUri(Rocket $rocket): string
     {
@@ -27,13 +28,13 @@ class ReturnAdvancePlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function getPartnerUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('refund_id'))) {
+        if (!$payload->has('refund_id')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
@@ -41,8 +42,8 @@ class ReturnAdvancePlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     protected function doSomething(Rocket $rocket): void
     {

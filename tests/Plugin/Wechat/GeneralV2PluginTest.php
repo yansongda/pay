@@ -4,6 +4,7 @@ namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
+use Yansongda\Pay\Packer\XmlPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
@@ -32,6 +33,7 @@ class GeneralV2PluginTest extends TestCase
         $params = $result->getParams();
         $payload = $result->getPayload();
 
+        self::assertEquals(XmlPacker::class, $result->getPacker());
         self::assertInstanceOf(RequestInterface::class, $radar);
         self::assertEquals('POST', $radar->getMethod());
         self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'yansongda/pay'), $radar->getUri());

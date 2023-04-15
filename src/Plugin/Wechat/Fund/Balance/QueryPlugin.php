@@ -21,13 +21,13 @@ class QueryPlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function getUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('account_type'))) {
+        if (!$payload->has('account_type')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

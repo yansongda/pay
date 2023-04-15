@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Fund\Transfer;
 
-use function Yansongda\Pay\encrypt_wechat_contents;
-use function Yansongda\Pay\get_wechat_config;
-
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Traits\HasWechatEncryption;
 use Yansongda\Supports\Collection;
+
+use function Yansongda\Pay\encrypt_wechat_contents;
+use function Yansongda\Pay\get_wechat_config;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter4_3_1.shtml
@@ -21,11 +26,11 @@ class CreatePlugin extends GeneralPlugin
     use HasWechatEncryption;
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\InvalidResponseException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws InvalidParamsException
+     * @throws InvalidResponseException
+     * @throws ServiceNotFoundException
      */
     protected function doSomething(Rocket $rocket): void
     {
@@ -54,17 +59,13 @@ class CreatePlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     protected function getWechatId(array $params, Collection $payload): array
     {
         $config = get_wechat_config($params);
-        $key = ($params['_type'] ?? 'mp').'_app_id';
-
-        if ('app_app_id' === $key) {
-            $key = 'app_id';
-        }
+        $key = $this->getConfigKey($params);
 
         $appId = [
             'appid' => $payload->get('appid', $config[$key] ?? ''),
@@ -80,9 +81,9 @@ class CreatePlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     protected function getEncryptUserName(array $params): array
     {

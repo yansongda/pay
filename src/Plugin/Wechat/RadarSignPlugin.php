@@ -8,20 +8,22 @@ use Closure;
 use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
-
-use function Yansongda\Pay\get_public_cert;
-use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_sign;
-
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Packer\XmlPacker;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
+
+use function Yansongda\Pay\get_public_cert;
+use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_wechat_sign;
+use function Yansongda\Pay\get_wechat_sign_v2;
 
 class RadarSignPlugin implements PluginInterface
 {
@@ -36,11 +38,10 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Exception
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -49,9 +50,12 @@ class RadarSignPlugin implements PluginInterface
         switch ($rocket->getParams()['_version'] ?? 'default') {
             case 'v2':
                 $radar = $this->v2($rocket);
+
                 break;
+
             default:
                 $radar = $this->v3($rocket);
+
                 break;
         }
 
@@ -63,18 +67,16 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     * @throws InvalidConfigException
      * @throws \Exception
      */
     protected function v2(Rocket $rocket): RequestInterface
     {
-        $config = get_wechat_config($rocket->getParams());
-
         $rocket->mergePayload(['nonce_str' => Str::random(32)]);
         $rocket->mergePayload([
-            'sign' => $this->v2GetSign($config['mch_secret_key_v2'] ?? '', $rocket->getPayload()->all()),
+            'sign' => get_wechat_sign_v2($rocket->getParams(), $rocket->getPayload()->all()),
         ]);
 
         return $rocket->getRadar()->withBody(
@@ -83,37 +85,10 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     */
-    protected function v2GetSign(?string $secret, array $payload): string
-    {
-        if (empty($secret)) {
-            throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key_v2]');
-        }
-
-        $string = md5($this->v2PayloadToString($payload).'&key='.$secret);
-
-        return strtoupper($string);
-    }
-
-    protected function v2PayloadToString(array $payload): string
-    {
-        ksort($payload);
-
-        $buff = '';
-
-        foreach ($payload as $k => $v) {
-            $buff .= ('sign' != $k && '' != $v && !is_array($v)) ? $k.'='.$v.'&' : '';
-        }
-
-        return trim($buff, '&');
-    }
-
-    /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      * @throws \Exception
      */
     protected function v3(Rocket $rocket): RequestInterface
@@ -137,9 +112,9 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
      */
     protected function v3GetWechatAuthorization(array $params, int $timestamp, string $random, string $contents): string
     {
@@ -169,7 +144,7 @@ class RadarSignPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function v3GetContents(Rocket $rocket, int $timestamp, string $random): string
     {

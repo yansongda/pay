@@ -7,20 +7,21 @@ namespace Yansongda\Pay\Plugin\Unipay;
 use Closure;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
-
-use function Yansongda\Pay\get_unipay_config;
-
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
 
+use function Yansongda\Pay\get_unipay_config;
+
 abstract class GeneralPlugin implements PluginInterface
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\ContainerException
+     * @throws ServiceNotFoundException
+     * @throws ContainerException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -35,8 +36,8 @@ abstract class GeneralPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     protected function getRequest(Rocket $rocket): RequestInterface
     {
@@ -53,8 +54,8 @@ abstract class GeneralPlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     protected function getUrl(Rocket $rocket): string
     {

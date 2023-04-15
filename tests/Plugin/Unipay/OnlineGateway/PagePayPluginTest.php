@@ -4,7 +4,7 @@ namespace Yansongda\Pay\Tests\Plugin\Unipay\OnlineGateway;
 
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
-use Yansongda\Pay\Parser\ResponseParser;
+use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\OnlineGateway\PagePayPlugin;
 use Yansongda\Pay\Provider\Unipay;
@@ -38,7 +38,7 @@ class PagePayPluginTest extends TestCase
         self::assertInstanceOf(RequestInterface::class, $radar);
         self::assertEquals('POST', $radar->getMethod());
         self::assertEquals(new Uri(Unipay::URL[Pay::MODE_NORMAL].'gateway/api/frontTransReq.do'), $radar->getUri());
-        self::assertEquals(ResponseParser::class, $result->getDirection());
+        self::assertEquals(ResponseDirection::class, $result->getDirection());
         self::assertEquals('000201', $payload['bizType']);
         self::assertEquals('01', $payload['txnType']);
         self::assertEquals('01', $payload['txnSubType']);

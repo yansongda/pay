@@ -25,13 +25,13 @@ class QueryComplaintDetailPlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function getUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('complaint_id'))) {
+        if (!$payload->has('complaint_id')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

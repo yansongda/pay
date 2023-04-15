@@ -5,7 +5,7 @@ namespace Yansongda\Pay\Tests\Plugin\Wechat\Risk\Complaints;
 use GuzzleHttp\Psr7\Uri;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Parser\OriginResponseParser;
+use Yansongda\Pay\Direction\OriginResponseDirection;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\Risk\Complaints\ResponseComplaintPlugin;
 use Yansongda\Pay\Provider\Wechat;
@@ -36,7 +36,7 @@ class ResponseComplaintPluginTest extends TestCase
 
         $radar = $result->getRadar();
 
-        self::assertEquals(OriginResponseParser::class, $result->getDirection());
+        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
         self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/merchant-service/complaints-v2/123/response'), $radar->getUri());
         self::assertEquals('POST', $radar->getMethod());
         self::assertEquals(['foo' => 'bar', 'complainted_mchid' => '1600314069'], $rocket->getPayload()->toArray());
@@ -51,7 +51,7 @@ class ResponseComplaintPluginTest extends TestCase
 
         $radar = $result->getRadar();
 
-        self::assertEquals(OriginResponseParser::class, $result->getDirection());
+        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
         self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/merchant-service/complaints-v2/456/response'), $radar->getUri());
         self::assertEquals(['complainted_mchid' => 'bar', 'u' => 'a'], $rocket->getPayload()->toArray());
     }

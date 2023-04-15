@@ -3,14 +3,26 @@
 ### added
 
 - feat: 支持微信 v2 版本刷卡支付(#753)
+- feat: 增加申请代扣协议插件(#767)
+- feat: 增加支付中签约插件(#763)
+- feat: 增加只签约插件(#765)
+- feat: `shortcut` 支持 `_no_common_plugins` 参数不使用通用插件(#771)
+- feat: 增加委托代扣 shortcut(#773)
 
 ### deleted
 
 - delete: 移除废弃的类(#752)
 
+### fixed
+
+- fix: 微信代金券 api 参数错误问题(#777)
+
 ### refactor
 
 - refactor: 重构 ArrayParser 类(#754)
+- refactor: coding style(#769)
+- refactor: 优化现有微信v2插件代码(#772)
+- refactor: 所有参数判断使用 `$payload->has()` 判断是否存在(#778)
 
 ### changed
 
@@ -18,6 +30,7 @@
 - change: 插件开始装载日志由 `info` 调整为 `debug`(#755)
 - change: ParserInterface 签名由 `?ResponseInterface $response` 变更为 `PackerInterface $packer, ?ResponseInterface $response`(#754)
 - change: \Yansongda\Pay\Plugin\Wechat\RadarSignPlugin 增加 `__construct(JsonPacker $jsonPacker, XmlPacker $xmlPacker)` 方法(#753)
+- change: 所有 `Parser` 更名为 `Direction`(#770, #774)
 
 ## v3.2.14
 

@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Traits;
 
-use function Yansongda\Pay\get_alipay_config;
-
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
+
+use function Yansongda\Pay\get_alipay_config;
 
 trait SupportServiceProviderTrait
 {
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
      */
     protected function loadAlipayServiceProvider(Rocket $rocket): void
     {

@@ -25,17 +25,17 @@ class QueryStockUseFlowPlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function getUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('stock_id'))) {
+        if (!$payload->has('stock_id')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
-        return 'vv3/marketing/favor/stocks/'.
+        return 'v3/marketing/favor/stocks/'.
             $payload->get('stock_id').
             '/use-flow';
     }

@@ -53,10 +53,10 @@ API 调用场景下的返回类型，`array` 和 `Collection` 是可以自定义
 如果想返回 array 类型的数据，只需要
 
 ```php
-use Yansongda\Pay\Contract\ParserInterface;
-use Yansongda\Pay\Parser\ArrayParser;
+use Yansongda\Pay\Contract\DirectionInterface;
+use Yansongda\Pay\Direction\ArrayDirection;
 
-Pay::set(ParserInterface::class, ArrayParser::class);
+Pay::set(DirectionInterface::class, ArrayDirection::class);
 ```
 
 是不是很简单方便？

@@ -8,8 +8,8 @@ use ArrayAccess;
 use JsonSerializable as JsonSerializableInterface;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
+use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\PackerInterface;
-use Yansongda\Pay\Contract\ParserInterface;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Traits\Accessable;
 use Yansongda\Supports\Traits\Arrayable;
@@ -29,12 +29,12 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
 
     private string $packer = PackerInterface::class;
 
-    private string $direction = ParserInterface::class;
+    private string $direction = DirectionInterface::class;
 
     /**
-     * @var \Yansongda\Supports\Collection|\Psr\Http\Message\MessageInterface|array|null
+     * @var null|array|Collection|MessageInterface
      */
-    private $destination = null;
+    private $destination;
 
     private ?MessageInterface $destinationOrigin = null;
 
@@ -117,7 +117,7 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
     }
 
     /**
-     * @return \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null
+     * @return null|array|Collection|MessageInterface
      */
     public function getDestination()
     {
@@ -125,7 +125,7 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
     }
 
     /**
-     * @param \Psr\Http\Message\MessageInterface|\Yansongda\Supports\Collection|array|null $destination
+     * @param null|array|Collection|MessageInterface $destination
      */
     public function setDestination($destination): Rocket
     {

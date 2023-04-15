@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund;
 
+use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-
-use function Yansongda\Pay\get_wechat_config;
-
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
+
+use function Yansongda\Pay\get_wechat_config;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/apiv3_partner/apis/chapter7_6_2.shtml
@@ -18,7 +19,7 @@ use Yansongda\Pay\Rocket;
 class QueryPlugin extends GeneralPlugin
 {
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function getUri(Rocket $rocket): string
     {
@@ -26,9 +27,9 @@ class QueryPlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     protected function getPartnerUri(Rocket $rocket): string
     {
@@ -36,11 +37,11 @@ class QueryPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
         $subMchId = $payload->get('sub_mchid', $config['sub_mch_id'] ?? '');
 
-        if (!is_null($payload->get('refund_id'))) {
+        if ($payload->has('refund_id')) {
             return 'v3/ecommerce/refunds/id/'.$payload->get('refund_id').'?sub_mchid='.$subMchId;
         }
 
-        if (!is_null($payload->get('out_refund_no'))) {
+        if ($payload->has('out_refund_no')) {
             return 'v3/ecommerce/refunds/out-refund-no/'.$payload->get('out_refund_no').'?sub_mchid='.$subMchId;
         }
 

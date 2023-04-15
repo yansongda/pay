@@ -25,13 +25,13 @@ class QueryOutBatchNoPlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function getUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('out_batch_no')) || is_null($payload->get('need_query_detail'))) {
+        if (!$payload->has('out_batch_no') || !$payload->has('need_query_detail')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 
@@ -44,13 +44,13 @@ class QueryOutBatchNoPlugin extends GeneralPlugin
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function getPartnerUri(Rocket $rocket): string
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('out_batch_no')) || is_null($payload->get('need_query_detail'))) {
+        if (!$payload->has('out_batch_no') || !$payload->has('need_query_detail')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Risk\Complaints;
 
-use Yansongda\Pay\Parser\OriginResponseParser;
+use Yansongda\Pay\Direction\OriginResponseDirection;
 use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
 use Yansongda\Pay\Rocket;
 
@@ -20,7 +20,7 @@ class DeleteCallbackPlugin extends GeneralPlugin
 
     protected function doSomething(Rocket $rocket): void
     {
-        $rocket->setDirection(OriginResponseParser::class);
+        $rocket->setDirection(OriginResponseDirection::class);
 
         $rocket->setPayload(null);
     }

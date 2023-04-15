@@ -15,13 +15,13 @@ use Yansongda\Pay\Rocket;
 class CreateBillReceiptPlugin extends GeneralPlugin
 {
     /**
-     * @throws \Yansongda\Pay\Exception\InvalidParamsException
+     * @throws InvalidParamsException
      */
     protected function doSomething(Rocket $rocket): void
     {
         $payload = $rocket->getPayload();
 
-        if (is_null($payload->get('out_batch_no'))) {
+        if (!$payload->has('out_batch_no')) {
             throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
         }
     }

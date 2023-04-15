@@ -6,23 +6,25 @@ namespace Yansongda\Pay\Plugin\Unipay;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
-
-use function Yansongda\Pay\get_tenant;
-use function Yansongda\Pay\get_unipay_config;
-
+use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Traits\GetUnipayCerts;
 use Yansongda\Supports\Str;
+
+use function Yansongda\Pay\get_tenant;
+use function Yansongda\Pay\get_unipay_config;
 
 class PreparePlugin implements PluginInterface
 {
     use GetUnipayCerts;
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     * @throws InvalidConfigException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -36,9 +38,9 @@ class PreparePlugin implements PluginInterface
     }
 
     /**
-     * @throws \Yansongda\Pay\Exception\ContainerException
-     * @throws \Yansongda\Pay\Exception\ServiceNotFoundException
-     * @throws \Yansongda\Pay\Exception\InvalidConfigException
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     * @throws InvalidConfigException
      */
     protected function getPayload(array $params): array
     {
