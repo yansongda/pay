@@ -27,14 +27,14 @@ class PosShortcut implements ShortcutInterface
         throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Pos action [{$typeMethod}] not supported");
     }
 
-    public function defaultPlugins(): array
+    protected function defaultPlugins(): array
     {
         return [
             PosNormalPlugin::class,
         ];
     }
 
-    public function preAuthPlugins(): array
+    protected function preAuthPlugins(): array
     {
         return [
             PosPreAuthPlugin::class,
