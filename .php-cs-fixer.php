@@ -7,8 +7,10 @@ $finder = PhpCsFixer\Finder::create()
 
 return (new PhpCsFixer\Config())
     ->setUsingCache(false)
+    ->setRiskyAllowed(true)
     ->setRules([
         '@PhpCsFixer' => true,
+        'declare_strict_types' => true,
         'single_line_comment_style' => ['comment_types' => ['hash']],
         'general_phpdoc_annotation_remove' => ['annotations' => ['author'], 'case_sensitive' => false],
         'global_namespace_import' => [

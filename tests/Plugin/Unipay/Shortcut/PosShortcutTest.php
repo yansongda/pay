@@ -33,15 +33,15 @@ class PosShortcutTest extends TestCase
     {
         self::assertEquals([
             PosPreAuthPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'pre_auth']));
+        ], $this->plugin->getPlugins(['_action' => 'pre_auth']));
     }
 
     public function testFoo()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_MULTI_TYPE_ERROR);
-        self::expectExceptionMessage('Pos type [fooPlugins] not supported');
+        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_ERROR);
+        self::expectExceptionMessage('Pos action [fooPlugins] not supported');
 
-        $this->plugin->getPlugins(['_type' => 'foo']);
+        $this->plugin->getPlugins(['_action' => 'foo']);
     }
 }

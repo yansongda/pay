@@ -22,13 +22,13 @@ class QueryShortcut implements ShortcutInterface
             return $this->combinePlugins();
         }
 
-        $typeMethod = Str::camel($params['_type'] ?? 'default').'Plugins';
+        $typeMethod = Str::camel($params['_action'] ?? 'default').'Plugins';
 
         if (method_exists($this, $typeMethod)) {
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Query type [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Query action [{$typeMethod}] not supported");
     }
 
     protected function defaultPlugins(): array

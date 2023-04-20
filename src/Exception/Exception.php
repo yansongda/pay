@@ -56,7 +56,7 @@ class Exception extends \Exception
 
     public const PLUGIN_ERROR = 4002;
 
-    public const SHORTCUT_MULTI_TYPE_ERROR = 4003;
+    public const SHORTCUT_MULTI_ACTION_ERROR = 4003;
 
     public const METHOD_NOT_SUPPORTED = 4004;
 
