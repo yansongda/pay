@@ -26,7 +26,7 @@ class QueryShortcut implements ShortcutInterface
         throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Query action [{$typeMethod}] not supported");
     }
 
-    public function defaultPlugins(): array
+    protected function defaultPlugins(): array
     {
         return [
             QueryPlugin::class,
