@@ -24,6 +24,10 @@
 - refactor: 优化现有微信v2插件代码(#772)
 - refactor: 所有参数判断使用 `$payload->has()` 判断是否存在(#778)
 
+### chore
+
+- chore: 支持 psr/http-message 2.0 版(#784)
+
 ### changed
 
 - change: 所有的 `Find*Plugin` 调整为 `Query*Plugin`(#756)
