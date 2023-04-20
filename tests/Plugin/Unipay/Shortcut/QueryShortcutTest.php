@@ -32,15 +32,15 @@ class QueryShortcutTest extends TestCase
     {
         self::assertEquals([
             \Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'qr_code']));
+        ], $this->plugin->getPlugins(['_action' => 'qr_code']));
     }
 
     public function testFoo()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_MULTI_TYPE_ERROR);
-        self::expectExceptionMessage('Query type [fooPlugins] not supported');
+        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_ERROR);
+        self::expectExceptionMessage('Query action [fooPlugins] not supported');
 
-        $this->plugin->getPlugins(['_type' => 'foo']);
+        $this->plugin->getPlugins(['_action' => 'foo']);
     }
 }

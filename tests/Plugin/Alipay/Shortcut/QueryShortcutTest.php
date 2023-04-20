@@ -34,22 +34,22 @@ class QueryShortcutTest extends TestCase
     {
         self::assertEquals([
             FastRefundQueryPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'refund']));
+        ], $this->plugin->getPlugins(['_action' => 'refund']));
     }
 
     public function testTransfer()
     {
         self::assertEquals([
             TransCommonQueryPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'transfer']));
+        ], $this->plugin->getPlugins(['_action' => 'transfer']));
     }
 
     public function testFoo()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_MULTI_TYPE_ERROR);
-        self::expectExceptionMessage('Query type [fooPlugins] not supported');
+        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_ERROR);
+        self::expectExceptionMessage('Query action [fooPlugins] not supported');
 
-        $this->plugin->getPlugins(['_type' => 'foo']);
+        $this->plugin->getPlugins(['_action' => 'foo']);
     }
 }

@@ -19,7 +19,7 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $typeMethod = Str::camel($params['_type'] ?? 'default').'Plugins';
+        $typeMethod = Str::camel($params['_action'] ?? 'default').'Plugins';
 
         if (isset($params['out_request_no'])) {
             return $this->refundPlugins();
@@ -29,7 +29,7 @@ class QueryShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Query type [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Query action [{$typeMethod}] not supported");
     }
 
     protected function defaultPlugins(): array
