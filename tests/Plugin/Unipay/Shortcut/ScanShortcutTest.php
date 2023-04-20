@@ -35,29 +35,29 @@ class ScanShortcutTest extends TestCase
     {
         self::assertEquals([
             ScanPreAuthPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'pre_auth']));
+        ], $this->plugin->getPlugins(['_action' => 'pre_auth']));
     }
 
     public function testPreOrder()
     {
         self::assertEquals([
             ScanPreOrderPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'pre_order']));
+        ], $this->plugin->getPlugins(['_action' => 'pre_order']));
     }
 
     public function testFee()
     {
         self::assertEquals([
             ScanFeePlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'fee']));
+        ], $this->plugin->getPlugins(['_action' => 'fee']));
     }
 
     public function testFoo()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_MULTI_TYPE_ERROR);
-        self::expectExceptionMessage('Scan type [fooPlugins] not supported');
+        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_ERROR);
+        self::expectExceptionMessage('Scan action [fooPlugins] not supported');
 
-        $this->plugin->getPlugins(['_type' => 'foo']);
+        $this->plugin->getPlugins(['_action' => 'foo']);
     }
 }

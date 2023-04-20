@@ -33,14 +33,14 @@ class QueryShortcutTest extends TestCase
     {
         self::assertEquals([
             QueryRefundPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'refund']));
+        ], $this->plugin->getPlugins(['_action' => 'refund']));
     }
 
     public function testCombine()
     {
         self::assertEquals([
             \Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'combine']));
+        ], $this->plugin->getPlugins(['_action' => 'combine']));
     }
 
     public function testCombineParams()
@@ -53,9 +53,9 @@ class QueryShortcutTest extends TestCase
     public function testFoo()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_MULTI_TYPE_ERROR);
-        self::expectExceptionMessage('Query type [fooPlugins] not supported');
+        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_ERROR);
+        self::expectExceptionMessage('Query action [fooPlugins] not supported');
 
-        $this->plugin->getPlugins(['_type' => 'foo']);
+        $this->plugin->getPlugins(['_action' => 'foo']);
     }
 }
