@@ -33,7 +33,7 @@ class CloseShortcutTest extends TestCase
     {
         self::assertEquals([
             \Yansongda\Pay\Plugin\Wechat\Pay\Combine\ClosePlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'combine']));
+        ], $this->plugin->getPlugins(['_action' => 'combine']));
     }
 
     public function testCombineParams()
