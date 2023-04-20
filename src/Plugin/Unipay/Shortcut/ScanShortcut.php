@@ -29,28 +29,28 @@ class ScanShortcut implements ShortcutInterface
         throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Scan action [{$typeMethod}] not supported");
     }
 
-    public function defaultPlugins(): array
+    protected function defaultPlugins(): array
     {
         return [
             ScanNormalPlugin::class,
         ];
     }
 
-    public function preAuthPlugins(): array
+    protected function preAuthPlugins(): array
     {
         return [
             ScanPreAuthPlugin::class,
         ];
     }
 
-    public function preOrderPlugins(): array
+    protected function preOrderPlugins(): array
     {
         return [
             ScanPreOrderPlugin::class,
         ];
     }
 
-    public function feePlugins(): array
+    protected function feePlugins(): array
     {
         return [
             ScanFeePlugin::class,

@@ -26,14 +26,14 @@ class CancelShortcut implements ShortcutInterface
         throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Cancel action [{$typeMethod}] not supported");
     }
 
-    public function defaultPlugins(): array
+    protected function defaultPlugins(): array
     {
         return [
             CancelPlugin::class,
         ];
     }
 
-    public function qrCodePlugins(): array
+    protected function qrCodePlugins(): array
     {
         return [
             \Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin::class,
