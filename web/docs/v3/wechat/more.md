@@ -306,8 +306,7 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 > 具体签约相关参数，请参阅委托代扣的文档
 
 ```php
-use Yansongda\Pay\Plugin\Wechat\Papay\OnlyContractPlugin;
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
+Pay::config($config);
 
 $result = Pay::wechat()->papay([
     '_action' => 'contract',
@@ -329,12 +328,7 @@ $result = Pay::wechat()->papay([
 > 具体签约相关参数，请参阅委托代扣的文档
 
 ```php
-
-use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\Papay\ContractOrderPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokePrepayV2Plugin;
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
+Pay::config($config);
 
 $result = Pay::wechat()->papay([
     '_no_common_plugins' => true,
@@ -361,10 +355,7 @@ $result = Pay::wechat()->papay([
 > 具体代扣相关参数，请参阅委托代扣的文档
 
 ```php
-use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\Papay\ApplyPlugin;
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
+Pay::config($config);
 
 $result = Pay::wechat()->papay([
     '_action' => 'apply',
