@@ -22,6 +22,7 @@
         "ext-libxml": "*",
         "ext-json": "*",
         "ext-bcmath": "*",
+        "ext-iconv": "*",
         "psr/event-dispatcher": "^1.0",
         "psr/log": "^1.1 || ^2.0 || ^3.0",
         "psr/container": "^1.1 || ^2.0",
