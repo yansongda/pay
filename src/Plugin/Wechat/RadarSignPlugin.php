@@ -31,10 +31,10 @@ class RadarSignPlugin implements PluginInterface
 
     protected XmlPacker $xmlPacker;
 
-    public function __construct(JsonPacker $jsonPacker, XmlPacker $xmlPacker)
+    public function __construct(?JsonPacker $jsonPacker = null, ?XmlPacker $xmlPacker = null)
     {
-        $this->jsonPacker = $jsonPacker;
-        $this->xmlPacker = $xmlPacker;
+        $this->jsonPacker = $jsonPacker ?? new JsonPacker();
+        $this->xmlPacker = $xmlPacker ?? new XmlPacker();
     }
 
     /**
