@@ -36,6 +36,7 @@
 - change: \Yansongda\Pay\Plugin\Wechat\RadarSignPlugin 增加 `__construct(JsonPacker $jsonPacker, XmlPacker $xmlPacker)` 方法(#753)
 - change: 所有 `Parser` 更名为 `Direction`(#770, #774)
 - change: '_type' 类型统一定义为渠道id，如: 小程序id，公众号id等；增加 '_action' 为操作类型用于 shortcut(#781)
+- change: 默认 container 由 `php-di/php-di` 改为 `hyperf/pimple`(#786)
 
 ## v3.2.14
 
