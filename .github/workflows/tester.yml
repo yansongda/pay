@@ -35,7 +35,7 @@ jobs:
         run: composer require illuminate/container:^8.0
       - name: Hyperf Framework
         if: matrix.framework == 'hyperf'
-        run: composer require hyperf/utils
+        run: composer require hyperf/utils hyperf/pimple
       - name: Other/No Framework
         if: matrix.framework == 'default'
         run: composer require hyperf/pimple
