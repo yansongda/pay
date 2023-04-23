@@ -29,7 +29,7 @@ Pay::config($this->config);
 $order = [
     'out_trade_no' => '1514027114',
     'out_request_no' => '1514027114',
-    '_type' => 'refund',
+    '_action' => 'refund',
 ];
 
 $result = Pay::alipay()->find($order);
@@ -46,7 +46,7 @@ Pay::config($this->config);
 
 $order = [
     'out_biz_no' => '202209032319',
-    '_type' => 'transfer'
+    '_action' => 'transfer'
 ];
 
 $result = Pay::alipay()->find($order);

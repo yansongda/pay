@@ -33,7 +33,7 @@ $order = [
     'txnAmt' => 1,
     'orderId' => 'cancel'.date('YmdHis'),
     'origQryId' => '062209121414535249018',
-    '_type' => 'qr_code',
+    '_action' => 'qr_code',
 ];
 
 $result = Pay::unipay()->cancel($order);

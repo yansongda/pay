@@ -29,7 +29,7 @@ Pay::config($this->config);
 $order = [
     'txnTime' => '20220911041647',
     'orderId' => 'pay20220911041647',
-    '_type' => 'qr_code',
+    '_action' => 'qr_code',
 ];
 
 $result = Pay::unipay()->find($order);

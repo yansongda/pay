@@ -28,7 +28,7 @@ Pay::config($config);
 
 $order = [
     'transaction_id' => '1217752501201407033233368018',
-    '_type' => 'refund'
+    '_action' => 'refund'
 ];
 
 $result = Pay::wechat()->find($order);
@@ -48,7 +48,7 @@ $order = [
 ];
 //$order = [
 //    'transaction_id' => '1217752501201407033233368018',
-//    '_type' => 'combine',
+//    '_action' => 'combine',
 //];
 
 $result = Pay::wechat()->find($order);

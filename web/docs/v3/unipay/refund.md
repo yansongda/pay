@@ -31,7 +31,7 @@ $result = Pay::unipay()->refund([
     'txnAmt' => 1,
     'orderId' => 'refund'.date('YmdHis'),
     'origQryId' => '392209121420295251518',
-    '_type' => 'qr_code',
+    '_action' => 'qr_code',
 ]);
 ```
 
