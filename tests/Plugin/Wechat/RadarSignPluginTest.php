@@ -24,11 +24,31 @@ class RadarSignPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new RadarSignPlugin(new JsonPacker(), new XmlPacker());
+        $this->plugin = new RadarSignPlugin();
     }
 
     public function testNormal()
     {
+        $params = [
+            'name' => 'yansongda',
+            'age' => 28,
+        ];
+        $rocket = (new Rocket())->setParams($params)
+                                ->setPayload(new Collection($params))
+                                ->setRadar(new Request('GET', '127.0.0.1'));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $radar = $result->getRadar();
+
+        self::assertTrue($radar->hasHeader('Authorization'));
+        self::assertFalse($radar->hasHeader('Wechatpay-Serial'));
+        self::assertEquals(json_encode($params), (string) $radar->getBody());
+    }
+
+    public function testNormalConstruct()
+    {
+        $this->plugin = new RadarSignPlugin(new JsonPacker(), new XmlPacker());
+
         $params = [
             'name' => 'yansongda',
             'age' => 28,
