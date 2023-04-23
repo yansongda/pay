@@ -21,7 +21,7 @@ composer require guzzlehttp/guzzle:^7.0 # 默认情况下，此包框架已自�
 ```shell
 composer require yansongda/pay:~3.3.0 -vvv
 composer require guzzlehttp/guzzle:^7.0
-composer require php-di/php-di -W
+composer require hyperf/pimple
 ```
 
 ## 详细安装介绍
@@ -39,7 +39,7 @@ composer require yansongda/pay:~3.3.0 -vvv
 
 1、hyperf/laravel 用户直接忽略此部分内容；
 
-2、其它用户（包括 thinkphp 用户）在安装完 `Pay` 后直接无脑 `composer require php-di/php-di` 即可
+2、其它用户（包括 thinkphp 用户）在安装完 `Pay` 后直接无脑 `composer require hyperf/pimple` 即可
 :::
 
 #### hyperf/laravel 用户
@@ -48,10 +48,10 @@ composer require yansongda/pay:~3.3.0 -vvv
 
 #### 其它框架/无框架 用户
 
-如果您不想操心那么多，SDK 自带了一套开箱即用的 Container，但仍然需要手动安装 php-di:
+如果您不想操心那么多，SDK 自带了一套开箱即用的 Container，但仍然需要手动安装 container:
 
 ```shell
-composer require php-di/php-di
+composer require hyperf/pimple
 ```
 
 
