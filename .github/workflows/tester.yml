@@ -35,9 +35,9 @@ jobs:
         run: composer require illuminate/container:^8.0
       - name: Hyperf Framework
         if: matrix.framework == 'hyperf'
-        run: composer require hyperf/utils php-di/php-di:^6.4
+        run: composer require hyperf/utils hyperf/pimple
       - name: Other/No Framework
         if: matrix.framework == 'default'
-        run: composer require php-di/php-di:^6.4
+        run: composer require hyperf/pimple
       - name: Run PHPUnit
         run: composer test

@@ -24,6 +24,10 @@
 - refactor: 优化现有微信v2插件代码(#772)
 - refactor: 所有参数判断使用 `$payload->has()` 判断是否存在(#778)
 
+### chore
+
+- chore: 支持 psr/http-message 2.0 版(#784)
+
 ### changed
 
 - change: 所有的 `Find*Plugin` 调整为 `Query*Plugin`(#756)
@@ -31,6 +35,8 @@
 - change: ParserInterface 签名由 `?ResponseInterface $response` 变更为 `PackerInterface $packer, ?ResponseInterface $response`(#754)
 - change: \Yansongda\Pay\Plugin\Wechat\RadarSignPlugin 增加 `__construct(JsonPacker $jsonPacker, XmlPacker $xmlPacker)` 方法(#753)
 - change: 所有 `Parser` 更名为 `Direction`(#770, #774)
+- change: '_type' 类型统一定义为渠道id，如: 小程序id，公众号id等；增加 '_action' 为操作类型用于 shortcut(#781)
+- change: 默认 container 由 `php-di/php-di` 改为 `hyperf/pimple`(#786)
 
 ## v3.2.14
 

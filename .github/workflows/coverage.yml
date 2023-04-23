@@ -19,7 +19,7 @@ jobs:
           extensions: openssl
           coverage: xdebug
       - name: Install Dependencies
-        run: composer require php-di/php-di:^6.4
+        run: composer require hyperf/pimple
       - name: Run Coverage
         run: vendor/bin/phpunit --coverage-clover coverage.xml
       - name: Upload Coverage

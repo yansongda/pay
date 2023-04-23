@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Service;
 
 use Closure;
-use DI\ContainerBuilder;
-use Hyperf\Utils\ApplicationContext as HyperfApplication;
+use Hyperf\Pimple\ContainerFactory as DefaultContainer;
+use Hyperf\Utils\ApplicationContext as HyperfContainer;
 use Illuminate\Container\Container as LaravelContainer;
 use Psr\Container\ContainerInterface;
-use Throwable;
 use Yansongda\Pay\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ContainerNotFoundException;
@@ -23,7 +22,7 @@ class ContainerServiceProvider implements ServiceProviderInterface
 {
     private array $detectApplication = [
         'laravel' => LaravelContainer::class,
-        'hyperf' => HyperfApplication::class,
+        'hyperf' => HyperfContainer::class,
     ];
 
     /**
@@ -77,40 +76,32 @@ class ContainerServiceProvider implements ServiceProviderInterface
      */
     protected function hyperfApplication(): bool
     {
-        if (!HyperfApplication::hasContainer()) {
+        if (!HyperfContainer::hasContainer()) {
             return false;
         }
 
-        Pay::setContainer(static fn () => HyperfApplication::getContainer());
+        Pay::setContainer(static fn () => HyperfContainer::getContainer());
 
-        Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, HyperfApplication::getContainer());
+        Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, HyperfContainer::getContainer());
 
         if (!Pay::has(ContainerInterface::class)) {
-            Pay::set(ContainerInterface::class, HyperfApplication::getContainer());
+            Pay::set(ContainerInterface::class, HyperfContainer::getContainer());
         }
 
         return true;
     }
 
     /**
-     * @throws ContainerException
+     * @throws ContainerNotFoundException
      */
     protected function defaultApplication(): void
     {
-        if (!class_exists(ContainerBuilder::class)) {
-            throw new ContainerNotFoundException('Init failed! Maybe you should install `php-di/php-di` first', Exception::CONTAINER_NOT_FOUND);
+        if (!class_exists(DefaultContainer::class)) {
+            throw new ContainerNotFoundException('Init failed! Maybe you should install `hyperf/pimple` first', Exception::CONTAINER_NOT_FOUND);
         }
 
-        $builder = new ContainerBuilder();
+        $container = (new DefaultContainer())();
 
-        try {
-            $container = $builder->build();
-            $container->set(ContainerInterface::class, $container);
-            $container->set(\Yansongda\Pay\Contract\ContainerInterface::class, $container);
-
-            Pay::setContainer($container);
-        } catch (Throwable $e) {
-            throw new ContainerException($e->getMessage());
-        }
+        Pay::setContainer($container);
     }
 }

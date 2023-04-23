@@ -23,10 +23,10 @@
         "ext-json": "*",
         "ext-bcmath": "*",
         "psr/event-dispatcher": "^1.0",
-        "psr/log": "^1.1 | ^2.0 | ^3.0",
-        "psr/container": "^1.1 | ^2.0",
+        "psr/log": "^1.1 || ^2.0 || ^3.0",
+        "psr/container": "^1.1 || ^2.0",
         "psr/http-client": "^1.0",
-        "psr/http-message": "^1.0",
+        "psr/http-message": "^1.1 || ^2.0",
         "yansongda/supports": "~3.2.0"
     },
     "require-dev": {
@@ -57,7 +57,7 @@
     "suggest": {
         "illuminate/container": "Laravel 框架下使用 SDK，请安装",
         "hyperf/utils": "Hyperf 框架下使用 SDK，请安装",
-        "php-di/php-di": "其它/无框架下使用 SDK，请安装"
+        "hyperf/pimple": "其它/无框架下使用 SDK，请安装"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit -c phpunit.xml --colors=always",

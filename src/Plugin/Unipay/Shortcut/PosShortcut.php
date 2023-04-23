@@ -18,23 +18,23 @@ class PosShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $typeMethod = Str::camel($params['_type'] ?? 'default').'Plugins';
+        $typeMethod = Str::camel($params['_action'] ?? 'default').'Plugins';
 
         if (method_exists($this, $typeMethod)) {
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Pos type [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Pos action [{$typeMethod}] not supported");
     }
 
-    public function defaultPlugins(): array
+    protected function defaultPlugins(): array
     {
         return [
             PosNormalPlugin::class,
         ];
     }
 
-    public function preAuthPlugins(): array
+    protected function preAuthPlugins(): array
     {
         return [
             PosPreAuthPlugin::class,

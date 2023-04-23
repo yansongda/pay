@@ -17,23 +17,23 @@ class CancelShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $typeMethod = Str::camel($params['_type'] ?? 'default').'Plugins';
+        $typeMethod = Str::camel($params['_action'] ?? 'default').'Plugins';
 
         if (method_exists($this, $typeMethod)) {
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_TYPE_ERROR, "Cancel type [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Cancel action [{$typeMethod}] not supported");
     }
 
-    public function defaultPlugins(): array
+    protected function defaultPlugins(): array
     {
         return [
             CancelPlugin::class,
         ];
     }
 
-    public function qrCodePlugins(): array
+    protected function qrCodePlugins(): array
     {
         return [
             \Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin::class,

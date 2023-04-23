@@ -31,14 +31,14 @@ class RefundShortcutTest extends TestCase
     {
         self::assertEquals([
             \Yansongda\Pay\Plugin\Unipay\QrCode\RefundPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'qr_code']));
+        ], $this->plugin->getPlugins(['_action' => 'qr_code']));
     }
 
     public function testFoo()
     {
         $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionMessage('Refund type [fooPlugins] not supported');
+        $this->expectExceptionMessage('Refund action [fooPlugins] not supported');
 
-        $this->plugin->getPlugins(['_type' => 'foo']);
+        $this->plugin->getPlugins(['_action' => 'foo']);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Plugin\Wechat\Papay;
 
 use Yansongda\Pay\Plugin\Wechat\GeneralV2Plugin;
