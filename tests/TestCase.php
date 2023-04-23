@@ -138,7 +138,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
             ]
         ];
 
-        // 未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个
+        // hyperf 单测时，未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个
         if (class_exists(ApplicationContext::class) && class_exists(ContainerFactory::class)) {
             ApplicationContext::setContainer((new ContainerFactory())());
         }
