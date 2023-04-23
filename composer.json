@@ -57,7 +57,7 @@
     "suggest": {
         "illuminate/container": "Laravel 框架下使用 SDK，请安装",
         "hyperf/utils": "Hyperf 框架下使用 SDK，请安装",
-        "php-di/php-di": "其它/无框架下使用 SDK，请安装"
+        "hyperf/pimple": "其它/无框架下使用 SDK，请安装"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit -c phpunit.xml --colors=always",
