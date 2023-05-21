@@ -62,7 +62,7 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
 ### 查询退款
 
-- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\FindRefundPlugin`
+- `Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryRefundPlugin`
 
 ### 申请交易账单
 
@@ -286,12 +286,86 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
 #### 查询退款
 
-- `Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\FindPlugin`
+- `Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\QueryPlugin`
 
 #### 查询垫付回补结果
 
-- `Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\FindReturnAdvancePlugin`
+- `Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\QueryReturnAdvancePlugin`
 
 #### 垫付退款回补
 
 - `Yansongda\Pay\Plugin\Wechat\Ecommerce\Refund\ReturnAdvancePlugin`
+
+
+## 委托代扣
+
+[文档](https://pay.weixin.qq.com/wiki/doc/api/wxpay_v2/papay/chapter1_1.shtml)
+
+### 只签约
+
+> 具体签约相关参数，请参阅委托代扣的文档
+
+```php
+Pay::config($config);
+
+$result = Pay::wechat()->papay([
+    '_action' => 'contract',
+    '_no_common_plugins' => true,
+    '_type' => 'mini', // 通过小程序签约
+    'contract_code' => '我方签约号',
+    'contract_display_account' => '签约人',
+    'mch_id' => '商户号',
+    'notify_url' => '签约成功回调地址',
+    'plan_id' => '委托代扣后台创建的模板ID',
+    'request_serial' => '请求序列号',
+    'timestamp' => time(),
+    'outerid' => '我方用户ID',
+])->toArray();
+```
+
+### 支付中签约
+
+> 具体签约相关参数，请参阅委托代扣的文档
+
+```php
+Pay::config($config);
+
+$result = Pay::wechat()->papay([
+    '_no_common_plugins' => true,
+    '_type' => 'mini',
+    'contract_mchid' => '签约商户ID',
+    'contract_appid' => '签约AppID',
+    'out_trade_no' => '我方订单号',
+    'body' => '委托代扣',
+    'notify_url' => '支付回调地址',
+    'total_fee' => 1000,
+    'spbill_create_ip' => '127.0.0.1',
+    'trade_type' => 'JSAPI',
+    'plan_id' => '委托代扣后台创建的模板ID',
+    'openid' => '用户OpenID',
+    'contract_code' => "我方签约号",
+    'request_serial' => '请求序列号',
+    'contract_display_account' => '签约人',
+    'contract_notify_url' => '签约成功回调地址',
+])->toArray();
+```
+
+### 代扣
+
+> 具体代扣相关参数，请参阅委托代扣的文档
+
+```php
+Pay::config($config);
+
+$result = Pay::wechat()->papay([
+    '_action' => 'apply',
+    '_no_common_plugins' => true,
+    '_type' => 'mini',
+    'body' => '委托代扣',
+    'out_trade_no' => '我方订单号',
+    'total_fee' => 1000,
+    'spbill_create_ip' => '127.0.0.1',
+    'notify_url' => '代扣成功回调地址',
+    'contract_id' => '签约ID',
+])->toArray();
+```

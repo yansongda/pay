@@ -35,7 +35,7 @@ $order = [
 //$order = [
 //    'out_trade_no' => '1514027114',
 //    'sub_orders' => '123456',
-//    '_type' => 'combine',
+//    '_action' => 'combine',
 //];
 
 $result = Pay::wechat()->close($order);

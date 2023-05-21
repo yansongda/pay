@@ -73,8 +73,8 @@ yansongda/pay 100% 兼容 支付宝/微信/银联 所有功能（包括服务商
 - H5 支付
 - 扫码支付
 - APP 支付
+- 刷卡支付
 - ...
-- ~~刷卡支付，微信v3版暂不支持，计划后续内置支持v2版，或直接使用 Pay v2 版本~~
 - ~~普通红包，微信v3版暂不支持，计划后续内置支持v2版，或直接使用 Pay v2 版本~~
 - ~~分裂红包，微信v3版暂不支持，计划后续内置支持v2版，或直接使用 Pay v2 版本~~
 
@@ -88,7 +88,7 @@ yansongda/pay 100% 兼容 支付宝/微信/银联 所有功能（包括服务商
 
 ## 安装
 ```shell
-composer require yansongda/pay:~3.2.0 -vvv
+composer require yansongda/pay:~3.3.0 -vvv
 ```
 
 ## 深情一撇
@@ -197,7 +197,9 @@ class WechatController
             'default' => [
                 // 必填-商户号
                 'mch_id' => '',
-                // 必填-商户秘钥
+                // 选填-v2商户私钥
+                'mch_secret_key_v2' => '',
+                // 必填-v3商户秘钥
                 'mch_secret_key' => '',
                 // 必填-商户私钥 字符串或路径
                 'mch_secret_cert' => '',

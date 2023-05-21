@@ -62,9 +62,9 @@ $result = Pay::unipay()->scan([
     'txnTime' => date('YmdHis'),
     'txnAmt' => 1,
     'orderId' => 'scan'.date('YmdHis'),
-    // '_type' => 'pre_auth', // 预授权
-    // '_type' => 'pre_order', // 统一下单
-    // '_type' => 'fee', // 缴费二维码
+    // '_action' => 'pre_auth', // 预授权
+    // '_action' => 'pre_order', // 统一下单
+    // '_action' => 'fee', // 缴费二维码
 ]);
 
 return $result->qrCode; // 二维码 url
