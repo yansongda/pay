@@ -35,7 +35,7 @@ class Alipay extends AbstractProvider
 {
     public const URL = [
         Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
-        Pay::MODE_SANDBOX => 'https://openapi.alipaydev.com/gateway.do?charset=utf-8',
+        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com/gateway.do?charset=utf-8',
         Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
     ];
 
