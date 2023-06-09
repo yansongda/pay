@@ -62,15 +62,11 @@ class Wechat extends AbstractProvider
     }
 
     /**
-     * @param array|string $order
-     *
-     * @return array|Collection
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function find($order)
+    public function find(array|string $order): Collection|array
     {
         $order = is_array($order) ? $order : ['transaction_id' => $order];
 
@@ -80,39 +76,33 @@ class Wechat extends AbstractProvider
     }
 
     /**
-     * @param array|string $order
-     *
      * @throws InvalidParamsException
      */
-    public function cancel($order): void
+    public function cancel(array|string $order): null|Collection|array
     {
         throw new InvalidParamsException(Exception::METHOD_NOT_SUPPORTED, 'Wechat does not support cancel api');
     }
 
     /**
-     * @param array|string $order
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function close($order): void
+    public function close(array|string $order): null|Collection|array
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
-        $this->__call('close', [$order]);
+        return $this->__call('close', [$order]);
     }
 
     /**
-     * @return array|Collection
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function refund(array $order)
+    public function refund(array $order): Collection|array
     {
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
@@ -120,12 +110,10 @@ class Wechat extends AbstractProvider
     }
 
     /**
-     * @param null|array|ServerRequestInterface $contents
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function callback($contents = null, ?array $params = null): Collection
+    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection
     {
         $request = $this->getCallbackParams($contents);
 
@@ -156,10 +144,7 @@ class Wechat extends AbstractProvider
         );
     }
 
-    /**
-     * @param null|array|ServerRequestInterface $contents
-     */
-    protected function getCallbackParams($contents = null): ServerRequestInterface
+    protected function getCallbackParams(null|array|ServerRequestInterface $contents = null): ServerRequestInterface
     {
         if (is_array($contents) && isset($contents['body'], $contents['headers'])) {
             return new ServerRequest('POST', 'http://localhost', $contents['headers'], $contents['body']);

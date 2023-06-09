@@ -50,15 +50,11 @@ class Unipay extends AbstractProvider
     }
 
     /**
-     * @param array|string $order
-     *
-     * @return array|Collection
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function find($order)
+    public function find(array|string $order): Collection|array
     {
         if (!is_array($order)) {
             throw new InvalidParamsException(Exception::UNIPAY_FIND_STRING_NOT_SUPPORTED);
@@ -70,15 +66,11 @@ class Unipay extends AbstractProvider
     }
 
     /**
-     * @param array|string $order
-     *
-     * @return array|Collection
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function cancel($order)
+    public function cancel(array|string $order): Collection|array|null
     {
         if (!is_array($order)) {
             throw new InvalidParamsException(Exception::UNIPAY_CANCEL_STRING_NOT_SUPPORTED);
@@ -90,25 +82,19 @@ class Unipay extends AbstractProvider
     }
 
     /**
-     * @param array|string $order
-     *
-     * @return array|Collection
-     *
      * @throws InvalidParamsException
      */
-    public function close($order)
+    public function close(array|string $order): Collection|array|null
     {
         throw new InvalidParamsException(Exception::METHOD_NOT_SUPPORTED, 'Unipay does not support close api');
     }
 
     /**
-     * @return array|Collection
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function refund(array $order)
+    public function refund(array $order): Collection|array
     {
         Event::dispatch(new Event\MethodCalled('unipay', __METHOD__, $order, null));
 
@@ -116,12 +102,10 @@ class Unipay extends AbstractProvider
     }
 
     /**
-     * @param null|array|ServerRequestInterface $contents
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function callback($contents = null, ?array $params = null): Collection
+    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection
     {
         $request = $this->getCallbackParams($contents);
 
@@ -148,10 +132,7 @@ class Unipay extends AbstractProvider
         );
     }
 
-    /**
-     * @param null|array|ServerRequestInterface $contents
-     */
-    protected function getCallbackParams($contents = null): Collection
+    protected function getCallbackParams(null|array|ServerRequestInterface $contents = null): Collection
     {
         if (is_array($contents)) {
             return Collection::wrap($contents);

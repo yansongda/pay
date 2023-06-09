@@ -12,11 +12,9 @@ use Yansongda\Pay\Provider\Alipay;
 class AlipayServiceProvider implements ServiceProviderInterface
 {
     /**
-     * @param mixed $data
-     *
      * @throws ContainerException
      */
-    public function register($data = null): void
+    public function register(mixed $data = null): void
     {
         $service = new Alipay();
 

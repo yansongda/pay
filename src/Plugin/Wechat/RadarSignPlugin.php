@@ -47,17 +47,10 @@ class RadarSignPlugin implements PluginInterface
     {
         Logger::debug('[wechat][RadarSignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        switch ($rocket->getParams()['_version'] ?? 'default') {
-            case 'v2':
-                $radar = $this->v2($rocket);
-
-                break;
-
-            default:
-                $radar = $this->v3($rocket);
-
-                break;
-        }
+        $radar = match ($rocket->getParams()['_version'] ?? 'default') {
+            'v2' => $this->v2($rocket),
+            default => $this->v3($rocket),
+        };
 
         $rocket->setRadar($radar);
 

@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
@@ -136,17 +137,17 @@ class AbstractProviderTest extends TestCase
 
 class FooProviderStub extends AbstractProvider
 {
-    public function find($order): Collection
+    public function find(array|string $order): Collection
     {
         return new Collection();
     }
 
-    public function cancel($order): Collection
+    public function cancel(array|string $order): Collection
     {
         return new Collection();
     }
 
-    public function close($order): Collection
+    public function close(array|string $order): Collection
     {
         return new Collection();
     }
@@ -156,7 +157,7 @@ class FooProviderStub extends AbstractProvider
         return new Collection();
     }
 
-    public function callback($contents = null, ?array $params = null): Collection
+    public function callback(array|ServerRequestInterface $contents = null, ?array $params = null): Collection
     {
         return new Collection();
     }

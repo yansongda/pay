@@ -15,44 +15,21 @@ use Yansongda\Supports\Collection;
 interface ProviderInterface
 {
     /**
-     * @return null|array|Collection|MessageInterface
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function pay(array $plugins, array $params);
+    public function pay(array $plugins, array $params): Collection|MessageInterface|array|null;
 
-    /**
-     * @param array|string $order
-     *
-     * @return array|Collection
-     */
-    public function find($order);
+    public function find(array|string $order): Collection|array;
 
-    /**
-     * @param array|string $order
-     *
-     * @return array|Collection|void
-     */
-    public function cancel($order);
+    public function cancel(array|string $order): array|Collection|null;
 
-    /**
-     * @param array|string $order
-     *
-     * @return array|Collection|void
-     */
-    public function close($order);
+    public function close(array|string $order): array|Collection|null;
 
-    /**
-     * @return array|Collection
-     */
-    public function refund(array $order);
+    public function refund(array $order): Collection|array;
 
-    /**
-     * @param null|array|ServerRequestInterface $contents
-     */
-    public function callback($contents = null, ?array $params = null): Collection;
+    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection;
 
     public function success(): ResponseInterface;
 }

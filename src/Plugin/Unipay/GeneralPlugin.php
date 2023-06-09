@@ -61,7 +61,7 @@ abstract class GeneralPlugin implements PluginInterface
     {
         $url = $this->getUri($rocket);
 
-        if (0 === strpos($url, 'http')) {
+        if (str_starts_with($url, 'http')) {
             return $url;
         }
 

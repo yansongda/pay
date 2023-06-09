@@ -31,13 +31,11 @@ use function Yansongda\Pay\should_do_http_request;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
-     * @return null|array|Collection|MessageInterface
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function call(string $plugin, array $params = [])
+    public function call(string $plugin, array $params = []): Collection|MessageInterface|array|null
     {
         if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
             throw new InvalidParamsException(Exception::SHORTCUT_NOT_FOUND, "[{$plugin}] is not incompatible");
@@ -56,12 +54,10 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @return null|array|Collection|MessageInterface
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function pay(array $plugins, array $params)
+    public function pay(array $plugins, array $params): Collection|MessageInterface|array|null
     {
         Logger::info('[AbstractProvider] 即将进行 pay 操作', func_get_args());
 

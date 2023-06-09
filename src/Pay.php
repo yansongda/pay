@@ -71,17 +71,12 @@ class Pay
         HttpServiceProvider::class,
     ];
 
-    /**
-     * @var null|Closure|ContainerInterface
-     */
-    private static $container;
+    private static Closure|null|ContainerInterface $container;
 
     /**
-     * @param null|Closure|ContainerInterface $container
-     *
      * @throws ContainerException
      */
-    private function __construct(array $config, $container = null)
+    private function __construct(array $config, ContainerInterface|Closure $container = null)
     {
         $this->registerServices($config, $container);
 
@@ -105,11 +100,9 @@ class Pay
     }
 
     /**
-     * @param null|Closure|ContainerInterface $container
-     *
      * @throws ContainerException
      */
-    public static function config(array $config = [], $container = null): bool
+    public static function config(array $config = [], ContainerInterface|Closure $container = null): bool
     {
         if (self::hasContainer() && !($config['_force'] ?? false)) {
             return false;
@@ -123,11 +116,9 @@ class Pay
     /**
      * @codeCoverageIgnore
      *
-     * @param mixed $value
-     *
      * @throws ContainerException
      */
-    public static function set(string $name, $value): void
+    public static function set(string $name, mixed $value): void
     {
         try {
             $container = Pay::getContainer();
@@ -155,11 +146,9 @@ class Pay
     /**
      * @codeCoverageIgnore
      *
-     * @return mixed
-     *
      * @throws ContainerException
      */
-    public static function make(string $service, array $parameters = [])
+    public static function make(string $service, array $parameters = []): mixed
     {
         try {
             $container = Pay::getContainer();
@@ -179,12 +168,10 @@ class Pay
     }
 
     /**
-     * @return mixed
-     *
      * @throws ServiceNotFoundException
      * @throws ContainerException
      */
-    public static function get(string $service)
+    public static function get(string $service): mixed
     {
         try {
             return Pay::getContainer()->get($service);
@@ -205,10 +192,7 @@ class Pay
         return Pay::getContainer()->has($service);
     }
 
-    /**
-     * @param null|Closure|ContainerInterface $container
-     */
-    public static function setContainer($container): void
+    public static function setContainer(ContainerInterface|Closure|null $container): void
     {
         self::$container = $container;
     }
@@ -240,11 +224,9 @@ class Pay
     }
 
     /**
-     * @param mixed $data
-     *
      * @throws ContainerException
      */
-    public static function registerService(string $service, $data): void
+    public static function registerService(string $service, mixed $data): void
     {
         $var = new $service();
 
@@ -254,11 +236,9 @@ class Pay
     }
 
     /**
-     * @param null|Closure|ContainerInterface $container
-     *
      * @throws ContainerException
      */
-    private function registerServices(array $config, $container = null): void
+    private function registerServices(array $config, ContainerInterface|Closure $container = null): void
     {
         foreach (array_merge($this->coreService, $this->service) as $service) {
             self::registerService($service, ContainerServiceProvider::class == $service ? $container : $config);

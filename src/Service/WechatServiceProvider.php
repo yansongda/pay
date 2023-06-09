@@ -12,11 +12,9 @@ use Yansongda\Pay\Provider\Wechat;
 class WechatServiceProvider implements ServiceProviderInterface
 {
     /**
-     * @param mixed $data
-     *
      * @throws ContainerException
      */
-    public function register($data = null): void
+    public function register(mixed $data = null): void
     {
         $service = new Wechat();
 

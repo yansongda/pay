@@ -9,9 +9,7 @@ use Yansongda\Pay\Exception\ContainerException;
 interface ServiceProviderInterface
 {
     /**
-     * @param mixed $data
-     *
      * @throws ContainerException
      */
-    public function register($data = null): void;
+    public function register(mixed $data = null): void;
 }

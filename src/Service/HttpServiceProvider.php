@@ -16,12 +16,10 @@ use Yansongda\Supports\Config;
 class HttpServiceProvider implements ServiceProviderInterface
 {
     /**
-     * @param mixed $data
-     *
      * @throws ContainerException
      * @throws ServiceNotFoundException
      */
-    public function register($data = null): void
+    public function register(mixed $data = null): void
     {
         /* @var Config $config */
         $config = Pay::get(ConfigInterface::class);

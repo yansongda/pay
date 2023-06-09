@@ -12,11 +12,9 @@ use Yansongda\Pay\Provider\Unipay;
 class UnipayServiceProvider implements ServiceProviderInterface
 {
     /**
-     * @param mixed $data
-     *
      * @throws ContainerException
      */
-    public function register($data = null): void
+    public function register(mixed $data = null): void
     {
         $service = new Unipay();
 
