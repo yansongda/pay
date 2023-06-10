@@ -6,7 +6,6 @@ namespace Yansongda\Pay\Plugin;
 
 use Closure;
 use Psr\Http\Message\ResponseInterface;
-use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
@@ -15,6 +14,8 @@ use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
+
+use function Yansongda\Pay\get_direction;
 
 class ParserPlugin implements PluginInterface
 {
@@ -32,26 +33,8 @@ class ParserPlugin implements PluginInterface
         $response = $rocket->getDestination();
 
         return $rocket->setDestination(
-            $this->getDirection($rocket)->parse($this->getPacker($rocket), $response)
+            get_direction($rocket->getDirection())->parse($this->getPacker($rocket), $response)
         );
-    }
-
-    /**
-     * @throws ContainerException
-     * @throws InvalidConfigException
-     * @throws ServiceNotFoundException
-     */
-    protected function getDirection(Rocket $rocket): DirectionInterface
-    {
-        $packer = Pay::get($rocket->getDirection());
-
-        $packer = is_string($packer) ? Pay::get($packer) : $packer;
-
-        if (!$packer instanceof DirectionInterface) {
-            throw new InvalidConfigException(Exception::INVALID_PARSER);
-        }
-
-        return $packer;
     }
 
     /**

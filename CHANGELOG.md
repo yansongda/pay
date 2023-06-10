@@ -1,5 +1,9 @@
 ## v3.4.0
 
+### added
+
+- feat: 增加 `get_direction` 方法获取 `Direction` 对象(#803)
+
 ### optimized
 
 - optimize: 优化 coding style 代码规范(#802)
