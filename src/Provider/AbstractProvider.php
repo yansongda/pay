@@ -77,8 +77,7 @@ abstract class AbstractProvider implements ProviderInterface
             ->send((new Rocket())->setParams($params)->setPayload(new Collection()))
             ->through($plugins)
             ->via('assembly')
-            ->then(fn ($rocket) => $this->ignite($rocket))
-        ;
+            ->then(fn ($rocket) => $this->ignite($rocket));
 
         Event::dispatch(new Event\PayFinish($rocket));
 
@@ -120,8 +119,7 @@ abstract class AbstractProvider implements ProviderInterface
             $contents = (string) $response->getBody();
 
             $rocket->setDestination($response->withBody(Utils::streamFor($contents)))
-                ->setDestinationOrigin($response->withBody(Utils::streamFor($contents)))
-            ;
+                ->setDestinationOrigin($response->withBody(Utils::streamFor($contents)));
         } catch (Throwable $e) {
             Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
 

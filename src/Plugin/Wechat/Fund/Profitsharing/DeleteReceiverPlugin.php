@@ -31,8 +31,7 @@ class DeleteReceiverPlugin extends GeneralPlugin
 
         if (Pay::MODE_SERVICE === ($config['mode'] ?? null)) {
             $wechatId['sub_mchid'] = $rocket->getPayload()
-                ->get('sub_mchid', $config['sub_mch_id'] ?? '')
-            ;
+                ->get('sub_mchid', $config['sub_mch_id'] ?? '');
         }
 
         $rocket->mergePayload($wechatId);

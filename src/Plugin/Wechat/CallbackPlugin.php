@@ -65,7 +65,6 @@ class CallbackPlugin implements PluginInterface
 
         $rocket->setDestination(clone $request)
             ->setDestinationOrigin($request)
-            ->setParams($rocket->getParams()['params'] ?? [])
-        ;
+            ->setParams($rocket->getParams()['params'] ?? []);
     }
 }

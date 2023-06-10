@@ -37,8 +37,7 @@ class AppPayPlugin implements PluginInterface
                     ['product_code' => 'QUICK_MSECURITY_PAY'],
                     $rocket->getParams(),
                 ),
-            ])
-        ;
+            ]);
 
         Logger::info('[alipay][AppPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

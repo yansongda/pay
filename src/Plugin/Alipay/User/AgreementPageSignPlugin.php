@@ -26,8 +26,7 @@ class AgreementPageSignPlugin implements PluginInterface
                     ['product_code' => 'CYCLE_PAY_AUTH'],
                     $rocket->getParams()
                 ),
-            ])
-        ;
+            ]);
 
         Logger::info('[alipay][AgreementPageSignPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
