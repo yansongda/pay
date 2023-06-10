@@ -43,8 +43,7 @@ class CallbackPlugin implements PluginInterface
         verify_unipay_sign($params, $rocket->getPayload()->sortKeys()->toString(), $signature);
 
         $rocket->setDirection(NoHttpRequestDirection::class)
-            ->setDestination($rocket->getPayload())
-        ;
+            ->setDestination($rocket->getPayload());
 
         Logger::info('[unipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -54,8 +53,7 @@ class CallbackPlugin implements PluginInterface
     protected function formatPayload(Rocket $rocket): void
     {
         $payload = (new Collection($rocket->getParams()))
-            ->filter(fn ($v, $k) => 'signature' != $k && !Str::startsWith($k, '_'))
-        ;
+            ->filter(fn ($v, $k) => 'signature' != $k && !Str::startsWith($k, '_'));
 
         $rocket->setPayload($payload);
     }

@@ -39,8 +39,7 @@ class WapPayPlugin implements PluginInterface
                     ],
                     $rocket->getParams(),
                 ),
-            ])
-        ;
+            ]);
 
         Logger::info('[alipay][WapPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
