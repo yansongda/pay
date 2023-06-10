@@ -25,10 +25,13 @@ export default defineConfig({
             message: 'Released under the MIT License.',
             copyright: 'Copyright © 2017-present yansongda'
         },
-        algolia: {
-            appId: 'UJ4V77W9P7',
-            apiKey: '181f0abb91e2400ab3c9907a4ab29532',
-            indexName: 'yansongda'
+        search: {
+            provider: 'algolia',
+            options: {
+                appId: 'UJ4V77W9P7',
+                apiKey: '181f0abb91e2400ab3c9907a4ab29532',
+                indexName: 'yansongda'
+            }
         }
     }
 })
