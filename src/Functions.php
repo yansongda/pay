@@ -34,15 +34,16 @@ function get_tenant(array $params = []): string
 }
 
 /**
- * @throws ContainerException
  * @throws InvalidConfigException
- * @throws ServiceNotFoundException
  */
 function get_direction(mixed $direction): DirectionInterface
 {
-    $direction = Pay::get($direction);
+    try {
+        $direction = Pay::get($direction);
 
-    $direction = is_string($direction) ? Pay::get($direction) : $direction;
+        $direction = is_string($direction) ? Pay::get($direction) : $direction;
+    } catch (ContainerException|ServiceNotFoundException) {
+    }
 
     if (!$direction instanceof DirectionInterface) {
         throw new InvalidConfigException(Exception::INVALID_DIRECTION);

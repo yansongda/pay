@@ -92,7 +92,9 @@ class Wechat extends AbstractProvider
 
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
-        return $this->__call('close', [$order]);
+        $this->__call('close', [$order]);
+
+        return null;
     }
 
     /**

@@ -1,3 +1,18 @@
+## v3.4.0
+
+### added
+
+- feat: 增加 `get_direction` 方法获取 `Direction` 对象(#803)
+
+### changed
+
+- change: `Exception::INVALID_PARSE` 更改为 `Exception::INVALID_DIRECTION`(#804)
+- chore: 最低支持版本变更为 php8.0(#801)
+
+### optimized
+
+- optimize: 优化 coding style 代码规范(#802)
+
 ## v3.3.1
 
 ### fixed

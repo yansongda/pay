@@ -25,6 +25,7 @@ use function Yansongda\Pay\decrypt_wechat_resource;
 use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
 use function Yansongda\Pay\encrypt_wechat_contents;
 use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_direction;
 use function Yansongda\Pay\get_private_cert;
 use function Yansongda\Pay\get_public_cert;
 use function Yansongda\Pay\get_tenant;
@@ -70,6 +71,15 @@ class FunctionTest extends TestCase
     {
         self::assertEquals('default', get_tenant([]));
         self::assertEquals('yansongda', get_tenant(['_config' => 'yansongda']));
+    }
+
+    public function testGetDirection()
+    {
+        self::assertInstanceOf(DirectionInterface::class, get_direction(DirectionInterface::class));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::INVALID_DIRECTION);
+        get_direction('invalid');
     }
 
     public function testGetAlipayConfig()
