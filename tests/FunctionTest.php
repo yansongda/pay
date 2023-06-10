@@ -10,12 +10,12 @@ use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PackerInterface;
-use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Direction\ResponseDirection;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
@@ -24,7 +24,6 @@ use Yansongda\Supports\Str;
 use function Yansongda\Pay\decrypt_wechat_resource;
 use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
 use function Yansongda\Pay\encrypt_wechat_contents;
-use function Yansongda\Pay\from_xml;
 use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_private_cert;
 use function Yansongda\Pay\get_public_cert;
@@ -40,18 +39,12 @@ use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
 use function Yansongda\Pay\verify_unipay_sign;
 use function Yansongda\Pay\verify_wechat_sign;
-use function Yansongda\Pay\to_xml;
 
 class FunctionTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
 
         Pay::set(DirectionInterface::class, CollectionDirection::class);
         Pay::set(PackerInterface::class, JsonPacker::class);

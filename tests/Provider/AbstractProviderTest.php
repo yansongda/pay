@@ -14,11 +14,11 @@ use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
+use Yansongda\Pay\Direction\ArrayDirection;
 use Yansongda\Pay\Direction\CollectionDirection;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Direction\ArrayDirection;
-use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\AbstractProvider;
@@ -28,9 +28,9 @@ use Yansongda\Supports\Collection;
 
 class AbstractProviderTest extends TestCase
 {
-    protected function tearDown(): void
+    protected function setUp(): void
     {
-        parent::tearDown();
+        parent::setUp();
 
         Pay::set(DirectionInterface::class, CollectionDirection::class);
         Pay::set(PackerInterface::class, JsonPacker::class);

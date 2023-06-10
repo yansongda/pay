@@ -5,8 +5,8 @@ namespace Yansongda\Pay\Tests\Plugin;
 use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Direction\CollectionDirection;
-use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
@@ -24,11 +24,6 @@ class ParserPluginTest extends TestCase
         parent::setUp();
 
         $this->plugin = new ParserPlugin();
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
 
         Pay::set(DirectionInterface::class, CollectionDirection::class);
         Pay::set(PackerInterface::class, JsonPacker::class);
