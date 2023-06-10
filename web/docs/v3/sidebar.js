@@ -87,6 +87,7 @@ exports = module.exports = [
         text: '升级指南',
         collapsible: true,
         items: [
+            { text: 'v3.4 升级指南', link: '/docs/v3/upgrade/v3.4'},
             { text: 'v3.3 升级指南', link: '/docs/v3/upgrade/v3.3'},
             { text: 'v3.2 升级指南', link: '/docs/v3/upgrade/v3.2'},
             { text: 'v3.1 升级指南', link: '/docs/v3/upgrade/v3.1'},
