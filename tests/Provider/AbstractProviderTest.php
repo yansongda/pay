@@ -9,13 +9,17 @@ use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
+use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
+use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Direction\ArrayDirection;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\AbstractProvider;
 use Yansongda\Pay\Rocket;
@@ -24,6 +28,14 @@ use Yansongda\Supports\Collection;
 
 class AbstractProviderTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        Pay::set(DirectionInterface::class, CollectionDirection::class);
+        Pay::set(PackerInterface::class, JsonPacker::class);
+    }
+
     public function testVerifyObjectPlugin()
     {
         $plugin = [new FooPlugin()];

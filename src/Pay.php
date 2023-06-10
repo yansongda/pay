@@ -71,7 +71,7 @@ class Pay
         HttpServiceProvider::class,
     ];
 
-    private static Closure|null|ContainerInterface $container;
+    private static Closure|null|ContainerInterface $container = null;
 
     /**
      * @throws ContainerException

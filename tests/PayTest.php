@@ -5,6 +5,7 @@ namespace Yansongda\Pay\Tests;
 use DI\Container;
 use DI\ContainerBuilder;
 use GuzzleHttp\Client;
+use Monolog\Logger;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Yansongda\Pay\Contract\ConfigInterface;
@@ -18,7 +19,6 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Tests\Stubs\FooServiceProviderStub;
 use Yansongda\Supports\Config;
-use Yansongda\Supports\Logger;
 use Yansongda\Supports\Pipeline;
 
 class PayTest extends TestCase
@@ -177,7 +177,7 @@ class PayTest extends TestCase
 
         self::assertInstanceOf(Logger::class, Pay::get(LoggerInterface::class));
 
-        $otherLogger = new \Monolog\Logger('test');
+        $otherLogger = new Logger('test');
         Pay::set(LoggerInterface::class, $otherLogger);
         self::assertEquals($otherLogger, Pay::get(LoggerInterface::class));
     }

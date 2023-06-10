@@ -7,13 +7,16 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
+use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Direction\ResponseDirection;
+use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
@@ -49,6 +52,9 @@ class FunctionTest extends TestCase
     protected function tearDown(): void
     {
         parent::tearDown();
+
+        Pay::set(DirectionInterface::class, CollectionDirection::class);
+        Pay::set(PackerInterface::class, JsonPacker::class);
     }
 
     public function testShouldDoHttpRequest()

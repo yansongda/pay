@@ -2,9 +2,14 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
+use Yansongda\Pay\Contract\DirectionInterface;
+use Yansongda\Pay\Contract\PackerInterface;
+use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Pay\Packer\JsonPacker;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -19,6 +24,14 @@ class LaunchPluginTest extends TestCase
         parent::setUp();
 
         $this->plugin = new LaunchPlugin();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        Pay::set(DirectionInterface::class, CollectionDirection::class);
+        Pay::set(PackerInterface::class, JsonPacker::class);
     }
 
     public function testNoHttpRequest()

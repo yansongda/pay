@@ -8,6 +8,7 @@ use ArrayAccess;
 use JsonSerializable as JsonSerializableInterface;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Supports\Collection;
@@ -33,7 +34,7 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
 
     private array|null|MessageInterface|Collection $destination = null;
 
-    private ?MessageInterface $destinationOrigin = null;
+    private null|RequestInterface|ResponseInterface $destinationOrigin = null;
 
     public function getRadar(): ?RequestInterface
     {
@@ -125,12 +126,12 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
         return $this;
     }
 
-    public function getDestinationOrigin(): ?MessageInterface
+    public function getDestinationOrigin(): null|RequestInterface|ResponseInterface
     {
         return $this->destinationOrigin;
     }
 
-    public function setDestinationOrigin(?MessageInterface $destinationOrigin): Rocket
+    public function setDestinationOrigin(null|RequestInterface|ResponseInterface $destinationOrigin): Rocket
     {
         $this->destinationOrigin = $destinationOrigin;
 
