@@ -31,7 +31,7 @@ class Exception extends \Exception
      */
     public const CONFIG_ERROR = 3000;
 
-    public const INVALID_PARSER = 3001;
+    public const INVALID_DIRECTION = 3001;
 
     public const ALIPAY_CONFIG_ERROR = 3002;
 
