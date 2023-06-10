@@ -13,11 +13,9 @@ use Yansongda\Pay\Pay;
 class EventServiceProvider implements ServiceProviderInterface
 {
     /**
-     * @param mixed $data
-     *
      * @throws ContainerException
      */
-    public function register($data = null): void
+    public function register(mixed $data = null): void
     {
         if (class_exists(EventDispatcher::class)) {
             Pay::set(EventDispatcherInterface::class, new EventDispatcher());

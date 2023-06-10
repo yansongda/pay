@@ -95,17 +95,9 @@ class Exception extends \Exception
 
     public const INVALID_REQUEST_ENCRYPTED_METHOD = 5009;
 
-    /**
-     * raw.
-     *
-     * @var mixed
-     */
-    public $extra;
+    public mixed $extra;
 
-    /**
-     * @param mixed $extra
-     */
-    public function __construct(string $message = 'Unknown Error', int $code = self::UNKNOWN_ERROR, $extra = null, Throwable $previous = null)
+    public function __construct(string $message = 'Unknown Error', int $code = self::UNKNOWN_ERROR, mixed $extra = null, Throwable $previous = null)
     {
         $this->extra = $extra;
 

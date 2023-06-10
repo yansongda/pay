@@ -37,7 +37,7 @@ class LaunchPlugin implements PluginInterface
 
         Logger::debug('[wechat][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        if (should_do_http_request($rocket->getDirection())) {
+        if (should_do_http_request($rocket->getDirection()) && !is_null($rocket->getDestinationOrigin())) {
             verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());
 
             $rocket->setDestination($this->validateResponse($rocket));
@@ -49,11 +49,9 @@ class LaunchPlugin implements PluginInterface
     }
 
     /**
-     * @return null|array|Collection|MessageInterface
-     *
      * @throws InvalidResponseException
      */
-    protected function validateResponse(Rocket $rocket)
+    protected function validateResponse(Rocket $rocket): Collection|MessageInterface|array|null
     {
         $response = $rocket->getDestination();
 

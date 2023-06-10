@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
-use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\DirectionInterface;
@@ -34,17 +34,15 @@ function get_tenant(array $params = []): string
 }
 
 /**
- * @param mixed $direction
- *
  * @throws InvalidConfigException
  */
-function get_direction($direction): DirectionInterface
+function get_direction(mixed $direction): DirectionInterface
 {
     try {
         $direction = Pay::get($direction);
 
         $direction = is_string($direction) ? Pay::get($direction) : $direction;
-    } catch (ContainerException|ServiceNotFoundException $e) {
+    } catch (ContainerException|ServiceNotFoundException) {
     }
 
     if (!$direction instanceof DirectionInterface) {
@@ -182,7 +180,7 @@ function get_wechat_sign_v2(array $params, array $payload, bool $upper = true): 
  * @throws ServiceNotFoundException
  * @throws InvalidParamsException
  */
-function verify_wechat_sign(MessageInterface $message, array $params): void
+function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, array $params): void
 {
     if ($message instanceof ServerRequestInterface && 'localhost' === $message->getUri()->getHost()) {
         return;
@@ -301,15 +299,10 @@ function decrypt_wechat_resource(array $resource, array $params): array
         throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key]');
     }
 
-    switch ($resource['algorithm'] ?? '') {
-        case 'AEAD_AES_256_GCM':
-            $resource['ciphertext'] = decrypt_wechat_resource_aes_256_gcm($ciphertext, $secret, $resource['nonce'] ?? '', $resource['associated_data'] ?? '');
-
-            break;
-
-        default:
-            throw new InvalidResponseException(Exception::INVALID_REQUEST_ENCRYPTED_METHOD);
-    }
+    $resource['ciphertext'] = match ($resource['algorithm'] ?? '') {
+        'AEAD_AES_256_GCM' => decrypt_wechat_resource_aes_256_gcm($ciphertext, $secret, $resource['nonce'] ?? '', $resource['associated_data'] ?? ''),
+        default => throw new InvalidResponseException(Exception::INVALID_REQUEST_ENCRYPTED_METHOD),
+    };
 
     return $resource;
 }
@@ -317,7 +310,7 @@ function decrypt_wechat_resource(array $resource, array $params): array
 /**
  * @throws InvalidResponseException
  */
-function decrypt_wechat_resource_aes_256_gcm(string $ciphertext, string $secret, string $nonce, string $associatedData)
+function decrypt_wechat_resource_aes_256_gcm(string $ciphertext, string $secret, string $nonce, string $associatedData): array|string
 {
     $decrypted = openssl_decrypt(
         substr($ciphertext, 0, -Wechat::AUTH_TAG_LENGTH_BYTE),

@@ -9,10 +9,7 @@ use Throwable;
 
 class ContainerException extends Exception implements ContainerExceptionInterface
 {
-    /**
-     * @param mixed $extra
-     */
-    public function __construct(string $message = '', int $code = self::CONTAINER_ERROR, $extra = null, Throwable $previous = null)
+    public function __construct(string $message = '', int $code = self::CONTAINER_ERROR, mixed $extra = null, Throwable $previous = null)
     {
         parent::__construct($message, $code, $extra, $previous);
     }

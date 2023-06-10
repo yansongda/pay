@@ -7,6 +7,7 @@
 ### changed
 
 - change: `Exception::INVALID_PARSE` 更改为 `Exception::INVALID_DIRECTION`(#804)
+- chore: 最低支持版本变更为 php8.0(#801)
 
 ### optimized
 

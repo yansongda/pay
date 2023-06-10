@@ -8,13 +8,18 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
+use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
+use Yansongda\Pay\Direction\ArrayDirection;
+use Yansongda\Pay\Direction\CollectionDirection;
+use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Direction\ArrayDirection;
-use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\AbstractProvider;
 use Yansongda\Pay\Rocket;
@@ -23,6 +28,14 @@ use Yansongda\Supports\Collection;
 
 class AbstractProviderTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Pay::set(DirectionInterface::class, CollectionDirection::class);
+        Pay::set(PackerInterface::class, JsonPacker::class);
+    }
+
     public function testVerifyObjectPlugin()
     {
         $plugin = [new FooPlugin()];
@@ -136,17 +149,17 @@ class AbstractProviderTest extends TestCase
 
 class FooProviderStub extends AbstractProvider
 {
-    public function find($order): Collection
+    public function find(array|string $order): Collection
     {
         return new Collection();
     }
 
-    public function cancel($order): Collection
+    public function cancel(array|string $order): Collection
     {
         return new Collection();
     }
 
-    public function close($order): Collection
+    public function close(array|string $order): Collection
     {
         return new Collection();
     }
@@ -156,7 +169,7 @@ class FooProviderStub extends AbstractProvider
         return new Collection();
     }
 
-    public function callback($contents = null, ?array $params = null): Collection
+    public function callback(array|ServerRequestInterface $contents = null, ?array $params = null): Collection
     {
         return new Collection();
     }

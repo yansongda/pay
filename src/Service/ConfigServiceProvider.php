@@ -32,11 +32,9 @@ class ConfigServiceProvider implements ServiceProviderInterface
     ];
 
     /**
-     * @param mixed $data
-     *
      * @throws ContainerException
      */
-    public function register($data = null): void
+    public function register(mixed $data = null): void
     {
         $config = new Config(array_replace_recursive($this->config, $data ?? []));
 

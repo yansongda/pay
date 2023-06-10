@@ -78,15 +78,10 @@ class PapayShortcut implements ShortcutInterface
 
     protected function getInvoke(array $params): string
     {
-        switch ($params['_type'] ?? 'default') {
-            case 'app':
-                return \Yansongda\Pay\Plugin\Wechat\Pay\App\InvokePrepayV2Plugin::class;
-
-            case 'mini':
-                return \Yansongda\Pay\Plugin\Wechat\Pay\Mini\InvokePrepayV2Plugin::class;
-
-            default:
-                return InvokePrepayV2Plugin::class;
-        }
+        return match ($params['_type'] ?? 'default') {
+            'app' => \Yansongda\Pay\Plugin\Wechat\Pay\App\InvokePrepayV2Plugin::class,
+            'mini' => \Yansongda\Pay\Plugin\Wechat\Pay\Mini\InvokePrepayV2Plugin::class,
+            default => InvokePrepayV2Plugin::class,
+        };
     }
 }

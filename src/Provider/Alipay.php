@@ -40,13 +40,11 @@ class Alipay extends AbstractProvider
     ];
 
     /**
-     * @return null|array|Collection|MessageInterface
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function __call(string $shortcut, array $params)
+    public function __call(string $shortcut, array $params): null|array|Collection|MessageInterface
     {
         $plugin = '\\Yansongda\\Pay\\Plugin\\Alipay\\Shortcut\\'.
             Str::studly($shortcut).'Shortcut';
@@ -55,15 +53,11 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @param array|string $order
-     *
-     * @return array|Collection
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function find($order)
+    public function find(array|string $order): Collection|array
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
@@ -73,15 +67,11 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @param array|string $order
-     *
-     * @return array|Collection
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function cancel($order)
+    public function cancel(array|string $order): Collection|array|null
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
@@ -91,15 +81,11 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @param array|string $order
-     *
-     * @return array|Collection
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function close($order)
+    public function close(array|string $order): Collection|array|null
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
@@ -109,13 +95,11 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @return array|Collection
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function refund(array $order)
+    public function refund(array $order): Collection|array
     {
         Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
 
@@ -123,12 +107,10 @@ class Alipay extends AbstractProvider
     }
 
     /**
-     * @param null|array|ServerRequestInterface $contents
-     *
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function callback($contents = null, ?array $params = null): Collection
+    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection
     {
         $request = $this->getCallbackParams($contents);
 
@@ -155,10 +137,7 @@ class Alipay extends AbstractProvider
         );
     }
 
-    /**
-     * @param null|array|ServerRequestInterface $contents
-     */
-    protected function getCallbackParams($contents = null): Collection
+    protected function getCallbackParams(array|ServerRequestInterface $contents = null): Collection
     {
         if (is_array($contents)) {
             return Collection::wrap($contents);

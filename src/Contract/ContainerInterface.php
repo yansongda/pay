@@ -6,17 +6,7 @@ namespace Yansongda\Pay\Contract;
 
 interface ContainerInterface extends \Psr\Container\ContainerInterface
 {
-    /**
-     * factory make.
-     *
-     * @return mixed
-     */
-    public function make(string $name, array $parameters = []);
+    public function make(string $name, array $parameters = []): mixed;
 
-    /**
-     * @param mixed $entry
-     *
-     * @return mixed
-     */
-    public function set(string $name, $entry);
+    public function set(string $name, mixed $entry): mixed;
 }

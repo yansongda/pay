@@ -28,10 +28,6 @@ class XmlPacker implements PackerInterface
             return [];
         }
 
-        if (PHP_VERSION_ID < 80000) {
-            libxml_disable_entity_loader();
-        }
-
         $data = json_decode(json_encode(
             simplexml_load_string($payload, 'SimpleXMLElement', LIBXML_NOCDATA),
             JSON_UNESCAPED_UNICODE

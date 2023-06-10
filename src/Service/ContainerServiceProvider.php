@@ -26,11 +26,9 @@ class ContainerServiceProvider implements ServiceProviderInterface
     ];
 
     /**
-     * @param mixed $data
-     *
      * @throws ContainerException
      */
-    public function register($data = null): void
+    public function register(mixed $data = null): void
     {
         if ($data instanceof ContainerInterface || $data instanceof Closure) {
             Pay::setContainer($data);

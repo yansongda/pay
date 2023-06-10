@@ -3,8 +3,11 @@
 namespace Yansongda\Pay\Tests\Plugin;
 
 use Yansongda\Pay\Contract\DirectionInterface;
-use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Contract\PackerInterface;
+use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Rocket;
@@ -21,6 +24,9 @@ class ParserPluginTest extends TestCase
         parent::setUp();
 
         $this->plugin = new ParserPlugin();
+
+        Pay::set(DirectionInterface::class, CollectionDirection::class);
+        Pay::set(PackerInterface::class, JsonPacker::class);
     }
 
     public function testWrongParser()

@@ -10,18 +10,12 @@ class InvalidResponseException extends Exception
 {
     public ?Throwable $exception = null;
 
-    /**
-     * @var mixed
-     */
-    public $response;
+    public mixed $response;
 
-    /**
-     * @param mixed $extra
-     */
     public function __construct(
         int $code = self::RESPONSE_ERROR,
         string $message = 'Provider response Error',
-        $extra = null,
+        mixed $extra = null,
         ?Throwable $exception = null,
         Throwable $previous = null
     ) {
