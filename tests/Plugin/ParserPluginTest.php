@@ -26,7 +26,7 @@ class ParserPluginTest extends TestCase
     public function testWrongParser()
     {
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(InvalidConfigException::INVALID_PARSER);
+        self::expectExceptionCode(InvalidConfigException::INVALID_DIRECTION);
 
         $rocket = new Rocket();
         $rocket->setDirection(FooParserStub::class);

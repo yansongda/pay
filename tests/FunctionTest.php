@@ -78,7 +78,7 @@ class FunctionTest extends TestCase
         self::assertInstanceOf(DirectionInterface::class, get_direction(DirectionInterface::class));
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::INVALID_PARSER);
+        self::expectExceptionCode(Exception::INVALID_DIRECTION);
         get_direction('invalid');
     }
 

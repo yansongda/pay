@@ -48,7 +48,7 @@ function get_direction($direction): DirectionInterface
     }
 
     if (!$direction instanceof DirectionInterface) {
-        throw new InvalidConfigException(Exception::INVALID_PARSER);
+        throw new InvalidConfigException(Exception::INVALID_DIRECTION);
     }
 
     return $direction;
