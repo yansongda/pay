@@ -18,5 +18,6 @@ return (new PhpCsFixer\Config())
             'import_constants' => true,
             'import_functions' => true,
         ],
+        'multiline_whitespace_before_semicolons' => ['strategy' => 'no_multi_line'],
     ])
     ->setFinder($finder);

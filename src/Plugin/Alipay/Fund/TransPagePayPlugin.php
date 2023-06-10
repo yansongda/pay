@@ -23,8 +23,7 @@ class TransPagePayPlugin implements PluginInterface
             ->mergePayload([
                 'method' => 'alipay.fund.trans.page.pay',
                 'biz_content' => $rocket->getParams(),
-            ])
-        ;
+            ]);
 
         Logger::info('[alipay][TransPagePayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

@@ -37,8 +37,7 @@ class PagePayPlugin implements PluginInterface
                     ['product_code' => 'FAST_INSTANT_TRADE_PAY'],
                     $rocket->getParams()
                 ),
-            ])
-        ;
+            ]);
 
         Logger::info('[alipay][PagePayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

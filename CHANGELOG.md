@@ -1,3 +1,9 @@
+## v3.4.0
+
+### optimized
+
+- optimize: 优化 coding style 代码规范(#802)
+
 ## v3.3.1
 
 ### fixed
