@@ -196,7 +196,7 @@ function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, a
     $public = get_wechat_config($params)['wechat_public_cert_path'][$wechatSerial] ?? null;
 
     if (empty($sign)) {
-        throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
+        throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, $body, ['headers' => $message->getHeaders(), 'body' => $body]);
     }
 
     $public = get_public_cert(
