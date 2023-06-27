@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Service;
 
 use Closure;
+use Hyperf\Context\ApplicationContext as HyperfContainer;
 use Hyperf\Pimple\ContainerFactory as DefaultContainer;
-use Hyperf\Utils\ApplicationContext as HyperfContainer;
 use Illuminate\Container\Container as LaravelContainer;
 use Psr\Container\ContainerInterface;
 use Yansongda\Pay\Contract\ServiceProviderInterface;

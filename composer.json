@@ -42,6 +42,9 @@
         "guzzlehttp/guzzle": "^7.0",
         "hyperf/pimple": "^2.2"
     },
+    "conflict": {
+        "hyperf/framework": "<3.0"
+    },
     "autoload": {
         "psr-4": {
             "Yansongda\\Pay\\": "src"
