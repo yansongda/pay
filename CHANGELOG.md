@@ -1,3 +1,9 @@
+## v3.4.2
+
+### changed
+
+- change: 只支持 hyperf3.x 版本(#815)
+
 ## v3.4.1
 
 ### optimized
