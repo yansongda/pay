@@ -56,7 +56,7 @@ class CollectionDirectionTest extends TestCase
 
         $result = $this->parser->parse(new JsonPacker(), $response);
 
-        self::assertEquals(['name' => 'yansongda'], $result);
+        self::assertEquals(['name' => 'yansongda'], $result->toArray());
     }
 
     public function testQueryBody()
@@ -65,7 +65,7 @@ class CollectionDirectionTest extends TestCase
 
         $result = $this->parser->parse(new QueryPacker(), $response);
 
-        self::assertEqualsCanonicalizing(['name' => 'yansongda', 'age' => '29'], $result);
+        self::assertEqualsCanonicalizing(['name' => 'yansongda', 'age' => '29'], $result->toArray());
     }
 
     public function testJsonWith()
