@@ -12,7 +12,6 @@ use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
-use Yansongda\Pay\Direction\ArrayDirection;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
@@ -77,13 +76,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         Event::dispatch(new Event\PayFinish($rocket));
 
-        $destination = $rocket->getDestination();
-
-        if (ArrayDirection::class === $rocket->getDirection() && $destination instanceof Collection) {
-            return $destination->toArray();
-        }
-
-        return $destination;
+        return $rocket->getDestination();
     }
 
     /**

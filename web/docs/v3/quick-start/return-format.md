@@ -48,15 +48,12 @@ ThinkPHP 框架在 [https://github.com/top-think/framework/pull/2614](https://gi
 
 ## array
 
-API 调用场景下的返回类型，`array` 和 `Collection` 是可以自定义的，默认情况下均返回 `Collection` 实例。
+API 调用场景下的返回类型，默认情况下均返回 `Collection` 实例。
 
 如果想返回 array 类型的数据，只需要
 
 ```php
-use Yansongda\Pay\Contract\DirectionInterface;
-use Yansongda\Pay\Direction\ArrayDirection;
-
-Pay::set(DirectionInterface::class, ArrayDirection::class);
+$collection->toArray();
 ```
 
 是不是很简单方便？

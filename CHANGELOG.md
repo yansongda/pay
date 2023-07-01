@@ -1,3 +1,9 @@
+## v3.5.0
+
+### deleted
+
+- deleted: 移除 `Yansongda\Pay\Direction\ArrayDirection` 类(#818)
+
 ## v3.4.2
 
 ### changed
