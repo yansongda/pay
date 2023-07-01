@@ -14,7 +14,6 @@ use Yansongda\Pay\Contract\HttpClientInterface;
 use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
-use Yansongda\Pay\Direction\ArrayDirection;
 use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\Exception;
@@ -121,23 +120,6 @@ class AbstractProviderTest extends TestCase
         $provider->ignite($rocket);
     }
 
-    public function testArrayDirection()
-    {
-        $response = new Response(200, [], '{"name":"yansongda"}');
-
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturn($response);
-
-        Pay::set(HttpClientInterface::class, $http);
-
-        $plugin = [BarPlugin::class];
-
-        $provider = new FooProviderStub();
-        $result = $provider->pay($plugin, []);
-
-        self::assertIsArray($result);
-    }
-
     public function testNoCommonPlugins()
     {
         $provider = new Foo2ProviderStub();
@@ -212,8 +194,7 @@ class BarPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $rocket->setDirection(ArrayDirection::class)
-            ->setRadar(new Request('get', ''));
+        $rocket->setRadar(new Request('get', ''));
 
         $rocket = $next($rocket);
 
