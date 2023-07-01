@@ -2,7 +2,7 @@
 
 ### deleted
 
-- deleted: 移除 `Yansongda\Pay\Direction\ArrayDirection` 类(#818)
+- deleted: 移除 `Yansongda\Pay\Direction\ArrayDirection` 类(#818, #819)
 
 ## v3.4.2
 
