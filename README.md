@@ -47,15 +47,13 @@ yii 扩展包请 [传送至这里](https://github.com/guanguans/yii-pay)
 
 ## 版本支持
 
-| 版本  |   PHP    |                       分支                       |      状态      |
-|:---:|:--------:|:----------------------------------------------:|:------------:|
-| 3.4 | `>= 8.0` |                     master                     |     积极开发     |
-| 3.3 | `>= 7.4` |                     master                     |   EOL，停止维护   |
-| 3.2 | `>= 7.4` |                     master                     |   EOL，停止维护   |
-| 3.1 | `>= 7.4` |                     master                     |   EOL，停止维护   |
-| 3.0 | `>= 7.3` |                     master                     |   EOL，停止维护   |
-| 2.x | `>= 7.0` | [v2](https://github.com/yansongda/pay/tree/v2) | 安全支持，不做新功能开发 |
-| 1.x | `>= 5.6` | [v1](https://github.com/yansongda/pay/tree/v1) |   EOL，停止维护   |
+|    版本    |   PHP    |                       分支                       |      状态      |
+|:--------:|:--------:|:----------------------------------------------:|:------------:|
+|   v3.5   | `>= 8.0` |                     master                     |    积极开发中     |
+|   v3.4   | `>= 8.0` |                     master                     |   EOL，停止维护   |
+| v3.0-3.3 | `>= 7.3` |                     master                     |   EOL，停止维护   |
+|   v2.x   | `>= 7.0` | [v2](https://github.com/yansongda/pay/tree/v2) | 安全支持，不做新功能开发 |
+|   v1.x   | `>= 5.6` | [v1](https://github.com/yansongda/pay/tree/v1) |   EOL，停止维护   |
 
 ## 详细文档
 
@@ -100,7 +98,7 @@ yansongda/pay 100% 兼容 支付宝/微信/银联 所有功能（包括服务商
 
 ## 安装
 ```shell
-composer require yansongda/pay:~3.4.0 -vvv
+composer require yansongda/pay:~3.5.0 -vvv
 ```
 
 ## 深情一撇
