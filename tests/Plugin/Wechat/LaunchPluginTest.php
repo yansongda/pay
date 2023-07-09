@@ -72,12 +72,12 @@ class LaunchPluginTest extends TestCase
 
         $rocket = new Rocket();
         $rocket->setDirection(OriginResponseDirection::class);
-        $rocket->setDestination($destination);
+        $rocket->setDestination(Collection::wrap($destination));
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals($destination, $result->getDestination());
+        self::assertEquals($destination, $result->getDestination()->toArray());
     }
 
     public function testCollectionDestination()
