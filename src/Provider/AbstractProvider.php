@@ -56,7 +56,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function pay(array $plugins, array $params): Collection|MessageInterface|array|null
+    public function pay(array $plugins, array $params): Collection|MessageInterface|null
     {
         Logger::info('[AbstractProvider] 即将进行 pay 操作', func_get_args());
 

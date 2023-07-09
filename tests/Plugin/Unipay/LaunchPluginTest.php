@@ -155,7 +155,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         ];
 
         $rocket = new Rocket();
-        $rocket->setDestination($response);
+        $rocket->setDestination(Collection::wrap($response));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
