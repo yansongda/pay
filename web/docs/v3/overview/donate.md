@@ -14,12 +14,12 @@ Pay 项目采用 MIT 协议开源发布，任何人均可在遵循 MIT 协议的
 
 ![pay](/images/pay.jpg)
 
-
 ## 不完全名单
 
 ### 企业
 
-[![jetbrains](/images/jetbrains.png)](https://www.jetbrains.com/)
+[![jetbrains](/images/companies/jetbrains.png)](https://www.jetbrains.com/)
+[![df81.com](/images/companies/df81.png)](https://df81.com/)
 
 ### 个人
 
