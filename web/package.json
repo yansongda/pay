@@ -5,8 +5,8 @@
     "docs:serve": "vitepress serve"
   },
   "devDependencies": {
-    "@types/node": "^20.2.6",
+    "@types/node": "^20.4.1",
     "sass": "^1.63.0",
-    "vitepress": "^1.0.0-beta.3"
+    "vitepress": "^1.0.0-beta.5"
   }
 }

@@ -9,14 +9,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "HomePrimary"
-}
+<script setup>
 </script>
 
-<style lang="scss" scoped>
-@import '../css/home';
+<style scoped lang="scss">
+@import '../../css/home';
 
 .home {
   .container {
