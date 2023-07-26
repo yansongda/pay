@@ -51,7 +51,7 @@ class Wechat extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function __call(string $shortcut, array $params): null|array|Collection|MessageInterface
+    public function __call(string $shortcut, array $params): null|Collection|MessageInterface
     {
         $plugin = '\\Yansongda\\Pay\\Plugin\\Wechat\\Shortcut\\'.
             Str::studly($shortcut).'Shortcut';
