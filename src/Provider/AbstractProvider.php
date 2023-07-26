@@ -34,7 +34,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function call(string $plugin, array $params = []): Collection|MessageInterface|array|null
+    public function call(string $plugin, array $params = []): Collection|MessageInterface|null
     {
         if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
             throw new InvalidParamsException(Exception::SHORTCUT_NOT_FOUND, "[{$plugin}] is not incompatible");

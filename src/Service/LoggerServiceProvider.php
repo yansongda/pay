@@ -22,7 +22,7 @@ class LoggerServiceProvider implements ServiceProviderInterface
         'enable' => false,
         'file' => null,
         'identify' => 'yansongda.pay',
-        'level' => Logger::DEBUG,
+        'level' => 'DEBUG',
         'type' => 'daily',
         'max_files' => 30,
         'formatter' => "%datetime% > %channel%.%level_name% > %message% %context% %extra%\n\n",
