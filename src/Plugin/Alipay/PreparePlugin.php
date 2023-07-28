@@ -16,8 +16,8 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 
 use function Yansongda\Pay\get_alipay_config;
-use function Yansongda\Pay\get_tenant;
 use function Yansongda\Pay\get_public_cert;
+use function Yansongda\Pay\get_tenant;
 
 class PreparePlugin implements PluginInterface
 {
