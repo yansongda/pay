@@ -1,12 +1,13 @@
 {
+  "type": "module",
   "scripts": {
-    "docs:dev": "vitepress dev",
-    "docs:build": "vitepress build",
-    "docs:serve": "vitepress serve"
+    "web:dev": "vitepress dev",
+    "web:build": "vitepress build",
+    "web:serve": "vitepress serve"
   },
   "devDependencies": {
-    "@types/node": "^20.4.1",
-    "sass": "^1.63.0",
-    "vitepress": "^1.0.0-beta.5"
+    "@types/node": "^20.4.9",
+    "sass": "^1.65.1",
+    "vitepress": "1.0.0-rc.4"
   }
 }

@@ -1,15 +1,13 @@
-// @ts-ignore
-import path from 'path'
-import versions from "./versions";
+import versions from "./versions"
 
 let sidebars = versions.reduce(
-    (sidebars, version) => ({
-        ...sidebars,
-        [`/docs/${version}/`]: require(path.join(
-            __dirname, `../docs/${version}/sidebar`
-        ))
-    }),
-    {}
-);
+  (sidebars, version) => {
+    return {
+      ...sidebars,
+      [`/docs/${version}/`]: import(`../docs/${version}/sidebar.ts`)
+    }
+  },
+  {}
+)
 
 export default sidebars;
