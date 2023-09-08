@@ -1,7 +1,9 @@
+import { DefaultTheme } from 'vitepress'
+
 export default [
   {
     text: '快速入门',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '安装', link: '/docs/v2/installation' },
       { text: '快速上手', link: '/docs/v2/quickUsage' },
@@ -10,7 +12,7 @@ export default [
   },
   {
     text: '支付 - 支付宝',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '概述', link: '/docs/v2/alipay/index' },
       { text: '支付', link: '/docs/v2/alipay/pay' },
@@ -24,7 +26,7 @@ export default [
   },
   {
     text: '支付 - 微信',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '概述', link: '/docs/v2/wechat/index' },
       { text: '支付', link: '/docs/v2/wechat/pay' },
@@ -38,7 +40,7 @@ export default [
   },
   {
     text: '事件系统',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '概述', link: '/docs/v2/events/index' },
       { text: '说明', link: '/docs/v2/events/class' },
@@ -47,16 +49,16 @@ export default [
   },
   {
     text: '日志系统',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '使用', link: '/docs/v2/logger/usage' }
     ]
   },
   {
     text: '其它',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: 'FAQ', link: '/docs/v2/others/faq' }
     ]
   }
-];
+] as DefaultTheme.Sidebar

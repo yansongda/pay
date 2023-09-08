@@ -1,5 +1,5 @@
 <script setup>
-import Companies from '@/Docs/Donate/Companies.vue'
+import Companies from '@components/Docs/Donate/Companies.vue'
 </script>
 
 # 捐赠

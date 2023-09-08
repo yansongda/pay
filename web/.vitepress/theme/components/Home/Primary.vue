@@ -1,3 +1,6 @@
+<script setup lang="ts">
+</script>
+
 <template>
   <div class="home">
     <div class="container">
@@ -8,9 +11,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-</script>
 
 <style scoped lang="scss">
 @import '../../css/home';

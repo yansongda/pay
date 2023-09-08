@@ -6,8 +6,19 @@
     "web:serve": "vitepress serve"
   },
   "devDependencies": {
-    "@types/node": "^20.4.9",
-    "sass": "^1.65.1",
-    "vitepress": "1.0.0-rc.4"
+    "@types/node": "^20.5.9",
+    "fast-glob": "^3.3.1",
+    "sass": "^1.66.1",
+    "vite": "^4.4.9",
+    "vitepress": "1.0.0-rc.10",
+    "vue": "^3.3.4"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@algolia/client-search",
+        "search-insights"
+      ]
+    }
   }
 }

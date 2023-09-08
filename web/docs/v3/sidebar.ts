@@ -1,7 +1,9 @@
+import { DefaultTheme } from 'vitepress'
+
 export default [
   {
     text: '概述',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '线上交流', link: '/docs/v3/overview/communication' },
       { text: '捐赠', link: '/docs/v3/overview/donate' },
@@ -12,7 +14,7 @@ export default [
   },
   {
     text: '快速入门',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '安装', link: '/docs/v3/quick-start/install' },
       { text: '初始化', link: '/docs/v3/quick-start/init' },
@@ -24,7 +26,7 @@ export default [
   },
   {
     text: '支付宝',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '支付', link: '/docs/v3/alipay/pay' },
       { text: '查询', link: '/docs/v3/alipay/find' },
@@ -38,7 +40,7 @@ export default [
   },
   {
     text: '微信',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '支付', link: '/docs/v3/wechat/pay' },
       { text: '查询', link: '/docs/v3/wechat/find' },
@@ -52,7 +54,7 @@ export default [
   },
   {
     text: '银联',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '支付', link: '/docs/v3/unipay/pay' },
       { text: '查询', link: '/docs/v3/unipay/find' },
@@ -66,7 +68,7 @@ export default [
   },
   {
     text: '核心架构',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '🚀 Rocket', link: '/docs/v3/kernel/rocket' },
       { text: '🧪 Pipeline', link: '/docs/v3/kernel/pipeline' },
@@ -76,7 +78,7 @@ export default [
   },
   {
     text: '其它',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: '事件', link: '/docs/v3/others/event' },
       { text: '日志', link: '/docs/v3/others/logger' },
@@ -85,7 +87,7 @@ export default [
   },
   {
     text: '升级指南',
-    collapsible: true,
+    collapsed: false,
     items: [
       { text: 'v3.5 升级指南', link: '/docs/v3/upgrade/v3.5' },
       { text: 'v3.4 升级指南', link: '/docs/v3/upgrade/v3.4' },
@@ -95,4 +97,4 @@ export default [
       { text: 'v3.0 升级指南', link: '/docs/v3/upgrade/v3.0' }
     ]
   }
-];
+] as DefaultTheme.Sidebar
