@@ -6,6 +6,4 @@ namespace Yansongda\Pay\Contract;
 
 use Psr\Http\Client\ClientInterface;
 
-interface HttpClientInterface extends ClientInterface
-{
-}
+interface HttpClientInterface extends ClientInterface {}

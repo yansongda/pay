@@ -7,6 +7,4 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Mini;
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_10.shtml
  */
-class QueryRefundPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryRefundPlugin
-{
-}
+class QueryRefundPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryRefundPlugin {}

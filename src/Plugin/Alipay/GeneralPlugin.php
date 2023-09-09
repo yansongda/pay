@@ -27,9 +27,7 @@ abstract class GeneralPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function doSomethingBefore(Rocket $rocket): void
-    {
-    }
+    protected function doSomethingBefore(Rocket $rocket): void {}
 
     abstract protected function getMethod(): string;
 }

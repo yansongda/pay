@@ -17,9 +17,7 @@ class UpdateCallbackPlugin extends GeneralPlugin
         return 'PUT';
     }
 
-    protected function doSomething(Rocket $rocket): void
-    {
-    }
+    protected function doSomething(Rocket $rocket): void {}
 
     protected function getUri(Rocket $rocket): string
     {
