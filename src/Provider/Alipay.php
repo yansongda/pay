@@ -44,7 +44,7 @@ class Alipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function __call(string $shortcut, array $params): null|array|Collection|MessageInterface
+    public function __call(string $shortcut, array $params): null|Collection|MessageInterface
     {
         $plugin = '\\Yansongda\\Pay\\Plugin\\Alipay\\Shortcut\\'.
             Str::studly($shortcut).'Shortcut';

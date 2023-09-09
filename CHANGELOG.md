@@ -1,3 +1,16 @@
+## v3.5.3-TBD
+
+### optimized
+
+- optimize: 支付宝公钥使用公共函数获取(#835)
+
+## v3.5.2
+
+### fixed
+
+- fix: monolog 不存在时报错问题(#834)
+- fix: `\Yansongda\Pay\Provider\AbstractProvider::call` 方法返回值类型错误问题(#834)
+
 ## v3.5.1
 
 ### fixed

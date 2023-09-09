@@ -16,9 +16,7 @@ class QueryPlugin extends GeneralPlugin
         return 'GET';
     }
 
-    protected function doSomething(Rocket $rocket): void
-    {
-    }
+    protected function doSomething(Rocket $rocket): void {}
 
     /**
      * @throws InvalidParamsException
