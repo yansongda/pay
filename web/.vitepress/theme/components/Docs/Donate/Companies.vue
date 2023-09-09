@@ -31,7 +31,16 @@
     width: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    column-gap: 4px;
+    grid-column-gap: 4px;
+
+    @media (max-width: 720px) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-column-gap: 0;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
 
     .company {
       width: 100%;

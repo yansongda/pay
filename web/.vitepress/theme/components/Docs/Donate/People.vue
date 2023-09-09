@@ -45,6 +45,14 @@
     grid-template-columns: repeat(5, minmax(0, 1fr));
     grid-column-gap: 4px;
 
+    @media (max-width: 720px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
     .person {
       width: 100%;
       height: 100px;
