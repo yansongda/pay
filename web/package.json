@@ -1,12 +1,23 @@
 {
+  "type": "module",
   "scripts": {
-    "docs:dev": "vitepress dev",
-    "docs:build": "vitepress build",
-    "docs:serve": "vitepress serve"
+    "web:dev": "vitepress dev",
+    "web:build": "vitepress build",
+    "web:serve": "vitepress serve"
   },
   "devDependencies": {
-    "@types/node": "^20.2.6",
-    "sass": "^1.63.0",
-    "vitepress": "^1.0.0-beta.3"
+    "@types/node": "^20.6.0",
+    "sass": "^1.66.1",
+    "vite": "^4.4.9",
+    "vitepress": "1.0.0-rc.10",
+    "vue": "^3.3.4"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@algolia/client-search",
+        "search-insights"
+      ]
+    }
   }
 }

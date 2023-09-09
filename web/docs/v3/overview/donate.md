@@ -1,3 +1,8 @@
+<script setup>
+import Companies from '@components/Docs/Donate/Companies.vue'
+import People from '@components/Docs/Donate/People.vue'
+</script>
+
 # 捐赠
 
 Pay 项目采用 MIT 协议开源发布，任何人均可在遵循 MIT 协议的情况下随意使用。
@@ -6,8 +11,8 @@ Pay 项目采用 MIT 协议开源发布，任何人均可在遵循 MIT 协议的
 如果这个项目给您带来了方便，希望您赞助开发与可持续性发展。
 如果您愿意，请联系我，您的公司/个人赞助将展现在本页面上。
 
-:::tip
-我的联系方式： me@yansongda.cn
+:::tip 我的联系方式
+me@yansongda.cn
 :::
 
 ## 赏一杯瑞幸吧
@@ -18,32 +23,10 @@ Pay 项目采用 MIT 协议开源发布，任何人均可在遵循 MIT 协议的
 
 ### 企业
 
-[![jetbrains](/images/companies/jetbrains.png)](https://www.jetbrains.com/)
-[![df81.com](/images/companies/df81.png)](https://df81.com/)
+<Companies />
 
 ### 个人
 
 排名按时间顺序
 
-| 昵称                                                | 姓名  | 金额/用途          |
-|---------------------------------------------------|-----|----------------|
-| 醒醒吧                                               | **平 | ￥10.00         |
-| Akun                                              | -   | 提供微信支付测试资源帮助测试 |
-| -                                                 | *坤  | ￥10.00         |
-| -                                                 | *爆  | ￥66.00         |
-| -                                                 | *洲  | ￥10.00         |
-| -                                                 | *友  | ￥300.00        |
-| 一杯小蓝                                              | *彦  | ￥16.80         |
-| u*e                                               | -   | ￥11.00         |
-| N*s                                               | -   | ￥10.00         |
-| *虫                                                | -   | ￥100.00        |
-| -                                                 | **波 | ￥10.00         |
-| *※                                                | -   | ￥8.88          |
-| 往**                                               | -   | ￥19.80         |
-| 建*u                                               | -   | ￥17.60         |
-| *酱                                                | -   | ￥20.00         |
-| *※                                                | -   | ￥10.00         |
-| N*s                                               | -   | ￥10.00         |
-| [F4nniu@FastAdmin开源社区](https://www.fastadmin.net) | -   | ￥100.00        |
-| 小黑                                                | **瑞 | ￥50.00         |
-| [《建站管家》多语言建站系统](https://df81.com/)                | **明 | ￥88.88         |
+<People />

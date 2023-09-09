@@ -1,3 +1,6 @@
+<script setup lang="ts">
+</script>
+
 <template>
   <div class="home">
     <div class="container">
@@ -9,14 +12,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "HomePrimary"
-}
-</script>
-
-<style lang="scss" scoped>
-@import '../css/home';
+<style scoped lang="scss">
+@import '../../css/home';
 
 .home {
   .container {

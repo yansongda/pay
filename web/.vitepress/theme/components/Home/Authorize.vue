@@ -1,3 +1,6 @@
+<script setup lang="ts">
+</script>
+
 <template>
   <div class="home">
     <div class="container">
@@ -14,14 +17,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "HomeAuthorize"
-}
-</script>
-
-<style lang="scss" scoped>
-@import '../css/home';
+<style scoped lang="scss">
+@import '../../css/home';
 
 .home {
   margin-top: 50px;
