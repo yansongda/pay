@@ -12,9 +12,7 @@ use Yansongda\Pay\Rocket;
  */
 class SetCallbackPlugin extends GeneralPlugin
 {
-    protected function doSomething(Rocket $rocket): void
-    {
-    }
+    protected function doSomething(Rocket $rocket): void {}
 
     protected function getUri(Rocket $rocket): string
     {
