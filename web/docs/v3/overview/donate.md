@@ -1,5 +1,6 @@
 <script setup>
 import Companies from '@components/Docs/Donate/Companies.vue'
+import People from '@components/Docs/Donate/People.vue'
 </script>
 
 # 捐赠
@@ -24,32 +25,8 @@ me@yansongda.cn
 
 <Companies />
 
-[![jetbrains](/images/companies/jetbrains.svg)](https://www.jetbrains.com/)
-[![df81.com](/images/companies/df81.png)](https://df81.com/)
-
 ### 个人
 
 排名按时间顺序
 
-| 昵称                                                | 姓名  | 金额/用途          |
-|---------------------------------------------------|-----|----------------|
-| 醒醒吧                                               | **平 | ￥10.00         |
-| Akun                                              | -   | 提供微信支付测试资源帮助测试 |
-| -                                                 | *坤  | ￥10.00         |
-| -                                                 | *爆  | ￥66.00         |
-| -                                                 | *洲  | ￥10.00         |
-| -                                                 | *友  | ￥300.00        |
-| 一杯小蓝                                              | *彦  | ￥16.80         |
-| u*e                                               | -   | ￥11.00         |
-| N*s                                               | -   | ￥10.00         |
-| *虫                                                | -   | ￥100.00        |
-| -                                                 | **波 | ￥10.00         |
-| *※                                                | -   | ￥8.88          |
-| 往**                                               | -   | ￥19.80         |
-| 建*u                                               | -   | ￥17.60         |
-| *酱                                                | -   | ￥20.00         |
-| *※                                                | -   | ￥10.00         |
-| N*s                                               | -   | ￥10.00         |
-| [F4nniu@FastAdmin开源社区](https://www.fastadmin.net) | -   | ￥100.00        |
-| 小黑                                                | **瑞 | ￥50.00         |
-| [《建站管家》多语言建站系统](https://df81.com/)                | **明 | ￥88.88         |
+<People />
