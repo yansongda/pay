@@ -18,8 +18,8 @@ devDependencies:
     specifier: ^4.4.9
     version: registry.npmmirror.com/vite@4.4.9(@types/node@20.6.0)(sass@1.66.1)
   vitepress:
-    specifier: 1.0.0-rc.10
-    version: registry.npmmirror.com/vitepress@1.0.0-rc.10(@types/node@20.6.0)(sass@1.66.1)
+    specifier: 1.0.0-rc.11
+    version: registry.npmmirror.com/vitepress@1.0.0-rc.11(@types/node@20.6.0)(sass@1.66.1)
   vue:
     specifier: ^3.3.4
     version: registry.npmmirror.com/vue@3.3.4
@@ -1092,10 +1092,10 @@ packages:
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
     dev: true
 
-  registry.npmmirror.com/rollup@3.29.0:
-    resolution: {integrity: sha512-nszM8DINnx1vSS+TpbWKMkxem0CDWk3cSit/WWCBVs9/JZ1I/XLwOsiUglYuYReaeWWSsW9kge5zE5NZtf/a4w==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/rollup/-/rollup-3.29.0.tgz}
+  registry.npmmirror.com/rollup@3.29.1:
+    resolution: {integrity: sha512-c+ebvQz0VIH4KhhCpDsI+Bik0eT8ZFEVZEYw0cGMVqIP8zc+gnwl7iXCamTw7vzv2MeuZFZfdx5JJIq+ehzDlg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/rollup/-/rollup-3.29.1.tgz}
     name: rollup
-    version: 3.29.0
+    version: 3.29.1
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -1196,17 +1196,17 @@ packages:
       '@types/node': registry.npmmirror.com/@types/node@20.6.0
       esbuild: registry.npmmirror.com/esbuild@0.18.20
       postcss: registry.npmmirror.com/postcss@8.4.29
-      rollup: registry.npmmirror.com/rollup@3.29.0
+      rollup: registry.npmmirror.com/rollup@3.29.1
       sass: registry.npmmirror.com/sass@1.66.1
     optionalDependencies:
       fsevents: registry.npmmirror.com/fsevents@2.3.3
     dev: true
 
-  registry.npmmirror.com/vitepress@1.0.0-rc.10(@types/node@20.6.0)(sass@1.66.1):
-    resolution: {integrity: sha512-+MsahIWqq5WUEmj6MR4obcKYbT7im07jZPCQPdNJExkeOSbOAJ4xypSLx88x7rvtzWHhHc5aXbOhCRvGEGjFrw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vitepress/-/vitepress-1.0.0-rc.10.tgz}
-    id: registry.npmmirror.com/vitepress/1.0.0-rc.10
+  registry.npmmirror.com/vitepress@1.0.0-rc.11(@types/node@20.6.0)(sass@1.66.1):
+    resolution: {integrity: sha512-HUnfYOadqwLSahtgQxKt9/wiNHdd80BaUfQ+DIMpfq03Iv9CWX1SCBK4gxK/bMWns3Q0ArhXajQbU/fmBwYUMg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vitepress/-/vitepress-1.0.0-rc.11.tgz}
+    id: registry.npmmirror.com/vitepress/1.0.0-rc.11
     name: vitepress
-    version: 1.0.0-rc.10
+    version: 1.0.0-rc.11
     hasBin: true
     dependencies:
       '@docsearch/css': registry.npmmirror.com/@docsearch/css@3.5.2
