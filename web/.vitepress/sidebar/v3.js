@@ -1,5 +1,3 @@
-import { DefaultTheme } from 'vitepress'
-
 export default [
   {
     text: '概述',
@@ -97,4 +95,4 @@ export default [
       { text: 'v3.0 升级指南', link: '/docs/v3/upgrade/v3.0' }
     ]
   }
-] as DefaultTheme.Sidebar
+]

@@ -1,5 +1,3 @@
-import { DefaultTheme } from 'vitepress'
-
 export default [
   {
     text: '快速入门',
@@ -61,4 +59,4 @@ export default [
       { text: 'FAQ', link: '/docs/v2/others/faq' }
     ]
   }
-] as DefaultTheme.Sidebar
+]
