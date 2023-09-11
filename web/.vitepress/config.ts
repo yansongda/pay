@@ -9,7 +9,7 @@ export default defineConfig({
   lastUpdated: true,
   head: [
     ['link', { rel: 'icon', href: '/images/icon.png' }],
-    ['script', { defer: '', src: 'https://static.cloudflareinsights.com/beacon.min.js', 'data-cf-beacon': "{'token': '0bff42137b6e45f0be5c8256c00cfc3a'}" }]
+    ['script', { defer: '', src: 'https://static.cloudflareinsights.com/beacon.min.js?token=0bff42137b6e45f0be5c8256c00cfc3a' }]
   ],
   themeConfig: {
     logo: '/images/logo2.png',
