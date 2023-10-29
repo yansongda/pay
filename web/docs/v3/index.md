@@ -18,8 +18,6 @@ hyperf 扩展包请 [传送至这里](https://github.com/yansongda/hyperf-pay)
 
 laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 
-yii 扩展包请 [传送至这里](https://github.com/guanguans/yii-pay)
-
 ## 特点
 
 - 多租户支持
@@ -36,7 +34,7 @@ yii 扩展包请 [传送至这里](https://github.com/guanguans/yii-pay)
 - 符合 PSR2、PSR3、PSR4、PSR7、PSR11、PSR14、PSR18 等各项标准，你可以各种方便的与你的框架集成
 
 ## 运行环境
-- PHP 7.3+
+- PHP 8.0+
 - composer
 
 ## 版本支持
