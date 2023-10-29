@@ -71,12 +71,12 @@ class Pay
         HttpServiceProvider::class,
     ];
 
-    private static Closure|null|ContainerInterface $container = null;
+    private static null|Closure|ContainerInterface $container = null;
 
     /**
      * @throws ContainerException
      */
-    private function __construct(array $config, ContainerInterface|Closure $container = null)
+    private function __construct(array $config, Closure|ContainerInterface $container = null)
     {
         $this->registerServices($config, $container);
 
@@ -102,7 +102,7 @@ class Pay
     /**
      * @throws ContainerException
      */
-    public static function config(array $config = [], ContainerInterface|Closure $container = null): bool
+    public static function config(array $config = [], Closure|ContainerInterface $container = null): bool
     {
         if (self::hasContainer() && !($config['_force'] ?? false)) {
             return false;
@@ -192,7 +192,7 @@ class Pay
         return Pay::getContainer()->has($service);
     }
 
-    public static function setContainer(ContainerInterface|Closure|null $container): void
+    public static function setContainer(null|Closure|ContainerInterface $container): void
     {
         self::$container = $container;
     }
@@ -238,7 +238,7 @@ class Pay
     /**
      * @throws ContainerException
      */
-    private function registerServices(array $config, ContainerInterface|Closure $container = null): void
+    private function registerServices(array $config, Closure|ContainerInterface $container = null): void
     {
         foreach (array_merge($this->coreService, $this->service) as $service) {
             self::registerService($service, ContainerServiceProvider::class == $service ? $container : $config);

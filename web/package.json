@@ -6,12 +6,12 @@
     "web:serve": "vitepress serve"
   },
   "devDependencies": {
-    "@types/node": "^20.8.4",
+    "@types/node": "^20.8.9",
     "fast-glob": "^3.3.1",
-    "sass": "^1.69.1",
-    "vite": "^4.4.11",
-    "vitepress": "1.0.0-rc.20",
-    "vue": "^3.3.4"
+    "sass": "^1.69.5",
+    "vite": "^4.5.0",
+    "vitepress": "1.0.0-rc.24",
+    "vue": "^3.3.7"
   },
   "pnpm": {
     "peerDependencyRules": {

@@ -21,7 +21,7 @@ composer require guzzlehttp/guzzle:^7.0 # 默认情况下，此包框架已自�
 ```shell
 composer require yansongda/pay:~3.5.0 -vvv
 composer require guzzlehttp/guzzle:^7.0
-composer require hyperf/pimple:~2.2.0
+composer require hyperf/pimple:~2.2.0  # 或者 composer require illuminate/container
 ```
 
 ## 详细安装介绍

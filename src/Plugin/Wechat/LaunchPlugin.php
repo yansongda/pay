@@ -51,7 +51,7 @@ class LaunchPlugin implements PluginInterface
     /**
      * @throws InvalidResponseException
      */
-    protected function validateResponse(Rocket $rocket): Collection|MessageInterface|array|null
+    protected function validateResponse(Rocket $rocket): null|array|Collection|MessageInterface
     {
         $response = $rocket->getDestination();
 

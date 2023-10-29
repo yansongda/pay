@@ -18,7 +18,7 @@
 
    请参考 [https://github.com/yansongda/pay/issues/16](https://github.com/yansongda/pay/issues/16)
 
-4. 是否支持其他支付平台？比如：银联、京东。
+4. 是否支持其他支付平台？比如：京东。
 
    由于使用限制，暂不支持。
 

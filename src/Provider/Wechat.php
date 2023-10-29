@@ -64,7 +64,7 @@ class Wechat extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function find(array|string $order): Collection|array
+    public function find(array|string $order): array|Collection
     {
         $order = is_array($order) ? $order : ['transaction_id' => $order];
 
@@ -76,7 +76,7 @@ class Wechat extends AbstractProvider
     /**
      * @throws InvalidParamsException
      */
-    public function cancel(array|string $order): null|Collection|array
+    public function cancel(array|string $order): null|array|Collection
     {
         throw new InvalidParamsException(Exception::METHOD_NOT_SUPPORTED, 'Wechat does not support cancel api');
     }
@@ -86,7 +86,7 @@ class Wechat extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function close(array|string $order): null|Collection|array
+    public function close(array|string $order): null|array|Collection
     {
         $order = is_array($order) ? $order : ['out_trade_no' => $order];
 
@@ -102,7 +102,7 @@ class Wechat extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function refund(array $order): Collection|array
+    public function refund(array $order): array|Collection
     {
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
