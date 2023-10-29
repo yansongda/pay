@@ -25,64 +25,56 @@
 </script>
 
 <template>
-  <div class="donate">
-    <div class="people">
-      <a v-for="person,idx in people" :key="idx" :href="person.link ?? ''" target="_blank" rel="noopener noreferrer" class="person">
-        <div class="person-nickname">{{ person.nickname }}</div>
-        <div class="person-intent">{{ person.intent }}</div>
-      </a>
-    </div>
+  <div class="people">
+    <a v-for="person,idx in people" :key="idx" :href="person.link ?? ''" target="_blank" rel="noopener noreferrer" class="person">
+      <div class="person-nickname">{{ person.nickname }}</div>
+      <div class="person-intent">{{ person.intent }}</div>
+    </a>
   </div>
 </template>
 
 <style scoped lang="scss">
-.donate {
-  width: 100%;
+.people {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-column-gap: 4px;
 
-  .people {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    grid-column-gap: 4px;
+  @media (max-width: 720px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
-    @media (max-width: 720px) {
-      grid-template-columns: repeat(3, 1fr);
-    }
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-    @media (max-width: 480px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
+  .person {
+    height: 100px;
+    margin: 2px 0;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    text-decoration: none;
 
-    .person {
-      width: 100%;
-      height: 100px;
-      margin: 2px 0;
-      background-color: #f9f9f9;
+    .person-nickname {
+      flex: 2;
+      color: #4cb1c5;
       display: flex;
-      flex-flow: column nowrap;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
-      text-decoration: none;
+    }
 
-      .person-nickname {
-        flex: 2;
-        color: #4cb1c5;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .person-intent {
-        flex: 1;
-        font-size: 10px;
-        color: #b0b0b0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        line-height: 15px;
-        text-align: center;
-      }
+    .person-intent {
+      flex: 1;
+      font-size: 10px;
+      color: #b0b0b0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      line-height: 15px;
+      text-align: center;
     }
   }
 }
