@@ -32,7 +32,7 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
 
     private string $direction = DirectionInterface::class;
 
-    private null|MessageInterface|Collection $destination = null;
+    private null|Collection|MessageInterface $destination = null;
 
     private null|RequestInterface|ResponseInterface $destinationOrigin = null;
 
@@ -114,12 +114,12 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
         return $this;
     }
 
-    public function getDestination(): Collection|MessageInterface|null
+    public function getDestination(): null|Collection|MessageInterface
     {
         return $this->destination;
     }
 
-    public function setDestination(Collection|MessageInterface|null $destination): Rocket
+    public function setDestination(null|Collection|MessageInterface $destination): Rocket
     {
         $this->destination = $destination;
 

@@ -52,7 +52,7 @@ class Unipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function find(array|string $order): Collection|array
+    public function find(array|string $order): array|Collection
     {
         if (!is_array($order)) {
             throw new InvalidParamsException(Exception::UNIPAY_FIND_STRING_NOT_SUPPORTED);
@@ -68,7 +68,7 @@ class Unipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function cancel(array|string $order): Collection|array|null
+    public function cancel(array|string $order): null|array|Collection
     {
         if (!is_array($order)) {
             throw new InvalidParamsException(Exception::UNIPAY_CANCEL_STRING_NOT_SUPPORTED);
@@ -82,7 +82,7 @@ class Unipay extends AbstractProvider
     /**
      * @throws InvalidParamsException
      */
-    public function close(array|string $order): Collection|array|null
+    public function close(array|string $order): null|array|Collection
     {
         throw new InvalidParamsException(Exception::METHOD_NOT_SUPPORTED, 'Unipay does not support close api');
     }
@@ -92,7 +92,7 @@ class Unipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function refund(array $order): Collection|array
+    public function refund(array $order): array|Collection
     {
         Event::dispatch(new Event\MethodCalled('unipay', __METHOD__, $order, null));
 
