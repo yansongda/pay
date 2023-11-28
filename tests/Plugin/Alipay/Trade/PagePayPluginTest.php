@@ -9,7 +9,7 @@ use Yansongda\Pay\Tests\TestCase;
 
 class PagePayPluginTest extends TestCase
 {
-    protected $plugin;
+    protected PagePayPlugin $plugin;
 
     protected function setUp(): void
     {

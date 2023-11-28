@@ -135,3 +135,21 @@ $result = Pay::alipay()->pay($allPlugins, $params);
 ### 协议由普通通用代扣协议产品转移到周期扣协议产品
 
 - `Yansongda\Pay\Plugin\Alipay\User\AgreementTransferPlugin`
+
+## 交易
+
+### 交易分账查询接口
+
+- `Yansongda\Pay\Plugin\Alipay\Trade\OrderSettleQueryPlugin`
+
+### 分账关系查询
+
+- `Yansongda\Pay\Plugin\Alipay\Trade\RoyaltyRelationBatchQueryPlugin`
+
+### 分账关系绑定
+
+- `Yansongda\Pay\Plugin\Alipay\Trade\RoyaltyRelationBindPlugin`
+
+### 分账关系解绑
+
+- `Yansongda\Pay\Plugin\Alipay\Trade\RoyaltyRelationUnbindPlugin`
