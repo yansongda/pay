@@ -9,7 +9,7 @@ use Yansongda\Pay\Tests\TestCase;
 
 class WapPluginTest extends TestCase
 {
-    protected $plugin;
+    protected WapPayPlugin $plugin;
 
     protected function setUp(): void
     {

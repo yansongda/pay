@@ -4,18 +4,19 @@ namespace Yansongda\Pay\Tests\Plugin\Alipay\Trade;
 
 use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Plugin\Alipay\Trade\AppPayPlugin;
+use Yansongda\Pay\Plugin\Alipay\Trade\OrderSettleQueryPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
-class AppPayPluginTest extends TestCase
+class OrderSettleQueryPluginTest extends TestCase
 {
-    protected AppPayPlugin $plugin;
+    protected OrderSettleQueryPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new AppPayPlugin();
+        $this->plugin = new OrderSettleQueryPlugin();
     }
 
     public function testNormal()
@@ -25,8 +26,6 @@ class AppPayPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.trade.app.pay', $result->getPayload()->toJson());
-        self::assertStringContainsString('QUICK_MSECURITY_PAY', $result->getPayload()->toJson());
+        self::assertStringContainsString('alipay.trade.order.settle.query', $result->getPayload()->toJson());
     }
 }
