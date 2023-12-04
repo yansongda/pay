@@ -19,7 +19,7 @@
     { nickname: 'N*s', intent: '￥10.00' },
     { nickname: 'FastAdmin开源社区 / F4nniu', intent: '￥100.00', link: 'https://www.fastadmin.net' },
     { nickname: '小黑 / **瑞', intent: '￥50.00' },
-    { nickname: '《建站管家》多语言建站系统 / **明', intent: '￥88.88', link: 'https://df81.com/' },
+    { nickname: '《建站管家》多语言建站系统 / **明', intent: '￥108.88', link: 'https://df81.com/' },
     { nickname: 'N*s', intent: '￥10.00' },
   ]
 </script>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-  const companies = [
-    {
-      name: 'df81.com',
-      link: 'https://df81.com/',
-      image: '/images/companies/df81.png'
-    },
-  ]
+  interface Company {
+    name: string
+    image: string
+    link: string
+  }
+
+  const companies: Company[] = []
 </script>
 
 <template>
