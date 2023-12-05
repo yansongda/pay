@@ -11,6 +11,11 @@
       link: 'https://www.jetbrains.com/',
       image: '/images/companies/jetbrains.png'
     },
+    {
+      name: 'df81.com',
+      link: 'https://df81.com/',
+      image: '/images/companies/df81.png'
+    },
   ]
 </script>
 
