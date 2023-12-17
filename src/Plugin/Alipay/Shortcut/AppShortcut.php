@@ -8,7 +8,11 @@ use Closure;
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
+use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
+use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
+use Yansongda\Pay\Plugin\Alipay\RadarSignPlugin;
 use Yansongda\Pay\Plugin\Alipay\Trade\AppPayPlugin;
+use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
@@ -18,8 +22,12 @@ class AppShortcut implements ShortcutInterface
     public function getPlugins(array $params): array
     {
         return [
+            PreparePlugin::class,
             AppPayPlugin::class,
             $this->buildResponse(),
+            RadarSignPlugin::class,
+            LaunchPlugin::class,
+            ParserPlugin::class,
         ];
     }
 

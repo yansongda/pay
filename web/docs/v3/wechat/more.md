@@ -310,7 +310,6 @@ Pay::config($config);
 
 $result = Pay::wechat()->papay([
     '_action' => 'contract',
-    '_no_common_plugins' => true,
     '_type' => 'mini', // 通过小程序签约
     'contract_code' => '我方签约号',
     'contract_display_account' => '签约人',
@@ -331,7 +330,6 @@ $result = Pay::wechat()->papay([
 Pay::config($config);
 
 $result = Pay::wechat()->papay([
-    '_no_common_plugins' => true,
     '_type' => 'mini',
     'contract_mchid' => '签约商户ID',
     'contract_appid' => '签约AppID',
@@ -359,7 +357,6 @@ Pay::config($config);
 
 $result = Pay::wechat()->papay([
     '_action' => 'apply',
-    '_no_common_plugins' => true,
     '_type' => 'mini',
     'body' => '委托代扣',
     'out_trade_no' => '我方订单号',

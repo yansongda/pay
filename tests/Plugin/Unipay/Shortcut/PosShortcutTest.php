@@ -6,14 +6,18 @@ namespace Yansongda\Pay\Tests\Plugin\Unipay\Shortcut;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
+use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\PosNormalPlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\PosPreAuthPlugin;
+use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
 use Yansongda\Pay\Plugin\Unipay\Shortcut\PosShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
 class PosShortcutTest extends TestCase
 {
-    protected $plugin;
+    protected PosShortcut $plugin;
 
     protected function setUp(): void
     {
@@ -25,14 +29,22 @@ class PosShortcutTest extends TestCase
     public function testDefault()
     {
         self::assertEquals([
+            PreparePlugin::class,
             PosNormalPlugin::class,
+            RadarSignPlugin::class,
+            LaunchPlugin::class,
+            ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
 
     public function testPreAuth()
     {
         self::assertEquals([
+            PreparePlugin::class,
             PosPreAuthPlugin::class,
+            RadarSignPlugin::class,
+            LaunchPlugin::class,
+            ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'pre_auth']));
     }
 

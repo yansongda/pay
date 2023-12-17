@@ -7,7 +7,11 @@ namespace Yansongda\Pay\Plugin\Unipay\Shortcut;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Unipay\OnlineGateway\CancelPlugin;
+use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
+use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
 use Yansongda\Supports\Str;
 
 class CancelShortcut implements ShortcutInterface
@@ -29,14 +33,22 @@ class CancelShortcut implements ShortcutInterface
     protected function defaultPlugins(): array
     {
         return [
+            PreparePlugin::class,
             CancelPlugin::class,
+            RadarSignPlugin::class,
+            LaunchPlugin::class,
+            ParserPlugin::class,
         ];
     }
 
     protected function qrCodePlugins(): array
     {
         return [
+            PreparePlugin::class,
             \Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin::class,
+            RadarSignPlugin::class,
+            LaunchPlugin::class,
+            ParserPlugin::class,
         ];
     }
 }

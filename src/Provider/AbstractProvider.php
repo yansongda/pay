@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
-use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\MessageInterface;
 use Throwable;
@@ -40,16 +39,10 @@ abstract class AbstractProvider implements ProviderInterface
             throw new InvalidParamsException(Exception::SHORTCUT_NOT_FOUND, "[{$plugin}] is not incompatible");
         }
 
-        /* @var ShortcutInterface $money */
-        $money = Pay::get($plugin);
+        /* @var ShortcutInterface $shortcut */
+        $shortcut = Pay::get($plugin);
 
-        $plugins = $money->getPlugins($params);
-
-        if (empty($params['_no_common_plugins'])) {
-            $plugins = $this->mergeCommonPlugins($plugins);
-        }
-
-        return $this->pay($plugins, $params);
+        return $this->pay($shortcut->getPlugins($params), $params);
     }
 
     /**
@@ -105,10 +98,8 @@ abstract class AbstractProvider implements ProviderInterface
         try {
             $response = $http->sendRequest($rocket->getRadar());
 
-            $contents = (string) $response->getBody();
-
-            $rocket->setDestination($response->withBody(Utils::streamFor($contents)))
-                ->setDestinationOrigin($response->withBody(Utils::streamFor($contents)));
+            $rocket->setDestination(clone $response)
+                ->setDestinationOrigin(clone $response);
         } catch (Throwable $e) {
             Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
 

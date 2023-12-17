@@ -8,8 +8,12 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Alipay\Fund\TransCommonQueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
+use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
+use Yansongda\Pay\Plugin\Alipay\RadarSignPlugin;
 use Yansongda\Pay\Plugin\Alipay\Trade\FastRefundQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Trade\QueryPlugin;
+use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Supports\Str;
 
 class QueryShortcut implements ShortcutInterface
@@ -35,21 +39,33 @@ class QueryShortcut implements ShortcutInterface
     protected function defaultPlugins(): array
     {
         return [
+            PreparePlugin::class,
             QueryPlugin::class,
+            RadarSignPlugin::class,
+            LaunchPlugin::class,
+            ParserPlugin::class,
         ];
     }
 
     protected function refundPlugins(): array
     {
         return [
+            PreparePlugin::class,
             FastRefundQueryPlugin::class,
+            RadarSignPlugin::class,
+            LaunchPlugin::class,
+            ParserPlugin::class,
         ];
     }
 
     protected function transferPlugins(): array
     {
         return [
+            PreparePlugin::class,
             TransCommonQueryPlugin::class,
+            RadarSignPlugin::class,
+            LaunchPlugin::class,
+            ParserPlugin::class,
         ];
     }
 }
