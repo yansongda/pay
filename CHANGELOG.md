@@ -1,3 +1,9 @@
+## v3.6.0 - TBD
+
+### changed
+
+- change(internal): shortcut 完整标明各个插件，不使用 commonPlugin(#886)
+
 ## v3.5.3
 
 ### feat
