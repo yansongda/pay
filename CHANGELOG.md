@@ -3,6 +3,7 @@
 ### changed
 
 - change(internal): shortcut 完整标明各个插件，不使用 commonPlugin(#886)
+- change(internal): 按 场景 对各个插件进行分类(#888)
 
 ## v3.5.3
 

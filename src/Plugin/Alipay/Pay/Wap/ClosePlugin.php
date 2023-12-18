@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\Pay\Pos;
+namespace Yansongda\Pay\Plugin\Alipay\Pay\Wap;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
@@ -10,20 +10,20 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 /**
- * @see https://opendocs.alipay.com/open/e84f0d79_alipay.trade.close?pathHash=b25c3fc7&ref=api&scene=common
+ * @see https://opendocs.alipay.com/open/a62e8677_alipay.trade.close?pathHash=0801e763&ref=api&scene=common
  */
 class ClosePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][pos][ClosePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][wap][ClosePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.close',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][pos][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][wap][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
