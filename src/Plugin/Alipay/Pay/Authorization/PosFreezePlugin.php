@@ -16,7 +16,7 @@ class PosFreezePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][authorization][PosFreezePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][pay][authorization][PosFreezePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.fund.auth.order.freeze',
@@ -29,7 +29,7 @@ class PosFreezePlugin implements PluginInterface
             ),
         ]);
 
-        Logger::info('[alipay][authorization][PosFreezePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][pay][authorization][PosFreezePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

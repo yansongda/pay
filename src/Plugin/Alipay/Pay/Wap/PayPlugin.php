@@ -26,22 +26,17 @@ class PayPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][wap][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][pay][wap][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->loadAlipayServiceProvider($rocket);
 
         $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
                 'method' => 'alipay.trade.wap.pay',
-                'biz_content' => array_merge(
-                    [
-                        'product_code' => 'QUICK_WAP_PAY',
-                    ],
-                    $rocket->getParams(),
-                ),
+                'biz_content' => $rocket->getParams(),
             ]);
 
-        Logger::info('[alipay][wap][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][pay][wap][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

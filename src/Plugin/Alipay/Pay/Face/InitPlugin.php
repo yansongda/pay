@@ -16,14 +16,14 @@ class InitPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][face][InitPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][pay][face][InitPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'zoloz.authentication.smilepay.initialize',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][face][InitPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][pay][face][InitPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

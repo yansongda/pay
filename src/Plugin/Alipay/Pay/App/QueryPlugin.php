@@ -16,14 +16,14 @@ class QueryPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][app][DetailPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][pay][app][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.query',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][app][DetailPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][pay][app][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

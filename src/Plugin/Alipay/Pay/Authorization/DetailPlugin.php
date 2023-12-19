@@ -16,14 +16,14 @@ class DetailPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][authorization][DetailPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][pay][authorization][DetailPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.fund.auth.operation.detail.query',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][authorization][DetailPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][pay][authorization][DetailPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

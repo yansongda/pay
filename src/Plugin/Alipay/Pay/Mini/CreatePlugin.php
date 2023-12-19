@@ -25,7 +25,7 @@ class CreatePlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][mini][CreatePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][pay][mini][CreatePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->loadAlipayServiceProvider($rocket);
 
@@ -34,7 +34,7 @@ class CreatePlugin implements PluginInterface
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][mini][CreatePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][pay][mini][CreatePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

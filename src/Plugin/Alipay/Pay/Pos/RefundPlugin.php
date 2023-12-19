@@ -16,14 +16,14 @@ class RefundPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][pos][RefundPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][pay][pos][RefundPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.refund',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][pos][RefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][pay][pos][RefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

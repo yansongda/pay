@@ -16,14 +16,14 @@ class QueryRefundPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][wap][QueryRefundPlugin] 通用插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][pay][wap][QueryRefundPlugin] 通用插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.fastpay.refund.query',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][wap][QueryRefundPlugin] 通用插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][pay][wap][QueryRefundPlugin] 通用插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

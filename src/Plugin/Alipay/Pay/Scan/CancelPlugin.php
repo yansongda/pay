@@ -16,14 +16,14 @@ class CancelPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][scan][CancelPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[alipay][pay][scan][CancelPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.cancel',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][scan][CancelPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][pay][scan][CancelPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
