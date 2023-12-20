@@ -38,13 +38,13 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $typeMethod = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
 
-        if (method_exists($this, $typeMethod)) {
-            return $this->{$typeMethod}();
+        if (method_exists($this, $method)) {
+            return $this->{$method}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Query action [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Query action [{$method}] not supported");
     }
 
     protected function defaultPlugins(): array
@@ -182,6 +182,19 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             TransferQueryPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function refundPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            WebQueryRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
