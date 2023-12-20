@@ -12,6 +12,7 @@ use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 
@@ -29,12 +30,18 @@ class ParserPlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
+        Logger::debug('[ParserPlugin] 插件开始装载', ['rocket' => $rocket]);
+
         /* @var ResponseInterface $response */
         $response = $rocket->getDestination();
 
-        return $rocket->setDestination(
+        $rocket->setDestination(
             get_direction($rocket->getDirection())->parse($this->getPacker($rocket), $response)
         );
+
+        Logger::debug('[ParserPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $rocket;
     }
 
     /**

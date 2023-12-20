@@ -17,6 +17,7 @@ use Yansongda\Pay\Plugin\Alipay\Pay\Pos\CancelPlugin as PosCancelPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Scan\CancelPlugin as ScanCancelPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
+use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Supports\Str;
 
@@ -44,6 +45,7 @@ class CancelShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -57,6 +59,7 @@ class CancelShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -70,6 +73,7 @@ class CancelShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -83,6 +87,7 @@ class CancelShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -96,6 +101,7 @@ class CancelShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -109,6 +115,7 @@ class CancelShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];

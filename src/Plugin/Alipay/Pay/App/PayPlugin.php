@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Alipay\Pay\App;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
@@ -18,7 +19,8 @@ class PayPlugin implements PluginInterface
     {
         Logger::debug('[Alipay][Pay][App][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $rocket->mergePayload([
+        $rocket->setDirection(ResponseDirection::class)
+            ->mergePayload([
             'method' => 'alipay.trade.app.pay',
             'biz_content' => $rocket->getParams(),
         ]);

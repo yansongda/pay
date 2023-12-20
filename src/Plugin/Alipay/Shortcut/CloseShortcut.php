@@ -20,6 +20,7 @@ use Yansongda\Pay\Plugin\Alipay\Pay\Wap\ClosePlugin as WapClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\ClosePlugin as WebClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
+use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Supports\Str;
 
@@ -47,6 +48,7 @@ class CloseShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -60,6 +62,7 @@ class CloseShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -73,6 +76,7 @@ class CloseShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -86,6 +90,7 @@ class CloseShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -99,6 +104,7 @@ class CloseShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -112,6 +118,7 @@ class CloseShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -125,6 +132,7 @@ class CloseShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -138,6 +146,7 @@ class CloseShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -151,6 +160,7 @@ class CloseShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];

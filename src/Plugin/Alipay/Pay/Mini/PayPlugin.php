@@ -31,7 +31,12 @@ class PayPlugin implements PluginInterface
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.create',
-            'biz_content' => $rocket->getParams(),
+            'biz_content' => array_merge(
+                [
+                    'product_code' => 'JSAPI_PAY',
+                ],
+                $rocket->getParams(),
+            ),
         ]);
 
         Logger::info('[Alipay][Pay][Mini][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);

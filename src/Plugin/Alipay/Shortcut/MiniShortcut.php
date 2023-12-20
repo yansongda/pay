@@ -11,6 +11,7 @@ use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Mini\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
+use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 
 class MiniShortcut implements ShortcutInterface
@@ -23,6 +24,7 @@ class MiniShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];

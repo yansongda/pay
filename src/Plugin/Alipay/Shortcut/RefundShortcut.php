@@ -21,6 +21,7 @@ use Yansongda\Pay\Plugin\Alipay\Pay\Wap\RefundPlugin as WapRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\RefundPlugin as WebRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
+use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Supports\Str;
 
@@ -48,6 +49,7 @@ class RefundShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -61,6 +63,7 @@ class RefundShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -74,6 +77,7 @@ class RefundShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -87,6 +91,7 @@ class RefundShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -100,6 +105,7 @@ class RefundShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -113,6 +119,7 @@ class RefundShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -126,6 +133,7 @@ class RefundShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -139,6 +147,7 @@ class RefundShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -152,6 +161,7 @@ class RefundShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
@@ -165,6 +175,7 @@ class RefundShortcut implements ShortcutInterface
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
