@@ -8,13 +8,12 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Contract\HttpClientInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
@@ -24,7 +23,7 @@ class AlipayTest extends TestCase
     public function testShortcutNotFound()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(InvalidParamsException::SHORTCUT_NOT_FOUND);
+        self::expectExceptionCode(Exception::SHORTCUT_NOT_FOUND);
 
         Pay::alipay()->foo();
     }
@@ -32,7 +31,7 @@ class AlipayTest extends TestCase
     public function testShortcutIncompatible()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(InvalidParamsException::SHORTCUT_NOT_FOUND);
+        self::expectExceptionCode(Exception::SHORTCUT_NOT_FOUND);
 
         Pay::alipay()->foo();
     }
@@ -195,7 +194,7 @@ class AlipayTest extends TestCase
 
     public function testMergeCommonPlugins()
     {
-        Pay::config([]);
+        Pay::config();
         $plugins = [FooPluginStub::class];
 
         self::assertEquals(array_merge(
