@@ -25,7 +25,10 @@ class ResponsePlugin implements PluginInterface
         $resultKey = str_replace('.', '_', $payload->get('method')).'_response';
 
         if (should_do_http_request($rocket->getDirection()) && $destination instanceof Collection) {
-            $rocket->setDestination(Collection::wrap($destination->get($resultKey, [])));
+            $rocket->setDestination(new Collection(array_merge(
+                ['_sign' => $destination->get('sign', '')],
+                $destination->get($resultKey, [])
+            )));
         }
 
         Logger::info('[Alipay][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
