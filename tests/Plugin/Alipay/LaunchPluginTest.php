@@ -10,20 +10,20 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
+use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
 class LaunchPluginTest extends TestCase
 {
-    private LaunchPlugin $plugin;
+    private ResponsePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new LaunchPlugin();
+        $this->plugin = new ResponsePlugin();
 
         Pay::set(DirectionInterface::class, CollectionDirection::class);
         Pay::set(PackerInterface::class, JsonPacker::class);

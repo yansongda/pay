@@ -16,14 +16,14 @@ class AuthPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][member][authorization][AuthPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Member][Authorization][AuthPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.user.info.auth',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][member][authorization][AuthPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Member][Authorization][AuthPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

@@ -93,7 +93,7 @@ class HtmlResponsePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[alipay][HtmlResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::info('[alipay][ResponseHtmlPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
@@ -106,7 +106,7 @@ class HtmlResponsePlugin implements PluginInterface
 
         $rocket->setDestination($response);
 
-        Logger::info('[alipay][HtmlResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[alipay][ResponseHtmlPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }
@@ -120,7 +120,7 @@ class HtmlResponsePlugin implements PluginInterface
                         <head>
                             <meta charset="UTF-8" />
                             <meta http-equiv="refresh" content="0;url=\'%1$s\'" />
-                    
+
                             <title>Redirecting to %1$s</title>
                         </head>
                         <body>

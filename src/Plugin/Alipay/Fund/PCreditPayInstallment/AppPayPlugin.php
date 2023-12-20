@@ -16,14 +16,14 @@ class AppPayPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][fund][pcreditPayInstallment][AppPayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Fund][PCreditPayInstallment][AppPayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.app.pay',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][fund][pcreditPayInstallment][AppPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Fund][PCreditPayInstallment][AppPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

@@ -25,7 +25,7 @@ class ScanPayPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][fund][pcreditPayInstallment][ScanPayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Fund][PCreditPayInstallment][ScanPayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->loadAlipayServiceProvider($rocket);
 
@@ -34,7 +34,7 @@ class ScanPayPlugin implements PluginInterface
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][fund][pcreditPayInstallment][ScanPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Fund][PCreditPayInstallment][ScanPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

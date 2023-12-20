@@ -6,9 +6,9 @@ namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\Alipay\Fund\TransUniTransferPlugin;
-use Yansongda\Pay\Plugin\Alipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Alipay\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Alipay\StartPlugin;
+use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 
 class TransferShortcut implements ShortcutInterface
@@ -16,10 +16,10 @@ class TransferShortcut implements ShortcutInterface
     public function getPlugins(array $params): array
     {
         return [
-            PreparePlugin::class,
+            StartPlugin::class,
             TransUniTransferPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }

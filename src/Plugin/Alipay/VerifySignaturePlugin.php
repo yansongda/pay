@@ -18,7 +18,7 @@ use Yansongda\Supports\Collection;
 use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
 
-class LaunchPlugin implements PluginInterface
+class VerifySignaturePlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
@@ -31,18 +31,17 @@ class LaunchPlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[alipay][LaunchPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][VerifySignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        if (should_do_http_request($rocket->getDirection())) {
-            $response = Collection::wrap($rocket->getDestination());
+        if (should_do_http_request($rocket->getDirection()) ) {
+            $response = $rocket->getDestination();
+
             $result = $response->get($this->getResultKey($rocket->getPayload()));
 
             $this->verifySign($rocket->getParams(), $response, $result);
-
-            $rocket->setDestination(Collection::wrap($result));
         }
 
-        Logger::info('[alipay][LaunchPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][VerifySignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }

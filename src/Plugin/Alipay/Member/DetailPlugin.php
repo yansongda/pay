@@ -16,7 +16,7 @@ class DetailPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][member][DetailPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Member][DetailPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
 
@@ -26,7 +26,7 @@ class DetailPlugin implements PluginInterface
             'biz_content' => [],
         ]);
 
-        Logger::info('[alipay][member][DetailPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Member][DetailPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

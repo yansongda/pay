@@ -16,7 +16,7 @@ class AppPayPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][marketing][redpack][AppPayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Marketing][Redpack][AppPayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.app.pay',
@@ -29,7 +29,7 @@ class AppPayPlugin implements PluginInterface
             ),
         ]);
 
-        Logger::info('[alipay][marketing][redpack][AppPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Marketing][Redpack][AppPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

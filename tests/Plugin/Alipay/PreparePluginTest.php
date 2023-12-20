@@ -6,7 +6,7 @@ use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Alipay\PreparePlugin;
+use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Config;
@@ -19,7 +19,7 @@ class PreparePluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new PreparePlugin();
+        $this->plugin = new StartPlugin();
     }
 
     public function testNormal()

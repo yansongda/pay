@@ -16,14 +16,14 @@ class QueryPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][pay][face][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Pay][Face][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'zoloz.authentication.customer.ftoken.query',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][pay][face][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Pay][Face][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

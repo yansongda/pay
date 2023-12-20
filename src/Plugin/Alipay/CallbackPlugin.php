@@ -29,7 +29,7 @@ class CallbackPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->formatPayload($rocket);
         $sign = $rocket->getParams()['sign'] ?? false;
@@ -43,7 +43,7 @@ class CallbackPlugin implements PluginInterface
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());
 
-        Logger::info('[alipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

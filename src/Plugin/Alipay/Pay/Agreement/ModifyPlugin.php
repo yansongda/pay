@@ -16,14 +16,14 @@ class ModifyPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][pay][agreement][ModifyPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Pay][Agreement][ModifyPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.user.agreement.executionplan.modify',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][pay][agreement][ModifyPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Pay][Agreement][ModifyPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

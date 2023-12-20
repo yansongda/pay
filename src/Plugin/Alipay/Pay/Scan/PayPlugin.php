@@ -25,7 +25,7 @@ class PayPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][pay][scan][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Pay][Scan][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->loadAlipayServiceProvider($rocket);
 
@@ -34,7 +34,7 @@ class PayPlugin implements PluginInterface
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][pay][scan][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Pay][Scan][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

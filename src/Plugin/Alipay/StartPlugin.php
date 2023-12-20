@@ -19,7 +19,7 @@ use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_public_cert;
 use function Yansongda\Pay\get_tenant;
 
-class PreparePlugin implements PluginInterface
+class StartPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
@@ -28,11 +28,11 @@ class PreparePlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][PreparePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][StartPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload($this->getPayload($rocket->getParams()));
 
-        Logger::info('[alipay][PreparePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][StartPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
@@ -169,9 +169,7 @@ class PreparePlugin implements PluginInterface
 
     protected function getCertSn(array $issuer, string $serialNumber): string
     {
-        return md5(
-            $this->array2string(array_reverse($issuer)).$serialNumber
-        );
+        return md5($this->array2string(array_reverse($issuer)).$serialNumber);
     }
 
     protected function array2string(array $array): string

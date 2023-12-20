@@ -28,11 +28,11 @@ class PreparePlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[unipay][PreparePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[unipay][StartPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload($this->getPayload($rocket->getParams()));
 
-        Logger::info('[unipay][PreparePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[unipay][StartPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

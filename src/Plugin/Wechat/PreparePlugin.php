@@ -14,11 +14,11 @@ class PreparePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[wechat][PreparePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[wechat][StartPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload($this->getPayload($rocket->getParams()));
 
-        Logger::info('[wechat][PreparePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[wechat][StartPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

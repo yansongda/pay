@@ -12,20 +12,20 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 
-class StringInvokeResponsePlugin implements PluginInterface
+class ResponseInvokeStringPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[alipay][StringInvokeResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][ResponseInvokeStringPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $response = $this->buildHtml($rocket->getPayload());
 
         $rocket->setDestination($response);
 
-        Logger::info('[alipay][StringInvokeResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][ResponseInvokeStringPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }

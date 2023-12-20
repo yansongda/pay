@@ -25,7 +25,7 @@ class PosPayPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][fund][pcreditPayInstallment][PosPayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Fund][PCreditPayInstallment][PosPayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->loadAlipayServiceProvider($rocket);
 
@@ -40,7 +40,7 @@ class PosPayPlugin implements PluginInterface
             ),
         ]);
 
-        Logger::info('[alipay][fund][pcreditPayInstallment][PosPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Fund][PCreditPayInstallment][PosPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

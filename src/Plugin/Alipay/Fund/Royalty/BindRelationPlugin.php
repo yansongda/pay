@@ -16,14 +16,14 @@ class BindRelationPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][royalty][BindRelationPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Fund][Royalty][BindRelationPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.royalty.relation.bind',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][royalty][BindRelationPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Fund][Royalty][BindRelationPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

@@ -16,14 +16,14 @@ class UnbindRelationPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][royalty][UnbindRelationPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Fund][Royalty][UnbindRelationPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.royalty.relation.unbind',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[alipay][royalty][UnbindRelationPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Fund][Royalty][UnbindRelationPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

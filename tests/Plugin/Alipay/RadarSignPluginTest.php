@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
-use Yansongda\Pay\Plugin\Alipay\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -15,7 +15,7 @@ class RadarSignPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new RadarSignPlugin();
+        $this->plugin = new AddRadarPlugin();
     }
 
     public function testSignNormal()

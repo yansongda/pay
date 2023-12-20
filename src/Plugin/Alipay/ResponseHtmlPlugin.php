@@ -11,14 +11,14 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
-class HtmlResponsePlugin implements PluginInterface
+class ResponseHtmlPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[alipay][HtmlResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][ResponseHtmlPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $radar = $rocket->getRadar();
 
@@ -28,7 +28,7 @@ class HtmlResponsePlugin implements PluginInterface
 
         $rocket->setDestination($response);
 
-        Logger::info('[alipay][HtmlResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][ResponseHtmlPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }

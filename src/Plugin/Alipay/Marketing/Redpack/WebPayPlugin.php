@@ -17,7 +17,7 @@ class WebPayPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[alipay][marketing][redpack][WebPayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Marketing][Redpack][WebPayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
@@ -25,7 +25,7 @@ class WebPayPlugin implements PluginInterface
                 'biz_content' => $rocket->getParams(),
             ]);
 
-        Logger::info('[alipay][marketing][redpack][WebPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Marketing][Redpack][WebPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
