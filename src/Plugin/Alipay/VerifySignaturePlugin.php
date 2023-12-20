@@ -13,6 +13,7 @@ use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+
 use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
 
@@ -31,7 +32,7 @@ class VerifySignaturePlugin implements PluginInterface
 
         Logger::debug('[Alipay][VerifySignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        if (!should_do_http_request($rocket->getDirection()) ) {
+        if (!should_do_http_request($rocket->getDirection())) {
             return $rocket;
         }
 

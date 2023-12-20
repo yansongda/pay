@@ -6,7 +6,8 @@ namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\App\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponseInvokeStringPlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
@@ -19,9 +20,10 @@ class AppShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             PayPlugin::class,
-            ResponseInvokeStringPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
+            ResponseInvokeStringPlugin::class,
             ParserPlugin::class,
         ];
     }

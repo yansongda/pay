@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
+use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Mini\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
-use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\Trade\CreatePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 
 class MiniShortcut implements ShortcutInterface
@@ -17,7 +19,9 @@ class MiniShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            CreatePlugin::class,
+            PayPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,

@@ -33,7 +33,6 @@ class PayPlugin implements PluginInterface
             'method' => 'alipay.trade.pay',
             'biz_content' => array_merge(
                 [
-                    'product_code' => 'FACE_TO_FACE_PAYMENT',
                     'scene' => 'bar_code',
                 ],
                 $rocket->getParams(),
