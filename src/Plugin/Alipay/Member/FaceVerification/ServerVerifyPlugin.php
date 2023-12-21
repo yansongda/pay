@@ -20,7 +20,12 @@ class ServerVerifyPlugin implements PluginInterface
 
         $rocket->mergePayload([
             'method' => 'datadigital.fincloud.generalsaas.face.source.certify',
-            'biz_content' => $rocket->getParams(),
+            'biz_content' => array_merge(
+                [
+                    'cert_type' => 'IDENTITY_CARD',
+                ],
+                $rocket->getParams()
+            ),
         ]);
 
         Logger::info('[Alipay][Member][FaceVerification][ServerVerifyPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -21,7 +21,7 @@ class SignPlugin implements PluginInterface
 
         $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
-                'method' => 'alipay.trade.page.pay',
+                'method' => 'alipay.user.agreement.page.sign',
                 'biz_content' => $rocket->getParams(),
             ]);
 

@@ -34,7 +34,9 @@ class PayPlugin implements PluginInterface
             ->mergePayload([
                 'method' => 'alipay.trade.page.pay',
                 'biz_content' => array_merge(
-                    ['product_code' => 'FAST_INSTANT_TRADE_PAY'],
+                    [
+                        'product_code' => 'FAST_INSTANT_TRADE_PAY',
+                    ],
                     $rocket->getParams()
                 ),
             ]);

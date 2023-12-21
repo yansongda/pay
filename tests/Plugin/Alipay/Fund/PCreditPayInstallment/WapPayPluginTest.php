@@ -27,5 +27,6 @@ class WapPayPluginTest extends TestCase
 
         self::assertEquals(ResponseDirection::class, $result->getDirection());
         self::assertStringContainsString('alipay.trade.wap.pay', $result->getPayload()->toJson());
+        self::assertStringContainsString('QUICK_WAP_WAY', $result->getPayload()->toJson());
     }
 }

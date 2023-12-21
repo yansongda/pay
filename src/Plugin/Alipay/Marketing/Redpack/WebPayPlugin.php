@@ -21,8 +21,13 @@ class WebPayPlugin implements PluginInterface
 
         $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
-                'method' => 'alipay.trade.page.pay',
-                'biz_content' => $rocket->getParams(),
+                'method' => 'alipay.fund.trans.page.pay',
+                'biz_content' => array_merge(
+                    [
+                        'product_code' => 'STD_APP_TRANSFER',
+                    ],
+                    $rocket->getParams()
+                ),
             ]);
 
         Logger::info('[Alipay][Marketing][Redpack][WebPayPlugin] 插件装载完毕', ['rocket' => $rocket]);

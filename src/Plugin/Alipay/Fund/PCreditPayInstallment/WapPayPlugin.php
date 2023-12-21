@@ -33,7 +33,12 @@ class WapPayPlugin implements PluginInterface
         $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
                 'method' => 'alipay.trade.wap.pay',
-                'biz_content' => $rocket->getParams(),
+                'biz_content' => array_merge(
+                    [
+                        'product_code' => 'QUICK_WAP_WAY',
+                    ],
+                    $rocket->getParams(),
+                ),
             ]);
 
         Logger::info('[Alipay][Fund][PCreditPayInstallment][WapPayPlugin] 插件装载完毕', ['rocket' => $rocket]);

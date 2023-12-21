@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Alipay\Pay\Authorization;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
@@ -18,15 +19,16 @@ class AppFreezePlugin implements PluginInterface
     {
         Logger::debug('[Alipay][Pay][Authorization][AppFreezePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $rocket->mergePayload([
-            'method' => 'alipay.fund.auth.order.app.freeze',
-            'biz_content' => array_merge(
-                [
-                    'product_code' => 'PREAUTH_PAY',
-                ],
-                $rocket->getParams()
-            ),
-        ]);
+        $rocket->setDirection(ResponseDirection::class)
+            ->mergePayload([
+                'method' => 'alipay.fund.auth.order.app.freeze',
+                'biz_content' => array_merge(
+                    [
+                        'product_code' => 'PREAUTH_PAY',
+                    ],
+                    $rocket->getParams()
+                ),
+            ]);
 
         Logger::info('[Alipay][Pay][Authorization][AppFreezePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
