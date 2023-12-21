@@ -10,7 +10,6 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Arr;
-use Yansongda\Supports\Collection;
 
 class ResponseInvokeStringPlugin implements PluginInterface
 {
@@ -21,17 +20,12 @@ class ResponseInvokeStringPlugin implements PluginInterface
 
         Logger::debug('[Alipay][ResponseInvokeStringPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $response = $this->buildHtml($rocket->getPayload());
+        $response = new Response(200, [], Arr::query($rocket->getPayload()->all()));
 
         $rocket->setDestination($response);
 
         Logger::info('[Alipay][ResponseInvokeStringPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
-    }
-
-    protected function buildHtml(Collection $payload): Response
-    {
-        return new Response(200, [], Arr::query($payload->all()));
     }
 }

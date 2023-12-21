@@ -21,9 +21,9 @@ class PayPlugin implements PluginInterface
 
         $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
-            'method' => 'alipay.trade.app.pay',
-            'biz_content' => $rocket->getParams(),
-        ]);
+                'method' => 'alipay.trade.app.pay',
+                'biz_content' => $rocket->getParams(),
+            ]);
 
         Logger::info('[Alipay][Pay][App][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

@@ -28,7 +28,7 @@ class ResponsePlugin implements PluginInterface
         if (should_do_http_request($rocket->getDirection()) && $destination instanceof Collection) {
             $rocket->setDestination(new Collection(array_merge(
                 ['_sign' => $destination->get('sign', '')],
-                $destination->get($resultKey, [])
+                $destination->get($resultKey, $destination->all())
             )));
         }
 

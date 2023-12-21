@@ -11,9 +11,9 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Config;
 
-class PreparePluginTest extends TestCase
+class StartPluginTest extends TestCase
 {
-    protected $plugin;
+    protected StartPlugin $plugin;
 
     protected function setUp(): void
     {
@@ -30,8 +30,7 @@ class PreparePluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
 
-        self::assertTrue($payload->has('app_cert_sn'));
-        self::assertEquals('fb5e86cfb784de936dd3594e32381cf8', $payload->get('app_cert_sn'));
+        self::assertEquals('e90dd23a37c5c7b616e003970817ff82', $payload->get('app_cert_sn'));
         self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
         self::assertEquals('yansongda_token', $payload->get('app_auth_token'));
     }
@@ -161,7 +160,7 @@ class PreparePluginTest extends TestCase
         $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
 
-        self::assertEquals('fb5e86cfb784de936dd3594e32381cf8', $payload->get('app_cert_sn'));
+        self::assertEquals('e90dd23a37c5c7b616e003970817ff82', $payload->get('app_cert_sn'));
 
         $config = Pay::get(ConfigInterface::class);
         $config->set('alipay.default.app_public_cert_path', null);
@@ -169,7 +168,7 @@ class PreparePluginTest extends TestCase
         $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
 
-        self::assertEquals('fb5e86cfb784de936dd3594e32381cf8', $payload->get('app_cert_sn'));
+        self::assertEquals('e90dd23a37c5c7b616e003970817ff82', $payload->get('app_cert_sn'));
     }
 
     public function testAlipayRootCertSnCached()

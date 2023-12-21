@@ -9,9 +9,9 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class HtmlResponsePluginTest extends TestCase
+class ResponseHtmlPluginTest extends TestCase
 {
-    private $plugin;
+    private ResponseHtmlPlugin $plugin;
 
     protected function setUp(): void
     {

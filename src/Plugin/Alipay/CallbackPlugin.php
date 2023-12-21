@@ -35,7 +35,7 @@ class CallbackPlugin implements PluginInterface
         $sign = $rocket->getParams()['sign'] ?? false;
 
         if (!$sign) {
-            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', $rocket->getParams());
+            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Callback Empty Sign', $rocket->getParams());
         }
 
         verify_alipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), $sign);
