@@ -40,7 +40,7 @@ class QueryMerchantConfigsPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (Pay::MODE_SERVICE !== ($config['mode'] ?? Pay::MODE_NORMAL)) {
-            throw new InvalidParamsException(Exception::METHOD_NOT_SUPPORTED);
+            throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED);
         }
 
         return 'v3/profitsharing/merchant-configs/'.

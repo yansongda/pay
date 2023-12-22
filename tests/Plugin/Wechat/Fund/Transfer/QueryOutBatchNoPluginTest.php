@@ -44,7 +44,7 @@ class QueryOutBatchNoPluginTest extends TestCase
         $rocket->setParams([])->setPayload(new Collection(['need_query_detail' => false]));
 
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -55,7 +55,7 @@ class QueryOutBatchNoPluginTest extends TestCase
         $rocket->setParams([])->setPayload(new Collection(['out_batch_no' => '123']));
 
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -81,7 +81,7 @@ class QueryOutBatchNoPluginTest extends TestCase
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['need_query_detail' => false]));
 
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -92,7 +92,7 @@ class QueryOutBatchNoPluginTest extends TestCase
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection(['out_batch_no' => '123']));
 
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

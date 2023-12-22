@@ -1,5 +1,9 @@
 ## v3.6.0 - TBD
 
+### added
+
+- feat: 新增 `InvalidCallbackException`, `InvalidSignException`(#903)
+
 ### changed
 
 - change(internal): shortcut 完整标明各个插件，不使用 commonPlugin(#886)
@@ -9,7 +13,8 @@
 - change: 查询API方法由 `find` 改为 `query`，同时参数只支持 array(#897)
 - change: cancel 的 API 参数只支持 array，不再支持 string(#900)
 - change: close 的 API 参数只支持 array，不再支持 string(#901)
-- change(internal): 错误代码 const 命名规则统一(#902)
+- change(internal): 错误代码 const 命名规则统一(#902, #903)
+
 
 ## v3.5.3
 

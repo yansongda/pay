@@ -24,7 +24,7 @@ class ReturnAdvancePlugin extends GeneralPlugin
      */
     protected function getUri(Rocket $rocket): string
     {
-        throw new InvalidParamsException(Exception::CURRENT_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
+        throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
     }
 
     /**
@@ -35,7 +35,7 @@ class ReturnAdvancePlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('refund_id')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         return 'v3/ecommerce/refunds/'.$payload->get('refund_id').'/return-advance';

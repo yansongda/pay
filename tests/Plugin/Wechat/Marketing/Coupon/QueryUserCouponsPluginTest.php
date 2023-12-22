@@ -42,7 +42,7 @@ class QueryUserCouponsPluginTest extends TestCase
     public function testException()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
         $rocket = (new Rocket())->setParams([])->setPayload(new Collection());
 

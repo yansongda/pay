@@ -112,10 +112,7 @@ class Alipay extends AbstractProvider
 
         Event::dispatch(new Event\CallbackReceived('alipay', $request->all(), $params, null));
 
-        return $this->pay(
-            [CallbackPlugin::class],
-            $request->merge($params)->all()
-        );
+        return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
     }
 
     public function success(): ResponseInterface

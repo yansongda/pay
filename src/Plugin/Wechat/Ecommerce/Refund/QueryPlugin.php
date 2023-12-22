@@ -23,7 +23,7 @@ class QueryPlugin extends GeneralPlugin
      */
     protected function getUri(Rocket $rocket): string
     {
-        throw new InvalidParamsException(Exception::CURRENT_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
+        throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
     }
 
     /**
@@ -45,7 +45,7 @@ class QueryPlugin extends GeneralPlugin
             return 'v3/ecommerce/refunds/out-refund-no/'.$payload->get('out_refund_no').'?sub_mchid='.$subMchId;
         }
 
-        throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+        throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
     }
 
     protected function getMethod(): string

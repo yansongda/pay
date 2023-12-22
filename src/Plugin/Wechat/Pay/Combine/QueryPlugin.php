@@ -18,7 +18,7 @@ class QueryPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('combine_out_trade_no') && !$payload->has('transaction_id')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         return 'v3/combine-transactions/out-trade-no/'.

@@ -41,7 +41,7 @@ class GetUnipayCertsTest extends TestCase
         $config->set('unipay.default.mch_cert_path', null);
 
         $this->expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::UNIPAY_CONFIG_INVALID);
+        self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
         $this->expectExceptionMessage('Missing Unipay Config -- [mch_cert_path] or [mch_cert_password]');
 
         $this->trait->getCertId('default', get_unipay_config([]));
@@ -53,7 +53,7 @@ class GetUnipayCertsTest extends TestCase
         $config->set('unipay.default.mch_cert_password', null);
 
         $this->expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::UNIPAY_CONFIG_INVALID);
+        self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
         $this->expectExceptionMessage('Missing Unipay Config -- [mch_cert_path] or [mch_cert_password]');
 
         $this->trait->getCertId('default', get_unipay_config([]));
@@ -66,7 +66,7 @@ class GetUnipayCertsTest extends TestCase
         $config->set('unipay.default.mch_cert_path', __DIR__.'/../Cert/foo');
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::UNIPAY_CONFIG_INVALID);
+        self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
         self::expectExceptionMessage('Read `mch_cert_path` Error');
 
         $this->trait->getCertId('default', get_unipay_config([]));

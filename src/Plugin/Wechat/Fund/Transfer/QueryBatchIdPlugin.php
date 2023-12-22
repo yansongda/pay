@@ -32,7 +32,7 @@ class QueryBatchIdPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('batch_id') || !$payload->has('need_query_detail')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         $batchId = $payload->get('batch_id');
@@ -51,7 +51,7 @@ class QueryBatchIdPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('batch_id') || !$payload->has('need_query_detail')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         $batchId = $payload->get('batch_id');

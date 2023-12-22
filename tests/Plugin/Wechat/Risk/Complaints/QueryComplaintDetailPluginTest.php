@@ -46,7 +46,7 @@ class QueryComplaintDetailPluginTest extends TestCase
         $rocket->setParams([])->setPayload(new Collection());
 
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
         $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
     }

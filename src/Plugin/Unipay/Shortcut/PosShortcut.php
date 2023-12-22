@@ -28,7 +28,7 @@ class PosShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_INVALID, "Pos action [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Pos action [{$typeMethod}] not supported");
     }
 
     protected function defaultPlugins(): array
