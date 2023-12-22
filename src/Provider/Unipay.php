@@ -64,12 +64,8 @@ class Unipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function cancel(array|string $order): null|array|Collection
+    public function cancel(array $order): null|array|Collection
     {
-        if (!is_array($order)) {
-            throw new InvalidParamsException(Exception::UNIPAY_CANCEL_STRING_NOT_SUPPORTED);
-        }
-
         Event::dispatch(new Event\MethodCalled('unipay', __METHOD__, $order, null));
 
         return $this->__call('cancel', [$order]);

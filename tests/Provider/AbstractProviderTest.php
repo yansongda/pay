@@ -136,7 +136,7 @@ class FooProviderStub extends AbstractProvider
         return new Collection();
     }
 
-    public function cancel(array|string $order): Collection
+    public function cancel(array $order): Collection
     {
         return new Collection();
     }
