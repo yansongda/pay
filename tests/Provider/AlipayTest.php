@@ -65,7 +65,7 @@ class AlipayTest extends TestCase
         $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::alipay()->find('1703141270');
+        $result = Pay::alipay()->query('1703141270');
 
         self::assertEqualsCanonicalizing($response['alipay_trade_query_response'], $result->except('_sign')->all());
     }
@@ -90,7 +90,7 @@ class AlipayTest extends TestCase
         $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::alipay()->find(['out_biz_no' => '202209032319', '_action' => 'transfer']);
+        $result = Pay::alipay()->query(['out_biz_no' => '202209032319', '_action' => 'transfer']);
         self::assertEqualsCanonicalizing($response['alipay_fund_trans_common_query_response'], $result->except('_sign')->all());
     }
 
@@ -116,14 +116,14 @@ class AlipayTest extends TestCase
         );
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::alipay()->find([
+        $result = Pay::alipay()->query([
             'out_trade_no' => '1703141270',
             'out_request_no' => '1703141270',
             '_action' => 'refund'
         ]);
         self::assertEqualsCanonicalizing($response['alipay_trade_fastpay_refund_query_response'], $result->except('_sign')->all());
 
-        $result1 = Pay::alipay()->find([
+        $result1 = Pay::alipay()->query([
             'out_trade_no' => '1703141270',
             'out_request_no' => '1703141270',
         ]);

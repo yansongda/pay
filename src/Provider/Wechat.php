@@ -64,10 +64,8 @@ class Wechat extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function find(array|string $order): array|Collection
+    public function query(array $order): array|Collection
     {
-        $order = is_array($order) ? $order : ['transaction_id' => $order];
-
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);

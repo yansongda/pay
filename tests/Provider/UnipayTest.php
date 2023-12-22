@@ -109,7 +109,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::unipay()->find([
+        $result = Pay::unipay()->query([
             'txnTime' => '20220911041647',
             'orderId' => 'pay20220911041647',
         ]);
@@ -118,7 +118,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::UNIPAY_FIND_STRING_NOT_SUPPORTED);
-        Pay::unipay()->find('123');
+        Pay::unipay()->query('123');
     }
 
     public function testCancel()

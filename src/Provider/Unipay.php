@@ -52,12 +52,8 @@ class Unipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function find(array|string $order): array|Collection
+    public function query(array $order): array|Collection
     {
-        if (!is_array($order)) {
-            throw new InvalidParamsException(Exception::UNIPAY_FIND_STRING_NOT_SUPPORTED);
-        }
-
         Event::dispatch(new Event\MethodCalled('unipay', __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
