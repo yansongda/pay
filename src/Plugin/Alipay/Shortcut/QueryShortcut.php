@@ -42,6 +42,10 @@ class QueryShortcut implements ShortcutInterface
     {
         $method = Str::camel($params['_action'] ?? 'default').'Plugins';
 
+        if (isset($params['out_request_no'])) {
+            return $this->refundPlugins();
+        }
+
         if (method_exists($this, $method)) {
             return $this->{$method}();
         }
