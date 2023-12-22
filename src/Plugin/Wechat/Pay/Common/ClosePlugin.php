@@ -26,7 +26,7 @@ class ClosePlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('out_trade_no')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         return 'v3/pay/transactions/out-trade-no/'.
@@ -42,7 +42,7 @@ class ClosePlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('out_trade_no')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         return 'v3/pay/partner/transactions/out-trade-no/'.

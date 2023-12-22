@@ -9,7 +9,7 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
@@ -22,8 +22,8 @@ class VerifySignaturePlugin implements PluginInterface
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
-     * @throws InvalidResponseException
      * @throws ServiceNotFoundException
+     * @throws InvalidSignException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -42,7 +42,7 @@ class VerifySignaturePlugin implements PluginInterface
         $result = $destination->except('_sign')->all();
 
         if ('' === $sign || empty($result)) {
-            throw new InvalidResponseException(Exception::SIGN_INVALID, 'Verify Alipay Response Sign Failed: sign is empty', $destination);
+            throw new InvalidSignException(Exception::SIGN_EMPTY, 'Verify Alipay Response Sign Failed: sign is empty', $destination);
         }
 
         verify_alipay_sign($rocket->getParams(), json_encode($result, JSON_UNESCAPED_UNICODE), $sign);

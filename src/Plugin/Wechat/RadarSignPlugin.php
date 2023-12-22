@@ -115,13 +115,13 @@ class RadarSignPlugin implements PluginInterface
         $mchPublicCertPath = $config['mch_public_cert_path'] ?? null;
 
         if (empty($mchPublicCertPath)) {
-            throw new InvalidConfigException(Exception::WECHAT_CONFIG_INVALID, 'Missing Wechat Config -- [mch_public_cert_path]');
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, 'Missing Wechat Config -- [mch_public_cert_path]');
         }
 
         $ssl = openssl_x509_parse(get_public_cert($mchPublicCertPath));
 
         if (empty($ssl['serialNumberHex'])) {
-            throw new InvalidConfigException(Exception::WECHAT_CONFIG_INVALID, 'Parse [mch_public_cert_path] Serial Number Error');
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, 'Parse [mch_public_cert_path] Serial Number Error');
         }
 
         $auth = sprintf(
@@ -144,7 +144,7 @@ class RadarSignPlugin implements PluginInterface
         $request = $rocket->getRadar();
 
         if (is_null($request)) {
-            throw new InvalidParamsException(Exception::REQUEST_EMPTY);
+            throw new InvalidParamsException(Exception::PARAMS_REQUEST_EMPTY);
         }
 
         $uri = $request->getUri();

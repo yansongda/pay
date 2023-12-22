@@ -56,7 +56,7 @@ class ParserPlugin implements PluginInterface
         $packer = is_string($packer) ? Pay::get($packer) : $packer;
 
         if (!$packer instanceof PackerInterface) {
-            throw new InvalidConfigException(Exception::PACKER_INVALID);
+            throw new InvalidConfigException(Exception::CONFIG_PACKER_INVALID);
         }
 
         return $packer;

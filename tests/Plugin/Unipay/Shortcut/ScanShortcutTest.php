@@ -75,7 +75,7 @@ class ScanShortcutTest extends TestCase
     public function testFoo()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_INVALID);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
         self::expectExceptionMessage('Scan action [fooPlugins] not supported');
 
         $this->plugin->getPlugins(['_action' => 'foo']);

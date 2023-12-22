@@ -26,7 +26,7 @@ class AlipayTest extends TestCase
     public function testShortcutNotFound()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_NOT_FOUND);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_NOT_FOUND);
 
         Pay::alipay()->foo();
     }
@@ -34,7 +34,7 @@ class AlipayTest extends TestCase
     public function testShortcutIncompatible()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_NOT_FOUND);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_NOT_FOUND);
 
         Pay::alipay()->foo();
     }

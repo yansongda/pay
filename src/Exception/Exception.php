@@ -31,53 +31,51 @@ class Exception extends \Exception
      */
     public const CONFIG_ERROR = 3000;
 
-    public const DIRECTION_INVALID = 3001;
+    public const CONFIG_DIRECTION_INVALID = 3001;
 
-    public const ALIPAY_CONFIG_INVALID = 3002;
+    public const CONFIG_ALIPAY_INVALID = 3002;
 
-    public const LOGGER_CONFIG_INVALID = 3003;
+    public const CONFIG_LOGGER_INVALID = 3003;
 
-    public const HTTP_CLIENT_INVALID = 3004;
+    public const CONFIG_HTTP_CLIENT_INVALID = 3004;
 
-    public const EVENT_CONFIG_INVALID = 3005;
+    public const CONFIG_EVENT_INVALID = 3005;
 
-    public const WECHAT_CONFIG_INVALID = 3006;
+    public const CONFIG_WECHAT_INVALID = 3006;
 
-    public const UNIPAY_CONFIG_INVALID = 3007;
+    public const CONFIG_UNIPAY_INVALID = 3007;
 
-    public const PACKER_INVALID = 3008;
+    public const CONFIG_PACKER_INVALID = 3008;
 
     /*
      * 关于参数.
      */
     public const PARAMS_ERROR = 4000;
 
-    public const SHORTCUT_NOT_FOUND = 4001;
+    public const PARAMS_SHORTCUT_NOT_FOUND = 4001;
 
-    public const PLUGIN_INCOMPATIBLE = 4002;
+    public const PARAMS_PLUGIN_INCOMPATIBLE = 4002;
 
-    public const SHORTCUT_MULTI_ACTION_INVALID = 4003;
+    public const PARAMS_SHORTCUT_ACTION_INVALID = 4003;
 
-    public const METHOD_NOT_SUPPORTED = 4004;
+    public const PARAMS_METHOD_NOT_SUPPORTED = 4004;
 
-    public const REQUEST_EMPTY = 4005;
+    public const PARAMS_REQUEST_EMPTY = 4005;
 
-    public const NECESSARY_PARAMS_MISSING = 4006;
+    public const PARAMS_NECESSARY_PARAMS_MISSING = 4006;
 
-    public const CURRENT_PLUGIN_ONLY_SUPPORT_SERVICE_MODE = 4007;
+    public const PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE = 4007;
 
-    public const WECHAT_SERIAL_NOT_FOUND = 4008;
+    public const PARAMS_WECHAT_SERIAL_NOT_FOUND = 4008;
 
     /**
-     * 关于api.
+     * 关于响应.
      */
     public const RESPONSE_ERROR = 5000;
 
     public const REQUEST_RESPONSE_ERROR = 5001;
 
-    public const UNPACK_RESPONSE_ERROR = 5002;
-
-    public const SIGN_INVALID = 5003;
+    public const RESPONSE_UNPACK_ERROR = 5002;
 
     public const RESPONSE_CODE_WRONG = 5004;
 
@@ -85,15 +83,22 @@ class Exception extends \Exception
 
     public const RESPONSE_EMPTY = 5006;
 
-    public const CIPHERTEXT_PARAMS_INVALID = 5007;
+    public const RESPONSE_CIPHERTEXT_PARAMS_INVALID = 5007;
 
-    public const REQUEST_ENCRYPTED_DATA_INVALID = 5008;
+    public const RESPONSE_ENCRYPTED_DATA_INVALID = 5008;
 
-    public const REQUEST_ENCRYPTED_METHOD_INVALID = 5009;
+    public const RESPONSE_DECRYPTED_METHOD_INVALID = 5009;
+
+    /**
+     * 关于签名.
+     */
+    public const SIGN_ERROR = 6000;
+
+    public const SIGN_EMPTY = 6001;
 
     public mixed $extra;
 
-    public function __construct(string $message = 'Unknown Error', int $code = self::UNKNOWN_ERROR, mixed $extra = null, Throwable $previous = null)
+    public function __construct(string $message = 'Unknown Error', int $code = self::UNKNOWN_ERROR, mixed $extra = null, ?Throwable $previous = null)
     {
         $this->extra = $extra;
 

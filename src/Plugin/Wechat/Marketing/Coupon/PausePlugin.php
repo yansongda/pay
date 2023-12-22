@@ -42,7 +42,7 @@ class PausePlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('stock_id')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         return 'v3/marketing/favor/stocks/'.$payload->get('stock_id').'/pause';

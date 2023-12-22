@@ -40,7 +40,7 @@ class QueryCouponDetailPlugin extends GeneralPlugin
         $config = get_wechat_config($params);
 
         if (!$payload->has('coupon_id') || !$payload->has('openid')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         return 'v3/marketing/favor/users/'.

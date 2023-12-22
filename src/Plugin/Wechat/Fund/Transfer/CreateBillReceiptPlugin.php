@@ -22,7 +22,7 @@ class CreateBillReceiptPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('out_batch_no')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
     }
 

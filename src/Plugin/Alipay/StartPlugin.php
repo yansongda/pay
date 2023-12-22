@@ -106,13 +106,13 @@ class StartPlugin implements PluginInterface
         $path = $config['app_public_cert_path'] ?? null;
 
         if (is_null($path)) {
-            throw new InvalidConfigException(Exception::ALIPAY_CONFIG_INVALID, 'Missing Alipay Config -- [app_public_cert_path]');
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, 'Missing Alipay Config -- [app_public_cert_path]');
         }
 
         $ssl = openssl_x509_parse(get_public_cert($path));
 
         if (false === $ssl) {
-            throw new InvalidConfigException(Exception::ALIPAY_CONFIG_INVALID, 'Parse `app_public_cert_path` Error');
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, 'Parse `app_public_cert_path` Error');
         }
 
         $result = $this->getCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
@@ -136,7 +136,7 @@ class StartPlugin implements PluginInterface
         $path = $config['alipay_root_cert_path'] ?? null;
 
         if (is_null($path)) {
-            throw new InvalidConfigException(Exception::ALIPAY_CONFIG_INVALID, 'Missing Alipay Config -- [alipay_root_cert_path]');
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, 'Missing Alipay Config -- [alipay_root_cert_path]');
         }
 
         $sn = '';
@@ -150,7 +150,7 @@ class StartPlugin implements PluginInterface
             $ssl = openssl_x509_parse($cert.'-----END CERTIFICATE-----');
 
             if (false === $ssl) {
-                throw new InvalidConfigException(Exception::ALIPAY_CONFIG_INVALID, 'Invalid alipay_root_cert');
+                throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, 'Invalid alipay_root_cert');
             }
 
             $detail = $this->formatCert($ssl);

@@ -40,7 +40,7 @@ class QueryReturnPlugin extends GeneralPlugin
         $config = get_wechat_config($rocket->getParams());
 
         if (!$payload->has('out_return_no') || !$payload->has('out_order_no')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         $url = 'v3/profitsharing/return-orders/'.

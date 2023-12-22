@@ -76,7 +76,7 @@ class Unipay extends AbstractProvider
      */
     public function close(array $order): null|array|Collection
     {
-        throw new InvalidParamsException(Exception::METHOD_NOT_SUPPORTED, 'Unipay does not support close api');
+        throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, 'Unipay does not support close api');
     }
 
     /**

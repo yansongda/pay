@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -59,8 +59,8 @@ class VerifySignaturePluginTest extends TestCase
         $rocket = (new Rocket())
             ->setDestination(new Collection($destination));
 
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::SIGN_INVALID);
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

@@ -32,7 +32,7 @@ class QueryOutBatchNoPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('out_batch_no') || !$payload->has('need_query_detail')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         $outBatchNo = $payload->get('out_batch_no');
@@ -51,7 +51,7 @@ class QueryOutBatchNoPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('out_batch_no') || !$payload->has('need_query_detail')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         $outBatchNo = $payload->get('out_batch_no');

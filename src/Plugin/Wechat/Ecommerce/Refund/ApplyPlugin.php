@@ -23,7 +23,7 @@ class ApplyPlugin extends GeneralPlugin
      */
     protected function getUri(Rocket $rocket): string
     {
-        throw new InvalidParamsException(Exception::CURRENT_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
+        throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
     }
 
     protected function getPartnerUri(Rocket $rocket): string

@@ -45,7 +45,7 @@ class QueryDayEndPluginTest extends TestCase
         $rocket->setParams([])->setPayload(new Collection(['date' => '2021-10-23']));
 
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -56,7 +56,7 @@ class QueryDayEndPluginTest extends TestCase
         $rocket->setParams([])->setPayload(new Collection(['account_type' => '123']));
 
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

@@ -36,7 +36,7 @@ abstract class AbstractProvider implements ProviderInterface
     public function call(string $plugin, array $params = []): null|Collection|MessageInterface
     {
         if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException(Exception::SHORTCUT_NOT_FOUND, "[{$plugin}] is not incompatible");
+            throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_NOT_FOUND, "[{$plugin}] is not incompatible");
         }
 
         /* @var ShortcutInterface $shortcut */
@@ -88,7 +88,7 @@ abstract class AbstractProvider implements ProviderInterface
         $http = Pay::get(HttpClientInterface::class);
 
         if (!$http instanceof ClientInterface) {
-            throw new InvalidConfigException(Exception::HTTP_CLIENT_INVALID);
+            throw new InvalidConfigException(Exception::CONFIG_HTTP_CLIENT_INVALID);
         }
 
         Logger::info('[AbstractProvider] 准备请求支付服务商 API', $rocket->toArray());
@@ -131,7 +131,7 @@ abstract class AbstractProvider implements ProviderInterface
                 continue;
             }
 
-            throw new InvalidParamsException(Exception::PLUGIN_INCOMPATIBLE, "[{$plugin}] is not incompatible");
+            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_INCOMPATIBLE, "[{$plugin}] is not incompatible");
         }
     }
 }

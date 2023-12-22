@@ -33,7 +33,7 @@ class QueryComplaintNegotiationPlugin extends GeneralPlugin
         $complaintId = $payload->get('complaint_id');
 
         if (is_null($complaintId)) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
 
         $payload->forget('complaint_id');

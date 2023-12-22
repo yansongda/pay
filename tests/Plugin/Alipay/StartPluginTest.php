@@ -106,7 +106,7 @@ class StartPluginTest extends TestCase
         Pay::set(ConfigInterface::class, new Config());
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::ALIPAY_CONFIG_INVALID);
+        self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
         self::expectExceptionMessage('Missing Alipay Config -- [app_public_cert_path]');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -121,7 +121,7 @@ class StartPluginTest extends TestCase
         Pay::set(ConfigInterface::class, $config);
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::ALIPAY_CONFIG_INVALID);
+        self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
         self::expectExceptionMessage('Parse `app_public_cert_path` Error');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -135,7 +135,7 @@ class StartPluginTest extends TestCase
         $config->set('alipay.default.alipay_root_cert_path', null);
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::ALIPAY_CONFIG_INVALID);
+        self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
         self::expectExceptionMessage('Missing Alipay Config -- [alipay_root_cert_path]');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -149,7 +149,7 @@ class StartPluginTest extends TestCase
         $config->set('alipay.default.alipay_root_cert_path', __DIR__.'/../../Cert/foo');
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::ALIPAY_CONFIG_INVALID);
+        self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
         self::expectExceptionMessage('Invalid alipay_root_cert');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

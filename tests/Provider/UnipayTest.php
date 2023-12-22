@@ -23,7 +23,7 @@ class UnipayTest extends TestCase
     public function testShortcutNotFound()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_NOT_FOUND);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_NOT_FOUND);
 
         Pay::unipay()->foo();
     }
@@ -31,7 +31,7 @@ class UnipayTest extends TestCase
     public function testShortcutIncompatible()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_NOT_FOUND);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_NOT_FOUND);
 
         Pay::unipay()->foo();
     }
@@ -181,7 +181,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
     public function testClose()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::METHOD_NOT_SUPPORTED);
+        self::expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
         Pay::unipay()->close(['foo']);
     }

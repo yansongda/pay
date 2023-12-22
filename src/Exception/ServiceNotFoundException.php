@@ -9,7 +9,7 @@ use Throwable;
 
 class ServiceNotFoundException extends Exception implements NotFoundExceptionInterface
 {
-    public function __construct(string $message = 'Service Not Found', int $code = self::SERVICE_NOT_FOUND, mixed $extra = null, Throwable $previous = null)
+    public function __construct(string $message = 'Service Not Found', int $code = self::SERVICE_NOT_FOUND, mixed $extra = null, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $extra, $previous);
     }

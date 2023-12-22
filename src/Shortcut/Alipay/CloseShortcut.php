@@ -37,7 +37,7 @@ class CloseShortcut implements ShortcutInterface
             return $this->{$method}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_INVALID, "Close action [{$method}] not supported");
+        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Close action [{$method}] not supported");
     }
 
     protected function defaultPlugins(): array

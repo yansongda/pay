@@ -22,7 +22,7 @@ class CreateDetailReceiptPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('out_detail_no') || !$payload->has('accept_type')) {
-            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
         }
     }
 

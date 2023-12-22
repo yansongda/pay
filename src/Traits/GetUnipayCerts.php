@@ -28,7 +28,7 @@ trait GetUnipayCerts
         $ssl = openssl_x509_parse($certs['cert'] ?? '');
 
         if (false === $ssl) {
-            throw new InvalidConfigException(Exception::UNIPAY_CONFIG_INVALID, 'Parse `mch_cert_path` Error');
+            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, 'Parse `mch_cert_path` Error');
         }
 
         $certs['cert_id'] = $ssl['serialNumber'] ?? '';
@@ -49,11 +49,11 @@ trait GetUnipayCerts
         $password = $config['mch_cert_password'] ?? null;
 
         if (is_null($path) || is_null($password)) {
-            throw new InvalidConfigException(Exception::UNIPAY_CONFIG_INVALID, 'Missing Unipay Config -- [mch_cert_path] or [mch_cert_password]');
+            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, 'Missing Unipay Config -- [mch_cert_path] or [mch_cert_password]');
         }
 
         if (false === openssl_pkcs12_read(file_get_contents($path), $certs, $password)) {
-            throw new InvalidConfigException(Exception::UNIPAY_CONFIG_INVALID, 'Read `mch_cert_path` Error');
+            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, 'Read `mch_cert_path` Error');
         }
 
         return $certs;

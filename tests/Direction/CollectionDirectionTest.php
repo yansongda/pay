@@ -41,7 +41,7 @@ class CollectionDirectionTest extends TestCase
     public function testWrongFormat()
     {
         self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::UNPACK_RESPONSE_ERROR);
+        self::expectExceptionCode(Exception::RESPONSE_UNPACK_ERROR);
 
         $response = new Response(200, [], '{"name": "yansongda"}a');
 

@@ -6,17 +6,17 @@ namespace Yansongda\Pay\Exception;
 
 use Throwable;
 
-class InvalidResponseException extends Exception
+class InvalidSignException extends Exception
 {
-    public mixed $response;
+    public mixed $callback;
 
     public function __construct(
-        int $code = self::RESPONSE_ERROR,
-        string $message = 'Provider response Error',
+        int $code = self::SIGN_ERROR,
+        string $message = 'Sign Error',
         mixed $extra = null,
         ?Throwable $previous = null
     ) {
-        $this->response = $extra;
+        $this->callback = $extra;
 
         parent::__construct($message, $code, $extra, $previous);
     }

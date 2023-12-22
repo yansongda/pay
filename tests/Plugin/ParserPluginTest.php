@@ -32,7 +32,7 @@ class ParserPluginTest extends TestCase
     public function testWrongParser()
     {
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(InvalidConfigException::DIRECTION_INVALID);
+        self::expectExceptionCode(InvalidConfigException::CONFIG_DIRECTION_INVALID);
 
         $rocket = new Rocket();
         $rocket->setDirection(FooParserStub::class);
@@ -43,7 +43,7 @@ class ParserPluginTest extends TestCase
     public function testWrongPacker()
     {
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(InvalidConfigException::PACKER_INVALID);
+        self::expectExceptionCode(InvalidConfigException::CONFIG_PACKER_INVALID);
 
         $rocket = new Rocket();
         $rocket->setPacker(FooPackerStub::class);

@@ -10,7 +10,7 @@ use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
@@ -25,7 +25,7 @@ class CallbackPlugin implements PluginInterface
      * @throws ContainerException
      * @throws InvalidConfigException
      * @throws ServiceNotFoundException
-     * @throws InvalidResponseException
+     * @throws InvalidSignException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -35,7 +35,7 @@ class CallbackPlugin implements PluginInterface
         $sign = $rocket->getParams()['sign'] ?? false;
 
         if (!$sign) {
-            throw new InvalidResponseException(Exception::SIGN_INVALID, 'Callback Empty Sign', $rocket->getParams());
+            throw new InvalidSignException(Exception::SIGN_EMPTY, 'Callback Empty Sign', $rocket->getParams());
         }
 
         verify_alipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), $sign);

@@ -10,7 +10,7 @@ use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
@@ -24,8 +24,8 @@ class CallbackPlugin implements PluginInterface
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
+     * @throws InvalidSignException
      * @throws ServiceNotFoundException
-     * @throws InvalidResponseException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -37,7 +37,7 @@ class CallbackPlugin implements PluginInterface
         $signature = $params['signature'] ?? false;
 
         if (!$signature) {
-            throw new InvalidResponseException(Exception::SIGN_INVALID, '', $params);
+            throw new InvalidSignException(Exception::SIGN_EMPTY, '', $params);
         }
 
         verify_unipay_sign($params, $rocket->getPayload()->sortKeys()->toString(), $signature);

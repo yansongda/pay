@@ -28,6 +28,6 @@ class CollectionDirection implements DirectionInterface
             return new Collection($result);
         }
 
-        throw new InvalidResponseException(Exception::UNPACK_RESPONSE_ERROR, 'Unpack Response Error', ['body' => $body, 'response' => $response]);
+        throw new InvalidResponseException(Exception::RESPONSE_UNPACK_ERROR, 'Unpack Response Error', ['body' => $body, 'response' => $response]);
     }
 }
