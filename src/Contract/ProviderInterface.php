@@ -23,7 +23,7 @@ interface ProviderInterface
 
     public function query(array $order): array|Collection;
 
-    public function cancel(array|string $order): null|array|Collection;
+    public function cancel(array $order): null|array|Collection;
 
     public function close(array|string $order): null|array|Collection;
 
