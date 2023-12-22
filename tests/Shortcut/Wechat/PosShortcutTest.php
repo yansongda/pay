@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Wechat;
 
 use Yansongda\Pay\Plugin\Wechat\Pay\Pos\PayPlugin;
-use Yansongda\Pay\Plugin\Wechat\Shortcut\PosShortcut;
+use Yansongda\Pay\Shortcut\Wechat\PosShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
 class PosShortcutTest extends TestCase

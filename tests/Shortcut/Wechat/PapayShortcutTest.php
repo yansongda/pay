@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Wechat;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
@@ -13,7 +13,7 @@ use Yansongda\Pay\Plugin\Wechat\Papay\OnlyContractPlugin;
 use Yansongda\Pay\Plugin\Wechat\Pay\Common\InvokePrepayV2Plugin;
 use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
 use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
-use Yansongda\Pay\Plugin\Wechat\Shortcut\PapayShortcut;
+use Yansongda\Pay\Shortcut\Wechat\PapayShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
 class PapayShortcutTest extends TestCase

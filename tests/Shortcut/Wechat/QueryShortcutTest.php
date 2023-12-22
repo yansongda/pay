@@ -2,46 +2,57 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Wechat;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Alipay\Fund\TransCommonQueryPlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\ClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
 use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
-use Yansongda\Pay\Plugin\Wechat\Shortcut\CloseShortcut;
+use Yansongda\Pay\Shortcut\Wechat\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class CloseShortcutTest extends TestCase
+class QueryShortcutTest extends TestCase
 {
-    protected CloseShortcut $plugin;
+    protected QueryShortcut $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new CloseShortcut();
+        $this->plugin = new QueryShortcut();
     }
 
     public function testDefault()
     {
         self::assertEquals([
             PreparePlugin::class,
-            ClosePlugin::class,
+            QueryPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
 
+    public function testRefund()
+    {
+        self::assertEquals([
+            PreparePlugin::class,
+            QueryRefundPlugin::class,
+            RadarSignPlugin::class,
+            LaunchPlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'refund']));
+    }
+
     public function testCombine()
     {
         self::assertEquals([
             PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\ClosePlugin::class,
+            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
@@ -52,19 +63,11 @@ class CloseShortcutTest extends TestCase
     {
         self::assertEquals([
             PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\ClosePlugin::class,
+            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['combine_out_trade_no' => '123abc']));
-
-        self::assertEquals([
-            PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\ClosePlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['sub_orders' => '123abc']));
     }
 
     public function testFoo()
