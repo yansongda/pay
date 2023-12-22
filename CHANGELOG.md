@@ -4,6 +4,7 @@
 
 - change(internal): shortcut 完整标明各个插件，不使用 commonPlugin(#886)
 - change(internal): 按场景对支付宝插件进行分类(#894)
+- change(internal): 支付宝 shortcut 从 plugin 文件夹独立出来(#895)
 
 ## v3.5.3
 
