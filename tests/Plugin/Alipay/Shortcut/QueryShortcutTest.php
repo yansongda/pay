@@ -1,10 +1,7 @@
 <?php
 
-declare(strict_types=1);
+namespace Yansongda\Pay\Tests\Plugin\Alipay\Shortcut;
 
-namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
-
-use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
@@ -28,30 +25,36 @@ use Yansongda\Pay\Plugin\Alipay\Pay\Wap\QueryRefundPlugin as WapQueryRefundPlugi
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\QueryPlugin as WebQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\QueryRefundPlugin as WebQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Alipay\Shortcut\QueryShortcut;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Supports\Str;
+use Yansongda\Pay\Tests\TestCase;
 
-class QueryShortcut implements ShortcutInterface
+class QueryShortcutTest extends TestCase
 {
-    /**
-     * @throws InvalidParamsException
-     */
-    public function getPlugins(array $params): array
+    protected QueryShortcut $shortcut;
+
+    protected function setUp(): void
     {
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        parent::setUp();
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Query action [{$method}] not supported");
+        $this->shortcut = new QueryShortcut();
     }
 
-    protected function defaultPlugins(): array
+    public function testFooParam()
     {
-        return [
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_ERROR);
+
+        $this->shortcut->getPlugins(['_action' => 'foo']);
+    }
+
+    public function testDefault()
+    {
+        $result = $this->shortcut->getPlugins([]);
+
+        self::assertEquals([
             StartPlugin::class,
             WebQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -60,12 +63,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function agreementPlugins(): array
+    public function testAgreement()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'agreement']);
+
+        self::assertEquals([
             StartPlugin::class,
             AgreementQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -74,12 +79,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function appPlugins(): array
+    public function testApp()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'app']);
+
+        self::assertEquals([
             StartPlugin::class,
             AppQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -88,12 +95,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function authorizationPlugins(): array
+    public function testAuthorization()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'authorization']);
+
+        self::assertEquals([
             StartPlugin::class,
             AuthorizationQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -102,12 +111,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function facePlugins(): array
+    public function testFace()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'face']);
+
+        self::assertEquals([
             StartPlugin::class,
             FaceQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -116,12 +127,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function miniPlugins(): array
+    public function testMini()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'mini']);
+
+        self::assertEquals([
             StartPlugin::class,
             MiniQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -130,12 +143,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function posPlugins(): array
+    public function testPos()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'pos']);
+
+        self::assertEquals([
             StartPlugin::class,
             PosQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -144,12 +159,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function scanPlugins(): array
+    public function testScan()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'scan']);
+
+        self::assertEquals([
             StartPlugin::class,
             ScanQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -158,12 +175,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function wapPlugins(): array
+    public function testWap()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'wap']);
+
+        self::assertEquals([
             StartPlugin::class,
             WapQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -172,12 +191,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function webPlugins(): array
+    public function testWeb()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'web']);
+
+        self::assertEquals([
             StartPlugin::class,
             WebQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -186,12 +207,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function transferPlugins(): array
+    public function testTransfer()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'transfer']);
+
+        self::assertEquals([
             StartPlugin::class,
             TransferQueryPlugin::class,
             FormatBizContentPlugin::class,
@@ -200,12 +223,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function refundPlugins(): array
+    public function testRefund()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'refund']);
+
+        self::assertEquals([
             StartPlugin::class,
             WebQueryRefundPlugin::class,
             FormatBizContentPlugin::class,
@@ -214,12 +239,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function refundAppPlugins(): array
+    public function testRefundApp()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'refund_app']);
+
+        self::assertEquals([
             StartPlugin::class,
             AppQueryRefundPlugin::class,
             FormatBizContentPlugin::class,
@@ -228,12 +255,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function refundAuthorizationPlugins(): array
+    public function testRefundAuthorization()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'refund_authorization']);
+
+        self::assertEquals([
             StartPlugin::class,
             AuthorizationQueryRefundPlugin::class,
             FormatBizContentPlugin::class,
@@ -242,12 +271,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function refundMiniPlugins(): array
+    public function testRefundMini()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'refund_mini']);
+
+        self::assertEquals([
             StartPlugin::class,
             MiniQueryRefundPlugin::class,
             FormatBizContentPlugin::class,
@@ -256,12 +287,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function refundPosPlugins(): array
+    public function testRefundPos()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'refund_pos']);
+
+        self::assertEquals([
             StartPlugin::class,
             PosQueryRefundPlugin::class,
             FormatBizContentPlugin::class,
@@ -270,12 +303,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function refundScanPlugins(): array
+    public function testRefundScan()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'refund_scan']);
+
+        self::assertEquals([
             StartPlugin::class,
             ScanQueryRefundPlugin::class,
             FormatBizContentPlugin::class,
@@ -284,12 +319,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function refundWapPlugins(): array
+    public function testRefundWap()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'refund_wap']);
+
+        self::assertEquals([
             StartPlugin::class,
             WapQueryRefundPlugin::class,
             FormatBizContentPlugin::class,
@@ -298,12 +335,14 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 
-    protected function refundWebPlugins(): array
+    public function testRefundWeb()
     {
-        return [
+        $result = $this->shortcut->getPlugins(['_action' => 'refund_web']);
+
+        self::assertEquals([
             StartPlugin::class,
             WebQueryRefundPlugin::class,
             FormatBizContentPlugin::class,
@@ -312,6 +351,6 @@ class QueryShortcut implements ShortcutInterface
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $result);
     }
 }
