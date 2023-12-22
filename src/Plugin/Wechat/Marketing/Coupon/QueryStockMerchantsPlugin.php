@@ -44,7 +44,7 @@ class QueryStockMerchantsPlugin extends GeneralPlugin
         }
 
         if (!$payload->has('stock_id')) {
-            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
         }
 
         $query = $rocket->getPayload()->all();

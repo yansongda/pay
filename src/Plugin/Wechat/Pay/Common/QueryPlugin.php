@@ -37,7 +37,7 @@ class QueryPlugin extends GeneralPlugin
                 '?mchid='.($config['mch_id'] ?? '');
         }
 
-        throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+        throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
     }
 
     /**
@@ -64,7 +64,7 @@ class QueryPlugin extends GeneralPlugin
                 '&sub_mchid='.$payload->get('sub_mchid', $config['sub_mch_id'] ?? null);
         }
 
-        throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+        throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
     }
 
     protected function getMethod(): string

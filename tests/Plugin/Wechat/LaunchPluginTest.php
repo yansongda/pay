@@ -61,7 +61,7 @@ class LaunchPluginTest extends TestCase
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 
         self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::INVALID_RESPONSE_CODE);
+        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

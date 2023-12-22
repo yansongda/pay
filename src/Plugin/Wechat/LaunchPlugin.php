@@ -57,7 +57,7 @@ class LaunchPlugin implements PluginInterface
 
         if ($response instanceof ResponseInterface
             && ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300)) {
-            throw new InvalidResponseException(Exception::INVALID_RESPONSE_CODE);
+            throw new InvalidResponseException(Exception::RESPONSE_CODE_WRONG);
         }
 
         return $response;

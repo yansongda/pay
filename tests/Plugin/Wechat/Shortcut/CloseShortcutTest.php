@@ -70,7 +70,7 @@ class CloseShortcutTest extends TestCase
     public function testFoo()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_ERROR);
+        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_INVALID);
         self::expectExceptionMessage('Query action [fooPlugins] not supported');
 
         $this->plugin->getPlugins(['_action' => 'foo']);

@@ -21,6 +21,6 @@ class OriginResponseDirection implements DirectionInterface
             return $response;
         }
 
-        throw new InvalidResponseException(Exception::INVALID_RESPONSE_CODE);
+        throw new InvalidResponseException(Exception::RESPONSE_CODE_WRONG);
     }
 }

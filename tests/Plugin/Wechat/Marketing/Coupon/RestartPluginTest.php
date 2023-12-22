@@ -43,7 +43,7 @@ class RestartPluginTest extends TestCase
     public function testException()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
+        self::expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
 
         $rocket = (new Rocket())->setParams([])->setPayload(new Collection());
 

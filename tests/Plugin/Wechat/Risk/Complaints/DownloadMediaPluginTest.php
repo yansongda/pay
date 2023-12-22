@@ -45,7 +45,7 @@ class DownloadMediaPluginTest extends TestCase
         $rocket->setParams([])->setPayload(new Collection());
 
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
+        self::expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

@@ -79,7 +79,7 @@ class HasWechatEncryptionTest extends TestCase
 
         $serialNo = 'non-exist';
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::WECHAT_SERIAL_NO_NOT_FOUND);
+        self::expectExceptionCode(Exception::WECHAT_SERIAL_NOT_FOUND);
         $this->trait->getPublicKey([], $serialNo);
     }
 }

@@ -88,7 +88,7 @@ abstract class AbstractProvider implements ProviderInterface
         $http = Pay::get(HttpClientInterface::class);
 
         if (!$http instanceof ClientInterface) {
-            throw new InvalidConfigException(Exception::HTTP_CLIENT_CONFIG_ERROR);
+            throw new InvalidConfigException(Exception::HTTP_CLIENT_INVALID);
         }
 
         Logger::info('[AbstractProvider] 准备请求支付服务商 API', $rocket->toArray());
@@ -131,7 +131,7 @@ abstract class AbstractProvider implements ProviderInterface
                 continue;
             }
 
-            throw new InvalidParamsException(Exception::PLUGIN_ERROR, "[{$plugin}] is not incompatible");
+            throw new InvalidParamsException(Exception::PLUGIN_INCOMPATIBLE, "[{$plugin}] is not incompatible");
         }
     }
 }

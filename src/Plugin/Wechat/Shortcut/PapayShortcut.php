@@ -29,7 +29,7 @@ class PapayShortcut implements ShortcutInterface
             return $this->{$typeMethod}($params);
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Papay action [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_INVALID, "Papay action [{$typeMethod}] not supported");
     }
 
     /**

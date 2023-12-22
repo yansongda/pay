@@ -27,7 +27,7 @@ class CancelShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Cancel action [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_INVALID, "Cancel action [{$typeMethod}] not supported");
     }
 
     protected function defaultPlugins(): array
