@@ -15,7 +15,6 @@
 - change: close 的 API 参数只支持 array，不再支持 string(#901)
 - change(internal): 错误代码 const 命名规则统一(#902, #903)
 
-
 ## v3.5.3
 
 ### feat
