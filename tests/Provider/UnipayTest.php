@@ -183,7 +183,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::METHOD_NOT_SUPPORTED);
 
-        Pay::unipay()->close('foo');
+        Pay::unipay()->close(['foo']);
     }
 
     public function testRefund()
