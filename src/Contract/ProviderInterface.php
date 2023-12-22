@@ -25,7 +25,7 @@ interface ProviderInterface
 
     public function cancel(array $order): null|array|Collection;
 
-    public function close(array|string $order): null|array|Collection;
+    public function close(array $order): null|array|Collection;
 
     public function refund(array $order): array|Collection;
 
