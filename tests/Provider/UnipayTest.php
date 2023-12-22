@@ -49,7 +49,7 @@ class UnipayTest extends TestCase
         ), Pay::unipay()->mergeCommonPlugins($plugins));
     }
 
-    public function testFind()
+    public function testQuery()
     {
         $response = [
             "accNo" => "dZRvehtDtCcBPbPBVJk+ezkyeXkF07UnbKwr8/012R5XSsDLE4RqpHSLis7WCItKIf6SYUcXCLHYpV9deIfnJfziDGpUdQXnlPfejrw5pKglzjKI/pRYg0ApNomryVBIoUIdTwlpELh048ITEojRgJwzaazWdLaB5iZPeN22E2KP7JkfwsYHEclVpLY4tYEc35IjMpWCs0i8U5KY4qAJ3zXpCFIur4x+9z4gyK89Mwf+csowScvfDbFBsqTpClQlNRJ6lLWOrISNnlCdc1ONK4QVhabDTTWsemM7PSuya2e3imeZFfRYDmSv6W1eMIs0gbRo8BxOr3suUhb2ukPL7w==",
@@ -115,10 +115,6 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         ]);
 
         self::assertArrayHasKey('origRespMsg', $result->all());
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::UNIPAY_FIND_STRING_NOT_SUPPORTED);
-        Pay::unipay()->query('123');
     }
 
     public function testCancel()
