@@ -66,7 +66,7 @@ class WechatTest extends TestCase
         $http->shouldReceive('sendRequest')->andReturn($response);
         Pay::set(HttpClientInterface::class, $http);
 
-        Pay::wechat()->close('foo');
+        Pay::wechat()->close(['foo']);
 
         self::assertTrue(true);
     }
