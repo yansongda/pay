@@ -2,7 +2,7 @@
 
 ### added
 
-- feat: 新增 `InvalidCallbackException`, `InvalidSignException`(#903)
+- feat: 新增 `InvalidSignException`(#903)
 
 ### changed
 

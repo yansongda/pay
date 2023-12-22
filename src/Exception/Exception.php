@@ -90,16 +90,11 @@ class Exception extends \Exception
     public const RESPONSE_DECRYPTED_METHOD_INVALID = 5009;
 
     /**
-     * 关于回调.
-     */
-    public const CALLBACK_ERROR = 6000;
-
-    /**
      * 关于签名.
      */
-    public const SIGN_ERROR = 7000;
+    public const SIGN_ERROR = 6000;
 
-    public const SIGN_EMPTY = 7001;
+    public const SIGN_EMPTY = 6001;
 
     public mixed $extra;
 

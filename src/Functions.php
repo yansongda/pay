@@ -102,7 +102,7 @@ function verify_alipay_sign(array $params, string $contents, string $sign): void
     );
 
     if (!$result) {
-        throw new InvalidSignException(Exception::SIGN_ERROR, 'Verify Alipay Response Sign Failed', func_get_args());
+        throw new InvalidSignException(Exception::SIGN_ERROR, 'Verify Alipay Sign Failed', func_get_args());
     }
 }
 
@@ -213,7 +213,7 @@ function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, a
     );
 
     if (!$result) {
-        throw new InvalidSignException(Exception::SIGN_ERROR, '', ['headers' => $message->getHeaders(), 'body' => $body]);
+        throw new InvalidSignException(Exception::SIGN_ERROR, 'Verify Wechat Sign Failed', ['headers' => $message->getHeaders(), 'body' => $body]);
     }
 }
 
@@ -367,6 +367,6 @@ function verify_unipay_sign(array $params, string $contents, string $sign): void
     );
 
     if (!$result) {
-        throw new InvalidSignException(Exception::SIGN_ERROR, 'Verify Unipay Response Sign Failed', func_get_args());
+        throw new InvalidSignException(Exception::SIGN_ERROR, 'Verify Unipay Sign Failed', func_get_args());
     }
 }
