@@ -25,7 +25,7 @@ class CollectionDirectionTest extends TestCase
     {
         $response = new Response(200, [], '{"name": "yansongda"}');
 
-        $result = $this->parser->parse(new JsonPacker(), $response);
+        $result = $this->parser->guide(new JsonPacker(), $response);
 
         self::assertEquals(['name' => 'yansongda'], $result->all());
     }
@@ -35,7 +35,7 @@ class CollectionDirectionTest extends TestCase
         self::expectException(InvalidResponseException::class);
         self::expectExceptionCode(Exception::RESPONSE_NONE);
 
-        $this->parser->parse(new JsonPacker(), null);
+        $this->parser->guide(new JsonPacker(), null);
     }
 
     public function testWrongFormat()
@@ -45,7 +45,7 @@ class CollectionDirectionTest extends TestCase
 
         $response = new Response(200, [], '{"name": "yansongda"}a');
 
-        $this->parser->parse(new JsonPacker(), $response);
+        $this->parser->guide(new JsonPacker(), $response);
     }
 
     public function testReadContents()
@@ -54,7 +54,7 @@ class CollectionDirectionTest extends TestCase
 
         $response->getBody()->read(2);
 
-        $result = $this->parser->parse(new JsonPacker(), $response);
+        $result = $this->parser->guide(new JsonPacker(), $response);
 
         self::assertEquals(['name' => 'yansongda'], $result->toArray());
     }
@@ -63,7 +63,7 @@ class CollectionDirectionTest extends TestCase
     {
         $response = new Response(200, [], 'name=yansongda&age=29');
 
-        $result = $this->parser->parse(new QueryPacker(), $response);
+        $result = $this->parser->guide(new QueryPacker(), $response);
 
         self::assertEqualsCanonicalizing(['name' => 'yansongda', 'age' => '29'], $result->toArray());
     }
@@ -74,7 +74,7 @@ class CollectionDirectionTest extends TestCase
 
         $response = new Response(200, [], json_encode(['h5_url' => $url]));
 
-        $result = $this->parser->parse(new JsonPacker(), $response);
+        $result = $this->parser->guide(new JsonPacker(), $response);
 
         self::assertEquals('https://yansongda.cn?name=yansongda&age=29', $result['h5_url']);
     }

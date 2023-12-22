@@ -22,14 +22,14 @@ class NoHttpRequestDirectionTest extends TestCase
     {
         $response = new Response(200, [], '{"name": "yansongda"}');
 
-        $result = $this->parser->parse(new JsonPacker(), $response);
+        $result = $this->parser->guide(new JsonPacker(), $response);
 
         self::assertSame($response, $result);
     }
 
     public function testNull()
     {
-        $result = $this->parser->parse(new JsonPacker(), null);
+        $result = $this->parser->guide(new JsonPacker(), null);
 
         self::assertNull($result);
     }

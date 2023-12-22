@@ -16,7 +16,7 @@ class CollectionDirection implements DirectionInterface
     /**
      * @throws InvalidResponseException
      */
-    public function parse(PackerInterface $packer, ?ResponseInterface $response): Collection
+    public function guide(PackerInterface $packer, ?ResponseInterface $response): Collection
     {
         if (is_null($response)) {
             throw new InvalidResponseException(Exception::RESPONSE_NONE);

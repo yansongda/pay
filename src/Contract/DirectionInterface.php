@@ -8,5 +8,5 @@ use Psr\Http\Message\ResponseInterface;
 
 interface DirectionInterface
 {
-    public function parse(PackerInterface $packer, ?ResponseInterface $response): mixed;
+    public function guide(PackerInterface $packer, ?ResponseInterface $response): mixed;
 }
