@@ -15,7 +15,7 @@ class OriginResponseDirection implements DirectionInterface
     /**
      * @throws InvalidResponseException
      */
-    public function parse(PackerInterface $packer, ?ResponseInterface $response): ?ResponseInterface
+    public function guide(PackerInterface $packer, ?ResponseInterface $response): ?ResponseInterface
     {
         if (!is_null($response)) {
             return $response;

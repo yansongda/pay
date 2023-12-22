@@ -10,7 +10,7 @@ use Yansongda\Pay\Contract\PackerInterface;
 
 class NoHttpRequestDirection implements DirectionInterface
 {
-    public function parse(PackerInterface $packer, ?ResponseInterface $response): ?ResponseInterface
+    public function guide(PackerInterface $packer, ?ResponseInterface $response): ?ResponseInterface
     {
         return $response;
     }

@@ -36,7 +36,7 @@ class ParserPlugin implements PluginInterface
         $response = $rocket->getDestination();
 
         $rocket->setDestination(
-            get_direction($rocket->getDirection())->parse($this->getPacker($rocket), $response)
+            get_direction($rocket->getDirection())->guide($this->getPacker($rocket), $response)
         );
 
         Logger::debug('[ParserPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -24,6 +24,6 @@ class OriginResponseDirectionTest extends TestCase
         self::expectException(InvalidResponseException::class);
         self::expectExceptionCode(Exception::INVALID_RESPONSE_CODE);
 
-        $this->parser->parse(new JsonPacker(), null);
+        $this->parser->guide(new JsonPacker(), null);
     }
 }
