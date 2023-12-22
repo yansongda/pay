@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
@@ -25,10 +25,10 @@ use Yansongda\Pay\Plugin\Alipay\Pay\Wap\QueryRefundPlugin as WapQueryRefundPlugi
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\QueryPlugin as WebQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\QueryRefundPlugin as WebQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
-use Yansongda\Pay\Plugin\Alipay\Shortcut\QueryShortcut;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Shortcut\Alipay\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
 class QueryShortcutTest extends TestCase

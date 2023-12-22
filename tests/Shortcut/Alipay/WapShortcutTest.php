@@ -1,26 +1,25 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
-use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Web\PayPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Wap\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponseHtmlPlugin;
-use Yansongda\Pay\Plugin\Alipay\Shortcut\WebShortcut;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Shortcut\Alipay\WapShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class WebShortcutTest extends TestCase
+class WapShortcutTest extends TestCase
 {
-    protected WebShortcut $shortcut;
+    protected WapShortcut $shortcut;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->shortcut = new WebShortcut();
+        $this->shortcut = new WapShortcut();
     }
 
     public function testNormal()
@@ -32,7 +31,6 @@ class WebShortcutTest extends TestCase
             PayPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
-            AddRadarPlugin::class,
             ResponseHtmlPlugin::class,
             ParserPlugin::class,
         ], $result);

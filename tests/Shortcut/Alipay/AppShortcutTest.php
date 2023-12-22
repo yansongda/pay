@@ -1,27 +1,25 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
-use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\Fund\Transfer\TransferPlugin;
-use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
-use Yansongda\Pay\Plugin\Alipay\Shortcut\TransferShortcut;
+use Yansongda\Pay\Plugin\Alipay\Pay\App\PayPlugin;
+use Yansongda\Pay\Plugin\Alipay\ResponseInvokeStringPlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
-use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Shortcut\Alipay\AppShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class TransferShortcutTest extends TestCase
+class AppShortcutTest extends TestCase
 {
-    protected TransferShortcut $shortcut;
+    protected AppShortcut $shortcut;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->shortcut = new TransferShortcut();
+        $this->shortcut = new AppShortcut();
     }
 
     public function testNormal()
@@ -30,12 +28,10 @@ class TransferShortcutTest extends TestCase
 
         self::assertEquals([
             StartPlugin::class,
-            TransferPlugin::class,
+            PayPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
+            ResponseInvokeStringPlugin::class,
             ParserPlugin::class,
         ], $result);
     }
