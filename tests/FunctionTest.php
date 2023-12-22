@@ -102,8 +102,8 @@ class FunctionTest extends TestCase
 
     public function testGetPublicCert()
     {
-        $alipayPublicCertPath = __DIR__ . '/Cert/alipayCertPublicKey_RSA2.crt';
-        $alipayPublicCertCerPath = __DIR__ . '/Cert/alipayCertPublicKey_RSA2.cer';
+        $alipayPublicCertPath = __DIR__ . '/Cert/alipayPublicCert.crt';
+        $alipayPublicCertCerPath = __DIR__ . '/Cert/alipayPublicCert.cer';
 
         self::assertEquals(file_get_contents($alipayPublicCertCerPath), get_public_cert($alipayPublicCertCerPath));
         self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_cert($alipayPublicCertPath));
@@ -111,7 +111,7 @@ class FunctionTest extends TestCase
 
     public function testGetPrivateCert()
     {
-        $appSecretCert = file_get_contents(__DIR__ . '/Cert/alipayAppSecretKey_RSA2_PKCS1.txt');
+        $appSecretCert = file_get_contents(__DIR__ . '/Cert/alipayAppSecret.txt');
 
         self::assertTrue(Str::contains(get_private_cert($appSecretCert), 'PRIVATE KEY'));
     }
@@ -121,19 +121,13 @@ class FunctionTest extends TestCase
         verify_alipay_sign([], json_encode([
             "code" => "10000",
             "msg" => "Success",
-            "buyer_logon_id" => "ghd***@sandbox.com",
-            "buyer_pay_amount" => "0.00",
-            "buyer_user_id" => "2088102174698127",
-            "buyer_user_type" => "PRIVATE",
-            "invoice_amount" => "0.00",
-            "out_trade_no" => "yansongda-1622986519",
-            "point_amount" => "0.00",
-            "receipt_amount" => "0.00",
-            "send_pay_date" => "2021-06-06 21:35:40",
-            "total_amount" => "0.01",
-            "trade_no" => "2021060622001498120501382075",
-            "trade_status" => "TRADE_SUCCESS",
-        ], JSON_UNESCAPED_UNICODE), 'Ipp1M3pwUFJ19Tx/D+40RZstXr3VSZzGxPB1Qfj1e837UkGxOJxFFK6EZ288SeEh06dPFd4qJ7BHfP/7mvkRqF1/mezBGvhBz03XTXfDn/O6IkoA+cVwpfm+i8MFvzC/ZQB0dgtZppu5qfzVyFaaNu8ct3L/NSQCMR1RXg2lH3HiwfxmIF35+LmCoL7ZPvTxB/epm7A/XNhAjLpK5GlJffPA0qwhhtQwaIZ7DHMXo06z03fbgxlBu2eEclQUm6Fobgj3JEERWLA0MDQiV1EYNWuHSSlHCMrIxWHba+Euu0jVkKKe0IFKsU8xJQbc7GTJXx/o0NfHqGwwq8hMvtgBkg==');
+            "order_id" => "20231220110070000002150000657610",
+            "out_biz_no" => "2023122022560000",
+            "pay_date" => "2023-12-20 22:56:33",
+            "pay_fund_order_id" => "20231220110070001502150000660902",
+            "status" => "SUCCESS",
+            "trans_amount" => "0.01",
+        ], JSON_UNESCAPED_UNICODE), 'eITxP5fZiJPB2+vZb90IRkv2iARxeNx/6Omxk7FStqflhG5lMoCvGjo2FZ6Szo1bGBMBReazZuqLaqsgomWAUO9onMVurB3enLbRvwUlpE7XEZaxk/sJYjgc2Y7pIAenvnLL9PEAiXmvUvuinUlvS9J2r1XysC0p/2wu7kEJ/GgZpFDIIYY9mdM6U1rGbi+RvirQXtQHmaEuuJWLA75NR1bvfG3L8znzW9xz1kOQqOWsQmD/bF1CDWbozNLwLCUmClRJz0Fj4mUYRF0zbW2VP8ZgHu1YvVKJ2+dWC9b+0o94URk7psIpc5NjiOM9Jsn6aoC2CfrJ/sqFMRCkYWzw6A==');
         self::assertTrue(true);
 
         // test config error
@@ -147,7 +141,7 @@ class FunctionTest extends TestCase
         Pay::config(array_merge($config1, ['_force' => true]));
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(InvalidConfigException::ALIPAY_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
         verify_alipay_sign([], '', '');
     }
 
@@ -306,7 +300,7 @@ class FunctionTest extends TestCase
 
         $result = reload_wechat_public_certs([], 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57');
 
-        self::assertTrue(false !== strpos($result, '-----BEGIN CERTIFICATE-----'));
+        self::assertTrue(str_contains($result, '-----BEGIN CERTIFICATE-----'));
         self::assertTrue(Pay::get(ConfigInterface::class)->has('wechat.default.wechat_public_cert_path.test-45F59D4DABF31918AFCEC556D5D2C6E376675D57'));
         self::assertIsArray(Pay::get(ConfigInterface::class)->get('wechat.default'));
     }
@@ -345,7 +339,7 @@ class FunctionTest extends TestCase
         $crtPathName = $path . '/test-45F59D4DABF31918AFCEC556D5D2C6E376675D57.crt';
 
         self::assertFileExists($crtPathName);
-        self::assertTrue(false !== strpos(file_get_contents($crtPathName), '-----BEGIN CERTIFICATE-----'));
+        self::assertTrue(str_contains(file_get_contents($crtPathName), '-----BEGIN CERTIFICATE-----'));
 
         self::expectOutputRegex('/.*-----BEGIN CERTIFICATE-----/');
         get_wechat_public_certs();
