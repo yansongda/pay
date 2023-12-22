@@ -1,33 +1,37 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Agreement\CancelPlugin as AgreementCancelPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\CancelPlugin as AuthorizationCancelPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Mini\CancelPlugin as MiniCancelPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Pos\CancelPlugin as PosCancelPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Scan\CancelPlugin as ScanCancelPlugin;
+use Yansongda\Pay\Plugin\Alipay\Fund\Transfer\RefundPlugin as FundTransferRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Agreement\RefundPlugin as AgreementRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\App\RefundPlugin as AppRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\RefundPlugin as AuthorizationRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Mini\RefundPlugin as MiniRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Pos\RefundPlugin as PosRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Scan\RefundPlugin as ScanRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Wap\RefundPlugin as WapRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Web\RefundPlugin as WebRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
-use Yansongda\Pay\Plugin\Alipay\Shortcut\CancelShortcut;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Shortcut\Alipay\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class CancelShortcutTest extends TestCase
+class RefundShortcutTest extends TestCase
 {
-    protected CancelShortcut $shortcut;
+    protected RefundShortcut $shortcut;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->shortcut = new CancelShortcut();
+        $this->shortcut = new RefundShortcut();
     }
 
     public function testFooParam()
@@ -44,7 +48,7 @@ class CancelShortcutTest extends TestCase
 
         self::assertEquals([
             StartPlugin::class,
-            PosCancelPlugin::class,
+            WebRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -60,7 +64,23 @@ class CancelShortcutTest extends TestCase
 
         self::assertEquals([
             StartPlugin::class,
-            AgreementCancelPlugin::class,
+            AgreementRefundPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $result);
+    }
+
+    public function testApp()
+    {
+        $result = $this->shortcut->getPlugins(['_action' => 'app']);
+
+        self::assertEquals([
+            StartPlugin::class,
+            AppRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -76,7 +96,7 @@ class CancelShortcutTest extends TestCase
 
         self::assertEquals([
             StartPlugin::class,
-            AuthorizationCancelPlugin::class,
+            AuthorizationRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -92,7 +112,7 @@ class CancelShortcutTest extends TestCase
 
         self::assertEquals([
             StartPlugin::class,
-            MiniCancelPlugin::class,
+            MiniRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -108,7 +128,7 @@ class CancelShortcutTest extends TestCase
 
         self::assertEquals([
             StartPlugin::class,
-            PosCancelPlugin::class,
+            PosRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -118,13 +138,61 @@ class CancelShortcutTest extends TestCase
         ], $result);
     }
 
-public function testScan()
+    public function testScan()
     {
         $result = $this->shortcut->getPlugins(['_action' => 'scan']);
 
         self::assertEquals([
             StartPlugin::class,
-            ScanCancelPlugin::class,
+            ScanRefundPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $result);
+    }
+
+    public function testWap()
+    {
+        $result = $this->shortcut->getPlugins(['_action' => 'wap']);
+
+        self::assertEquals([
+            StartPlugin::class,
+            WapRefundPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $result);
+    }
+
+    public function testWeb()
+    {
+        $result = $this->shortcut->getPlugins(['_action' => 'web']);
+
+        self::assertEquals([
+            StartPlugin::class,
+            WebRefundPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $result);
+    }
+
+    public function testTransfer()
+    {
+        $result = $this->shortcut->getPlugins(['_action' => 'transfer']);
+
+        self::assertEquals([
+            StartPlugin::class,
+            FundTransferRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,

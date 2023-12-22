@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
@@ -16,10 +16,10 @@ use Yansongda\Pay\Plugin\Alipay\Pay\Scan\ClosePlugin as ScanClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Wap\ClosePlugin as WapClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\ClosePlugin as WebClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
-use Yansongda\Pay\Plugin\Alipay\Shortcut\CloseShortcut;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Shortcut\Alipay\CloseShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
 class CloseShortcutTest extends TestCase

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
+namespace Yansongda\Pay\Shortcut\Alipay;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
@@ -10,18 +10,22 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Agreement\CancelPlugin as AgreementCancelPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\CancelPlugin as AuthorizationCancelPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Mini\CancelPlugin as MiniCancelPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Pos\CancelPlugin as PosCancelPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Scan\CancelPlugin as ScanCancelPlugin;
+use Yansongda\Pay\Plugin\Alipay\Fund\Transfer\RefundPlugin as FundTransferRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Agreement\RefundPlugin as AgreementRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\App\RefundPlugin as AppRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\RefundPlugin as AuthorizationRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Mini\RefundPlugin as MiniRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Pos\RefundPlugin as PosRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Scan\RefundPlugin as ScanRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Wap\RefundPlugin as WapRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Web\RefundPlugin as WebRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Supports\Str;
 
-class CancelShortcut implements ShortcutInterface
+class RefundShortcut implements ShortcutInterface
 {
     /**
      * @throws InvalidParamsException
@@ -34,14 +38,14 @@ class CancelShortcut implements ShortcutInterface
             return $this->{$method}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Cancel action [{$method}] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Refund action [{$method}] not supported");
     }
 
     protected function defaultPlugins(): array
     {
         return [
             StartPlugin::class,
-            PosCancelPlugin::class,
+            WebRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -55,7 +59,21 @@ class CancelShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            AgreementCancelPlugin::class,
+            AgreementRefundPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function appPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            AppRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -69,7 +87,7 @@ class CancelShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            AuthorizationCancelPlugin::class,
+            AuthorizationRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -83,7 +101,7 @@ class CancelShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            MiniCancelPlugin::class,
+            MiniRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -97,7 +115,7 @@ class CancelShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            PosCancelPlugin::class,
+            PosRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -111,7 +129,49 @@ class CancelShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            ScanCancelPlugin::class,
+            ScanRefundPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function wapPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            WapRefundPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function webPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            WebRefundPlugin::class,
+            FormatBizContentPlugin::class,
+            AddSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function transferPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            FundTransferRefundPlugin::class,
             FormatBizContentPlugin::class,
             AddSignaturePlugin::class,
             AddRadarPlugin::class,
