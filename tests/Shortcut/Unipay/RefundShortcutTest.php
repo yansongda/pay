@@ -2,34 +2,33 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\CancelPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\RefundPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
-use Yansongda\Pay\Plugin\Unipay\Shortcut\CancelShortcut;
+use Yansongda\Pay\Shortcut\Unipay\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class CancelShortcutTest extends TestCase
+class RefundShortcutTest extends TestCase
 {
-    protected CancelShortcut $plugin;
+    protected RefundShortcut $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new CancelShortcut();
+        $this->plugin = new RefundShortcut();
     }
 
     public function testDefault()
     {
         self::assertEquals([
             PreparePlugin::class,
-            CancelPlugin::class,
+            RefundPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
@@ -40,7 +39,7 @@ class CancelShortcutTest extends TestCase
     {
         self::assertEquals([
             PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin::class,
+            \Yansongda\Pay\Plugin\Unipay\QrCode\RefundPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
@@ -49,9 +48,8 @@ class CancelShortcutTest extends TestCase
 
     public function testFoo()
     {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-        self::expectExceptionMessage('Cancel action [fooPlugins] not supported');
+        $this->expectException(InvalidParamsException::class);
+        $this->expectExceptionMessage('Refund action [fooPlugins] not supported');
 
         $this->plugin->getPlugins(['_action' => 'foo']);
     }

@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Unipay\Shortcut;
+namespace Yansongda\Pay\Shortcut\Unipay;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\CancelPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
 use Yansongda\Supports\Str;
 
-class QueryShortcut implements ShortcutInterface
+class CancelShortcut implements ShortcutInterface
 {
     /**
      * @throws InvalidParamsException
@@ -27,14 +27,14 @@ class QueryShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Query action [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Cancel action [{$typeMethod}] not supported");
     }
 
     protected function defaultPlugins(): array
     {
         return [
             PreparePlugin::class,
-            QueryPlugin::class,
+            CancelPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
@@ -45,7 +45,7 @@ class QueryShortcut implements ShortcutInterface
     {
         return [
             PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin::class,
+            \Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,

@@ -2,54 +2,57 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\RefundPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\PosNormalPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\PosPreAuthPlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
-use Yansongda\Pay\Plugin\Unipay\Shortcut\RefundShortcut;
+use Yansongda\Pay\Shortcut\Unipay\PosShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class RefundShortcutTest extends TestCase
+class PosShortcutTest extends TestCase
 {
-    protected RefundShortcut $plugin;
+    protected PosShortcut $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new RefundShortcut();
+        $this->plugin = new PosShortcut();
     }
 
     public function testDefault()
     {
         self::assertEquals([
             PreparePlugin::class,
-            RefundPlugin::class,
+            PosNormalPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
 
-    public function testQrCode()
+    public function testPreAuth()
     {
         self::assertEquals([
             PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Unipay\QrCode\RefundPlugin::class,
+            PosPreAuthPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'qr_code']));
+        ], $this->plugin->getPlugins(['_action' => 'pre_auth']));
     }
 
     public function testFoo()
     {
-        $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionMessage('Refund action [fooPlugins] not supported');
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+        self::expectExceptionMessage('Pos action [fooPlugins] not supported');
 
         $this->plugin->getPlugins(['_action' => 'foo']);
     }

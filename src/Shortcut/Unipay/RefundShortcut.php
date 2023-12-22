@@ -2,20 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Unipay\Shortcut;
+namespace Yansongda\Pay\Shortcut\Unipay;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\RefundPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\PosNormalPlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\PosPreAuthPlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
 use Yansongda\Supports\Str;
 
-class PosShortcut implements ShortcutInterface
+class RefundShortcut implements ShortcutInterface
 {
     /**
      * @throws InvalidParamsException
@@ -28,25 +27,25 @@ class PosShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Pos action [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Refund action [{$typeMethod}] not supported");
     }
 
     protected function defaultPlugins(): array
     {
         return [
             PreparePlugin::class,
-            PosNormalPlugin::class,
+            RefundPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
         ];
     }
 
-    protected function preAuthPlugins(): array
+    protected function qrCodePlugins(): array
     {
         return [
             PreparePlugin::class,
-            PosPreAuthPlugin::class,
+            \Yansongda\Pay\Plugin\Unipay\QrCode\RefundPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,

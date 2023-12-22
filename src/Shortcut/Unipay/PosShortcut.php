@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Unipay\Shortcut;
+namespace Yansongda\Pay\Shortcut\Unipay;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
@@ -10,14 +10,12 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\ScanFeePlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\ScanNormalPlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPreAuthPlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPreOrderPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\PosNormalPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\PosPreAuthPlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
 use Yansongda\Supports\Str;
 
-class ScanShortcut implements ShortcutInterface
+class PosShortcut implements ShortcutInterface
 {
     /**
      * @throws InvalidParamsException
@@ -30,14 +28,14 @@ class ScanShortcut implements ShortcutInterface
             return $this->{$typeMethod}();
         }
 
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Scan action [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Pos action [{$typeMethod}] not supported");
     }
 
     protected function defaultPlugins(): array
     {
         return [
             PreparePlugin::class,
-            ScanNormalPlugin::class,
+            PosNormalPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
@@ -48,29 +46,7 @@ class ScanShortcut implements ShortcutInterface
     {
         return [
             PreparePlugin::class,
-            ScanPreAuthPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
-            ParserPlugin::class,
-        ];
-    }
-
-    protected function preOrderPlugins(): array
-    {
-        return [
-            PreparePlugin::class,
-            ScanPreOrderPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
-            ParserPlugin::class,
-        ];
-    }
-
-    protected function feePlugins(): array
-    {
-        return [
-            PreparePlugin::class,
-            ScanFeePlugin::class,
+            PosPreAuthPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,

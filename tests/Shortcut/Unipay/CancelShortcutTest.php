@@ -2,34 +2,34 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\CancelPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
-use Yansongda\Pay\Plugin\Unipay\Shortcut\QueryShortcut;
+use Yansongda\Pay\Shortcut\Unipay\CancelShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class QueryShortcutTest extends TestCase
+class CancelShortcutTest extends TestCase
 {
-    protected QueryShortcut $plugin;
+    protected CancelShortcut $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryShortcut();
+        $this->plugin = new CancelShortcut();
     }
 
     public function testDefault()
     {
         self::assertEquals([
             PreparePlugin::class,
-            QueryPlugin::class,
+            CancelPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
@@ -40,7 +40,7 @@ class QueryShortcutTest extends TestCase
     {
         self::assertEquals([
             PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin::class,
+            \Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
@@ -51,7 +51,7 @@ class QueryShortcutTest extends TestCase
     {
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-        self::expectExceptionMessage('Query action [fooPlugins] not supported');
+        self::expectExceptionMessage('Cancel action [fooPlugins] not supported');
 
         $this->plugin->getPlugins(['_action' => 'foo']);
     }

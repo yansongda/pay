@@ -41,8 +41,7 @@ class Unipay extends AbstractProvider
      */
     public function __call(string $shortcut, array $params): null|Collection|MessageInterface
     {
-        $plugin = '\\Yansongda\\Pay\\Plugin\\Unipay\\Shortcut\\'.
-            Str::studly($shortcut).'Shortcut';
+        $plugin = '\\Yansongda\\Pay\\Shortcut\\Unipay\\'.Str::studly($shortcut).'Shortcut';
 
         return $this->call($plugin, ...$params);
     }
