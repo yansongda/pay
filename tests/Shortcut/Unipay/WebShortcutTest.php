@@ -2,27 +2,37 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Unipay\Shortcut;
+namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 
-use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\HtmlResponsePlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Unipay\OnlineGateway\PagePayPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
+use Yansongda\Pay\Shortcut\Unipay\WebShortcut;
+use Yansongda\Pay\Tests\TestCase;
 
-class WebShortcut implements ShortcutInterface
+class WebShortcutTest extends TestCase
 {
-    public function getPlugins(array $params): array
+    protected WebShortcut $plugin;
+
+    protected function setUp(): void
     {
-        return [
+        parent::setUp();
+
+        $this->plugin = new WebShortcut();
+    }
+
+    public function test()
+    {
+        self::assertEquals([
             PreparePlugin::class,
             PagePayPlugin::class,
             HtmlResponsePlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,
-        ];
+        ], $this->plugin->getPlugins([]));
     }
 }
