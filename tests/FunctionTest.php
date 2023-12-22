@@ -78,7 +78,7 @@ class FunctionTest extends TestCase
         self::assertInstanceOf(DirectionInterface::class, get_direction(DirectionInterface::class));
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::INVALID_DIRECTION);
+        self::expectExceptionCode(Exception::DIRECTION_INVALID);
         get_direction('invalid');
     }
 
@@ -141,7 +141,7 @@ class FunctionTest extends TestCase
         Pay::config(array_merge($config1, ['_force' => true]));
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::ALIPAY_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::ALIPAY_CONFIG_INVALID);
         verify_alipay_sign([], '', '');
     }
 
@@ -205,7 +205,7 @@ class FunctionTest extends TestCase
         Pay::config(array_merge($config1, ['_force' => true]));
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::WECHAT_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::WECHAT_CONFIG_INVALID);
         get_wechat_sign([], '', '');
     }
 
@@ -225,7 +225,7 @@ class FunctionTest extends TestCase
         Pay::config(array_merge($config1, ['_force' => true]));
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::WECHAT_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::WECHAT_CONFIG_INVALID);
         get_wechat_sign_v2([], []);
     }
     
@@ -377,7 +377,7 @@ class FunctionTest extends TestCase
             'nonce' => '4196a5b75276',
         ];
         self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::INVALID_REQUEST_ENCRYPTED_DATA);
+        self::expectExceptionCode(Exception::REQUEST_ENCRYPTED_DATA_INVALID);
         decrypt_wechat_resource_aes_256_gcm(base64_decode($resource['ciphertext']), 'foo', $resource['nonce'], $resource['associated_data']);
     }
 
@@ -434,7 +434,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::assertTrue(true);
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::UNIPAY_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::UNIPAY_CONFIG_INVALID);
         self::expectExceptionMessage('Missing Unipay Config -- [unipay_public_cert_path]');
         Pay::get(ConfigInterface::class)->set('unipay.default.unipay_public_cert_path', null);
         verify_unipay_sign([], $contents, $sign);

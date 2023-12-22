@@ -37,7 +37,7 @@ class CallbackPlugin implements PluginInterface
         $signature = $params['signature'] ?? false;
 
         if (!$signature) {
-            throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', $params);
+            throw new InvalidResponseException(Exception::SIGN_INVALID, '', $params);
         }
 
         verify_unipay_sign($params, $rocket->getPayload()->sortKeys()->toString(), $signature);

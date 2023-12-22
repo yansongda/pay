@@ -37,7 +37,7 @@ class RefundShortcutTest extends TestCase
     public function testFooParam()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_ERROR);
+        self::expectExceptionCode(Exception::SHORTCUT_MULTI_ACTION_INVALID);
 
         $this->shortcut->getPlugins(['_action' => 'foo']);
     }

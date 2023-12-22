@@ -135,7 +135,7 @@ class RadarSignPluginTest extends TestCase
         $config->set('wechat.default.mch_public_cert_path', null);
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::WECHAT_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::WECHAT_CONFIG_INVALID);
         self::expectExceptionMessage('Missing Wechat Config -- [mch_public_cert_path]');
 
         $class = new ReflectionClass($this->plugin);
@@ -166,7 +166,7 @@ class RadarSignPluginTest extends TestCase
         $config->set('wechat.default.mch_public_cert_path', __DIR__.'/../../Cert/foo');
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::WECHAT_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::WECHAT_CONFIG_INVALID);
         self::expectExceptionMessage('Parse [mch_public_cert_path] Serial Number Error');
 
         $class = new ReflectionClass($this->plugin);

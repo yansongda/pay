@@ -32,7 +32,7 @@ class QueryAmountsPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('transaction_id')) {
-            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
         }
 
         return 'v3/profitsharing/transactions/'.

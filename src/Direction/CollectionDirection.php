@@ -19,7 +19,7 @@ class CollectionDirection implements DirectionInterface
     public function guide(PackerInterface $packer, ?ResponseInterface $response): Collection
     {
         if (is_null($response)) {
-            throw new InvalidResponseException(Exception::RESPONSE_NONE);
+            throw new InvalidResponseException(Exception::RESPONSE_EMPTY);
         }
 
         $body = (string) $response->getBody();

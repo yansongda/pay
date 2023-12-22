@@ -32,7 +32,7 @@ class ApplyPluginTest extends TestCase
         $rocket->setParams([])->setPayload(new Collection());
 
         $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionCode(Exception::NOT_IN_SERVICE_MODE);
+        $this->expectExceptionCode(Exception::CURRENT_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
 
         $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }

@@ -60,7 +60,7 @@ class AddSignaturePlugin implements PluginInterface
         $privateKey = get_alipay_config($params)['app_secret_cert'] ?? null;
 
         if (is_null($privateKey)) {
-            throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [app_secret_cert]');
+            throw new InvalidConfigException(Exception::ALIPAY_CONFIG_INVALID, 'Missing Alipay Config -- [app_secret_cert]');
         }
 
         return get_private_cert($privateKey);

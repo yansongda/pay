@@ -32,7 +32,7 @@ class ReturnAdvancePluginTest extends TestCase
         $rocket->setParams([])->setPayload(new Collection());
 
         $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionCode(Exception::NOT_IN_SERVICE_MODE);
+        $this->expectExceptionCode(Exception::CURRENT_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
 
         $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
@@ -43,7 +43,7 @@ class ReturnAdvancePluginTest extends TestCase
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection());
 
         $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionCode(Exception::MISSING_NECESSARY_PARAMS);
+        $this->expectExceptionCode(Exception::NECESSARY_PARAMS_MISSING);
 
         $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }

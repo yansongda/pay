@@ -40,7 +40,7 @@ class QueryStockDetailPlugin extends GeneralPlugin
         $config = get_wechat_config($params);
 
         if (!$payload->has('stock_id')) {
-            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
         }
 
         return 'v3/marketing/favor/stocks/'.

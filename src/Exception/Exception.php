@@ -24,28 +24,28 @@ class Exception extends \Exception
      */
     public const SERVICE_ERROR = 2000;
 
-    public const SERVICE_NOT_FOUND_ERROR = 2001;
+    public const SERVICE_NOT_FOUND = 2001;
 
     /*
      * 关于配置.
      */
     public const CONFIG_ERROR = 3000;
 
-    public const INVALID_DIRECTION = 3001;
+    public const DIRECTION_INVALID = 3001;
 
-    public const ALIPAY_CONFIG_ERROR = 3002;
+    public const ALIPAY_CONFIG_INVALID = 3002;
 
-    public const LOGGER_CONFIG_ERROR = 3003;
+    public const LOGGER_CONFIG_INVALID = 3003;
 
-    public const HTTP_CLIENT_CONFIG_ERROR = 3004;
+    public const HTTP_CLIENT_INVALID = 3004;
 
-    public const EVENT_CONFIG_ERROR = 3005;
+    public const EVENT_CONFIG_INVALID = 3005;
 
-    public const WECHAT_CONFIG_ERROR = 3006;
+    public const WECHAT_CONFIG_INVALID = 3006;
 
-    public const UNIPAY_CONFIG_ERROR = 3007;
+    public const UNIPAY_CONFIG_INVALID = 3007;
 
-    public const INVALID_PACKER = 3008;
+    public const PACKER_INVALID = 3008;
 
     /*
      * 关于参数.
@@ -54,23 +54,19 @@ class Exception extends \Exception
 
     public const SHORTCUT_NOT_FOUND = 4001;
 
-    public const PLUGIN_ERROR = 4002;
+    public const PLUGIN_INCOMPATIBLE = 4002;
 
-    public const SHORTCUT_MULTI_ACTION_ERROR = 4003;
+    public const SHORTCUT_MULTI_ACTION_INVALID = 4003;
 
     public const METHOD_NOT_SUPPORTED = 4004;
 
-    public const REQUEST_NULL_ERROR = 4005;
+    public const REQUEST_EMPTY = 4005;
 
-    public const MISSING_NECESSARY_PARAMS = 4006;
+    public const NECESSARY_PARAMS_MISSING = 4006;
 
-    public const NOT_IN_SERVICE_MODE = 4007;
+    public const CURRENT_PLUGIN_ONLY_SUPPORT_SERVICE_MODE = 4007;
 
-    public const WECHAT_SERIAL_NO_NOT_FOUND = 4008;
-
-    public const UNIPAY_FIND_STRING_NOT_SUPPORTED = 4009;
-
-    public const UNIPAY_CANCEL_STRING_NOT_SUPPORTED = 4010;
+    public const WECHAT_SERIAL_NOT_FOUND = 4008;
 
     /**
      * 关于api.
@@ -81,19 +77,19 @@ class Exception extends \Exception
 
     public const UNPACK_RESPONSE_ERROR = 5002;
 
-    public const INVALID_RESPONSE_SIGN = 5003;
+    public const SIGN_INVALID = 5003;
 
-    public const INVALID_RESPONSE_CODE = 5004;
+    public const RESPONSE_CODE_WRONG = 5004;
 
     public const RESPONSE_MISSING_NECESSARY_PARAMS = 5005;
 
-    public const RESPONSE_NONE = 5006;
+    public const RESPONSE_EMPTY = 5006;
 
-    public const INVALID_CIPHERTEXT_PARAMS = 5007;
+    public const CIPHERTEXT_PARAMS_INVALID = 5007;
 
-    public const INVALID_REQUEST_ENCRYPTED_DATA = 5008;
+    public const REQUEST_ENCRYPTED_DATA_INVALID = 5008;
 
-    public const INVALID_REQUEST_ENCRYPTED_METHOD = 5009;
+    public const REQUEST_ENCRYPTED_METHOD_INVALID = 5009;
 
     public mixed $extra;
 

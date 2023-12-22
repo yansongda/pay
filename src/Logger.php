@@ -43,6 +43,6 @@ class Logger
             return;
         }
 
-        throw new InvalidConfigException(Exception\Exception::LOGGER_CONFIG_ERROR);
+        throw new InvalidConfigException(Exception\Exception::LOGGER_CONFIG_INVALID);
     }
 }

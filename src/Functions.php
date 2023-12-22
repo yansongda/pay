@@ -46,7 +46,7 @@ function get_direction(mixed $direction): DirectionInterface
     }
 
     if (!$direction instanceof DirectionInterface) {
-        throw new InvalidConfigException(Exception::INVALID_DIRECTION);
+        throw new InvalidConfigException(Exception::DIRECTION_INVALID);
     }
 
     return $direction;
@@ -90,7 +90,7 @@ function verify_alipay_sign(array $params, string $contents, string $sign): void
     $public = get_alipay_config($params)['alipay_public_cert_path'] ?? null;
 
     if (empty($public)) {
-        throw new InvalidConfigException(Exception::ALIPAY_CONFIG_ERROR, 'Missing Alipay Config -- [alipay_public_cert_path]');
+        throw new InvalidConfigException(Exception::ALIPAY_CONFIG_INVALID, 'Missing Alipay Config -- [alipay_public_cert_path]');
     }
 
     $result = 1 === openssl_verify(
@@ -101,7 +101,7 @@ function verify_alipay_sign(array $params, string $contents, string $sign): void
     );
 
     if (!$result) {
-        throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Alipay Response Sign Failed', func_get_args());
+        throw new InvalidResponseException(Exception::SIGN_INVALID, 'Verify Alipay Response Sign Failed', func_get_args());
     }
 }
 
@@ -137,7 +137,7 @@ function get_wechat_sign(array $params, string $contents): string
     $privateKey = get_wechat_config($params)['mch_secret_cert'] ?? null;
 
     if (empty($privateKey)) {
-        throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_cert]');
+        throw new InvalidConfigException(Exception::WECHAT_CONFIG_INVALID, 'Missing Wechat Config -- [mch_secret_cert]');
     }
 
     $privateKey = get_private_cert($privateKey);
@@ -157,7 +157,7 @@ function get_wechat_sign_v2(array $params, array $payload, bool $upper = true): 
     $key = get_wechat_config($params)['mch_secret_key_v2'] ?? null;
 
     if (empty($key)) {
-        throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key_v2]');
+        throw new InvalidConfigException(Exception::WECHAT_CONFIG_INVALID, 'Missing Wechat Config -- [mch_secret_key_v2]');
     }
 
     ksort($payload);
@@ -196,7 +196,7 @@ function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, a
     $public = get_wechat_config($params)['wechat_public_cert_path'][$wechatSerial] ?? null;
 
     if (empty($sign)) {
-        throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, $body, ['headers' => $message->getHeaders(), 'body' => $body]);
+        throw new InvalidResponseException(Exception::SIGN_INVALID, $body, ['headers' => $message->getHeaders(), 'body' => $body]);
     }
 
     $public = get_public_cert(
@@ -211,7 +211,7 @@ function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, a
     );
 
     if (!$result) {
-        throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, '', ['headers' => $message->getHeaders(), 'body' => $body]);
+        throw new InvalidResponseException(Exception::SIGN_INVALID, '', ['headers' => $message->getHeaders(), 'body' => $body]);
     }
 }
 
@@ -250,7 +250,7 @@ function reload_wechat_public_certs(array $params, ?string $serialNo = null): st
     );
 
     if (!is_null($serialNo) && empty($certs[$serialNo])) {
-        throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Get Wechat Public Cert Error');
+        throw new InvalidConfigException(Exception::WECHAT_CONFIG_INVALID, 'Get Wechat Public Cert Error');
     }
 
     return $certs[$serialNo] ?? '';
@@ -292,16 +292,16 @@ function decrypt_wechat_resource(array $resource, array $params): array
     $secret = get_wechat_config($params)['mch_secret_key'] ?? null;
 
     if (strlen($ciphertext) <= Wechat::AUTH_TAG_LENGTH_BYTE) {
-        throw new InvalidResponseException(Exception::INVALID_CIPHERTEXT_PARAMS);
+        throw new InvalidResponseException(Exception::CIPHERTEXT_PARAMS_INVALID);
     }
 
     if (is_null($secret) || Wechat::MCH_SECRET_KEY_LENGTH_BYTE != strlen($secret)) {
-        throw new InvalidConfigException(Exception::WECHAT_CONFIG_ERROR, 'Missing Wechat Config -- [mch_secret_key]');
+        throw new InvalidConfigException(Exception::WECHAT_CONFIG_INVALID, 'Missing Wechat Config -- [mch_secret_key]');
     }
 
     $resource['ciphertext'] = match ($resource['algorithm'] ?? '') {
         'AEAD_AES_256_GCM' => decrypt_wechat_resource_aes_256_gcm($ciphertext, $secret, $resource['nonce'] ?? '', $resource['associated_data'] ?? ''),
-        default => throw new InvalidResponseException(Exception::INVALID_REQUEST_ENCRYPTED_METHOD),
+        default => throw new InvalidResponseException(Exception::REQUEST_ENCRYPTED_METHOD_INVALID),
     };
 
     return $resource;
@@ -326,7 +326,7 @@ function decrypt_wechat_resource_aes_256_gcm(string $ciphertext, string $secret,
         $decrypted = json_decode(strval($decrypted), true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new InvalidResponseException(Exception::INVALID_REQUEST_ENCRYPTED_DATA);
+            throw new InvalidResponseException(Exception::REQUEST_ENCRYPTED_DATA_INVALID);
         }
     }
 
@@ -354,7 +354,7 @@ function verify_unipay_sign(array $params, string $contents, string $sign): void
 {
     if (empty($params['signPubKeyCert'])
         && empty($public = get_unipay_config($params)['unipay_public_cert_path'] ?? null)) {
-        throw new InvalidConfigException(Exception::UNIPAY_CONFIG_ERROR, 'Missing Unipay Config -- [unipay_public_cert_path]');
+        throw new InvalidConfigException(Exception::UNIPAY_CONFIG_INVALID, 'Missing Unipay Config -- [unipay_public_cert_path]');
     }
 
     $result = 1 === openssl_verify(
@@ -365,6 +365,6 @@ function verify_unipay_sign(array $params, string $contents, string $sign): void
     );
 
     if (!$result) {
-        throw new InvalidResponseException(Exception::INVALID_RESPONSE_SIGN, 'Verify Unipay Response Sign Failed', func_get_args());
+        throw new InvalidResponseException(Exception::SIGN_INVALID, 'Verify Unipay Response Sign Failed', func_get_args());
     }
 }

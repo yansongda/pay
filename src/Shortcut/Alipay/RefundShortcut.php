@@ -38,7 +38,7 @@ class RefundShortcut implements ShortcutInterface
             return $this->{$method}();
         }
 
-        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_ERROR, "Refund action [{$method}] not supported");
+        throw new InvalidParamsException(Exception::SHORTCUT_MULTI_ACTION_INVALID, "Refund action [{$method}] not supported");
     }
 
     protected function defaultPlugins(): array

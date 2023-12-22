@@ -33,6 +33,6 @@ class Event
             return;
         }
 
-        throw new InvalidConfigException(Exception\Exception::EVENT_CONFIG_ERROR);
+        throw new InvalidConfigException(Exception\Exception::EVENT_CONFIG_INVALID);
     }
 }

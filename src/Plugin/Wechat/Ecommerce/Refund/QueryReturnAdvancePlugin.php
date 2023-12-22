@@ -23,7 +23,7 @@ class QueryReturnAdvancePlugin extends GeneralPlugin
      */
     protected function getUri(Rocket $rocket): string
     {
-        throw new InvalidParamsException(Exception::NOT_IN_SERVICE_MODE);
+        throw new InvalidParamsException(Exception::CURRENT_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
     }
 
     /**
@@ -38,7 +38,7 @@ class QueryReturnAdvancePlugin extends GeneralPlugin
         $subMchId = $payload->get('sub_mchid', $config['sub_mch_id'] ?? '');
 
         if (!$payload->has('refund_id')) {
-            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
         }
 
         return 'v3/ecommerce/refunds/'.$payload->get('refund_id').'/return-advance?sub_mchid='.$subMchId;

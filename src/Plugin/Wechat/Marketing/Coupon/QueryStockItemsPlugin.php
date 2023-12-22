@@ -40,7 +40,7 @@ class QueryStockItemsPlugin extends GeneralPlugin
         $config = get_wechat_config($params);
 
         if (!$payload->has('stock_id')) {
-            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
         }
 
         if (!$payload->has('stock_creator_mchid')) {

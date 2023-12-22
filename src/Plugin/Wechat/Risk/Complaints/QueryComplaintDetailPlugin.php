@@ -32,7 +32,7 @@ class QueryComplaintDetailPlugin extends GeneralPlugin
         $payload = $rocket->getPayload();
 
         if (!$payload->has('complaint_id')) {
-            throw new InvalidParamsException(Exception::MISSING_NECESSARY_PARAMS);
+            throw new InvalidParamsException(Exception::NECESSARY_PARAMS_MISSING);
         }
 
         return 'v3/merchant-service/complaints-v2/'.$payload->get('complaint_id');

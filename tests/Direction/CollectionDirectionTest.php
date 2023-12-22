@@ -33,7 +33,7 @@ class CollectionDirectionTest extends TestCase
     public function testResponseNull()
     {
         self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_NONE);
+        self::expectExceptionCode(Exception::RESPONSE_EMPTY);
 
         $this->parser->guide(new JsonPacker(), null);
     }

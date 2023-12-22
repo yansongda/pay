@@ -60,7 +60,7 @@ class VerifySignaturePluginTest extends TestCase
             ->setDestination(new Collection($destination));
 
         self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::INVALID_RESPONSE_SIGN);
+        self::expectExceptionCode(Exception::SIGN_INVALID);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

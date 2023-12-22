@@ -114,7 +114,7 @@ class AbstractProviderTest extends TestCase
         Pay::set(HttpClientInterface::class, new Collection());
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::HTTP_CLIENT_CONFIG_ERROR);
+        self::expectExceptionCode(Exception::HTTP_CLIENT_INVALID);
 
         $provider = new FooProviderStub();
         $provider->ignite($rocket);

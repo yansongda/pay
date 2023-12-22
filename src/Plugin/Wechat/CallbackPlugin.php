@@ -60,7 +60,7 @@ class CallbackPlugin implements PluginInterface
         $request = $rocket->getParams()['request'] ?? null;
 
         if (!$request instanceof ServerRequestInterface) {
-            throw new InvalidParamsException(Exception::REQUEST_NULL_ERROR);
+            throw new InvalidParamsException(Exception::REQUEST_EMPTY);
         }
 
         $rocket->setDestination(clone $request)
