@@ -83,10 +83,8 @@ class Alipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function close(array|string $order): null|array|Collection
+    public function close(array $order): null|array|Collection
     {
-        $order = is_array($order) ? $order : ['out_trade_no' => $order];
-
         Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
 
         return $this->__call('close', [$order]);
