@@ -131,7 +131,7 @@ class AbstractProviderTest extends TestCase
 
 class FooProviderStub extends AbstractProvider
 {
-    public function find(array|string $order): Collection
+    public function query(array $order): Collection
     {
         return new Collection();
     }

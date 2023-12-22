@@ -21,7 +21,7 @@ interface ProviderInterface
      */
     public function pay(array $plugins, array $params): null|array|Collection|MessageInterface;
 
-    public function find(array|string $order): array|Collection;
+    public function query(array $order): array|Collection;
 
     public function cancel(array|string $order): null|array|Collection;
 

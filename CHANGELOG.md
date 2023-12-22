@@ -6,6 +6,7 @@
 - change(internal): 按场景对支付宝插件进行分类(#894)
 - change(internal): 支付宝 shortcut 从 plugin 文件夹独立出来(#895)
 - change(internal): DirectionInterface 方法由 `parse` 改为 `guide`(#896)
+- change: 查询API方法由 `find` 改为 `query`，同时参数只支持 array(#897)
 
 ## v3.5.3
 

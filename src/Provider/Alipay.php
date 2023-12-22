@@ -59,10 +59,8 @@ class Alipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function find(array|string $order): array|Collection
+    public function query(array $order): array|Collection
     {
-        $order = is_array($order) ? $order : ['out_trade_no' => $order];
-
         Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
