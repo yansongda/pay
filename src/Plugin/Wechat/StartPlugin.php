@@ -11,15 +11,15 @@ use Yansongda\Pay\Rocket;
 
 use function Yansongda\Pay\filter_params;
 
-class PreparePlugin implements PluginInterface
+class StartPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[wechat][StartPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][StartPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload(filter_params($rocket->getParams()));
 
-        Logger::info('[wechat][StartPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][StartPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

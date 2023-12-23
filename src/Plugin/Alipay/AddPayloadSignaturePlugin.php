@@ -16,7 +16,7 @@ use Yansongda\Pay\Rocket;
 use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_private_cert;
 
-class AddSignaturePlugin implements PluginInterface
+class AddPayloadSignaturePlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
@@ -25,11 +25,11 @@ class AddSignaturePlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][AddSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload(['sign' => $this->getSign($rocket)]);
 
-        Logger::info('[Alipay][AddSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][AddPayloadSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
@@ -60,7 +60,7 @@ class AddSignaturePlugin implements PluginInterface
         $privateKey = get_alipay_config($params)['app_secret_cert'] ?? null;
 
         if (is_null($privateKey)) {
-            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, 'Missing Alipay Config -- [app_secret_cert]');
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_secret_cert]');
         }
 
         return get_private_cert($privateKey);

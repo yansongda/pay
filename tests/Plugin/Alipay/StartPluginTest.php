@@ -107,7 +107,7 @@ class StartPluginTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        self::expectExceptionMessage('Missing Alipay Config -- [app_public_cert_path]');
+        self::expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

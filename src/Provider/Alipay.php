@@ -14,10 +14,10 @@ use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
-use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
@@ -125,7 +125,7 @@ class Alipay extends AbstractProvider
         return array_merge(
             [StartPlugin::class],
             $plugins,
-            [FormatBizContentPlugin::class, AddSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
+            [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
         );
     }
 

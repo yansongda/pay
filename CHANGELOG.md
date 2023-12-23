@@ -3,6 +3,7 @@
 ### added
 
 - feat: 新增 `InvalidSignException`(#903)
+- feat: 新增 `DecryptException`(#906)
 
 ### changed
 
@@ -13,9 +14,10 @@
 - change: 查询API方法由 `find` 改为 `query`，同时参数只支持 array(#897)
 - change: cancel 的 API 参数只支持 array，不再支持 string(#900)
 - change: close 的 API 参数只支持 array，不再支持 string(#901)
-- change(internal): 错误代码 const 命名规则统一(#902, #903)
+- change(internal): 错误代码 const 命名规则统一(#902, #903, #906)
 - change(internal): 微信 shortcut 从 plugin 文件夹独立出来(#904)
 - change(internal): 银联 shortcut 从 plugin 文件夹独立出来(#905)
+- change(internal): 按场景对微信插件进行分类，优化相关代码(#906)
 
 ## v3.5.3
 

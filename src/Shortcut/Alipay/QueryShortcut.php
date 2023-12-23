@@ -7,9 +7,9 @@ namespace Yansongda\Pay\Shortcut\Alipay;
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Fund\Transfer\QueryPlugin as TransferQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Agreement\QueryPlugin as AgreementQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\App\QueryPlugin as AppQueryPlugin;
@@ -58,8 +58,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             WebQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -72,8 +72,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             AgreementQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -86,8 +86,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             AppQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -100,8 +100,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             AuthorizationQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -114,8 +114,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             FaceQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -128,8 +128,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             MiniQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -142,8 +142,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             PosQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -156,8 +156,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             ScanQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -170,8 +170,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             WapQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -184,8 +184,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             WebQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -198,8 +198,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             TransferQueryPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -212,8 +212,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             WebQueryRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -226,8 +226,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             AppQueryRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -240,8 +240,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             AuthorizationQueryRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -254,8 +254,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             MiniQueryRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -268,8 +268,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             PosQueryRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -282,8 +282,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             ScanQueryRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -296,8 +296,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             WapQueryRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -310,8 +310,8 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             WebQueryRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,

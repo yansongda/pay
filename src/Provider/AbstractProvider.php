@@ -36,7 +36,7 @@ abstract class AbstractProvider implements ProviderInterface
     public function call(string $plugin, array $params = []): null|Collection|MessageInterface
     {
         if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_NOT_FOUND, "[{$plugin}] is not incompatible");
+            throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_NOT_FOUND, "参数异常: [{$plugin}] 未实现 `ShortcutInterface`");
         }
 
         /* @var ShortcutInterface $shortcut */
@@ -88,7 +88,7 @@ abstract class AbstractProvider implements ProviderInterface
         $http = Pay::get(HttpClientInterface::class);
 
         if (!$http instanceof ClientInterface) {
-            throw new InvalidConfigException(Exception::CONFIG_HTTP_CLIENT_INVALID);
+            throw new InvalidConfigException(Exception::CONFIG_HTTP_CLIENT_INVALID, '配置异常: 配置的 ClientInterface 不符合 PSR 规范');
         }
 
         Logger::info('[AbstractProvider] 准备请求支付服务商 API', $rocket->toArray());
@@ -103,7 +103,7 @@ abstract class AbstractProvider implements ProviderInterface
         } catch (Throwable $e) {
             Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
 
-            throw new InvalidResponseException(Exception::REQUEST_RESPONSE_ERROR, $e->getMessage(), [], $e);
+            throw new InvalidResponseException(Exception::REQUEST_RESPONSE_ERROR, '响应异常: 请求支付服务商 API 出错 - '.$e->getMessage(), [], $e);
         }
 
         Logger::info('[AbstractProvider] 请求支付服务商 API 成功', ['response' => $response, 'rocket' => $rocket->toArray()]);
@@ -131,7 +131,7 @@ abstract class AbstractProvider implements ProviderInterface
                 continue;
             }
 
-            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_INCOMPATIBLE, "[{$plugin}] is not incompatible");
+            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_INCOMPATIBLE, "参数异常: [{$plugin}] 插件未实现 `PluginInterface`");
         }
     }
 }

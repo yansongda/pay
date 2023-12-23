@@ -42,7 +42,7 @@ class GetUnipayCertsTest extends TestCase
 
         $this->expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
-        $this->expectExceptionMessage('Missing Unipay Config -- [mch_cert_path] or [mch_cert_password]');
+        $this->expectExceptionMessage('配置异常: 缺少银联配置 -- [mch_cert_path] or [mch_cert_password]');
 
         $this->trait->getCertId('default', get_unipay_config([]));
     }
@@ -54,7 +54,7 @@ class GetUnipayCertsTest extends TestCase
 
         $this->expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
-        $this->expectExceptionMessage('Missing Unipay Config -- [mch_cert_path] or [mch_cert_password]');
+        $this->expectExceptionMessage('配置异常: 缺少银联配置 -- [mch_cert_path] or [mch_cert_password]');
 
         $this->trait->getCertId('default', get_unipay_config([]));
     }
@@ -67,7 +67,7 @@ class GetUnipayCertsTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
-        self::expectExceptionMessage('Read `mch_cert_path` Error');
+        self::expectExceptionMessage('配置异常: 读取银联 `mch_cert_path` 失败，请确认参数是否正确');
 
         $this->trait->getCertId('default', get_unipay_config([]));
     }

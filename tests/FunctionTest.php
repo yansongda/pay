@@ -13,9 +13,9 @@ use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Direction\ResponseDirection;
+use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
@@ -24,6 +24,7 @@ use Yansongda\Supports\Str;
 use function Yansongda\Pay\decrypt_wechat_resource;
 use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
 use function Yansongda\Pay\encrypt_wechat_contents;
+use function Yansongda\Pay\filter_params;
 use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_direction;
 use function Yansongda\Pay\get_private_cert;
@@ -82,6 +83,43 @@ class FunctionTest extends TestCase
         get_direction('invalid');
     }
 
+    public function testGetPublicCert()
+    {
+        $alipayPublicCertPath = __DIR__ . '/Cert/alipayPublicCert.crt';
+        $alipayPublicCertCerPath = __DIR__ . '/Cert/alipayPublicCert.cer';
+
+        self::assertEquals(file_get_contents($alipayPublicCertCerPath), get_public_cert($alipayPublicCertCerPath));
+        self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_cert($alipayPublicCertPath));
+    }
+
+    public function testGetPrivateCert()
+    {
+        $appSecretCert = file_get_contents(__DIR__ . '/Cert/alipayAppSecret.txt');
+
+        self::assertTrue(Str::contains(get_private_cert($appSecretCert), 'PRIVATE KEY'));
+    }
+
+    public function testFilterParams()
+    {
+        // none closure
+        $params = [
+            'name' => 'yansongda',
+            '_method' => 'foo',
+        ];
+        self::assertEqualsCanonicalizing(['name' => 'yansongda'], filter_params($params));
+
+        // closure
+        $params = [
+            'name' => 'yansongda',
+            '_method' => 'foo',
+            'sign' => 'aaa',
+            'sign_type' => 'bbb',
+            's' => '',
+            'a' => null,
+        ];
+        self::assertEqualsCanonicalizing(['name' => 'yansongda'], filter_params($params, fn ($k, $v) => '' !== $v && !is_null($v) && 'sign' != $k && 'sign_type' != $k));
+    }
+
     public function testGetAlipayConfig()
     {
         self::assertArrayHasKey('app_id', get_alipay_config([]));
@@ -98,22 +136,6 @@ class FunctionTest extends TestCase
         self::assertEquals(['name' => 'yansongda'], get_alipay_config([]));
 
         self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1']));
-    }
-
-    public function testGetPublicCert()
-    {
-        $alipayPublicCertPath = __DIR__ . '/Cert/alipayPublicCert.crt';
-        $alipayPublicCertCerPath = __DIR__ . '/Cert/alipayPublicCert.cer';
-
-        self::assertEquals(file_get_contents($alipayPublicCertCerPath), get_public_cert($alipayPublicCertCerPath));
-        self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_cert($alipayPublicCertPath));
-    }
-
-    public function testGetPrivateCert()
-    {
-        $appSecretCert = file_get_contents(__DIR__ . '/Cert/alipayAppSecret.txt');
-
-        self::assertTrue(Str::contains(get_private_cert($appSecretCert), 'PRIVATE KEY'));
     }
 
     public function testVerifyAlipaySign()
@@ -376,8 +398,8 @@ class FunctionTest extends TestCase
             'ciphertext' => 'kbbHAUhBwdjYZkHPW149MW/8WNpxQo1Gyp4kVNVjd+zrXnyOFhgZic2U2+tobFAgfdr93zr0JZF3FdbxgkaOAV2NAeCfU8jsUYXSfn7fM8487jXMVXKKEneGiiv1/bDLkz7KFsTfu2y5Rv+igWQ+bvCUQAwoNzjupTXnnDR5hBiofZcFLHL45govyYE2o0qD5SLiJHcFS4pg/IOx8SIqUFNepr3piKXUxKowU8/kNxXyRzL8yp7XnhrzAzclupvjveNwZyiw3TqlLZdR5TbEFLCogWaRHZRqz3vKEfgRaUYUtXCtQVrm+adbSDBFIq34v+XfeIHMz9pKhH/m80N5Hx69hPzbvIdBhzwaEDyN3h8gaeYKFyW9xIAs5jCrzzUEkKyMzOKzx7XA+1HRakSyvs6RlkRTa/ztBy6aZL0nxK6XMZ9tA7zdf2VnBX/7WPQYRzoky0cVyH1KRZxI7In2hfvpjSvl6P7Adzp+EZXYM/dINTrrg+RQRe60tPy7vgE8PZZf+SAWzSZPWIm7Lx6GksJX0vnT4gOeTAPw6EeFsYU/ZD7fYslJOEbA14yHBrJFkwDpSI8aSHp2nZYbruM0y8IKr0p3vjN80Ko3jiRPxj4uNdJliR9WDCV22b9JeadAaJhO9+oSNbbtFnFTCZjXbf8rMz5KCGVrGRvUyB70zhRxYIOdTYKAEkmbU7jcMLd0aufuQqIw0WviQHB+ztrkjBCFwPu5/hlRVj9opNFnzYNltfVGrA1XW3NQ4FaMNah95ahomAG/+S7zJqq4Gvk1O/PgQ9kMP0adY3GlrHUNqr2zC709IervMQ1pEdcuNEln3V5TSDiE0x7BjoMoN2m+MKAIhw59VxzHGNmJELbkKsZUhKKXFFyEXFsw143/9IYOyanmHQxujdIBKI0rxYkVz9QgaajisCzdnRf0ymnkceGGnYsP7VTYBnuCncjgHxbEn3emlTRygEjgj/epupsQL2tfW+snxnafEM+Pc079pUYmKeCUEUoX/FUmdFIf8hlSHBTjEVMGsNUI/u2W781RBDfk2X/2QQQm3NOjgZ3le6hxEQqc12yANTvdq7cFVllWqMHBsXPCjpHWIHcS5BMkImoD7s6WItq60yJA8ioGJf3Rba+Yb/YeBBNxjDnXtAmX/2hJIsxEFLTYGUvdmFC5jeb5ifrOuxnLciKM8y4nLZ28dDsvVsaBBAMAFYfWb5NymKUDhhngR5bDuW4sKccZ6DmYQeStHT1fn2yoSneGA70HctQSWZ2roTdNihPTCs7rYD0dFeQ+SfLOJzMN4c5GbJ6n5tdCjERcLGIaXEKacfySo7e4VZtHeHowvlvBclS9pooZqzHd+EFlJEYywEs9jURgsJY2yHJt2zTZeIdsvM8KK5v0NkH8FiPbWqFG8LaRmUrqhJGLuLLRTcJnt6YVYESxUVTb3pmriUbXfg/ThHF/y0THyrM6bVDNOwNWZOpMYPPNaVmOTX39JdYayWl2HX0n8AsIRmevXzD4N9iDh2HGwie4gh92Qdcogwua++uhkhSsLFuWBpJiaPdxVtzz3E3jHfy+yryfh6msaXc/jmhwqBm/ii3j76lDP5YaRv4+JWZmom72+pmZuKD8qPKrPRxI2/aGiKEqgs25knpLLnbAhWAEYeIzVK1sQkjc5JFss1Std8FdDrHeM6agAB+MWncK1LloXZmiwz/6WmlwSDepnGHqLEciXThAZq6FwunJZTcHY9LamJgIY81c9t/KHlSFqlc/9mW4OZHM4BOZQ5sTj5PWE+OP2Aq9CKdJqoK3OmphBg2ewjrZt5/tSn9jpk6NlVrHD7MsJcKi5a0he4qvNPh1cHqUqWcF4rBFmfPptdHIBV77LXnizJZMUAwf16KsmJpwJg==',
             'nonce' => '4196a5b75276',
         ];
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_ENCRYPTED_DATA_INVALID);
+        self::expectException(DecryptException::class);
+        self::expectExceptionCode(Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID);
         decrypt_wechat_resource_aes_256_gcm(base64_decode($resource['ciphertext']), 'foo', $resource['nonce'], $resource['associated_data']);
     }
 
@@ -435,7 +457,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
-        self::expectExceptionMessage('Missing Unipay Config -- [unipay_public_cert_path]');
+        self::expectExceptionMessage('配置异常： 缺少银联配置 -- [unipay_public_cert_path]');
         Pay::get(ConfigInterface::class)->set('unipay.default.unipay_public_cert_path', null);
         verify_unipay_sign([], $contents, $sign);
     }

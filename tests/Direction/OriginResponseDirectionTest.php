@@ -22,7 +22,7 @@ class OriginResponseDirectionTest extends TestCase
     public function testResponseNull()
     {
         self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
+        self::expectExceptionCode(Exception::RESPONSE_EMPTY);
 
         $this->parser->guide(new JsonPacker(), null);
     }

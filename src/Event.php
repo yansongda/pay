@@ -33,6 +33,6 @@ class Event
             return;
         }
 
-        throw new InvalidConfigException(Exception\Exception::CONFIG_EVENT_INVALID);
+        throw new InvalidConfigException(Exception\Exception::CONFIG_EVENT_INVALID, '配置异常: 配置的 `EventDispatcherInterface` 不符合 PSR 规范');
     }
 }

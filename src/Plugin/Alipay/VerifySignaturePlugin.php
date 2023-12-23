@@ -42,7 +42,7 @@ class VerifySignaturePlugin implements PluginInterface
         $result = $destination->except('_sign')->all();
 
         if ('' === $sign || empty($result)) {
-            throw new InvalidSignException(Exception::SIGN_EMPTY, 'Verify Alipay Response Sign Failed: sign is empty', $destination);
+            throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 验证支付宝签名失败-支付宝签名为空', $destination);
         }
 
         verify_alipay_sign($rocket->getParams(), json_encode($result, JSON_UNESCAPED_UNICODE), $sign);

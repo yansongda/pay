@@ -137,10 +137,10 @@ class Pay
         } catch (ContainerNotFoundException $e) {
             throw $e;
         } catch (Throwable $e) {
-            throw new ContainerException($e->getMessage());
+            throw new ContainerException('容器异常: '.$e->getMessage());
         }
 
-        throw new ContainerException('Current container does NOT support `set` method');
+        throw new ContainerException('容器异常: 当前容器类型不支持 `set` 方法');
     }
 
     /**
@@ -159,7 +159,7 @@ class Pay
         } catch (ContainerNotFoundException $e) {
             throw $e;
         } catch (Throwable $e) {
-            throw new ContainerException($e->getMessage());
+            throw new ContainerException('容器异常: '.$e->getMessage());
         }
 
         $parameters = array_values($parameters);
@@ -176,11 +176,11 @@ class Pay
         try {
             return Pay::getContainer()->get($service);
         } catch (NotFoundExceptionInterface $e) {
-            throw new ServiceNotFoundException($e->getMessage());
+            throw new ServiceNotFoundException('服务未找到: '.$e->getMessage());
         } catch (ContainerNotFoundException $e) {
             throw $e;
         } catch (Throwable $e) {
-            throw new ContainerException($e->getMessage());
+            throw new ContainerException('容器异常: '.$e->getMessage());
         }
     }
 
@@ -210,7 +210,7 @@ class Pay
             return (self::$container)();
         }
 
-        throw new ContainerNotFoundException('`getContainer()` failed! Maybe you should `setContainer()` first', Exception\Exception::CONTAINER_NOT_FOUND);
+        throw new ContainerNotFoundException('容器未找到: `getContainer()` failed! Maybe you should `setContainer()` first', Exception\Exception::CONTAINER_NOT_FOUND);
     }
 
     public static function hasContainer(): bool

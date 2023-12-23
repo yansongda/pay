@@ -2,20 +2,20 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
-use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddSignaturePluginTest extends TestCase
+class AddPayloadSignaturePluginTest extends TestCase
 {
-    protected AddSignaturePlugin $plugin;
+    protected AddPayloadSignaturePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new AddSignaturePlugin();
+        $this->plugin = new AddPayloadSignaturePlugin();
     }
 
     public function testSignNormal()

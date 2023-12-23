@@ -6,18 +6,14 @@ namespace Yansongda\Pay\Exception;
 
 use Throwable;
 
-class InvalidResponseException extends Exception
+class DecryptException extends Exception
 {
-    public mixed $response;
-
     public function __construct(
-        int $code = self::RESPONSE_ERROR,
-        string $message = '响应异常',
+        int $code = self::DECRYPT_ERROR,
+        string $message = '加解密异常',
         mixed $extra = null,
         ?Throwable $previous = null
     ) {
-        $this->response = $extra;
-
         parent::__construct($message, $code, $extra, $previous);
     }
 }

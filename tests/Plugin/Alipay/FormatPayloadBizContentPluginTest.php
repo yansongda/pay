@@ -2,20 +2,20 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
-use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class FormatBizContentPluginTest extends TestCase
+class FormatPayloadBizContentPluginTest extends TestCase
 {
-    protected FormatBizContentPlugin $plugin;
+    protected FormatPayloadBizContentPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new FormatBizContentPlugin();
+        $this->plugin = new FormatPayloadBizContentPlugin();
     }
 
     public function testSignNormal()

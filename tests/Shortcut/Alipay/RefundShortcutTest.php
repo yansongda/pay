@@ -5,8 +5,8 @@ namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Fund\Transfer\RefundPlugin as FundTransferRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Agreement\RefundPlugin as AgreementRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\App\RefundPlugin as AppRefundPlugin;
@@ -49,8 +49,8 @@ class RefundShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             WebRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -65,8 +65,8 @@ class RefundShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             AgreementRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -81,8 +81,8 @@ class RefundShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             AppRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -97,8 +97,8 @@ class RefundShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             AuthorizationRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -113,8 +113,8 @@ class RefundShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             MiniRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -129,8 +129,8 @@ class RefundShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             PosRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -145,8 +145,8 @@ class RefundShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             ScanRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -161,8 +161,8 @@ class RefundShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             WapRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -177,8 +177,8 @@ class RefundShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             WebRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -193,8 +193,8 @@ class RefundShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             FundTransferRefundPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,

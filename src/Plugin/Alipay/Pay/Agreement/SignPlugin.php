@@ -17,7 +17,7 @@ class SignPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][Pay][Agreement][AddSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Pay][Agreement][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
@@ -25,7 +25,7 @@ class SignPlugin implements PluginInterface
                 'biz_content' => $rocket->getParams(),
             ]);
 
-        Logger::info('[Alipay][Pay][Agreement][AddSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Pay][Agreement][AddPayloadSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

@@ -2,8 +2,8 @@
 
 namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
-use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\App\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponseInvokeStringPlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
@@ -29,8 +29,8 @@ class AppShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             PayPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             ResponseInvokeStringPlugin::class,
             ParserPlugin::class,
         ], $result);

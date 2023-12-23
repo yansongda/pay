@@ -75,7 +75,7 @@ class Wechat extends AbstractProvider
      */
     public function cancel(array $order): null|array|Collection
     {
-        throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, 'Wechat does not support cancel api');
+        throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: 微信不支持 cancel API');
     }
 
     /**
@@ -116,7 +116,7 @@ class Wechat extends AbstractProvider
 
         return $this->pay(
             [CallbackPlugin::class],
-            ['request' => $request, 'params' => $params]
+            ['_request' => $request, '_params' => $params]
         );
     }
 

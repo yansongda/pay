@@ -5,8 +5,8 @@ namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Agreement\ClosePlugin as AgreementClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\App\ClosePlugin as AppClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\ClosePlugin as AuthorizationClosePlugin;
@@ -48,8 +48,8 @@ class CloseShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             WebClosePlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -64,8 +64,8 @@ class CloseShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             AgreementClosePlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -80,8 +80,8 @@ class CloseShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             AppClosePlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -96,8 +96,8 @@ class CloseShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             AuthorizationClosePlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -112,8 +112,8 @@ class CloseShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             MiniClosePlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -128,8 +128,8 @@ class CloseShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             PosClosePlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -144,8 +144,8 @@ class CloseShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             ScanClosePlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -160,8 +160,8 @@ class CloseShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             WapClosePlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -176,8 +176,8 @@ class CloseShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             WebClosePlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,

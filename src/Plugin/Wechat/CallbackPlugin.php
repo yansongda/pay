@@ -9,10 +9,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
@@ -26,15 +27,16 @@ class CallbackPlugin implements PluginInterface
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
-     * @throws ServiceNotFoundException
-     * @throws InvalidResponseException
      * @throws InvalidParamsException
+     * @throws InvalidSignException
+     * @throws ServiceNotFoundException
+     * @throws DecryptException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[wechat][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $this->formatRequestAndParams($rocket);
+        $this->init($rocket);
 
         /* @phpstan-ignore-next-line */
         verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());
@@ -47,7 +49,7 @@ class CallbackPlugin implements PluginInterface
 
         $rocket->setDestination(new Collection($body));
 
-        Logger::info('[wechat][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
@@ -55,16 +57,17 @@ class CallbackPlugin implements PluginInterface
     /**
      * @throws InvalidParamsException
      */
-    protected function formatRequestAndParams(Rocket $rocket): void
+    protected function init(Rocket $rocket): void
     {
-        $request = $rocket->getParams()['request'] ?? null;
+        $request = $rocket->getParams()['_request'] ?? null;
+        $params = $rocket->getParams()['_params'] ?? [];
 
         if (!$request instanceof ServerRequestInterface) {
-            throw new InvalidParamsException(Exception::PARAMS_REQUEST_EMPTY);
+            throw new InvalidParamsException(Exception::PARAMS_CALLBACK_REQUEST_INVALID, '参数异常: 微信回调参数不正确');
         }
 
         $rocket->setDestination(clone $request)
             ->setDestinationOrigin($request)
-            ->setParams($rocket->getParams()['params'] ?? []);
+            ->setParams($params);
     }
 }
