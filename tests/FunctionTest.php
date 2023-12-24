@@ -16,10 +16,12 @@ use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 use function Yansongda\Pay\decrypt_wechat_resource;
 use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
@@ -32,10 +34,14 @@ use function Yansongda\Pay\get_public_cert;
 use function Yansongda\Pay\get_tenant;
 use function Yansongda\Pay\get_unipay_config;
 use function Yansongda\Pay\get_wechat_base_uri;
+use function Yansongda\Pay\get_wechat_body;
 use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_wechat_config_key;
+use function Yansongda\Pay\get_wechat_method;
 use function Yansongda\Pay\get_wechat_public_certs;
 use function Yansongda\Pay\get_wechat_sign;
 use function Yansongda\Pay\get_wechat_sign_v2;
+use function Yansongda\Pay\get_wechat_url;
 use function Yansongda\Pay\reload_wechat_public_certs;
 use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
@@ -181,6 +187,43 @@ class FunctionTest extends TestCase
         self::assertEquals(['name' => 'yansongda'], get_wechat_config([]));
 
         self::assertEquals(['age' => 28], get_wechat_config(['_config' => 'c1']));
+    }
+
+    public function testGetWechatMethod()
+    {
+        self::assertEquals('POST', get_wechat_method(null));
+        self::assertEquals('GET', get_wechat_method(new Collection(['_method' => 'get'])));
+        self::assertEquals('POST', get_wechat_method(new Collection(['_method' => 'post'])));
+    }
+
+    public function testGetWechatUrl()
+    {
+        self::assertEquals('https://yansongda.cn', get_wechat_url([], new Collection(['_url' => 'https://yansongda.cn'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', get_wechat_url([], new Collection(['_url' => 'api/v1/yansongda'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['_config' => 'service_provider'], new Collection(['_url' => 'api/v1/service/yansongda'])));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_WECHAT_URL_MISSING);
+        get_wechat_url([], new Collection([]));
+    }
+
+    public function testGetWechatBody()
+    {
+        self::assertEquals('https://yansongda.cn', get_wechat_body(new Collection(['_body' => 'https://yansongda.cn'])));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_WECHAT_BODY_MISSING);
+        get_wechat_body(new Collection([]));
+    }
+
+    public function testGetWechatConfigKey()
+    {
+        // default
+        self::assertEquals('mp_app_id', get_wechat_config_key([]));
+        // app
+        self::assertEquals('app_id', get_wechat_config_key(['_config' => 'app']));
+        // mini
+        self::assertEquals('mini_app_id', get_wechat_config_key(['_config' => 'mini']));
     }
 
     public function testGetWechatBaseUri()

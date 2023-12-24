@@ -2,88 +2,63 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
-use GuzzleHttp\Psr7\Request;
 use ReflectionClass;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Packer\JsonPacker;
-use Yansongda\Pay\Packer\XmlPacker;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
-use Yansongda\Supports\Str;
 
-class RadarSignPluginTest extends TestCase
+class AddPayloadSignaturePluginTest extends TestCase
 {
-    protected RadarSignPlugin $plugin;
+    protected AddPayloadSignaturePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new RadarSignPlugin();
+        $this->plugin = new AddPayloadSignaturePlugin();
     }
 
-    public function testNormal()
+    public function testGetSignatureContent()
     {
+        $timestamp = 1626493236;
+        $random = 'QqtzdVzxavZeXag9G5mtfzbfzFMf89p6';
         $params = [
-            'name' => 'yansongda',
-            'age' => 28,
+            'out_trade_no' => 1626493236,
+            'description' => 'yansongda 测试 - 1626493236',
+            'amount' => [
+                'total' => 1,
+            ],
+            'scene_info' => [
+                'payer_client_ip' => '127.0.0.1',
+                'h5_info' => [
+                    'type' => 'Wap',
+                ]
+            ],
+            'appid' => "wx55955316af4ef13",
+            'mchid' => "1600314069",
+            "notify_url" => "http://127.0.0.1:8000/wechat/notify",
         ];
-        $rocket = (new Rocket())->setParams($params)
-                                ->setPayload(new Collection($params))
-                                ->setRadar(new Request('GET', '127.0.0.1'));
+        $payload = new Collection([
+            '_method' => 'POST',
+            '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/h5',
+            '_body' => (new JsonPacker())->pack($params),
+        ]);
+        $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\/\/127.0.0.1:8000\/wechat\/notify\"}\n";
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
+        $class = new ReflectionClass($this->plugin);
+        $method = $class->getMethod('getSignatureContent');
 
-        self::assertTrue($radar->hasHeader('Authorization'));
-        self::assertFalse($radar->hasHeader('Wechatpay-Serial'));
-        self::assertEquals(json_encode($params), (string) $radar->getBody());
+        $result = $method->invokeArgs($this->plugin, [$params, $payload, $timestamp, $random]);
+
+        self::assertEquals($contents, $result);
     }
 
-    public function testNormalConstruct()
-    {
-        $this->plugin = new RadarSignPlugin(new JsonPacker(), new XmlPacker());
-
-        $params = [
-            'name' => 'yansongda',
-            'age' => 28,
-        ];
-        $rocket = (new Rocket())->setParams($params)
-                                ->setPayload(new Collection($params))
-                                ->setRadar(new Request('GET', '127.0.0.1'));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
-
-        self::assertTrue($radar->hasHeader('Authorization'));
-        self::assertFalse($radar->hasHeader('Wechatpay-Serial'));
-        self::assertEquals(json_encode($params), (string) $radar->getBody());
-    }
-
-    public function testNormalWithWechatSerial()
-    {
-        $params = [
-            '_serial_no' => 'yansongda',
-            'name' => 'yansongda',
-            'age' => 28,
-        ];
-        $rocket = (new Rocket())->setParams($params)
-            ->setPayload(new Collection($params))
-            ->setRadar(new Request('GET', '127.0.0.1'));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
-
-        self::assertTrue($radar->hasHeader('Authorization'));
-        self::assertTrue($radar->hasHeader('Wechatpay-Serial'));
-    }
-
-    public function testGetWechatAuthorization()
+    public function testGetSignatureNormal()
     {
         $params = [
             'out_trade_no' => 1626493236,
@@ -96,14 +71,14 @@ class RadarSignPluginTest extends TestCase
                 'h5_info' => [
                     'type' => 'Wap',
                 ]
-            ]];
+            ]
+        ];
         $timestamp = 1626493236;
         $random = 'QqtzdVzxavZeXag9G5mtfzbfzFMf89p6';
         $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\/\/127.0.0.1:8000\/wechat\/notify\"}\n";
 
         $class = new ReflectionClass($this->plugin);
-        $method = $class->getMethod('v3GetWechatAuthorization');
-        $method->setAccessible(true);
+        $method = $class->getMethod('getSignature');
 
         $result = $method->invokeArgs($this->plugin, [$params, $timestamp, $random, $contents]);
 
@@ -113,7 +88,7 @@ class RadarSignPluginTest extends TestCase
         );
     }
 
-    public function testGetWechatAuthorizationMissingMchPublicCert()
+    public function testGetSignatureMissingMchPublicCert()
     {
         $params = [
             'out_trade_no' => 1626493236,
@@ -136,15 +111,14 @@ class RadarSignPluginTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        self::expectExceptionMessage('Missing Wechat Config -- [mch_public_cert_path]');
+        self::expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_public_cert_path]');
 
         $class = new ReflectionClass($this->plugin);
-        $method = $class->getMethod('v3GetWechatAuthorization');
-        $method->setAccessible(true);
+        $method = $class->getMethod('getSignature');
         $method->invokeArgs($this->plugin, [$params, $timestamp, $random, $contents]);
     }
 
-    public function testGetWechatAuthorizationWrongMchPublicCert()
+    public function testGetSignatureWrongMchPublicCert()
     {
         $params = [
             'out_trade_no' => 1626493236,
@@ -167,33 +141,10 @@ class RadarSignPluginTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        self::expectExceptionMessage('Parse [mch_public_cert_path] Serial Number Error');
+        self::expectExceptionMessage('配置异常: 解析微信配置 [mch_public_cert_path] 出错');
 
         $class = new ReflectionClass($this->plugin);
-        $method = $class->getMethod('v3GetWechatAuthorization');
-        $method->setAccessible(true);
+        $method = $class->getMethod('getSignature');
         $method->invokeArgs($this->plugin, [$params, $timestamp, $random, $contents]);
-    }
-
-    public function testV2Normal()
-    {
-        $params = [
-            'name' => 'yansongda',
-            'age' => 28,
-        ];
-        $rocket = (new Rocket())->setParams(array_merge($params, ['_version' => 'v2']))
-                                ->setPayload(new Collection($params))
-                                ->setRadar(new Request('POST', '127.0.0.1'));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $radar = $result->getRadar();
-        $payload = $result->getPayload();
-
-        self::assertTrue($payload->has('sign'));
-        self::assertTrue($payload->has('nonce_str'));
-        self::assertTrue(Str::contains((string) $radar->getBody(), '<xml>'));
-        self::assertTrue(Str::contains((string) $radar->getBody(), '<sign>'));
-        self::assertTrue(Str::contains((string) $radar->getBody(), '<nonce_str>'));
     }
 }

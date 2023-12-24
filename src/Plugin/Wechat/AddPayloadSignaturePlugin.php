@@ -42,12 +42,10 @@ class AddPayloadSignaturePlugin implements PluginInterface
 
         $timestamp = time();
         $random = Str::random(32);
-        $signContent = $this->getSignContent($params, $payload, $timestamp, $random);
+        $signContent = $this->getSignatureContent($params, $payload, $timestamp, $random);
         $signature = $this->getSignature($params, $timestamp, $random, $signContent);
 
-        $rocket->mergePayload([
-            '_authorization' => $signature,
-        ]);
+        $rocket->mergePayload(['_authorization' => $signature]);
 
         Logger::info('[Wechat][AddPayloadSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -59,7 +57,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    protected function getSignContent(array $params, ?Collection $payload, int $timestamp, string $random): string
+    protected function getSignatureContent(array $params, ?Collection $payload, int $timestamp, string $random): string
     {
         $url = get_wechat_url($params, $payload);
         $urlPath = parse_url($url, PHP_URL_PATH);

@@ -2,22 +2,19 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
+use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
-class PreparePluginTest extends TestCase
+class StartPluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Wechat\PreparePlugin
-     */
-    protected $plugin;
+    protected StartPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new PreparePlugin();
+        $this->plugin = new StartPlugin();
     }
 
     public function testNormal()

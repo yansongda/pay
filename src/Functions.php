@@ -18,8 +18,6 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
 use Yansongda\Pay\Plugin\Wechat\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
@@ -136,7 +134,7 @@ function get_wechat_method(?Collection $payload): string
  */
 function get_wechat_url(array $params, ?Collection $payload): string
 {
-    $url = $payload?->get('_url') ?? '';
+    $url = $payload?->get('_url') ?? null;
 
     if (empty($url)) {
         throw new InvalidParamsException(Exception::PARAMS_WECHAT_URL_MISSING, '参数异常: 微信 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
@@ -163,6 +161,17 @@ function get_wechat_body(?Collection $payload): string
     }
 
     return $body;
+}
+
+function get_wechat_config_key(array $params): string
+{
+    $key = ($params['_type'] ?? 'mp').'_app_id';
+
+    if ('app_app_id' === $key) {
+        $key = 'app_id';
+    }
+
+    return $key;
 }
 
 /**

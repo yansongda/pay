@@ -35,7 +35,7 @@ class VerifySignaturePlugin implements PluginInterface
 
         Logger::debug('[Wechat][VerifySignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        if (should_do_http_request($rocket->getDirection()) && !is_null($rocket->getDestinationOrigin())) {
+        if (!should_do_http_request($rocket->getDirection()) || is_null($rocket->getDestinationOrigin())) {
             return $rocket;
         }
 

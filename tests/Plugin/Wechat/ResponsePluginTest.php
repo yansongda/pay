@@ -4,37 +4,23 @@ namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
+use Yansongda\Pay\Direction\OriginResponseDirection;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
-use Yansongda\Pay\Direction\NoHttpRequestDirection;
-use Yansongda\Pay\Direction\OriginResponseDirection;
-use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
+use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class LaunchPluginTest extends TestCase
+class ResponsePluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Wechat\LaunchPlugin
-     */
-    protected $plugin;
+    protected ResponsePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new LaunchPlugin();
-    }
-
-    public function testShouldNotDoRequest()
-    {
-        $rocket = new Rocket();
-        $rocket->setDirection(NoHttpRequestDirection::class);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertSame($rocket, $result);
+        $this->plugin = new ResponsePlugin();
     }
 
     public function testOriginalResponseDestination()
@@ -66,26 +52,11 @@ class LaunchPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testArrayDestination()
-    {
-        $destination = [];
-
-        $rocket = new Rocket();
-        $rocket->setDirection(OriginResponseDirection::class);
-        $rocket->setDestination(Collection::wrap($destination));
-        $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals($destination, $result->getDestination()->toArray());
-    }
-
     public function testCollectionDestination()
     {
         $destination = new Collection();
 
         $rocket = new Rocket();
-        $rocket->setDirection(OriginResponseDirection::class);
         $rocket->setDestination($destination);
         $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
 
