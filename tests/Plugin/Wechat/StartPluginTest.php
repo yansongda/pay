@@ -31,6 +31,6 @@ class StartPluginTest extends TestCase
 
         self::assertEquals('yansongda', $payload['name']);
         self::assertArrayNotHasKey('aaa', $payload);
-        self::assertArrayNotHasKey('_aaa', $payload);
+        self::assertArrayHasKey('_aaa', $payload);
     }
 }

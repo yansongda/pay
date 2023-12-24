@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests\Plugin\Alipay\Pay\Wap;
 
 use Yansongda\Pay\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\Pay\Wap\RefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\H5\RefundPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 

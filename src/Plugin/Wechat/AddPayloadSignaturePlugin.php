@@ -37,13 +37,13 @@ class AddPayloadSignaturePlugin implements PluginInterface
     {
         Logger::debug('[Wechat][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $params = $rocket->getParams();
+        $config = get_wechat_config($rocket->getParams());
         $payload = $rocket->getPayload();
 
         $timestamp = time();
         $random = Str::random(32);
-        $signContent = $this->getSignatureContent($params, $payload, $timestamp, $random);
-        $signature = $this->getSignature($params, $timestamp, $random, $signContent);
+        $signContent = $this->getSignatureContent($config, $payload, $timestamp, $random);
+        $signature = $this->getSignature($config, $timestamp, $random, $signContent);
 
         $rocket->mergePayload(['_authorization' => $signature]);
 
@@ -53,13 +53,11 @@ class AddPayloadSignaturePlugin implements PluginInterface
     }
 
     /**
-     * @throws ContainerException
      * @throws InvalidParamsException
-     * @throws ServiceNotFoundException
      */
-    protected function getSignatureContent(array $params, ?Collection $payload, int $timestamp, string $random): string
+    protected function getSignatureContent(array $config, ?Collection $payload, int $timestamp, string $random): string
     {
-        $url = get_wechat_url($params, $payload);
+        $url = get_wechat_url($config, $payload);
         $urlPath = parse_url($url, PHP_URL_PATH);
         $urlQuery = parse_url($url, PHP_URL_QUERY);
 
@@ -71,13 +69,10 @@ class AddPayloadSignaturePlugin implements PluginInterface
     }
 
     /**
-     * @throws ContainerException
      * @throws InvalidConfigException
-     * @throws ServiceNotFoundException
      */
-    protected function getSignature(array $params, int $timestamp, string $random, string $contents): string
+    protected function getSignature(array $config, int $timestamp, string $random, string $contents): string
     {
-        $config = get_wechat_config($params);
         $mchPublicCertPath = $config['mch_public_cert_path'] ?? null;
 
         if (empty($mchPublicCertPath)) {
@@ -96,7 +91,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
             $random,
             $timestamp,
             $ssl['serialNumberHex'],
-            get_wechat_sign($params, $contents),
+            get_wechat_sign($config, $contents),
         );
 
         return 'WECHATPAY2-SHA256-RSA2048 '.$auth;

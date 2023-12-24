@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
+use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -30,12 +31,31 @@ class AddPayloadBodyPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertSame(json_encode($payload), $result->getPayload()->get('_body'));
+        self::assertSame((new JsonPacker())->pack($payload), $result->getPayload()->get('_body'));
+    }
+
+    public function testUnderline()
+    {
+        $payload = [
+            "name" => "yansongda",
+            '_age' => 30,
+        ];
+
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection($payload));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        unset($payload['_age']);
+
+        self::assertSame((new JsonPacker())->pack($payload), $result->getPayload()->get('_body'));
     }
 
     public function testEmpty()
     {
-        $payload = [];
+        $payload = [
+            '_age' => '30',
+        ];
 
         $rocket = new Rocket();
         $rocket->setPayload(new Collection($payload));

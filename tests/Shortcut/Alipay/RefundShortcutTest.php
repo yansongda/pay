@@ -14,7 +14,7 @@ use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\RefundPlugin as AuthorizationR
 use Yansongda\Pay\Plugin\Alipay\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Pos\RefundPlugin as PosRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Scan\RefundPlugin as ScanRefundPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Wap\RefundPlugin as WapRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\H5\RefundPlugin as WapRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\RefundPlugin as WebRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;

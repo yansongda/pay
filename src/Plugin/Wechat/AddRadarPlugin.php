@@ -16,6 +16,7 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_body;
+use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_method;
 use function Yansongda\Pay\get_wechat_url;
 
@@ -32,10 +33,11 @@ class AddRadarPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
+        $config = get_wechat_config($params);
 
         $rocket->setRadar(new Request(
             get_wechat_method($payload),
-            get_wechat_url($params, $payload),
+            get_wechat_url($config, $payload),
             $this->getHeaders($params, $payload),
             get_wechat_body($payload),
         ));

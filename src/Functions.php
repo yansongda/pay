@@ -18,6 +18,11 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
+use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Plugin\Wechat\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
@@ -71,7 +76,7 @@ function get_private_cert(string $key): string
 
 function filter_params(array $params, ?Closure $closure = null): array
 {
-    return array_filter($params, static fn ($v, $k) => !Str::startsWith($k, '_') && (empty($closure) || $closure($k, $v)), ARRAY_FILTER_USE_BOTH);
+    return array_filter($params, static fn ($v, $k) => !Str::startsWith($k, '_') && !is_null($v) && (empty($closure) || $closure($k, $v)), ARRAY_FILTER_USE_BOTH);
 }
 
 /**
@@ -128,13 +133,15 @@ function get_wechat_method(?Collection $payload): string
 }
 
 /**
- * @throws ContainerException
  * @throws InvalidParamsException
- * @throws ServiceNotFoundException
  */
-function get_wechat_url(array $params, ?Collection $payload): string
+function get_wechat_url(array $config, ?Collection $payload): string
 {
     $url = $payload?->get('_url') ?? null;
+
+    if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        $url = $payload?->get('_service_url') ?? $url ?? null;
+    }
 
     if (empty($url)) {
         throw new InvalidParamsException(Exception::PARAMS_WECHAT_URL_MISSING, '参数异常: 微信 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
@@ -144,8 +151,6 @@ function get_wechat_url(array $params, ?Collection $payload): string
         return $url;
     }
 
-    $config = get_wechat_config($params);
-
     return Wechat::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
 }
 
@@ -154,9 +159,9 @@ function get_wechat_url(array $params, ?Collection $payload): string
  */
 function get_wechat_body(?Collection $payload): string
 {
-    $body = $payload?->get('_body') ?? '';
+    $body = $payload?->get('_body') ?? null;
 
-    if (empty($body)) {
+    if (is_null($body)) {
         throw new InvalidParamsException(Exception::PARAMS_WECHAT_BODY_MISSING, '参数异常: 微信 `_body` 参数缺失：你可能用错插件顺序，应该先使用 `AddPayloadBodyPlugin`');
     }
 
@@ -186,13 +191,11 @@ function get_wechat_base_uri(array $params): string
 }
 
 /**
- * @throws ContainerException
- * @throws ServiceNotFoundException
  * @throws InvalidConfigException
  */
-function get_wechat_sign(array $params, string $contents): string
+function get_wechat_sign(array $config, string $contents): string
 {
-    $privateKey = get_wechat_config($params)['mch_secret_cert'] ?? null;
+    $privateKey = $config['mch_secret_cert'] ?? null;
 
     if (empty($privateKey)) {
         throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_cert]');
@@ -293,7 +296,7 @@ function encrypt_wechat_contents(string $contents, string $publicKey): ?string
 function reload_wechat_public_certs(array $params, ?string $serialNo = null): string
 {
     $data = Pay::wechat()->pay(
-        [PreparePlugin::class, WechatPublicCertsPlugin::class, RadarSignPlugin::class, ParserPlugin::class],
+        [StartPlugin::class, WechatPublicCertsPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class],
         $params
     )->get('data', []);
 

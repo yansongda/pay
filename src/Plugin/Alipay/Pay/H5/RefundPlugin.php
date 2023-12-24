@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\Pay\Wap;
+namespace Yansongda\Pay\Plugin\Alipay\Pay\H5;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;

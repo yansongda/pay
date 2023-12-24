@@ -11,6 +11,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
+use function Yansongda\Pay\get_wechat_config;
 
 class AddPayloadSignaturePluginTest extends TestCase
 {
@@ -53,7 +54,7 @@ class AddPayloadSignaturePluginTest extends TestCase
         $class = new ReflectionClass($this->plugin);
         $method = $class->getMethod('getSignatureContent');
 
-        $result = $method->invokeArgs($this->plugin, [$params, $payload, $timestamp, $random]);
+        $result = $method->invokeArgs($this->plugin, [get_wechat_config($params), $payload, $timestamp, $random]);
 
         self::assertEquals($contents, $result);
     }
@@ -80,7 +81,7 @@ class AddPayloadSignaturePluginTest extends TestCase
         $class = new ReflectionClass($this->plugin);
         $method = $class->getMethod('getSignature');
 
-        $result = $method->invokeArgs($this->plugin, [$params, $timestamp, $random, $contents]);
+        $result = $method->invokeArgs($this->plugin, [get_wechat_config($params), $timestamp, $random, $contents]);
 
         self::assertEquals(
             'WECHATPAY2-SHA256-RSA2048 mchid="1600314069",nonce_str="QqtzdVzxavZeXag9G5mtfzbfzFMf89p6",timestamp="1626493236",serial_no="25F8AA5452D55497C24BA57DC81B1E5915DC2E77",signature="KzIgMgiop3nQJNdBVR2Xah/JUwVBLDFFajyXPiSN8b8YAYEA4FuWfaCgFJ52+WFed+PhOYWx/ZPih4RaEuuSdYB8eZwYUx7RZGMQZk0bKCctAjjPuf4pJN+f/WsXKjPIy3diqF5x7gyxwSCaKWP4/KjsHNqgQpiC8q1uC5xmElzuhzSwj88LIoLtkAuSmtUVvdAt0Nz41ECHZgHWSGR32TfBo902r8afdaVKkFde8IoqcEJJcp6sMxdDO5l9R5KEWxrJ1SjsXVrb0IPH8Nj7e6hfhq7pucxojPpzsC+ZWAYvufZkAQx3kTiFmY87T+QhkP9FesOfWvkIRL4E6MP6ug=="',
@@ -115,7 +116,7 @@ class AddPayloadSignaturePluginTest extends TestCase
 
         $class = new ReflectionClass($this->plugin);
         $method = $class->getMethod('getSignature');
-        $method->invokeArgs($this->plugin, [$params, $timestamp, $random, $contents]);
+        $method->invokeArgs($this->plugin, [get_wechat_config($params), $timestamp, $random, $contents]);
     }
 
     public function testGetSignatureWrongMchPublicCert()
@@ -145,6 +146,6 @@ class AddPayloadSignaturePluginTest extends TestCase
 
         $class = new ReflectionClass($this->plugin);
         $method = $class->getMethod('getSignature');
-        $method->invokeArgs($this->plugin, [$params, $timestamp, $random, $contents]);
+        $method->invokeArgs($this->plugin, [get_wechat_config($params), $timestamp, $random, $contents]);
     }
 }

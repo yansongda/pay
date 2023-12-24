@@ -12,17 +12,17 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/jsapi-payment/get-trade-bill.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-jsapi-payment/get-trade-bill.html
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/jsapi-payment/get-fund-bill.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/partner-jsapi-payment/get-fund-bill.html
  */
-class GetTradeBillPlugin implements PluginInterface
+class GetFundBillPlugin implements PluginInterface
 {
     /**
      * @throws InvalidParamsException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Pay][Jsapi][GetTradeBillPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Pay][Jsapi][GetFundBillPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
 
@@ -32,11 +32,11 @@ class GetTradeBillPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/bill/tradebill?'.$payload->query(),
-            '_service_url' => 'v3/bill/tradebill?'.$payload->query(),
+            '_url' => 'v3/bill/fundflowbill?'.$payload->query(),
+            '_service_url' => 'v3/bill/fundflowbill?'.$payload->query(),
         ]);
 
-        Logger::info('[Wechat][Pay][Jsapi][GetTradeBillPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Pay][Jsapi][GetFundBillPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

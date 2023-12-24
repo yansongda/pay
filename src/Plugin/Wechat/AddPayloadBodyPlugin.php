@@ -11,6 +11,8 @@ use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
+use function Yansongda\Pay\filter_params;
+
 class AddPayloadBodyPlugin implements PluginInterface
 {
     protected JsonPacker $jsonPacker;
@@ -33,6 +35,8 @@ class AddPayloadBodyPlugin implements PluginInterface
 
     protected function getBody(?Collection $payload): string
     {
-        return (is_null($payload) || 0 === $payload->count()) ? '' : $this->jsonPacker->pack($payload->all());
+        $actualPayload = filter_params($payload->all());
+
+        return empty($actualPayload) ? '' : $this->jsonPacker->pack($actualPayload);
     }
 }

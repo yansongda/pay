@@ -111,6 +111,7 @@ class FunctionTest extends TestCase
         $params = [
             'name' => 'yansongda',
             '_method' => 'foo',
+            'a' => null,
         ];
         self::assertEqualsCanonicalizing(['name' => 'yansongda'], filter_params($params));
 
@@ -200,7 +201,8 @@ class FunctionTest extends TestCase
     {
         self::assertEquals('https://yansongda.cn', get_wechat_url([], new Collection(['_url' => 'https://yansongda.cn'])));
         self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', get_wechat_url([], new Collection(['_url' => 'api/v1/yansongda'])));
-        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['_config' => 'service_provider'], new Collection(['_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'foo', '_partner_url' => 'api/v1/service/yansongda'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_URL_MISSING);
@@ -221,9 +223,9 @@ class FunctionTest extends TestCase
         // default
         self::assertEquals('mp_app_id', get_wechat_config_key([]));
         // app
-        self::assertEquals('app_id', get_wechat_config_key(['_config' => 'app']));
+        self::assertEquals('app_id', get_wechat_config_key(['_type' => 'app']));
         // mini
-        self::assertEquals('mini_app_id', get_wechat_config_key(['_config' => 'mini']));
+        self::assertEquals('mini_app_id', get_wechat_config_key(['_type' => 'mini']));
     }
 
     public function testGetWechatBaseUri()
@@ -240,23 +242,11 @@ class FunctionTest extends TestCase
 
     public function testGetWechatSign()
     {
-        $params = [
-            'out_trade_no' => 1626493236,
-            'description' => 'yansongda 测试 - 1626493236',
-            'amount' => [
-                'total' => 1,
-            ],
-            'scene_info' => [
-                'payer_client_ip' => '127.0.0.1',
-                'h5_info' => [
-                    'type' => 'Wap',
-                ]
-            ]];
         $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\/\/127.0.0.1:8000\/wechat\/notify\"}\n";
 
         self::assertEquals(
             'KzIgMgiop3nQJNdBVR2Xah/JUwVBLDFFajyXPiSN8b8YAYEA4FuWfaCgFJ52+WFed+PhOYWx/ZPih4RaEuuSdYB8eZwYUx7RZGMQZk0bKCctAjjPuf4pJN+f/WsXKjPIy3diqF5x7gyxwSCaKWP4/KjsHNqgQpiC8q1uC5xmElzuhzSwj88LIoLtkAuSmtUVvdAt0Nz41ECHZgHWSGR32TfBo902r8afdaVKkFde8IoqcEJJcp6sMxdDO5l9R5KEWxrJ1SjsXVrb0IPH8Nj7e6hfhq7pucxojPpzsC+ZWAYvufZkAQx3kTiFmY87T+QhkP9FesOfWvkIRL4E6MP6ug==',
-            get_wechat_sign($params, $contents)
+            get_wechat_sign(get_wechat_config([]), $contents)
         );
 
         // test config error

@@ -13,7 +13,7 @@ use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\ClosePlugin as AuthorizationCl
 use Yansongda\Pay\Plugin\Alipay\Pay\Mini\ClosePlugin as MiniClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Pos\ClosePlugin as PosClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Scan\ClosePlugin as ScanClosePlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Wap\ClosePlugin as WapClosePlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\H5\ClosePlugin as WapClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\ClosePlugin as WebClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
