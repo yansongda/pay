@@ -17,14 +17,14 @@ use Yansongda\Pay\Plugin\Alipay\Pay\App\QueryRefundPlugin as AppQueryRefundPlugi
 use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\QueryPlugin as AuthorizationQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\QueryRefundPlugin as AuthorizationQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Face\QueryPlugin as FaceQueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\H5\QueryPlugin as WapQueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\H5\QueryRefundPlugin as WapQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Mini\QueryPlugin as MiniQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Mini\QueryRefundPlugin as MiniQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Pos\QueryPlugin as PosQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Pos\QueryRefundPlugin as PosQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Scan\QueryPlugin as ScanQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Scan\QueryRefundPlugin as ScanQueryRefundPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\H5\QueryPlugin as WapQueryPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\H5\QueryRefundPlugin as WapQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\QueryPlugin as WebQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\QueryRefundPlugin as WebQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;

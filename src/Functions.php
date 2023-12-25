@@ -91,14 +91,12 @@ function get_alipay_config(array $params = []): array
 }
 
 /**
- * @throws ContainerException
  * @throws InvalidConfigException
- * @throws ServiceNotFoundException
  * @throws InvalidSignException
  */
-function verify_alipay_sign(array $params, string $contents, string $sign): void
+function verify_alipay_sign(array $config, string $contents, string $sign): void
 {
-    $public = get_alipay_config($params)['alipay_public_cert_path'] ?? null;
+    $public = $config['alipay_public_cert_path'] ?? null;
 
     if (empty($public)) {
         throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [alipay_public_cert_path]');
@@ -120,7 +118,7 @@ function verify_alipay_sign(array $params, string $contents, string $sign): void
  * @throws ContainerException
  * @throws ServiceNotFoundException
  */
-function get_wechat_config(array $params): array
+function get_wechat_config(array $params = []): array
 {
     $wechat = Pay::get(ConfigInterface::class)->get('wechat');
 
@@ -177,17 +175,6 @@ function get_wechat_config_key(array $params): string
     }
 
     return $key;
-}
-
-/**
- * @throws ContainerException
- * @throws ServiceNotFoundException
- */
-function get_wechat_base_uri(array $params): string
-{
-    $config = get_wechat_config($params);
-
-    return Wechat::URL[$config['mode'] ?? Pay::MODE_NORMAL];
 }
 
 /**
@@ -300,11 +287,11 @@ function reload_wechat_public_certs(array $params, ?string $serialNo = null): st
         $params
     )->get('data', []);
 
-    foreach ($data as $item) {
-        $certs[$item['serial_no']] = decrypt_wechat_resource($item['encrypt_certificate'], $params)['ciphertext'] ?? '';
-    }
-
     $wechatConfig = get_wechat_config($params);
+
+    foreach ($data as $item) {
+        $certs[$item['serial_no']] = decrypt_wechat_resource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
+    }
 
     Pay::get(ConfigInterface::class)->set(
         'wechat.'.get_tenant($params).'.wechat_public_cert_path',
@@ -343,15 +330,13 @@ function get_wechat_public_certs(array $params = [], ?string $path = null): void
 }
 
 /**
- * @throws ContainerException
  * @throws InvalidConfigException
- * @throws ServiceNotFoundException
  * @throws DecryptException
  */
-function decrypt_wechat_resource(array $resource, array $params): array
+function decrypt_wechat_resource(array $resource, array $config): array
 {
     $ciphertext = base64_decode($resource['ciphertext'] ?? '');
-    $secret = get_wechat_config($params)['mch_secret_key'] ?? null;
+    $secret = $config['mch_secret_key'] ?? null;
 
     if (strlen($ciphertext) <= Wechat::AUTH_TAG_LENGTH_BYTE) {
         throw new DecryptException(Exception::DECRYPT_WECHAT_CIPHERTEXT_PARAMS_INVALID, '加解密异常: ciphertext 位数过短');
@@ -393,6 +378,46 @@ function decrypt_wechat_resource_aes_256_gcm(string $ciphertext, string $secret,
     }
 
     return $decrypted;
+}
+
+/**
+ * @throws ContainerException
+ * @throws DecryptException
+ * @throws InvalidConfigException
+ * @throws InvalidParamsException
+ * @throws ServiceNotFoundException
+ */
+function get_wechat_serial_no(array $params): string
+{
+    if (!empty($params['_serial_no'])) {
+        return $params['_serial_no'];
+    }
+
+    $config = get_wechat_config($params);
+
+    if (empty($config['wechat_public_cert_path'])) {
+        reload_wechat_public_certs($params);
+
+        $config = get_wechat_config($params);
+    }
+
+    mt_srand();
+
+    return strval(array_rand($config['wechat_public_cert_path']));
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_wechat_public_key(array $config, string $serialNo): string
+{
+    $publicKey = $config['wechat_public_cert_path'][$serialNo] ?? null;
+
+    if (empty($publicKey)) {
+        throw new InvalidParamsException(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND, '参数异常: 微信公钥序列号为找到 -'.$serialNo);
+    }
+
+    return $publicKey;
 }
 
 /**

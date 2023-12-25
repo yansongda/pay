@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\Pay\Jsapi;
+namespace Yansongda\Pay\Plugin\Wechat\Pay\H5;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
@@ -15,8 +15,8 @@ use Yansongda\Pay\Rocket;
 use function Yansongda\Pay\get_wechat_config;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/jsapi-payment/create.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-jsapi-payment/create.html
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/h5-payment/create.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/partner-h5-payment/create.html
  */
 class RefundPlugin implements PluginInterface
 {
@@ -26,7 +26,7 @@ class RefundPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Pay][Jsapi][RefundPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Pay][H5][RefundPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
@@ -40,12 +40,12 @@ class RefundPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/refund/domestic/refunds',
                 '_service_url' => 'v3/refund/domestic/refunds',
-                'notify_url' => $config['notify_url'] ?? '',
+                'notify_url' => $config['notify_url'] ?? null,
             ],
             $payload ?? $this->normal()
         ));
 
-        Logger::info('[Wechat][Pay][Jsapi][RefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Pay][H5][RefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

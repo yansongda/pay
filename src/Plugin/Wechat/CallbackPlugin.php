@@ -20,6 +20,7 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\decrypt_wechat_resource;
+use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\verify_wechat_sign;
 
 class CallbackPlugin implements PluginInterface
@@ -38,14 +39,16 @@ class CallbackPlugin implements PluginInterface
 
         $this->init($rocket);
 
+        $params = $rocket->getParams();
+
         /* @phpstan-ignore-next-line */
-        verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());
+        verify_wechat_sign($rocket->getDestinationOrigin(), $params);
 
         $body = json_decode((string) $rocket->getDestination()->getBody(), true);
 
         $rocket->setDirection(NoHttpRequestDirection::class)->setPayload(new Collection($body));
 
-        $body['resource'] = decrypt_wechat_resource($body['resource'] ?? [], $rocket->getParams());
+        $body['resource'] = decrypt_wechat_resource($body['resource'] ?? [], get_wechat_config($params));
 
         $rocket->setDestination(new Collection($body));
 

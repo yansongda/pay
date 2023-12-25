@@ -38,7 +38,7 @@ class AddRadarPlugin implements PluginInterface
         $rocket->setRadar(new Request(
             get_wechat_method($payload),
             get_wechat_url($config, $payload),
-            $this->getHeaders($params, $payload),
+            $this->getHeaders($payload),
             get_wechat_body($payload),
         ));
 
@@ -50,7 +50,7 @@ class AddRadarPlugin implements PluginInterface
     /**
      * @throws InvalidParamsException
      */
-    protected function getHeaders(array $params, ?Collection $payload): array
+    protected function getHeaders(?Collection $payload): array
     {
         $authorization = $payload?->get('_authorization') ?? null;
 
@@ -65,8 +65,9 @@ class AddRadarPlugin implements PluginInterface
             'Authorization' => $authorization,
         ];
 
-        if (!empty($params['_serial_no'])) {
-            $headers['Wechatpay-Serial'] = $params['_serial_no'];
+        // 当 body 里有加密内容时，需要传递此参数用于微信区分
+        if ($payload?->has('_serial_no') ?? false) {
+            $headers['Wechatpay-Serial'] = $payload->get('_serial_no');
         }
 
         return $headers;

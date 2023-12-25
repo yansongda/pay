@@ -16,34 +16,34 @@ use Yansongda\Pay\Rocket;
 use function Yansongda\Pay\get_wechat_config;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/query-by-out-trade-no.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-mini-program-payment/query-by-out-trade-no.html
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/query-by-wx-trade-no.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/partner-mini-program-payment/query-by-wx-trade-no.html
  */
-class QueryPlugin implements PluginInterface
+class QueryByWxPlugin implements PluginInterface
 {
     /**
-     * @throws InvalidParamsException
      * @throws ContainerException
+     * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Pay][Mini][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Pay][Mini][QueryByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
 
-        if (empty($params['out_trade_no'])) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Mini 通过商户订单号查询订单，参数缺少 `out_trade_no`');
+        if (empty($params['transaction_id'])) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Mini 通过微信订单号查询订单，参数缺少 `transaction_id`');
         }
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/pay/transactions/out-trade-no/'.$params['out_trade_no'].'?'.$this->normal($config),
-            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$params['out_trade_no'].'?'.$this->service($config),
+            '_url' => 'v3/pay/transactions/id/'.$params['transaction_id'].'?'.$this->normal($config),
+            '_service_url' => 'v3/pay/partner/transactions/id/'.$params['transaction_id'].'?'.$this->service($config),
         ]);
 
-        Logger::info('[Wechat][Pay][Mini][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Pay][Mini][QueryByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

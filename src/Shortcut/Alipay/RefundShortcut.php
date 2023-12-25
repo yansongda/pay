@@ -14,10 +14,10 @@ use Yansongda\Pay\Plugin\Alipay\Fund\Transfer\RefundPlugin as FundTransferRefund
 use Yansongda\Pay\Plugin\Alipay\Pay\Agreement\RefundPlugin as AgreementRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\App\RefundPlugin as AppRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\RefundPlugin as AuthorizationRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\H5\RefundPlugin as WapRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Pos\RefundPlugin as PosRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Scan\RefundPlugin as ScanRefundPlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\H5\RefundPlugin as WapRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Web\RefundPlugin as WebRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\Pay\Jsapi;
+namespace Yansongda\Pay\Plugin\Wechat\Pay\Mini;
 
 use Closure;
 use Throwable;
@@ -19,12 +19,11 @@ use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_key;
 use function Yansongda\Pay\get_wechat_sign;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/jsapi-payment/jsapi-transfer-payment.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-jsapi-payment/jsapi-transfer-payment.html
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/mini-transfer-payment.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/partner-mini-program-payment/mini-transfer-payment.html
  */
 class InvokePlugin implements PluginInterface
 {
@@ -40,14 +39,14 @@ class InvokePlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[Wechat][Pay][Jsapi][InvokePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Mini][Jsapi][InvokePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $destination = $rocket->getDestination();
 
         $prepayId = $destination->get('prepay_id');
 
         if (is_null($prepayId)) {
-            Logger::error('[Wechat][Pay][Jsapi][InvokePlugin] 预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求', $destination->all());
+            Logger::error('[Wechat][Pay][Mini][InvokePlugin] 预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求', $destination->all());
 
             throw new InvalidResponseException(Exception::RESPONSE_MISSING_NECESSARY_PARAMS, $destination->get('message', '预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求'), $destination->all());
         }
@@ -55,9 +54,9 @@ class InvokePlugin implements PluginInterface
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
 
-        $rocket->setDestination($this->getInvokeConfig($params, $config, $prepayId));
+        $rocket->setDestination($this->getInvokeConfig($config, $prepayId));
 
-        Logger::info('[Wechat][Pay][Jsapi][InvokePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Pay][Mini][InvokePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }
@@ -66,10 +65,10 @@ class InvokePlugin implements PluginInterface
      * @throws InvalidConfigException
      * @throws Throwable              生成随机串失败
      */
-    protected function getInvokeConfig(array $params, array $config, string $prepayId): Config
+    protected function getInvokeConfig(array $config, string $prepayId): Config
     {
         $invokeConfig = new Config([
-            'appId' => $config[get_wechat_config_key($params)] ?? '',
+            'appId' => $config['mini_app_id'] ?? '',
             'timeStamp' => time().'',
             'nonceStr' => Str::random(32),
             'package' => 'prepay_id='.$prepayId,

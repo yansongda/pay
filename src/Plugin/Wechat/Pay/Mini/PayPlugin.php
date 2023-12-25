@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\Pay\H5;
+namespace Yansongda\Pay\Plugin\Wechat\Pay\Mini;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
@@ -16,8 +16,8 @@ use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_config_key;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/h5-payment/direct-jsons/h5-prepay.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-h5-payment/partner-jsons/partner-h5-prepay.html
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/mini-prepay.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/partner-mini-program-payment/partner-mini-prepay.html
  */
 class PayPlugin implements PluginInterface
 {
@@ -27,7 +27,7 @@ class PayPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Pay][H5][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Pay][Mini][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
@@ -39,14 +39,14 @@ class PayPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/pay/transactions/h5',
-                '_service_url' => 'v3/pay/partner/transactions/h5',
+                '_url' => 'v3/pay/transactions/jsapi',
+                '_service_url' => 'v3/pay/partner/transactions/jsapi',
                 'notify_url' => $config['notify_url'] ?? '',
             ],
             $payload ?? $this->normal($params, $config)
         ));
 
-        Logger::info('[Wechat][Pay][H5][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Pay][Mini][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
@@ -63,10 +63,16 @@ class PayPlugin implements PluginInterface
     {
         $configKey = get_wechat_config_key($params);
 
-        return [
+        $payload = [
+            'sub_mchid' => $config['sub_mch_id'] ?? '',
             'sp_appid' => $config[$configKey] ?? '',
             'sp_mchid' => $config['mch_id'] ?? '',
-            'sub_mchid' => $config['sub_mch_id'] ?? '',
         ];
+
+        if (!empty($params['payer']['sub_openid'])) {
+            $payload['sub_appid'] = $config['sub_'.$configKey] ?? '';
+        }
+
+        return $payload;
     }
 }

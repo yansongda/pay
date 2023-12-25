@@ -17,6 +17,7 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\filter_params;
+use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\verify_alipay_sign;
 
 class CallbackPlugin implements PluginInterface
@@ -38,7 +39,9 @@ class CallbackPlugin implements PluginInterface
             throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 支付宝回调签名为空', $rocket->getParams());
         }
 
-        verify_alipay_sign($rocket->getParams(), $this->getSignContent($rocket->getPayload()), $sign);
+        $config = get_alipay_config($rocket->getParams());
+
+        verify_alipay_sign($config, $this->getSignContent($rocket->getPayload()), $sign);
 
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());
@@ -50,7 +53,7 @@ class CallbackPlugin implements PluginInterface
 
     protected function formatPayload(Rocket $rocket): void
     {
-        $payload = filter_params($rocket->getParams(), fn ($k, $v) => '' !== $v && !is_null($v) && 'sign' != $k && 'sign_type' != $k);
+        $payload = filter_params($rocket->getParams(), fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k);
 
         $rocket->setPayload(new Collection($payload));
     }

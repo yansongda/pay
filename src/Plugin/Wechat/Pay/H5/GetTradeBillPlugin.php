@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\Pay\Jsapi;
+namespace Yansongda\Pay\Plugin\Wechat\Pay\H5;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
@@ -12,8 +12,8 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/jsapi-payment/get-trade-bill.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-jsapi-payment/get-trade-bill.html
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/h5-payment/get-trade-bill.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/partner-h5-payment/get-trade-bill.html
  */
 class GetTradeBillPlugin implements PluginInterface
 {
@@ -22,12 +22,12 @@ class GetTradeBillPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Pay][Jsapi][GetTradeBillPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Pay][H5][GetTradeBillPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
 
         if (is_null($payload?->get('bill_date') ?? null)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Jsapi 下载交易对账单，参数缺少 `bill_date`');
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: H5 下载交易对账单，参数缺少 `bill_date`');
         }
 
         $rocket->setPayload([
@@ -36,7 +36,7 @@ class GetTradeBillPlugin implements PluginInterface
             '_service_url' => 'v3/bill/tradebill?'.$payload->query(),
         ]);
 
-        Logger::info('[Wechat][Pay][Jsapi][GetTradeBillPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Pay][H5][GetTradeBillPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
