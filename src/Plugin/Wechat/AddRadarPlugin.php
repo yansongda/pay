@@ -66,7 +66,7 @@ class AddRadarPlugin implements PluginInterface
         ];
 
         // 当 body 里有加密内容时，需要传递此参数用于微信区分
-        if ($payload?->has('_serial_no') ?? false) {
+        if ($payload->has('_serial_no')) {
             $headers['Wechatpay-Serial'] = $payload->get('_serial_no');
         }
 
