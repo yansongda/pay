@@ -4,44 +4,71 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Pay\Combine;
 
+use Closure;
+use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Logger;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_wechat_config_key;
 
 /**
- * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_12.shtml
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/close-order.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/orders/close-order.html
  */
-class ClosePlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\ClosePlugin
+class ClosePlugin implements PluginInterface
 {
-    protected function getUri(Rocket $rocket): string
-    {
-        $payload = $rocket->getPayload();
-
-        if (!$payload->has('combine_out_trade_no') && !$payload->has('out_trade_no')) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        }
-
-        return 'v3/combine-transactions/out-trade-no/'.
-            $payload->get('combine_out_trade_no', $payload->get('out_trade_no')).
-            '/close';
-    }
-
     /**
      * @throws ContainerException
+     * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    protected function doSomething(Rocket $rocket): void
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $config = get_wechat_config($rocket->getParams());
+        Logger::debug('[Wechat][Pay][Combine][ClosePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $rocket->setPayload(new Collection([
-            'combine_appid' => $config['combine_appid'] ?? '',
-            'sub_orders' => $rocket->getParams()['sub_orders'] ?? [],
-        ]));
+        $params = $rocket->getParams();
+        $config = get_wechat_config($params);
+        $payload = $rocket->getPayload();
+
+        if (empty($payload?->get('combine_out_trade_no') ?? null)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 合单关单，参数缺少 `combine_out_trade_no`');
+        }
+
+        if (Pay::MODE_SERVICE === $config['mode']) {
+            $data = $this->service($config, $params);
+        }
+
+        $rocket->setPayload(array_merge(
+            [
+                '_method' => 'POST',
+                '_url' => 'v3/combine-transactions/out-trade-no/'.$payload->get('combine_out_trade_no').'/close',
+                '_service_url' => 'v3/combine-transactions/out-trade-no/'.$payload->get('combine_out_trade_no').'/close',
+            ],
+            $data ?? $this->normal($config, $params)
+        ));
+
+        Logger::info('[Wechat][Pay][Combine][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
+    }
+
+    protected function normal(array $config, array $params): array
+    {
+        return [
+            'combine_appid' => $config[get_wechat_config_key($params)] ?? '',
+        ];
+    }
+
+    protected function service(array $config, array $params): array
+    {
+        return [
+            'combine_appid' => $config[get_wechat_config_key($params)] ?? '',
+        ];
     }
 }

@@ -4,24 +4,40 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Pay\Combine;
 
+use Closure;
+use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter5_1_11.shtml
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/query-order.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/orders/query-order.html
  */
-class QueryPlugin extends \Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin
+class QueryPlugin implements PluginInterface
 {
-    protected function getUri(Rocket $rocket): string
+    /**
+     * @throws InvalidParamsException
+     */
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
+        Logger::debug('[Wechat][Pay][Combine][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
+
         $payload = $rocket->getPayload();
 
-        if (!$payload->has('combine_out_trade_no') && !$payload->has('transaction_id')) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        if (empty($payload?->get('combine_out_trade_no') ?? null)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 合单查询，参数缺少 `combine_out_trade_no`');
         }
 
-        return 'v3/combine-transactions/out-trade-no/'.
-            $payload->get('combine_out_trade_no', $payload->get('transaction_id'));
+        $rocket->setPayload([
+            '_method' => 'GET',
+            '_url' => 'v3/combine-transactions/out-trade-no/'.$payload->get('combine_out_trade_no'),
+            '_service_url' => 'v3/combine-transactions/out-trade-no/'.$payload->get('combine_out_trade_no'),
+        ]);
+
+        Logger::info('[Wechat][Pay][Combine][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
     }
 }

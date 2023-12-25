@@ -40,7 +40,7 @@ class RefundPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/refund/domestic/refunds',
                 '_service_url' => 'v3/refund/domestic/refunds',
-                'notify_url' => $config['notify_url'] ?? '',
+                'notify_url' => $config['notify_url'] ?? null,
             ],
             $payload ?? $this->normal()
         ));

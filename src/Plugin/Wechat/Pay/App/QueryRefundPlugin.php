@@ -32,15 +32,16 @@ class QueryRefundPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
+        $payload = $rocket->getPayload();
 
-        if (empty($params['out_trade_no'])) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: App 通过商户订单号查询订单，参数缺少 `out_trade_no`');
+        if (empty($payload?->get('out_refund_no') ?? null)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: App 查询退款订单，参数缺少 `out_refund_no`');
         }
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/refund/domestic/refunds/'.$params['out_trade_no'],
-            '_service_url' => 'v3/refund/domestic/refunds/'.$params['out_trade_no'].'?'.$this->service($config),
+            '_url' => 'v3/refund/domestic/refunds/'.$payload->get('out_refund_no'),
+            '_service_url' => 'v3/refund/domestic/refunds/'.$payload->get('out_refund_no').'?'.$this->service($config),
         ]);
 
         Logger::info('[Wechat][Pay][App][QueryRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);

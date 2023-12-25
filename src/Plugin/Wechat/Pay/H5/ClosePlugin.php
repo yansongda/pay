@@ -33,22 +33,23 @@ class ClosePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
+        $payload = $rocket->getPayload();
 
-        if (empty($params['out_trade_no'])) {
+        if (empty($payload?->get('out_trade_no') ?? null)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: H5 关闭订单，参数缺少 `out_trade_no`');
         }
 
         if (Pay::MODE_SERVICE === $config['mode']) {
-            $payload = $this->service($config);
+            $data = $this->service($config);
         }
 
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/pay/transactions/out-trade-no/'.$params['out_trade_no'].'/close',
-                '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$params['out_trade_no'].'/close',
+                '_url' => 'v3/pay/transactions/out-trade-no/'.$payload->get('out_trade_no').'/close',
+                '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$payload->get('out_trade_no').'/close',
             ],
-            $payload ?? $this->normal($config)
+            $data ?? $this->normal($config)
         ));
 
         Logger::info('[Wechat][Pay][H5][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);
