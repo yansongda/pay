@@ -80,12 +80,10 @@ class CreatePlugin implements PluginInterface
      */
     protected function encryptSensitiveData(array $params, array $config, Collection $payload): array
     {
-        $lists = $payload->get('transfer_detail_list');
-
         $data['_serial_no'] = get_wechat_serial_no($params);
         $publicKey = get_wechat_public_key($config, $data['_serial_no']);
 
-        foreach ($lists as $key => $list) {
+        foreach ($payload->get('transfer_detail_list', []) as $key => $list) {
             $data['transfer_detail_list'][$key]['user_name'] = encrypt_wechat_contents($list['username'], $publicKey);
         }
 

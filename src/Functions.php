@@ -146,7 +146,7 @@ function get_wechat_url(array $config, ?Collection $payload): string
     }
 
     if (empty($url)) {
-        throw new InvalidParamsException(Exception::PARAMS_WECHAT_URL_MISSING, '参数异常: 微信 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
+        throw new InvalidParamsException(Exception::PARAMS_WECHAT_URL_MISSING, '参数异常: 微信 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件` 或者此业务模式不支持普通商户模式');
     }
 
     if (str_starts_with($url, 'http')) {
