@@ -23,8 +23,7 @@ class QueryReceiptPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Marketing][Transfer][QueryReceiptPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-        $outBatchNo = $payload?->get('out_batch_no') ?? null;
+        $outBatchNo = $rocket->getPayload()?->get('out_batch_no') ?? null;
 
         if (empty($outBatchNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询转账账单电子回单接口，参数缺少 `out_batch_no`');
