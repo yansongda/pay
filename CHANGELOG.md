@@ -7,18 +7,15 @@
 
 ### changed
 
-- change(internal): shortcut 完整标明各个插件，不使用 commonPlugin(#886)
-- change(internal): 按场景对支付宝插件进行分类(#894)
-- change(internal): 支付宝 shortcut 从 plugin 文件夹独立出来(#895)
-- change(internal): DirectionInterface 方法由 `parse` 改为 `guide`(#896)
 - change: 查询API方法由 `find` 改为 `query`，同时参数只支持 array(#897)
-- change: cancel 的 API 参数只支持 array，不再支持 string(#900)
-- change: close 的 API 参数只支持 array，不再支持 string(#901)
-- change(internal): 错误代码 const 命名规则统一(#902, #903, #906)
-- change(internal): 微信 shortcut 从 plugin 文件夹独立出来(#904)
-- change(internal): 银联 shortcut 从 plugin 文件夹独立出来(#905)
-- change(internal): 按场景对微信插件进行分类，优化相关代码(#909)
+- change: cancel/close 的 API 参数只支持 array，不再支持 string(#900, #901)
 - change: 微信合单支付去掉独立的 `combine_app_id`,`combine_mch_id` 配置，复用其它配置(#909)
+- change(internal): 按场景对 支付宝/微信/银联 插件进行分类 && 插件代码优化(#894, #909)
+- change(internal): 将 支付/微信/银联 shortcut 从 plugin 文件夹独立出来(#895, #904, #905)
+- change(internal): shortcut 完整标明各个插件，不使用 commonPlugin(#886)
+- change(internal): DirectionInterface 方法由 `parse` 改为 `guide`(#896)
+- change(internal): 错误代码 const 命名规则统一(#902, #903, #906)
+- change(internal): 调整 `ProviderInterface` 的返回参数，增加了 `Rocket` 返回(#909)
 
 ## v3.5.3
 
