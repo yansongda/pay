@@ -6,8 +6,8 @@ namespace Yansongda\Pay\Shortcut\Wechat;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\Fund\Transfer\CreatePlugin;
 use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
+use Yansongda\Pay\Plugin\Wechat\Marketing\Transfer\CreatePlugin;
 use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
 use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
 

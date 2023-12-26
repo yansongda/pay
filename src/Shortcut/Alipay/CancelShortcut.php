@@ -39,16 +39,7 @@ class CancelShortcut implements ShortcutInterface
 
     protected function defaultPlugins(): array
     {
-        return [
-            StartPlugin::class,
-            PosCancelPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ];
+        return $this->posPlugins();
     }
 
     protected function agreementPlugins(): array

@@ -42,16 +42,7 @@ class CloseShortcut implements ShortcutInterface
 
     protected function defaultPlugins(): array
     {
-        return [
-            StartPlugin::class,
-            WebClosePlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ];
+        return $this->webPlugins();
     }
 
     protected function agreementPlugins(): array

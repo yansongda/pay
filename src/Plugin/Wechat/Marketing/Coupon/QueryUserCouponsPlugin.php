@@ -4,59 +4,59 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 
+use Closure;
+use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
-use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_wechat_config_type_key;
 
 /**
- * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter9_1_9.shtml
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/coupon/list-coupons-by-filter.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/coupon/list-coupons-by-filter.html
  */
-class QueryUserCouponsPlugin extends GeneralPlugin
+class QueryUserCouponsPlugin implements PluginInterface
 {
-    protected function getMethod(): string
-    {
-        return 'GET';
-    }
-
-    protected function doSomething(Rocket $rocket): void
-    {
-        $rocket->setPayload(null);
-    }
-
     /**
      * @throws InvalidParamsException
      * @throws ContainerException
      * @throws ServiceNotFoundException
      */
-    protected function getUri(Rocket $rocket): string
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $rocket->getPayload();
+        Logger::debug('[Wechat][Marketing][Coupon][QueryUserCouponsPlugin] 插件开始装载', ['rocket' => $rocket]);
+
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
+        $payload = $rocket->getPayload();
 
-        if (!$payload->has('openid')) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        if (empty($payload?->get('openid') ?? null)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 根据商户号查用户的券，参数缺少 `openid`');
         }
 
-        if (!$payload->has('appid')) {
-            $rocket->mergePayload(['appid' => $config[$this->getConfigKey($params)] ?? '']);
-        }
+        $rocket->setPayload(array_merge(
+            [
+                '_method' => 'GET',
+                '_url' => 'v3/marketing/favor/users/'.$payload->get('openid').'/coupons?'.$this->normal($payload, $params, $config),
+                '_service_url' => 'v3/marketing/favor/users/'.$payload->get('openid').'/coupons?'.$this->normal($payload, $params, $config),
+            ],
+        ));
 
-        if (!$payload->has('creator_mchid')) {
-            $rocket->mergePayload(['creator_mchid' => $config['mch_id']]);
-        }
+        Logger::info('[Wechat][Marketing][Coupon][QueryUserCouponsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
-        $query = $rocket->getPayload()->all();
+        return $next($rocket);
+    }
 
-        unset($query['openid']);
-
-        return 'v3/marketing/favor/users/'.
-            $payload->get('openid').
-            '/coupons?'.http_build_query($query);
+    protected function normal(?Collection $payload, array $params, array $config): string
+    {
+        return http_build_query(array_merge($payload?->all() ?? [], [
+            'appid' => $config[get_wechat_config_type_key($params)],
+        ]));
     }
 }

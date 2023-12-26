@@ -139,6 +139,10 @@ function get_wechat_url(array $config, ?Collection $payload): string
 
     if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
         $url = $payload?->get('_service_url') ?? $url ?? null;
+
+        if (empty($url)) {
+            throw new InvalidParamsException(Exception::PARAMS_WECHAT_URL_MISSING, '参数异常: 微信服务商模式下 `_service_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件` 或者此业务模式不支持服务商模式');
+        }
     }
 
     if (empty($url)) {
@@ -166,7 +170,7 @@ function get_wechat_body(?Collection $payload): string
     return $body;
 }
 
-function get_wechat_config_key(array $params): string
+function get_wechat_config_type_key(array $params): string
 {
     $key = ($params['_type'] ?? 'mp').'_app_id';
 

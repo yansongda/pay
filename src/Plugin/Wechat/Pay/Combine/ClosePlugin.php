@@ -14,7 +14,7 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_key;
+use function Yansongda\Pay\get_wechat_config_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/close-order.html
@@ -56,7 +56,7 @@ class ClosePlugin implements PluginInterface
     protected function normal(array $config, array $params): array
     {
         return [
-            'combine_appid' => $config[get_wechat_config_key($params)] ?? '',
+            'combine_appid' => $config[get_wechat_config_type_key($params)] ?? '',
         ];
     }
 }

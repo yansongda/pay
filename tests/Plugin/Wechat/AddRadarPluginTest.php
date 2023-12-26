@@ -42,17 +42,15 @@ class AddRadarPluginTest extends TestCase
 
     public function testNormalWithWechatSerial()
     {
-        $params = [
-            '_serial_no' => 'yansongda',
-        ];
         $payload = new Collection([
             '_method' => 'POST',
             '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
             '_body' => '123',
             '_authorization' => '456',
+            '_serial_no' => 'yansongda',
         ]);
 
-        $rocket = (new Rocket())->setParams($params)->setPayload($payload);
+        $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         $radar = $result->getRadar();

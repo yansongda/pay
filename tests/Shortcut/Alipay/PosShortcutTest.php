@@ -9,7 +9,7 @@ use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Pos\PayPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Pos\PayPlugin;
 use Yansongda\Pay\Shortcut\Alipay\PosShortcut;
 use Yansongda\Pay\Tests\TestCase;
 

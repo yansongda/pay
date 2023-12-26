@@ -13,7 +13,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_key;
+use function Yansongda\Pay\get_wechat_config_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/mini-prepay.html
@@ -54,14 +54,14 @@ class PayPlugin implements PluginInterface
     protected function normal(array $params, array $config): array
     {
         return [
-            'appid' => $config[get_wechat_config_key($params)] ?? '',
+            'appid' => $config[get_wechat_config_type_key($params)] ?? '',
             'mchid' => $config['mch_id'] ?? '',
         ];
     }
 
     protected function service(array $params, array $config): array
     {
-        $configKey = get_wechat_config_key($params);
+        $configKey = get_wechat_config_type_key($params);
 
         $payload = [
             'sub_mchid' => $config['sub_mch_id'] ?? '',

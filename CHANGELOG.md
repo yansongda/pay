@@ -17,7 +17,8 @@
 - change(internal): 错误代码 const 命名规则统一(#902, #903, #906)
 - change(internal): 微信 shortcut 从 plugin 文件夹独立出来(#904)
 - change(internal): 银联 shortcut 从 plugin 文件夹独立出来(#905)
-- change(internal): 按场景对微信插件进行分类，优化相关代码(#906)
+- change(internal): 按场景对微信插件进行分类，优化相关代码(#909)
+- change: 微信合单支付去掉独立的 `combine_app_id`,`combine_mch_id` 配置，复用其它配置(#909)
 
 ## v3.5.3
 

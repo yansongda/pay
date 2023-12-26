@@ -19,7 +19,7 @@ use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_key;
+use function Yansongda\Pay\get_wechat_config_type_key;
 use function Yansongda\Pay\get_wechat_sign;
 
 /**
@@ -69,7 +69,7 @@ class JsapiInvokePlugin implements PluginInterface
     protected function getInvokeConfig(array $params, array $config, string $prepayId): Config
     {
         $invokeConfig = new Config([
-            'appId' => $config[get_wechat_config_key($params)] ?? '',
+            'appId' => $config[get_wechat_config_type_key($params)] ?? '',
             'timeStamp' => time().'',
             'nonceStr' => Str::random(32),
             'package' => 'prepay_id='.$prepayId,
