@@ -20,6 +20,7 @@ use Yansongda\Pay\Plugin\Unipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
+use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -39,7 +40,7 @@ class Unipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function __call(string $shortcut, array $params): null|Collection|MessageInterface
+    public function __call(string $shortcut, array $params): null|Collection|MessageInterface|Rocket
     {
         $plugin = '\\Yansongda\\Pay\\Shortcut\\Unipay\\'.Str::studly($shortcut).'Shortcut';
 
@@ -51,7 +52,7 @@ class Unipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function query(array $order): array|Collection
+    public function query(array $order): Collection|Rocket
     {
         Event::dispatch(new Event\MethodCalled('unipay', __METHOD__, $order, null));
 
@@ -63,7 +64,7 @@ class Unipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function cancel(array $order): null|array|Collection
+    public function cancel(array $order): Collection|Rocket
     {
         Event::dispatch(new Event\MethodCalled('unipay', __METHOD__, $order, null));
 
@@ -73,7 +74,7 @@ class Unipay extends AbstractProvider
     /**
      * @throws InvalidParamsException
      */
-    public function close(array $order): null|array|Collection
+    public function close(array $order): Collection|Rocket
     {
         throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: 银联不支持 close API');
     }
@@ -83,7 +84,7 @@ class Unipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function refund(array $order): array|Collection
+    public function refund(array $order): Collection|Rocket
     {
         Event::dispatch(new Event\MethodCalled('unipay', __METHOD__, $order, null));
 
@@ -94,7 +95,7 @@ class Unipay extends AbstractProvider
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection
+    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection|Rocket
     {
         $request = $this->getCallbackParams($contents);
 

@@ -23,6 +23,7 @@ use Yansongda\Pay\Plugin\Wechat\CallbackPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Plugin\Wechat\VerifySignaturePlugin;
+use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -66,7 +67,7 @@ class Wechat extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function query(array $order): array|Collection
+    public function query(array $order): Collection|Rocket
     {
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
@@ -76,7 +77,7 @@ class Wechat extends AbstractProvider
     /**
      * @throws InvalidParamsException
      */
-    public function cancel(array $order): null|array|Collection
+    public function cancel(array $order): Collection|Rocket
     {
         throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: 微信不支持 cancel API');
     }
@@ -86,13 +87,13 @@ class Wechat extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function close(array $order): null|array|Collection
+    public function close(array $order): Collection|Rocket
     {
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
         $this->__call('close', [$order]);
 
-        return null;
+        return new Collection();
     }
 
     /**
@@ -100,7 +101,7 @@ class Wechat extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function refund(array $order): array|Collection
+    public function refund(array $order): Collection|Rocket
     {
         Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
 
@@ -111,7 +112,7 @@ class Wechat extends AbstractProvider
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection
+    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection|Rocket
     {
         $request = $this->getCallbackParams($contents);
 

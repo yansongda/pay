@@ -70,28 +70,81 @@ class AlipayTest extends TestCase
         self::assertEqualsCanonicalizing($response['alipay_trade_query_response'], $result->except('_sign')->all());
     }
 
-    public function testQueryTransfer()
+    public function testTransfer()
     {
         $response = [
-            "alipay_fund_trans_common_query_response" => [
+            "alipay_fund_trans_uni_transfer_response" => [
                 "code" => "10000",
                 "msg" => "Success",
-                "order_id" => "20231220110070000002150000657610",
-                "out_biz_no" => "2023122022560000",
-                "pay_date" => "2023-12-20 22:56:33",
-                "pay_fund_order_id" => "20231220110070001502150000660902",
+                "order_id" => "20231226110070000002150000683137",
+                "out_biz_no" => "2023122621450001",
+                "pay_fund_order_id" => "20231226110070001502150000685481",
                 "status" => "SUCCESS",
-                "trans_amount" => "0.01",
+                "trans_date" => "2023-12-26 22:11:45",
             ],
-            "sign" => "eITxP5fZiJPB2+vZb90IRkv2iARxeNx/6Omxk7FStqflhG5lMoCvGjo2FZ6Szo1bGBMBReazZuqLaqsgomWAUO9onMVurB3enLbRvwUlpE7XEZaxk/sJYjgc2Y7pIAenvnLL9PEAiXmvUvuinUlvS9J2r1XysC0p/2wu7kEJ/GgZpFDIIYY9mdM6U1rGbi+RvirQXtQHmaEuuJWLA75NR1bvfG3L8znzW9xz1kOQqOWsQmD/bF1CDWbozNLwLCUmClRJz0Fj4mUYRF0zbW2VP8ZgHu1YvVKJ2+dWC9b+0o94URk7psIpc5NjiOM9Jsn6aoC2CfrJ/sqFMRCkYWzw6A==",
+            "sign" => "exg0CUSgsRvI+q/Qqyu+MJ17ao4+vnEUMRE4YNbN2H3K6iX3xBcZv9jTt6m6c9JLZIifbqkZU13PLa4zy1MaQnQKg676wbqpN7ybEVL7LMzAgXUFm3Dc0XL1minPie2XOtwIgEecoPwpEqvqjjdTXfaE7fT6ZLxFLMMlPAESGwDDnKQVUmWs/8oq/EdPDNtVMmoVbF4o9zizyHw/QHVpLYvt0DHNCZRLhY85V99W6CrHjkNTB1QzEb1vCe3okVT3UAq26sxpu46R5l3n0xKJiYrucs8Y6CEWmayTKmZou7WQdgKQJHC0x0OIN58zWBkAFwz9ZAGON/WO3YHWq6mi5A==",
         ];
 
         $http = Mockery::mock(Client::class);
         $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::alipay()->query(['out_biz_no' => '202209032319', '_action' => 'transfer']);
-        self::assertEqualsCanonicalizing($response['alipay_fund_trans_common_query_response'], $result->except('_sign')->all());
+        $result = Pay::alipay()->transfer([
+            'out_biz_no' => '2023122621450001',
+            'trans_amount' => '0.01',
+            'product_code' => 'TRANS_ACCOUNT_NO_PWD',
+            'biz_scene' => 'DIRECT_TRANSFER',
+            'payee_info' => [
+                'identity' => 'ifvlwp1413@sandbox.com',
+                'identity_type' => 'ALIPAY_LOGON_ID',
+                'name' => 'ifvlwp1413'
+            ],
+            '_return_rocket' => true,
+        ]);
+
+        // 支付宝参数里有实时时间，导致签名不一样，这里只验证签名之前的部分
+        $body1 = 'app_id=9021000122682882&method=alipay.fund.trans.uni.transfer&format=JSON&return_url=https%3A%2F%2Fpay.yansongda.cn&charset=utf-8&sign_type=RSA2&timestamp=';
+        $body2 = '&version=1.0&notify_url=https%3A%2F%2Fpay.yansongda.cn&app_cert_sn=e90dd23a37c5c7b616e003970817ff82&alipay_root_cert_sn=687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6&biz_content=%7B%22biz_scene%22%3A%22DIRECT_TRANSFER%22%2C%22product_code%22%3A%22TRANS_ACCOUNT_NO_PWD%22%2C%22out_biz_no%22%3A%222023122621450001%22%2C%22trans_amount%22%3A%220.01%22%2C%22payee_info%22%3A%7B%22identity%22%3A%22ifvlwp1413%40sandbox.com%22%2C%22identity_type%22%3A%22ALIPAY_LOGON_ID%22%2C%22name%22%3A%22ifvlwp1413%22%7D%7D&sign=';
+
+        self::assertStringContainsString($body1, (string) $result->getRadar()->getBody());
+        self::assertStringContainsString($body2, (string) $result->getRadar()->getBody());
+        self::assertEqualsCanonicalizing($response['alipay_fund_trans_uni_transfer_response'], $result->getDestination()->except('_sign')->all());
+    }
+
+    public function testQueryTransfer()
+    {
+        $response = [
+            "alipay_fund_trans_common_query_response" => [
+                "code" => "10000",
+                "msg" => "Success",
+                "order_id" => "20231226110070000002150000683137",
+                "out_biz_no" => "2023122621450001",
+                "pay_date" => "2023-12-26 22:11:45",
+                "pay_fund_order_id" => "20231226110070001502150000685481",
+                "status" => "SUCCESS",
+                "trans_amount" => "0.01",
+            ],
+            "sign" => "AVEw2M/E95HJvcUVS05s/ABD96Hlw0IlGyjz36IjFMmb2u0Qviz/ZSBGnSdW4XH4Nda80h4hmiuslp7vnydeZKiyMUMms1wq8YZGYCjrBPs1pj898wPT22foVWEIAmwZYQ1ixJtmycYd8wZfg0y+fuLiSYifsik4OyQ8SGam1k0RqB1Qje0v8WKLtsrZszw0zDp9vYbPuCTLkgmT0gGRxHoUOP2JLfpK/uJs54tECVF9FUEVJmeBM8TvTxgMPB0b32MOzOtI1JB8qE/Gn7RaMbTVrQQZNCSEHhjhaCvHoBo3xVbx8Rcq6Xl2Nf0N8uEmK6UQqqLh//IW4nWs0T4HHQ==",
+        ];
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::alipay()->query([
+            'out_biz_no' => '2023122621450001',
+            'product_code' => 'TRANS_ACCOUNT_NO_PWD',
+            'biz_scene' => 'DIRECT_TRANSFER',
+            '_action' => 'transfer',
+            '_return_rocket' => true,
+        ]);
+
+        $body1 = 'app_id=9021000122682882&method=alipay.fund.trans.common.query&format=JSON&return_url=https%3A%2F%2Fpay.yansongda.cn&charset=utf-8&sign_type=RSA2&timestamp=';
+        $body2 = '&version=1.0&notify_url=https%3A%2F%2Fpay.yansongda.cn&app_cert_sn=e90dd23a37c5c7b616e003970817ff82&alipay_root_cert_sn=687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6&biz_content=%7B%22out_biz_no%22%3A%222023122621450001%22%2C%22product_code%22%3A%22TRANS_ACCOUNT_NO_PWD%22%2C%22biz_scene%22%3A%22DIRECT_TRANSFER%22%7D&sign=';
+
+        self::assertStringContainsString($body1, (string) $result->getRadar()->getBody());
+        self::assertStringContainsString($body2, (string) $result->getRadar()->getBody());
+        self::assertEqualsCanonicalizing($response['alipay_fund_trans_common_query_response'], $result->getDestination()->except('_sign')->all());
     }
 
     public function testQueryRefund()
