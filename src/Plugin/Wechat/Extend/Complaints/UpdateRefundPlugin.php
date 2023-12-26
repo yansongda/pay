@@ -2,36 +2,42 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\Risk\Complaints;
+namespace Yansongda\Pay\Plugin\Wechat\Extend\Complaints;
 
+use Closure;
+use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_19.shtml
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaints/update-refund-progress.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/consumer-complaint/complaints/update-refund-progress.html
  */
-class UpdateRefundPlugin extends GeneralPlugin
+class UpdateRefundPlugin implements PluginInterface
 {
-    protected function doSomething(Rocket $rocket): void
-    {
-        $rocket->getPayload()->forget('complaint_id');
-    }
-
     /**
      * @throws InvalidParamsException
      */
-    protected function getUri(Rocket $rocket): string
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $rocket->getPayload();
+        Logger::debug('[Wechat][Extend][Complaints][UpdateRefundPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        if (!$payload->has('complaint_id')) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        $complaintId = $rocket->getPayload()?->get('complaint_id') ?? null;
+
+        if (empty($complaintId)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 更新退款审批结果，参数缺少 `complaint_id`');
         }
 
-        return 'v3/merchant-service/complaints-v2/'.
-            $payload->get('complaint_id').
-            '/update-refund-progress';
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/update-refund-progress',
+            '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/update-refund-progress',
+        ]);
+
+        Logger::info('[Wechat][Extend][Complaints][UpdateRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
     }
 }

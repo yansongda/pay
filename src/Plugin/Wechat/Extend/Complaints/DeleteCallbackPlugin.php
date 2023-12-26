@@ -2,31 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\Risk\Complaints;
+namespace Yansongda\Pay\Plugin\Wechat\Extend\Complaints;
 
-use Yansongda\Pay\Direction\OriginResponseDirection;
-use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
+use Closure;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter10_2_5.shtml
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaint-notifications/delete-complaint-notifications.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/consumer-complaint/complaint-notifications/delete-complaint-notifications.html
  */
-class DeleteCallbackPlugin extends GeneralPlugin
+class DeleteCallbackPlugin implements PluginInterface
 {
-    protected function getMethod(): string
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        return 'DELETE';
-    }
+        Logger::debug('[Wechat][Extend][Complaints][DeleteCallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-    protected function doSomething(Rocket $rocket): void
-    {
-        $rocket->setDirection(OriginResponseDirection::class);
+        $rocket->mergePayload([
+            '_method' => 'DELETE',
+            '_url' => 'v3/merchant-service/complaint-notifications',
+            '_service_url' => 'v3/merchant-service/complaint-notifications',
+        ]);
 
-        $rocket->setPayload(null);
-    }
+        Logger::info('[Wechat][Extend][Complaints][DeleteCallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
-    protected function getUri(Rocket $rocket): string
-    {
-        return 'v3/merchant-service/complaint-notifications';
+        return $next($rocket);
     }
 }

@@ -70,6 +70,14 @@ class AddRadarPlugin implements PluginInterface
             $headers['Wechatpay-Serial'] = $payload->get('_serial_no');
         }
 
+        if ($payload->has('_content-type')) {
+            $headers['Content-Type'] = $payload->get('_content-type');
+        }
+
+        if ($payload->has('_accept')) {
+            $headers['Accept'] = $payload->get('_accept');
+        }
+
         return $headers;
     }
 }
