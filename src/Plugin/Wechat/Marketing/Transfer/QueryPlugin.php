@@ -15,14 +15,14 @@ use Yansongda\Supports\Collection;
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-out-no.html
  */
-class QueryOutBatchNoPlugin implements PluginInterface
+class QueryPlugin implements PluginInterface
 {
     /**
      * @throws InvalidParamsException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Marketing][Transfer][QueryOutBatchNoPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Marketing][Transfer][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
         $outBatchNo = $payload?->get('out_batch_no') ?? null;
@@ -38,7 +38,7 @@ class QueryOutBatchNoPlugin implements PluginInterface
             ],
         ));
 
-        Logger::info('[Wechat][Marketing][Transfer][QueryOutBatchNoPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Marketing][Transfer][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

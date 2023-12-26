@@ -6,12 +6,15 @@ namespace Yansongda\Pay\Tests\Shortcut\Wechat;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Alipay\Fund\TransCommonQueryPlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\ClosePlugin;
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Combine\ClosePlugin as CombineClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Jsapi\ClosePlugin as JsapiClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
+use Yansongda\Pay\Plugin\Wechat\StartPlugin;
+use Yansongda\Pay\Plugin\Wechat\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\CloseShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -29,10 +32,13 @@ class CloseShortcutTest extends TestCase
     public function testDefault()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            ClosePlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            JsapiClosePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
@@ -40,10 +46,13 @@ class CloseShortcutTest extends TestCase
     public function testCombine()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\ClosePlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            CombineClosePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'combine']));
     }
@@ -51,18 +60,24 @@ class CloseShortcutTest extends TestCase
     public function testCombineParams()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\ClosePlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            CombineClosePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['combine_out_trade_no' => '123abc']));
 
         self::assertEquals([
-            PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\ClosePlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            CombineClosePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['sub_orders' => '123abc']));
     }
@@ -71,7 +86,7 @@ class CloseShortcutTest extends TestCase
     {
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-        self::expectExceptionMessage('Query action [fooPlugins] not supported');
+        self::expectExceptionMessage('Close action [fooPlugins] not supported');
 
         $this->plugin->getPlugins(['_action' => 'foo']);
     }

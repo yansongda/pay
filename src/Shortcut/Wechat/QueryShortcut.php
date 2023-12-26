@@ -8,11 +8,25 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryRefundPlugin;
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Wechat\Marketing\Transfer\QueryDetailPlugin as TransferQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\App\QueryPlugin as AppQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\App\RefundPlugin as AppRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin as CombineQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Combine\RefundPlugin as CombineRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\H5\QueryPlugin as H5QueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\H5\RefundPlugin as H5RefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Jsapi\QueryPlugin as JsapiQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Jsapi\RefundPlugin as JsapiRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Mini\QueryPlugin as MiniQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Mini\RefundPlugin as MiniRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Native\QueryPlugin as NativeQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Native\RefundPlugin as NativeRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
+use Yansongda\Pay\Plugin\Wechat\StartPlugin;
+use Yansongda\Pay\Plugin\Wechat\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
 class QueryShortcut implements ShortcutInterface
@@ -26,33 +40,30 @@ class QueryShortcut implements ShortcutInterface
             return $this->combinePlugins();
         }
 
-        $typeMethod = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = Str::camel($params['_action'] ?? 'default').'Plugins';
 
-        if (method_exists($this, $typeMethod)) {
-            return $this->{$typeMethod}();
+        if (method_exists($this, $action)) {
+            return $this->{$action}();
         }
 
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Query action [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Query action [{$action}] not supported");
     }
 
     protected function defaultPlugins(): array
     {
-        return [
-            PreparePlugin::class,
-            QueryPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
-            ParserPlugin::class,
-        ];
+        return $this->jsapiPlugins();
     }
 
-    protected function refundPlugins(): array
+    protected function appPlugins(): array
     {
         return [
-            PreparePlugin::class,
-            QueryRefundPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            AppQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -60,10 +71,172 @@ class QueryShortcut implements ShortcutInterface
     protected function combinePlugins(): array
     {
         return [
-            PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            CombineQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function h5Plugins(): array
+    {
+        return [
+            StartPlugin::class,
+            H5QueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function jsapiPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            JsapiQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function miniPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            MiniQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function nativePlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            NativeQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function refundPlugins(): array
+    {
+        return $this->refundJsapiPlugins();
+    }
+
+    protected function refundAppPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            AppRefundPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function refundCombinePlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            CombineRefundPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function refundH5Plugins(): array
+    {
+        return [
+            StartPlugin::class,
+            H5RefundPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function refundJsapiPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            JsapiRefundPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function refundMiniPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            MiniRefundPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function refundNativePlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            NativeRefundPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function transferPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            TransferQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }

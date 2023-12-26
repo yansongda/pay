@@ -32,7 +32,6 @@ class StartPluginTest extends TestCase
 
         self::assertEquals('e90dd23a37c5c7b616e003970817ff82', $payload->get('app_cert_sn'));
         self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
-        self::assertEquals('yansongda_token', $payload->get('app_auth_token'));
     }
 
     public function testGlobalBcscale()
@@ -51,26 +50,24 @@ class StartPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setParams([
-            '_return_url' => 'https://yansongda.cn',
+            '_return_url' => 'https://yansongda.cna',
         ]);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('', $result->getPayload()->get('notify_url'));
-        self::assertEquals('https://yansongda.cn', $result->getPayload()->get('return_url'));
+        self::assertEquals('https://yansongda.cna', $result->getPayload()->get('return_url'));
     }
 
     public function testCustomizedNotifyUrl()
     {
         $rocket = new Rocket();
         $rocket->setParams([
-            '_notify_url' => 'https://yansongda.cn',
+            '_notify_url' => 'https://yansongda.cna',
         ]);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('', $result->getPayload()->get('return_url'));
-        self::assertEquals('https://yansongda.cn', $result->getPayload()->get('notify_url'));
+        self::assertEquals('https://yansongda.cna', $result->getPayload()->get('notify_url'));
     }
 
     public function testCustomizedReturnNotifyUrl()

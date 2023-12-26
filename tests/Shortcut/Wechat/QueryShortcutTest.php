@@ -7,11 +7,16 @@ namespace Yansongda\Pay\Tests\Shortcut\Wechat;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Common\QueryRefundPlugin;
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Wechat\Marketing\Transfer\QueryDetailPlugin as TransferQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin as CombineQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Jsapi\QueryPlugin as JsapiQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Jsapi\RefundPlugin as JsapiRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
+use Yansongda\Pay\Plugin\Wechat\StartPlugin;
+use Yansongda\Pay\Plugin\Wechat\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -29,10 +34,13 @@ class QueryShortcutTest extends TestCase
     public function testDefault()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            QueryPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            JsapiQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
@@ -40,10 +48,13 @@ class QueryShortcutTest extends TestCase
     public function testRefund()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            QueryRefundPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            JsapiRefundPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'refund']));
     }
@@ -51,10 +62,13 @@ class QueryShortcutTest extends TestCase
     public function testCombine()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            CombineQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'combine']));
     }
@@ -62,12 +76,29 @@ class QueryShortcutTest extends TestCase
     public function testCombineParams()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\Pay\Combine\QueryPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            CombineQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['combine_out_trade_no' => '123abc']));
+    }
+
+    public function testTransfer()
+    {
+        self::assertEquals([
+            StartPlugin::class,
+            TransferQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'transfer']));
     }
 
     public function testFoo()

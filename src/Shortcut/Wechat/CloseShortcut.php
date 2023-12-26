@@ -33,13 +33,13 @@ class CloseShortcut implements ShortcutInterface
             return $this->combinePlugins();
         }
 
-        $typeMethod = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = Str::camel($params['_action'] ?? 'default').'Plugins';
 
-        if (method_exists($this, $typeMethod)) {
-            return $this->{$typeMethod}();
+        if (method_exists($this, $action)) {
+            return $this->{$action}();
         }
 
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Query action [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Close action [{$action}] not supported");
     }
 
     protected function defaultPlugins(): array
