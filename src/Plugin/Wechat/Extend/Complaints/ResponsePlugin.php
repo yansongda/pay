@@ -11,9 +11,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
 
@@ -37,38 +35,18 @@ class ResponsePlugin implements PluginInterface
         $complaintId = $payload?->get('complaint_id') ?? null;
 
         if (empty($complaintId)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 反馈处理完成，参数缺少 `complaint_id`');
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 回复用户，参数缺少 `complaint_id`');
         }
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
-            $data = $this->service($payload, $config);
-        }
-
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/response',
-                '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/response',
-            ],
-            $data ?? $this->normal($payload, $config)
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/response',
+            '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/response',
+            'complainted_mchid' => $payload->get('complainted_mchid', $config['mch_id']),
+        ])->exceptPayload('complaint_id');
 
         Logger::info('[Wechat][Extend][Complaints][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function normal(Collection $payload, array $config): array
-    {
-        return [
-            'complainted_mchid' => $payload->get('complainted_mchid', $config['mch_id']),
-        ];
-    }
-
-    protected function service(Collection $payload, array $config): array
-    {
-        return [
-            'complainted_mchid' => $payload->get('complainted_mchid', $config['sub_mch_id']),
-        ];
     }
 }

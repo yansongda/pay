@@ -19,10 +19,13 @@ class UpdateCallbackPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Extend][Complaints][UpdateCallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $rocket->mergePayload([
+        $payload = $rocket->getPayload();
+
+        $rocket->setPayload([
             '_method' => 'PUT',
             '_url' => 'v3/merchant-service/complaint-notifications',
             '_service_url' => 'v3/merchant-service/complaint-notifications',
+            'url' => $payload?->get('url', '') ?? '',
         ]);
 
         Logger::info('[Wechat][Extend][Complaints][UpdateCallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);

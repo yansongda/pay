@@ -94,6 +94,17 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
         return $this;
     }
 
+    public function exceptPayload(mixed $key): Rocket
+    {
+        if (empty($this->payload)) {
+            return $this;
+        }
+
+        $this->payload = $this->payload->except($key);
+
+        return $this;
+    }
+
     public function getPacker(): string
     {
         return $this->packer;

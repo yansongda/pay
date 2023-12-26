@@ -19,7 +19,7 @@ class DeleteCallbackPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Extend][Complaints][DeleteCallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $rocket->mergePayload([
+        $rocket->setPayload([
             '_method' => 'DELETE',
             '_url' => 'v3/merchant-service/complaint-notifications',
             '_service_url' => 'v3/merchant-service/complaint-notifications',
