@@ -8,10 +8,10 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\Pay\Pos\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\Pay\Pos\PayPlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 
 class PosShortcut implements ShortcutInterface

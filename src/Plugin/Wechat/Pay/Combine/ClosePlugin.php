@@ -11,7 +11,6 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 
 use function Yansongda\Pay\get_wechat_config;
@@ -40,17 +39,13 @@ class ClosePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 合单关单，参数缺少 `combine_out_trade_no`');
         }
 
-        if (Pay::MODE_SERVICE === $config['mode']) {
-            $data = $this->service($config, $params);
-        }
-
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'POST',
                 '_url' => 'v3/combine-transactions/out-trade-no/'.$payload->get('combine_out_trade_no').'/close',
                 '_service_url' => 'v3/combine-transactions/out-trade-no/'.$payload->get('combine_out_trade_no').'/close',
             ],
-            $data ?? $this->normal($config, $params)
+            $this->normal($config, $params)
         ));
 
         Logger::info('[Wechat][Pay][Combine][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -59,13 +54,6 @@ class ClosePlugin implements PluginInterface
     }
 
     protected function normal(array $config, array $params): array
-    {
-        return [
-            'combine_appid' => $config[get_wechat_config_key($params)] ?? '',
-        ];
-    }
-
-    protected function service(array $config, array $params): array
     {
         return [
             'combine_appid' => $config[get_wechat_config_key($params)] ?? '',

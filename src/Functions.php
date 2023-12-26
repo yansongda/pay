@@ -369,8 +369,12 @@ function decrypt_wechat_resource_aes_256_gcm(string $ciphertext, string $secret,
         $associatedData
     );
 
+    if (false === $decrypted) {
+        throw new DecryptException(Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID, '加解密异常: 解密失败，请检查微信 mch_secret_key 是否正确');
+    }
+
     if ('certificate' !== $associatedData) {
-        $decrypted = json_decode(strval($decrypted), true);
+        $decrypted = json_decode($decrypted, true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new DecryptException(Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID, '加解密异常: 待解密数据非正常数据');

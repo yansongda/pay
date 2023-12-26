@@ -15,10 +15,10 @@ use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_config_key;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/jsapi-prepay.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/orders/jsapi-prepay.html
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/mini-program-prepay.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/orders/mini-program-prepay.html
  */
-class JsapiPayPlugin implements PluginInterface
+class MiniPayPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
@@ -26,7 +26,7 @@ class JsapiPayPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Pay][Combine][JsapiPayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Pay][Combine][MiniPayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
@@ -41,7 +41,7 @@ class JsapiPayPlugin implements PluginInterface
             $this->normal($params, $config)
         ));
 
-        Logger::info('[Wechat][Pay][Combine][JsapiPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Pay][Combine][MiniPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
