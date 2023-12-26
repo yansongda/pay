@@ -42,8 +42,9 @@ class RefundAbnormalPlugin implements PluginInterface
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
         $config = get_wechat_config($params);
+        $refundId = $payload?->get('refund_id') ?? null;
 
-        if (empty($payload->get('refund_id'))) {
+        if (empty($refundId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 发起异常退款，参数缺少 `refund_id`');
         }
 
@@ -54,8 +55,8 @@ class RefundAbnormalPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/refund/domestic/refunds/'.$payload->get('refund_id').'/apply-abnormal-refund',
-                '_service_url' => 'v3/refund/domestic/refunds/'.$payload->get('refund_id').'/apply-abnormal-refund',
+                '_url' => 'v3/refund/domestic/refunds/'.$refundId.'/apply-abnormal-refund',
+                '_service_url' => 'v3/refund/domestic/refunds/'.$refundId.'/apply-abnormal-refund',
             ],
             $data ?? $this->normal($params, $config, $payload)
         ));

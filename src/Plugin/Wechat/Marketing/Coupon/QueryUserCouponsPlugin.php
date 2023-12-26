@@ -35,16 +35,17 @@ class QueryUserCouponsPlugin implements PluginInterface
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
         $payload = $rocket->getPayload();
+        $openId = $payload?->get('openid') ?? null;
 
-        if (empty($payload?->get('openid') ?? null)) {
+        if (empty($openId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 根据商户号查用户的券，参数缺少 `openid`');
         }
 
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'GET',
-                '_url' => 'v3/marketing/favor/users/'.$payload->get('openid').'/coupons?'.$this->normal($payload, $params, $config),
-                '_service_url' => 'v3/marketing/favor/users/'.$payload->get('openid').'/coupons?'.$this->normal($payload, $params, $config),
+                '_url' => 'v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
+                '_service_url' => 'v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
             ],
         ));
 

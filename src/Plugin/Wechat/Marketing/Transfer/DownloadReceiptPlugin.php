@@ -24,14 +24,15 @@ class DownloadReceiptPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][Transfer][DownloadReceiptPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
+        $downloadUrl = $payload?->get('download_url') ?? null;
 
-        if (!$payload?->has('download_url')) {
+        if (empty($downloadUrl)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 下载电子回单，参数缺少 `download_url`');
         }
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => $payload->get('download_url'),
+            '_url' => $downloadUrl,
         ]);
 
         Logger::info('[Wechat][Marketing][Transfer][DownloadReceiptPlugin] 插件装载完毕', ['rocket' => $rocket]);

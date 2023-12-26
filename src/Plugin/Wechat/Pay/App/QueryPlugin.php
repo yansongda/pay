@@ -32,16 +32,16 @@ class QueryPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
-        $payload = $rocket->getPayload();
+        $outTradeNo = $rocket->getPayload()?->get('out_trade_no') ?? null;
 
-        if (empty($payload?->get('out_trade_no') ?? null)) {
+        if (empty($outTradeNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: App 通过商户订单号查询订单，参数缺少 `out_trade_no`');
         }
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/pay/transactions/out-trade-no/'.$payload->get('out_trade_no').'?'.$this->normal($config),
-            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$payload->get('out_trade_no').'?'.$this->service($config),
+            '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'?'.$this->normal($config),
+            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'?'.$this->service($config),
         ]);
 
         Logger::info('[Wechat][Pay][App][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -33,9 +33,9 @@ class ClosePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
-        $payload = $rocket->getPayload();
+        $outTradeNo = $rocket->getPayload()?->get('out_trade_no') ?? null;
 
-        if (empty($payload?->get('out_trade_no') ?? null)) {
+        if (empty($outTradeNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Mini 关闭订单，参数缺少 `out_trade_no`');
         }
 
@@ -46,8 +46,8 @@ class ClosePlugin implements PluginInterface
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/pay/transactions/out-trade-no/'.$payload->get('out_trade_no').'/close',
-                '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$payload->get('out_trade_no').'/close',
+                '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/close',
+                '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/close',
             ],
             $data ?? $this->normal($config)
         ));

@@ -25,15 +25,16 @@ class QueryBatchIdPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][Transfer][QueryBatchIdPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
+        $batchId = $payload?->get('batch_id') ?? null;
 
-        if (empty($payload?->get('batch_id'))) {
+        if (empty($batchId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 通过微信批次单号查询批次单，参数缺少 `batch_id`');
         }
 
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'GET',
-                '_url' => 'v3/transfer/batches/batch-id/'.$payload->get('batch_id').'?'.$this->normal($payload),
+                '_url' => 'v3/transfer/batches/batch-id/'.$batchId.'?'.$this->normal($payload),
             ],
         ));
 

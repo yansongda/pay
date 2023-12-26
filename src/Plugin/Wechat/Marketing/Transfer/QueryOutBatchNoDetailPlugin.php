@@ -24,15 +24,17 @@ class QueryOutBatchNoDetailPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][Transfer][QueryOutBatchNoDetailPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
+        $outBatchNo = $payload?->get('out_batch_no') ?? null;
+        $outDetailNo = $payload?->get('out_detail_no') ?? null;
 
-        if (empty($payload?->get('out_batch_no')) || !is_string($payload?->get('out_detail_no'))) {
+        if (empty($outBatchNo) || empty($outDetailNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 通过商家明细单号查询明细单，参数缺少 `out_batch_no` 或 `out_detail_no`');
         }
 
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'GET',
-                '_url' => 'v3/transfer/batches/out-batch-no/'.$payload->get('out_batch_no').'/details/out-detail-no'.$payload->get('out_detail_no'),
+                '_url' => 'v3/transfer/batches/out-batch-no/'.$outBatchNo.'/details/out-detail-no/'.$outDetailNo,
             ],
         ));
 

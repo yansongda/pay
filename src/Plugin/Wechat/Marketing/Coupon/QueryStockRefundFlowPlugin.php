@@ -25,16 +25,17 @@ class QueryStockRefundFlowPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][Coupon][QueryStockRefundFlowPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
+        $stockId = $payload?->get('stock_id') ?? null;
 
-        if (empty($payload?->get('stock_id') ?? null)) {
+        if (empty($stockId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 下载批次退款明细，参数缺少 `stock_id`');
         }
 
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'GET',
-                '_url' => 'v3/marketing/favor/stocks/'.$payload->get('stock_id').'/refund-flow',
-                '_service_url' => 'v3/marketing/favor/stocks/'.$payload->get('stock_id').'/refund-flow',
+                '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/refund-flow',
+                '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/refund-flow',
             ],
         ));
 

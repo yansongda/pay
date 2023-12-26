@@ -34,16 +34,17 @@ class QueryStockMerchantsPlugin implements PluginInterface
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
         $payload = $rocket->getPayload();
+        $stockId = $payload?->get('stock_id') ?? null;
 
-        if (empty($payload?->get('stock_id') ?? null)) {
+        if (empty($stockId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询代金券可用商户，参数缺少 `stock_id`');
         }
 
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'GET',
-                '_url' => 'v3/marketing/favor/stocks/'.$payload->get('stock_id').'/merchants?'.$this->normal($payload, $config),
-                '_service_url' => 'v3/marketing/favor/stocks/'.$payload->get('stock_id').'/merchants?'.$this->normal($payload, $config),
+                '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/merchants?'.$this->normal($payload, $config),
+                '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/merchants?'.$this->normal($payload, $config),
             ],
         ));
 

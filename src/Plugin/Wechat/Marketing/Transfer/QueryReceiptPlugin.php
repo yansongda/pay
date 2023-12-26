@@ -24,15 +24,16 @@ class QueryReceiptPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][Transfer][QueryReceiptPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
+        $outBatchNo = $payload?->get('out_batch_no') ?? null;
 
-        if (empty($payload?->get('out_batch_no'))) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询转账账单电子回单接口，参数缺少 `batch_id` 或 `detail_id`');
+        if (empty($outBatchNo)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询转账账单电子回单接口，参数缺少 `out_batch_no`');
         }
 
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'GET',
-                '_url' => 'v3/transfer/bill-receipt/'.$payload->get('out_batch_no'),
+                '_url' => 'v3/transfer/bill-receipt/'.$outBatchNo,
             ],
         ));
 

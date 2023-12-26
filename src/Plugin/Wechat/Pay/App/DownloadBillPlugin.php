@@ -25,15 +25,16 @@ class DownloadBillPlugin implements PluginInterface
         Logger::debug('[Wechat][Pay][App][DownloadBillPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
+        $downloadUrl = $payload->get('download_url') ?? null;
 
-        if (!$payload->has('download_url')) {
+        if (empty($downloadUrl)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: App 下载交易对账单，参数缺少 `download_url`');
         }
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => $payload->get('download_url'),
-            '_service_url' => $payload->get('download_url'),
+            '_url' => $downloadUrl,
+            '_service_url' => $downloadUrl,
         ]);
 
         Logger::info('[Wechat][Pay][App][DownloadBillPlugin] 插件装载完毕', ['rocket' => $rocket]);

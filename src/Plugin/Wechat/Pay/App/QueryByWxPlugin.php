@@ -32,16 +32,16 @@ class QueryByWxPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
-        $payload = $rocket->getPayload();
+        $transactionId = $rocket->getPayload()?->get('transaction_id') ?? null;
 
-        if (empty($payload?->get('transaction_id') ?? null)) {
+        if (empty($transactionId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: App 通过微信订单号查询订单，参数缺少 `transaction_id`');
         }
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/pay/transactions/id/'.$payload->get('transaction_id').'?'.$this->normal($config),
-            '_service_url' => 'v3/pay/partner/transactions/id/'.$payload->get('transaction_id').'?'.$this->service($config),
+            '_url' => 'v3/pay/transactions/id/'.$transactionId.'?'.$this->normal($config),
+            '_service_url' => 'v3/pay/partner/transactions/id/'.$transactionId.'?'.$this->service($config),
         ]);
 
         Logger::info('[Wechat][Pay][App][QueryByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);

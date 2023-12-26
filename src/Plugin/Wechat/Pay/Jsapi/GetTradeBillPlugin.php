@@ -6,8 +6,6 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Jsapi;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
@@ -17,18 +15,11 @@ use Yansongda\Pay\Rocket;
  */
 class GetTradeBillPlugin implements PluginInterface
 {
-    /**
-     * @throws InvalidParamsException
-     */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::debug('[Wechat][Pay][Jsapi][GetTradeBillPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
-
-        if (is_null($payload?->get('bill_date') ?? null)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Jsapi 下载交易对账单，参数缺少 `bill_date`');
-        }
 
         $rocket->setPayload([
             '_method' => 'GET',

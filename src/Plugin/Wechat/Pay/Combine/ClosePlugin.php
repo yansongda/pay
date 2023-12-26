@@ -33,17 +33,17 @@ class ClosePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
-        $payload = $rocket->getPayload();
+        $combineOutTradeNo = $rocket->getPayload()?->get('combine_out_trade_no') ?? null;
 
-        if (empty($payload?->get('combine_out_trade_no') ?? null)) {
+        if (empty($combineOutTradeNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 合单关单，参数缺少 `combine_out_trade_no`');
         }
 
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/combine-transactions/out-trade-no/'.$payload->get('combine_out_trade_no').'/close',
-                '_service_url' => 'v3/combine-transactions/out-trade-no/'.$payload->get('combine_out_trade_no').'/close',
+                '_url' => 'v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
+                '_service_url' => 'v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
             ],
             $this->normal($config, $params)
         ));

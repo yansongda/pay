@@ -45,7 +45,7 @@ class MiniInvokePlugin implements PluginInterface
 
         $prepayId = $destination->get('prepay_id');
 
-        if (is_null($prepayId)) {
+        if (empty($prepayId)) {
             Logger::error('[Wechat][Pay][Combine][MiniInvokePlugin] 预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求', $destination->all());
 
             throw new InvalidResponseException(Exception::RESPONSE_MISSING_NECESSARY_PARAMS, $destination->get('message', '预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求'), $destination->all());

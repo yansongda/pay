@@ -24,15 +24,17 @@ class QueryBatchIdDetailPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][Transfer][QueryBatchIdDetailPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
+        $batchId = $payload?->get('batch_id') ?? null;
+        $detailId = $payload?->get('detail_id') ?? null;
 
-        if (empty($payload?->get('batch_id')) || empty($payload?->get('detail_id'))) {
+        if (empty($batchId) || empty($detailId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 通过微信明细单号查询明细单，参数缺少 `batch_id` 或 `detail_id`');
         }
 
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'GET',
-                '_url' => 'v3/transfer/batches/batch-id/'.$payload->get('batch_id').'/details/detail-id/'.$payload->get('detail_id'),
+                '_url' => 'v3/transfer/batches/batch-id/'.$batchId.'/details/detail-id/'.$detailId,
             ],
         ));
 
