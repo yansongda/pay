@@ -51,7 +51,7 @@ class DeleteReceiverPlugin implements PluginInterface
                 '_url' => 'v3/profitsharing/receivers/delete',
                 '_service_url' => 'v3/profitsharing/receivers/delete',
             ],
-            $data ?? $this->normal($params, $config),
+            $data ?? $this->normal($payload, $params, $config),
         ));
 
         Logger::info('[Wechat][Extend][ProfitSharing][DeleteReceiverPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -59,22 +59,22 @@ class DeleteReceiverPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array $params, array $config): array
+    protected function normal(Collection $payload, array $params, array $config): array
     {
         return [
-            'appid' => $config[get_wechat_config_type_key($params)],
+            'appid' => $payload->get('appid', $config[get_wechat_config_type_key($params)] ?? ''),
         ];
     }
 
     protected function service(Collection $payload, array $params, array $config): array
     {
         $data = [
-            'sub_mchid' => $config['sub_mch_id'],
-            'appid' => $config[get_wechat_config_type_key($params)],
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
+            'appid' => $payload->get('appid', $config[get_wechat_config_type_key($params)] ?? ''),
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = $config['sub_'.get_wechat_config_type_key($params)] ?? '';
+            $data['sub_appid'] = $payload->get('sub_appid', $config['sub_'.get_wechat_config_type_key($params)] ?? '');
         }
 
         return $data;

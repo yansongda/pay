@@ -34,18 +34,17 @@ class QueryPlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $outOrderNo = $payload?->get('out_order_no') ?? null;
         $transactionId = $payload?->get('transaction_id') ?? null;
+        $subMchId = $payload?->get('sub_mchid') ?? $config['sub_mch_id'] ?? 'null';
 
         if (empty($outOrderNo) || empty($transactionId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询分账结果, 缺少必要参数 `out_order_no`, `transaction_id`');
         }
 
-        $rocket->setPayload(array_merge(
-            [
-                '_method' => 'GET',
-                '_url' => 'v3/profitsharing/orders/'.$outOrderNo.'?transaction_id='.$transactionId,
-                '_service_url' => 'v3/profitsharing/orders/'.$outOrderNo.'?sub_mchid='.$config['sub_mch_id'].'&transaction_id='.$transactionId,
-            ],
-        ));
+        $rocket->setPayload([
+            '_method' => 'GET',
+            '_url' => 'v3/profitsharing/orders/'.$outOrderNo.'?transaction_id='.$transactionId,
+            '_service_url' => 'v3/profitsharing/orders/'.$outOrderNo.'?sub_mchid='.$subMchId.'&transaction_id='.$transactionId,
+        ]);
 
         Logger::info('[Wechat][Extend][ProfitSharing][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

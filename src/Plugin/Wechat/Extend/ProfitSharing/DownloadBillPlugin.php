@@ -12,6 +12,7 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 /**
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/download-bill.html
  * @see https://pay.weixin.qq.com/docs/partner/apis/profit-sharing/download-bill.html
  */
 class DownloadBillPlugin implements PluginInterface
@@ -32,6 +33,7 @@ class DownloadBillPlugin implements PluginInterface
         $rocket->setPayload([
             '_method' => 'GET',
             '_url' => $downloadUrl,
+            '_service_url' => $downloadUrl,
         ]);
 
         Logger::info('[Wechat][Extend][ProfitSharing][DownloadBillPlugin] 插件装载完毕', ['rocket' => $rocket]);

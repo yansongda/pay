@@ -27,16 +27,14 @@ class QueryAmountsPlugin implements PluginInterface
         $transactionId = $rocket->getPayload()?->get('transaction_id');
 
         if (is_null($transactionId)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账参数');
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询剩余待分金额，参数缺少 `transaction_id`');
         }
 
-        $rocket->setPayload(array_merge(
-            [
-                '_method' => 'GET',
-                '_url' => 'v3/profitsharing/transactions/'.$transactionId.'/amounts',
-                '_service_url' => 'v3/profitsharing/transactions/'.$transactionId.'/amounts',
-            ],
-        ));
+        $rocket->setPayload([
+            '_method' => 'GET',
+            '_url' => 'v3/profitsharing/transactions/'.$transactionId.'/amounts',
+            '_service_url' => 'v3/profitsharing/transactions/'.$transactionId.'/amounts',
+        ]);
 
         Logger::info('[Wechat][Extend][ProfitSharing][QueryAmountsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

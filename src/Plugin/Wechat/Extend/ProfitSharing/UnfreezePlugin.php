@@ -13,6 +13,7 @@ use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
 
@@ -40,7 +41,7 @@ class UnfreezePlugin implements PluginInterface
         }
 
         if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
-            $data = $this->service($config);
+            $data = $this->service($payload, $config);
         }
 
         $rocket->mergePayload(array_merge(
@@ -62,11 +63,11 @@ class UnfreezePlugin implements PluginInterface
         return [];
     }
 
-    protected function service(array $config): array
+    protected function service(Collection $payload, array $config): array
     {
         return [
-            'sub_mchid' => $config['sub_mch_id'],
-            'notify_url' => $config['notify_url'] ?? null,
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
+            'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? null),
         ];
     }
 }

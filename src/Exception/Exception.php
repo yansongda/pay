@@ -60,21 +60,19 @@ class Exception extends \Exception
 
     public const PARAMS_METHOD_NOT_SUPPORTED = 4004;
 
-    public const PARAMS_REQUEST_EMPTY = 4005;
+    public const PARAMS_NECESSARY_PARAMS_MISSING = 4005;
 
-    public const PARAMS_NECESSARY_PARAMS_MISSING = 4006;
+    public const PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE = 4006;
 
-    public const PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE = 4007;
+    public const PARAMS_WECHAT_SERIAL_NOT_FOUND = 4007;
 
-    public const PARAMS_WECHAT_SERIAL_NOT_FOUND = 4008;
+    public const PARAMS_CALLBACK_REQUEST_INVALID = 4008;
 
-    public const PARAMS_CALLBACK_REQUEST_INVALID = 4009;
+    public const PARAMS_WECHAT_URL_MISSING = 4009;
 
-    public const PARAMS_WECHAT_URL_MISSING = 4010;
+    public const PARAMS_WECHAT_BODY_MISSING = 4010;
 
-    public const PARAMS_WECHAT_BODY_MISSING = 4011;
-
-    public const PARAMS_WECHAT_AUTHORIZATION_MISSING = 4012;
+    public const PARAMS_WECHAT_AUTHORIZATION_MISSING = 4011;
 
     /**
      * 关于响应.
