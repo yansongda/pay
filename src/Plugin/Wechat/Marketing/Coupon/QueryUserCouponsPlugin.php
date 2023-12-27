@@ -41,23 +41,25 @@ class QueryUserCouponsPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 根据商户号查用户的券，参数缺少 `openid`');
         }
 
-        $rocket->setPayload(array_merge(
-            [
-                '_method' => 'GET',
-                '_url' => 'v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
-                '_service_url' => 'v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
-            ],
-        ));
+        $rocket->setPayload([
+            '_method' => 'GET',
+            '_url' => 'v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
+            '_service_url' => 'v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
+        ]);
 
         Logger::info('[Wechat][Marketing][Coupon][QueryUserCouponsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
 
-    protected function normal(?Collection $payload, array $params, array $config): string
+    protected function normal(Collection $payload, array $params, array $config): string
     {
-        return http_build_query(array_merge($payload?->all() ?? [], [
-            'appid' => $config[get_wechat_config_type_key($params)],
-        ]));
+        $appId = $payload->get('appid');
+
+        if (is_null($appId)) {
+            $payload->set('appid', $config[get_wechat_config_type_key($params)] ?? '');
+        }
+
+        return $payload->except('openid')->query();
     }
 }

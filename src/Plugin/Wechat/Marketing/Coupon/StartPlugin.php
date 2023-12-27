@@ -32,20 +32,19 @@ class StartPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
-        $stockId = $rocket->getPayload()?->get('stock_id') ?? null;
+        $payload = $rocket->getPayload();
+        $stockId = $payload?->get('stock_id') ?? null;
 
         if (empty($stockId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 激活代金券，参数缺少 `stock_id`');
         }
 
-        $rocket->setPayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/start',
-                '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/start',
-                'stock_creator_mchid' => $config['mch_id'],
-            ],
-        ));
+        $rocket->setPayload([
+            '_method' => 'POST',
+            '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/start',
+            '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/start',
+            'stock_creator_mchid' => $payload->get('stock_creator_mchid') ?? $config['mch_id'] ?? '',
+        ]);
 
         Logger::info('[Wechat][Marketing][Coupon][StartPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

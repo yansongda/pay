@@ -29,14 +29,15 @@ class SetCallbackPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
+        $payload = $rocket->getPayload();
 
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
                 '_url' => 'v3/marketing/favor/callbacks',
                 '_service_url' => 'v3/marketing/favor/callbacks',
-                'mchid' => $config['mch_id'],
-                'notify_url' => $config['notify_url'] ?? '',
+                'mchid' => $payload?->get('mchid') ?? $config['mch_id'] ?? '',
+                'notify_url' => $payload?->get('notify_url') ?? $config['notify_url'] ?? '',
             ],
         ));
 

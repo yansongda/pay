@@ -40,23 +40,25 @@ class QueryStockMerchantsPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询代金券可用商户，参数缺少 `stock_id`');
         }
 
-        $rocket->setPayload(array_merge(
-            [
-                '_method' => 'GET',
-                '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/merchants?'.$this->normal($payload, $config),
-                '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/merchants?'.$this->normal($payload, $config),
-            ],
-        ));
+        $rocket->setPayload([
+            '_method' => 'GET',
+            '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/merchants?'.$this->normal($payload, $config),
+            '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/merchants?'.$this->normal($payload, $config),
+        ]);
 
         Logger::info('[Wechat][Marketing][Coupon][QueryStockMerchantsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
 
-    public function normal(?Collection $payload, array $config): string
+    public function normal(Collection $payload, array $config): string
     {
-        return http_build_query(array_merge($payload?->all() ?? [], [
-            'stock_creator_mchid' => $config['mch_id'],
-        ]));
+        $stockCreatorMchId = $payload->get('stock_creator_mchid');
+
+        if (is_null($stockCreatorMchId)) {
+            $payload->set('stock_creator_mchid', $config['mch_id'] ?? '');
+        }
+
+        return $payload->except('stock_id')->query();
     }
 }

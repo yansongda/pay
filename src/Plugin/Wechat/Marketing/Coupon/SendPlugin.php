@@ -38,15 +38,16 @@ class SendPlugin implements PluginInterface
         $openId = $payload?->get('openid') ?? null;
 
         if (empty($openId)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 根据商户号查用户的券，参数缺少 `openid`');
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 发放指定批次的代金券，参数缺少 `openid`');
         }
 
-        $rocket->mergePayload(array_merge(
+        $rocket->setPayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
-                '_service_url' => 'v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
+                '_url' => 'v3/marketing/favor/users/'.$openId.'/coupons',
+                '_service_url' => 'v3/marketing/favor/users/'.$openId.'/coupons',
             ],
+            $this->normal($payload, $params, $config),
         ));
 
         Logger::info('[Wechat][Marketing][Coupon][SendPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -54,11 +55,16 @@ class SendPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(?Collection $payload, array $params, array $config): string
+    protected function normal(Collection $payload, array $params, array $config): array
     {
-        return http_build_query(array_merge($payload?->all() ?? [], [
-            'appid' => $config[get_wechat_config_type_key($params)],
-            'stock_creator_mchid' => $config['mch_id'],
-        ]));
+        if (empty($payload->get('appid'))) {
+            $payload->set('appid', $config[get_wechat_config_type_key($params)] ?? '');
+        }
+
+        if (empty($payload->get('stock_creator_mchid'))) {
+            $payload->set('stock_creator_mchid', $config['mch_id'] ?? '');
+        }
+
+        return $payload->except('openid')->all();
     }
 }

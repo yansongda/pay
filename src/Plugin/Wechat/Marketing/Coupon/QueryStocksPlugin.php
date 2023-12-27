@@ -7,6 +7,8 @@ namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
@@ -22,6 +24,7 @@ class QueryStocksPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
+     * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
@@ -32,23 +35,29 @@ class QueryStocksPlugin implements PluginInterface
         $config = get_wechat_config($params);
         $payload = $rocket->getPayload();
 
-        $rocket->setPayload(array_merge(
-            [
-                '_method' => 'GET',
-                '_url' => 'v3/marketing/favor/stocks?'.$this->normal($payload, $config),
-                '_service_url' => 'v3/marketing/favor/stocks?'.$this->normal($payload, $config),
-            ],
-        ));
+        if (is_null($payload)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少代金券相关参数');
+        }
+
+        $rocket->setPayload([
+            '_method' => 'GET',
+            '_url' => 'v3/marketing/favor/stocks?'.$this->normal($payload, $config),
+            '_service_url' => 'v3/marketing/favor/stocks?'.$this->normal($payload, $config),
+        ]);
 
         Logger::info('[Wechat][Marketing][Coupon][QueryStocksPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
 
-    public function normal(?Collection $payload, array $config): string
+    public function normal(Collection $payload, array $config): string
     {
-        return http_build_query(array_merge($payload?->all() ?? [], [
-            'stock_creator_mchid' => $config['mch_id'],
-        ]));
+        $stockCreatorMchId = $payload->get('stock_creator_mchid');
+
+        if (is_null($stockCreatorMchId)) {
+            $payload->set('stock_creator_mchid', $config['mch_id'] ?? '');
+        }
+
+        return $payload->query();
     }
 }
