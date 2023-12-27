@@ -29,14 +29,13 @@ class QueryCallbackPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
+        $mchId = $rocket->getPayload()?->get('mchid') ?? $config['mch_id'] ?? 'null';
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'GET',
-                '_url' => 'v3/marketing/favor/callbacks?mchid='.$config['mch_id'],
-                '_service_url' => 'v3/marketing/favor/callbacks?mchid='.$config['mch_id'],
-            ],
-        ));
+        $rocket->setPayload([
+            '_method' => 'GET',
+            '_url' => 'v3/marketing/favor/callbacks?mchid='.$mchId,
+            '_service_url' => 'v3/marketing/favor/callbacks?mchid='.$mchId,
+        ]);
 
         Logger::info('[Wechat][Marketing][Coupon][QueryCallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

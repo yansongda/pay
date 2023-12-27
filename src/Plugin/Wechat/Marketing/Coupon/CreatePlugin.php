@@ -29,15 +29,14 @@ class CreatePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
+        $belongMerchant = $rocket->getPayload()?->get('belong_merchant') ?? $config['mch_id'];
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => 'v3/marketing/favor/coupon-stocks',
-                '_service_url' => 'v3/marketing/favor/coupon-stocks',
-                'belong_merchant' => $config['mch_id'],
-            ],
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => 'v3/marketing/favor/coupon-stocks',
+            '_service_url' => 'v3/marketing/favor/coupon-stocks',
+            'belong_merchant' => $belongMerchant,
+        ]);
 
         Logger::info('[Wechat][Marketing][Coupon][CreatePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
