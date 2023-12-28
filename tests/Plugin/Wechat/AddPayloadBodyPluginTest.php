@@ -39,6 +39,7 @@ class AddPayloadBodyPluginTest extends TestCase
         $payload = [
             "name" => "yansongda",
             '_age' => 30,
+            'aaa' => null,
         ];
 
         $rocket = new Rocket();
@@ -46,7 +47,7 @@ class AddPayloadBodyPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        unset($payload['_age']);
+        unset($payload['_age'], $payload['aaa']);
 
         self::assertSame((new JsonPacker())->pack($payload), $result->getPayload()->get('_body'));
     }

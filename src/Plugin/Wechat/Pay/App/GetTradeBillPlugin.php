@@ -6,6 +6,8 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\App;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
@@ -15,11 +17,18 @@ use Yansongda\Pay\Rocket;
  */
 class GetTradeBillPlugin implements PluginInterface
 {
+    /**
+     * @throws InvalidParamsException
+     */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::debug('[Wechat][Pay][App][GetTradeBillPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
+
+        if (is_null($payload)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 申请交易账单，参数为空');
+        }
 
         $rocket->setPayload([
             '_method' => 'GET',
