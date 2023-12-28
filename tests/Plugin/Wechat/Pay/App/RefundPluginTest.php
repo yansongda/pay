@@ -26,7 +26,7 @@ class RefundPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 退款申请，参数为空');
+        self::expectExceptionMessage('参数异常: App 退款申请，参数为空');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

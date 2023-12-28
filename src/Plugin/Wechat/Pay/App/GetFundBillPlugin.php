@@ -27,7 +27,7 @@ class GetFundBillPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 申请资金账单，参数为空');
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: App 申请资金账单，参数为空');
         }
 
         $rocket->setPayload([

@@ -13,6 +13,7 @@ use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
 
@@ -33,14 +34,15 @@ class ClosePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
-        $outTradeNo = $rocket->getPayload()?->get('out_trade_no') ?? null;
+        $payload = $rocket->getPayload();
+        $outTradeNo = $payload?->get('out_trade_no') ?? null;
 
         if (empty($outTradeNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: H5 关闭订单，参数缺少 `out_trade_no`');
         }
 
-        if (Pay::MODE_SERVICE === $config['mode']) {
-            $data = $this->service($config);
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+            $data = $this->service($payload, $config);
         }
 
         $rocket->setPayload(array_merge(
@@ -49,7 +51,7 @@ class ClosePlugin implements PluginInterface
                 '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/close',
                 '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/close',
             ],
-            $data ?? $this->normal($config)
+            $data ?? $this->normal($payload, $config)
         ));
 
         Logger::info('[Wechat][Pay][H5][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -57,18 +59,18 @@ class ClosePlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array $config): array
+    protected function normal(Collection $payload, array $config): array
     {
         return [
-            'mchid' => $config['mch_id'] ?? '',
+            'mchid' => $payload->get('mchid', $config['mch_id'] ?? ''),
         ];
     }
 
-    protected function service(array $config): array
+    protected function service(Collection $payload, array $config): array
     {
         return [
-            'sp_mchid' => $config['mch_id'] ?? '',
-            'sub_mchid' => $config['sub_mch_id'] ?? '',
+            'sp_mchid' => $payload->get('sp_mchid', $config['mch_id'] ?? ''),
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ];
     }
 }

@@ -7,10 +7,13 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Jsapi;
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
 
@@ -22,6 +25,7 @@ class RefundPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
+     * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
@@ -30,9 +34,14 @@ class RefundPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
+        $payload = $rocket->getPayload();
+
+        if (is_null($payload)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Jsapi 退款申请，参数为空');
+        }
 
         if (Pay::MODE_SERVICE === $config['mode']) {
-            $payload = $this->service($config);
+            $data = $this->service($payload, $config);
         }
 
         $rocket->mergePayload(array_merge(
@@ -40,9 +49,9 @@ class RefundPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/refund/domestic/refunds',
                 '_service_url' => 'v3/refund/domestic/refunds',
-                'notify_url' => $config['notify_url'] ?? null,
+                'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? null),
             ],
-            $payload ?? $this->normal()
+            $data ?? $this->normal()
         ));
 
         Logger::info('[Wechat][Pay][Jsapi][RefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -55,10 +64,10 @@ class RefundPlugin implements PluginInterface
         return [];
     }
 
-    protected function service(array $config): array
+    protected function service(Collection $payload, array $config): array
     {
         return [
-            'sub_mchid' => $config['sub_mch_id'] ?? '',
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ];
     }
 }

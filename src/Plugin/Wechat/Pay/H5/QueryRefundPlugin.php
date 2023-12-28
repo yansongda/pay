@@ -32,7 +32,8 @@ class QueryRefundPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
-        $outRefundNo = $rocket->getPayload()?->get('out_refund_no') ?? '';
+        $payload = $rocket->getPayload();
+        $outRefundNo = $payload?->get('out_refund_no') ?? null;
 
         if (empty($outRefundNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: H5 查询退款订单，参数缺少 `out_refund_no`');
@@ -41,7 +42,7 @@ class QueryRefundPlugin implements PluginInterface
         $rocket->setPayload([
             '_method' => 'GET',
             '_url' => 'v3/refund/domestic/refunds/'.$outRefundNo,
-            '_service_url' => 'v3/refund/domestic/refunds/'.$outRefundNo.'?'.$this->service($config),
+            '_service_url' => 'v3/refund/domestic/refunds/'.$outRefundNo.'?sub_mchid='.$payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ]);
 
         Logger::info('[Wechat][Pay][H5][QueryRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);

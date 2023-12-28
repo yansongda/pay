@@ -12,6 +12,7 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
 
@@ -28,39 +29,40 @@ class QueryByWxPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Pay][Jsapi][QueryBatchByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Pay][Jsapi][QueryByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
-        $transactionId = $rocket->getPayload()?->get('transaction_id') ?? null;
+        $payload = $rocket->getPayload();
+        $transactionId = $payload?->get('transaction_id') ?? null;
 
-        if (empty($config)) {
+        if (empty($transactionId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Jsapi 通过微信订单号查询订单，参数缺少 `transaction_id`');
         }
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/pay/transactions/id/'.$transactionId.'?'.$this->normal($config),
-            '_service_url' => 'v3/pay/partner/transactions/id/'.$transactionId.'?'.$this->service($config),
+            '_url' => 'v3/pay/transactions/id/'.$transactionId.'?'.$this->normal($payload, $config),
+            '_service_url' => 'v3/pay/partner/transactions/id/'.$transactionId.'?'.$this->service($payload, $config),
         ]);
 
-        Logger::info('[Wechat][Pay][Jsapi][QueryBatchByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Pay][Jsapi][QueryByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
 
-    protected function normal(array $config): string
+    protected function normal(Collection $payload, array $config): string
     {
         return http_build_query([
-            'mchid' => $config['mch_id'] ?? '',
+            'mchid' => $payload->get('mchid', $config['mch_id'] ?? 'null'),
         ]);
     }
 
-    protected function service(array $config): string
+    protected function service(Collection $payload, array $config): string
     {
         return http_build_query([
-            'sp_mchid' => $config['mch_id'] ?? '',
-            'sub_mchid' => $config['sub_mch_id'] ?? '',
+            'sp_mchid' => $payload->get('sp_mchid', $config['mch_id'] ?? 'null'),
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? 'null'),
         ]);
     }
 }

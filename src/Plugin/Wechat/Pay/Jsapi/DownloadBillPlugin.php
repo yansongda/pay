@@ -24,7 +24,7 @@ class DownloadBillPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Pay][Jsapi][DownloadBillPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $downloadUrl = $rocket->getPayload()->get('download_url');
+        $downloadUrl = $rocket->getPayload()?->get('download_url') ?? null;
 
         if (empty($downloadUrl)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Jsapi 下载交易对账单，参数缺少 `download_url`');
