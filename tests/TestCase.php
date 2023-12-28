@@ -41,6 +41,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mode' => Pay::MODE_NORMAL,
                 ],
                 'service_provider' => [
+                    'app_id' => 'yansongdaa',
                     'mp_app_id' => 'wx55955316af4ef13',
                     'mch_id' => '1600314069',
                     'mini_app_id' => 'wx55955316af4ef14',
