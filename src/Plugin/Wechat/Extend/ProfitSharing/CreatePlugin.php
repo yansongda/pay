@@ -19,9 +19,9 @@ use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\encrypt_wechat_contents;
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_type_key;
 use function Yansongda\Pay\get_wechat_public_key;
 use function Yansongda\Pay\get_wechat_serial_no;
+use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/orders/create-order.html
@@ -76,7 +76,7 @@ class CreatePlugin implements PluginInterface
     protected function normal(Collection $payload, array $params, array $config): array
     {
         $data = [
-            'appid' => $payload->get('appid', $config[get_wechat_config_type_key($params)] ?? ''),
+            'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
         ];
 
         if (!$payload->has('receivers.0.name')) {
@@ -97,11 +97,11 @@ class CreatePlugin implements PluginInterface
     {
         $data = [
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
-            'appid' => $payload->get('appid', $config[get_wechat_config_type_key($params)] ?? ''),
+            'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('receivers.0.type')) {
-            $data['sub_appid'] = $payload->get('sub_appid', $config['sub_'.get_wechat_config_type_key($params)] ?? '');
+            $data['sub_appid'] = $payload->get('sub_appid', $config['sub_'.get_wechat_type_key($params)] ?? '');
         }
 
         if (!$payload->has('receivers.0.name')) {

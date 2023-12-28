@@ -11,10 +11,11 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/partner/apis/ecommerce-refund/refunds/create-refund.html
@@ -33,30 +34,27 @@ class ApplyPlugin implements PluginInterface
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
         $config = get_wechat_config($params);
+        $subMchId = $payload?->get('sub_mchid') ?? $config['sub_mch_id'] ?? '';
+        $spAppId = $payload?->get('sp_appid') ?? $config[get_wechat_type_key($params)] ?? '';
+
+        if (Pay::MODE_NORMAL === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE, '参数异常: 平台收付通（退款）-申请退款，只支持服务商模式，当前配置为普通商户模式');
+        }
 
         if (is_null($payload)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 平台收付通（退款）-申请退款，缺少必要参数');
         }
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_service_url' => 'v3/ecommerce/refunds/apply',
-            ],
-            $this->service($payload, $config)
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_service_url' => 'v3/ecommerce/refunds/apply',
+            'sub_mchid' => $subMchId,
+            'sp_appid' => $spAppId,
+            'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? null),
+        ]);
 
         Logger::info('[Wechat][Marketing][ECommerceRefund][ApplyPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function service(Collection $payload, array $config): array
-    {
-        return [
-            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id']),
-            'sp_appid' => $payload->get('sp_appid', $config['app_id']),
-            'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? null),
-        ];
     }
 }

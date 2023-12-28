@@ -36,7 +36,7 @@ use function Yansongda\Pay\get_unipay_config;
 use function Yansongda\Pay\get_wechat_base_uri;
 use function Yansongda\Pay\get_wechat_body;
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_type_key;
+use function Yansongda\Pay\get_wechat_type_key;
 use function Yansongda\Pay\get_wechat_method;
 use function Yansongda\Pay\get_wechat_public_certs;
 use function Yansongda\Pay\get_wechat_public_key;
@@ -223,11 +223,11 @@ class FunctionTest extends TestCase
     public function testGetWechatConfigKey()
     {
         // default
-        self::assertEquals('mp_app_id', get_wechat_config_type_key([]));
+        self::assertEquals('mp_app_id', get_wechat_type_key([]));
         // app
-        self::assertEquals('app_id', get_wechat_config_type_key(['_type' => 'app']));
+        self::assertEquals('app_id', get_wechat_type_key(['_type' => 'app']));
         // mini
-        self::assertEquals('mini_app_id', get_wechat_config_type_key(['_type' => 'mini']));
+        self::assertEquals('mini_app_id', get_wechat_type_key(['_type' => 'mini']));
     }
 
     public function testGetWechatSign()

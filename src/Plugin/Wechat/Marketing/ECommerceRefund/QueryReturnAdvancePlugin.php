@@ -11,6 +11,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 
 use function Yansongda\Pay\get_wechat_config;
@@ -33,6 +34,10 @@ class QueryReturnAdvancePlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $config = get_wechat_config($params);
         $refundId = $payload?->get('refund_id') ?? null;
+
+        if (Pay::MODE_NORMAL === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE, '参数异常: 平台收付通（退款）-查询垫付回补结果，只支持服务商模式，当前配置为普通商户模式');
+        }
 
         if (is_null($refundId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 平台收付通（退款）-查询垫付回补结果，缺少必要参数 `refund_id`');

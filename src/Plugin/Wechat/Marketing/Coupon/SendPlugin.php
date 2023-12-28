@@ -15,7 +15,7 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_type_key;
+use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/coupon/send-coupon.html
@@ -58,7 +58,7 @@ class SendPlugin implements PluginInterface
     protected function normal(Collection $payload, array $params, array $config): array
     {
         if (empty($payload->get('appid'))) {
-            $payload->set('appid', $config[get_wechat_config_type_key($params)] ?? '');
+            $payload->set('appid', $config[get_wechat_type_key($params)] ?? '');
         }
 
         if (empty($payload->get('stock_creator_mchid'))) {

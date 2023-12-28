@@ -11,6 +11,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 
 use function Yansongda\Pay\get_wechat_config;
@@ -27,12 +28,16 @@ class QueryByWxPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Marketing][ECommerceRefund][QueryByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Marketing][ECommerceRefund][QueryBatchByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
         $config = get_wechat_config($params);
         $refundId = $payload?->get('refund_id') ?? null;
+
+        if (Pay::MODE_NORMAL === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE, '参数异常: 平台收付通（退款）-查询单笔退款（按微信支付退款单号），只支持服务商模式，当前配置为普通商户模式');
+        }
 
         if (is_null($refundId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 平台收付通（退款）-查询单笔退款（按微信支付退款单号），缺少必要参数 `refund_id`');
@@ -40,10 +45,10 @@ class QueryByWxPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_service_url' => 'v3/ecommerce/refunds/id/'.$refundId.'?sub_mchid='.$payload->get('sub_mchid', $config['sub_mch_id']),
+            '_service_url' => 'v3/ecommerce/refunds/id/'.$refundId.'?sub_mchid='.$payload->get('sub_mchid', $config['sub_mch_id'] ?? 'null'),
         ]);
 
-        Logger::info('[Wechat][Marketing][ECommerceRefund][QueryByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Marketing][ECommerceRefund][QueryBatchByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

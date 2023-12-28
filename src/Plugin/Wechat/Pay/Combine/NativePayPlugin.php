@@ -12,7 +12,7 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_type_key;
+use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/native-prepay.html
@@ -49,7 +49,7 @@ class NativePayPlugin implements PluginInterface
     protected function normal(array $params, array $config): array
     {
         return [
-            'combine_appid' => $config[get_wechat_config_type_key($params)] ?? '',
+            'combine_appid' => $config[get_wechat_type_key($params)] ?? '',
             'combine_mchid' => $config['mch_id'] ?? '',
         ];
     }

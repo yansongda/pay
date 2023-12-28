@@ -74,6 +74,8 @@ class Exception extends \Exception
 
     public const PARAMS_WECHAT_AUTHORIZATION_MISSING = 4011;
 
+    public const PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE = 4012;
+
     /**
      * 关于响应.
      */

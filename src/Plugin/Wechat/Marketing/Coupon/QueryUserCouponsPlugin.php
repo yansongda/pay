@@ -15,7 +15,7 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_type_key;
+use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/coupon/list-coupons-by-filter.html
@@ -57,7 +57,7 @@ class QueryUserCouponsPlugin implements PluginInterface
         $appId = $payload->get('appid');
 
         if (is_null($appId)) {
-            $payload->set('appid', $config[get_wechat_config_type_key($params)] ?? '');
+            $payload->set('appid', $config[get_wechat_type_key($params)] ?? '');
         }
 
         return $payload->except('openid')->query();

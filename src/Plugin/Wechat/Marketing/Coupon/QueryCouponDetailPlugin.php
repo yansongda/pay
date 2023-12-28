@@ -14,7 +14,7 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_type_key;
+use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/coupon/query-coupon.html
@@ -36,7 +36,7 @@ class QueryCouponDetailPlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $openId = $payload?->get('openid') ?? null;
         $couponId = $payload?->get('coupon_id') ?? null;
-        $appId = $payload?->get('appid') ?? $config[get_wechat_config_type_key($params)] ?? 'null';
+        $appId = $payload?->get('appid') ?? $config[get_wechat_type_key($params)] ?? 'null';
 
         if (empty($openId) || empty($couponId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询代金券详情，参数缺少 `openid` 或 `coupon_id`');

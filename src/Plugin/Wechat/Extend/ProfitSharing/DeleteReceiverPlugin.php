@@ -16,7 +16,7 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_type_key;
+use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/receivers/delete-receiver.html
@@ -62,7 +62,7 @@ class DeleteReceiverPlugin implements PluginInterface
     protected function normal(Collection $payload, array $params, array $config): array
     {
         return [
-            'appid' => $payload->get('appid', $config[get_wechat_config_type_key($params)] ?? ''),
+            'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
         ];
     }
 
@@ -70,11 +70,11 @@ class DeleteReceiverPlugin implements PluginInterface
     {
         $data = [
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
-            'appid' => $payload->get('appid', $config[get_wechat_config_type_key($params)] ?? ''),
+            'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = $payload->get('sub_appid', $config['sub_'.get_wechat_config_type_key($params)] ?? '');
+            $data['sub_appid'] = $payload->get('sub_appid', $config['sub_'.get_wechat_type_key($params)] ?? '');
         }
 
         return $data;

@@ -19,8 +19,8 @@ use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_config_type_key;
 use function Yansongda\Pay\get_wechat_sign;
+use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/in-app-payment/app-transfer-payment.html
@@ -69,7 +69,7 @@ class InvokePlugin implements PluginInterface
     protected function getInvokeConfig(array $params, array $config, string $prepayId): Config
     {
         $invokeConfig = new Config([
-            'appid' => $config[get_wechat_config_type_key($params)] ?? '',
+            'appid' => $config[get_wechat_type_key($params)] ?? '',
             'partnerid' => $config['mch_id'] ?? null,
             'prepayid' => $prepayId,
             'package' => 'Sign=WXPay',

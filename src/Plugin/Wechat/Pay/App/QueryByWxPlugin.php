@@ -28,7 +28,7 @@ class QueryByWxPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Pay][App][QueryByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Pay][App][QueryBatchByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
@@ -44,7 +44,7 @@ class QueryByWxPlugin implements PluginInterface
             '_service_url' => 'v3/pay/partner/transactions/id/'.$transactionId.'?'.$this->service($config),
         ]);
 
-        Logger::info('[Wechat][Pay][App][QueryByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Pay][App][QueryBatchByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
