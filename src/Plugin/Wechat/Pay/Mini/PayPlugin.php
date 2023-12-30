@@ -7,13 +7,15 @@ namespace Yansongda\Pay\Plugin\Wechat\Pay\Mini;
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/mini-prepay.html
@@ -23,17 +25,23 @@ class PayPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
+     * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::debug('[Wechat][Pay][Mini][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
 
-        if (Pay::MODE_SERVICE === $config['mode']) {
-            $payload = $this->service($params, $config);
+        if (is_null($payload)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Mini 下单，参数为空');
+        }
+
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+            $data = $this->service($payload, $config);
         }
 
         $rocket->mergePayload(array_merge(
@@ -41,9 +49,9 @@ class PayPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/pay/transactions/jsapi',
                 '_service_url' => 'v3/pay/partner/transactions/jsapi',
-                'notify_url' => $config['notify_url'] ?? '',
+                'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
             ],
-            $payload ?? $this->normal($params, $config)
+            $data ?? $this->normal($config)
         ));
 
         Logger::info('[Wechat][Pay][Mini][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -51,28 +59,26 @@ class PayPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array $params, array $config): array
+    protected function normal(array $config): array
     {
         return [
-            'appid' => $config[get_wechat_type_key($params)] ?? '',
+            'appid' => $config['mini_app_id'] ?? '',
             'mchid' => $config['mch_id'] ?? '',
         ];
     }
 
-    protected function service(array $params, array $config): array
+    protected function service(Collection $payload, array $config): array
     {
-        $configKey = get_wechat_type_key($params);
-
-        $payload = [
-            'sub_mchid' => $config['sub_mch_id'] ?? '',
-            'sp_appid' => $config[$configKey] ?? '',
+        $data = [
+            'sp_appid' => $config['mini_app_id'] ?? '',
             'sp_mchid' => $config['mch_id'] ?? '',
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ];
 
-        if (!empty($params['payer']['sub_openid'])) {
-            $payload['sub_appid'] = $config['sub_'.$configKey] ?? '';
+        if ($payload->has('payer.sub_openid')) {
+            $data['sub_appid'] = $config['sub_mini_app_id'] ?? '';
         }
 
-        return $payload;
+        return $data;
     }
 }

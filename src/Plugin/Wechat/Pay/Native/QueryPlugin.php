@@ -12,6 +12,7 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
 
@@ -32,7 +33,8 @@ class QueryPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
-        $outTradeNo = $rocket->getPayload()?->get('out_trade_no') ?? null;
+        $payload = $rocket->getPayload();
+        $outTradeNo = $payload?->get('out_trade_no') ?? null;
 
         if (empty($outTradeNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Native 通过商户订单号查询订单，参数缺少 `out_trade_no`');
@@ -41,7 +43,7 @@ class QueryPlugin implements PluginInterface
         $rocket->setPayload([
             '_method' => 'GET',
             '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'?'.$this->normal($config),
-            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'?'.$this->service($config),
+            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'?'.$this->service($payload, $config),
         ]);
 
         Logger::info('[Wechat][Pay][Native][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -56,11 +58,11 @@ class QueryPlugin implements PluginInterface
         ]);
     }
 
-    protected function service(array $config): string
+    protected function service(Collection $payload, array $config): string
     {
         return http_build_query([
             'sp_mchid' => $config['mch_id'] ?? '',
-            'sub_mchid' => $config['sub_mch_id'] ?? '',
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ]);
     }
 }

@@ -13,6 +13,7 @@ use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
 
@@ -33,14 +34,15 @@ class ClosePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
-        $outTradeNo = $rocket->getPayload()?->get('out_trade_no') ?? null;
+        $payload = $rocket->getPayload();
+        $outTradeNo = $payload?->get('out_trade_no') ?? null;
 
         if (empty($outTradeNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Mini 关闭订单，参数缺少 `out_trade_no`');
         }
 
-        if (Pay::MODE_SERVICE === $config['mode']) {
-            $data = $this->service($config);
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+            $data = $this->service($payload, $config);
         }
 
         $rocket->setPayload(array_merge(
@@ -64,11 +66,11 @@ class ClosePlugin implements PluginInterface
         ];
     }
 
-    protected function service(array $config): array
+    protected function service(Collection $payload, array $config): array
     {
         return [
             'sp_mchid' => $config['mch_id'] ?? '',
-            'sub_mchid' => $config['sub_mch_id'] ?? '',
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ];
     }
 }
