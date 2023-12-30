@@ -67,7 +67,7 @@ class InvokePlugin implements PluginInterface
      * @throws InvalidConfigException
      * @throws Throwable              生成随机串失败
      */
-    protected function getInvokeConfig(Collection $payload, array $params, array $config, string $prepayId): Config
+    protected function getInvokeConfig(?Collection $payload, array $params, array $config, string $prepayId): Config
     {
         $invokeConfig = new Config([
             'appId' => $this->getAppId($payload, $config, $params),
@@ -101,6 +101,6 @@ class InvokePlugin implements PluginInterface
             return $payload?->get('_invoke_appid') ?? $config['sub_'.get_wechat_type_key($params)] ?? '';
         }
 
-        return $payload?->get('_invoke_appid') ?? $config['app_id'] ?? '';
+        return $payload?->get('_invoke_appid') ?? $config[get_wechat_type_key($params)] ?? '';
     }
 }

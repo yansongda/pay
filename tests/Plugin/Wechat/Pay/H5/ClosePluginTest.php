@@ -1,10 +1,10 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\App;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\H5;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\Pay\App\ClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\H5\ClosePlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -26,7 +26,7 @@ class ClosePluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: App 关闭订单，参数缺少 `out_trade_no`');
+        self::expectExceptionMessage('参数异常: H5 关闭订单，参数缺少 `out_trade_no`');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

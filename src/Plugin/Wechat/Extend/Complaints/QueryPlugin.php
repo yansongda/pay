@@ -30,10 +30,12 @@ class QueryPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询投诉单列表，缺少必要参数');
         }
 
+        $query = $payload->query();
+
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/complaints-v2?'.$payload->query(),
-            '_service_url' => 'v3/merchant-service/complaints-v2?'.$payload->query(),
+            '_url' => 'v3/merchant-service/complaints-v2?'.$query,
+            '_service_url' => 'v3/merchant-service/complaints-v2?'.$query,
         ]);
 
         Logger::info('[Wechat][Extend][Complaints][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

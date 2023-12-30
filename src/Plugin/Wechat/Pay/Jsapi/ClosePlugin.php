@@ -51,7 +51,7 @@ class ClosePlugin implements PluginInterface
                 '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/close',
                 '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/close',
             ],
-            $data ?? $this->normal($payload, $config)
+            $data ?? $this->normal($config)
         ));
 
         Logger::info('[Wechat][Pay][Jsapi][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -59,17 +59,17 @@ class ClosePlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(Collection $payload, array $config): array
+    protected function normal(array $config): array
     {
         return [
-            'mchid' => $payload->get('mchid', $config['mch_id'] ?? ''),
+            'mchid' => $config['mch_id'] ?? '',
         ];
     }
 
     protected function service(Collection $payload, array $config): array
     {
         return [
-            'sp_mchid' => $payload->get('sp_mchid', $config['mch_id'] ?? ''),
+            'sp_mchid' => $config['mch_id'] ?? '',
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ];
     }

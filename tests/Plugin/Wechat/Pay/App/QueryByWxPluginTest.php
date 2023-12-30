@@ -31,20 +31,6 @@ class QueryByWxPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testNormalParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "transaction_id" => "111",
-            'mchid' => '222',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('v3/pay/transactions/id/111?mchid=222', $result->getPayload()->get('_url'));
-    }
-
     public function testNormal()
     {
         $rocket = new Rocket();
@@ -63,14 +49,13 @@ class QueryByWxPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
             "transaction_id" => "111",
-            'sp_mchid' => '222',
             'sub_mchid' => '333',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('v3/pay/partner/transactions/id/111?sp_mchid=222&sub_mchid=333', $result->getPayload()->get('_service_url'));
+        self::assertEquals('v3/pay/partner/transactions/id/111?sp_mchid=1600314069&sub_mchid=333', $result->getPayload()->get('_service_url'));
     }
 
     public function testService()

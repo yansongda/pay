@@ -31,25 +31,6 @@ class DeleteReceiverPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testNormalParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "test" => "yansongda",
-            'appid' => '1111',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => 'v3/profitsharing/receivers/delete',
-            '_service_url' => 'v3/profitsharing/receivers/delete',
-            'test' => 'yansongda',
-            'appid' => '1111',
-        ], $result->getPayload()->all());
-    }
-
     public function testNormal()
     {
         $rocket = new Rocket();
@@ -73,7 +54,6 @@ class DeleteReceiverPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
             "test" => "yansongda",
-            'appid' => '1111',
             'sub_mchid' => '2222',
         ]));
 
@@ -84,7 +64,7 @@ class DeleteReceiverPluginTest extends TestCase
             '_url' => 'v3/profitsharing/receivers/delete',
             '_service_url' => 'v3/profitsharing/receivers/delete',
             'test' => 'yansongda',
-            'appid' => '1111',
+            'appid' => 'wx55955316af4ef13',
             'sub_mchid' => '2222',
         ], $result->getPayload()->all());
     }

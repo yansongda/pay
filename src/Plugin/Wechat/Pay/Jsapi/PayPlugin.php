@@ -52,7 +52,7 @@ class PayPlugin implements PluginInterface
                 '_service_url' => 'v3/pay/partner/transactions/jsapi',
                 'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
             ],
-            $data ?? $this->normal($payload, $config, $params)
+            $data ?? $this->normal($config, $params)
         ));
 
         Logger::info('[Wechat][Pay][Jsapi][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -60,24 +60,26 @@ class PayPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(Collection $payload, array $config, array $params): array
+    protected function normal(array $config, array $params): array
     {
         return [
-            'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
-            'mchid' => $payload->get('mchid', $config['mch_id'] ?? ''),
+            'appid' => $config[get_wechat_type_key($params)] ?? '',
+            'mchid' => $config['mch_id'] ?? '',
         ];
     }
 
     protected function service(Collection $payload, array $config, array $params): array
     {
+        $wechatTypeKey = get_wechat_type_key($params);
+
         $data = [
-            'sp_appid' => $payload->get('sp_appid', $config[get_wechat_type_key($params)] ?? ''),
-            'sp_mchid' => $payload->get('sp_mchid', $config['mch_id'] ?? ''),
+            'sp_appid' => $config[$wechatTypeKey] ?? '',
+            'sp_mchid' => $config['mch_id'] ?? '',
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ];
 
         if ($payload->has('payer.sub_openid')) {
-            $data['sub_appid'] = $payload->get('sub_appid', $config['sub_'.get_wechat_type_key($params)] ?? '');
+            $data['sub_appid'] = $config['sub_'.$wechatTypeKey] ?? '';
         }
 
         return $data;

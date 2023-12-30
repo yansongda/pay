@@ -1,23 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\App;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\H5;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\Pay\App\ClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\H5\PayPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class ClosePluginTest extends TestCase
+class PayPluginTest extends TestCase
 {
-    protected ClosePlugin $plugin;
+    protected PayPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new ClosePlugin();
+        $this->plugin = new PayPlugin();
     }
 
     public function testEmptyPayload()
@@ -26,7 +26,7 @@ class ClosePluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: App 关闭订单，参数缺少 `out_trade_no`');
+        self::expectExceptionMessage('参数异常: H5 下单，参数为空');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -35,16 +35,19 @@ class ClosePluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "out_trade_no" => "111",
+            "name" => "yansongda",
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/out-trade-no/111/close',
-            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/111/close',
+            '_url' => 'v3/pay/transactions/h5',
+            '_service_url' => 'v3/pay/partner/transactions/h5',
+            "appid" => "wx55955316af4ef13",
             'mchid' => '1600314069',
+            'notify_url' => 'https://pay.yansongda.cn',
+            'name' => 'yansongda',
         ], $result->getPayload()->all());
     }
 
@@ -52,18 +55,22 @@ class ClosePluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
-            "out_trade_no" => "111",
             'sub_mchid' => '333',
+            'notify_url' => '444',
+            'name' => 'yansongda',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/out-trade-no/111/close',
-            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/111/close',
+            '_url' => 'v3/pay/transactions/h5',
+            '_service_url' => 'v3/pay/partner/transactions/h5',
+            "sp_appid" => "wx55955316af4ef13",
             'sp_mchid' => '1600314069',
             'sub_mchid' => '333',
+            'notify_url' => '444',
+            'name' => 'yansongda',
         ], $result->getPayload()->all());
     }
 
@@ -71,17 +78,20 @@ class ClosePluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
-            "out_trade_no" => "111",
+            'name' => 'yansongda',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/out-trade-no/111/close',
-            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/111/close',
+            '_url' => 'v3/pay/transactions/h5',
+            '_service_url' => 'v3/pay/partner/transactions/h5',
+            "sp_appid" => "wx55955316af4ef13",
             'sp_mchid' => '1600314069',
             'sub_mchid' => '1600314070',
+            'notify_url' => '',
+            'name' => 'yansongda',
         ], $result->getPayload()->all());
     }
 }

@@ -50,9 +50,9 @@ class PayPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/pay/transactions/h5',
                 '_service_url' => 'v3/pay/partner/transactions/h5',
-                'notify_url' => $config['notify_url'] ?? '',
+                'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
             ],
-            $data ?? $this->normal($payload, $params, $config)
+            $data ?? $this->normal($params, $config)
         ));
 
         Logger::info('[Wechat][Pay][H5][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -60,11 +60,11 @@ class PayPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(Collection $payload, array $params, array $config): array
+    protected function normal(array $params, array $config): array
     {
         return [
-            'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
-            'mchid' => $payload->get('mchid', $config['mch_id'] ?? ''),
+            'appid' => $config[get_wechat_type_key($params)] ?? '',
+            'mchid' => $config['mch_id'] ?? '',
         ];
     }
 
@@ -73,8 +73,8 @@ class PayPlugin implements PluginInterface
         $configKey = get_wechat_type_key($params);
 
         return [
-            'sp_appid' => $payload->get('sp_appid', $config[$configKey] ?? ''),
-            'sp_mchid' => $payload->get('sp_mchid', $config['mch_id'] ?? ''),
+            'sp_appid' => $config[$configKey] ?? '',
+            'sp_mchid' => $config['mch_id'] ?? '',
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ];
     }

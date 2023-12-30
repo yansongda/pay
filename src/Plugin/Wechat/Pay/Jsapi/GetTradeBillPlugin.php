@@ -27,13 +27,15 @@ class GetTradeBillPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: App 申请交易账单，参数为空');
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Jsapi 申请交易账单，参数为空');
         }
+
+        $query = $payload->query();
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/bill/tradebill?'.$payload->query(),
-            '_service_url' => 'v3/bill/tradebill?'.$payload->query(),
+            '_url' => 'v3/bill/tradebill?'.$query,
+            '_service_url' => 'v3/bill/tradebill?'.$query,
         ]);
 
         Logger::info('[Wechat][Pay][Jsapi][GetTradeBillPlugin] 插件装载完毕', ['rocket' => $rocket]);

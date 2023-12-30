@@ -42,7 +42,7 @@ class QueryPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'?'.$this->normal($payload, $config),
+            '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'?'.$this->normal($config),
             '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'?'.$this->service($payload, $config),
         ]);
 
@@ -51,17 +51,17 @@ class QueryPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(Collection $payload, array $config): string
+    protected function normal(array $config): string
     {
         return http_build_query([
-            'mchid' => $payload->get('mchid', $config['mch_id'] ?? ''),
+            'mchid' => $config['mch_id'] ?? '',
         ]);
     }
 
     protected function service(Collection $payload, array $config): string
     {
         return http_build_query([
-            'sp_mchid' => $payload->get('sp_mchid', $config['mch_id'] ?? ''),
+            'sp_mchid' => $config['mch_id'] ?? '',
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ]);
     }

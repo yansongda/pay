@@ -39,21 +39,16 @@ class QueryRefundPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: H5 查询退款订单，参数缺少 `out_refund_no`');
         }
 
+        $subMchId = $payload->get('sub_mchid', $config['sub_mch_id'] ?? '');
+
         $rocket->setPayload([
             '_method' => 'GET',
             '_url' => 'v3/refund/domestic/refunds/'.$outRefundNo,
-            '_service_url' => 'v3/refund/domestic/refunds/'.$outRefundNo.'?sub_mchid='.$payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
+            '_service_url' => 'v3/refund/domestic/refunds/'.$outRefundNo.'?sub_mchid='.$subMchId,
         ]);
 
         Logger::info('[Wechat][Pay][H5][QueryRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function service(array $config): string
-    {
-        return http_build_query([
-            'sub_mchid' => $config['sub_mch_id'] ?? '',
-        ]);
     }
 }

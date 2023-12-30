@@ -42,7 +42,7 @@ class QueryByWxPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/pay/transactions/id/'.$transactionId.'?'.$this->normal($payload, $config),
+            '_url' => 'v3/pay/transactions/id/'.$transactionId.'?'.$this->normal($config),
             '_service_url' => 'v3/pay/partner/transactions/id/'.$transactionId.'?'.$this->service($payload, $config),
         ]);
 
@@ -51,17 +51,17 @@ class QueryByWxPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(Collection $payload, array $config): string
+    protected function normal(array $config): string
     {
         return http_build_query([
-            'mchid' => $payload->get('mchid', $config['mch_id'] ?? 'null'),
+            'mchid' => $config['mch_id'] ?? 'null',
         ]);
     }
 
     protected function service(Collection $payload, array $config): string
     {
         return http_build_query([
-            'sp_mchid' => $payload->get('sp_mchid', $config['mch_id'] ?? 'null'),
+            'sp_mchid' => $config['mch_id'] ?? 'null',
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? 'null'),
         ]);
     }

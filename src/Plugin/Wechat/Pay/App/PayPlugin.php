@@ -51,7 +51,7 @@ class PayPlugin implements PluginInterface
                 '_service_url' => 'v3/pay/partner/transactions/app',
                 'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
             ],
-            $data ?? $this->normal($payload, $config)
+            $data ?? $this->normal($config)
         ));
 
         Logger::info('[Wechat][Pay][App][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -59,19 +59,19 @@ class PayPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(Collection $payload, array $config): array
+    protected function normal(array $config): array
     {
         return [
-            'appid' => $payload->get('appid', $config['app_id'] ?? ''),
-            'mchid' => $payload->get('mchid', $config['mch_id'] ?? ''),
+            'appid' => $config['app_id'] ?? '',
+            'mchid' => $config['mch_id'] ?? '',
         ];
     }
 
     protected function service(Collection $payload, array $config): array
     {
         return [
-            'sp_appid' => $payload->get('sp_appid', $config['app_id'] ?? ''),
-            'sp_mchid' => $payload->get('sp_mchid', $config['mch_id'] ?? ''),
+            'sp_appid' => $config['app_id'] ?? '',
+            'sp_mchid' => $config['mch_id'] ?? '',
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ];
     }

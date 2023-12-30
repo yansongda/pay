@@ -1,23 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\App;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Pay\H5;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\Pay\App\PayPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\H5\RefundPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class PayPluginTest extends TestCase
+class RefundPluginTest extends TestCase
 {
-    protected PayPlugin $plugin;
+    protected RefundPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new PayPlugin();
+        $this->plugin = new RefundPlugin();
     }
 
     public function testEmptyPayload()
@@ -26,28 +26,45 @@ class PayPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: APP下单，参数为空');
+        self::expectExceptionMessage('参数异常: H5 退款申请，参数为空');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testNormal()
+    public function testNormalParams()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "name" => "yansongda",
+            "notify_url" => "111",
+            'name' => '222',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/app',
-            '_service_url' => 'v3/pay/partner/transactions/app',
-            "appid" => "yansongda",
-            'mchid' => '1600314069',
+            '_url' => 'v3/refund/domestic/refunds',
+            '_service_url' => 'v3/refund/domestic/refunds',
+            'notify_url' => '111',
+            'name' => '222',
+        ], $result->getPayload()->all());
+    }
+    
+    public function testNormal()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection( [
+            "out_trade_no" => "111",
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertEquals([
+            '_method' => 'POST',
+            '_url' => 'v3/refund/domestic/refunds',
+            '_service_url' => 'v3/refund/domestic/refunds',
             'notify_url' => 'https://pay.yansongda.cn',
-            'name' => 'yansongda',
+            'out_trade_no' => '111',
         ], $result->getPayload()->all());
     }
 
@@ -55,8 +72,8 @@ class PayPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
-            'sub_mchid' => '333',
-            'notify_url' => '444',
+            "notify_url" => "111",
+            'sub_mchid' => '222',
             'name' => 'yansongda',
         ]));
 
@@ -64,12 +81,10 @@ class PayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/app',
-            '_service_url' => 'v3/pay/partner/transactions/app',
-            "sp_appid" => "yansongdaa",
-            'sp_mchid' => '1600314069',
-            'sub_mchid' => '333',
-            'notify_url' => '444',
+            '_url' => 'v3/refund/domestic/refunds',
+            '_service_url' => 'v3/refund/domestic/refunds',
+            'notify_url' => '111',
+            'sub_mchid' => '222',
             'name' => 'yansongda',
         ], $result->getPayload()->all());
     }
@@ -77,7 +92,7 @@ class PayPluginTest extends TestCase
     public function testService()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
             'name' => 'yansongda',
         ]));
 
@@ -85,13 +100,11 @@ class PayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/app',
-            '_service_url' => 'v3/pay/partner/transactions/app',
-            "sp_appid" => "yansongdaa",
-            'sp_mchid' => '1600314069',
-            'sub_mchid' => '1600314070',
-            'notify_url' => '',
+            '_url' => 'v3/refund/domestic/refunds',
+            '_service_url' => 'v3/refund/domestic/refunds',
             'name' => 'yansongda',
+            'notify_url' => null,
+            'sub_mchid' => '1600314070',
         ], $result->getPayload()->all());
     }
 }

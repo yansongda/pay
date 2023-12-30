@@ -32,10 +32,12 @@ class QueryNegotiationPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询投诉单协商历史，参数缺少 `complaint_id`');
         }
 
+        $query = $this->normal($payload);
+
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/negotiation-historys'.$this->normal($payload),
-            '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/negotiation-historys'.$this->normal($payload),
+            '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/negotiation-historys'.$query,
+            '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/negotiation-historys'.$query,
         ]);
 
         Logger::info('[Wechat][Extend][Complaints][QueryNegotiationPlugin] 插件装载完毕', ['rocket' => $rocket]);

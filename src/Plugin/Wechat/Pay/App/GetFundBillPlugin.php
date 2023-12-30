@@ -30,10 +30,12 @@ class GetFundBillPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: App 申请资金账单，参数为空');
         }
 
+        $query = $payload->query();
+
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/bill/fundflowbill?'.$payload->query(),
-            '_service_url' => 'v3/bill/fundflowbill?'.$payload->query(),
+            '_url' => 'v3/bill/fundflowbill?'.$query,
+            '_service_url' => 'v3/bill/fundflowbill?'.$query,
         ]);
 
         Logger::info('[Wechat][Pay][App][GetFundBillPlugin] 插件装载完毕', ['rocket' => $rocket]);

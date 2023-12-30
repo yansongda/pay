@@ -76,7 +76,7 @@ class AddReceiverPlugin implements PluginInterface
     protected function normal(Collection $payload, array $params, array $config): array
     {
         $data = [
-            'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
+            'appid' => $config[get_wechat_type_key($params)] ?? '',
         ];
 
         if (!$payload->has('name')) {
@@ -95,13 +95,15 @@ class AddReceiverPlugin implements PluginInterface
      */
     protected function service(Collection $payload, array $params, array $config): array
     {
+        $wechatTypeKey = get_wechat_type_key($params);
+
         $data = [
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
-            'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
+            'appid' => $config[$wechatTypeKey] ?? '',
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = $payload->get('sub_appid', $config['sub_'.get_wechat_type_key($params)] ?? '');
+            $data['sub_appid'] = $config['sub_'.$wechatTypeKey] ?? '';
         }
 
         if (!$payload->has('name')) {
