@@ -24,6 +24,7 @@ use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Plugin\Wechat\WechatPublicCertsPlugin;
+use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -79,6 +80,31 @@ function filter_params(array $params, ?Closure $closure = null): array
     return array_filter($params, static fn ($v, $k) => !Str::startsWith($k, '_') && !is_null($v) && (empty($closure) || $closure($k, $v)), ARRAY_FILTER_USE_BOTH);
 }
 
+function get_radar_method(?Collection $payload): ?string
+{
+    $string = $payload?->get('_method') ?? null;
+
+    if (is_null($string)) {
+        return null;
+    }
+
+    return strtoupper($string);
+}
+
+function get_radar_url(array $config, ?Collection $payload): ?string
+{
+    return match ($config['mode'] ?? Pay::MODE_NORMAL) {
+        Pay::MODE_SERVICE => $payload?->get('_service_url') ?? $payload?->get('_url') ?? null,
+        Pay::MODE_SANDBOX => $payload?->get('_sandbox_url') ?? $payload?->get('_url') ?? null,
+        default => $payload?->get('_url') ?? null,
+    };
+}
+
+function get_radar_body(?Collection $payload): ?string
+{
+    return $payload?->get('_body') ?? null;
+}
+
 /**
  * @throws ContainerException
  * @throws ServiceNotFoundException
@@ -96,6 +122,10 @@ function get_alipay_config(array $params = []): array
  */
 function verify_alipay_sign(array $config, string $contents, string $sign): void
 {
+    if (empty($sign)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 验证支付宝签名失败-支付宝签名为空', func_get_args());
+    }
+
     $public = $config['alipay_public_cert_path'] ?? null;
 
     if (empty($public)) {
@@ -127,7 +157,7 @@ function get_wechat_config(array $params = []): array
 
 function get_wechat_method(?Collection $payload): string
 {
-    return strtoupper($payload?->get('_method') ?? 'POST');
+    return get_radar_method($payload) ?? 'POST';
 }
 
 /**
@@ -135,11 +165,7 @@ function get_wechat_method(?Collection $payload): string
  */
 function get_wechat_url(array $config, ?Collection $payload): string
 {
-    $url = $payload?->get('_url') ?? null;
-
-    if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
-        $url = $payload?->get('_service_url') ?? $url ?? null;
-    }
+    $url = get_radar_url($config, $payload);
 
     if (empty($url)) {
         throw new InvalidParamsException(Exception::PARAMS_WECHAT_URL_MISSING, '参数异常: 微信 `_url` 或 `_service_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
@@ -157,7 +183,7 @@ function get_wechat_url(array $config, ?Collection $payload): string
  */
 function get_wechat_body(?Collection $payload): string
 {
-    $body = $payload?->get('_body') ?? null;
+    $body = get_radar_body($payload);
 
     if (is_null($body)) {
         throw new InvalidParamsException(Exception::PARAMS_WECHAT_BODY_MISSING, '参数异常: 微信 `_body` 参数缺失：你可能用错插件顺序，应该先使用 `AddPayloadBodyPlugin`');
@@ -437,7 +463,7 @@ function get_wechat_public_key(array $config, string $serialNo): string
  * @throws ContainerException
  * @throws ServiceNotFoundException
  */
-function get_unipay_config(array $params): array
+function get_unipay_config(array $params = []): array
 {
     $unipay = Pay::get(ConfigInterface::class)->get('unipay');
 
@@ -445,26 +471,45 @@ function get_unipay_config(array $params): array
 }
 
 /**
- * @throws ContainerException
  * @throws InvalidConfigException
- * @throws ServiceNotFoundException
  * @throws InvalidSignException
  */
-function verify_unipay_sign(array $params, string $contents, string $sign): void
+function verify_unipay_sign(array $config, string $contents, string $sign, ?string $signPublicKeyCert = null): void
 {
-    if (empty($params['signPubKeyCert'])
-        && empty($public = get_unipay_config($params)['unipay_public_cert_path'] ?? null)) {
+    if (empty($sign)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 银联签名为空', func_get_args());
+    }
+
+    if (empty($signPublicKeyCert) && empty($public = $config['unipay_public_cert_path'] ?? null)) {
         throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常： 缺少银联配置 -- [unipay_public_cert_path]');
     }
 
     $result = 1 === openssl_verify(
         hash('sha256', $contents),
         base64_decode($sign),
-        get_public_cert($params['signPubKeyCert'] ?? $public ?? ''),
+        get_public_cert($signPublicKeyCert ?? $public ?? ''),
         'sha256'
     );
 
     if (!$result) {
         throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证银联签名失败', func_get_args());
     }
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_unipay_url(array $config, ?Collection $payload): string
+{
+    $url = get_radar_url($config, $payload);
+
+    if (empty($url)) {
+        throw new InvalidParamsException(Exception::PARAMS_UNIPAY_URL_MISSING, '参数异常: 银联 `_url` 或 `_service_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
+    }
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    return Unipay::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
 }

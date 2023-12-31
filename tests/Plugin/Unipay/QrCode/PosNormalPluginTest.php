@@ -5,7 +5,7 @@ namespace Yansongda\Pay\Tests\Plugin\Unipay\QrCode;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Unipay\QrCode\PosNormalPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\PosPlugin;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -13,7 +13,7 @@ use Yansongda\Pay\Tests\TestCase;
 class PosNormalPluginTest extends TestCase
 {
     /**
-     * @var \Yansongda\Pay\Plugin\Unipay\QrCode\PosNormalPlugin
+     * @var \Yansongda\Pay\Plugin\Unipay\QrCode\PosPlugin
      */
     protected $plugin;
 
@@ -21,7 +21,7 @@ class PosNormalPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new PosNormalPlugin();
+        $this->plugin = new PosPlugin();
     }
 
     public function testNormal()

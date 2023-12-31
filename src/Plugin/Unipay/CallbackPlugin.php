@@ -8,15 +8,14 @@ use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\ContainerException;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
-use Yansongda\Supports\Str;
 
+use function Yansongda\Pay\filter_params;
+use function Yansongda\Pay\get_unipay_config;
 use function Yansongda\Pay\verify_unipay_sign;
 
 class CallbackPlugin implements PluginInterface
@@ -29,32 +28,20 @@ class CallbackPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[unipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
-
-        $this->formatPayload($rocket);
+        Logger::debug('[Unipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $signature = $params['signature'] ?? false;
+        $config = get_unipay_config($params);
 
-        if (!$signature) {
-            throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 银联签名为空', $params);
-        }
+        $rocket->setPayload(filter_params($params, fn ($k, $v) => 'signature' != $k));
 
-        verify_unipay_sign($params, $rocket->getPayload()->sortKeys()->toString(), $signature);
+        verify_unipay_sign($config, $rocket->getPayload()->sortKeys()->toString(), $params['signature'] ?? '', $params['signPubKeyCert'] ?? null);
 
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());
 
-        Logger::info('[unipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Unipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function formatPayload(Rocket $rocket): void
-    {
-        $payload = (new Collection($rocket->getParams()))
-            ->filter(fn ($v, $k) => 'signature' != $k && !Str::startsWith($k, '_'));
-
-        $rocket->setPayload($payload);
     }
 }

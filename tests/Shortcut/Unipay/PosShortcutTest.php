@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\PosNormalPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\PosPlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\PosPreAuthPlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
 use Yansongda\Pay\Shortcut\Unipay\PosShortcut;
@@ -30,7 +30,7 @@ class PosShortcutTest extends TestCase
     {
         self::assertEquals([
             PreparePlugin::class,
-            PosNormalPlugin::class,
+            PosPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,

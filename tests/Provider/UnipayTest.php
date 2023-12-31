@@ -12,9 +12,11 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Unipay\StartPlugin;
+use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -42,10 +44,9 @@ class UnipayTest extends TestCase
         $plugins = [FooPluginStub::class];
 
         self::assertEquals(array_merge(
-            [PreparePlugin::class],
+            [StartPlugin::class],
             $plugins,
-            [RadarSignPlugin::class],
-            [LaunchPlugin::class, ParserPlugin::class],
+            [AddPayloadSignaturePlugin::class, AddPayloadBodyPlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ParserPlugin::class],
         ), Pay::unipay()->mergeCommonPlugins($plugins));
     }
 

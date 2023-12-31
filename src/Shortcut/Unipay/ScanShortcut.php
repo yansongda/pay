@@ -11,7 +11,7 @@ use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanFeePlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\ScanNormalPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPreAuthPlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPreOrderPlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
@@ -37,7 +37,7 @@ class ScanShortcut implements ShortcutInterface
     {
         return [
             PreparePlugin::class,
-            ScanNormalPlugin::class,
+            ScanPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,

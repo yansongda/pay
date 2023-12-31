@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Unipay\HtmlResponsePlugin;
+use Yansongda\Pay\Plugin\Unipay\ResponseHtmlPlugin;
 use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\WapPayPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\H5PayPlugin;
 use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
 use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
 use Yansongda\Pay\Shortcut\Unipay\H5Shortcut;
@@ -28,8 +28,8 @@ class H5ShortcutTest extends TestCase
     {
         self::assertEquals([
             PreparePlugin::class,
-            WapPayPlugin::class,
-            HtmlResponsePlugin::class,
+            H5PayPlugin::class,
+            ResponseHtmlPlugin::class,
             RadarSignPlugin::class,
             LaunchPlugin::class,
             ParserPlugin::class,

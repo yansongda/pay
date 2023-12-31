@@ -11,14 +11,14 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
-class HtmlResponsePlugin implements PluginInterface
+class ResponseHtmlPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[unipay][ResponseHtmlPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Unipay][ResponseHtmlPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $radar = $rocket->getRadar();
 
@@ -26,15 +26,15 @@ class HtmlResponsePlugin implements PluginInterface
 
         $rocket->setDestination($response);
 
-        Logger::info('[unipay][ResponseHtmlPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Unipay][ResponseHtmlPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }
 
-    protected function buildHtml(string $endpoint, Collection $payload): Response
+    protected function buildHtml(string $endpoint, ?Collection $payload): Response
     {
         $sHtml = "<form id='pay_form' name='pay_form' action='".$endpoint."' method='POST'>";
-        foreach ($payload->all() as $key => $val) {
+        foreach ($payload?->all() ?? [] as $key => $val) {
             $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
         }
         $sHtml .= "<input type='submit' value='ok' style='display:none;'></form>";

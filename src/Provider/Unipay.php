@@ -16,10 +16,12 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\CallbackPlugin;
-use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Unipay\StartPlugin;
+use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -32,7 +34,7 @@ class Unipay extends AbstractProvider
     public const URL = [
         Pay::MODE_NORMAL => 'https://gateway.95516.com/',
         Pay::MODE_SANDBOX => 'https://gateway.test.95516.com/',
-        Pay::MODE_SERVICE => 'https://gateway.95516.com',
+        Pay::MODE_SERVICE => 'https://gateway.95516.com/',
     ];
 
     /**
@@ -115,10 +117,9 @@ class Unipay extends AbstractProvider
     public function mergeCommonPlugins(array $plugins): array
     {
         return array_merge(
-            [PreparePlugin::class],
+            [StartPlugin::class],
             $plugins,
-            [RadarSignPlugin::class],
-            [LaunchPlugin::class, ParserPlugin::class],
+            [AddPayloadSignaturePlugin::class, AddPayloadBodyPlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ParserPlugin::class],
         );
     }
 

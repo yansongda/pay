@@ -17,9 +17,9 @@ use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -32,18 +32,20 @@ use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_direction;
 use function Yansongda\Pay\get_private_cert;
 use function Yansongda\Pay\get_public_cert;
+use function Yansongda\Pay\get_radar_body;
+use function Yansongda\Pay\get_radar_method;
+use function Yansongda\Pay\get_radar_url;
 use function Yansongda\Pay\get_tenant;
 use function Yansongda\Pay\get_unipay_config;
-use function Yansongda\Pay\get_wechat_base_uri;
 use function Yansongda\Pay\get_wechat_body;
 use function Yansongda\Pay\get_wechat_config;
-use function Yansongda\Pay\get_wechat_type_key;
 use function Yansongda\Pay\get_wechat_method;
 use function Yansongda\Pay\get_wechat_public_certs;
 use function Yansongda\Pay\get_wechat_public_key;
 use function Yansongda\Pay\get_wechat_serial_no;
 use function Yansongda\Pay\get_wechat_sign;
 use function Yansongda\Pay\get_wechat_sign_v2;
+use function Yansongda\Pay\get_wechat_type_key;
 use function Yansongda\Pay\get_wechat_url;
 use function Yansongda\Pay\reload_wechat_public_certs;
 use function Yansongda\Pay\should_do_http_request;
@@ -130,6 +132,30 @@ class FunctionTest extends TestCase
         self::assertEqualsCanonicalizing(['name' => 'yansongda'], filter_params($params, fn ($k, $v) => '' !== $v && !is_null($v) && 'sign' != $k && 'sign_type' != $k));
     }
 
+    public function testGetRadarMethod()
+    {
+        self::assertNull(get_radar_method(null));
+        self::assertNull(get_radar_method(new Collection()));
+        self::assertEquals('GET', get_radar_method(new Collection(['_method' => 'get'])));
+        self::assertEquals('POST', get_radar_method(new Collection(['_method' => 'post'])));
+    }
+
+    public function testGetRadarUrl()
+    {
+        self::assertNull(get_radar_url([], null));
+        self::assertNull(get_radar_url([], new Collection()));
+        self::assertEquals('https://yansongda.cn', get_radar_url([], new Collection(['_url' => 'https://yansongda.cn'])));
+        self::assertEquals('https://yansongda.cnaaa', get_radar_url(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'https://yansongda.cn', '_service_url' => 'https://yansongda.cnaaa'])));
+    }
+
+    public function testGetRadarBody()
+    {
+        self::assertNull(get_radar_body(new Collection([])));
+        self::assertNull(get_radar_body(null));
+
+        self::assertEquals('https://yansongda.cn', get_wechat_body(new Collection(['_body' => 'https://yansongda.cn'])));
+    }
+
     public function testGetAlipayConfig()
     {
         self::assertArrayHasKey('app_id', get_alipay_config([]));
@@ -174,6 +200,13 @@ class FunctionTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
+        verify_alipay_sign(get_alipay_config(), '', 'aaa');
+    }
+
+    public function testVerifyAlipaySignEmpty()
+    {
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_EMPTY);
         verify_alipay_sign(get_alipay_config(), '', '');
     }
 
@@ -204,7 +237,7 @@ class FunctionTest extends TestCase
     {
         self::assertEquals('https://yansongda.cn', get_wechat_url([], new Collection(['_url' => 'https://yansongda.cn'])));
         self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', get_wechat_url([], new Collection(['_url' => 'api/v1/yansongda'])));
-        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['mode' => Pay::MODE_SERVICE], new Collection(['_service_url' => 'api/v1/service/yansongda'])));
         self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
 
         self::expectException(InvalidParamsException::class);
@@ -542,7 +575,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 -----END CERTIFICATE-----&traceNo=067402&traceTime=0908132206&txnAmt=1&txnSubType=01&txnTime=20220908132206&txnType=01&version=5.1.0";
         $sign = 'JeA4S2+6TbGo9yjXDUvV5A2E3oJbunoCcZ66exN6xR3OH/5PNDK1VSV1Mq7XhVdxzkTeREUveiOYHalqoagRkh71nsHVvruwGbk6azygXSaawuO5tF67UIqNd4Mbufwh1KhbVpEkKbOETUvRhFcdon0fulE97I83eMSk52INHt8E1xk8NdbhyUadSlp+Uv30AKx70PpQbTGmVS3PJfd+Whj0b7LnvZKeC+BS1kUOtIKlcZO+gBoTigvCIJqj51kBrcBCs+x+VaeGm7EYBBhGSERpfQhQ4n+eJBwLdBeZ0/dNbo3iELjvVMx0n9KoW4klvUJhaH5LALA8pV02SbZv4Q==';
 
-        verify_unipay_sign([], $contents, $sign);
+        verify_unipay_sign(get_unipay_config(), $contents, $sign);
 
         self::assertTrue(true);
 

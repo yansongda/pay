@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Direction\ResponseDirection;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\WapPayPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\H5PayPlugin;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -14,7 +14,7 @@ use Yansongda\Pay\Tests\TestCase;
 class WapPayPluginTest extends TestCase
 {
     /**
-     * @var \Yansongda\Pay\Plugin\Unipay\OnlineGateway\WapPayPlugin
+     * @var \Yansongda\Pay\Plugin\Unipay\OnlineGateway\H5PayPlugin
      */
     protected $plugin;
 
@@ -22,7 +22,7 @@ class WapPayPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new WapPayPlugin();
+        $this->plugin = new H5PayPlugin();
     }
 
     public function testNormal()

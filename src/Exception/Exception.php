@@ -76,6 +76,8 @@ class Exception extends \Exception
 
     public const PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE = 4012;
 
+    public const PARAMS_UNIPAY_URL_MISSING = 4013;
+
     /**
      * 关于响应.
      */

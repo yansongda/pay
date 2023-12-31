@@ -4,30 +4,31 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Unipay\QrCode;
 
-use Yansongda\Pay\Exception\ContainerException;
-use Yansongda\Pay\Exception\ServiceNotFoundException;
-use Yansongda\Pay\Pay;
+use Closure;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
-
-use function Yansongda\Pay\get_unipay_config;
 
 /**
  * @see https://open.unionpay.com/tjweb/acproduct/APIList?acpAPIId=792&apiservId=468&version=V2.2&bussType=0
  */
-class QueryPlugin extends \Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin
+class QueryPlugin implements PluginInterface
 {
-    /**
-     * @throws ContainerException
-     * @throws ServiceNotFoundException
-     */
-    protected function getUri(Rocket $rocket): string
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $config = get_unipay_config($rocket->getParams());
+        Logger::debug('[Unipay][QrCode][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        if (Pay::MODE_SANDBOX === ($config['mode'] ?? Pay::MODE_NORMAL)) {
-            return 'https://101.231.204.80:5000/gateway/api/backTransReq.do';
-        }
+        $rocket->mergePayload([
+            '_url' => 'gateway/api/backTransReq.do',
+            '_sandbox_url' => 'https://101.231.204.80:5000/gateway/api/backTransReq.do',
+            'bizType' => '000000',
+            'accessType' => '0',
+            'txnType' => '00',
+            'txnSubType' => '00',
+        ]);
 
-        return parent::getUri($rocket);
+        Logger::info('[Unipay][QrCode][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
     }
 }

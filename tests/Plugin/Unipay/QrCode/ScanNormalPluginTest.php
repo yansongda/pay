@@ -5,7 +5,7 @@ namespace Yansongda\Pay\Tests\Plugin\Unipay\QrCode;
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Unipay\QrCode\ScanNormalPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPlugin;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -13,7 +13,7 @@ use Yansongda\Pay\Tests\TestCase;
 class ScanNormalPluginTest extends TestCase
 {
     /**
-     * @var \Yansongda\Pay\Plugin\Unipay\QrCode\ScanNormalPlugin
+     * @var \Yansongda\Pay\Plugin\Unipay\QrCode\ScanPlugin
      */
     protected $plugin;
 
@@ -21,7 +21,7 @@ class ScanNormalPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new ScanNormalPlugin();
+        $this->plugin = new ScanPlugin();
     }
 
     public function testNormal()
