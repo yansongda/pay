@@ -8,18 +8,18 @@ use Yansongda\Pay\Plugin\Alipay\Pay\H5\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponseHtmlPlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Shortcut\Alipay\WapShortcut;
+use Yansongda\Pay\Shortcut\Alipay\H5Shortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class WapShortcutTest extends TestCase
+class H5ShortcutTest extends TestCase
 {
-    protected WapShortcut $shortcut;
+    protected H5Shortcut $shortcut;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->shortcut = new WapShortcut();
+        $this->shortcut = new H5Shortcut();
     }
 
     public function testNormal()
