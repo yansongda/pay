@@ -4,6 +4,8 @@
 
 - feat: 新增 `InvalidSignException`(#903)
 - feat: 新增 `DecryptException`(#906)
+- feat: 新增 `decrypt_wechat_contents` 解密微信加密内容(#912)
+- feat: `\Yansongda\Pay\Plugin\Wechat\Extend\Complaints\QueryDetailPlugin` 自动解密用户手机号(#912)
 
 ### changed
 
