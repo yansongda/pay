@@ -3,6 +3,7 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\Extend\Complaints;
 
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\Extend\Complaints\QueryDetailPlugin;
 use Yansongda\Pay\Rocket;
@@ -72,5 +73,26 @@ class QueryDetailPluginTest extends TestCase
             '_service_url' => 'v3/merchant-service/complaints-v2/yansongda',
         ], $result->getPayload()->all());
         self::assertEquals('yansongda', $result->getDestination()->all()['payer_phone']);
+    }
+
+    public function testNormalWithEncryptedContentsWrong()
+    {
+        $payload = [
+            "complaint_id" => "yansongda",
+        ];
+
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection($payload));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID);
+
+        $this->plugin->assembly($rocket, function ($rocket) {
+            $rocket->setDestination(new Collection([
+                'payer_phone' => 'invalid',
+            ]));
+
+            return $rocket;
+        });
     }
 }

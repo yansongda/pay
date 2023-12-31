@@ -324,6 +324,7 @@ class FunctionTest extends TestCase
         $config = get_wechat_config();
 
         self::assertEquals('yansongda', decrypt_wechat_contents($encrypted, $config));
+        self::assertNull(decrypt_wechat_contents('invalid', $config));
     }
 
     public function testReloadWechatPublicCerts()

@@ -8,6 +8,7 @@ use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
@@ -25,6 +26,7 @@ class QueryDetailPlugin implements PluginInterface
 {
     /**
      * @throws InvalidParamsException
+     * @throws InvalidConfigException
      * @throws ContainerException
      * @throws ServiceNotFoundException
      */
@@ -57,7 +59,7 @@ class QueryDetailPlugin implements PluginInterface
             $decryptPayerPhone = decrypt_wechat_contents($payerPhone, get_wechat_config($rocket->getParams()));
 
             if (empty($decryptPayerPhone)) {
-                throw new InvalidParamsException(Exception::DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID, '参数异常: 查询投诉单详情，参数 `payer_phone` 解密失败');
+                throw new InvalidConfigException(Exception::DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID, '参数异常: 查询投诉单详情，参数 `payer_phone` 解密失败');
             }
 
             $destination->set('payer_phone', $decryptPayerPhone);
