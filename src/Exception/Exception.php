@@ -109,6 +109,8 @@ class Exception extends \Exception
 
     public const DECRYPT_WECHAT_DECRYPTED_METHOD_INVALID = 7003;
 
+    public const DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID = 7004;
+
     public mixed $extra;
 
     public function __construct(string $message = '未知异常', int $code = self::UNKNOWN_ERROR, mixed $extra = null, ?Throwable $previous = null)

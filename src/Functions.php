@@ -273,6 +273,15 @@ function encrypt_wechat_contents(string $contents, string $publicKey): ?string
     return null;
 }
 
+function decrypt_wechat_contents(string $encrypted, array $config): ?string
+{
+    if (openssl_private_decrypt(base64_decode($encrypted), $decrypted, get_private_cert($config['mch_secret_cert'] ?? ''), OPENSSL_PKCS1_OAEP_PADDING)) {
+        return $decrypted;
+    }
+
+    return null;
+}
+
 /**
  * @throws ContainerException
  * @throws DecryptException
