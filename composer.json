@@ -27,12 +27,12 @@
         "psr/container": "^1.1 || ^2.0",
         "psr/http-client": "^1.0",
         "psr/http-message": "^1.1 || ^2.0",
-        "yansongda/supports": "~4.0.0"
+        "yansongda/supports": "~4.0.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
         "mockery/mockery": "^1.4",
-        "friendsofphp/php-cs-fixer": "^3.0",
+        "friendsofphp/php-cs-fixer": "^3.44",
         "phpstan/phpstan": "^1.0.0",
         "monolog/monolog": "^2.2",
         "symfony/var-dumper": "^5.1",

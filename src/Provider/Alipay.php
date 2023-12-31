@@ -14,25 +14,26 @@ use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
-use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method ResponseInterface app(array $order)      APP 支付
- * @method Collection        pos(array $order)      刷卡支付
- * @method Collection        scan(array $order)     扫码支付
- * @method Collection        transfer(array $order) 帐户转账
- * @method ResponseInterface wap(array $order)      手机网站支付
- * @method ResponseInterface web(array $order)      电脑支付
- * @method Collection        mini(array $order)     小程序支付
+ * @method ResponseInterface|Rocket app(array $order)      APP 支付
+ * @method Collection|Rocket        pos(array $order)      刷卡支付
+ * @method Collection|Rocket        scan(array $order)     扫码支付
+ * @method Collection|Rocket        transfer(array $order) 帐户转账
+ * @method ResponseInterface|Rocket wap(array $order)      手机网站支付
+ * @method ResponseInterface|Rocket web(array $order)      电脑支付
+ * @method Collection|Rocket        mini(array $order)     小程序支付
  */
 class Alipay extends AbstractProvider
 {
@@ -47,7 +48,7 @@ class Alipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function __call(string $shortcut, array $params): null|Collection|MessageInterface
+    public function __call(string $shortcut, array $params): null|Collection|MessageInterface|Rocket
     {
         $plugin = '\\Yansongda\\Pay\\Shortcut\\Alipay\\'.Str::studly($shortcut).'Shortcut';
 
@@ -59,7 +60,7 @@ class Alipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function query(array $order): array|Collection
+    public function query(array $order): Collection|Rocket
     {
         Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
 
@@ -71,7 +72,7 @@ class Alipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function cancel(array $order): null|array|Collection
+    public function cancel(array $order): Collection|Rocket
     {
         Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
 
@@ -83,7 +84,7 @@ class Alipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function close(array $order): null|array|Collection
+    public function close(array $order): Collection|Rocket
     {
         Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
 
@@ -95,7 +96,7 @@ class Alipay extends AbstractProvider
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function refund(array $order): array|Collection
+    public function refund(array $order): Collection|Rocket
     {
         Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
 
@@ -125,7 +126,7 @@ class Alipay extends AbstractProvider
         return array_merge(
             [StartPlugin::class],
             $plugins,
-            [FormatBizContentPlugin::class, AddSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
+            [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
         );
     }
 

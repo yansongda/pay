@@ -5,8 +5,8 @@ namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Agreement\CancelPlugin as AgreementCancelPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Authorization\CancelPlugin as AuthorizationCancelPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\Mini\CancelPlugin as MiniCancelPlugin;
@@ -45,8 +45,8 @@ class CancelShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             PosCancelPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -61,8 +61,8 @@ class CancelShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             AgreementCancelPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -77,8 +77,8 @@ class CancelShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             AuthorizationCancelPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -93,8 +93,8 @@ class CancelShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             MiniCancelPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -109,8 +109,8 @@ class CancelShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             PosCancelPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
@@ -125,8 +125,8 @@ public function testScan()
         self::assertEquals([
             StartPlugin::class,
             ScanCancelPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,

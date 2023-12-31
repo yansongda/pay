@@ -6,22 +6,26 @@ namespace Yansongda\Pay\Shortcut\Wechat;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Jsapi\InvokePrepayPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Jsapi\PrepayPlugin;
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Wechat\Pay\Jsapi\PayPlugin;
+use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
+use Yansongda\Pay\Plugin\Wechat\StartPlugin;
+use Yansongda\Pay\Plugin\Wechat\VerifySignaturePlugin;
 
 class MpShortcut implements ShortcutInterface
 {
     public function getPlugins(array $params): array
     {
         return [
-            PreparePlugin::class,
-            PrepayPlugin::class,
-            InvokePrepayPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            PayPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }

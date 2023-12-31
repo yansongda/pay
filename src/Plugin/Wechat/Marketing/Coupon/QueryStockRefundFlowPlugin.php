@@ -4,39 +4,40 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 
+use Closure;
+use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter9_1_11.shtml
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/stock/refund-flow.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/stock/refund-flow.html
  */
-class QueryStockRefundFlowPlugin extends GeneralPlugin
+class QueryStockRefundFlowPlugin implements PluginInterface
 {
-    protected function getMethod(): string
-    {
-        return 'GET';
-    }
-
-    protected function doSomething(Rocket $rocket): void
-    {
-        $rocket->setPayload(null);
-    }
-
     /**
      * @throws InvalidParamsException
      */
-    protected function getUri(Rocket $rocket): string
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        $payload = $rocket->getPayload();
+        Logger::debug('[Wechat][Marketing][Coupon][QueryStockRefundFlowPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        if (!$payload->has('stock_id')) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        $stockId = $rocket->getPayload()?->get('stock_id') ?? null;
+
+        if (empty($stockId)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 下载批次退款明细，参数缺少 `stock_id`');
         }
 
-        return 'v3/marketing/favor/stocks/'.
-            $payload->get('stock_id').
-            '/refund-flow';
+        $rocket->setPayload([
+            '_method' => 'GET',
+            '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/refund-flow',
+            '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/refund-flow',
+        ]);
+
+        Logger::info('[Wechat][Marketing][Coupon][QueryStockRefundFlowPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
     }
 }

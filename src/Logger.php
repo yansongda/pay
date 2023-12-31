@@ -43,6 +43,6 @@ class Logger
             return;
         }
 
-        throw new InvalidConfigException(Exception\Exception::CONFIG_LOGGER_INVALID);
+        throw new InvalidConfigException(Exception\Exception::CONFIG_LOGGER_INVALID, '配置异常: 配置的 `LoggerInterface` 不符合 PSR 规范');
     }
 }

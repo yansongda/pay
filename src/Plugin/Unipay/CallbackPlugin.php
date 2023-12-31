@@ -37,7 +37,7 @@ class CallbackPlugin implements PluginInterface
         $signature = $params['signature'] ?? false;
 
         if (!$signature) {
-            throw new InvalidSignException(Exception::SIGN_EMPTY, '', $params);
+            throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 银联签名为空', $params);
         }
 
         verify_unipay_sign($params, $rocket->getPayload()->sortKeys()->toString(), $signature);

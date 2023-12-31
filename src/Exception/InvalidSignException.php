@@ -12,7 +12,7 @@ class InvalidSignException extends Exception
 
     public function __construct(
         int $code = self::SIGN_ERROR,
-        string $message = 'Sign Error',
+        string $message = '签名异常',
         mixed $extra = null,
         ?Throwable $previous = null
     ) {

@@ -33,10 +33,10 @@ abstract class AbstractProvider implements ProviderInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function call(string $plugin, array $params = []): null|Collection|MessageInterface
+    public function call(string $plugin, array $params = []): null|Collection|MessageInterface|Rocket
     {
         if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_NOT_FOUND, "[{$plugin}] is not incompatible");
+            throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_NOT_FOUND, "参数异常: [{$plugin}] 未实现 `ShortcutInterface`");
         }
 
         /* @var ShortcutInterface $shortcut */
@@ -49,7 +49,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function pay(array $plugins, array $params): null|Collection|MessageInterface
+    public function pay(array $plugins, array $params): null|Collection|MessageInterface|Rocket
     {
         Logger::info('[AbstractProvider] 即将进行 pay 操作', func_get_args());
 
@@ -68,6 +68,10 @@ abstract class AbstractProvider implements ProviderInterface
             ->then(fn ($rocket) => $this->ignite($rocket));
 
         Event::dispatch(new Event\PayFinish($rocket));
+
+        if (!empty($params['_return_rocket'])) {
+            return $rocket;
+        }
 
         return $rocket->getDestination();
     }
@@ -88,7 +92,7 @@ abstract class AbstractProvider implements ProviderInterface
         $http = Pay::get(HttpClientInterface::class);
 
         if (!$http instanceof ClientInterface) {
-            throw new InvalidConfigException(Exception::CONFIG_HTTP_CLIENT_INVALID);
+            throw new InvalidConfigException(Exception::CONFIG_HTTP_CLIENT_INVALID, '配置异常: 配置的 ClientInterface 不符合 PSR 规范');
         }
 
         Logger::info('[AbstractProvider] 准备请求支付服务商 API', $rocket->toArray());
@@ -99,14 +103,14 @@ abstract class AbstractProvider implements ProviderInterface
             $response = $http->sendRequest($rocket->getRadar());
 
             $rocket->setDestination(clone $response)
-                ->setDestinationOrigin($response);
+                ->setDestinationOrigin(clone $response);
         } catch (Throwable $e) {
             Logger::error('[AbstractProvider] 请求支付服务商 API 出错', ['message' => $e->getMessage(), 'rocket' => $rocket->toArray(), 'trace' => $e->getTrace()]);
 
-            throw new InvalidResponseException(Exception::REQUEST_RESPONSE_ERROR, $e->getMessage(), [], $e);
+            throw new InvalidResponseException(Exception::REQUEST_RESPONSE_ERROR, '响应异常: 请求支付服务商 API 出错 - '.$e->getMessage(), [], $e);
         }
 
-        Logger::info('[AbstractProvider] 请求支付服务商 API 成功', ['response' => $response, 'rocket' => $rocket->toArray()]);
+        Logger::info('[AbstractProvider] 请求支付服务商 API 成功', ['response' => ['status' => $response->getStatusCode(), 'headers' => $response->getHeaders(), 'body' => (string) $response->getBody()], 'rocket' => $rocket->toArray()]);
 
         Event::dispatch(new Event\ApiRequested($rocket));
 
@@ -131,7 +135,7 @@ abstract class AbstractProvider implements ProviderInterface
                 continue;
             }
 
-            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_INCOMPATIBLE, "[{$plugin}] is not incompatible");
+            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_INCOMPATIBLE, "参数异常: [{$plugin}] 插件未实现 `PluginInterface`");
         }
     }
 }

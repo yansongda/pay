@@ -12,9 +12,12 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\LaunchPlugin;
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
+use Yansongda\Pay\Plugin\Wechat\StartPlugin;
+use Yansongda\Pay\Plugin\Wechat\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -42,10 +45,9 @@ class WechatTest extends TestCase
         $plugins = [FooPluginStub::class];
 
         self::assertEquals(array_merge(
-            [PreparePlugin::class],
+            [StartPlugin::class],
             $plugins,
-            [RadarSignPlugin::class],
-            [LaunchPlugin::class, ParserPlugin::class],
+            [AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, VerifySignaturePlugin::class, ParserPlugin::class],
         ), Pay::wechat()->mergeCommonPlugins($plugins));
     }
 

@@ -12,7 +12,7 @@ class InvalidResponseException extends Exception
 
     public function __construct(
         int $code = self::RESPONSE_ERROR,
-        string $message = 'Provider response Error',
+        string $message = '响应异常',
         mixed $extra = null,
         ?Throwable $previous = null
     ) {

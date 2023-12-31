@@ -2,10 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat\Marketing\Coupon;
 
-use GuzzleHttp\Psr7\Uri;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\Marketing\Coupon\SetCallbackPlugin;
-use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -21,21 +18,47 @@ class SetCallbackPluginTest extends TestCase
         $this->plugin = new SetCallbackPlugin();
     }
 
+    public function testNormalParams()
+    {
+        $payload = [
+            "mchid" => "yansongda",
+            "notify_url" => "https://www.yansongda.cn",
+            'test' => 'aaa',
+        ];
+
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection($payload));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertEquals([
+            '_method' => 'POST',
+            '_url' => 'v3/marketing/favor/callbacks',
+            '_service_url' => 'v3/marketing/favor/callbacks',
+            'mchid' => 'yansongda',
+            'notify_url' => 'https://www.yansongda.cn',
+            'test' => 'aaa',
+        ], $result->getPayload()->all());
+    }
+
     public function testNormal()
     {
-        $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
-            'enable' => true,
-        ]));
+        $payload = [
+            'test' => 'aaa',
+        ];
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection($payload));
 
-        $radar = $result->getRadar();
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/marketing/favor/callbacks'), $radar->getUri());
         self::assertEquals([
-            'enable' => true,
+            '_method' => 'POST',
+            '_url' => 'v3/marketing/favor/callbacks',
+            '_service_url' => 'v3/marketing/favor/callbacks',
             'mchid' => '1600314069',
+            'notify_url' => 'https://pay.yansongda.cn',
+            'test' => 'aaa',
         ], $result->getPayload()->all());
     }
 }

@@ -4,23 +4,28 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
+use Closure;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\PreparePlugin;
-use Yansongda\Pay\Plugin\Wechat\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
+use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Plugin\Wechat\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Wechat;
+use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 function should_do_http_request(string $direction): bool
@@ -47,21 +52,10 @@ function get_direction(mixed $direction): DirectionInterface
     }
 
     if (!$direction instanceof DirectionInterface) {
-        throw new InvalidConfigException(Exception::CONFIG_DIRECTION_INVALID);
+        throw new InvalidConfigException(Exception::CONFIG_DIRECTION_INVALID, '配置异常: 配置的 DirectionInterface 未实现 `DirectionInterface`');
     }
 
     return $direction;
-}
-
-/**
- * @throws ContainerException
- * @throws ServiceNotFoundException
- */
-function get_alipay_config(array $params = []): array
-{
-    $alipay = Pay::get(ConfigInterface::class)->get('alipay');
-
-    return $alipay[get_tenant($params)] ?? [];
 }
 
 function get_public_cert(string $key): string
@@ -80,18 +74,32 @@ function get_private_cert(string $key): string
         "\n-----END RSA PRIVATE KEY-----";
 }
 
+function filter_params(array $params, ?Closure $closure = null): array
+{
+    return array_filter($params, static fn ($v, $k) => !Str::startsWith($k, '_') && !is_null($v) && (empty($closure) || $closure($k, $v)), ARRAY_FILTER_USE_BOTH);
+}
+
 /**
  * @throws ContainerException
- * @throws InvalidConfigException
  * @throws ServiceNotFoundException
+ */
+function get_alipay_config(array $params = []): array
+{
+    $alipay = Pay::get(ConfigInterface::class)->get('alipay');
+
+    return $alipay[get_tenant($params)] ?? [];
+}
+
+/**
+ * @throws InvalidConfigException
  * @throws InvalidSignException
  */
-function verify_alipay_sign(array $params, string $contents, string $sign): void
+function verify_alipay_sign(array $config, string $contents, string $sign): void
 {
-    $public = get_alipay_config($params)['alipay_public_cert_path'] ?? null;
+    $public = $config['alipay_public_cert_path'] ?? null;
 
     if (empty($public)) {
-        throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, 'Missing Alipay Config -- [alipay_public_cert_path]');
+        throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [alipay_public_cert_path]');
     }
 
     $result = 1 === openssl_verify(
@@ -102,7 +110,7 @@ function verify_alipay_sign(array $params, string $contents, string $sign): void
     );
 
     if (!$result) {
-        throw new InvalidSignException(Exception::SIGN_ERROR, 'Verify Alipay Sign Failed', func_get_args());
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证支付宝签名失败', func_get_args());
     }
 }
 
@@ -110,35 +118,74 @@ function verify_alipay_sign(array $params, string $contents, string $sign): void
  * @throws ContainerException
  * @throws ServiceNotFoundException
  */
-function get_wechat_config(array $params): array
+function get_wechat_config(array $params = []): array
 {
     $wechat = Pay::get(ConfigInterface::class)->get('wechat');
 
     return $wechat[get_tenant($params)] ?? [];
 }
 
-/**
- * @throws ContainerException
- * @throws ServiceNotFoundException
- */
-function get_wechat_base_uri(array $params): string
+function get_wechat_method(?Collection $payload): string
 {
-    $config = get_wechat_config($params);
-
-    return Wechat::URL[$config['mode'] ?? Pay::MODE_NORMAL];
+    return strtoupper($payload?->get('_method') ?? 'POST');
 }
 
 /**
- * @throws ContainerException
- * @throws ServiceNotFoundException
+ * @throws InvalidParamsException
+ */
+function get_wechat_url(array $config, ?Collection $payload): string
+{
+    $url = $payload?->get('_url') ?? null;
+
+    if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        $url = $payload?->get('_service_url') ?? $url ?? null;
+    }
+
+    if (empty($url)) {
+        throw new InvalidParamsException(Exception::PARAMS_WECHAT_URL_MISSING, '参数异常: 微信 `_url` 或 `_service_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
+    }
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    return Wechat::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_wechat_body(?Collection $payload): string
+{
+    $body = $payload?->get('_body') ?? null;
+
+    if (is_null($body)) {
+        throw new InvalidParamsException(Exception::PARAMS_WECHAT_BODY_MISSING, '参数异常: 微信 `_body` 参数缺失：你可能用错插件顺序，应该先使用 `AddPayloadBodyPlugin`');
+    }
+
+    return $body;
+}
+
+function get_wechat_type_key(array $params): string
+{
+    $key = ($params['_type'] ?? 'mp').'_app_id';
+
+    if ('app_app_id' === $key) {
+        $key = 'app_id';
+    }
+
+    return $key;
+}
+
+/**
  * @throws InvalidConfigException
  */
-function get_wechat_sign(array $params, string $contents): string
+function get_wechat_sign(array $config, string $contents): string
 {
-    $privateKey = get_wechat_config($params)['mch_secret_cert'] ?? null;
+    $privateKey = $config['mch_secret_cert'] ?? null;
 
     if (empty($privateKey)) {
-        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, 'Missing Wechat Config -- [mch_secret_cert]');
+        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_cert]');
     }
 
     $privateKey = get_private_cert($privateKey);
@@ -158,7 +205,7 @@ function get_wechat_sign_v2(array $params, array $payload, bool $upper = true): 
     $key = get_wechat_config($params)['mch_secret_key_v2'] ?? null;
 
     if (empty($key)) {
-        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, 'Missing Wechat Config -- [mch_secret_key_v2]');
+        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key_v2]');
     }
 
     ksort($payload);
@@ -176,11 +223,11 @@ function get_wechat_sign_v2(array $params, array $payload, bool $upper = true): 
 
 /**
  * @throws ContainerException
+ * @throws DecryptException
  * @throws InvalidConfigException
- * @throws InvalidResponseException
- * @throws ServiceNotFoundException
  * @throws InvalidParamsException
  * @throws InvalidSignException
+ * @throws ServiceNotFoundException
  */
 function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, array $params): void
 {
@@ -198,7 +245,7 @@ function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, a
     $public = get_wechat_config($params)['wechat_public_cert_path'][$wechatSerial] ?? null;
 
     if (empty($sign)) {
-        throw new InvalidSignException(Exception::SIGN_EMPTY, $body, ['headers' => $message->getHeaders(), 'body' => $body]);
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 微信签名为空', ['headers' => $message->getHeaders(), 'body' => $body]);
     }
 
     $public = get_public_cert(
@@ -213,7 +260,7 @@ function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, a
     );
 
     if (!$result) {
-        throw new InvalidSignException(Exception::SIGN_ERROR, 'Verify Wechat Sign Failed', ['headers' => $message->getHeaders(), 'body' => $body]);
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证微信签名失败', ['headers' => $message->getHeaders(), 'body' => $body]);
     }
 }
 
@@ -228,23 +275,23 @@ function encrypt_wechat_contents(string $contents, string $publicKey): ?string
 
 /**
  * @throws ContainerException
+ * @throws DecryptException
  * @throws InvalidConfigException
- * @throws ServiceNotFoundException
  * @throws InvalidParamsException
- * @throws InvalidResponseException
+ * @throws ServiceNotFoundException
  */
 function reload_wechat_public_certs(array $params, ?string $serialNo = null): string
 {
     $data = Pay::wechat()->pay(
-        [PreparePlugin::class, WechatPublicCertsPlugin::class, RadarSignPlugin::class, ParserPlugin::class],
+        [StartPlugin::class, WechatPublicCertsPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class],
         $params
     )->get('data', []);
 
-    foreach ($data as $item) {
-        $certs[$item['serial_no']] = decrypt_wechat_resource($item['encrypt_certificate'], $params)['ciphertext'] ?? '';
-    }
-
     $wechatConfig = get_wechat_config($params);
+
+    foreach ($data as $item) {
+        $certs[$item['serial_no']] = decrypt_wechat_resource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
+    }
 
     Pay::get(ConfigInterface::class)->set(
         'wechat.'.get_tenant($params).'.wechat_public_cert_path',
@@ -252,7 +299,7 @@ function reload_wechat_public_certs(array $params, ?string $serialNo = null): st
     );
 
     if (!is_null($serialNo) && empty($certs[$serialNo])) {
-        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, 'Get Wechat Public Cert Error');
+        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 获取微信 wechat_public_cert_path 配置失败');
     }
 
     return $certs[$serialNo] ?? '';
@@ -260,10 +307,10 @@ function reload_wechat_public_certs(array $params, ?string $serialNo = null): st
 
 /**
  * @throws ContainerException
+ * @throws DecryptException
  * @throws InvalidConfigException
- * @throws ServiceNotFoundException
  * @throws InvalidParamsException
- * @throws InvalidResponseException
+ * @throws ServiceNotFoundException
  */
 function get_wechat_public_certs(array $params = [], ?string $path = null): void
 {
@@ -283,34 +330,32 @@ function get_wechat_public_certs(array $params = [], ?string $path = null): void
 }
 
 /**
- * @throws ContainerException
  * @throws InvalidConfigException
- * @throws InvalidResponseException
- * @throws ServiceNotFoundException
+ * @throws DecryptException
  */
-function decrypt_wechat_resource(array $resource, array $params): array
+function decrypt_wechat_resource(array $resource, array $config): array
 {
     $ciphertext = base64_decode($resource['ciphertext'] ?? '');
-    $secret = get_wechat_config($params)['mch_secret_key'] ?? null;
+    $secret = $config['mch_secret_key'] ?? null;
 
     if (strlen($ciphertext) <= Wechat::AUTH_TAG_LENGTH_BYTE) {
-        throw new InvalidResponseException(Exception::RESPONSE_CIPHERTEXT_PARAMS_INVALID);
+        throw new DecryptException(Exception::DECRYPT_WECHAT_CIPHERTEXT_PARAMS_INVALID, '加解密异常: ciphertext 位数过短');
     }
 
     if (is_null($secret) || Wechat::MCH_SECRET_KEY_LENGTH_BYTE != strlen($secret)) {
-        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, 'Missing Wechat Config -- [mch_secret_key]');
+        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key]');
     }
 
     $resource['ciphertext'] = match ($resource['algorithm'] ?? '') {
         'AEAD_AES_256_GCM' => decrypt_wechat_resource_aes_256_gcm($ciphertext, $secret, $resource['nonce'] ?? '', $resource['associated_data'] ?? ''),
-        default => throw new InvalidResponseException(Exception::RESPONSE_DECRYPTED_METHOD_INVALID),
+        default => throw new DecryptException(Exception::DECRYPT_WECHAT_DECRYPTED_METHOD_INVALID, '加解密异常: algorithm 不支持'),
     };
 
     return $resource;
 }
 
 /**
- * @throws InvalidResponseException
+ * @throws DecryptException
  */
 function decrypt_wechat_resource_aes_256_gcm(string $ciphertext, string $secret, string $nonce, string $associatedData): array|string
 {
@@ -324,15 +369,59 @@ function decrypt_wechat_resource_aes_256_gcm(string $ciphertext, string $secret,
         $associatedData
     );
 
+    if (false === $decrypted) {
+        throw new DecryptException(Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID, '加解密异常: 解密失败，请检查微信 mch_secret_key 是否正确');
+    }
+
     if ('certificate' !== $associatedData) {
-        $decrypted = json_decode(strval($decrypted), true);
+        $decrypted = json_decode($decrypted, true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new InvalidResponseException(Exception::RESPONSE_ENCRYPTED_DATA_INVALID);
+            throw new DecryptException(Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID, '加解密异常: 待解密数据非正常数据');
         }
     }
 
     return $decrypted;
+}
+
+/**
+ * @throws ContainerException
+ * @throws DecryptException
+ * @throws InvalidConfigException
+ * @throws InvalidParamsException
+ * @throws ServiceNotFoundException
+ */
+function get_wechat_serial_no(array $params): string
+{
+    if (!empty($params['_serial_no'])) {
+        return $params['_serial_no'];
+    }
+
+    $config = get_wechat_config($params);
+
+    if (empty($config['wechat_public_cert_path'])) {
+        reload_wechat_public_certs($params);
+
+        $config = get_wechat_config($params);
+    }
+
+    mt_srand();
+
+    return strval(array_rand($config['wechat_public_cert_path']));
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_wechat_public_key(array $config, string $serialNo): string
+{
+    $publicKey = $config['wechat_public_cert_path'][$serialNo] ?? null;
+
+    if (empty($publicKey)) {
+        throw new InvalidParamsException(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND, '参数异常: 微信公钥序列号为找到 -'.$serialNo);
+    }
+
+    return $publicKey;
 }
 
 /**
@@ -356,7 +445,7 @@ function verify_unipay_sign(array $params, string $contents, string $sign): void
 {
     if (empty($params['signPubKeyCert'])
         && empty($public = get_unipay_config($params)['unipay_public_cert_path'] ?? null)) {
-        throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, 'Missing Unipay Config -- [unipay_public_cert_path]');
+        throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常： 缺少银联配置 -- [unipay_public_cert_path]');
     }
 
     $result = 1 === openssl_verify(
@@ -367,6 +456,6 @@ function verify_unipay_sign(array $params, string $contents, string $sign): void
     );
 
     if (!$result) {
-        throw new InvalidSignException(Exception::SIGN_ERROR, 'Verify Unipay Sign Failed', func_get_args());
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证银联签名失败', func_get_args());
     }
 }

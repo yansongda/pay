@@ -10,10 +10,7 @@ use Yansongda\Supports\Collection;
 
 class CallbackPluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Wechat\CallbackPlugin
-     */
-    protected $plugin;
+    protected CallbackPlugin $plugin;
 
     protected function setUp(): void
     {
@@ -44,7 +41,7 @@ class CallbackPluginTest extends TestCase
         );
 
         $rocket = (new Rocket())
-            ->setParams(['request' => $request]);
+            ->setParams(['_request' => $request]);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 

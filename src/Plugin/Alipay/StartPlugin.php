@@ -106,7 +106,7 @@ class StartPlugin implements PluginInterface
         $path = $config['app_public_cert_path'] ?? null;
 
         if (is_null($path)) {
-            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, 'Missing Alipay Config -- [app_public_cert_path]');
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
         }
 
         $ssl = openssl_x509_parse(get_public_cert($path));

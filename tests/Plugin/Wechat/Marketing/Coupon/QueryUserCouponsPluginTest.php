@@ -2,12 +2,9 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat\Marketing\Coupon;
 
-use GuzzleHttp\Psr7\Uri;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\Marketing\Coupon\QueryUserCouponsPlugin;
-use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -23,43 +20,47 @@ class QueryUserCouponsPluginTest extends TestCase
         $this->plugin = new QueryUserCouponsPlugin();
     }
 
-    public function testNormal()
+    public function testEmptyPayload()
     {
-        $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
-            'openid' => '123',
-            'limit' => 1,
-        ]));
+        $rocket = new Rocket();
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
-
-        $radar = $result->getRadar();
-
-        self::assertEquals('GET', $radar->getMethod());
-        self::assertNull($result->getPayload());
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/marketing/favor/users/123/coupons?limit=1&appid=wx55955316af4ef13&creator_mchid=1600314069'), $radar->getUri());
-    }
-
-    public function testException()
-    {
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        self::expectExceptionMessage('参数异常: 根据商户号查用户的券，参数缺少 `openid`');
 
-        $rocket = (new Rocket())->setParams([])->setPayload(new Collection());
-
-        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testOtherAppId()
+    public function testNormalParams()
     {
-        $rocket = (new Rocket())->setParams(['_type' => 'mini'])->setPayload(new Collection([
-            'openid' => '123',
-            'limit' => 1,
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection( [
+            "openid" => "111",
+            'appid' => '222',
         ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $radar = $result->getRadar();
+        self::assertEquals([
+            '_method' => 'GET',
+            '_url' => 'v3/marketing/favor/users/111/coupons?appid=222',
+            '_service_url' => 'v3/marketing/favor/users/111/coupons?appid=222',
+        ], $result->getPayload()->all());
+    }
 
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/marketing/favor/users/123/coupons?limit=1&appid=wx55955316af4ef14&creator_mchid=1600314069'), $radar->getUri());
+    public function testNormal()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection( [
+            "openid" => "111",
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertEquals([
+            '_method' => 'GET',
+            '_url' => 'v3/marketing/favor/users/111/coupons?appid=wx55955316af4ef13',
+            '_service_url' => 'v3/marketing/favor/users/111/coupons?appid=wx55955316af4ef13',
+        ], $result->getPayload()->all());
     }
 }

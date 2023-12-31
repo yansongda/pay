@@ -14,6 +14,7 @@ use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
+use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
 
@@ -42,10 +43,12 @@ class VerifySignaturePlugin implements PluginInterface
         $result = $destination->except('_sign')->all();
 
         if ('' === $sign || empty($result)) {
-            throw new InvalidSignException(Exception::SIGN_EMPTY, 'Verify Alipay Response Sign Failed: sign is empty', $destination);
+            throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 验证支付宝签名失败-支付宝签名为空', $destination);
         }
 
-        verify_alipay_sign($rocket->getParams(), json_encode($result, JSON_UNESCAPED_UNICODE), $sign);
+        $config = get_alipay_config($rocket->getParams());
+
+        verify_alipay_sign($config, json_encode($result, JSON_UNESCAPED_UNICODE), $sign);
 
         Logger::info('[Alipay][VerifySignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
 

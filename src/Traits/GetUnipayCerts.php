@@ -28,7 +28,7 @@ trait GetUnipayCerts
         $ssl = openssl_x509_parse($certs['cert'] ?? '');
 
         if (false === $ssl) {
-            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, 'Parse `mch_cert_path` Error');
+            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 解析银联 `mch_cert_path` 失败，请检查参数是否正确');
         }
 
         $certs['cert_id'] = $ssl['serialNumber'] ?? '';
@@ -49,11 +49,11 @@ trait GetUnipayCerts
         $password = $config['mch_cert_password'] ?? null;
 
         if (is_null($path) || is_null($password)) {
-            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, 'Missing Unipay Config -- [mch_cert_path] or [mch_cert_password]');
+            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 缺少银联配置 -- [mch_cert_path] or [mch_cert_password]');
         }
 
         if (false === openssl_pkcs12_read(file_get_contents($path), $certs, $password)) {
-            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, 'Read `mch_cert_path` Error');
+            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 读取银联 `mch_cert_path` 失败，请确认参数是否正确');
         }
 
         return $certs;

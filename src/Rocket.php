@@ -72,8 +72,12 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
         return $this->payload;
     }
 
-    public function setPayload(?Collection $payload): Rocket
+    public function setPayload(null|array|Collection $payload): Rocket
     {
+        if (is_array($payload)) {
+            $payload = new Collection($payload);
+        }
+
         $this->payload = $payload;
 
         return $this;
@@ -86,6 +90,17 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
         }
 
         $this->payload = $this->payload->merge($payload);
+
+        return $this;
+    }
+
+    public function exceptPayload(mixed $key): Rocket
+    {
+        if (empty($this->payload)) {
+            return $this;
+        }
+
+        $this->payload = $this->payload->except($key);
 
         return $this;
     }

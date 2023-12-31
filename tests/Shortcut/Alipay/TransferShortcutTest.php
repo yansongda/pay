@@ -3,8 +3,8 @@
 namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
 use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\AddSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\FormatBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Fund\Transfer\TransferPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
@@ -31,8 +31,8 @@ class TransferShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             TransferPlugin::class,
-            FormatBizContentPlugin::class,
-            AddSignaturePlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,

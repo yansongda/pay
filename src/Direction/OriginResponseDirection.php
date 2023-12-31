@@ -17,10 +17,10 @@ class OriginResponseDirection implements DirectionInterface
      */
     public function guide(PackerInterface $packer, ?ResponseInterface $response): ?ResponseInterface
     {
-        if (!is_null($response)) {
-            return $response;
+        if (is_null($response)) {
+            throw new InvalidResponseException(Exception::RESPONSE_EMPTY, '响应异常: 响应为空，不能进行 direction');
         }
 
-        throw new InvalidResponseException(Exception::RESPONSE_CODE_WRONG);
+        return $response;
     }
 }

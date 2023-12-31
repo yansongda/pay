@@ -33,12 +33,12 @@ class PreparePluginTest extends TestCase
         $payload = array_merge($params, [
             'version' => '5.1.0',
             'encoding' => 'utf-8',
-            'backUrl' => 'https://yansongda.cn/unipay/notify',
+            'backUrl' => 'https://pay.yansongda.cn',
             'accessType' => '0',
             'signature' => '',
             'signMethod' => '01',
             'merId' => '777290058167151',
-            'frontUrl' => 'https://yansongda.cn/unipay/return',
+            'frontUrl' => 'https://pay.yansongda.cn',
             'certId' => '69903319369',
             'currencyCode' => '156',
         ]);

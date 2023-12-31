@@ -2,12 +2,9 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat\Marketing\Coupon;
 
-use GuzzleHttp\Psr7\Uri;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\Marketing\Coupon\SendPlugin;
-use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -23,73 +20,56 @@ class SendPluginTest extends TestCase
         $this->plugin = new SendPlugin();
     }
 
-    public function testNormal()
+    public function testEmptyPayload()
     {
-        $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
-            'openid' => '7890',
-            'stock_id' => '123',
-        ]));
+        $rocket = new Rocket();
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
-
-        $radar = $result->getRadar();
-
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/marketing/favor/users/7890/coupons'), $radar->getUri());
-        self::assertEquals([
-            'stock_id' => '123',
-            'appid' => 'wx55955316af4ef13',
-            'stock_creator_mchid' => '1600314069',
-        ], $result->getPayload()->all());
-    }
-
-    public function testException()
-    {
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        self::expectExceptionMessage('参数异常: 发放指定批次的代金券，参数缺少 `openid`');
 
-        $rocket = (new Rocket())->setParams([])->setPayload(new Collection());
-
-        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testExistMchId()
+    public function testNormalParams()
     {
-        $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
-            'openid' => '7890',
-            'stock_id' => '123',
-            'stock_creator_mchid' => '123',
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'openid' => '111',
+            "appid" => "222",
+            'stock_creator_mchid' => '333',
+            'test' => 'yansongda'
         ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $radar = $result->getRadar();
-
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/marketing/favor/users/7890/coupons'), $radar->getUri());
         self::assertEquals([
-            'stock_id' => '123',
-            'appid' => 'wx55955316af4ef13',
-            'stock_creator_mchid' => '123',
+            '_method' => 'POST',
+            '_url' => 'v3/marketing/favor/users/111/coupons',
+            '_service_url' => 'v3/marketing/favor/users/111/coupons',
+            'appid' => '222',
+            'stock_creator_mchid' => '333',
+            'test' => 'yansongda',
         ], $result->getPayload()->all());
     }
-
-    public function testOtherAppId()
+    
+    public function testNormal()
     {
-        $rocket = (new Rocket())->setParams(['_type' => 'mini'])->setPayload(new Collection([
-            'openid' => '7890',
-            'stock_id' => '123',
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'openid' => '111',
+            "test" => "yansongda",
         ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $radar = $result->getRadar();
-
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals(new Uri(Wechat::URL[Pay::MODE_NORMAL].'v3/marketing/favor/users/7890/coupons'), $radar->getUri());
         self::assertEquals([
-            'stock_id' => '123',
-            'appid' => 'wx55955316af4ef14',
+            '_method' => 'POST',
+            '_url' => 'v3/marketing/favor/users/111/coupons',
+            '_service_url' => 'v3/marketing/favor/users/111/coupons',
+            'appid' => 'wx55955316af4ef13',
             'stock_creator_mchid' => '1600314069',
+            'test' => 'yansongda',
         ], $result->getPayload()->all());
     }
 }

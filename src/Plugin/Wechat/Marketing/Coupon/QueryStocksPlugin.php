@@ -4,41 +4,60 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 
+use Closure;
+use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
-use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
 
 /**
- * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter9_1_4.shtml
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/stock/list-stocks.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/stock/list-stocks.html
  */
-class QueryStocksPlugin extends GeneralPlugin
+class QueryStocksPlugin implements PluginInterface
 {
-    protected function getMethod(): string
-    {
-        return 'GET';
-    }
-
-    protected function doSomething(Rocket $rocket): void
-    {
-        $rocket->setPayload(null);
-    }
-
     /**
      * @throws ContainerException
+     * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    protected function getUri(Rocket $rocket): string
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
+        Logger::debug('[Wechat][Marketing][Coupon][QueryStocksPlugin] 插件开始装载', ['rocket' => $rocket]);
+
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
+        $payload = $rocket->getPayload();
 
-        if (!$rocket->getPayload()->has('stock_creator_mchid')) {
-            $rocket->mergePayload(['stock_creator_mchid' => $config['mch_id']]);
+        if (is_null($payload)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少代金券相关参数');
         }
 
-        return 'v3/marketing/favor/stocks?'.$rocket->getPayload()->query();
+        $rocket->setPayload([
+            '_method' => 'GET',
+            '_url' => 'v3/marketing/favor/stocks?'.$this->normal($payload, $config),
+            '_service_url' => 'v3/marketing/favor/stocks?'.$this->normal($payload, $config),
+        ]);
+
+        Logger::info('[Wechat][Marketing][Coupon][QueryStocksPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
+    }
+
+    public function normal(Collection $payload, array $config): string
+    {
+        $stockCreatorMchId = $payload->get('stock_creator_mchid');
+
+        if (is_null($stockCreatorMchId)) {
+            $payload->set('stock_creator_mchid', $config['mch_id'] ?? '');
+        }
+
+        return $payload->query();
     }
 }

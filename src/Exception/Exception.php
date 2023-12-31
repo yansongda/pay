@@ -60,13 +60,21 @@ class Exception extends \Exception
 
     public const PARAMS_METHOD_NOT_SUPPORTED = 4004;
 
-    public const PARAMS_REQUEST_EMPTY = 4005;
+    public const PARAMS_NECESSARY_PARAMS_MISSING = 4005;
 
-    public const PARAMS_NECESSARY_PARAMS_MISSING = 4006;
+    public const PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE = 4006;
 
-    public const PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE = 4007;
+    public const PARAMS_WECHAT_SERIAL_NOT_FOUND = 4007;
 
-    public const PARAMS_WECHAT_SERIAL_NOT_FOUND = 4008;
+    public const PARAMS_CALLBACK_REQUEST_INVALID = 4008;
+
+    public const PARAMS_WECHAT_URL_MISSING = 4009;
+
+    public const PARAMS_WECHAT_BODY_MISSING = 4010;
+
+    public const PARAMS_WECHAT_AUTHORIZATION_MISSING = 4011;
+
+    public const PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE = 4012;
 
     /**
      * 关于响应.
@@ -77,17 +85,11 @@ class Exception extends \Exception
 
     public const RESPONSE_UNPACK_ERROR = 5002;
 
-    public const RESPONSE_CODE_WRONG = 5004;
+    public const RESPONSE_CODE_WRONG = 5003;
 
-    public const RESPONSE_MISSING_NECESSARY_PARAMS = 5005;
+    public const RESPONSE_MISSING_NECESSARY_PARAMS = 5004;
 
-    public const RESPONSE_EMPTY = 5006;
-
-    public const RESPONSE_CIPHERTEXT_PARAMS_INVALID = 5007;
-
-    public const RESPONSE_ENCRYPTED_DATA_INVALID = 5008;
-
-    public const RESPONSE_DECRYPTED_METHOD_INVALID = 5009;
+    public const RESPONSE_EMPTY = 5005;
 
     /**
      * 关于签名.
@@ -96,9 +98,20 @@ class Exception extends \Exception
 
     public const SIGN_EMPTY = 6001;
 
+    /**
+     * 关于加解密.
+     */
+    public const DECRYPT_ERROR = 7000;
+
+    public const DECRYPT_WECHAT_CIPHERTEXT_PARAMS_INVALID = 7001;
+
+    public const DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID = 7002;
+
+    public const DECRYPT_WECHAT_DECRYPTED_METHOD_INVALID = 7003;
+
     public mixed $extra;
 
-    public function __construct(string $message = 'Unknown Error', int $code = self::UNKNOWN_ERROR, mixed $extra = null, ?Throwable $previous = null)
+    public function __construct(string $message = '未知异常', int $code = self::UNKNOWN_ERROR, mixed $extra = null, ?Throwable $previous = null)
     {
         $this->extra = $extra;
 

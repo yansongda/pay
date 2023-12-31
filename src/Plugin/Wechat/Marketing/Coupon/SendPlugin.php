@@ -4,51 +4,67 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Wechat\Marketing\Coupon;
 
+use Closure;
+use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
-use Yansongda\Pay\Plugin\Wechat\GeneralPlugin;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_wechat_type_key;
 
 /**
- * @see https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter9_1_2.shtml
+ * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/coupon/send-coupon.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/coupon/send-coupon.html
  */
-class SendPlugin extends GeneralPlugin
+class SendPlugin implements PluginInterface
 {
     /**
+     * @throws InvalidParamsException
      * @throws ContainerException
      * @throws ServiceNotFoundException
      */
-    protected function doSomething(Rocket $rocket): void
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
+        Logger::debug('[Wechat][Marketing][Coupon][SendPlugin] 插件开始装载', ['rocket' => $rocket]);
+
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
+        $payload = $rocket->getPayload();
+        $openId = $payload?->get('openid') ?? null;
 
-        if (!$rocket->getPayload()->has('appid')) {
-            $rocket->mergePayload(['appid' => $config[$this->getConfigKey($params)] ?? '']);
+        if (empty($openId)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 发放指定批次的代金券，参数缺少 `openid`');
         }
 
-        if (!$rocket->getPayload()->has('stock_creator_mchid')) {
-            $rocket->mergePayload(['stock_creator_mchid' => $config['mch_id']]);
-        }
+        $rocket->setPayload(array_merge(
+            [
+                '_method' => 'POST',
+                '_url' => 'v3/marketing/favor/users/'.$openId.'/coupons',
+                '_service_url' => 'v3/marketing/favor/users/'.$openId.'/coupons',
+            ],
+            $this->normal($payload, $params, $config),
+        ));
 
-        $rocket->getPayload()->forget('openid');
+        Logger::info('[Wechat][Marketing][Coupon][SendPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
     }
 
-    /**
-     * @throws InvalidParamsException
-     */
-    protected function getUri(Rocket $rocket): string
+    protected function normal(Collection $payload, array $params, array $config): array
     {
-        $payload = $rocket->getPayload();
-
-        if (!$payload->has('openid')) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        if (empty($payload->get('appid'))) {
+            $payload->set('appid', $config[get_wechat_type_key($params)] ?? '');
         }
 
-        return 'v3/marketing/favor/users/'.$payload->get('openid').'/coupons';
+        if (empty($payload->get('stock_creator_mchid'))) {
+            $payload->set('stock_creator_mchid', $config['mch_id'] ?? '');
+        }
+
+        return $payload->except('openid')->all();
     }
 }

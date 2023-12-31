@@ -95,7 +95,7 @@ class ContainerServiceProvider implements ServiceProviderInterface
     protected function defaultApplication(): void
     {
         if (!class_exists(DefaultContainer::class)) {
-            throw new ContainerNotFoundException('Init failed! Maybe you should install `hyperf/pimple` first', Exception::CONTAINER_NOT_FOUND);
+            throw new ContainerNotFoundException('容器未找到: Init failed! Maybe you should install `hyperf/pimple` first', Exception::CONTAINER_NOT_FOUND);
         }
 
         $container = (new DefaultContainer())();
