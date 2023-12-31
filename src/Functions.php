@@ -504,7 +504,7 @@ function get_unipay_url(array $config, ?Collection $payload): string
     $url = get_radar_url($config, $payload);
 
     if (empty($url)) {
-        throw new InvalidParamsException(Exception::PARAMS_UNIPAY_URL_MISSING, '参数异常: 银联 `_url` 或 `_service_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
+        throw new InvalidParamsException(Exception::PARAMS_UNIPAY_URL_MISSING, '参数异常: 银联 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
     }
 
     if (str_starts_with($url, 'http')) {
@@ -512,4 +512,18 @@ function get_unipay_url(array $config, ?Collection $payload): string
     }
 
     return Unipay::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_unipay_body(?Collection $payload): string
+{
+    $body = get_radar_body($payload);
+
+    if (is_null($body)) {
+        throw new InvalidParamsException(Exception::PARAMS_UNIPAY_BODY_MISSING, '参数异常: 银联 `_body` 参数缺失：你可能用错插件顺序，应该先使用 `AddPayloadBodyPlugin`');
+    }
+
+    return $body;
 }

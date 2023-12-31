@@ -34,4 +34,20 @@ class ResponseHtmlPluginTest extends TestCase
         self::assertStringContainsString('pay_form', $contents);
         self::assertStringContainsString('yansongda', $contents);
     }
+
+    public function testPayloadUnderline()
+    {
+        $rocket = new Rocket();
+        $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))
+            ->setPayload(new Collection(['name' => 'yansongda', '_age' => 'aaaa']));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $contents = (string) $result->getDestination()->getBody();
+
+        self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
+        self::assertStringContainsString('pay_form', $contents);
+        self::assertStringContainsString('yansongda', $contents);
+        self::assertStringNotContainsString('_age', $contents);
+    }
 }

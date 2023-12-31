@@ -78,6 +78,8 @@ class Exception extends \Exception
 
     public const PARAMS_UNIPAY_URL_MISSING = 4013;
 
+    public const PARAMS_UNIPAY_BODY_MISSING = 4014;
+
     /**
      * 关于响应.
      */

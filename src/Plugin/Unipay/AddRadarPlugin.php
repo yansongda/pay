@@ -14,8 +14,8 @@ use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
-use function Yansongda\Pay\get_radar_body;
 use function Yansongda\Pay\get_radar_method;
+use function Yansongda\Pay\get_unipay_body;
 use function Yansongda\Pay\get_unipay_config;
 use function Yansongda\Pay\get_unipay_url;
 
@@ -38,7 +38,7 @@ class AddRadarPlugin implements PluginInterface
             get_radar_method($payload) ?? 'POST',
             get_unipay_url($config, $payload),
             $this->getHeaders($payload),
-            get_radar_body($payload),
+            get_unipay_body($payload),
         ));
 
         Logger::info('[Unipay][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);

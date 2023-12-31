@@ -7,10 +7,13 @@ namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\CancelPlugin;
-use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\CancelPlugin as OnlineGatewayCancelPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin as QrCodeCancelPlugin;
+use Yansongda\Pay\Plugin\Unipay\StartPlugin;
+use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\CancelShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -28,10 +31,12 @@ class CancelShortcutTest extends TestCase
     public function testDefault()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            CancelPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            OnlineGatewayCancelPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
@@ -39,10 +44,12 @@ class CancelShortcutTest extends TestCase
     public function testQrCode()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            QrCodeCancelPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'qr_code']));
     }

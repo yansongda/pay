@@ -7,13 +7,15 @@ namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanFeePlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPreAuthPlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPreOrderPlugin;
-use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Unipay\StartPlugin;
+use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\ScanShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -31,10 +33,12 @@ class ScanShortcutTest extends TestCase
     public function testDefault()
     {
         self::assertEquals([
-            PreparePlugin::class,
+            StartPlugin::class,
             ScanPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
@@ -42,10 +46,12 @@ class ScanShortcutTest extends TestCase
     public function testPreAuth()
     {
         self::assertEquals([
-            PreparePlugin::class,
+            StartPlugin::class,
             ScanPreAuthPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'pre_auth']));
     }
@@ -53,10 +59,12 @@ class ScanShortcutTest extends TestCase
     public function testPreOrder()
     {
         self::assertEquals([
-            PreparePlugin::class,
+            StartPlugin::class,
             ScanPreOrderPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'pre_order']));
     }
@@ -64,10 +72,12 @@ class ScanShortcutTest extends TestCase
     public function testFee()
     {
         self::assertEquals([
-            PreparePlugin::class,
+            StartPlugin::class,
             ScanFeePlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'fee']));
     }
