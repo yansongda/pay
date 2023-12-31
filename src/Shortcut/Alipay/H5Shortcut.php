@@ -12,7 +12,7 @@ use Yansongda\Pay\Plugin\Alipay\ResponseHtmlPlugin;
 use Yansongda\Pay\Plugin\Alipay\StartPlugin;
 use Yansongda\Pay\Plugin\ParserPlugin;
 
-class WapShortcut implements ShortcutInterface
+class H5Shortcut implements ShortcutInterface
 {
     public function getPlugins(array $params): array
     {

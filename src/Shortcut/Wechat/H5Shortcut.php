@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Wechat;
+namespace Yansongda\Pay\Shortcut\Wechat;
 
+use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
@@ -12,23 +13,12 @@ use Yansongda\Pay\Plugin\Wechat\Pay\H5\PayPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Plugin\Wechat\VerifySignaturePlugin;
-use Yansongda\Pay\Shortcut\Wechat\WapShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class WapShortcutTest extends TestCase
+class H5Shortcut implements ShortcutInterface
 {
-    protected WapShortcut $plugin;
-
-    protected function setUp(): void
+    public function getPlugins(array $params): array
     {
-        parent::setUp();
-
-        $this->plugin = new WapShortcut();
-    }
-
-    public function testDefault()
-    {
-        self::assertEquals([
+        return [
             StartPlugin::class,
             PayPlugin::class,
             AddPayloadBodyPlugin::class,
@@ -37,6 +27,6 @@ class WapShortcutTest extends TestCase
             ResponsePlugin::class,
             VerifySignaturePlugin::class,
             ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
+        ];
     }
 }
