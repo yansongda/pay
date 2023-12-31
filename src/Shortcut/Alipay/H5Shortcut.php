@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Shortcut\Alipay;
 
 use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\Alipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Pay\H5\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\ResponseHtmlPlugin;
@@ -21,6 +22,7 @@ class H5Shortcut implements ShortcutInterface
             PayPlugin::class,
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
             ResponseHtmlPlugin::class,
             ParserPlugin::class,
         ];
