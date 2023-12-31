@@ -14,7 +14,7 @@
 - change(internal): 将 支付/微信/银联 shortcut 从 plugin 文件夹独立出来(#895, #904, #905)
 - change(internal): shortcut 完整标明各个插件，不使用 commonPlugin(#886)
 - change(internal): DirectionInterface 方法由 `parse` 改为 `guide`(#896)
-- change(internal): 错误代码 const 命名规则统一(#902, #903, #906)
+- change(internal): 错误代码 const 命名规则统一(#902, #903, #906, #909)
 - change(internal): 调整 `ProviderInterface` 的返回参数，增加了 `Rocket` 返回(#909)
 
 ## v3.5.3

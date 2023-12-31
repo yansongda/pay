@@ -13,6 +13,7 @@ use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
@@ -43,19 +44,19 @@ class JsapiInvokePlugin implements PluginInterface
         Logger::debug('[Wechat][Pay][Combine][JsapiInvokePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $destination = $rocket->getDestination();
+        $prepayId = $destination?->get('prepay_id');
 
-        $prepayId = $destination->get('prepay_id');
+        if (is_null($prepayId)) {
+            Logger::error('[Wechat][Pay][Combine][JsapiInvokePlugin] 预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求', $destination?->all() ?? null);
 
-        if (empty($prepayId)) {
-            Logger::error('[Wechat][Pay][Combine][JsapiInvokePlugin] 预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求', $destination->all());
-
-            throw new InvalidResponseException(Exception::RESPONSE_MISSING_NECESSARY_PARAMS, $destination->get('message', '预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求'), $destination->all());
+            throw new InvalidResponseException(Exception::RESPONSE_MISSING_NECESSARY_PARAMS, $destination?->get('message') ?? '预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求', $destination?->all() ?? null);
         }
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
+        $payload = $rocket->getPayload();
 
-        $rocket->setDestination($this->getInvokeConfig($params, $config, $prepayId));
+        $rocket->setDestination($this->getInvokeConfig($payload, $params, $config, $prepayId));
 
         Logger::info('[Wechat][Pay][Combine][JsapiInvokePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -66,10 +67,10 @@ class JsapiInvokePlugin implements PluginInterface
      * @throws InvalidConfigException
      * @throws Throwable              生成随机串失败
      */
-    protected function getInvokeConfig(array $params, array $config, string $prepayId): Config
+    protected function getInvokeConfig(?Collection $payload, array $params, array $config, string $prepayId): Config
     {
         $invokeConfig = new Config([
-            'appId' => $config[get_wechat_type_key($params)] ?? '',
+            'appId' => $this->getAppId($payload, $config, $params),
             'timeStamp' => time().'',
             'nonceStr' => Str::random(32),
             'package' => 'prepay_id='.$prepayId,
@@ -92,5 +93,14 @@ class JsapiInvokePlugin implements PluginInterface
             $invokeConfig->get('package', '')."\n";
 
         return get_wechat_sign($config, $contents);
+    }
+
+    protected function getAppId(?Collection $payload, array $config, array $params): string
+    {
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+            return $payload?->get('_invoke_appid') ?? $config['sub_'.get_wechat_type_key($params)] ?? '';
+        }
+
+        return $payload?->get('_invoke_appid') ?? $config[get_wechat_type_key($params)] ?? '';
     }
 }
