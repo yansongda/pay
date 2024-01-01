@@ -27,7 +27,10 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method ResponseInterface web(array $order) 电脑支付
+ * @method ResponseInterface|Rocket web(array $order)  电脑支付
+ * @method ResponseInterface|Rocket h5(array $order)   H5支付
+ * @method Collection|Rocket        pos(array $order)  刷卡支付（付款码，被扫码）
+ * @method Collection|Rocket        scan(array $order) 扫码支付（摄像头，主动扫）
  */
 class Unipay extends AbstractProvider
 {

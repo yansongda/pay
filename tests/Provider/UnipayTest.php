@@ -113,9 +113,11 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         $result = Pay::unipay()->query([
             'txnTime' => '20220911041647',
             'orderId' => 'pay20220911041647',
+            '_return_rocket' => true,
         ]);
 
-        self::assertArrayHasKey('origRespMsg', $result->all());
+        self::assertEquals('txnTime=20220911041647&orderId=pay20220911041647&version=5.1.0&encoding=utf-8&backUrl=https%3A%2F%2Fpay.yansongda.cn&currencyCode=156&accessType=0&signature=OQkKHuMITwTijM%2Fk4QLWYpFwU5LEuXWHLtsWZsuv9dCyvTx5Z4dIY5%2FdpaQgpOw6iLDDtjz6Ocdo3IYPn%2FUySoyh0W8DO31poqL1uWxEimN0mzKa4z4milWFqzFfe6hOzP1gNXVSzz8xS21QNaUsJsvk4JdbqC5eLwV4xBAgLTAvbZ5GQM4Ta5gIYC%2B1vK6Jg0XSxQQPFQ35jeKSJyqj2yyKJFnET6lWe7ZQSDCjpMjDNGtf2FvVSd9PAX5xp5DA4WXQP73U81NE7kBtxW6WbsBiaS05YO2ylg7ukh4AM%2FgzbvvU24FO%2F5keLy7MdVFB7ZEDVuuEwXNnauiosH4LhQ%3D%3D&signMethod=01&merId=777290058167151&frontUrl=https%3A%2F%2Fpay.yansongda.cn&certId=69903319369&bizType=000000&txnType=00&txnSubType=00', (string) $result->getRadar()->getBody());
+        self::assertArrayHasKey('origRespMsg', $result->getDestination()->all());
     }
 
     public function testCancel()

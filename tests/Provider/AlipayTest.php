@@ -39,35 +39,148 @@ class AlipayTest extends TestCase
         Pay::alipay()->foo();
     }
 
-    public function testQueryDefault()
+    public function testWeb()
+    {
+        $result = Pay::alipay()->web([
+            'out_trade_no' => 'web'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+            '_return_rocket' => true,
+        ]);
+
+        $radar = $result->getRadar();
+
+        // 支付宝参数里有实时时间，导致签名不一样，这里只验证签名之前的部分
+        $body1 = 'app_id=9021000122682882&method=alipay.trade.page.pay&format=JSON&return_url=https%3A%2F%2Fpay.yansongda.cn&charset=utf-8&sign_type=RSA2&timestamp=';
+        $body2 = '&version=1.0&notify_url=https%3A%2F%2Fpay.yansongda.cn&app_cert_sn=e90dd23a37c5c7b616e003970817ff82&alipay_root_cert_sn=687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6&biz_content=%7B%22product_code%22%3A%22FAST_INSTANT_TRADE_PAY%22%2C%22out_trade_no';
+        $body3= 'total_amount%22%3A%220.01%22%2C%22subject%22%3A%22yansongda+%5Cu6d4b%5Cu8bd5+-+01%22%7D&sign=';
+
+        self::assertStringContainsString($body1, (string) $radar->getBody());
+        self::assertStringContainsString($body2, (string) $radar->getBody());
+        self::assertStringContainsString($body3, (string) $radar->getBody());
+        self::assertEquals('POST', $radar->getMethod());
+    }
+
+    public function testWebGet()
+    {
+        $result = Pay::alipay()->web([
+            '_method' => 'get',
+            'out_trade_no' => 'web'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+            '_return_rocket' => true,
+        ]);
+
+        $radar = $result->getRadar();
+
+        // 支付宝参数里有实时时间，导致签名不一样，这里只验证签名之前的部分
+        $body1 = 'app_id=9021000122682882&method=alipay.trade.page.pay&format=JSON&return_url=https%3A%2F%2Fpay.yansongda.cn&charset=utf-8&sign_type=RSA2&timestamp=';
+        $body2 = '&version=1.0&notify_url=https%3A%2F%2Fpay.yansongda.cn&app_cert_sn=e90dd23a37c5c7b616e003970817ff82&alipay_root_cert_sn=687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6&biz_content=%7B%22product_code%22%3A%22FAST_INSTANT_TRADE_PAY%22%2C%22out_trade_no';
+        $body3= 'total_amount%22%3A%220.01%22%2C%22subject%22%3A%22yansongda+%5Cu6d4b%5Cu8bd5+-+01%22%7D&sign=';
+
+        self::assertStringContainsString($body1, (string) $radar->getBody());
+        self::assertStringContainsString($body2, (string) $radar->getBody());
+        self::assertStringContainsString($body3, (string) $radar->getBody());
+        self::assertEquals('GET', $radar->getMethod());
+    }
+
+    public function testH5()
+    {
+        $result = Pay::alipay()->h5([
+            'out_trade_no' => 'web'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+            'quit_url' => 'https://yansongda.cn',
+            '_return_rocket' => true,
+        ]);
+
+        $radar = $result->getRadar();
+
+        // 支付宝参数里有实时时间，导致签名不一样，这里只验证签名之前的部分
+        $body1 = 'app_id=9021000122682882&method=alipay.trade.wap.pay&format=JSON&return_url=https%3A%2F%2Fpay.yansongda.cn&charset=utf-8&sign_type=RSA2&timestamp=';
+        $body2 = '&version=1.0&notify_url=https%3A%2F%2Fpay.yansongda.cn&app_cert_sn=e90dd23a37c5c7b616e003970817ff82&alipay_root_cert_sn=687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6&biz_content=%7B%22out_trade_no%22%3A%22web';
+        $body3= 'total_amount%22%3A%220.01%22%2C%22subject%22%3A%22yansongda+%5Cu6d4b%5Cu8bd5+-+01%22%2C%22quit_url%22%3A%22https%3A%5C%2F%5C%2Fyansongda.cn%22%7D&sign=';
+
+        self::assertStringContainsString($body1, (string) $radar->getBody());
+        self::assertStringContainsString($body2, (string) $radar->getBody());
+        self::assertStringContainsString($body3, (string) $radar->getBody());
+        self::assertEquals('POST', $radar->getMethod());
+    }
+
+    public function testH5Get()
+    {
+        $result = Pay::alipay()->h5([
+            '_method' => 'get',
+            'out_trade_no' => 'web'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+            'quit_url' => 'https://yansongda.cn',
+            '_return_rocket' => true,
+        ]);
+
+        $radar = $result->getRadar();
+
+        // 支付宝参数里有实时时间，导致签名不一样，这里只验证签名之前的部分
+        $body1 = 'app_id=9021000122682882&method=alipay.trade.wap.pay&format=JSON&return_url=https%3A%2F%2Fpay.yansongda.cn&charset=utf-8&sign_type=RSA2&timestamp=';
+        $body2 = '&version=1.0&notify_url=https%3A%2F%2Fpay.yansongda.cn&app_cert_sn=e90dd23a37c5c7b616e003970817ff82&alipay_root_cert_sn=687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6&biz_content=%7B%22out_trade_no%22%3A%22web';
+        $body3= 'total_amount%22%3A%220.01%22%2C%22subject%22%3A%22yansongda+%5Cu6d4b%5Cu8bd5+-+01%22%2C%22quit_url%22%3A%22https%3A%5C%2F%5C%2Fyansongda.cn%22%7D&sign=';
+
+        self::assertStringContainsString($body1, (string) $radar->getBody());
+        self::assertStringContainsString($body2, (string) $radar->getBody());
+        self::assertStringContainsString($body3, (string) $radar->getBody());
+        self::assertEquals('GET', $radar->getMethod());
+    }
+
+    public function testApp()
+    {
+        $result = Pay::alipay()->app([
+            'out_trade_no' => 'web'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+        ]);
+
+        // 支付宝参数里有实时时间，导致签名不一样，这里只验证签名之前的部分
+        $body1 = 'app_id=9021000122682882&method=alipay.trade.app.pay&format=JSON&return_url=https%3A%2F%2Fpay.yansongda.cn&charset=utf-8&sign_type=RSA2';
+        $body2 = '&version=1.0&notify_url=https%3A%2F%2Fpay.yansongda.cn&app_cert_sn=e90dd23a37c5c7b616e003970817ff82&alipay_root_cert_sn=687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6&biz_content=%7B%22out_trade_no%22%3A%22web';
+        $body3= 'total_amount%22%3A%220.01%22%2C%22subject%22%3A%22yansongda+%5Cu6d4b%5Cu8bd5+-+01%22%7D&sign=';
+
+        self::assertStringContainsString($body1, (string) $result->getBody());
+        self::assertStringContainsString($body2, (string) $result->getBody());
+        self::assertStringContainsString($body3, (string) $result->getBody());
+    }
+
+    public function testScan()
     {
         $response = [
-            "alipay_trade_query_response" => [
+            "alipay_trade_precreate_response" => [
                 "code" => "10000",
                 "msg" => "Success",
-                "buyer_logon_id" => "ifv***@sandbox.com",
-                "buyer_pay_amount" => "0.00",
-                "buyer_user_id" => "2088722003899169",
-                "buyer_user_type" => "PRIVATE",
-                "invoice_amount" => "0.00",
-                "out_trade_no" => "1703141270",
-                "point_amount" => "0.00",
-                "receipt_amount" => "0.00",
-                "send_pay_date" => "2023-12-21 14:48:36",
-                "total_amount" => "0.01",
-                "trade_no" => "2023122122001499160501586202",
-                "trade_status" => "TRADE_SUCCESS",
+                "out_trade_no" => "1704093802",
+                "qr_code" => "https://qr.alipay.com/bax07651xvtprxfkmxyf00a9",
             ],
-            "sign" => "WBz5iEFVhP99SRqHAaUi6KD+6u4xUxOgLAJ989gxByd79pa9bhHfQ0EFO/78YU3TuoqNvUBbHZ7LPxP+OPQFTUtHa5JF2pz+EfgBkYOnBPW+YGz6arGqmAPBy9I+ltJxKNKq4G7ehPG0gbtQQcVqqIR9vDylitmlGIIe+YKfNbEi+vPNkQ3HXLsu3lXKGqB21XSYb/NdxneALsVOowVqgU2SSR/+5TcUzCuW5VA/LWKnpXZEDdE1HTgUFqvqrYtLoVfmXO41oKZdrR3t4/rbV64YlWR4vPSuELuC4gLdXdd63PaOmdIo/5TxI26379ZC8IfhcBiS/KO3PYm1dbgpIg==",
+            "sign" => "Mz0jF7DeQ6ogyle/5P6cxqbezmR9RNkuJFNIiH4bPrcHjwnaNsb3Ad5PAFc7xERDHOvfdWkNzx8++Ov+cAhfqIcKWNLyL7UFiRIeL1LoLku2K0rcAXeuxm9KKjYaEl3lr0JFQE/zUElfDcQn3s9ujNFkkMNOcPgQwbSPlEXja0a4syG76FnTknsITHONIbCCsIWnHMuf95cq8zkgjMUOlfVOL8l4Iv0n9n2r9H1OJKv+2GmDp6ntc9xAhrIlO+f5urp1N+LzO9lDx5r1HIjqlSiemNZAdQveQjRuOtx/FM4KhFvn3312Xv7XuKW9iqNnBSwXOEAuUXghXcqD8xl05g==",
         ];
 
         $http = Mockery::mock(Client::class);
         $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::alipay()->query(['out_trade_no' => '1703141270']);
+        $result = Pay::alipay()->scan([
+            'out_trade_no' => time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+            '_return_rocket' => true,
+        ]);
 
-        self::assertEqualsCanonicalizing($response['alipay_trade_query_response'], $result->except('_sign')->all());
+        // 支付宝参数里有实时时间，导致签名不一样，这里只验证签名之前的部分
+        $body1 = 'app_id=9021000122682882&method=alipay.trade.precreate&format=JSON&return_url=https%3A%2F%2Fpay.yansongda.cn&charset=utf-8&sign_type=RSA2&timestamp=';
+        $body2 = '&version=1.0&notify_url=https%3A%2F%2Fpay.yansongda.cn&app_cert_sn=e90dd23a37c5c7b616e003970817ff82&alipay_root_cert_sn=687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6&biz_content=%7B%22out_trade_no';
+        $body3 = 'total_amount%22%3A%220.01%22%2C%22subject%22%3A%22yansongda+%5Cu6d4b%5Cu8bd5+-+01%22%7D&sign=';
+
+        self::assertStringContainsString($body1, (string) $result->getRadar()->getBody());
+        self::assertStringContainsString($body2, (string) $result->getRadar()->getBody());
+        self::assertStringContainsString($body3, (string) $result->getRadar()->getBody());
+        self::assertEqualsCanonicalizing($response['alipay_trade_precreate_response'], $result->getDestination()->except('_sign')->all());
     }
 
     public function testTransfer()
@@ -109,6 +222,37 @@ class AlipayTest extends TestCase
         self::assertStringContainsString($body1, (string) $result->getRadar()->getBody());
         self::assertStringContainsString($body2, (string) $result->getRadar()->getBody());
         self::assertEqualsCanonicalizing($response['alipay_fund_trans_uni_transfer_response'], $result->getDestination()->except('_sign')->all());
+    }
+
+    public function testQueryDefault()
+    {
+        $response = [
+            "alipay_trade_query_response" => [
+                "code" => "10000",
+                "msg" => "Success",
+                "buyer_logon_id" => "ifv***@sandbox.com",
+                "buyer_pay_amount" => "0.00",
+                "buyer_user_id" => "2088722003899169",
+                "buyer_user_type" => "PRIVATE",
+                "invoice_amount" => "0.00",
+                "out_trade_no" => "1703141270",
+                "point_amount" => "0.00",
+                "receipt_amount" => "0.00",
+                "send_pay_date" => "2023-12-21 14:48:36",
+                "total_amount" => "0.01",
+                "trade_no" => "2023122122001499160501586202",
+                "trade_status" => "TRADE_SUCCESS",
+            ],
+            "sign" => "WBz5iEFVhP99SRqHAaUi6KD+6u4xUxOgLAJ989gxByd79pa9bhHfQ0EFO/78YU3TuoqNvUBbHZ7LPxP+OPQFTUtHa5JF2pz+EfgBkYOnBPW+YGz6arGqmAPBy9I+ltJxKNKq4G7ehPG0gbtQQcVqqIR9vDylitmlGIIe+YKfNbEi+vPNkQ3HXLsu3lXKGqB21XSYb/NdxneALsVOowVqgU2SSR/+5TcUzCuW5VA/LWKnpXZEDdE1HTgUFqvqrYtLoVfmXO41oKZdrR3t4/rbV64YlWR4vPSuELuC4gLdXdd63PaOmdIo/5TxI26379ZC8IfhcBiS/KO3PYm1dbgpIg==",
+        ];
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($response)));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::alipay()->query(['out_trade_no' => '1703141270']);
+
+        self::assertEqualsCanonicalizing($response['alipay_trade_query_response'], $result->except('_sign')->all());
     }
 
     public function testQueryTransfer()
