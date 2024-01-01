@@ -8,10 +8,13 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin;
-use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin as OnlineGatewayQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin as QrCodeQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\StartPlugin;
+use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
 class QueryShortcut implements ShortcutInterface
@@ -32,11 +35,18 @@ class QueryShortcut implements ShortcutInterface
 
     protected function defaultPlugins(): array
     {
+        return $this->onlineGatewayPlugins();
+    }
+
+    protected function onlineGatewayPlugins(): array
+    {
         return [
-            PreparePlugin::class,
-            QueryPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            OnlineGatewayQueryPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -44,10 +54,12 @@ class QueryShortcut implements ShortcutInterface
     protected function qrCodePlugins(): array
     {
         return [
-            PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            QrCodeQueryPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }

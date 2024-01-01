@@ -1,20 +1,20 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\QrCode;
+namespace Yansongda\Pay\Tests\Plugin\Unipay\OnlineGateway;
 
-use Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\H5PayPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
-class QueryPluginTest extends TestCase
+class H5PayPluginTest extends TestCase
 {
-    protected QueryPlugin $plugin;
+    protected H5PayPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryPlugin();
+        $this->plugin = new H5PayPlugin();
     }
 
     public function testNormalParams()
@@ -33,8 +33,7 @@ class QueryPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals([
-            '_url' => 'gateway/api/backTransReq.do',
-            '_sandbox_url' => 'https://101.231.204.80:5000/gateway/api/backTransReq.do',
+            '_url' => 'gateway/api/frontTransReq.do',
             'accessType' => '1',
             'bizType' => '2',
             'txnType' => '3',
@@ -53,12 +52,12 @@ class QueryPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals([
-            '_url' => 'gateway/api/backTransReq.do',
-            '_sandbox_url' => 'https://101.231.204.80:5000/gateway/api/backTransReq.do',
+            '_url' => 'gateway/api/frontTransReq.do',
             'accessType' => '0',
-            'bizType' => '000000',
-            'txnType' => '00',
-            'txnSubType' => '00',
+            'bizType' => '000201',
+            'txnType' => '01',
+            'txnSubType' => '01',
+            'channelType' => '08',
         ], $payload->all());
     }
 }

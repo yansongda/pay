@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay;
+namespace Yansongda\Pay\Plugin\Unipay;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
@@ -18,23 +16,22 @@ use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\should_do_http_request;
-use function Yansongda\Pay\verify_alipay_sign;
+use function Yansongda\Pay\verify_unipay_sign;
 
 class VerifySignaturePlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
-     * @throws ServiceNotFoundException
      * @throws InvalidSignException
-     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[Alipay][VerifySignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Unipay][VerifySignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         if (!should_do_http_request($rocket->getDirection())) {
             return $rocket;
@@ -42,15 +39,21 @@ class VerifySignaturePlugin implements PluginInterface
 
         $destination = $rocket->getDestination();
 
-        if ((!$destination instanceof Collection) || empty($result = $destination->except('_sign')->all())) {
-            throw new InvalidParamsException(Exception::RESPONSE_EMPTY, '参数异常: 支付宝验证签名时待验签参数不正确', $destination);
+        if (!$destination instanceof Collection) {
+            return $rocket;
         }
 
-        $config = get_alipay_config($rocket->getParams());
+        $params = $rocket->getParams();
+        $config = get_alipay_config($params);
 
-        verify_alipay_sign($config, json_encode($result, JSON_UNESCAPED_UNICODE), $destination->get('_sign', ''));
+        verify_unipay_sign(
+            $config,
+            $destination->except('signature')->sortKeys()->toString(),
+            $destination->get('signature', ''),
+            $destination->get('signPubKeyCert')
+        );
 
-        Logger::info('[Alipay][VerifySignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Unipay][VerifySignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }

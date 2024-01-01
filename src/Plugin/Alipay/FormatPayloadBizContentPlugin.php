@@ -21,7 +21,7 @@ class FormatPayloadBizContentPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         $rocket->setPayload(new Collection(array_merge(
-            filter_params($payload->all(), fn ($k, $v) => '' !== $v && !is_null($v) && 'sign' != $k),
+            filter_params($payload->all(), fn ($k, $v) => '' !== $v && 'sign' != $k),
             ['biz_content' => json_encode(filter_params($payload->get('biz_content', [])))]
         )));
 

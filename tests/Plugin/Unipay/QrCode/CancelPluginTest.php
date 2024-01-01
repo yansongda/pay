@@ -12,16 +12,38 @@ use Yansongda\Pay\Tests\TestCase;
 
 class CancelPluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin
-     */
-    protected $plugin;
+    protected CancelPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->plugin = new CancelPlugin();
+    }
+
+    public function testNormalParams()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload([
+            'accessType' => '1',
+            'bizType' => '2',
+            'txnType' => '3',
+            'txnSubType' => '4',
+            'channelType' => '5',
+        ]);
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $payload = $result->getPayload();
+
+        self::assertEquals([
+            '_url' => 'gateway/api/backTransReq.do',
+            'accessType' => '1',
+            'bizType' => '2',
+            'txnType' => '3',
+            'txnSubType' => '4',
+            'channelType' => '5',
+        ], $payload->all());
     }
 
     public function testNormal()
@@ -31,15 +53,15 @@ class CancelPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $radar = $result->getRadar();
         $payload = $result->getPayload();
 
-        self::assertInstanceOf(RequestInterface::class, $radar);
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals(new Uri(Unipay::URL[Pay::MODE_NORMAL].'gateway/api/backTransReq.do'), $radar->getUri());
-        self::assertEquals('000000', $payload['bizType']);
-        self::assertEquals('31', $payload['txnType']);
-        self::assertEquals('00', $payload['txnSubType']);
-        self::assertEquals('08', $payload['channelType']);
+        self::assertEquals([
+            '_url' => 'gateway/api/backTransReq.do',
+            'accessType' => '0',
+            'bizType' => '000000',
+            'txnType' => '31',
+            'txnSubType' => '00',
+            'channelType' => '08',
+        ], $payload->all());
     }
 }

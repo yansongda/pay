@@ -10,7 +10,7 @@ use Yansongda\Pay\Tests\TestCase;
 
 class CallbackPluginTest extends TestCase
 {
-    protected $plugin;
+    protected CallbackPlugin $plugin;
 
     protected function setUp(): void
     {

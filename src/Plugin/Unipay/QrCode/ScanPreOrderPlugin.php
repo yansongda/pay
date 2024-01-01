@@ -4,26 +4,33 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Unipay\QrCode;
 
-use Yansongda\Pay\Plugin\Unipay\GeneralPlugin;
+use Closure;
+use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 
 /**
  * @see https://open.unionpay.com/tjweb/acproduct/APIList?acpAPIId=795&apiservId=468&version=V2.2&bussType=0
  */
-class ScanPreOrderPlugin extends GeneralPlugin
+class ScanPreOrderPlugin implements PluginInterface
 {
-    protected function getUri(Rocket $rocket): string
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        return 'gateway/api/order.do';
-    }
+        Logger::debug('[Unipay][QrCode][ScanPreOrderPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-    protected function doSomething(Rocket $rocket): void
-    {
+        $payload = $rocket->getPayload();
+
         $rocket->mergePayload([
-            'bizType' => '000000',
-            'txnType' => '01',
-            'txnSubType' => '01',
-            'channelType' => '08',
+            '_url' => 'gateway/api/order.do',
+            'accessType' => $payload?->get('accessType') ?? '0',
+            'bizType' => $payload?->get('bizType') ?? '000000',
+            'txnType' => $payload?->get('txnType') ?? '01',
+            'txnSubType' => $payload?->get('txnSubType') ?? '01',
+            'channelType' => $payload?->get('channelType') ?? '08',
         ]);
+
+        Logger::info('[Unipay][QrCode][ScanPreOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
     }
 }

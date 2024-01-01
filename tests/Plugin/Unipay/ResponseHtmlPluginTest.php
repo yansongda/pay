@@ -4,20 +4,20 @@ namespace Yansongda\Pay\Tests\Plugin\Unipay;
 
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
-use Yansongda\Pay\Plugin\Unipay\HtmlResponsePlugin;
+use Yansongda\Pay\Plugin\Unipay\ResponseHtmlPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class HtmlResponsePluginTest extends TestCase
+class ResponseHtmlPluginTest extends TestCase
 {
-    protected $plugin;
+    protected ResponseHtmlPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new HtmlResponsePlugin();
+        $this->plugin = new ResponseHtmlPlugin();
     }
 
     public function testHtml()
@@ -33,5 +33,21 @@ class HtmlResponsePluginTest extends TestCase
         self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
         self::assertStringContainsString('pay_form', $contents);
         self::assertStringContainsString('yansongda', $contents);
+    }
+
+    public function testPayloadUnderline()
+    {
+        $rocket = new Rocket();
+        $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))
+            ->setPayload(new Collection(['name' => 'yansongda', '_age' => 'aaaa']));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $contents = (string) $result->getDestination()->getBody();
+
+        self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
+        self::assertStringContainsString('pay_form', $contents);
+        self::assertStringContainsString('yansongda', $contents);
+        self::assertStringNotContainsString('_age', $contents);
     }
 }

@@ -7,10 +7,13 @@ namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin;
-use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
-use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin as OnlineGatewayQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin as QrCodeQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\StartPlugin;
+use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -28,10 +31,12 @@ class QueryShortcutTest extends TestCase
     public function testDefault()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            QueryPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            OnlineGatewayQueryPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
@@ -39,10 +44,12 @@ class QueryShortcutTest extends TestCase
     public function testQrCode()
     {
         self::assertEquals([
-            PreparePlugin::class,
-            \Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            QrCodeQueryPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'qr_code']));
     }

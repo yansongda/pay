@@ -8,13 +8,15 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Unipay\LaunchPlugin;
-use Yansongda\Pay\Plugin\Unipay\PreparePlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanFeePlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\ScanNormalPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPreAuthPlugin;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPreOrderPlugin;
-use Yansongda\Pay\Plugin\Unipay\RadarSignPlugin;
+use Yansongda\Pay\Plugin\Unipay\StartPlugin;
+use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
 class ScanShortcut implements ShortcutInterface
@@ -36,10 +38,12 @@ class ScanShortcut implements ShortcutInterface
     protected function defaultPlugins(): array
     {
         return [
-            PreparePlugin::class,
-            ScanNormalPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            StartPlugin::class,
+            ScanPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -47,10 +51,12 @@ class ScanShortcut implements ShortcutInterface
     protected function preAuthPlugins(): array
     {
         return [
-            PreparePlugin::class,
+            StartPlugin::class,
             ScanPreAuthPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -58,10 +64,12 @@ class ScanShortcut implements ShortcutInterface
     protected function preOrderPlugins(): array
     {
         return [
-            PreparePlugin::class,
+            StartPlugin::class,
             ScanPreOrderPlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -69,10 +77,12 @@ class ScanShortcut implements ShortcutInterface
     protected function feePlugins(): array
     {
         return [
-            PreparePlugin::class,
+            StartPlugin::class,
             ScanFeePlugin::class,
-            RadarSignPlugin::class,
-            LaunchPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }
