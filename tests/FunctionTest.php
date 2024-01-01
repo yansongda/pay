@@ -36,7 +36,9 @@ use function Yansongda\Pay\get_radar_body;
 use function Yansongda\Pay\get_radar_method;
 use function Yansongda\Pay\get_radar_url;
 use function Yansongda\Pay\get_tenant;
+use function Yansongda\Pay\get_unipay_body;
 use function Yansongda\Pay\get_unipay_config;
+use function Yansongda\Pay\get_unipay_url;
 use function Yansongda\Pay\get_wechat_body;
 use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_method;
@@ -584,5 +586,34 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectExceptionMessage('配置异常： 缺少银联配置 -- [unipay_public_cert_path]');
         Pay::get(ConfigInterface::class)->set('unipay.default.unipay_public_cert_path', null);
         verify_unipay_sign([], $contents, $sign);
+    }
+
+    public function testVerifyUnipaySignEmpty()
+    {
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_EMPTY);
+        self::expectExceptionMessage('签名异常: 银联签名为空');
+        verify_unipay_sign([], '', '');
+    }
+
+    public function testGetUnipayUrl()
+    {
+        self::assertEquals('https://yansongda.cn', get_wechat_url([], new Collection(['_url' => 'https://yansongda.cn'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', get_wechat_url([], new Collection(['_url' => 'api/v1/yansongda'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['mode' => Pay::MODE_SERVICE], new Collection(['_service_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_UNIPAY_URL_MISSING);
+        get_unipay_url([], new Collection([]));
+    }
+
+    public function testGetUnipayBody()
+    {
+        self::assertEquals('https://yansongda.cn', get_wechat_body(new Collection(['_body' => 'https://yansongda.cn'])));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_UNIPAY_BODY_MISSING);
+        get_unipay_body(new Collection([]));
     }
 }
