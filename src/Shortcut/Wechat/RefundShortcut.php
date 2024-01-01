@@ -8,18 +8,18 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
-use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\App\RefundPlugin as AppRefundPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Combine\RefundPlugin as CombineRefundPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\H5\RefundPlugin as H5RefundPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Jsapi\RefundPlugin as JsapiRefundPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Mini\RefundPlugin as MiniRefundPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Native\RefundPlugin as NativeRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
-use Yansongda\Pay\Plugin\Wechat\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\RefundPlugin as AppRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\RefundPlugin as CombineRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\H5\RefundPlugin as H5RefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\RefundPlugin as JsapiRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\RefundPlugin as MiniRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\RefundPlugin as NativeRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
 class RefundShortcut implements ShortcutInterface

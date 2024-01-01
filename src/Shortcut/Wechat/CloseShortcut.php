@@ -8,18 +8,18 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
-use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\App\ClosePlugin as AppClosePlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Combine\ClosePlugin as CombineClosePlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\H5\ClosePlugin as H5ClosePlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Jsapi\ClosePlugin as JsapiClosePlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Mini\ClosePlugin as MiniClosePlugin;
-use Yansongda\Pay\Plugin\Wechat\Pay\Native\ClosePlugin as NativeClosePlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
-use Yansongda\Pay\Plugin\Wechat\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\ClosePlugin as AppClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\ClosePlugin as CombineClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\H5\ClosePlugin as H5ClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\ClosePlugin as JsapiClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\ClosePlugin as MiniClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\ClosePlugin as NativeClosePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
 class CloseShortcut implements ShortcutInterface
