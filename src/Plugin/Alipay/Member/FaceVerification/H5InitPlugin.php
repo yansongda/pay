@@ -12,11 +12,11 @@ use Yansongda\Pay\Rocket;
 /**
  * @see https://opendocs.alipay.com/open/02zloa?pathHash=b0b7fece&ref=api&scene=common
  */
-class WapInitPlugin implements PluginInterface
+class H5InitPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][Member][FaceVerification][WapInitPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Member][FaceVerification][H5InitPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'datadigital.fincloud.generalsaas.face.certify.initialize',
@@ -28,7 +28,7 @@ class WapInitPlugin implements PluginInterface
             ),
         ]);
 
-        Logger::info('[Alipay][Member][FaceVerification][WapInitPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Member][FaceVerification][H5InitPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

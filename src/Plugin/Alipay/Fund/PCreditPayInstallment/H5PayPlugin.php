@@ -16,7 +16,7 @@ use Yansongda\Pay\Traits\SupportServiceProviderTrait;
 /**
  * @see https://opendocs.alipay.com/open/02np8y?pathHash=718b8786&ref=api
  */
-class WapPayPlugin implements PluginInterface
+class H5PayPlugin implements PluginInterface
 {
     use SupportServiceProviderTrait;
 
@@ -26,7 +26,7 @@ class WapPayPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][Fund][PCreditPayInstallment][WapPayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Fund][PCreditPayInstallment][H5PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->loadAlipayServiceProvider($rocket);
 
@@ -41,7 +41,7 @@ class WapPayPlugin implements PluginInterface
                 ),
             ]);
 
-        Logger::info('[Alipay][Fund][PCreditPayInstallment][WapPayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Fund][PCreditPayInstallment][H5PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
