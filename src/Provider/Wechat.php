@@ -28,15 +28,12 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection app(array $order)           APP 支付
- * @method Collection mini(array $order)          小程序支付
- * @method Collection mp(array $order)            公众号支付
- * @method Collection scan(array $order)          扫码支付
- * @method Collection wap(array $order)           H5 支付
- * @method Collection transfer(array $order)      帐户转账
- * @method Collection papay(array $order)         支付时签约（委托代扣）
- * @method Collection papayApply(array $order)    申请代扣（委托代扣）
- * @method Collection papayContract(array $order) 申请代扣（委托代扣）
+ * @method Collection|Rocket app(array $order)      APP 支付
+ * @method Collection|Rocket mini(array $order)     小程序支付
+ * @method Collection|Rocket mp(array $order)       公众号支付
+ * @method Collection|Rocket scan(array $order)     扫码支付（摄像头，主动扫）
+ * @method Collection|Rocket h5(array $order)       H5 支付
+ * @method Collection|Rocket transfer(array $order) 帐户转账
  */
 class Wechat extends AbstractProvider
 {
