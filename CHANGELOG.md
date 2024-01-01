@@ -12,7 +12,7 @@
 - change: 查询API方法由 `find` 改为 `query`，同时参数只支持 array(#897)
 - change: cancel/close 的 API 参数只支持 array，不再支持 string(#900, #901)
 - change: 微信合单支付去掉独立的 `combine_app_id`,`combine_mch_id` 配置，复用其它配置(#909)
-- change: 手机网站支付快捷方式由 wap 改为 h5(#911)
+- change: 手机网站支付快捷方式由 wap 改为 h5(#911, #915)
 - change(internal): 按场景对 支付宝/微信/银联 插件进行分类 && 插件代码优化(#894, #909, #913)
 - change(internal): 将 支付/微信/银联 shortcut 从 plugin 文件夹独立出来(#895, #904, #905)
 - change(internal): shortcut 完整标明各个插件，不使用 commonPlugin(#886)

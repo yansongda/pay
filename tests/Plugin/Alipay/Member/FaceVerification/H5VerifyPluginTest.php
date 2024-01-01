@@ -3,19 +3,19 @@
 namespace Yansongda\Pay\Tests\Plugin\Alipay\Member\FaceVerification;
 
 use Yansongda\Pay\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\Member\FaceVerification\WapInitPlugin;
+use Yansongda\Pay\Plugin\Alipay\Member\FaceVerification\H5VerifyPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
-class WapInitPluginTest extends TestCase
+class H5VerifyPluginTest extends TestCase
 {
-    protected WapInitPlugin $plugin;
+    protected H5VerifyPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new WapInitPlugin();
+        $this->plugin = new H5VerifyPlugin();
     }
 
     public function testNormal()
@@ -26,7 +26,6 @@ class WapInitPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('datadigital.fincloud.generalsaas.face.certify.initialize', $result->getPayload()->toJson());
-        self::assertStringContainsString('FUTURE_TECH_BIZ_FACE_SDK', $result->getPayload()->toJson());
+        self::assertStringContainsString('datadigital.fincloud.generalsaas.face.certify.verify', $result->getPayload()->toJson());
     }
 }

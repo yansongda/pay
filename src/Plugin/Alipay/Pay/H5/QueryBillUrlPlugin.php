@@ -16,14 +16,14 @@ class QueryBillUrlPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][Pay][Wap][QueryBillUrlPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Pay][H5][QueryBillUrlPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.data.dataservice.bill.downloadurl.query',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[Alipay][Pay][Wap][QueryBillUrlPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Pay][H5][QueryBillUrlPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

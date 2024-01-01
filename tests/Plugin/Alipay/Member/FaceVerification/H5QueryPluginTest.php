@@ -3,19 +3,19 @@
 namespace Yansongda\Pay\Tests\Plugin\Alipay\Member\FaceVerification;
 
 use Yansongda\Pay\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\Member\FaceVerification\WapQueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\Member\FaceVerification\H5QueryPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
-class WapQueryPluginTest extends TestCase
+class H5QueryPluginTest extends TestCase
 {
-    protected WapQueryPlugin $plugin;
+    protected H5QueryPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new WapQueryPlugin();
+        $this->plugin = new H5QueryPlugin();
     }
 
     public function testNormal()

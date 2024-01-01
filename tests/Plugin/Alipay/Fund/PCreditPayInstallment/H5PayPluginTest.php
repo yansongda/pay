@@ -3,19 +3,19 @@
 namespace Yansongda\Pay\Tests\Plugin\Alipay\Fund\PCreditPayInstallment;
 
 use Yansongda\Pay\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\Fund\PCreditPayInstallment\WapPayPlugin;
+use Yansongda\Pay\Plugin\Alipay\Fund\PCreditPayInstallment\H5PayPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
-class WapPayPluginTest extends TestCase
+class H5PayPluginTest extends TestCase
 {
-    protected WapPayPlugin $plugin;
+    protected H5PayPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new WapPayPlugin();
+        $this->plugin = new H5PayPlugin();
     }
 
     public function testNormal()
