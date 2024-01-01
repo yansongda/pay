@@ -2,26 +2,44 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay\QrCode;
 
-use GuzzleHttp\Psr7\Uri;
-use Psr\Http\Message\RequestInterface;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPreOrderPlugin;
-use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class ScanPreOrderPluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Unipay\QrCode\ScanPreOrderPlugin
-     */
-    protected $plugin;
+    protected ScanPreOrderPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->plugin = new ScanPreOrderPlugin();
+    }
+
+    public function testNormalParams()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload([
+            'accessType' => '1',
+            'bizType' => '2',
+            'txnType' => '3',
+            'txnSubType' => '4',
+            'channelType' => '5',
+        ]);
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $payload = $result->getPayload();
+
+        self::assertEquals([
+            '_url' => 'gateway/api/order.do',
+            'accessType' => '1',
+            'bizType' => '2',
+            'txnType' => '3',
+            'txnSubType' => '4',
+            'channelType' => '5',
+        ], $payload->all());
     }
 
     public function testNormal()
@@ -31,15 +49,15 @@ class ScanPreOrderPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $radar = $result->getRadar();
         $payload = $result->getPayload();
 
-        self::assertInstanceOf(RequestInterface::class, $radar);
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals(new Uri(Unipay::URL[Pay::MODE_NORMAL].'gateway/api/order.do'), $radar->getUri());
-        self::assertEquals('000000', $payload['bizType']);
-        self::assertEquals('01', $payload['txnType']);
-        self::assertEquals('01', $payload['txnSubType']);
-        self::assertEquals('08', $payload['channelType']);
+        self::assertEquals([
+            '_url' => 'gateway/api/order.do',
+            'accessType' => '0',
+            'bizType' => '000000',
+            'txnType' => '01',
+            'txnSubType' => '01',
+            'channelType' => '08',
+        ], $payload->all());
     }
 }

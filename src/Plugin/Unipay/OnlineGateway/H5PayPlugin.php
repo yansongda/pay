@@ -19,14 +19,16 @@ class H5PayPlugin implements PluginInterface
     {
         Logger::debug('[Unipay][OnlineGateway][H5PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
+
         $rocket->setDirection(ResponseDirection::class)
             ->mergePayload([
                 '_url' => 'gateway/api/frontTransReq.do',
-                'accessType' => '0',
-                'bizType' => '000201',
-                'txnType' => '01',
-                'txnSubType' => '01',
-                'channelType' => '08',
+                'accessType' => $payload?->get('accessType') ?? '0',
+                'bizType' => $payload?->get('bizType') ?? '000201',
+                'txnType' => $payload?->get('txnType') ?? '01',
+                'txnSubType' => $payload?->get('txnSubType') ?? '01',
+                'channelType' => $payload?->get('channelType') ?? '08',
             ]);
 
         Logger::info('[Unipay][OnlineGateway][H5PayPlugin] 插件装载完毕', ['rocket' => $rocket]);

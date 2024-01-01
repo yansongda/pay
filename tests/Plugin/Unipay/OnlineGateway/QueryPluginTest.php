@@ -2,26 +2,44 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay\OnlineGateway;
 
-use GuzzleHttp\Psr7\Uri;
-use Psr\Http\Message\RequestInterface;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin;
-use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class QueryPluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin
-     */
-    protected $plugin;
+    protected QueryPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->plugin = new QueryPlugin();
+    }
+
+    public function testNormalParams()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload([
+            'accessType' => '1',
+            'bizType' => '2',
+            'txnType' => '3',
+            'txnSubType' => '4',
+            'channelType' => '5',
+        ]);
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $payload = $result->getPayload();
+
+        self::assertEquals([
+            '_url' => 'gateway/api/queryTrans.do',
+            'accessType' => '1',
+            'bizType' => '2',
+            'txnType' => '3',
+            'txnSubType' => '4',
+            'channelType' => '5',
+        ], $payload->all());
     }
 
     public function testNormal()
@@ -31,14 +49,14 @@ class QueryPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $radar = $result->getRadar();
         $payload = $result->getPayload();
 
-        self::assertInstanceOf(RequestInterface::class, $radar);
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals(new Uri(Unipay::URL[Pay::MODE_NORMAL].'gateway/api/queryTrans.do'), $radar->getUri());
-        self::assertEquals('000000', $payload['bizType']);
-        self::assertEquals('00', $payload['txnType']);
-        self::assertEquals('00', $payload['txnSubType']);
+        self::assertEquals([
+            '_url' => 'gateway/api/queryTrans.do',
+            'accessType' => '0',
+            'bizType' => '000000',
+            'txnType' => '00',
+            'txnSubType' => '00',
+        ], $payload->all());
     }
 }

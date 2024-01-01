@@ -18,12 +18,14 @@ class QueryPlugin implements PluginInterface
     {
         Logger::debug('[Unipay][OnlineGateway][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
+
         $rocket->mergePayload([
             '_url' => 'gateway/api/queryTrans.do',
-            'accessType' => '0',
-            'bizType' => '000000',
-            'txnType' => '00',
-            'txnSubType' => '00',
+            'accessType' => $payload?->get('accessType') ?? '0',
+            'bizType' => $payload?->get('bizType') ?? '000000',
+            'txnType' => $payload?->get('txnType') ?? '00',
+            'txnSubType' => $payload?->get('txnSubType') ?? '00',
         ]);
 
         Logger::info('[Unipay][OnlineGateway][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -18,13 +18,15 @@ class ScanFeePlugin implements PluginInterface
     {
         Logger::debug('[Unipay][QrCode][ScanFeePlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
+
         $rocket->mergePayload([
             '_url' => 'gateway/api/backTransReq.do',
-            'accessType' => '0',
-            'bizType' => '000601',
-            'txnType' => '13',
-            'txnSubType' => '08',
-            'channelType' => '08',
+            'accessType' => $payload?->get('accessType') ?? '0',
+            'bizType' => $payload?->get('bizType') ?? '000601',
+            'txnType' => $payload?->get('txnType') ?? '13',
+            'txnSubType' => $payload?->get('txnSubType') ?? '08',
+            'channelType' => $payload?->get('channelType') ?? '08',
         ]);
 
         Logger::info('[Unipay][QrCode][ScanFeePlugin] 插件装载完毕', ['rocket' => $rocket]);

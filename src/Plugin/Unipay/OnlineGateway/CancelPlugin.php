@@ -18,13 +18,15 @@ class CancelPlugin implements PluginInterface
     {
         Logger::debug('[Unipay][OnlineGateway][CancelPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
+
         $rocket->mergePayload([
             '_url' => 'gateway/api/backTransReq.do',
-            'accessType' => '0',
-            'bizType' => '000000',
-            'txnType' => '31',
-            'txnSubType' => '00',
-            'channelType' => '07',
+            'accessType' => $payload?->get('accessType') ?? '0',
+            'bizType' => $payload?->get('bizType') ?? '000000',
+            'txnType' => $payload?->get('txnType') ?? '31',
+            'txnSubType' => $payload?->get('txnSubType') ?? '00',
+            'channelType' => $payload?->get('channelType') ?? '07',
         ]);
 
         Logger::info('[Unipay][OnlineGateway][CancelPlugin] 插件装载完毕', ['rocket' => $rocket]);

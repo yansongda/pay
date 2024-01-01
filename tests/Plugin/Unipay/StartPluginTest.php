@@ -79,8 +79,6 @@ class StartPluginTest extends TestCase
         $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
 
-        var_dump($config['unipay']);
-
         self::assertEquals('69903319369', $payload->get('certId'));
         self::assertEquals('69903319369', $config->get('unipay.default.certs.cert_id'));
     }

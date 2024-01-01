@@ -18,13 +18,15 @@ class ScanPlugin implements PluginInterface
     {
         Logger::debug('[Unipay][QrCode][ScanPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
+
         $rocket->mergePayload([
             '_url' => 'gateway/api/backTransReq.do',
-            'accessType' => '0',
-            'bizType' => '000000',
-            'txnType' => '01',
-            'txnSubType' => '07',
-            'channelType' => '08',
+            'accessType' => $payload?->get('accessType') ?? '0',
+            'bizType' => $payload?->get('bizType') ?? '000000',
+            'txnType' => $payload?->get('txnType') ?? '01',
+            'txnSubType' => $payload?->get('txnSubType') ?? '07',
+            'channelType' => $payload?->get('channelType') ?? '08',
         ]);
 
         Logger::info('[Unipay][QrCode][ScanPlugin] 插件装载完毕', ['rocket' => $rocket]);

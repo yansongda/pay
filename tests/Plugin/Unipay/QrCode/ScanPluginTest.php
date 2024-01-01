@@ -2,19 +2,19 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay\QrCode;
 
-use Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\QrCode\ScanPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
-class QueryPluginTest extends TestCase
+class ScanPluginTest extends TestCase
 {
-    protected QueryPlugin $plugin;
+    protected ScanPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryPlugin();
+        $this->plugin = new ScanPlugin();
     }
 
     public function testNormalParams()
@@ -34,7 +34,6 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals([
             '_url' => 'gateway/api/backTransReq.do',
-            '_sandbox_url' => 'https://101.231.204.80:5000/gateway/api/backTransReq.do',
             'accessType' => '1',
             'bizType' => '2',
             'txnType' => '3',
@@ -54,11 +53,11 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals([
             '_url' => 'gateway/api/backTransReq.do',
-            '_sandbox_url' => 'https://101.231.204.80:5000/gateway/api/backTransReq.do',
             'accessType' => '0',
             'bizType' => '000000',
-            'txnType' => '00',
-            'txnSubType' => '00',
+            'txnType' => '01',
+            'txnSubType' => '07',
+            'channelType' => '08',
         ], $payload->all());
     }
 }

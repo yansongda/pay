@@ -2,27 +2,44 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay\OnlineGateway;
 
-use GuzzleHttp\Psr7\Uri;
-use Psr\Http\Message\RequestInterface;
-use Yansongda\Pay\Direction\ResponseDirection;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\OnlineGateway\PagePayPlugin;
-use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class PagePayPluginTest extends TestCase
 {
-    /**
-     * @var \Yansongda\Pay\Plugin\Unipay\OnlineGateway\PagePayPlugin
-     */
-    protected $plugin;
+    protected PagePayPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->plugin = new PagePayPlugin();
+    }
+
+    public function testNormalParams()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload([
+            'accessType' => '1',
+            'bizType' => '2',
+            'txnType' => '3',
+            'txnSubType' => '4',
+            'channelType' => '5',
+        ]);
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $payload = $result->getPayload();
+
+        self::assertEquals([
+            '_url' => 'gateway/api/frontTransReq.do',
+            'accessType' => '1',
+            'bizType' => '2',
+            'txnType' => '3',
+            'txnSubType' => '4',
+            'channelType' => '5',
+        ], $payload->all());
     }
 
     public function testNormal()
@@ -32,16 +49,15 @@ class PagePayPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $radar = $result->getRadar();
         $payload = $result->getPayload();
 
-        self::assertInstanceOf(RequestInterface::class, $radar);
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals(new Uri(Unipay::URL[Pay::MODE_NORMAL].'gateway/api/frontTransReq.do'), $radar->getUri());
-        self::assertEquals(ResponseDirection::class, $result->getDirection());
-        self::assertEquals('000201', $payload['bizType']);
-        self::assertEquals('01', $payload['txnType']);
-        self::assertEquals('01', $payload['txnSubType']);
-        self::assertEquals('07', $payload['channelType']);
+        self::assertEquals([
+            '_url' => 'gateway/api/frontTransReq.do',
+            'accessType' => '0',
+            'bizType' => '000201',
+            'txnType' => '01',
+            'txnSubType' => '01',
+            'channelType' => '07',
+        ], $payload->all());
     }
 }

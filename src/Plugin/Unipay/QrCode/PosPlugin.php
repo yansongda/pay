@@ -18,13 +18,15 @@ class PosPlugin implements PluginInterface
     {
         Logger::debug('[Unipay][QrCode][PosPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
+
         $rocket->mergePayload([
             '_url' => 'gateway/api/backTransReq.do',
-            'bizType' => '000000',
-            'accessType' => '0',
-            'txnType' => '01',
-            'txnSubType' => '06',
-            'channelType' => '08',
+            'accessType' => $payload?->get('accessType') ?? '0',
+            'bizType' => $payload?->get('bizType') ?? '000000',
+            'txnType' => $payload?->get('txnType') ?? '01',
+            'txnSubType' => $payload?->get('txnSubType') ?? '06',
+            'channelType' => $payload?->get('channelType') ?? '08',
         ]);
 
         Logger::info('[Unipay][QrCode][PosPlugin] 插件装载完毕', ['rocket' => $rocket]);

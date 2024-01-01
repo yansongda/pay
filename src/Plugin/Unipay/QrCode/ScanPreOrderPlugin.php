@@ -18,13 +18,15 @@ class ScanPreOrderPlugin implements PluginInterface
     {
         Logger::debug('[Unipay][QrCode][ScanPreOrderPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
+
         $rocket->mergePayload([
             '_url' => 'gateway/api/order.do',
-            'accessType' => '0',
-            'bizType' => '000000',
-            'txnType' => '01',
-            'txnSubType' => '01',
-            'channelType' => '08',
+            'accessType' => $payload?->get('accessType') ?? '0',
+            'bizType' => $payload?->get('bizType') ?? '000000',
+            'txnType' => $payload?->get('txnType') ?? '01',
+            'txnSubType' => $payload?->get('txnSubType') ?? '01',
+            'channelType' => $payload?->get('channelType') ?? '08',
         ]);
 
         Logger::info('[Unipay][QrCode][ScanPreOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);

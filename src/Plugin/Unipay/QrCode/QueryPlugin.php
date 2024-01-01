@@ -18,13 +18,15 @@ class QueryPlugin implements PluginInterface
     {
         Logger::debug('[Unipay][QrCode][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
+
         $rocket->mergePayload([
             '_url' => 'gateway/api/backTransReq.do',
             '_sandbox_url' => 'https://101.231.204.80:5000/gateway/api/backTransReq.do',
-            'bizType' => '000000',
-            'accessType' => '0',
-            'txnType' => '00',
-            'txnSubType' => '00',
+            'accessType' => $payload?->get('accessType') ?? '0',
+            'bizType' => $payload?->get('bizType') ?? '000000',
+            'txnType' => $payload?->get('txnType') ?? '00',
+            'txnSubType' => $payload?->get('txnSubType') ?? '00',
         ]);
 
         Logger::info('[Unipay][QrCode][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
