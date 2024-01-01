@@ -123,7 +123,7 @@ class AbstractProviderTest extends TestCase
     public function testNoCommonPlugins()
     {
         $provider = new Foo2ProviderStub();
-        $result = $provider->call(FooShortcut::class, ['_no_common_plugins' => true]);
+        $result = $provider->shortcut(FooShortcut::class, ['_no_common_plugins' => true]);
 
         self::assertInstanceOf(ResponseInterface::class, $result);
     }

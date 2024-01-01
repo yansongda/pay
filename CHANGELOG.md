@@ -19,6 +19,7 @@
 - change(internal): DirectionInterface 方法由 `parse` 改为 `guide`(#896)
 - change(internal): 错误代码 const 命名规则统一(#902, #903, #906, #909)
 - change(internal): 调整 `ProviderInterface` 的返回参数，增加了 `Rocket` 返回(#909)
+- change(internal): 将 `call()` 方法重命名为 `shortcut()`(#914)
 
 ## v3.5.3
 
