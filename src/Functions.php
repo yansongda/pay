@@ -222,13 +222,11 @@ function get_wechat_sign(array $config, string $contents): string
 }
 
 /**
- * @throws ContainerException
- * @throws ServiceNotFoundException
  * @throws InvalidConfigException
  */
-function get_wechat_sign_v2(array $params, array $payload, bool $upper = true): string
+function get_wechat_sign_v2(array $config, array $payload, bool $upper = true): string
 {
-    $key = get_wechat_config($params)['mch_secret_key_v2'] ?? null;
+    $key = $config['mch_secret_key_v2'] ?? null;
 
     if (empty($key)) {
         throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key_v2]');

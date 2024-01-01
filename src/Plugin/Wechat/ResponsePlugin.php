@@ -36,7 +36,7 @@ class ResponsePlugin implements PluginInterface
     /**
      * @throws InvalidResponseException
      */
-    protected function validateResponse(Rocket $rocket): null|array|Collection|MessageInterface
+    protected function validateResponse(Rocket $rocket): null|Collection|MessageInterface
     {
         $response = $rocket->getDestination();
 

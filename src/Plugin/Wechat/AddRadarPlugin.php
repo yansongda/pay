@@ -63,7 +63,7 @@ class AddRadarPlugin implements PluginInterface
             $headers['Authorization'] = $authorization;
         }
 
-        if (!empty($contentType = $payload?->get('_content-type'))) {
+        if (!empty($contentType = $payload?->get('_content_type'))) {
             $headers['Content-Type'] = $contentType;
         }
 
