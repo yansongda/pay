@@ -52,7 +52,7 @@ class Alipay extends AbstractProvider
     {
         $plugin = '\\Yansongda\\Pay\\Shortcut\\Alipay\\'.Str::studly($shortcut).'Shortcut';
 
-        return $this->call($plugin, ...$params);
+        return $this->shortcut($plugin, ...$params);
     }
 
     /**

@@ -33,16 +33,16 @@ abstract class AbstractProvider implements ProviderInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function call(string $plugin, array $params = []): null|Collection|MessageInterface|Rocket
+    public function shortcut(string $shortcut, array $params = []): null|Collection|MessageInterface|Rocket
     {
-        if (!class_exists($plugin) || !in_array(ShortcutInterface::class, class_implements($plugin))) {
-            throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_NOT_FOUND, "参数异常: [{$plugin}] 未实现 `ShortcutInterface`");
+        if (!class_exists($shortcut) || !in_array(ShortcutInterface::class, class_implements($shortcut))) {
+            throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_NOT_FOUND, "参数异常: [{$shortcut}] 未实现 `ShortcutInterface`");
         }
 
-        /* @var ShortcutInterface $shortcut */
-        $shortcut = Pay::get($plugin);
+        /* @var ShortcutInterface $shortcutInstance */
+        $shortcutInstance = Pay::get($shortcut);
 
-        return $this->pay($shortcut->getPlugins($params), $params);
+        return $this->pay($shortcutInstance->getPlugins($params), $params);
     }
 
     /**
