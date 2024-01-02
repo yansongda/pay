@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon;
 
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\CreatePlugin;
 use Yansongda\Pay\Rocket;

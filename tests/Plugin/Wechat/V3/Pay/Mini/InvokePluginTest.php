@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Wechat\V3\Pay\Mini;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Mini;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;

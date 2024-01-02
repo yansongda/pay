@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Wechat\V3;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3;
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;

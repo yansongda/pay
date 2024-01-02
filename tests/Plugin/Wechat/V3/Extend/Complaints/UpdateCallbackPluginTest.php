@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Wechat\V3\Extend\Complaints;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
 
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\UpdateCallbackPlugin;
 use Yansongda\Pay\Rocket;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Wechat\V3\Pay\H5;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\H5;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;

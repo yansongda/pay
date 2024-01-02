@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Wechat\V3;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3;
 
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadBodyPlugin;

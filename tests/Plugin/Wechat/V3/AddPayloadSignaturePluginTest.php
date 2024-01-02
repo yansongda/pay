@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Wechat\V3;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3;
 
 use ReflectionClass;
 use Yansongda\Pay\Contract\ConfigInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Wechat\V3\Marketing\ECommerceBalance;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\ECommerceBalance;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Wechat\V3\Pay\Jsapi;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Jsapi;
 
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidResponseException;
