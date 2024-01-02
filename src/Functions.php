@@ -288,6 +288,29 @@ function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, a
     }
 }
 
+/**
+ * @throws InvalidConfigException
+ * @throws InvalidSignException
+ */
+function verify_wechat_sign_v2(array $config, array $destination): void
+{
+    $sign = $destination['sign'] ?? null;
+
+    if (empty($sign)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 微信签名为空', $destination);
+    }
+
+    $key = $config['mch_secret_key_v2'] ?? null;
+
+    if (empty($key)) {
+        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key_v2]');
+    }
+
+    if (get_wechat_sign_v2($config, $destination) !== $destination['sign']) {
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证微信签名失败', $destination);
+    }
+}
+
 function encrypt_wechat_contents(string $contents, string $publicKey): ?string
 {
     if (openssl_public_encrypt($contents, $encrypted, get_public_cert($publicKey), OPENSSL_PKCS1_OAEP_PADDING)) {
