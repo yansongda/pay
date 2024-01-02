@@ -34,9 +34,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Alipay\Shortcut;
 
-use Yansongda\Pay\Contract\ShortcutInterface;
-use Yansongda\Pay\Plugin\Alipay\ResponseHtmlPlugin;
-use Yansongda\Pay\Plugin\Alipay\Trade\PagePayPlugin;
+use Yansongda\Pay\Contract\ShortcutInterface;use Yansongda\Pay\Plugin\Alipay\Trade\PagePayPlugin;use Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin;
 
 class WebShortcut implements ShortcutInterface
 {
