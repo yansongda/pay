@@ -344,6 +344,38 @@ class FunctionTest extends TestCase
         self::assertTrue(true);
     }
 
+    public function testVerifyWechatSignV2()
+    {
+        $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => '3213848AED2C380749FD1D559555881D'];
+        verify_wechat_sign_v2(get_wechat_config(), $destination);
+        self::assertTrue(true);
+
+        $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_EMPTY);
+        verify_wechat_sign_v2(get_wechat_config(), $destination);
+    }
+
+    public function testVerifyWechatSignV2EmptySecret()
+    {
+        $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
+
+        verify_wechat_sign_v2([], $destination);
+    }
+
+    public function testVerifyWechatSignV2Wrong()
+    {
+        $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => 'foo'];
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        verify_wechat_sign_v2([], $destination);
+    }
+
     public function testEncryptWechatContents()
     {
         $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
