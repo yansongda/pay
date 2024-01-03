@@ -17,9 +17,9 @@ class AddPayloadBodyPlugin implements PluginInterface
 {
     protected XmlPacker $xmlPacker;
 
-    public function __construct(?XmlPacker $jsonPacker = null)
+    public function __construct(protected ?XmlPacker $jsonPacker = null)
     {
-        $this->xmlPacker = $jsonPacker ?? new XmlPacker();
+        $this->xmlPacker ??= new XmlPacker();
     }
 
     public function assembly(Rocket $rocket, Closure $next): Rocket

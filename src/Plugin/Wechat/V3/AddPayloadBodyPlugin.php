@@ -15,11 +15,9 @@ use function Yansongda\Pay\filter_params;
 
 class AddPayloadBodyPlugin implements PluginInterface
 {
-    protected JsonPacker $jsonPacker;
-
-    public function __construct(?JsonPacker $jsonPacker = null)
+    public function __construct(protected ?JsonPacker $jsonPacker = null)
     {
-        $this->jsonPacker = $jsonPacker ?? new JsonPacker();
+        $this->jsonPacker ??= new JsonPacker();
     }
 
     public function assembly(Rocket $rocket, Closure $next): Rocket

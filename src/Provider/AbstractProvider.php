@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Provider;
 
-use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\MessageInterface;
 use Throwable;
-use Yansongda\Pay\Contract\HttpClientInterface;
+use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Pay\Contract\HttpClientFactoryInterface;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Contract\ShortcutInterface;
@@ -22,6 +22,7 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Config;
 use Yansongda\Supports\Pipeline;
 
 use function Yansongda\Pay\should_do_http_request;
@@ -88,14 +89,18 @@ abstract class AbstractProvider implements ProviderInterface
             return $rocket;
         }
 
-        /* @var HttpClientInterface $http */
-        $http = Pay::get(HttpClientInterface::class);
+        /* @var HttpClientFactoryInterface $httpFactory */
+        $httpFactory = Pay::get(HttpClientFactoryInterface::class);
+        /* @var Config $config */
+        $config = Pay::get(ConfigInterface::class);
 
-        if (!$http instanceof ClientInterface) {
-            throw new InvalidConfigException(Exception::CONFIG_HTTP_CLIENT_INVALID, '配置异常: 配置的 ClientInterface 不符合 PSR 规范');
+        if (!$httpFactory instanceof HttpClientFactoryInterface) {
+            throw new InvalidConfigException(Exception::CONFIG_HTTP_CLIENT_FACTORY_INVALID, '配置异常: 配置的 HttpClientFactoryInterface 不符合规范');
         }
 
         Logger::info('[AbstractProvider] 准备请求支付服务商 API', $rocket->toArray());
+
+        $http = $httpFactory->create(array_merge($config->get('httpFactory', []), $rocket->getPayload()?->get('_http') ?? []));
 
         Event::dispatch(new Event\ApiRequesting($rocket));
 
