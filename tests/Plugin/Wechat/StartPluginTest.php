@@ -1,6 +1,6 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3;
+namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Rocket;
