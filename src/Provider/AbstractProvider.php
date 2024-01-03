@@ -117,8 +117,6 @@ abstract class AbstractProvider implements ProviderInterface
         return $rocket;
     }
 
-    abstract public function mergeCommonPlugins(array $plugins): array;
-
     /**
      * @throws InvalidParamsException
      */

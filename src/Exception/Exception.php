@@ -72,7 +72,7 @@ class Exception extends \Exception
 
     public const PARAMS_WECHAT_BODY_MISSING = 4010;
 
-    public const PARAMS_WECHAT_AUTHORIZATION_MISSING = 4011;
+    public const PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED = 4011;
 
     public const PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE = 4012;
 

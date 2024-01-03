@@ -54,6 +54,7 @@ use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
 use function Yansongda\Pay\verify_unipay_sign;
 use function Yansongda\Pay\verify_wechat_sign;
+use function Yansongda\Pay\verify_wechat_sign_v2;
 
 class FunctionTest extends TestCase
 {
@@ -293,7 +294,7 @@ class FunctionTest extends TestCase
     public function testGetWechatSignV2()
     {
         $params = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
-        self::assertEquals('3213848AED2C380749FD1D559555881D', get_wechat_sign_v2([], $params));
+        self::assertEquals('3213848AED2C380749FD1D559555881D', get_wechat_sign_v2(get_wechat_config($params), $params));
 
         // test config error
         $config1 = [
@@ -307,7 +308,7 @@ class FunctionTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        get_wechat_sign_v2([], []);
+        get_wechat_sign_v2(get_wechat_config(), []);
     }
     
     public function testVerifyWechatSign()
@@ -342,6 +343,38 @@ class FunctionTest extends TestCase
         $response->getBody()->read(10);
         verify_wechat_sign($response, []);
         self::assertTrue(true);
+    }
+
+    public function testVerifyWechatSignV2()
+    {
+        $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => '3213848AED2C380749FD1D559555881D'];
+        verify_wechat_sign_v2(get_wechat_config(), $destination);
+        self::assertTrue(true);
+
+        $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_EMPTY);
+        verify_wechat_sign_v2(get_wechat_config(), $destination);
+    }
+
+    public function testVerifyWechatSignV2EmptySecret()
+    {
+        $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => 'aaa'];
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
+
+        verify_wechat_sign_v2([], $destination);
+    }
+
+    public function testVerifyWechatSignV2Wrong()
+    {
+        $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => 'foo'];
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        verify_wechat_sign_v2(get_wechat_config(), $destination);
     }
 
     public function testEncryptWechatContents()

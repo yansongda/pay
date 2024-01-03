@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\Unipay;
+namespace Yansongda\Pay\Tests\Plugin\Unipay;
 
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Pay;

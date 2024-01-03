@@ -6,6 +6,7 @@
 - feat: 新增 `DecryptException`(#906)
 - feat: 新增 `decrypt_wechat_contents` 解密微信加密内容(#912)
 - feat: `\Yansongda\Pay\Plugin\Wechat\Extend\Complaints\QueryDetailPlugin` 自动解密用户手机号(#912)
+- feat: 支持 微信/支付宝 多版本(#918)
 
 ### changed
 
@@ -20,6 +21,7 @@
 - change(internal): 错误代码 const 命名规则统一(#902, #903, #906, #909)
 - change(internal): 调整 `ProviderInterface` 的返回参数，增加了 `Rocket` 返回(#909)
 - change(internal): 将 `call()` 方法重命名为 `shortcut()`(#914)
+- change(internal): `mergeCommonPlugins` 不再作为 `AbstractProvider` 的方法(#918)
 
 ## v3.5.3
 

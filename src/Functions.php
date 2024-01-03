@@ -18,12 +18,12 @@ use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Wechat\AddPayloadBodyPlugin;
-use Yansongda\Pay\Plugin\Wechat\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
-use Yansongda\Pay\Plugin\Wechat\WechatPublicCertsPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadBodyPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
@@ -222,13 +222,11 @@ function get_wechat_sign(array $config, string $contents): string
 }
 
 /**
- * @throws ContainerException
- * @throws ServiceNotFoundException
  * @throws InvalidConfigException
  */
-function get_wechat_sign_v2(array $params, array $payload, bool $upper = true): string
+function get_wechat_sign_v2(array $config, array $payload, bool $upper = true): string
 {
-    $key = get_wechat_config($params)['mch_secret_key_v2'] ?? null;
+    $key = $config['mch_secret_key_v2'] ?? null;
 
     if (empty($key)) {
         throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key_v2]');
@@ -287,6 +285,29 @@ function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, a
 
     if (!$result) {
         throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证微信签名失败', ['headers' => $message->getHeaders(), 'body' => $body]);
+    }
+}
+
+/**
+ * @throws InvalidConfigException
+ * @throws InvalidSignException
+ */
+function verify_wechat_sign_v2(array $config, array $destination): void
+{
+    $sign = $destination['sign'] ?? null;
+
+    if (empty($sign)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 微信签名为空', $destination);
+    }
+
+    $key = $config['mch_secret_key_v2'] ?? null;
+
+    if (empty($key)) {
+        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key_v2]');
+    }
+
+    if (get_wechat_sign_v2($config, $destination) !== $destination['sign']) {
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证微信签名失败', $destination);
     }
 }
 

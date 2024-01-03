@@ -7,7 +7,6 @@ namespace Yansongda\Pay\Plugin\Wechat;
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
@@ -47,35 +46,29 @@ class AddRadarPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    /**
-     * @throws InvalidParamsException
-     */
     protected function getHeaders(?Collection $payload): array
     {
-        $authorization = $payload?->get('_authorization') ?? null;
-
-        if (empty($authorization)) {
-            throw new InvalidParamsException(Exception::PARAMS_WECHAT_AUTHORIZATION_MISSING, '参数异常: 微信 `_authorization` 参数缺失：你可能用错插件顺序，应该先使用 `AddPayloadSignaturePlugin`, 再使用 `AddRadarPlugin`');
-        }
-
         $headers = [
             'Accept' => 'application/json, text/plain, application/x-gzip',
             'User-Agent' => 'yansongda/pay-v3',
             'Content-Type' => 'application/json; charset=utf-8',
-            'Authorization' => $authorization,
         ];
 
         // 当 body 里有加密内容时，需要传递此参数用于微信区分
-        if ($payload->has('_serial_no')) {
-            $headers['Wechatpay-Serial'] = $payload->get('_serial_no');
+        if (!empty($serialNo = $payload?->get('_serial_no'))) {
+            $headers['Wechatpay-Serial'] = $serialNo;
         }
 
-        if ($payload->has('_content-type')) {
-            $headers['Content-Type'] = $payload->get('_content-type');
+        if (!empty($authorization = $payload?->get('_authorization'))) {
+            $headers['Authorization'] = $authorization;
         }
 
-        if ($payload->has('_accept')) {
-            $headers['Accept'] = $payload->get('_accept');
+        if (!empty($contentType = $payload?->get('_content_type'))) {
+            $headers['Content-Type'] = $contentType;
+        }
+
+        if (!empty($accept = $payload?->get('_accept'))) {
+            $headers['Accept'] = $accept;
         }
 
         return $headers;
