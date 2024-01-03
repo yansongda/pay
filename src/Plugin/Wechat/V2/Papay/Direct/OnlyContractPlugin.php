@@ -32,7 +32,7 @@ class OnlyContractPlugin implements PluginInterface
         $config = get_wechat_config($params);
         $payload = $rocket->getPayload();
 
-        $rocket->setPacker(NoHttpRequestDirection::class)
+        $rocket->setDirection(NoHttpRequestDirection::class)
             ->mergePayload([
                 'appid' => $config[get_wechat_type_key($params)] ?? '',
                 'mch_id' => $config['mch_id'] ?? '',

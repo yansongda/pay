@@ -54,6 +54,7 @@ use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
 use function Yansongda\Pay\verify_unipay_sign;
 use function Yansongda\Pay\verify_wechat_sign;
+use function Yansongda\Pay\verify_wechat_sign_v2;
 
 class FunctionTest extends TestCase
 {
@@ -358,7 +359,7 @@ class FunctionTest extends TestCase
 
     public function testVerifyWechatSignV2EmptySecret()
     {
-        $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
+        $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => 'aaa'];
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
@@ -373,7 +374,7 @@ class FunctionTest extends TestCase
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        verify_wechat_sign_v2([], $destination);
+        verify_wechat_sign_v2(get_wechat_config(), $destination);
     }
 
     public function testEncryptWechatContents()
