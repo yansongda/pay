@@ -3,20 +3,20 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V2\Papay\Direct;
 
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
-use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\OnlyContractPlugin;
+use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\MiniOnlyContractPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class OnlyContractPluginTest extends TestCase
+class MiniOnlyContractPluginTest extends TestCase
 {
-    protected OnlyContractPlugin $plugin;
+    protected MiniOnlyContractPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new OnlyContractPlugin();
+        $this->plugin = new MiniOnlyContractPlugin();
     }
 
     public function testNormal()
