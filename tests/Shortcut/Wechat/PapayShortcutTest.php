@@ -112,4 +112,13 @@ class PapayShortcutTest extends TestCase
 
         $this->plugin->getPlugins(['_action' => 'contract', '_type' => 'app']);
     }
+
+    public function testFoo()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+        self::expectExceptionMessage('Papay action [fooPlugins] not supported');
+
+        $this->plugin->getPlugins(['_action' => 'foo']);
+    }
 }

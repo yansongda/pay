@@ -88,9 +88,4 @@ class InvokePlugin implements PluginInterface
 
         return $payload?->get('_invoke_appid') ?? $config['mini_app_id'] ?? '';
     }
-
-    protected function getPartnerId(?Collection $payload, array $config): string
-    {
-        return $payload?->get('_invoke_partnerid') ?? $config['mch_id'] ?? '';
-    }
 }
