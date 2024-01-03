@@ -33,6 +33,14 @@ class AbstractProviderTest extends TestCase
 
         Pay::set(DirectionInterface::class, CollectionDirection::class);
         Pay::set(PackerInterface::class, JsonPacker::class);
+        Pay::set(HttpClientInterface::class, null);
+    }
+
+    protected function tearDown(): void
+    {
+        Pay::set(HttpClientInterface::class, null);
+
+        parent::tearDown();
     }
 
     public function testVerifyObjectPlugin()

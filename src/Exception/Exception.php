@@ -47,6 +47,8 @@ class Exception extends \Exception
 
     public const CONFIG_PACKER_INVALID = 3008;
 
+    public const CONFIG_HTTP_CLIENT_FACTORY_INVALID = 3009;
+
     /*
      * 关于参数.
      */

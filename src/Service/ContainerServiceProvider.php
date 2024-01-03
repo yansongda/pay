@@ -90,6 +90,7 @@ class ContainerServiceProvider implements ServiceProviderInterface
     }
 
     /**
+     * @throws ContainerException
      * @throws ContainerNotFoundException
      */
     protected function defaultApplication(): void
@@ -101,5 +102,7 @@ class ContainerServiceProvider implements ServiceProviderInterface
         $container = (new DefaultContainer())();
 
         Pay::setContainer($container);
+
+        Pay::set(\Yansongda\Pay\Contract\ContainerInterface::class, $container);
     }
 }
