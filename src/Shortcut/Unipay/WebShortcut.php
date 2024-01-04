@@ -8,7 +8,7 @@ use Yansongda\Pay\Contract\ShortcutInterface;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\PagePayPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\Web\PayPlugin;
 use Yansongda\Pay\Plugin\Unipay\ResponseHtmlPlugin;
 use Yansongda\Pay\Plugin\Unipay\StartPlugin;
 
@@ -18,7 +18,7 @@ class WebShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            PagePayPlugin::class,
+            PayPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             ResponseHtmlPlugin::class,

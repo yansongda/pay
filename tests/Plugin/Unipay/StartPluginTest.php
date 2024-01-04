@@ -28,16 +28,7 @@ class StartPluginTest extends TestCase
             'orderId' => 'yansongda20220903065448',
         ];
         $payload = array_merge($params, [
-            'version' => '5.1.0',
-            'encoding' => 'utf-8',
-            'backUrl' => 'https://pay.yansongda.cn',
-            'accessType' => '0',
-            'signature' => '',
-            'signMethod' => '01',
-            'merId' => '777290058167151',
-            'frontUrl' => 'https://pay.yansongda.cn',
             'certId' => '69903319369',
-            'currencyCode' => '156',
         ]);
 
         $rocket = (new Rocket())->setParams($params);
@@ -55,20 +46,6 @@ class StartPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertTrue(true);
-    }
-
-    public function testCustomizedNotifyUrl()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            '_notify_url' => 'https://yansongda.cna',
-            '_return_url' => 'https://yansongda.cnaa',
-        ]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('https://yansongda.cna', $result->getPayload()->get('backUrl'));
-        self::assertEquals('https://yansongda.cnaa', $result->getPayload()->get('frontUrl'));
     }
 
     public function testCertsCached()

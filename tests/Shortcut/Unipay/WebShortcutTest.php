@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\PagePayPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\Web\PayPlugin;
 use Yansongda\Pay\Plugin\Unipay\ResponseHtmlPlugin;
 use Yansongda\Pay\Plugin\Unipay\StartPlugin;
 use Yansongda\Pay\Shortcut\Unipay\WebShortcut;
@@ -28,7 +28,7 @@ class WebShortcutTest extends TestCase
     {
         self::assertEquals([
             StartPlugin::class,
-            PagePayPlugin::class,
+            PayPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             ResponseHtmlPlugin::class,
