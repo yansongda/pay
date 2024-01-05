@@ -12,7 +12,7 @@ use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\CancelPlugin as QrCodeCancelPlugin;
-use Yansongda\Pay\Plugin\Unipay\Pay\Web\CancelPlugin as OnlineGatewayCancelPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\Web\CancelPlugin as webCancelPlugin;
 use Yansongda\Pay\Plugin\Unipay\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
@@ -35,14 +35,14 @@ class CancelShortcut implements ShortcutInterface
 
     protected function defaultPlugins(): array
     {
-        return $this->onlineGatewayPlugins();
+        return $this->webPlugins();
     }
 
-    protected function onlineGatewayPlugins(): array
+    protected function webPlugins(): array
     {
         return [
             StartPlugin::class,
-            OnlineGatewayCancelPlugin::class,
+            webCancelPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,

@@ -9,6 +9,7 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
+use Yansongda\Pay\Packer\QueryPacker;
 use Yansongda\Pay\Rocket;
 
 use function Yansongda\Pay\get_unipay_config;
@@ -30,20 +31,21 @@ class CancelPlugin implements PluginInterface
         $config = get_unipay_config($params);
         $payload = $rocket->getPayload();
 
-        $rocket->mergePayload([
-            '_url' => 'gateway/api/backTransReq.do',
-            'encoding' => 'utf-8',
-            'signature' => '',
-            'bizType' => $payload?->get('bizType') ?? '000000',
-            'accessType' => $payload?->get('accessType') ?? '0',
-            'merId' => $config['mch_id'] ?? '',
-            'channelType' => $payload?->get('channelType') ?? '08',
-            'signMethod' => '01',
-            'txnType' => $payload?->get('txnType') ?? '31',
-            'txnSubType' => $payload?->get('txnSubType') ?? '00',
-            'backUrl' => $payload->get('backUrl', $config['notify_url'] ?? ''),
-            'version' => '5.1.0',
-        ]);
+        $rocket->setPacker(QueryPacker::class)
+            ->mergePayload([
+                '_url' => 'gateway/api/backTransReq.do',
+                'encoding' => 'utf-8',
+                'signature' => '',
+                'bizType' => $payload?->get('bizType') ?? '000000',
+                'accessType' => $payload?->get('accessType') ?? '0',
+                'merId' => $config['mch_id'] ?? '',
+                'channelType' => $payload?->get('channelType') ?? '08',
+                'signMethod' => '01',
+                'txnType' => $payload?->get('txnType') ?? '31',
+                'txnSubType' => $payload?->get('txnSubType') ?? '00',
+                'backUrl' => $payload?->get('backUrl') ?? $config['notify_url'] ?? '',
+                'version' => '5.1.0',
+            ]);
 
         Logger::info('[Unipay][Pay][QrCode][CancelPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

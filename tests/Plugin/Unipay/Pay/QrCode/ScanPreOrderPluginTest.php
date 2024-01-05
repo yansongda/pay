@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Pay\QrCode;
 
+use Yansongda\Pay\Packer\QueryPacker;
 use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\ScanPreOrderPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -32,13 +33,22 @@ class ScanPreOrderPluginTest extends TestCase
 
         $payload = $result->getPayload();
 
+        self::assertEquals(QueryPacker::class, $result->getPacker());
         self::assertEquals([
             '_url' => 'gateway/api/order.do',
-            'accessType' => '1',
+            'encoding' => 'utf-8',
+            'signature' => '',
             'bizType' => '2',
+            'accessType' => '1',
+            'merId' => '777290058167151',
+            'currencyCode' => '156',
+            'channelType' => '5',
+            'signMethod' => '01',
             'txnType' => '3',
             'txnSubType' => '4',
-            'channelType' => '5',
+            'backUrl' => 'https://pay.yansongda.cn',
+            'version' => '5.1.0',
+            'frontUrl' => 'https://pay.yansongda.cn',
         ], $payload->all());
     }
 
@@ -51,13 +61,22 @@ class ScanPreOrderPluginTest extends TestCase
 
         $payload = $result->getPayload();
 
+        self::assertEquals(QueryPacker::class, $result->getPacker());
         self::assertEquals([
             '_url' => 'gateway/api/order.do',
-            'accessType' => '0',
+            'encoding' => 'utf-8',
+            'signature' => '',
             'bizType' => '000000',
+            'accessType' => '0',
+            'merId' => '777290058167151',
+            'currencyCode' => '156',
+            'channelType' => '08',
+            'signMethod' => '01',
             'txnType' => '01',
             'txnSubType' => '01',
-            'channelType' => '08',
+            'backUrl' => 'https://pay.yansongda.cn',
+            'version' => '5.1.0',
+            'frontUrl' => 'https://pay.yansongda.cn',
         ], $payload->all());
     }
 }

@@ -115,7 +115,7 @@ abstract class AbstractProvider implements ProviderInterface
             throw new InvalidResponseException(Exception::REQUEST_RESPONSE_ERROR, '响应异常: 请求支付服务商 API 出错 - '.$e->getMessage(), [], $e);
         }
 
-        Logger::info('[AbstractProvider] 请求支付服务商 API 成功', ['response' => ['status' => $response->getStatusCode(), 'headers' => $response->getHeaders(), 'body' => (string) $response->getBody()], 'rocket' => $rocket->toArray()]);
+        Logger::info('[AbstractProvider] 请求支付服务商 API 成功', ['rocket' => $rocket->toArray()]);
 
         Event::dispatch(new Event\ApiRequested($rocket));
 

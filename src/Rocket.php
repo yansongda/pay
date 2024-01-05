@@ -152,4 +152,29 @@ class Rocket implements JsonSerializableInterface, ArrayAccess
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        $request = $this->getRadar();
+        $destination = $this->getDestinationOrigin();
+
+        return [
+            'radar' => [
+                'url' => $request?->getUri()->__toString(),
+                'method' => $request?->getMethod(),
+                'headers' => $request?->getHeaders(),
+                'body' => (string) $request?->getBody(),
+            ],
+            'params' => $this->getParams(),
+            'payload' => $this->getPayload()?->toArray(),
+            'packer' => $this->getPacker(),
+            'direction' => $this->getDirection(),
+            'destination' => $this->getDestination(),
+            'destination_origin' => [
+                'status' => $destination instanceof ResponseInterface ? $destination->getStatusCode() : null,
+                'headers' => $destination?->getHeaders(),
+                'body' => (string) $destination?->getBody(),
+            ],
+        ];
+    }
 }

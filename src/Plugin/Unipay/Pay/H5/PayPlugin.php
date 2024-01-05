@@ -44,8 +44,8 @@ class PayPlugin implements PluginInterface
                 'signMethod' => '01',
                 'txnType' => $payload?->get('txnType') ?? '01',
                 'txnSubType' => $payload?->get('txnSubType') ?? '01',
-                'frontUrl' => $payload->get('frontUrl', $config['return_url'] ?? ''),
-                'backUrl' => $payload->get('backUrl', $config['notify_url'] ?? ''),
+                'frontUrl' => $payload?->get('frontUrl') ?? $config['return_url'] ?? '',
+                'backUrl' => $payload?->get('backUrl') ?? $config['notify_url'] ?? '',
                 'version' => '5.1.0',
             ]);
 

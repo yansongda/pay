@@ -33,9 +33,9 @@ class CallbackPlugin implements PluginInterface
         $params = $rocket->getParams();
         $config = get_unipay_config($params);
 
-        $rocket->setPayload(filter_params($params, fn ($k, $v) => 'signature' != $k));
+        $rocket->setPayload(filter_params($params));
 
-        verify_unipay_sign($config, $rocket->getPayload()->sortKeys()->toString(), $params['signature'] ?? '', $params['signPubKeyCert'] ?? null);
+        verify_unipay_sign($config, $rocket->getPayload()->except('signature')->sortKeys()->toString(), $params['signature'] ?? '', $params['signPubKeyCert'] ?? null);
 
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());

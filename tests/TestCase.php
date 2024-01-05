@@ -134,8 +134,8 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_cert_path' => __DIR__.'/Cert/unipayAppCert.pfx',
                     'mch_cert_password' => '000000',
                     'unipay_public_cert_path' => __DIR__.'/Cert/unipayCertPublicKey.cer',
-                    'return_url' => 'https://pay.yansongda.cn',
-                    'notify_url' => 'https://pay.yansongda.cn',
+                    'return_url' => 'http://127.0.0.1:8000/unipay/return',
+                    'notify_url' => 'https://yansongda.cn/unipay/notify',
                     'mode' => Pay::MODE_SANDBOX,
                 ]
             ]
