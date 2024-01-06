@@ -6,11 +6,11 @@ namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
-use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Unipay\Pay\H5\PayPlugin;
-use Yansongda\Pay\Plugin\Unipay\ResponseHtmlPlugin;
-use Yansongda\Pay\Plugin\Unipay\StartPlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\Pay\H5\PayPlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\ResponseHtmlPlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Shortcut\Unipay\H5Shortcut;
 use Yansongda\Pay\Tests\TestCase;
 

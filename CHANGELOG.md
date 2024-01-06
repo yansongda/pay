@@ -25,6 +25,7 @@
 - change(internal): 将 `call()` 方法重命名为 `shortcut()`(#914)
 - change(internal): `mergeCommonPlugins` 不再作为 `AbstractProvider` 的方法(#918)
 - change(internal): `AbstractProvider` 默认使用 `HttpClientFactoryInterface` 创建 http client(#921)
+- change(internal): 调整 银联 插件文件夹结构(#923)
 
 ## v3.5.3
 
