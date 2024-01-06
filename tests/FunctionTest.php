@@ -45,6 +45,8 @@ use function Yansongda\Pay\get_unipay_url;
 use function Yansongda\Pay\get_wechat_body;
 use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_method;
+use function Yansongda\Pay\get_wechat_miniprogram_pay_sign;
+use function Yansongda\Pay\get_wechat_miniprogram_user_sign;
 use function Yansongda\Pay\get_wechat_public_certs;
 use function Yansongda\Pay\get_wechat_public_key;
 use function Yansongda\Pay\get_wechat_serial_no;
@@ -575,6 +577,16 @@ class FunctionTest extends TestCase
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND);
         get_wechat_public_key(get_wechat_config(), $serialNo);
+    }
+
+    public function testGetWechatMiniprogramPaySign()
+    {
+        self::assertEquals('6bb3e49bb4744fc6817331333ffa435e0d1409c3c900a87637c98265445cbe96', get_wechat_miniprogram_pay_sign(get_wechat_config(), 'yansongda.cn', '{"name":"yansongda"}'));
+    }
+
+    public function testGetWechatMiniprogramUserSign()
+    {
+        self::assertEquals('e2bfc507bfee7e1f7029cf204e4a1a848a1d4c64eec279ec2d5be56c675a1bbe', get_wechat_miniprogram_user_sign('yansongda', '{"name":"yansongda"}'));
     }
 
     public function testGetUnipayConfig()
