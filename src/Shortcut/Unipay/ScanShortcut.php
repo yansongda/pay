@@ -9,14 +9,14 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
-use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\ScanFeePlugin;
-use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\ScanPlugin;
-use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\ScanPreAuthPlugin;
-use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\ScanPreOrderPlugin;
-use Yansongda\Pay\Plugin\Unipay\StartPlugin;
-use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\ScanFeePlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\ScanPlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\ScanPreAuthPlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\ScanPreOrderPlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
 class ScanShortcut implements ShortcutInterface
