@@ -34,15 +34,6 @@ class StartPlugin implements PluginInterface
         $tenant = get_tenant($params);
 
         $rocket->mergePayload(array_merge($params, [
-            'version' => '5.1.0',
-            'encoding' => 'utf-8',
-            'backUrl' => $this->getNotifyUrl($params, $config),
-            'currencyCode' => '156',
-            'accessType' => '0',
-            'signature' => '',
-            'signMethod' => '01',
-            'merId' => $config['mch_id'] ?? '',
-            'frontUrl' => $this->getReturnUrl($params, $config),
             'certId' => $this->getCertId($tenant, $config),
         ]));
 
@@ -74,24 +65,6 @@ class StartPlugin implements PluginInterface
         Pay::get(ConfigInterface::class)->set('unipay.'.$tenant.'.certs', $certs);
 
         return $certs['cert_id'];
-    }
-
-    protected function getReturnUrl(array $params, array $config): string
-    {
-        if (!empty($params['_return_url'])) {
-            return $params['_return_url'];
-        }
-
-        return $config['return_url'] ?? '';
-    }
-
-    protected function getNotifyUrl(array $params, array $config): string
-    {
-        if (!empty($params['_notify_url'])) {
-            return $params['_notify_url'];
-        }
-
-        return $config['notify_url'] ?? '';
     }
 
     /**

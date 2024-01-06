@@ -13,6 +13,7 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\filter_params;
 use function Yansongda\Pay\get_alipay_config;
@@ -33,11 +34,12 @@ class CallbackPlugin implements PluginInterface
         $params = $rocket->getParams();
         $config = get_alipay_config($params);
 
-        $rocket->setPayload(filter_params($params, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k));
+        $value = filter_params($params, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k);
 
-        verify_alipay_sign($config, $rocket->getPayload()->sortKeys()->toString(), $params['sign'] ?? '');
+        verify_alipay_sign($config, Collection::wrap($value)->sortKeys()->toString(), $params['sign'] ?? '');
 
-        $rocket->setDirection(NoHttpRequestDirection::class)
+        $rocket->setPayload($params)
+            ->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());
 
         Logger::info('[Alipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);

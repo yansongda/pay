@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Contract\ConfigInterface;
 use Yansongda\Pay\Contract\DirectionInterface;
+use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\DecryptException;
@@ -24,6 +25,7 @@ use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
+use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
@@ -59,6 +61,25 @@ function get_direction(mixed $direction): DirectionInterface
     return $direction;
 }
 
+/**
+ * @throws InvalidConfigException
+ */
+function get_packer(mixed $packer): PackerInterface
+{
+    try {
+        $packer = Pay::get($packer);
+
+        $packer = is_string($packer) ? Pay::get($packer) : $packer;
+    } catch (ContainerException|ServiceNotFoundException) {
+    }
+
+    if (!$packer instanceof PackerInterface) {
+        throw new InvalidConfigException(Exception::CONFIG_PACKER_INVALID, '配置参数异常: 配置的 `PackerInterface` 未实现 `PackerInterface`');
+    }
+
+    return $packer;
+}
+
 function get_public_cert(string $key): string
 {
     return Str::endsWith($key, ['.cer', '.crt', '.pem']) ? file_get_contents($key) : $key;
@@ -75,9 +96,11 @@ function get_private_cert(string $key): string
         "\n-----END RSA PRIVATE KEY-----";
 }
 
-function filter_params(array $params, ?Closure $closure = null): array
+function filter_params(null|array|Collection $params, ?Closure $closure = null): array
 {
-    return array_filter($params, static fn ($v, $k) => !Str::startsWith($k, '_') && !is_null($v) && (empty($closure) || $closure($k, $v)), ARRAY_FILTER_USE_BOTH);
+    $params = Collection::wrap($params);
+
+    return $params->filter(static fn ($v, $k) => !Str::startsWith($k, '_') && !is_null($v) && (empty($closure) || $closure($k, $v)))->toArray();
 }
 
 function get_radar_method(?Collection $payload): ?string
@@ -114,6 +137,17 @@ function get_alipay_config(array $params = []): array
     $alipay = Pay::get(ConfigInterface::class)->get('alipay');
 
     return $alipay[get_tenant($params)] ?? [];
+}
+
+function get_alipay_url(array $config, ?Collection $payload): string
+{
+    $url = get_radar_url($config, $payload) ?? '';
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    return Alipay::URL[$config['mode'] ?? Pay::MODE_NORMAL];
 }
 
 /**
@@ -306,7 +340,7 @@ function verify_wechat_sign_v2(array $config, array $destination): void
         throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key_v2]');
     }
 
-    if (get_wechat_sign_v2($config, $destination) !== $destination['sign']) {
+    if (get_wechat_sign_v2($config, $destination) !== $sign) {
         throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证微信签名失败', $destination);
     }
 }
@@ -547,4 +581,49 @@ function get_unipay_body(?Collection $payload): string
     }
 
     return $body;
+}
+
+/**
+ * @throws InvalidConfigException
+ */
+function get_unipay_sign_qra(array $config, array $payload): string
+{
+    $key = $config['mch_secret_key'] ?? null;
+
+    if (empty($key)) {
+        throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 缺少银联配置 -- [mch_secret_key]');
+    }
+
+    ksort($payload);
+
+    $buff = '';
+
+    foreach ($payload as $k => $v) {
+        $buff .= ('sign' != $k && '' != $v && !is_array($v)) ? $k.'='.$v.'&' : '';
+    }
+
+    return strtoupper(md5($buff.'key='.$key));
+}
+
+/**
+ * @throws InvalidConfigException
+ * @throws InvalidSignException
+ */
+function verify_unipay_sign_qra(array $config, array $destination): void
+{
+    $sign = $destination['sign'] ?? null;
+
+    if (empty($sign)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 银联签名为空', $destination);
+    }
+
+    $key = $config['mch_secret_key'] ?? null;
+
+    if (empty($key)) {
+        throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 缺少银联配置 -- [mch_secret_key]');
+    }
+
+    if (get_unipay_sign_qra($config, $destination) !== $sign) {
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证银联签名失败', $destination);
+    }
 }

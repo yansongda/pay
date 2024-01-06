@@ -8,6 +8,7 @@
 - feat: `\Yansongda\Pay\Plugin\Wechat\Extend\Complaints\QueryDetailPlugin` 自动解密用户手机号(#912)
 - feat: 支持 微信/支付宝 多版本(#918)
 - feat: 增加 `HttpClientFactoryInterface` 方法用于工厂模式创建 http client(#921)
+- feat: 增加银联 `条码支付综合前置平台-被扫支付` 刷卡支付插件(#922)
 
 ### changed
 
@@ -15,7 +16,7 @@
 - change: cancel/close 的 API 参数只支持 array，不再支持 string(#900, #901)
 - change: 微信合单支付去掉独立的 `combine_app_id`,`combine_mch_id` 配置，复用其它配置(#909)
 - change: 手机网站支付快捷方式由 wap 改为 h5(#911, #915, #916)
-- change(internal): 按场景对 支付宝/微信/银联 插件进行分类 && 插件代码优化(#894, #909, #913)
+- change(internal): 按场景对 支付宝/微信/银联 插件进行分类 && 插件代码优化(#894, #909, #913, #922)
 - change(internal): 将 支付/微信/银联 shortcut 从 plugin 文件夹独立出来(#895, #904, #905)
 - change(internal): shortcut 完整标明各个插件，不使用 commonPlugin(#886)
 - change(internal): DirectionInterface 方法由 `parse` 改为 `guide`(#896)

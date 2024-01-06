@@ -10,8 +10,12 @@ use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\CancelPlugin as OnlineGatewayCancelPlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\CancelPlugin as QrCodeCancelPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\CancelPlugin as QrCodeCancelPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\Web\CancelPlugin as OnlineGatewayCancelPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin as QraAddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\Pos\CancelPlugin as QraPosCancelQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\CancelShortcut;
@@ -52,6 +56,19 @@ class CancelShortcutTest extends TestCase
             VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'qr_code']));
+    }
+
+    public function testQraPos()
+    {
+        self::assertEquals([
+            QraStartPlugin::class,
+            QraPosCancelQueryPlugin::class,
+            QraAddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            QraVerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'qra_pos']));
     }
 
     public function testFoo()

@@ -37,7 +37,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
         }
 
         $rocket->mergePayload([
-            'signature' => $this->getSignature($config['certs']['pkey'] ?? '', filter_params($rocket->getPayload()->all(), fn ($k, $v) => 'signature' != $k)),
+            'signature' => $this->getSignature($config['certs']['pkey'] ?? '', filter_params($rocket->getPayload(), fn ($k, $v) => 'signature' != $k)),
         ]);
 
         Logger::info('[Unipay][AddPayloadSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);

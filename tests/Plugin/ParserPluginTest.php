@@ -6,12 +6,12 @@ use Yansongda\Pay\Contract\DirectionInterface;
 use Yansongda\Pay\Contract\PackerInterface;
 use Yansongda\Pay\Direction\CollectionDirection;
 use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Rocket;
-use Yansongda\Pay\Tests\Stubs\FooPackerStub;
 use Yansongda\Pay\Tests\Stubs\FooParserStub;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -29,10 +29,10 @@ class ParserPluginTest extends TestCase
         Pay::set(PackerInterface::class, JsonPacker::class);
     }
 
-    public function testWrongParser()
+    public function testWrongDirection()
     {
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(InvalidConfigException::CONFIG_DIRECTION_INVALID);
+        self::expectExceptionCode(Exception::CONFIG_DIRECTION_INVALID);
 
         $rocket = new Rocket();
         $rocket->setDirection(FooParserStub::class);
@@ -40,18 +40,7 @@ class ParserPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testWrongPacker()
-    {
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(InvalidConfigException::CONFIG_PACKER_INVALID);
-
-        $rocket = new Rocket();
-        $rocket->setPacker(FooPackerStub::class);
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-
-    public function testDefaultParser()
+    public function testDefaultDirection()
     {
         Pay::set(DirectionInterface::class, NoHttpRequestDirection::class);
 
@@ -62,7 +51,7 @@ class ParserPluginTest extends TestCase
         self::assertSame($rocket, $result);
     }
 
-    public function testObjectParser()
+    public function testObjectDirection()
     {
         Pay::set(DirectionInterface::class, new NoHttpRequestDirection());
 

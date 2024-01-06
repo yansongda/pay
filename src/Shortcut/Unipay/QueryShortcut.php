@@ -11,8 +11,13 @@ use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin as OnlineGatewayQueryPlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin as QrCodeQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\QueryPlugin as QrCodeQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\Web\QueryPlugin as WebQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin as QraAddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\Pos\QueryPlugin as QraPosQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\Pos\QueryRefundPlugin as QraPosQueryRefundPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
@@ -35,14 +40,14 @@ class QueryShortcut implements ShortcutInterface
 
     protected function defaultPlugins(): array
     {
-        return $this->onlineGatewayPlugins();
+        return $this->webPlugins();
     }
 
-    protected function onlineGatewayPlugins(): array
+    protected function webPlugins(): array
     {
         return [
             StartPlugin::class,
-            OnlineGatewayQueryPlugin::class,
+            WebQueryPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
@@ -60,6 +65,32 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function qraPosPlugins(): array
+    {
+        return [
+            QraStartPlugin::class,
+            QraPosQueryPlugin::class,
+            QraAddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            QraVerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function qraPosRefundPlugins(): array
+    {
+        return [
+            QraStartPlugin::class,
+            QraPosQueryRefundPlugin::class,
+            QraAddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            QraVerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }

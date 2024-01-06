@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat;
 
 use Closure;
+use GuzzleHttp\Psr7\Request;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 

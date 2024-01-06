@@ -14,7 +14,7 @@ use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
-use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_unipay_config;
 use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_unipay_sign;
 
@@ -44,7 +44,7 @@ class VerifySignaturePlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-        $config = get_alipay_config($params);
+        $config = get_unipay_config($params);
 
         verify_unipay_sign(
             $config,

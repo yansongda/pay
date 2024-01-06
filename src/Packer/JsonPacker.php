@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Packer;
 
 use Yansongda\Pay\Contract\PackerInterface;
+use Yansongda\Supports\Arr;
+use Yansongda\Supports\Collection;
 
 class JsonPacker implements PackerInterface
 {
-    public function pack(array $payload): string
+    public function pack(null|array|Collection $payload): string
     {
-        return json_encode($payload, JSON_UNESCAPED_UNICODE);
+        if (empty($payload)) {
+            return '';
+        }
+
+        return Collection::wrap($payload)->toJson();
     }
 
     public function unpack(string $payload): ?array
     {
-        $data = json_decode($payload, true);
-
-        if (JSON_ERROR_NONE === json_last_error()) {
-            return $data;
-        }
-
-        return null;
+        return Arr::wrapJson($payload);
     }
 }

@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Unipay;
 
 use Closure;
+use GuzzleHttp\Psr7\Request;
 use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Request;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_radar_method;
 use function Yansongda\Pay\get_unipay_body;
@@ -37,7 +36,7 @@ class AddRadarPlugin implements PluginInterface
         $rocket->setRadar(new Request(
             get_radar_method($payload) ?? 'POST',
             get_unipay_url($config, $payload),
-            $this->getHeaders($payload),
+            $this->getHeaders(),
             get_unipay_body($payload),
         ));
 
@@ -46,21 +45,11 @@ class AddRadarPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function getHeaders(?Collection $payload): array
+    protected function getHeaders(): array
     {
-        $headers = [
+        return [
             'User-Agent' => 'yansongda/pay-v3',
             'Content-Type' => 'application/x-www-form-urlencoded;charset=utf-8',
         ];
-
-        if ($payload->has('_content-type')) {
-            $headers['Content-Type'] = $payload->get('_content-type');
-        }
-
-        if ($payload->has('_accept')) {
-            $headers['Accept'] = $payload->get('_accept');
-        }
-
-        return $headers;
     }
 }

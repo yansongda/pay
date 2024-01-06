@@ -11,8 +11,12 @@ use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\PosPlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\PosPreAuthPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\PosPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\PosPreAuthPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin as QraAddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\Pos\PayPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
@@ -55,6 +59,19 @@ class PosShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function qraPlugins(): array
+    {
+        return [
+            QraStartPlugin::class,
+            PayPlugin::class,
+            QraAddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            QraVerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }

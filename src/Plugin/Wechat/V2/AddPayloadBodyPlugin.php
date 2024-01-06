@@ -6,35 +6,28 @@ namespace Yansongda\Pay\Plugin\Wechat\V2;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
+use Yansongda\Pay\Exception\InvalidConfigException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Packer\XmlPacker;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\filter_params;
+use function Yansongda\Pay\get_packer;
 
 class AddPayloadBodyPlugin implements PluginInterface
 {
-    protected XmlPacker $xmlPacker;
-
-    public function __construct(protected ?XmlPacker $jsonPacker = null)
-    {
-        $this->xmlPacker ??= new XmlPacker();
-    }
-
+    /**
+     * @throws InvalidConfigException
+     */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::debug('[Wechat][V2][AddPayloadBodyPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $rocket->mergePayload(['_body' => $this->getBody($rocket->getPayload())]);
+        $packer = get_packer($rocket->getPacker());
+
+        $rocket->mergePayload(['_body' => $packer->pack(filter_params($rocket->getPayload()))]);
 
         Logger::info('[Wechat][V2][AddPayloadBodyPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function getBody(?Collection $payload): string
-    {
-        return $this->xmlPacker->pack(filter_params($payload->all()));
     }
 }

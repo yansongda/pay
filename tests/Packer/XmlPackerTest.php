@@ -3,8 +3,10 @@
 namespace Yansongda\Pay\Tests\Packer;
 
 use Yansongda\Pay\Packer\XmlPacker;
+use Yansongda\Pay\Tests\TestCase;
+use Yansongda\Supports\Collection;
 
-class XmlPackerTest extends \Yansongda\Pay\Tests\TestCase
+class XmlPackerTest extends TestCase
 {
     protected XmlPacker $packer;
 
@@ -21,6 +23,7 @@ class XmlPackerTest extends \Yansongda\Pay\Tests\TestCase
         $array = ['name' => 'yansongda', 'age' => 29];
 
         self::assertEquals($xml, $this->packer->pack($array));
+        self::assertEquals($xml, $this->packer->pack(Collection::wrap($array)));
     }
 
     public function testUnpack()

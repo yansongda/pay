@@ -3,8 +3,10 @@
 namespace Yansongda\Pay\Tests\Packer;
 
 use Yansongda\Pay\Packer\JsonPacker;
+use Yansongda\Pay\Tests\TestCase;
+use Yansongda\Supports\Collection;
 
-class JsonPackerTest extends \Yansongda\Pay\Tests\TestCase
+class JsonPackerTest extends TestCase
 {
     protected JsonPacker $packer;
 
@@ -21,6 +23,7 @@ class JsonPackerTest extends \Yansongda\Pay\Tests\TestCase
         $str = '{"name":"yansongda","age":29}';
 
         self::assertEquals($str, $this->packer->pack($array));
+        self::assertEquals($str, $this->packer->pack(Collection::wrap($array)));
     }
 
     public function testUnpack()

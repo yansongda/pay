@@ -10,8 +10,13 @@ use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Unipay\OnlineGateway\QueryPlugin as OnlineGatewayQueryPlugin;
-use Yansongda\Pay\Plugin\Unipay\QrCode\QueryPlugin as QrCodeQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\QueryPlugin as QrCodeQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\Pay\Web\QueryPlugin as OnlineGatewayQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin as QraAddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\Pos\QueryPlugin as QraPosQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\Pos\QueryRefundPlugin as QraPosQueryRefundPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\QueryShortcut;
@@ -52,6 +57,32 @@ class QueryShortcutTest extends TestCase
             VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'qr_code']));
+    }
+
+    public function testQraPos()
+    {
+        self::assertEquals([
+            QraStartPlugin::class,
+            QraPosQueryPlugin::class,
+            QraAddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            QraVerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'qra_pos']));
+    }
+
+    public function testQraPosRefund()
+    {
+        self::assertEquals([
+            QraStartPlugin::class,
+            QraPosQueryRefundPlugin::class,
+            QraAddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            QraVerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'qra_pos_refund']));
     }
 
     public function testFoo()
