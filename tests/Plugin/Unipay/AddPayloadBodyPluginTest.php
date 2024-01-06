@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay;
 
+use Yansongda\Pay\Packer\QueryPacker;
 use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -26,7 +27,7 @@ class AddPayloadBodyPluginTest extends TestCase
         ]);
 
         $rocket = new Rocket();
-        $rocket->setPayload($payload);
+        $rocket->setPacker(QueryPacker::class)->setPayload($payload);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
@@ -42,7 +43,7 @@ class AddPayloadBodyPluginTest extends TestCase
         ]);
 
         $rocket = new Rocket();
-        $rocket->setPayload($payload);
+        $rocket->setPacker(QueryPacker::class)->setPayload($payload);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
@@ -58,7 +59,7 @@ class AddPayloadBodyPluginTest extends TestCase
         ]);
 
         $rocket = new Rocket();
-        $rocket->setPayload($payload);
+        $rocket->setPacker(QueryPacker::class)->setPayload($payload);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 

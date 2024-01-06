@@ -10,12 +10,10 @@ use Yansongda\Pay\Contract\PluginInterface;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
-use Yansongda\Pay\Pay;
-use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_alipay_url;
 
 class AddRadarPlugin implements PluginInterface
 {
@@ -28,33 +26,20 @@ class AddRadarPlugin implements PluginInterface
         Logger::debug('[Alipay][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+        $config = get_alipay_config($params);
+        $payload = $rocket->getPayload();
 
         $rocket->setRadar(new Request(
-            $this->getMethod($params),
-            $this->getUrl($params),
+            strtoupper($params['_method'] ?? 'POST'),
+            get_alipay_url($config, $payload),
             $this->getHeaders(),
-            $this->getBody($rocket->getPayload()),
+            // 不能用 packer，支付宝接收的是 x-www-form-urlencoded 返回的又是 json，packer 用的是返回.
+            $payload?->query() ?? '',
         ));
 
         Logger::info('[Alipay][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function getMethod(array $params): string
-    {
-        return strtoupper($params['_method'] ?? 'POST');
-    }
-
-    /**
-     * @throws ContainerException
-     * @throws ServiceNotFoundException
-     */
-    protected function getUrl(array $params): string
-    {
-        $config = get_alipay_config($params);
-
-        return Alipay::URL[$config['mode'] ?? Pay::MODE_NORMAL];
     }
 
     protected function getHeaders(): array
@@ -63,10 +48,5 @@ class AddRadarPlugin implements PluginInterface
             'Content-Type' => 'application/x-www-form-urlencoded',
             'User-Agent' => 'yansongda/pay-v3',
         ];
-    }
-
-    protected function getBody(Collection $payload): string
-    {
-        return $payload->query();
     }
 }

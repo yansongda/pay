@@ -27,7 +27,7 @@ class AddPayloadBodyPluginTest extends TestCase
         ];
 
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
+        $rocket->setPacker(XmlPacker::class)->setPayload(new Collection($payload));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
@@ -43,7 +43,7 @@ class AddPayloadBodyPluginTest extends TestCase
         ];
 
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
+        $rocket->setPacker(XmlPacker::class)->setPayload(new Collection($payload));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
@@ -59,7 +59,7 @@ class AddPayloadBodyPluginTest extends TestCase
         ];
 
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
+        $rocket->setPacker(XmlPacker::class)->setPayload(new Collection($payload));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 

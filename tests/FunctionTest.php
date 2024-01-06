@@ -21,6 +21,7 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Rocket;
+use Yansongda\Pay\Tests\Stubs\FooPackerStub;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 use function Yansongda\Pay\decrypt_wechat_contents;
@@ -30,6 +31,7 @@ use function Yansongda\Pay\encrypt_wechat_contents;
 use function Yansongda\Pay\filter_params;
 use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_direction;
+use function Yansongda\Pay\get_packer;
 use function Yansongda\Pay\get_private_cert;
 use function Yansongda\Pay\get_public_cert;
 use function Yansongda\Pay\get_radar_body;
@@ -95,6 +97,17 @@ class FunctionTest extends TestCase
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_DIRECTION_INVALID);
         get_direction('invalid');
+    }
+
+    public function testPacker()
+    {
+        // default
+        self::assertInstanceOf(JsonPacker::class, get_packer(PackerInterface::class));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_PACKER_INVALID);
+
+        get_packer(FooPackerStub::class);
     }
 
     public function testGetPublicCert()
