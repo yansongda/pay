@@ -12,6 +12,10 @@ use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\PosPlugin;
 use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\PosPreAuthPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin as QraAddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\Pos\PayPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\PosShortcut;
@@ -52,6 +56,19 @@ class PosShortcutTest extends TestCase
             VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'pre_auth']));
+    }
+
+    public function testQra()
+    {
+        self::assertEquals([
+            QraStartPlugin::class,
+            PayPlugin::class,
+            QraAddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            QraVerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'qra']));
     }
 
     public function testFoo()

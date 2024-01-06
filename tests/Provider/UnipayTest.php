@@ -64,6 +64,36 @@ class UnipayTest extends TestCase
         self::assertEquals('application/x-www-form-urlencoded;charset=utf-8', $response->getRadar()->getHeaderLine('Content-Type'));
     }
 
+    public function testPosQra()
+    {
+        $response = '<xml><charset><![CDATA[UTF-8]]></charset> <code><![CDATA[9999999]]></code> <err_code><![CDATA[NOAUTH]]></err_code> <err_msg><![CDATA[此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。]]></err_msg> <mch_id><![CDATA[QRA29045311KKR1]]></mch_id> <need_query><![CDATA[N]]></need_query> <nonce_str><![CDATA[UhxOr4kzerPGku9wCaVQyfd1zisoAnAm]]></nonce_str> <result_code><![CDATA[1]]></result_code> <sign><![CDATA[4B9B2AA73A05CBC32CFDCB4456E12EBA]]></sign> <sign_type><![CDATA[MD5]]></sign_type> <status><![CDATA[0]]></status> <transaction_id><![CDATA[95516000379952690603566602920171]]></transaction_id> <version><![CDATA[2.0]]></version> </xml>';
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], $response));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $response = Pay::unipay()->pos([
+            '_config' => 'qra',
+            '_action' => 'qra',
+            'out_trade_no' => 'pos-qra-20240106163401',
+            'body' => '测试商品',
+            'total_fee' => 1,
+            'mch_create_ip' => '127.0.0.1',
+            'auth_code' => '131969896307360385',
+            'op_device_id' => '123',
+            'terminal_info' => json_encode([
+                'device_type' => '07',
+                'terminal_id' => '123',
+            ]),
+            '_return_rocket' => true,
+        ]);
+
+        // 有随机串，只验证部分
+        self::assertStringContainsString('<xml><out_trade_no><![CDATA[pos-qra-20240106163401]]></out_trade_no><body><![CDATA[测试商品]]></body><total_fee>1</total_fee><mch_create_ip><![CDATA[127.0.0.1]]></mch_create_ip><auth_code>131969896307360385</auth_code><op_device_id>123</op_device_id><terminal_info><![CDATA[{"device_type":"07","terminal_id":"123"}]]></terminal_info><service><![CDATA[unified.trade.micropay]]></service><charset><![CDATA[UTF-8]]></charset><sign_type><![CDATA[MD5]]></sign_type><mch_id><![CDATA[QRA29045311KKR1]]></mch_id>', (string) $response->getRadar()->getBody());
+        self::assertEquals('https://qra.95516.com/pay/gateway', (string) $response->getRadar()->getUri());
+        self::assertEquals('application/x-www-form-urlencoded;charset=utf-8', $response->getRadar()->getHeaderLine('Content-Type'));
+    }
+
     public function testQuery()
     {
         $response = "accNo=cDg4jpD9tKxlI4si91lomXcSjQeOyOxEFLmMc9BLmsJrLPMqmN0JIUkJUD1MVYCfpXRsGKFGDwerpR0LylHiKXnB1ZX0zS4OleY2kSvgX6J2X24TPHkY+EKS7F2kfuYW8yHF+OgUEoUqPa/WO/qzigGci3sSGLiD/uCIljuDOfskQdgXYpsQANPmmgqCOC+TqtDSjYfPKZ3o6SbJJSn4lOvUy3FF/re7PFCShVghJVO1XRJFw0d0VNUkhWs2VzdUl1ZwkDVXcFWB39REEOWDHNEBoBgvkfVSb9j6KV7K3gUNXkfqHqk7zBTtg67jAi/kudAN4U1k9Y5UMGj5mVbu2g==&accessType=0&bizType=000000&currencyCode=156&encoding=utf-8&issuerIdentifyMode=0&merId=777290058167151&orderId=pay20240105145046&origRespCode=00&origRespMsg=成功[0000000]&queryId=442401051450467846498&respCode=00&respMsg=成功[0000000]&settleAmt=1&settleCurrencyCode=156&settleDate=0105&signMethod=01&traceNo=784649&traceTime=0105145046&txnAmt=1&txnSubType=01&txnTime=20240105145046&txnType=01&version=5.1.0&signPubKeyCert=-----BEGIN CERTIFICATE-----\r\nMIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r\nQ04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r\ncml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMjAwNzMxMDExOTE2WhcN\r\nMjUwNzMxMDExOTE2WjCBljELMAkGA1UEBhMCY24xEjAQBgNVBAoTCUNGQ0EgT0NB\r\nMTEWMBQGA1UECxMNTG9jYWwgUkEgT0NBMTEUMBIGA1UECxMLRW50ZXJwcmlzZXMx\r\nRTBDBgNVBAMMPDA0MUA4MzEwMDAwMDAwMDgzMDQwQOS4reWbvemTtuiBlOiCoeS7\r\nveaciemZkOWFrOWPuEAwMDAxNjQ5NTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC\r\nAQoCggEBAMHNa81t44KBfUWUgZhb1YTx3nO9DeagzBO5ZEE9UZkdK5+2IpuYi48w\r\neYisCaLpLuhrwTced19w2UR5hVrc29aa2TxMvQH9s74bsAy7mqUJX+mPd6KThmCr\r\nt5LriSQ7rDlD0MALq3yimLvkEdwYJnvyzA6CpHntP728HIGTXZH6zOL0OAvTnP8u\r\nRCHZ8sXJPFUkZcbG3oVpdXQTJVlISZUUUhsfSsNdvRDrcKYY+bDWTMEcG8ZuMZzL\r\ng0N+/spSwB8eWz+4P87nGFVlBMviBmJJX8u05oOXPyIcZu+CWybFQVcS2sMWDVZy\r\nsPeT3tPuBDbFWmKQYuu+gT83PM3G6zMCAwEAAaOB9DCB8TAfBgNVHSMEGDAWgBTP\r\ncJ1h6518Lrj3ywJA9wmd/jN0gDBIBgNVHSAEQTA/MD0GCGCBHIbvKgEBMDEwLwYI\r\nKwYBBQUHAgEWI2h0dHA6Ly93d3cuY2ZjYS5jb20uY24vdXMvdXMtMTQuaHRtMDkG\r\nA1UdHwQyMDAwLqAsoCqGKGh0dHA6Ly91Y3JsLmNmY2EuY29tLmNuL1JTQS9jcmw3\r\nNTAwMy5jcmwwCwYDVR0PBAQDAgPoMB0GA1UdDgQWBBTmzk7XEM/J/sd+wPrMils3\r\n9rJ2/DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQEF\r\nBQADggEBAJLbXxbJaFngROADdNmNUyVxPtbAvK32Ia0EjgDh/vjn1hpRNgvL4flH\r\nNsGNttCy8afLJcH8UnFJyGLas8v/P3UKXTJtgrOj1mtothv7CQa4LUYhzrVw3UhL\r\n4L1CTtmE6D1Kf3+c2Fj6TneK+MoK9AuckySjK5at6a2GQi18Y27gVF88Nk8bp1lJ\r\nvzOwPKd8R7iGFotuF4/8GGhBKR4k46EYnKCodyIhNpPdQfpaN5AKeS7xeLSbFvPJ\r\nHYrtBsI48jUK/WKtWBJWhFH+Gty+GWX0e5n2QHXHW6qH62M0lDo7OYeyBvG1mh9u\r\nQ0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r\n-----END CERTIFICATE-----&signature=sEJYCC94bvr5KJ12EVeid6kVoyviipkieSp5I9r7baINMZdTxJZlFLIpqI/58s/QMgQXO7I7W0d//YUYXgR2SxZy0n56df+oTUMiXEchwngF/ksiegh0HndsY9ZdYcfwqzD1repppuKGRhOmFL4oUZFPOdLZ8t6QJEcdpEKh21eZ1+fw+Fd2gAfBaIJTx1fg0ZNarvOh1AeeJu48c399p3DZKYxRX04sg5grr6By0GCE3h8UdmSWRRoEdiT/jMKB+xnSi+JL8x04NXfqbjSJcmMebw5uIZ3Bst93Aa2jR3GgK+52j78Al8AIy4nmI0WncAmxAToMrN6AJZaUpj1S5Q==";

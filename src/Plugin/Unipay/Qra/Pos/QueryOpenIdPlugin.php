@@ -17,9 +17,9 @@ use Yansongda\Supports\Str;
 use function Yansongda\Pay\get_unipay_config;
 
 /**
- * @see https://up.95516.com/open/openapi/doc?index_1=2&index_2=1&chapter_1=274&chapter_2=292
+ * @see https://up.95516.com/open/openapi/doc?index_1=2&index_2=1&chapter_1=274&chapter_2=300
  */
-class PayPlugin implements PluginInterface
+class QueryOpenIdPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
@@ -28,7 +28,7 @@ class PayPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Unipay][Qra][Pos][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Unipay][Qra][Pos][QueryOpenIdPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_unipay_config($params);
@@ -36,14 +36,14 @@ class PayPlugin implements PluginInterface
         $rocket->setPacker(XmlPacker::class)
             ->mergePayload([
                 '_url' => 'https://qra.95516.com/pay/gateway',
-                'service' => 'unified.trade.micropay',
+                'service' => 'unified.tools.authcodetoopenid',
                 'charset' => 'UTF-8',
                 'sign_type' => 'MD5',
                 'mch_id' => $config['mch_id'] ?? '',
                 'nonce_str' => Str::random(32),
             ]);
 
-        Logger::info('[Unipay][Qra][Pos][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Unipay][Qra][Pos][QueryOpenIdPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

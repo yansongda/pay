@@ -137,7 +137,12 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'return_url' => 'http://127.0.0.1:8000/unipay/return',
                     'notify_url' => 'https://yansongda.cn/unipay/notify',
                     'mode' => Pay::MODE_SANDBOX,
-                ]
+                ],
+                'qra' => [
+                    'mch_id' => 'QRA29045311KKR1',
+                    'mch_secret_key' => '979da4cfccbae7923641daa5dd7047c2',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
             ]
         ];
 

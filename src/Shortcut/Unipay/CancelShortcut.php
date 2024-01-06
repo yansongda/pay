@@ -13,6 +13,10 @@ use Yansongda\Pay\Plugin\Unipay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Pay\QrCode\CancelPlugin as QrCodeCancelPlugin;
 use Yansongda\Pay\Plugin\Unipay\Pay\Web\CancelPlugin as webCancelPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin as QraAddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\Pos\CancelPlugin as QraPosCancelQueryPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
@@ -60,6 +64,19 @@ class CancelShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function qraPosPlugins(): array
+    {
+        return [
+            QraStartPlugin::class,
+            QraPosCancelQueryPlugin::class,
+            QraAddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            QraVerifySignaturePlugin::class,
             ParserPlugin::class,
         ];
     }

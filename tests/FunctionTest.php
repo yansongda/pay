@@ -40,6 +40,7 @@ use function Yansongda\Pay\get_radar_url;
 use function Yansongda\Pay\get_tenant;
 use function Yansongda\Pay\get_unipay_body;
 use function Yansongda\Pay\get_unipay_config;
+use function Yansongda\Pay\get_unipay_sign_qra;
 use function Yansongda\Pay\get_unipay_url;
 use function Yansongda\Pay\get_wechat_body;
 use function Yansongda\Pay\get_wechat_config;
@@ -55,6 +56,7 @@ use function Yansongda\Pay\reload_wechat_public_certs;
 use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
 use function Yansongda\Pay\verify_unipay_sign;
+use function Yansongda\Pay\verify_unipay_sign_qra;
 use function Yansongda\Pay\verify_wechat_sign;
 use function Yansongda\Pay\verify_wechat_sign_v2;
 
@@ -661,5 +663,107 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_UNIPAY_BODY_MISSING);
         get_unipay_body(new Collection([]));
+    }
+
+    public function testGetUnipaySignQra()
+    {
+        $config = get_unipay_config(['_config' => 'qra']);
+
+        $payload = [
+            'out_trade_no' => 'pos-qra-20240106163401',
+            'body' => '测试商品',
+            'total_fee' => 1,
+            'mch_create_ip' => '127.0.0.1',
+            'auth_code' => '131969896307360385',
+            'op_device_id' => '123',
+            'terminal_info' => json_encode([
+                'device_type' => '07',
+                'terminal_id' => '123',
+            ]),
+            'service' => 'unified.trade.micropay',
+            'charset' => 'UTF-8',
+            'sign_type' => 'MD5',
+            'mch_id' => 'QRA29045311KKR1',
+            'nonce_str' => 'UhxOr4kzerPGku9wCaVQyfd1zisoAnAm',
+        ];
+
+        self::assertEquals('DB571C2F75C657B42485CD07470F0FB9', get_unipay_sign_qra($config, $payload));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
+        get_unipay_sign_qra([], $payload);
+    }
+
+    public function testVerifyUnipaySignQra()
+    {
+        $payload = [
+            "charset" => "UTF-8",
+            "code" => "9999999",
+            "err_code" => "NOAUTH",
+            "err_msg" => "此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。",
+            "mch_id" => "QRA29045311KKR1",
+            "need_query" => "N",
+            "nonce_str" => "UhxOr4kzerPGku9wCaVQyfd1zisoAnAm",
+            "result_code" => "1",
+            "sign" => "4B9B2AA73A05CBC32CFDCB4456E12EBA",
+            "sign_type" => "MD5",
+            "status" => "0",
+            "transaction_id" => "95516000379952690603566602920171",
+            "version" => "2.0",
+        ];
+
+        verify_unipay_sign_qra(get_unipay_config(['_config' => 'qra']), $payload);
+        self::assertTrue(true);
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
+        get_unipay_sign_qra([], $payload);
+    }
+
+    public function testVerifyUnipaySignQraWrong()
+    {
+        $payload = [
+            "charset" => "UTF-8",
+            "code" => "9999999",
+            "err_code" => "NOAUTH",
+            "err_msg" => "此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。",
+            "mch_id" => "QRA29045311KKR1",
+            "need_query" => "N",
+            "nonce_str" => "UhxOr4kzerPGku9wCaVQyfd1zisoAnAm",
+            "result_code" => "1",
+            "sign" => "4B9B2AA73A05CBC32CFDCB4456E12EB1",
+            "sign_type" => "MD5",
+            "status" => "0",
+            "transaction_id" => "95516000379952690603566602920171",
+            "version" => "2.0",
+        ];
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        verify_unipay_sign_qra(get_unipay_config(['_config' => 'qra']), $payload);
+    }
+
+    public function testVerifyUnipaySignQraEmpty()
+    {
+        $payload = [
+            "charset" => "UTF-8",
+            "code" => "9999999",
+            "err_code" => "NOAUTH",
+            "err_msg" => "此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。",
+            "mch_id" => "QRA29045311KKR1",
+            "need_query" => "N",
+            "nonce_str" => "UhxOr4kzerPGku9wCaVQyfd1zisoAnAm",
+            "result_code" => "1",
+            "sign_type" => "MD5",
+            "status" => "0",
+            "transaction_id" => "95516000379952690603566602920171",
+            "version" => "2.0",
+        ];
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_EMPTY);
+
+        verify_unipay_sign_qra(get_unipay_config(['_config' => 'qra']), $payload);
     }
 }
