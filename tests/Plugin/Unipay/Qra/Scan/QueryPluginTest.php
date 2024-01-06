@@ -1,22 +1,22 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra\Pos;
+namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra\Scan;
 
 use Yansongda\Pay\Packer\XmlPacker;
-use Yansongda\Pay\Plugin\Unipay\Qra\Pos\QueryRefundPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\Scan\QueryPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
 
-class QueryRefundPluginTest extends TestCase
+class QueryPluginTest extends TestCase
 {
-    protected QueryRefundPlugin $plugin;
+    protected QueryPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryRefundPlugin();
+        $this->plugin = new QueryPlugin();
     }
 
     public function testNormal()
@@ -30,7 +30,7 @@ class QueryRefundPluginTest extends TestCase
 
         self::assertEquals(XmlPacker::class, $result->getPacker());
         self::assertEquals('https://qra.95516.com/pay/gateway', $payload->get('_url'));
-        self::assertEquals('unified.trade.refundquery', $payload->get('service'));
+        self::assertEquals('unified.trade.query', $payload->get('service'));
         self::assertEquals('UTF-8', $payload->get('charset'));
         self::assertEquals('MD5', $payload->get('sign_type'));
         self::assertEquals('QRA29045311KKR1', $payload->get('mch_id'));

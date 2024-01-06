@@ -13,6 +13,7 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Logger;
 use Yansongda\Pay\Rocket;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\filter_params;
 use function Yansongda\Pay\get_unipay_config;
@@ -33,9 +34,11 @@ class CallbackPlugin implements PluginInterface
         $params = $rocket->getParams();
         $config = get_unipay_config($params);
 
-        $rocket->setPayload(filter_params($params));
+        $rocket->setPayload($params);
 
-        verify_unipay_sign($config, $rocket->getPayload()->except('signature')->sortKeys()->toString(), $params['signature'] ?? '', $params['signPubKeyCert'] ?? null);
+        $collection = Collection::wrap(filter_params($params))->except('signature')->sortKeys();
+
+        verify_unipay_sign($config, $collection->toString(), $params['signature'] ?? '', $params['signPubKeyCert'] ?? null);
 
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());

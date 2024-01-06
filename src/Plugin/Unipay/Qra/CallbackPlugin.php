@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\V2;
+namespace Yansongda\Pay\Plugin\Unipay\Qra;
 
 use Closure;
 use Yansongda\Pay\Contract\PluginInterface;
@@ -16,33 +16,34 @@ use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\filter_params;
-use function Yansongda\Pay\get_alipay_config;
-use function Yansongda\Pay\verify_alipay_sign;
+use function Yansongda\Pay\get_unipay_config;
+use function Yansongda\Pay\verify_unipay_sign_qra;
 
 class CallbackPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
-     * @throws ServiceNotFoundException
      * @throws InvalidSignException
+     * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Unipay][Qra][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_alipay_config($params);
+        $config = get_unipay_config($params);
+        $destination = filter_params($params);
 
-        $value = filter_params($params, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k);
-
-        verify_alipay_sign($config, Collection::wrap($value)->sortKeys()->toString(), $params['sign'] ?? '');
+        if (isset($params['status']) && 0 == $params['status']) {
+            verify_unipay_sign_qra($config, $destination);
+        }
 
         $rocket->setPayload($params)
             ->setDirection(NoHttpRequestDirection::class)
-            ->setDestination($rocket->getPayload());
+            ->setDestination(new Collection($destination));
 
-        Logger::info('[Alipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Unipay][Qra][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

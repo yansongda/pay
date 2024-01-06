@@ -1,9 +1,9 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra\Pos;
+namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra\Scan;
 
 use Yansongda\Pay\Packer\XmlPacker;
-use Yansongda\Pay\Plugin\Unipay\Qra\Pos\QueryRefundPlugin;
+use Yansongda\Pay\Plugin\Unipay\Qra\Scan\QueryRefundPlugin;
 use Yansongda\Pay\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
