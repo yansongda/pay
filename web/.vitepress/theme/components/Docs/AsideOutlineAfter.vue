@@ -6,11 +6,6 @@
   }
 
   const companies: Company[] = [
-    {
-      name: 'df81.com',
-      link: 'https://df81.com/',
-      image: '/images/companies/df81.png'
-    },
   ]
 </script>
 
