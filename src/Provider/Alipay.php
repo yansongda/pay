@@ -9,10 +9,15 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Yansongda\Pay\Event;
-use Yansongda\Pay\Exception\ContainerException;
-use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Artful;
+use Yansongda\Artful\Event;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Event\CallbackReceived;
+use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
@@ -21,8 +26,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -35,7 +39,7 @@ use Yansongda\Supports\Str;
  * @method ResponseInterface|Rocket web(array $order)      电脑支付
  * @method Collection|Rocket        mini(array $order)     小程序支付
  */
-class Alipay extends AbstractProvider
+class Alipay implements ProviderInterface
 {
     public const URL = [
         Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
@@ -52,7 +56,16 @@ class Alipay extends AbstractProvider
     {
         $plugin = '\\Yansongda\\Pay\\Shortcut\\Alipay\\'.Str::studly($shortcut).'Shortcut';
 
-        return $this->shortcut($plugin, ...$params);
+        return Artful::shortcut($plugin, ...$params);
+    }
+
+    /**
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     */
+    public function pay(array $plugins, array $params): null|Collection|MessageInterface|Rocket
+    {
+        return Artful::artful($plugins, ...$params);
     }
 
     /**
@@ -62,7 +75,7 @@ class Alipay extends AbstractProvider
      */
     public function query(array $order): Collection|Rocket
     {
-        Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled('alipay', __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }
@@ -74,7 +87,7 @@ class Alipay extends AbstractProvider
      */
     public function cancel(array $order): Collection|Rocket
     {
-        Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled('alipay', __METHOD__, $order, null));
 
         return $this->__call('cancel', [$order]);
     }
@@ -86,7 +99,7 @@ class Alipay extends AbstractProvider
      */
     public function close(array $order): Collection|Rocket
     {
-        Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled('alipay', __METHOD__, $order, null));
 
         return $this->__call('close', [$order]);
     }
@@ -98,7 +111,7 @@ class Alipay extends AbstractProvider
      */
     public function refund(array $order): Collection|Rocket
     {
-        Event::dispatch(new Event\MethodCalled('alipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled('alipay', __METHOD__, $order, null));
 
         return $this->__call('refund', [$order]);
     }
@@ -111,7 +124,7 @@ class Alipay extends AbstractProvider
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new Event\CallbackReceived('alipay', $request->all(), $params, null));
+        Event::dispatch(new CallbackReceived('alipay', $request->all(), $params, null));
 
         return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
     }

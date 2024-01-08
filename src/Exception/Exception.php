@@ -10,57 +10,29 @@ class Exception extends \Exception
 {
     public const UNKNOWN_ERROR = 9999;
 
-    /**
-     * 关于容器.
+    /*
+     * 关于参数.
      */
-    public const CONTAINER_ERROR = 1000;
+    public const PARAMS_SHORTCUT_ACTION_INVALID = 9210;
 
-    public const CONTAINER_NOT_FOUND = 1001;
+    public const PARAMS_METHOD_NOT_SUPPORTED = 9211;
 
-    public const CONTAINER_NOT_FOUND_ENTRY = 1002;
-
-    /**
-     * 关于容器的服务.
-     */
-    public const SERVICE_ERROR = 2000;
-
-    public const SERVICE_NOT_FOUND = 2001;
+    public const PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED = 9212;
 
     /*
      * 关于配置.
      */
-    public const CONFIG_ERROR = 3000;
+    public const CONFIG_ALIPAY_INVALID = 9401;
 
-    public const CONFIG_DIRECTION_INVALID = 3001;
+    public const CONFIG_WECHAT_INVALID = 9402;
 
-    public const CONFIG_ALIPAY_INVALID = 3002;
+    public const CONFIG_UNIPAY_INVALID = 9403;
 
-    public const CONFIG_LOGGER_INVALID = 3003;
 
-    public const CONFIG_HTTP_CLIENT_INVALID = 3004;
 
-    public const CONFIG_EVENT_INVALID = 3005;
 
-    public const CONFIG_WECHAT_INVALID = 3006;
 
-    public const CONFIG_UNIPAY_INVALID = 3007;
 
-    public const CONFIG_PACKER_INVALID = 3008;
-
-    public const CONFIG_HTTP_CLIENT_FACTORY_INVALID = 3009;
-
-    /*
-     * 关于参数.
-     */
-    public const PARAMS_ERROR = 4000;
-
-    public const PARAMS_SHORTCUT_NOT_FOUND = 4001;
-
-    public const PARAMS_PLUGIN_INCOMPATIBLE = 4002;
-
-    public const PARAMS_SHORTCUT_ACTION_INVALID = 4003;
-
-    public const PARAMS_METHOD_NOT_SUPPORTED = 4004;
 
     public const PARAMS_NECESSARY_PARAMS_MISSING = 4005;
 
@@ -74,7 +46,7 @@ class Exception extends \Exception
 
     public const PARAMS_WECHAT_BODY_MISSING = 4010;
 
-    public const PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED = 4011;
+
 
     public const PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE = 4012;
 
@@ -85,11 +57,6 @@ class Exception extends \Exception
     /**
      * 关于响应.
      */
-    public const RESPONSE_ERROR = 5000;
-
-    public const REQUEST_RESPONSE_ERROR = 5001;
-
-    public const RESPONSE_UNPACK_ERROR = 5002;
 
     public const RESPONSE_CODE_WRONG = 5003;
 

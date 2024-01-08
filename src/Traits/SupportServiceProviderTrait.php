@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Traits;
 
-use Yansongda\Pay\Exception\ContainerException;
-use Yansongda\Pay\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 
 use function Yansongda\Pay\get_alipay_config;
 
