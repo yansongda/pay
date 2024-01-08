@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests;
 
 use Hyperf\Pimple\ContainerFactory;
-use Hyperf\Utils\ApplicationContext;
+use Hyperf\Context\ApplicationContext;
 use Yansongda\Pay\Pay;
 
 class TestCase extends \PHPUnit\Framework\TestCase

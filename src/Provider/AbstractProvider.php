@@ -54,7 +54,7 @@ abstract class AbstractProvider implements ProviderInterface
     {
         Logger::info('[AbstractProvider] 即将进行 pay 操作', func_get_args());
 
-        Event::dispatch(new Event\PayStarted($plugins, $params, null));
+        Event::dispatch(new Event\PayStart($plugins, $params, null));
 
         $this->verifyPlugin($plugins);
 
@@ -68,7 +68,7 @@ abstract class AbstractProvider implements ProviderInterface
             ->via('assembly')
             ->then(fn ($rocket) => $this->ignite($rocket));
 
-        Event::dispatch(new Event\PayFinish($rocket));
+        Event::dispatch(new Event\PayEnd($rocket));
 
         if (!empty($params['_return_rocket'])) {
             return $rocket;

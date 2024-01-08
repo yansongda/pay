@@ -26,6 +26,7 @@
 - change(internal): `mergeCommonPlugins` 不再作为 `AbstractProvider` 的方法(#918)
 - change(internal): `AbstractProvider` 默认使用 `HttpClientFactoryInterface` 创建 http client(#921)
 - change(internal): 调整 银联 插件文件夹结构(#923)
+- change(internal): 替换为 `artful` API 请求框架(#925)
 
 ## v3.5.3
 

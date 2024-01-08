@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Event;
 
+use Yansongda\Artful\Event\Event;
 use Yansongda\Pay\Rocket;
 
 class MethodCalled extends Event

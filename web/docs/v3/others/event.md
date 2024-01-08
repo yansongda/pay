@@ -20,22 +20,22 @@ composer require symfony/event-dispatcher
 <?php
 
 use Yansongda\Pay\Event;
-use Yansongda\Pay\Event\PayStarted;
+use Yansongda\Pay\Event\PayStart;
 
 // 1. 新建一个监听器
 class PayStartedListener
 {
-    public function sendEmail(PayStarted $event)
+    public function sendEmail(PayStart $event)
     {
         // 可以直接通过 $event 获取事件的额外数据，例如：
         //      支付传递的参数：$event->params
-        
+
         // coding to send email...
     }
 }
 
 // 2. 添加监听器
-Event::addListener(PayStarted::class, [new PayStartedListener(), 'sendEmail']);
+Event::addListener(PayStart::class, [new PayStartedListener(), 'sendEmail']);
 
 // 3. 喝杯咖啡
 ```
@@ -80,7 +80,7 @@ Event::addListener(PayStarted::class, [new PayStartedListener(), 'sendEmail']);
     - $provider (支付机构)
     - $contents (收到的数据)
     - $params (自定义数据)
-    
+
 ### 调用其它方法
 
 - 事件类：Yansongda\Pay\Event\MethodCalled

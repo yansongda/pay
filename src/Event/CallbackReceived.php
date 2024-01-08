@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Event;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Event\Event;
+use Yansongda\Artful\Rocket;
 
 class CallbackReceived extends Event
 {
