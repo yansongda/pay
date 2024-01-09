@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\V2\Pay\Face;
 
 use Closure;
-use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Logger;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
 
 /**
  * @see https://opendocs.alipay.com/open/2f7c1d5f_zoloz.authentication.smilepay.initialize?pathHash=24de8b36&ref=api&scene=common

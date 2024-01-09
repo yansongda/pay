@@ -5,17 +5,16 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Unipay\Open;
 
 use Closure;
-use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Direction\NoHttpRequestDirection;
-use Yansongda\Pay\Exception\ContainerException;
-use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Exception\ServiceNotFoundException;
-use Yansongda\Pay\Logger;
-use Yansongda\Pay\Rocket;
-use Yansongda\Supports\Collection;
 
-use function Yansongda\Pay\filter_params;
+use function Yansongda\Artful\filter_params;
 use function Yansongda\Pay\get_unipay_config;
 use function Yansongda\Pay\verify_unipay_sign;
 
@@ -36,7 +35,7 @@ class CallbackPlugin implements PluginInterface
 
         $rocket->setPayload($params);
 
-        $collection = Collection::wrap(filter_params($params))->except('signature')->sortKeys();
+        $collection = filter_params($params)->except('signature')->sortKeys();
 
         verify_unipay_sign($config, $collection->toString(), $params['signature'] ?? '', $params['signPubKeyCert'] ?? null);
 

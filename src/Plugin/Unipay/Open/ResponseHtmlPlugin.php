@@ -6,11 +6,12 @@ namespace Yansongda\Pay\Plugin\Unipay\Open;
 
 use Closure;
 use GuzzleHttp\Psr7\Response;
-use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Logger;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
+use Yansongda\Supports\Collection;
 
-use function Yansongda\Pay\filter_params;
+use function Yansongda\Artful\filter_params;
 
 class ResponseHtmlPlugin implements PluginInterface
 {
@@ -24,7 +25,7 @@ class ResponseHtmlPlugin implements PluginInterface
         $radar = $rocket->getRadar();
         $payload = $rocket->getPayload();
 
-        $response = $this->buildHtml($radar->getUri()->__toString(), filter_params($payload?->all() ?? []));
+        $response = $this->buildHtml($radar->getUri()->__toString(), filter_params($payload));
 
         $rocket->setDestination($response);
 
@@ -33,10 +34,10 @@ class ResponseHtmlPlugin implements PluginInterface
         return $rocket;
     }
 
-    protected function buildHtml(string $endpoint, array $payload): Response
+    protected function buildHtml(string $endpoint, Collection $payload): Response
     {
         $sHtml = "<form id='pay_form' name='pay_form' action='".$endpoint."' method='POST'>";
-        foreach ($payload as $key => $val) {
+        foreach ($payload->all() as $key => $val) {
             $sHtml .= "<input type='hidden' name='".$key."' value='".$val."'/>";
         }
         $sHtml .= "<input type='submit' value='ok' style='display:none;'></form>";

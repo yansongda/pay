@@ -6,8 +6,8 @@ namespace Yansongda\Pay\Traits;
 
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
-use Yansongda\Pay\Pay;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Pay;
 
 use function Yansongda\Pay\get_alipay_config;
 

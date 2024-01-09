@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon;
 
 use Closure;
-use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Exception\ContainerException;
-use Yansongda\Pay\Exception\ServiceNotFoundException;
-use Yansongda\Pay\Logger;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
 
 use function Yansongda\Pay\get_wechat_config;
 

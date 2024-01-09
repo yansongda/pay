@@ -6,7 +6,7 @@ namespace Yansongda\Pay\Event;
 
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Event\Event;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 
 class PayStart extends Event
 {

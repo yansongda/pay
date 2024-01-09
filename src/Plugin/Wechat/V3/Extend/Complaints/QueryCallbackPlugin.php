@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints;
 
 use Closure;
-use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Logger;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaint-notifications/query-complaint-notifications.html

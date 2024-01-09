@@ -27,7 +27,7 @@
         "psr/container": "^1.1 || ^2.0",
         "psr/http-client": "^1.0",
         "psr/http-message": "^1.1 || ^2.0",
-        "yansongda/artful": "~1.0.4",
+        "yansongda/artful": "~1.0.5",
         "yansongda/supports": "~4.0.9",
         "guzzlehttp/guzzle": "^7.0"
     },

@@ -7,6 +7,8 @@ namespace Yansongda\Pay\Plugin\Alipay\V2\Fund\PCreditPayInstallment;
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Direction\ResponseDirection;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Traits\SupportServiceProviderTrait;
@@ -18,6 +20,10 @@ class H5PayPlugin implements PluginInterface
 {
     use SupportServiceProviderTrait;
 
+    /**
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::debug('[Alipay][Fund][PCreditPayInstallment][H5PayPlugin] 插件开始装载', ['rocket' => $rocket]);

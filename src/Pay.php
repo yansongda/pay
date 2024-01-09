@@ -8,6 +8,7 @@ use Closure;
 use Psr\Container\ContainerInterface;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
@@ -20,7 +21,7 @@ use Yansongda\Pay\Service\WechatServiceProvider;
  * @method static Wechat wechat(array $config = [], $container = null)
  * @method static Unipay unipay(array $config = [], $container = null)
  */
-class Pay extends Artful
+class Pay
 {
     /**
      * 正常模式.
@@ -37,7 +38,7 @@ class Pay extends Artful
      */
     public const MODE_SERVICE = 2;
 
-    protected array $providers = [
+    protected static array $providers = [
         AlipayServiceProvider::class,
         WechatServiceProvider::class,
         UnipayServiceProvider::class,
@@ -45,15 +46,41 @@ class Pay extends Artful
 
     /**
      * @throws ContainerException
+     * @throws ServiceNotFoundException
+     */
+    public static function __callStatic(string $service, array $config)
+    {
+        if (!empty($config)) {
+            self::config(...$config);
+        }
+
+        return Artful::get($service);
+    }
+
+    /**
+     * @throws ContainerException
      */
     public static function config(array $config = [], Closure|ContainerInterface $container = null): bool
     {
-        $result = parent::config($config, $container);
+        $result = Artful::config($config, $container);
 
-        foreach ($this->providers as $provider) {
-            self::load($provider);
+        foreach (self::$providers as $provider) {
+            Artful::load($provider);
         }
 
         return $result;
+    }
+
+    /**
+     * @throws ContainerException
+     */
+    public static function set(string $name, mixed $value): void
+    {
+        Artful::set($name, $value);
+    }
+
+    public static function setContainer(null|Closure|ContainerInterface $container): void
+    {
+        Artful::setContainer($container);
     }
 }

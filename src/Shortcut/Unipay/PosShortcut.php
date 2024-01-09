@@ -6,9 +6,9 @@ namespace Yansongda\Pay\Shortcut\Unipay;
 
 use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\PosPlugin;
