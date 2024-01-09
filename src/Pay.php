@@ -83,4 +83,9 @@ class Pay
     {
         Artful::setContainer($container);
     }
+
+    public static function clear(): void
+    {
+        Artful::clear();
+    }
 }
