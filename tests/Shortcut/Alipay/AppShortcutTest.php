@@ -7,7 +7,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponseInvokeStringPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
-use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Shortcut\Alipay\AppShortcut;
 use Yansongda\Pay\Tests\TestCase;
 

@@ -3,9 +3,9 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Jsapi;
 
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\InvokePlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

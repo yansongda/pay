@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Shortcut\Wechat;
+namespace Yansongda\Pay\Tests\Shortcut\Wechat;
 
-use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
+use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
@@ -31,6 +32,7 @@ class PosShortcutTest extends TestCase
             StartPlugin::class,
             PayPlugin::class,
             AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,

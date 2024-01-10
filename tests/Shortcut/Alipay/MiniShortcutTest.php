@@ -9,7 +9,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Shortcut\Alipay\MiniShortcut;
 use Yansongda\Pay\Tests\TestCase;
 

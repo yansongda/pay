@@ -1,11 +1,11 @@
 <?php
 
-namespace Plugin\Wechat\V2;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V2;
 
 use GuzzleHttp\Psr7\Response;
-use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
