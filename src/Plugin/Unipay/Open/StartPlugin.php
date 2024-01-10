@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Unipay\Open;
 
 use Closure;
-use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
@@ -14,6 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 
 use function Yansongda\Pay\get_tenant;
 use function Yansongda\Pay\get_unipay_config;
@@ -62,7 +62,7 @@ class StartPlugin implements PluginInterface
 
         $certs['cert_id'] = $ssl['serialNumber'] ?? '';
 
-        Artful::get(ConfigInterface::class)->set('unipay.'.$tenant.'.certs', $certs);
+        Pay::get(ConfigInterface::class)->set('unipay.'.$tenant.'.certs', $certs);
 
         return $certs['cert_id'];
     }

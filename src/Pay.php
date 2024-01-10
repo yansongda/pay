@@ -48,7 +48,7 @@ class Pay
      * @throws ContainerException
      * @throws ServiceNotFoundException
      */
-    public static function __callStatic(string $service, array $config)
+    public static function __callStatic(string $service, array $config = [])
     {
         if (!empty($config)) {
             self::config(...$config);
@@ -77,6 +77,15 @@ class Pay
     public static function set(string $name, mixed $value): void
     {
         Artful::set($name, $value);
+    }
+
+    /**
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     */
+    public static function get(string $service): mixed
+    {
+        return Artful::get($service);
     }
 
     public static function setContainer(null|Closure|ContainerInterface $container): void

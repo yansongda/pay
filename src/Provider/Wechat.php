@@ -69,7 +69,7 @@ class Wechat implements ProviderInterface
      */
     public function pay(array $plugins, array $params): null|Collection|MessageInterface|Rocket
     {
-        return Artful::artful($plugins, ...$params);
+        return Artful::artful($plugins, $params);
     }
 
     /**

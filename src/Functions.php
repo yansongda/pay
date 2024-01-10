@@ -6,7 +6,6 @@ namespace Yansongda\Pay;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
@@ -67,7 +66,7 @@ function get_radar_url(array $config, ?Collection $payload): ?string
  */
 function get_alipay_config(array $params = []): array
 {
-    $alipay = Artful::get(ConfigInterface::class)->get('alipay');
+    $alipay = Pay::get(ConfigInterface::class)->get('alipay');
 
     return $alipay[get_tenant($params)] ?? [];
 }
@@ -117,7 +116,7 @@ function verify_alipay_sign(array $config, string $contents, string $sign): void
  */
 function get_wechat_config(array $params = []): array
 {
-    $wechat = Artful::get(ConfigInterface::class)->get('wechat');
+    $wechat = Pay::get(ConfigInterface::class)->get('wechat');
 
     return $wechat[get_tenant($params)] ?? [];
 }
@@ -316,7 +315,7 @@ function reload_wechat_public_certs(array $params, ?string $serialNo = null): st
         $certs[$item['serial_no']] = decrypt_wechat_resource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
     }
 
-    Artful::get(ConfigInterface::class)->set(
+    Pay::get(ConfigInterface::class)->set(
         'wechat.'.get_tenant($params).'.wechat_public_cert_path',
         ((array) ($wechatConfig['wechat_public_cert_path'] ?? [])) + ($certs ?? []),
     );
@@ -453,7 +452,7 @@ function get_wechat_public_key(array $config, string $serialNo): string
  */
 function get_unipay_config(array $params = []): array
 {
-    $unipay = Artful::get(ConfigInterface::class)->get('unipay');
+    $unipay = Pay::get(ConfigInterface::class)->get('unipay');
 
     return $unipay[get_tenant($params)] ?? [];
 }

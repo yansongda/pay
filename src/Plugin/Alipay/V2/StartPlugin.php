@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\V2;
 
 use Closure;
-use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
@@ -14,6 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 
 use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_public_cert;
@@ -117,7 +117,7 @@ class StartPlugin implements PluginInterface
 
         $result = $this->getCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
 
-        Artful::get(ConfigInterface::class)->set('alipay.'.$tenant.'.app_public_cert_sn', $result);
+        Pay::get(ConfigInterface::class)->set('alipay.'.$tenant.'.app_public_cert_sn', $result);
 
         return $result;
     }
@@ -162,7 +162,7 @@ class StartPlugin implements PluginInterface
 
         $result = substr($sn, 0, -1);
 
-        Artful::get(ConfigInterface::class)->set('alipay.'.$tenant.'.alipay_root_cert_sn', $result);
+        Pay::get(ConfigInterface::class)->set('alipay.'.$tenant.'.alipay_root_cert_sn', $result);
 
         return $result;
     }
