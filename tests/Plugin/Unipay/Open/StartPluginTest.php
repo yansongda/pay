@@ -2,10 +2,10 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Open;
 
-use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use function Yansongda\Pay\get_unipay_config;
 

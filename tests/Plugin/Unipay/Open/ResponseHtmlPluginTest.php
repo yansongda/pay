@@ -5,7 +5,7 @@ namespace Yansongda\Pay\Tests\Plugin\Unipay\Open;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Pay\Plugin\Unipay\Open\ResponseHtmlPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

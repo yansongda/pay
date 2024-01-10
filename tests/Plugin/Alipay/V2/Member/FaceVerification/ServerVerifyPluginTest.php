@@ -2,9 +2,9 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Member\FaceVerification;
 
-use Yansongda\Pay\Direction\ResponseDirection;
+use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Pay\Plugin\Alipay\V2\Member\FaceVerification\ServerVerifyPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class ServerVerifyPluginTest extends TestCase

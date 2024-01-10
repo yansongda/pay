@@ -2,9 +2,9 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Open\Pay\QrCode;
 
-use Yansongda\Pay\Packer\QueryPacker;
+use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\ScanPreAuthPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class ScanPreAuthPluginTest extends TestCase

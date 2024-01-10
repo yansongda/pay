@@ -2,9 +2,9 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V2\Papay\Direct;
 
-use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\MiniOnlyContractPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

@@ -2,9 +2,9 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\Royalty;
 
-use Yansongda\Pay\Direction\ResponseDirection;
+use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Pay\Plugin\Alipay\V2\Fund\Royalty\SettleOrderPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class SettleOrderPluginTest extends TestCase
