@@ -34,6 +34,7 @@ class StartPlugin implements PluginInterface
         $tenant = get_tenant($params);
 
         $rocket->mergePayload(array_merge($params, [
+            '_unpack_raw' => true,
             'certId' => $this->getCertId($tenant, $config),
         ]));
 

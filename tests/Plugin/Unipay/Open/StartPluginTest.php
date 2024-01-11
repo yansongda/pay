@@ -28,6 +28,7 @@ class StartPluginTest extends TestCase
             'orderId' => 'yansongda20220903065448',
         ];
         $payload = array_merge($params, [
+            '_unpack_raw' => true,
             'certId' => '69903319369',
         ]);
 
