@@ -4,11 +4,11 @@ namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
-use Yansongda\Pay\Direction\OriginResponseDirection;
+use Yansongda\Artful\Direction\OriginResponseDirection;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidResponseException;
+use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

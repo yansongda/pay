@@ -7,15 +7,15 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
-use Yansongda\Pay\Contract\HttpClientInterface;
-use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Artful\Contract\HttpClientInterface;
+use Yansongda\Artful\Exception\Exception;
+use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
+use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
@@ -26,7 +26,7 @@ class WechatTest extends TestCase
     public function testShortcutNotFound()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_NOT_FOUND);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
         Pay::wechat()->foo();
     }
@@ -34,7 +34,7 @@ class WechatTest extends TestCase
     public function testShortcutIncompatible()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_NOT_FOUND);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
         Pay::wechat()->foo();
     }

@@ -6,36 +6,24 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
-use Yansongda\Pay\Contract\ConfigInterface;
-use Yansongda\Pay\Contract\DirectionInterface;
-use Yansongda\Pay\Contract\HttpClientInterface;
-use Yansongda\Pay\Contract\PackerInterface;
-use Yansongda\Pay\Direction\CollectionDirection;
-use Yansongda\Pay\Direction\NoHttpRequestDirection;
-use Yansongda\Pay\Direction\ResponseDirection;
+use Yansongda\Artful\Artful;
+use Yansongda\Artful\Contract\ConfigInterface;
+use Yansongda\Artful\Contract\HttpClientInterface;
+use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Rocket;
-use Yansongda\Pay\Tests\Stubs\FooPackerStub;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 use function Yansongda\Pay\decrypt_wechat_contents;
 use function Yansongda\Pay\decrypt_wechat_resource;
 use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
 use function Yansongda\Pay\encrypt_wechat_contents;
-use function Yansongda\Pay\filter_params;
 use function Yansongda\Pay\get_alipay_config;
-use function Yansongda\Pay\get_direction;
-use function Yansongda\Pay\get_packer;
 use function Yansongda\Pay\get_private_cert;
 use function Yansongda\Pay\get_public_cert;
-use function Yansongda\Pay\get_radar_body;
-use function Yansongda\Pay\get_radar_method;
 use function Yansongda\Pay\get_radar_url;
 use function Yansongda\Pay\get_tenant;
 use function Yansongda\Pay\get_unipay_body;
@@ -55,7 +43,6 @@ use function Yansongda\Pay\get_wechat_sign_v2;
 use function Yansongda\Pay\get_wechat_type_key;
 use function Yansongda\Pay\get_wechat_url;
 use function Yansongda\Pay\reload_wechat_public_certs;
-use function Yansongda\Pay\should_do_http_request;
 use function Yansongda\Pay\verify_alipay_sign;
 use function Yansongda\Pay\verify_unipay_sign;
 use function Yansongda\Pay\verify_unipay_sign_qra;
@@ -64,54 +51,10 @@ use function Yansongda\Pay\verify_wechat_sign_v2;
 
 class FunctionTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Pay::set(DirectionInterface::class, CollectionDirection::class);
-        Pay::set(PackerInterface::class, JsonPacker::class);
-    }
-
-    public function testShouldDoHttpRequest()
-    {
-        $rocket = new Rocket();
-
-        self::assertTrue(should_do_http_request($rocket->getDirection()));
-
-        $rocket->setDirection(CollectionDirection::class);
-        self::assertTrue(should_do_http_request($rocket->getDirection()));
-
-        $rocket->setDirection(ResponseDirection::class);
-        self::assertFalse(should_do_http_request($rocket->getDirection()));
-
-        $rocket->setDirection(NoHttpRequestDirection::class);
-        self::assertFalse(should_do_http_request($rocket->getDirection()));
-    }
-
     public function testGetTenant()
     {
-        self::assertEquals('default', get_tenant([]));
+        self::assertEquals('default', get_tenant());
         self::assertEquals('yansongda', get_tenant(['_config' => 'yansongda']));
-    }
-
-    public function testGetDirection()
-    {
-        self::assertInstanceOf(DirectionInterface::class, get_direction(DirectionInterface::class));
-
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_DIRECTION_INVALID);
-        get_direction('invalid');
-    }
-
-    public function testPacker()
-    {
-        // default
-        self::assertInstanceOf(JsonPacker::class, get_packer(PackerInterface::class));
-
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_PACKER_INVALID);
-
-        get_packer(FooPackerStub::class);
     }
 
     public function testGetPublicCert()
@@ -130,36 +73,6 @@ class FunctionTest extends TestCase
         self::assertTrue(Str::contains(get_private_cert($appSecretCert), 'PRIVATE KEY'));
     }
 
-    public function testFilterParams()
-    {
-        // none closure
-        $params = [
-            'name' => 'yansongda',
-            '_method' => 'foo',
-            'a' => null,
-        ];
-        self::assertEqualsCanonicalizing(['name' => 'yansongda'], filter_params($params));
-
-        // closure
-        $params = [
-            'name' => 'yansongda',
-            '_method' => 'foo',
-            'sign' => 'aaa',
-            'sign_type' => 'bbb',
-            's' => '',
-            'a' => null,
-        ];
-        self::assertEqualsCanonicalizing(['name' => 'yansongda'], filter_params($params, fn ($k, $v) => '' !== $v && !is_null($v) && 'sign' != $k && 'sign_type' != $k));
-    }
-
-    public function testGetRadarMethod()
-    {
-        self::assertNull(get_radar_method(null));
-        self::assertNull(get_radar_method(new Collection()));
-        self::assertEquals('GET', get_radar_method(new Collection(['_method' => 'get'])));
-        self::assertEquals('POST', get_radar_method(new Collection(['_method' => 'post'])));
-    }
-
     public function testGetRadarUrl()
     {
         self::assertNull(get_radar_url([], null));
@@ -168,17 +81,9 @@ class FunctionTest extends TestCase
         self::assertEquals('https://yansongda.cnaaa', get_radar_url(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'https://yansongda.cn', '_service_url' => 'https://yansongda.cnaaa'])));
     }
 
-    public function testGetRadarBody()
-    {
-        self::assertNull(get_radar_body(new Collection([])));
-        self::assertNull(get_radar_body(null));
-
-        self::assertEquals('https://yansongda.cn', get_wechat_body(new Collection(['_body' => 'https://yansongda.cn'])));
-    }
-
     public function testGetAlipayConfig()
     {
-        self::assertArrayHasKey('app_id', get_alipay_config([]));
+        self::assertArrayHasKey('app_id', get_alipay_config());
 
         Pay::clear();
 
@@ -189,7 +94,7 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config($config2);
-        self::assertEquals(['name' => 'yansongda'], get_alipay_config([]));
+        self::assertEquals(['name' => 'yansongda'], get_alipay_config());
 
         self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1']));
     }
@@ -442,8 +347,8 @@ class FunctionTest extends TestCase
         $result = reload_wechat_public_certs([], 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57');
 
         self::assertTrue(str_contains($result, '-----BEGIN CERTIFICATE-----'));
-        self::assertTrue(Pay::get(ConfigInterface::class)->has('wechat.default.wechat_public_cert_path.test-45F59D4DABF31918AFCEC556D5D2C6E376675D57'));
-        self::assertIsArray(Pay::get(ConfigInterface::class)->get('wechat.default'));
+        self::assertTrue(Artful::get(ConfigInterface::class)->has('wechat.default.wechat_public_cert_path.test-45F59D4DABF31918AFCEC556D5D2C6E376675D57'));
+        self::assertIsArray(Artful::get(ConfigInterface::class)->get('wechat.default'));
     }
 
     public function testGetWechatPublicCerts()
@@ -644,7 +549,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
         self::expectExceptionMessage('配置异常： 缺少银联配置 -- [unipay_public_cert_path]');
-        Pay::get(ConfigInterface::class)->set('unipay.default.unipay_public_cert_path', null);
+        Artful::get(ConfigInterface::class)->set('unipay.default.unipay_public_cert_path', null);
         verify_unipay_sign([], $contents, $sign);
     }
 

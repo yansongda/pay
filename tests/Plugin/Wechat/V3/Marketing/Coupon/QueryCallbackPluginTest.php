@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon;
 
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\QueryCallbackPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

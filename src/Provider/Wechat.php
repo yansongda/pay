@@ -9,21 +9,25 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Yansongda\Pay\Event;
-use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Artful\Artful;
+use Yansongda\Artful\Event;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
+use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Event\CallbackReceived;
+use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
-use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -35,7 +39,7 @@ use Yansongda\Supports\Str;
  * @method Collection|Rocket h5(array $order)       H5 支付
  * @method Collection|Rocket transfer(array $order) 帐户转账
  */
-class Wechat extends AbstractProvider
+class Wechat implements ProviderInterface
 {
     public const AUTH_TAG_LENGTH_BYTE = 16;
 
@@ -56,7 +60,16 @@ class Wechat extends AbstractProvider
     {
         $plugin = '\\Yansongda\\Pay\\Shortcut\\Wechat\\'.Str::studly($shortcut).'Shortcut';
 
-        return $this->shortcut($plugin, ...$params);
+        return Artful::shortcut($plugin, ...$params);
+    }
+
+    /**
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     */
+    public function pay(array $plugins, array $params): null|Collection|MessageInterface|Rocket
+    {
+        return Artful::artful($plugins, $params);
     }
 
     /**
@@ -66,7 +79,7 @@ class Wechat extends AbstractProvider
      */
     public function query(array $order): Collection|Rocket
     {
-        Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled('wechat', __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }
@@ -86,7 +99,7 @@ class Wechat extends AbstractProvider
      */
     public function close(array $order): Collection|Rocket
     {
-        Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled('wechat', __METHOD__, $order, null));
 
         $this->__call('close', [$order]);
 
@@ -100,7 +113,7 @@ class Wechat extends AbstractProvider
      */
     public function refund(array $order): Collection|Rocket
     {
-        Event::dispatch(new Event\MethodCalled('wechat', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled('wechat', __METHOD__, $order, null));
 
         return $this->__call('refund', [$order]);
     }
@@ -113,7 +126,7 @@ class Wechat extends AbstractProvider
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new Event\CallbackReceived('wechat', clone $request, $params, null));
+        Event::dispatch(new CallbackReceived('wechat', clone $request, $params, null));
 
         return $this->pay(
             [CallbackPlugin::class],

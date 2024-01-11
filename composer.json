@@ -22,13 +22,8 @@
         "ext-libxml": "*",
         "ext-json": "*",
         "ext-bcmath": "*",
-        "psr/event-dispatcher": "^1.0",
-        "psr/log": "^1.1 || ^2.0 || ^3.0",
-        "psr/container": "^1.1 || ^2.0",
-        "psr/http-client": "^1.0",
-        "psr/http-message": "^1.1 || ^2.0",
-        "yansongda/supports": "~4.0.9",
-        "guzzlehttp/guzzle": "^7.0"
+        "yansongda/artful": "~1.0.7",
+        "yansongda/supports": "~4.0.9"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
@@ -40,7 +35,8 @@
         "symfony/http-foundation": "^5.2.0",
         "symfony/event-dispatcher": "^5.2.0",
         "symfony/psr-http-message-bridge": "^2.1",
-        "hyperf/pimple": "^2.2"
+        "hyperf/pimple": "^2.2",
+        "guzzlehttp/guzzle": "^7.0"
     },
     "conflict": {
         "hyperf/framework": "<3.0"
@@ -57,11 +53,6 @@
         "psr-4": {
             "Yansongda\\Pay\\Tests\\": "tests"
         }
-    },
-    "suggest": {
-        "illuminate/container": "Laravel 框架下使用 SDK，请安装",
-        "hyperf/utils": "Hyperf 框架下使用 SDK，请安装",
-        "hyperf/pimple": "其它/无框架下使用 SDK，请安装"
     },
     "scripts": {
         "test": "./vendor/bin/phpunit -c phpunit.xml --colors=always",

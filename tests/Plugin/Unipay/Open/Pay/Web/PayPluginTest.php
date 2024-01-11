@@ -2,9 +2,9 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Open\Pay\Web;
 
-use Yansongda\Pay\Direction\ResponseDirection;
+use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\Web\PayPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class PayPluginTest extends TestCase

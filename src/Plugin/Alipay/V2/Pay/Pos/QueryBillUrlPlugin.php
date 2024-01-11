@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\V2\Pay\Pos;
 
 use Closure;
-use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Logger;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
 
 /**
  * @see https://opendocs.alipay.com/open/e81ed5f1_alipay.data.dataservice.bill.downloadurl.query?pathHash=3dde2faa&ref=api&scene=common

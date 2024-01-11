@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Open;
 
 use Yansongda\Pay\Plugin\Unipay\Open\CallbackPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class CallbackPluginTest extends TestCase

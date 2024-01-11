@@ -7,9 +7,9 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
-use Yansongda\Pay\Contract\HttpClientInterface;
-use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Artful\Contract\HttpClientInterface;
+use Yansongda\Artful\Exception\Exception;
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
@@ -17,7 +17,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -26,7 +26,7 @@ class AlipayTest extends TestCase
     public function testShortcutNotFound()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_NOT_FOUND);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
         Pay::alipay()->foo();
     }
@@ -34,7 +34,7 @@ class AlipayTest extends TestCase
     public function testShortcutIncompatible()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_NOT_FOUND);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
         Pay::alipay()->foo();
     }

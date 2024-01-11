@@ -2,12 +2,12 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
 
-use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidConfigException;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Config;
 

@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra;
 
 use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class StartPluginTest extends TestCase

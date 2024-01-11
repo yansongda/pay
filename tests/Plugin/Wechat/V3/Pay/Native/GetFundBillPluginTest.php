@@ -3,9 +3,9 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Native;
 
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\GetFundBillPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

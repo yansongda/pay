@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement;
 
 use Closure;
-use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Direction\ResponseDirection;
-use Yansongda\Pay\Logger;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Direction\ResponseDirection;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
 
 /**
  * @see https://opendocs.alipay.com/open/8bccfa0b_alipay.user.agreement.page.sign?pathHash=725a0634&ref=api&scene=common

@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Event;
 
-use Yansongda\Pay\Contract\PluginInterface;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Event\Event;
+use Yansongda\Artful\Rocket;
 
-class PayStarted extends Event
+class PayStart extends Event
 {
     /**
      * @var PluginInterface[]

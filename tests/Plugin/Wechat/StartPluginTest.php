@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class StartPluginTest extends TestCase

@@ -3,9 +3,9 @@
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra;
 
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

@@ -3,9 +3,9 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3;
 
 use GuzzleHttp\Psr7\Response;
-use Yansongda\Pay\Direction\NoHttpRequestDirection;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class VerifySignaturePluginTest extends TestCase

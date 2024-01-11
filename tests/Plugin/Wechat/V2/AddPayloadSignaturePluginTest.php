@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V2;
 
 use Yansongda\Pay\Plugin\Wechat\V2\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

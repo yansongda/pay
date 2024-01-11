@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Stubs;
 
-use Yansongda\Pay\Contract\ServiceProviderInterface;
+use Yansongda\Artful\Contract\ServiceProviderInterface;
 use Yansongda\Pay\Pay;
 
 class FooServiceProviderStub implements ServiceProviderInterface
