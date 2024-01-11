@@ -36,6 +36,7 @@ class GetTradeBillPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
             "download_url" => "111",
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

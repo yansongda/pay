@@ -38,6 +38,7 @@ class QueryPluginTest extends TestCase
             'offset' => 3,
             'begin_date' => '2021-06-06',
             'end_date' => '2021-06-07',
+            '_t' => 'a',
         ];
 
         $rocket = new Rocket();

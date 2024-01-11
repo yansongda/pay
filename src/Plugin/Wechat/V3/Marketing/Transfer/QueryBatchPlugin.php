@@ -14,6 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
+use function Yansongda\Artful\filter_params;
 use function Yansongda\Pay\get_wechat_config;
 
 /**
@@ -44,7 +45,7 @@ class QueryBatchPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/transfer/batches/out-batch-no/'.$outBatchNo.'?'.$payload->except('out_batch_no')->query(),
+            '_url' => 'v3/transfer/batches/out-batch-no/'.$outBatchNo.'?'.filter_params($payload)->except('out_batch_no')->query(),
         ]);
 
         Logger::info('[Wechat][Marketing][Transfer][QueryBatchPlugin] 插件装载完毕', ['rocket' => $rocket]);

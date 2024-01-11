@@ -15,6 +15,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
+use function Yansongda\Artful\filter_params;
 use function Yansongda\Pay\get_wechat_config;
 
 /**
@@ -55,7 +56,7 @@ class QueryDayEndPlugin implements PluginInterface
 
     protected function service(Collection $payload): string
     {
-        $query = $payload->except('account_type');
+        $query = filter_params($payload)->except('account_type');
 
         if ($query->isEmpty()) {
             return '';

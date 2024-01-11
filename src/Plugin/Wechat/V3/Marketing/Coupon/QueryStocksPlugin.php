@@ -14,6 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 
+use function Yansongda\Artful\filter_params;
 use function Yansongda\Pay\get_wechat_config;
 
 /**
@@ -58,6 +59,6 @@ class QueryStocksPlugin implements PluginInterface
             $payload->set('stock_creator_mchid', $config['mch_id'] ?? '');
         }
 
-        return $payload->query();
+        return filter_params($payload)->query();
     }
 }

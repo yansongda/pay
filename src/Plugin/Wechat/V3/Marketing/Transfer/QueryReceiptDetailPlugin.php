@@ -14,6 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
+use function Yansongda\Artful\filter_params;
 use function Yansongda\Pay\get_wechat_config;
 
 /**
@@ -43,7 +44,7 @@ class QueryReceiptDetailPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/transfer-detail/electronic-receipts?'.$payload->query(),
+            '_url' => 'v3/transfer-detail/electronic-receipts?'.filter_params($payload)->query(),
         ]);
 
         Logger::info('[Wechat][Marketing][Transfer][QueryReceiptDetailPlugin] 插件装载完毕', ['rocket' => $rocket]);

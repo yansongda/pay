@@ -10,6 +10,7 @@
 - feat: 增加 `HttpClientFactoryInterface` 方法用于工厂模式创建 http client(#921)
 - feat: 增加银联 `条码支付综合前置平台-被扫支付` 刷卡支付插件(#922)
 - feat: 增加小程序虚拟支付签名、用户签名方法(#924)
+- feat: 增加微信发票插件(#927)
 
 ### changed
 

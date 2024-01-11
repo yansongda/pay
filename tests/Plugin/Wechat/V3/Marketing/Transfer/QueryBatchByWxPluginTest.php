@@ -49,6 +49,7 @@ class QueryBatchByWxPluginTest extends TestCase
         $rocket->setPayload(new Collection( [
             "batch_id" => "111",
             'detail_id' => '222',
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
