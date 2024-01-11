@@ -487,6 +487,10 @@ class FunctionTest extends TestCase
     public function testGetWechatMiniprogramPaySign()
     {
         self::assertEquals('6bb3e49bb4744fc6817331333ffa435e0d1409c3c900a87637c98265445cbe96', get_wechat_miniprogram_pay_sign(get_wechat_config(), 'yansongda.cn', '{"name":"yansongda"}'));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
+        get_wechat_miniprogram_pay_sign([], 'yansongda.cn', '{"name":"yansongda"}');
     }
 
     public function testGetWechatMiniprogramUserSign()
