@@ -9,20 +9,24 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Yansongda\Pay\Event;
-use Yansongda\Pay\Exception\ContainerException;
+use Yansongda\Artful\Artful;
+use Yansongda\Artful\Event;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
+use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Event\CallbackReceived;
+use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Unipay\AddPayloadBodyPlugin;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\CallbackPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
-use Yansongda\Pay\Rocket;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -32,7 +36,7 @@ use Yansongda\Supports\Str;
  * @method Collection|Rocket        pos(array $order)  刷卡支付（付款码，被扫码）
  * @method Collection|Rocket        scan(array $order) 扫码支付（摄像头，主动扫）
  */
-class Unipay extends AbstractProvider
+class Unipay implements ProviderInterface
 {
     public const URL = [
         Pay::MODE_NORMAL => 'https://gateway.95516.com/',
@@ -49,7 +53,16 @@ class Unipay extends AbstractProvider
     {
         $plugin = '\\Yansongda\\Pay\\Shortcut\\Unipay\\'.Str::studly($shortcut).'Shortcut';
 
-        return $this->shortcut($plugin, ...$params);
+        return Artful::shortcut($plugin, ...$params);
+    }
+
+    /**
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     */
+    public function pay(array $plugins, array $params): null|Collection|MessageInterface|Rocket
+    {
+        return Artful::artful($plugins, $params);
     }
 
     /**
@@ -59,7 +72,7 @@ class Unipay extends AbstractProvider
      */
     public function query(array $order): Collection|Rocket
     {
-        Event::dispatch(new Event\MethodCalled('unipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled('unipay', __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }
@@ -71,7 +84,7 @@ class Unipay extends AbstractProvider
      */
     public function cancel(array $order): Collection|Rocket
     {
-        Event::dispatch(new Event\MethodCalled('unipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled('unipay', __METHOD__, $order, null));
 
         return $this->__call('cancel', [$order]);
     }
@@ -91,7 +104,7 @@ class Unipay extends AbstractProvider
      */
     public function refund(array $order): Collection|Rocket
     {
-        Event::dispatch(new Event\MethodCalled('unipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled('unipay', __METHOD__, $order, null));
 
         return $this->__call('refund', [$order]);
     }
@@ -104,7 +117,7 @@ class Unipay extends AbstractProvider
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new Event\CallbackReceived('unipay', $request->all(), $params, null));
+        Event::dispatch(new CallbackReceived('unipay', $request->all(), $params, null));
 
         return $this->pay(
             [CallbackPlugin::class],

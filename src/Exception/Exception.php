@@ -10,112 +10,68 @@ class Exception extends \Exception
 {
     public const UNKNOWN_ERROR = 9999;
 
-    /**
-     * 关于容器.
-     */
-    public const CONTAINER_ERROR = 1000;
-
-    public const CONTAINER_NOT_FOUND = 1001;
-
-    public const CONTAINER_NOT_FOUND_ENTRY = 1002;
-
-    /**
-     * 关于容器的服务.
-     */
-    public const SERVICE_ERROR = 2000;
-
-    public const SERVICE_NOT_FOUND = 2001;
-
-    /*
-     * 关于配置.
-     */
-    public const CONFIG_ERROR = 3000;
-
-    public const CONFIG_DIRECTION_INVALID = 3001;
-
-    public const CONFIG_ALIPAY_INVALID = 3002;
-
-    public const CONFIG_LOGGER_INVALID = 3003;
-
-    public const CONFIG_HTTP_CLIENT_INVALID = 3004;
-
-    public const CONFIG_EVENT_INVALID = 3005;
-
-    public const CONFIG_WECHAT_INVALID = 3006;
-
-    public const CONFIG_UNIPAY_INVALID = 3007;
-
-    public const CONFIG_PACKER_INVALID = 3008;
-
-    public const CONFIG_HTTP_CLIENT_FACTORY_INVALID = 3009;
-
     /*
      * 关于参数.
      */
-    public const PARAMS_ERROR = 4000;
+    public const PARAMS_SHORTCUT_ACTION_INVALID = 9210;
 
-    public const PARAMS_SHORTCUT_NOT_FOUND = 4001;
+    public const PARAMS_METHOD_NOT_SUPPORTED = 9211;
 
-    public const PARAMS_PLUGIN_INCOMPATIBLE = 4002;
+    public const PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED = 9212;
 
-    public const PARAMS_SHORTCUT_ACTION_INVALID = 4003;
+    public const PARAMS_WECHAT_URL_MISSING = 9213;
 
-    public const PARAMS_METHOD_NOT_SUPPORTED = 4004;
+    public const PARAMS_WECHAT_BODY_MISSING = 9214;
 
-    public const PARAMS_NECESSARY_PARAMS_MISSING = 4005;
+    public const PARAMS_WECHAT_SERIAL_NOT_FOUND = 9215;
 
-    public const PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE = 4006;
+    public const PARAMS_UNIPAY_URL_MISSING = 9216;
 
-    public const PARAMS_WECHAT_SERIAL_NOT_FOUND = 4007;
+    public const PARAMS_UNIPAY_BODY_MISSING = 9217;
 
-    public const PARAMS_CALLBACK_REQUEST_INVALID = 4008;
+    public const PARAMS_NECESSARY_PARAMS_MISSING = 9218;
 
-    public const PARAMS_WECHAT_URL_MISSING = 4009;
+    public const PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE = 9219;
 
-    public const PARAMS_WECHAT_BODY_MISSING = 4010;
+    public const PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE = 9220;
 
-    public const PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED = 4011;
-
-    public const PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE = 4012;
-
-    public const PARAMS_UNIPAY_URL_MISSING = 4013;
-
-    public const PARAMS_UNIPAY_BODY_MISSING = 4014;
+    public const PARAMS_CALLBACK_REQUEST_INVALID = 9221;
 
     /**
      * 关于响应.
      */
-    public const RESPONSE_ERROR = 5000;
+    public const RESPONSE_CODE_WRONG = 9304;
 
-    public const REQUEST_RESPONSE_ERROR = 5001;
+    public const RESPONSE_MISSING_NECESSARY_PARAMS = 9305;
 
-    public const RESPONSE_UNPACK_ERROR = 5002;
+    /*
+     * 关于配置.
+     */
+    public const CONFIG_ALIPAY_INVALID = 9401;
 
-    public const RESPONSE_CODE_WRONG = 5003;
+    public const CONFIG_WECHAT_INVALID = 9402;
 
-    public const RESPONSE_MISSING_NECESSARY_PARAMS = 5004;
-
-    public const RESPONSE_EMPTY = 5005;
+    public const CONFIG_UNIPAY_INVALID = 9403;
 
     /**
      * 关于签名.
      */
-    public const SIGN_ERROR = 6000;
+    public const SIGN_ERROR = 9500;
 
-    public const SIGN_EMPTY = 6001;
+    public const SIGN_EMPTY = 9501;
 
     /**
      * 关于加解密.
      */
-    public const DECRYPT_ERROR = 7000;
+    public const DECRYPT_ERROR = 9600;
 
-    public const DECRYPT_WECHAT_CIPHERTEXT_PARAMS_INVALID = 7001;
+    public const DECRYPT_WECHAT_CIPHERTEXT_PARAMS_INVALID = 9601;
 
-    public const DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID = 7002;
+    public const DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID = 9602;
 
-    public const DECRYPT_WECHAT_DECRYPTED_METHOD_INVALID = 7003;
+    public const DECRYPT_WECHAT_DECRYPTED_METHOD_INVALID = 9603;
 
-    public const DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID = 7004;
+    public const DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID = 9604;
 
     public mixed $extra;
 

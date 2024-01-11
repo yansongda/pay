@@ -2,9 +2,9 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra\Scan;
 
-use Yansongda\Pay\Packer\XmlPacker;
+use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Pay\Plugin\Unipay\Qra\Scan\PayPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
 

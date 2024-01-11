@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Shortcut\Wechat;
 
-use Yansongda\Pay\Contract\ShortcutInterface;
-use Yansongda\Pay\Plugin\ParserPlugin;
+use Yansongda\Artful\Contract\ShortcutInterface;
+use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
+use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
@@ -21,6 +22,7 @@ class PosShortcut implements ShortcutInterface
             StartPlugin::class,
             PayPlugin::class,
             AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,

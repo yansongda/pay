@@ -3,10 +3,10 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3;
 
 use ReflectionClass;
-use Yansongda\Pay\Contract\ConfigInterface;
+use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Packer\JsonPacker;
+use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Packer\JsonPacker;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;

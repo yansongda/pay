@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
 
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

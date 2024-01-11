@@ -2,7 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Stubs\Traits;
 
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Traits\SupportServiceProviderTrait;
 
 class SupportServiceProviderPluginStub

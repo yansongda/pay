@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
 
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\DeleteCallbackPlugin;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
 class DeleteCallbackPluginTest extends TestCase

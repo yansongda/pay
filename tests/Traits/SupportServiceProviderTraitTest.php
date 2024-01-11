@@ -3,7 +3,7 @@
 namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\Stubs\Traits\SupportServiceProviderPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
