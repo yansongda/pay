@@ -447,6 +447,23 @@ function get_wechat_public_key(array $config, string $serialNo): string
 }
 
 /**
+ * @throws InvalidConfigException
+ */
+function get_wechat_miniprogram_pay_sign(array $config, string $url, string $payload): string
+{
+    if (empty($config['mini_app_key_virtual_pay'])) {
+        throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mini_app_key_virtual_pay]');
+    }
+
+    return hash_hmac('sha256', $url.'&'.$payload, $config['mini_app_key_virtual_pay']);
+}
+
+function get_wechat_miniprogram_user_sign(string $sessionKey, string $payload): string
+{
+    return hash_hmac('sha256', $payload, $sessionKey);
+}
+
+/**
  * @throws ContainerException
  * @throws ServiceNotFoundException
  */
