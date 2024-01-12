@@ -1,23 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon\Stock;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\QueryStockUseFlowPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\QueryUseFlowPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryStockUseFlowPluginTest extends TestCase
+class QueryUseFlowPluginTest extends TestCase
 {
-    protected QueryStockUseFlowPlugin $plugin;
+    protected QueryUseFlowPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryStockUseFlowPlugin();
+        $this->plugin = new QueryUseFlowPlugin();
     }
 
     public function testEmptyPayload()

@@ -1,9 +1,9 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon\Stock;
 
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\CreatePlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\CreatePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

@@ -1,23 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon\Stock;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\RestartPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\PausePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class RestartPluginTest extends TestCase
+class PausePluginTest extends TestCase
 {
-    protected RestartPlugin $plugin;
+    protected PausePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new RestartPlugin();
+        $this->plugin = new PausePlugin();
     }
 
     public function testEmptyPayload()
@@ -26,7 +26,7 @@ class RestartPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 激活代金券，参数缺少 `stock_id`');
+        self::expectExceptionMessage('参数异常: 暂停代金券批次，参数缺少 `stock_id`');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -35,17 +35,17 @@ class RestartPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "stock_id" => "111",
-            'stock_creator_mchid' => '222',
+            "stock_id" => "yansongda",
+            'stock_creator_mchid' => '1111',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/111/restart',
-            '_service_url' => 'v3/marketing/favor/stocks/111/restart',
-            'stock_creator_mchid' => '222',
+            '_url' => 'v3/marketing/favor/stocks/yansongda/pause',
+            '_service_url' => 'v3/marketing/favor/stocks/yansongda/pause',
+            'stock_creator_mchid' => '1111',
         ], $result->getPayload()->all());
     }
 
@@ -53,15 +53,15 @@ class RestartPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "stock_id" => "111",
+            "stock_id" => "yansongda",
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/111/restart',
-            '_service_url' => 'v3/marketing/favor/stocks/111/restart',
+            '_url' => 'v3/marketing/favor/stocks/yansongda/pause',
+            '_service_url' => 'v3/marketing/favor/stocks/yansongda/pause',
             'stock_creator_mchid' => '1600314069',
         ], $result->getPayload()->all());
     }

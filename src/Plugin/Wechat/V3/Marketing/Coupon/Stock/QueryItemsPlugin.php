@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -20,7 +20,7 @@ use function Yansongda\Pay\get_wechat_config;
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/stock/list-available-singleitems.html
  * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/stock/list-available-singleitems.html
  */
-class QueryStockItemsPlugin implements PluginInterface
+class QueryItemsPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
@@ -29,7 +29,7 @@ class QueryStockItemsPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][V3][Marketing][Coupon][QueryStockItemsPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][V3][Marketing][Coupon][Stock][QueryItemsPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
@@ -46,7 +46,7 @@ class QueryStockItemsPlugin implements PluginInterface
             '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/items?'.$this->normal($payload, $config),
         ]);
 
-        Logger::info('[Wechat][V3][Marketing][Coupon][QueryStockItemsPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][V3][Marketing][Coupon][Stock][QueryItemsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

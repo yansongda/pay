@@ -1,23 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon\Stock;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\QueryStocksPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\RestartPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryStocksPluginTest extends TestCase
+class RestartPluginTest extends TestCase
 {
-    protected QueryStocksPlugin $plugin;
+    protected RestartPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryStocksPlugin();
+        $this->plugin = new RestartPlugin();
     }
 
     public function testEmptyPayload()
@@ -26,7 +26,7 @@ class QueryStocksPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 缺少代金券相关参数');
+        self::expectExceptionMessage('参数异常: 激活代金券，参数缺少 `stock_id`');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -42,9 +42,10 @@ class QueryStocksPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
-            '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/stocks?stock_id=111&stock_creator_mchid=222',
-            '_service_url' => 'v3/marketing/favor/stocks?stock_id=111&stock_creator_mchid=222',
+            '_method' => 'POST',
+            '_url' => 'v3/marketing/favor/stocks/111/restart',
+            '_service_url' => 'v3/marketing/favor/stocks/111/restart',
+            'stock_creator_mchid' => '222',
         ], $result->getPayload()->all());
     }
 
@@ -58,9 +59,10 @@ class QueryStocksPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
-            '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/stocks?stock_id=111&stock_creator_mchid=1600314069',
-            '_service_url' => 'v3/marketing/favor/stocks?stock_id=111&stock_creator_mchid=1600314069',
+            '_method' => 'POST',
+            '_url' => 'v3/marketing/favor/stocks/111/restart',
+            '_service_url' => 'v3/marketing/favor/stocks/111/restart',
+            'stock_creator_mchid' => '1600314069',
         ], $result->getPayload()->all());
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -25,7 +25,7 @@ class CreatePlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][V3][Marketing][Coupon][CreatePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][V3][Marketing][Coupon][Stock][CreatePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
@@ -38,7 +38,7 @@ class CreatePlugin implements PluginInterface
             'belong_merchant' => $belongMerchant,
         ]);
 
-        Logger::info('[Wechat][V3][Marketing][Coupon][CreatePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][V3][Marketing][Coupon][Stock][CreatePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
