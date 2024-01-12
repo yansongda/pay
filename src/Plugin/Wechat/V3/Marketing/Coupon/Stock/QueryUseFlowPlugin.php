@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -15,14 +15,14 @@ use Yansongda\Pay\Exception\Exception;
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/stock/use-flow.html
  * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/stock/use-flow.html
  */
-class QueryStockUseFlowPlugin implements PluginInterface
+class QueryUseFlowPlugin implements PluginInterface
 {
     /**
      * @throws InvalidParamsException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][V3][Marketing][Coupon][QueryStockUseFlowPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][V3][Marketing][Coupon][Stock][QueryUseFlowPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $stockId = $rocket->getPayload()?->get('stock_id') ?? null;
 
@@ -36,7 +36,7 @@ class QueryStockUseFlowPlugin implements PluginInterface
             '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/use-flow',
         ]);
 
-        Logger::info('[Wechat][V3][Marketing][Coupon][QueryStockUseFlowPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][V3][Marketing][Coupon][Stock][QueryUseFlowPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

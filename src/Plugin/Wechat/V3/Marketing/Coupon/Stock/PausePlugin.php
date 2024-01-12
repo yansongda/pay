@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -12,7 +12,6 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
 use function Yansongda\Pay\get_wechat_config;
 
 /**
@@ -28,7 +27,7 @@ class PausePlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][V3][Marketing][Coupon][PausePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][V3][Marketing][Coupon][Stock][PausePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
@@ -47,7 +46,7 @@ class PausePlugin implements PluginInterface
             'stock_creator_mchid' => $stockCreatorMchId,
         ]);
 
-        Logger::info('[Wechat][V3][Marketing][Coupon][PausePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][V3][Marketing][Coupon][Stock][PausePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

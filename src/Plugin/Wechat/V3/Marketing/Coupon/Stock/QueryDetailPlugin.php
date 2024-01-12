@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -12,14 +12,13 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
 use function Yansongda\Pay\get_wechat_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/stock/query-stock.html
  * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/stock/query-stock.html
  */
-class QueryStockDetailPlugin implements PluginInterface
+class QueryDetailPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
@@ -28,7 +27,7 @@ class QueryStockDetailPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][V3][Marketing][Coupon][QueryStockDetailPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][V3][Marketing][Coupon][Stock][QueryDetailPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
@@ -46,7 +45,7 @@ class QueryStockDetailPlugin implements PluginInterface
             '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'?stock_creator_mchid='.$mchId,
         ]);
 
-        Logger::info('[Wechat][V3][Marketing][Coupon][QueryStockDetailPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][V3][Marketing][Coupon][Stock][QueryDetailPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
