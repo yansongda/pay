@@ -37,6 +37,7 @@ class QueryUserCouponsPluginTest extends TestCase
         $rocket->setPayload(new Collection( [
             "openid" => "111",
             'appid' => '222',
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -53,6 +54,7 @@ class QueryUserCouponsPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
             "openid" => "111",
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

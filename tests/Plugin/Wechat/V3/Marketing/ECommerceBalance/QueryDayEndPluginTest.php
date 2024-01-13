@@ -50,6 +50,7 @@ class QueryDayEndPluginTest extends TestCase
             ->setPayload(new Collection( [
                 "account_type" => "111",
                 'aaa' => '222',
+                '_t' => 'a',
             ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -66,6 +67,7 @@ class QueryDayEndPluginTest extends TestCase
         $rocket->setParams(['_config' => 'service_provider'])
             ->setPayload(new Collection( [
                 "account_type" => "111",
+                '_t' => 'a',
             ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

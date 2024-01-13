@@ -34,9 +34,10 @@ class QueryItemsPluginTest extends TestCase
     public function testNormalParams()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
+        $rocket->setPayload(new Collection([
             "stock_id" => "111",
             'stock_creator_mchid' => '222',
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -53,6 +54,7 @@ class QueryItemsPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
             "stock_id" => "111",
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

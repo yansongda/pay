@@ -11,6 +11,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
+use function Yansongda\Artful\filter_params;
+
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaints/list-complaints-v2.html
  * @see https://pay.weixin.qq.com/docs/partner/apis/consumer-complaint/complaints/list-complaints-v2.html
@@ -30,7 +32,7 @@ class QueryPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询投诉单列表，缺少必要参数');
         }
 
-        $query = $payload->query();
+        $query = filter_params($payload)->query();
 
         $rocket->setPayload([
             '_method' => 'GET',

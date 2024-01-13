@@ -35,6 +35,7 @@ class QueryNegotiationPluginTest extends TestCase
     {
         $payload = [
             "complaint_id" => "yansongda",
+            '_t' => 'a',
         ];
 
         $rocket = new Rocket();
@@ -55,6 +56,7 @@ class QueryNegotiationPluginTest extends TestCase
             "complaint_id" => "yansongda",
             'limit' => 2,
             'offset' => 3,
+            '_t' => 'a',
         ];
 
         $rocket = new Rocket();

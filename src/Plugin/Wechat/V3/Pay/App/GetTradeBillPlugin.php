@@ -11,6 +11,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
+use function Yansongda\Artful\filter_params;
+
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/in-app-payment/get-trade-bill.html
  * @see https://pay.weixin.qq.com/docs/partner/apis/partner-in-app-payment/get-trade-bill.html
@@ -30,7 +32,7 @@ class GetTradeBillPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: App 申请交易账单，参数为空');
         }
 
-        $query = $payload->query();
+        $query = filter_params($payload)->query();
 
         $rocket->setPayload([
             '_method' => 'GET',

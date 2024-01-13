@@ -12,6 +12,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 
+use function Yansongda\Artful\filter_params;
+
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaints/query-negotiation-history-v2.html
  * @see https://pay.weixin.qq.com/docs/partner/apis/consumer-complaint/complaints/query-negotiation-history-v2.html
@@ -47,7 +49,7 @@ class QueryNegotiationPlugin implements PluginInterface
 
     protected function normal(Collection $payload): string
     {
-        $query = $payload->except('complaint_id')->query();
+        $query = filter_params($payload)->except('complaint_id')->query();
 
         return empty($query) ? '' : '?'.$query;
     }

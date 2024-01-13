@@ -37,6 +37,7 @@ class QueryMerchantsPluginTest extends TestCase
         $rocket->setPayload(new Collection( [
             "stock_id" => "111",
             'stock_creator_mchid' => '222',
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -53,6 +54,7 @@ class QueryMerchantsPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
             "stock_id" => "111",
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

@@ -49,6 +49,7 @@ class QueryReceiptDetailPluginTest extends TestCase
         $rocket->setPayload(new Collection( [
             "out_batch_no" => "111",
             'out_detail_no' => '222',
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
