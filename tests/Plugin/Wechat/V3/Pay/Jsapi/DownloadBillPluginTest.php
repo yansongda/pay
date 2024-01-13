@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Jsapi;
 
+use Yansongda\Artful\Direction\OriginResponseDirection;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\DownloadBillPlugin;
@@ -40,6 +41,7 @@ class DownloadBillPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
+        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
         self::assertEquals([
             '_method' => 'GET',
             '_url' => '111',

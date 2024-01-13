@@ -1,23 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Fapiao;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\GetTitleUrlPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetDownloadInfoPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class GetTitleUrlPluginTest extends TestCase
+class GetDownloadInfoPluginTest extends TestCase
 {
-    protected GetTitleUrlPlugin $plugin;
+    protected GetDownloadInfoPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new GetTitleUrlPlugin();
+        $this->plugin = new GetDownloadInfoPlugin();
     }
 
     public function testEmptyPayload()
@@ -26,7 +26,7 @@ class GetTitleUrlPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 获取抬头填写链接，缺少必要参数');
+        self::expectExceptionMessage('参数异常: 查询电子发票，参数缺少 `fapiao_apply_id`');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -35,8 +35,8 @@ class GetTitleUrlPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "test" => "yansongda",
-            'appid' => '1111',
+            "fapiao_id" => "yansongda",
+            'fapiao_apply_id' => '111',
             '_t' => 'a',
         ]));
 
@@ -44,7 +44,7 @@ class GetTitleUrlPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/user-title/title-url?test=yansongda&appid=1111',
+            '_url' => 'v3/new-tax-control-fapiao/fapiao-applications/111/fapiao-files?fapiao_id=yansongda',
         ], $result->getPayload()->all());
     }
 
@@ -52,14 +52,15 @@ class GetTitleUrlPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "test" => "yansongda",
+            'fapiao_apply_id' => '111',
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/user-title/title-url?test=yansongda&appid=wx55955316af4ef13',
+            '_url' => 'v3/new-tax-control-fapiao/fapiao-applications/111/fapiao-files',
         ], $result->getPayload()->all());
     }
 }

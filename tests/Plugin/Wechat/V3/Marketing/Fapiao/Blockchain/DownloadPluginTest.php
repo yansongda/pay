@@ -1,24 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\ProfitSharing;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain;
 
-use Yansongda\Artful\Direction\OriginResponseDirection;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\DownloadBillPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\DownloadPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class DownloadBillPluginTest extends TestCase
+class DownloadPluginTest extends TestCase
 {
-    protected DownloadBillPlugin $plugin;
+    protected DownloadPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new DownloadBillPlugin();
+        $this->plugin = new DownloadPlugin();
     }
 
     public function testEmptyPayload()
@@ -27,25 +26,25 @@ class DownloadBillPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 下载电子回单，参数缺少 `download_url`');
+        self::expectExceptionMessage('参数异常: 下载发票文件，缺少 `download_url` 参数');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testNormal()
+    public function testNormalParams()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "download_url" => "yansongda",
+            "download_url" => "https://pay.yansongda.cn?token=123",
+            'appid' => '1111',
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'yansongda',
-            '_service_url' => 'yansongda',
+            '_url' => 'https://pay.yansongda.cn?token=123&appid=1111',
         ], $result->getPayload()->all());
     }
 }

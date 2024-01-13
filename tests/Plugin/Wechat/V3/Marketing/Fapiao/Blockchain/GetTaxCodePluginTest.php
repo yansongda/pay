@@ -1,24 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\ProfitSharing;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain;
 
-use Yansongda\Artful\Direction\OriginResponseDirection;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\DownloadBillPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetTaxCodePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class DownloadBillPluginTest extends TestCase
+class GetTaxCodePluginTest extends TestCase
 {
-    protected DownloadBillPlugin $plugin;
+    protected GetTaxCodePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new DownloadBillPlugin();
+        $this->plugin = new GetTaxCodePlugin();
     }
 
     public function testEmptyPayload()
@@ -27,7 +26,7 @@ class DownloadBillPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 下载电子回单，参数缺少 `download_url`');
+        self::expectExceptionMessage('参数异常: 获取商户可开具的商品和服务税收分类编码对照表，缺少 `offset` 或 `limit` 参数');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -36,16 +35,16 @@ class DownloadBillPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "download_url" => "yansongda",
+            "offset" => "yansongda",
+            'limit' => '111',
+            '_t' => 'a',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'yansongda',
-            '_service_url' => 'yansongda',
+            '_url' => 'v3/new-tax-control-fapiao/merchant/tax-codes?offset=yansongda&limit=111',
         ], $result->getPayload()->all());
     }
 }

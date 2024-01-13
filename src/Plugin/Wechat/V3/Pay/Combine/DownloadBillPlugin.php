@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Direction\OriginResponseDirection;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
@@ -30,11 +31,12 @@ class DownloadBillPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 合单 下载交易对账单，参数缺少 `download_url`');
         }
 
-        $rocket->setPayload([
-            '_method' => 'GET',
-            '_url' => $downloadUrl,
-            '_service_url' => $downloadUrl,
-        ]);
+        $rocket->setDirection(OriginResponseDirection::class)
+            ->setPayload([
+                '_method' => 'GET',
+                '_url' => $downloadUrl,
+                '_service_url' => $downloadUrl,
+            ]);
 
         Logger::info('[Wechat][Pay][Combine][DownloadBillPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

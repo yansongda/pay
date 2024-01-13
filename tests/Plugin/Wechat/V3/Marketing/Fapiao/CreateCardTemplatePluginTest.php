@@ -36,7 +36,7 @@ class CreateCardTemplatePluginTest extends TestCase
         ], $result->getPayload()->all());
     }
 
-    public function testNormalWithoutName()
+    public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [

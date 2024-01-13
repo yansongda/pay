@@ -147,7 +147,7 @@ function get_wechat_url(array $config, ?Collection $payload): string
 /**
  * @throws InvalidParamsException
  */
-function get_wechat_body(?Collection $payload): string
+function get_wechat_body(?Collection $payload): mixed
 {
     $body = get_radar_body($payload);
 

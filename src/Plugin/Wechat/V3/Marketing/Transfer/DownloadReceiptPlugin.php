@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Direction\OriginResponseDirection;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
@@ -41,10 +42,11 @@ class DownloadReceiptPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 下载电子回单，参数缺少 `download_url`');
         }
 
-        $rocket->setPayload([
-            '_method' => 'GET',
-            '_url' => $downloadUrl,
-        ]);
+        $rocket->setDirection(OriginResponseDirection::class)
+            ->setPayload([
+                '_method' => 'GET',
+                '_url' => $downloadUrl,
+            ]);
 
         Logger::info('[Wechat][Marketing][Transfer][DownloadReceiptPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
