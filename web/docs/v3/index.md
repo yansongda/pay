@@ -33,20 +33,6 @@ laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 - 内置自动获取微信公共证书方法，再也不用再费劲去考虑第一次获取证书的的问题了
 - 符合 PSR2、PSR3、PSR4、PSR7、PSR11、PSR14、PSR18 等各项标准，你可以各种方便的与你的框架集成
 
-## 运行环境
-- PHP 8.0+
-- composer
-
-## 版本支持
-
-|    版本    |   PHP    |                       分支                       |      状态      |
-|:--------:|:--------:|:----------------------------------------------:|:------------:|
-|   v3.5   | `>= 8.0` |                     master                     |    积极开发中     |
-|   v3.4   | `>= 8.0` |                     master                     |   EOL，停止维护   |
-| v3.0-3.3 | `>= 7.3` |                     master                     |   EOL，停止维护   |
-|   v2.x   | `>= 7.0` | [v2](https://github.com/yansongda/pay/tree/v2) | 安全支持，不做新功能开发 |
-|   v1.x   | `>= 5.6` | [v1](https://github.com/yansongda/pay/tree/v1) |   EOL，停止维护   |
-
 ## LICENSE
 
 MIT

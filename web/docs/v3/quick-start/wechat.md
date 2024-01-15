@@ -43,11 +43,11 @@ $order = [
         'payer_client_ip' => '1.2.4.8',
         'h5_info' => [
             'type' => 'Wap',
-        ]       
+        ]
     ],
 ];
 
-return Pay::wechat()->wap($order);
+return Pay::wechat()->h5($order);
 ```
 
 ## APP 支付
@@ -108,6 +108,8 @@ $result = Pay::wechat()->mini($order);
 ```
 
 ## 账户转账
+
+即，商家转账到零钱
 
 ```php
 Pay::config($config);

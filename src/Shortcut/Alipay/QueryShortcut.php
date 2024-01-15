@@ -18,8 +18,8 @@ use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\QueryRefundPlugin as AppQueryRefundPl
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\QueryPlugin as AuthorizationQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\QueryRefundPlugin as AuthorizationQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Face\QueryPlugin as FaceQueryPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\QueryPlugin as WapQueryPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\QueryRefundPlugin as WapQueryRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\QueryPlugin as H5QueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\QueryRefundPlugin as H5QueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\QueryPlugin as MiniQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\QueryRefundPlugin as MiniQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Pos\QueryPlugin as PosQueryPlugin;
@@ -156,11 +156,11 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
-    protected function wapPlugins(): array
+    protected function h5Plugins(): array
     {
         return [
             StartPlugin::class,
-            WapQueryPlugin::class,
+            H5QueryPlugin::class,
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -282,11 +282,11 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
-    protected function refundWapPlugins(): array
+    protected function refundH5Plugins(): array
     {
         return [
             StartPlugin::class,
-            WapQueryRefundPlugin::class,
+            H5QueryRefundPlugin::class,
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,

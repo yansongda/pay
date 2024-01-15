@@ -19,7 +19,7 @@ return Pay::unipay()->web([
 ```php
 Pay::config($this->config);
 
-return Pay::unipay()->wap([
+return Pay::unipay()->h5([
     'txnTime' => date('YmdHis'),
     'txnAmt' => 1,
     'orderId' => 'yansongda'.date('YmdHis'),
@@ -54,5 +54,43 @@ $result = Pay::unipay()->pos([
     'txnAmt' => 1,
     'orderId' => 'pos'.date('YmdHis'),
     // '_action' => 'pre_auth', // 预授权
+]);
+
+//return Pay::unipay()->pos([
+//    '_action' => 'qra', // 银联条码支付综合前置平台
+//    'out_trade_no' => 'pos-qra-20240106163401',
+//    'body' => '测试商品',
+//    'total_fee' => 1,
+//    'mch_create_ip' => '127.0.0.1',
+//    'auth_code' => '131969896307360385',
+//    'op_device_id' => '123',
+//    'terminal_info' => json_encode([
+//        'device_type' => '07',
+//        'terminal_id' => '123',
+//    ]),
+//]);
+```
+
+## 查询订单
+
+```php
+Pay::config($this->config);
+
+$result = Pay::unipay()->query([
+   'txnTime' => '20240105164725',
+   'orderId' => 'pay20240105164725',
+]);
+```
+
+## 退款
+
+```php
+Pay::config($this->config);
+
+return Pay::unipay()->refund([
+   'txnTime' => '20240105165842',
+   'txnAmt' => 1,
+   'orderId' => 'refundpay20240105165842',
+   'origQryId' => '052401051658427862748'
 ]);
 ```

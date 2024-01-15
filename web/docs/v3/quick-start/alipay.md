@@ -30,7 +30,7 @@ return Pay::alipay()->web([
 Pay::config($this->config);
 
 // 注意返回类型为 Response，具体见详细文档
-return Pay::alipay()->wap([
+return Pay::alipay()->h5([
     'out_trade_no' => time(),
     'total_amount' => '0.01',
     'subject' => 'yansongda 测试 - 01',
@@ -79,7 +79,7 @@ $result = Pay::alipay()->pos([
     'subject' => 'yansongda 测试 - 01',
 ]);
 ```
-    
+
 ## 扫码支付
 
 ```php
@@ -120,6 +120,9 @@ Pay::config($this->config);
 $result = Pay::alipay()->refund([
     'out_trade_no' => '1623160012',
     'refund_amount' => '0.01',
+    // '_action' => 'agreement', // 商家收款退款
+    // '_action' => 'authorization', // 预授权退款
+    // '_action' => 'transfer', // 转账退款
 ]);
 ```
 
@@ -130,10 +133,15 @@ Pay::config($this->config);
 
 $order = [
     'out_trade_no' => '1514027114',
+    // '_action' => 'agreement', // 商家收款查询
+    // '_action' => 'authorization', // 预授权查询
+    // '_action' => 'transfer', // 转账查询
+    // '_action' => 'face' // 刷脸结果信息查询
+    // '_action' => 'transfer' // 转账查询
+    // '_action' => 'refund' // 退款查询
 ];
-// $order = '1514027114';
 
-$result = Pay::alipay()->find($order);
+$result = Pay::alipay()->query($order);
 ```
 
 ## 支付宝回调处理

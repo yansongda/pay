@@ -15,7 +15,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\RefundPlugin as FundTransferRef
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\RefundPlugin as AgreementRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\RefundPlugin as AppRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\RefundPlugin as AuthorizationRefundPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\RefundPlugin as WapRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\RefundPlugin as H5RefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Pos\RefundPlugin as PosRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Scan\RefundPlugin as ScanRefundPlugin;
@@ -130,11 +130,11 @@ class RefundShortcut implements ShortcutInterface
         ];
     }
 
-    protected function wapPlugins(): array
+    protected function h5Plugins(): array
     {
         return [
             StartPlugin::class,
-            WapRefundPlugin::class,
+            H5RefundPlugin::class,
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,

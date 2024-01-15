@@ -14,7 +14,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\ClosePlugin as AgreementClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\ClosePlugin as AppClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\ClosePlugin as AuthorizationClosePlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\ClosePlugin as WapClosePlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\ClosePlugin as H5ClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\ClosePlugin as MiniClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Pos\ClosePlugin as PosClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Scan\ClosePlugin as ScanClosePlugin;
@@ -129,11 +129,11 @@ class CloseShortcut implements ShortcutInterface
         ];
     }
 
-    protected function wapPlugins(): array
+    protected function h5Plugins(): array
     {
         return [
             StartPlugin::class,
-            WapClosePlugin::class,
+            H5ClosePlugin::class,
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,

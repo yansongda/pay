@@ -4,7 +4,6 @@
 
 - `\Psr\Http\Message\MessageInterface`
 - `\Yansongda\Supports\Collection`
-- `array`
 
 其中 `\Psr\Http\Message\MessageInterface` 最终 实例/接口 为
 

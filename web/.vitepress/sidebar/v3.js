@@ -14,6 +14,7 @@ export default [
     text: '快速入门',
     collapsed: false,
     items: [
+      { text: '版本计划', link: '/docs/v3/quick-start/planning' },
       { text: '安装', link: '/docs/v3/quick-start/install' },
       { text: '初始化', link: '/docs/v3/quick-start/init' },
       { text: '支付宝', link: '/docs/v3/quick-start/alipay' },
