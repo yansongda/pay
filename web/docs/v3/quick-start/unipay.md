@@ -2,7 +2,7 @@
 
 在初始化完毕后，就可以直接方便的享受 `yansongda/pay`  带来的便利了。
 
-## 电脑支付
+## 网页支付
 
 ```php
 Pay::config($this->config);
@@ -14,7 +14,7 @@ return Pay::unipay()->web([
 ]);
 ```
 
-## 手机网站支付
+## H5 支付
 
 ```php
 Pay::config($this->config);
@@ -24,23 +24,6 @@ return Pay::unipay()->h5([
     'txnAmt' => 1,
     'orderId' => 'yansongda'.date('YmdHis'),
  ]);
-```
-
-## 扫码支付
-
-```php
-Pay::config($this->config);
-
-$result = Pay::unipay()->scan([
-    'txnTime' => date('YmdHis'),
-    'txnAmt' => 1,
-    'orderId' => 'scan'.date('YmdHis'),
-    // '_action' => 'pre_auth', // 预授权
-    // '_action' => 'pre_order', // 统一下单
-    // '_action' => 'fee', // 缴费二维码
-]);
-
-return $result->qrCode; // 二维码 url
 ```
 
 ## 刷卡支付（付款码，被扫码）
@@ -72,15 +55,21 @@ return Pay::unipay()->pos([
 ]);
 ```
 
-## 查询订单
+## 扫码支付
 
 ```php
 Pay::config($this->config);
 
-$result = Pay::unipay()->query([
-   'txnTime' => '20240105164725',
-   'orderId' => 'pay20240105164725',
+$result = Pay::unipay()->scan([
+    'txnTime' => date('YmdHis'),
+    'txnAmt' => 1,
+    'orderId' => 'scan'.date('YmdHis'),
+    // '_action' => 'pre_auth', // 预授权
+    // '_action' => 'pre_order', // 统一下单
+    // '_action' => 'fee', // 缴费二维码
 ]);
+
+return $result->qrCode; // 二维码 url
 ```
 
 ## 退款
@@ -94,4 +83,32 @@ return Pay::unipay()->refund([
    'orderId' => 'refundpay20240105165842',
    'origQryId' => '052401051658427862748'
 ]);
+```
+
+## 查询订单
+
+```php
+Pay::config($this->config);
+
+$result = Pay::unipay()->query([
+   'txnTime' => '20240105164725',
+   'orderId' => 'pay20240105164725',
+]);
+```
+
+
+## 银联回调处理
+
+```php
+Pay::config($this->config);
+
+$result = Pay::unipay()->callback();
+```
+
+## 响应银联回调
+
+```php
+Pay::config($this->config);
+
+return Pay::unipay()->success();
 ```

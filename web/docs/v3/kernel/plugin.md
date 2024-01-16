@@ -1,9 +1,6 @@
 # 🔌Plugin
 
-得益于 pipeline，Pay 中的所有数据变换都通过 plugin 来实现，
-同时 Pay 中也内置了很多常用的 Plugin，因此使用方式非常灵活简单。
-
-其实大家经常使用的 「网站支付」「小程序支付」「查询订单」 等均属于自定义插件，只不过这类插件已经内置在 yansongda/pay 中了，不需要您额外开发即可使用。
+得益于 pipeline，`Artful` 中的所有数据变换都通过 plugin 来实现，因此使用方式非常灵活简单。
 
 ## 定义
 
@@ -12,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Contract;
+namespace Yansongda\Artful\Contract;
 
 use Closure;
-use Yansongda\Pay\Rocket;
+use Yansongda\Artful\Rocket;
 
 interface PluginInterface
 {

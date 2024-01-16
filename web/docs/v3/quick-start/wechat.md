@@ -211,7 +211,7 @@ $order = [
 $result = Pay::wechat()->query($order);
 ```
 
-## 支付宝回调处理
+## 微信回调处理
 
 ```php
 Pay::config($this->config);
@@ -219,7 +219,7 @@ Pay::config($this->config);
 $result = Pay::wechat()->callback();
 ```
 
-## 响应支付宝回调
+## 响应微信回调
 
 ```php
 Pay::config($this->config);
