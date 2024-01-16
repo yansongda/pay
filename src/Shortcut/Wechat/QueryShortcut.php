@@ -15,17 +15,17 @@ use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\QueryDetailPlugin as TransferQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\QueryPlugin as AppQueryPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\RefundPlugin as AppRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\QueryRefundPlugin as AppQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\QueryPlugin as CombineQueryPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\RefundPlugin as CombineRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\QueryRefundPlugin as CombineQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\H5\QueryPlugin as H5QueryPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Pay\H5\RefundPlugin as H5RefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\H5\QueryRefundPlugin as H5QueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\QueryPlugin as JsapiQueryPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\RefundPlugin as JsapiRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\QueryRefundPlugin as JsapiQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\QueryPlugin as MiniQueryPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\RefundPlugin as MiniRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\QueryRefundPlugin as MiniQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryPlugin as NativeQueryPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\RefundPlugin as NativeRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryRefundPlugin as NativeQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
@@ -147,7 +147,7 @@ class QueryShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            AppRefundPlugin::class,
+            AppQueryRefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -161,7 +161,7 @@ class QueryShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            CombineRefundPlugin::class,
+            CombineQueryRefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -175,7 +175,7 @@ class QueryShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            H5RefundPlugin::class,
+            H5QueryRefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -189,7 +189,7 @@ class QueryShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            JsapiRefundPlugin::class,
+            JsapiQueryRefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -203,7 +203,7 @@ class QueryShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            MiniRefundPlugin::class,
+            MiniQueryRefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
@@ -217,7 +217,7 @@ class QueryShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            NativeRefundPlugin::class,
+            NativeQueryRefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,

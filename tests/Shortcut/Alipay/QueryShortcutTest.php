@@ -178,9 +178,9 @@ class QueryShortcutTest extends TestCase
         ], $result);
     }
 
-    public function testWap()
+    public function testH5()
     {
-        $result = $this->shortcut->getPlugins(['_action' => 'wap']);
+        $result = $this->shortcut->getPlugins(['_action' => 'h5']);
 
         self::assertEquals([
             StartPlugin::class,
@@ -322,9 +322,9 @@ class QueryShortcutTest extends TestCase
         ], $result);
     }
 
-    public function testRefundWap()
+    public function testRefundH5()
     {
-        $result = $this->shortcut->getPlugins(['_action' => 'refund_wap']);
+        $result = $this->shortcut->getPlugins(['_action' => 'refund_h5']);
 
         self::assertEquals([
             StartPlugin::class,

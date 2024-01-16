@@ -56,19 +56,20 @@ $result = Pay::unipay()->pos([
     // '_action' => 'pre_auth', // 预授权
 ]);
 
-//return Pay::unipay()->pos([
-//    '_action' => 'qra', // 银联条码支付综合前置平台
-//    'out_trade_no' => 'pos-qra-20240106163401',
-//    'body' => '测试商品',
-//    'total_fee' => 1,
-//    'mch_create_ip' => '127.0.0.1',
-//    'auth_code' => '131969896307360385',
-//    'op_device_id' => '123',
-//    'terminal_info' => json_encode([
-//        'device_type' => '07',
-//        'terminal_id' => '123',
-//    ]),
-//]);
+// 银联条码支付综合前置平台
+return Pay::unipay()->pos([
+    '_action' => 'qra',
+    'out_trade_no' => 'pos-qra-20240106163401',
+    'body' => '测试商品',
+    'total_fee' => 1,
+    'mch_create_ip' => '127.0.0.1',
+    'auth_code' => '131969896307360385',
+    'op_device_id' => '123',
+    'terminal_info' => json_encode([
+        'device_type' => '07',
+        'terminal_id' => '123',
+    ]),
+]);
 ```
 
 ## 查询订单

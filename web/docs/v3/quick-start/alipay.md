@@ -24,7 +24,7 @@ return Pay::alipay()->web([
 // return (string) $web->getBody();
 ```
 
-## H5支付
+## H5 支付
 
 ```php
 Pay::config($this->config);
