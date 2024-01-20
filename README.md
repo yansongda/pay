@@ -287,7 +287,7 @@ class WechatController
 
 ## 赏一杯咖啡吧
 
-![pay](https://cdn.jsdelivr.net/gh/yansongda/pay-site/.vuepress/public/images/pay.jpg)
+![pay](https://cdn.jsdelivr.net/gh/yansongda/pay/web/public/images/pay.jpg)
 
 ## LICENSE
 

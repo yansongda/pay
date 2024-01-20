@@ -6,6 +6,7 @@ export default [
       { text: '线上交流', link: '/docs/v3/overview/communication' },
       { text: '捐赠', link: '/docs/v3/overview/donate' },
       { text: '参与开发', link: '/docs/v3/overview/contribute' },
+      { text: '版本计划', link: '/docs/v3/overview/planning' },
       { text: '更新记录', link: '/docs/v3/overview/versions' },
       { text: '商业与企业服务', link: '/docs/v3/overview/business' }
     ]
@@ -14,7 +15,6 @@ export default [
     text: '快速入门',
     collapsed: false,
     items: [
-      { text: '版本计划', link: '/docs/v3/quick-start/planning' },
       { text: '安装', link: '/docs/v3/quick-start/install' },
       { text: '初始化', link: '/docs/v3/quick-start/init' },
       { text: '支付宝', link: '/docs/v3/quick-start/alipay' },
@@ -28,7 +28,7 @@ export default [
     collapsed: false,
     items: [
       { text: '支付', link: '/docs/v3/alipay/pay' },
-      { text: '查询', link: '/docs/v3/alipay/find' },
+      { text: '查询', link: '/docs/v3/alipay/query' },
       { text: '退款', link: '/docs/v3/alipay/refund' },
       { text: '关闭', link: '/docs/v3/alipay/close' },
       { text: '取消', link: '/docs/v3/alipay/cancel' },
@@ -42,7 +42,7 @@ export default [
     collapsed: false,
     items: [
       { text: '支付', link: '/docs/v3/wechat/pay' },
-      { text: '查询', link: '/docs/v3/wechat/find' },
+      { text: '查询', link: '/docs/v3/wechat/query' },
       { text: '退款', link: '/docs/v3/wechat/refund' },
       { text: '关闭', link: '/docs/v3/wechat/close' },
       { text: '取消', link: '/docs/v3/wechat/cancel' },
@@ -56,7 +56,7 @@ export default [
     collapsed: false,
     items: [
       { text: '支付', link: '/docs/v3/unipay/pay' },
-      { text: '查询', link: '/docs/v3/unipay/find' },
+      { text: '查询', link: '/docs/v3/unipay/query' },
       { text: '退款', link: '/docs/v3/unipay/refund' },
       { text: '关闭', link: '/docs/v3/unipay/close' },
       { text: '取消', link: '/docs/v3/unipay/cancel' },
@@ -69,10 +69,7 @@ export default [
     text: '核心架构',
     collapsed: false,
     items: [
-      { text: '🚀 Rocket', link: '/docs/v3/kernel/rocket' },
-      { text: '🧪 Pipeline', link: '/docs/v3/kernel/pipeline' },
-      { text: '🔌 Plugin', link: '/docs/v3/kernel/plugin' },
-      { text: '💤 Shortcut', link: '/docs/v3/kernel/shortcut' }
+      { text: '核心思想', link: '/docs/v3/kernel/kernel' },
     ]
   },
   {

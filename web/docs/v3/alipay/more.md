@@ -20,7 +20,7 @@ $allPlugins = Pay::alipay()->mergeCommonPlugins([QueryPlugin::class]);
 $result = Pay::alipay()->pay($allPlugins, $params);
 ```
 
-关于插件的详细介绍，如果您感兴趣，可以参考 [这篇说明文档](/docs/v3/kernel/plugin.md)
+关于插件的详细介绍，如果您感兴趣，可以参考 [yansongda/artful](https://artful.yansongda.cn/)
 
 ## 账务API插件
 

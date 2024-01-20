@@ -200,16 +200,7 @@ class QueryShortcut implements ShortcutInterface
 
     protected function refundPlugins(): array
     {
-        return [
-            StartPlugin::class,
-            WebQueryRefundPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ];
+        return $this->refundWebPlugins();
     }
 
     protected function refundAppPlugins(): array

@@ -2,7 +2,7 @@
 
 ## 运行环境
 
-[各个版本说明](/docs/v3/quick-start/planning)
+[各个版本说明](/docs/v3/overview/planning)
 
 ## 安装总结
 
