@@ -20,7 +20,7 @@ $allPlugins = Pay::wechat()->mergeCommonPlugins([QueryPlugin::class]);
 $result = Pay::wechat()->pay($allPlugins, $params);
 ```
 
-关于插件的详细介绍，如果您感兴趣，可以参考 [这篇说明文档](/docs/v3/kernel/plugin.md)
+关于插件的详细介绍，如果您感兴趣，可以参考 [yansongda/artful](https://artful.yansongda.cn/)
 
 ## 基础支付-合单支付
 

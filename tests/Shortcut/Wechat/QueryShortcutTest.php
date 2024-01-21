@@ -13,9 +13,13 @@ use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\QueryDetailPlugin as TransferQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\QueryPlugin as AppQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\QueryPlugin as CombineQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\H5\QueryPlugin as H5QueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\QueryPlugin as JsapiQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\QueryRefundPlugin as JsapiQueryRefundPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\QueryPlugin as MiniQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryPlugin as NativeQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
@@ -45,18 +49,18 @@ class QueryShortcutTest extends TestCase
         ], $this->plugin->getPlugins([]));
     }
 
-    public function testRefund()
+    public function testApp()
     {
         self::assertEquals([
             StartPlugin::class,
-            JsapiQueryRefundPlugin::class,
+            AppQueryPlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
             VerifySignaturePlugin::class,
             ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'refund']));
+        ], $this->plugin->getPlugins(['_action' => 'app']));
     }
 
     public function testCombine()
@@ -85,6 +89,76 @@ class QueryShortcutTest extends TestCase
             VerifySignaturePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['combine_out_trade_no' => '123abc']));
+    }
+
+    public function testH5()
+    {
+        self::assertEquals([
+            StartPlugin::class,
+            H5QueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'h5']));
+    }
+
+    public function testJsapi()
+    {
+        self::assertEquals([
+            StartPlugin::class,
+            JsapiQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'jsapi']));
+    }
+
+    public function testMini()
+    {
+        self::assertEquals([
+            StartPlugin::class,
+            MiniQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'mini']));
+    }
+
+    public function testNative()
+    {
+        self::assertEquals([
+            StartPlugin::class,
+            NativeQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'native']));
+    }
+
+    public function testRefund()
+    {
+        self::assertEquals([
+            StartPlugin::class,
+            JsapiQueryRefundPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            VerifySignaturePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'refund']));
     }
 
     public function testTransfer()
