@@ -20,7 +20,7 @@
 - change: 手机网站支付快捷方式由 wap 改为 h5(#911, #915, #916)
 - change: `Pay` 类对外方法由所改变，如果您有自行扩展相关插件，请检查(#926)
 - change(internal): 按场景对 支付宝/微信/银联 插件进行分类 && 插件代码优化(#894, #909, #913, #922)
-- change(internal): 将 支付/微信/银联 shortcut 从 plugin 文件夹独立出来(#895, #904, #905)
+- change(internal): 将 支付/微信/银联 shortcut 从 plugin 文件夹独立出来(#895, #904, #905, #933)
 - change(internal): shortcut 完整标明各个插件，不使用 commonPlugin(#886)
 - change(internal): DirectionInterface 方法由 `parse` 改为 `guide`(#896)
 - change(internal): 错误代码 const 命名规则统一(#902, #903, #906, #909, #926)
