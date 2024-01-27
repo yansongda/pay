@@ -1,21 +1,21 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\Transfer;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\Transfer\Bill;
 
 use Yansongda\Artful\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\QueryBillUrlPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\Bill\QueryUrlPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-class QueryBillUrlPluginTest extends TestCase
+class QueryUrlPluginTest extends TestCase
 {
-    protected QueryBillUrlPlugin $plugin;
+    protected QueryUrlPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryBillUrlPlugin();
+        $this->plugin = new QueryUrlPlugin();
     }
 
     public function testNormal()

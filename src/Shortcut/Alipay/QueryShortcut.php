@@ -11,7 +11,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\QueryPlugin as TransferQueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\Fund\QueryPlugin as TransferQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\QueryPlugin as AgreementQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\QueryPlugin as AppQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\QueryRefundPlugin as AppQueryRefundPlugin;

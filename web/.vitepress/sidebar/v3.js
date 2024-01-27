@@ -34,7 +34,7 @@ export default [
       { text: '取消', link: '/docs/v3/alipay/cancel' },
       { text: '接收回调', link: '/docs/v3/alipay/callback' },
       { text: '确认回调', link: '/docs/v3/alipay/response' },
-      { text: '更多便捷插件', link: '/docs/v3/alipay/more' },
+      { text: '所有内置插件', link: '/docs/v3/alipay/all' },
     ]
   },
   {

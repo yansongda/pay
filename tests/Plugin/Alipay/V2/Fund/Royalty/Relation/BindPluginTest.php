@@ -1,21 +1,21 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\Transfer;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\Royalty\Relation;
 
 use Yansongda\Artful\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\TransferPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\V2\Fund\Royalty\Relation\BindPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-class TransferPluginTest extends TestCase
+class BindPluginTest extends TestCase
 {
-    protected TransferPlugin $plugin;
+    protected BindPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new TransferPlugin();
+        $this->plugin = new BindPlugin();
     }
 
     public function testNormal()
@@ -28,8 +28,6 @@ class TransferPluginTest extends TestCase
         $payload = $result->getPayload()->toJson();
 
         self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.fund.trans.uni.transfer', $payload);
-        self::assertStringContainsString('DIRECT_TRANSFER', $payload);
-        self::assertStringContainsString('TRANS_ACCOUNT_NO_PWD', $payload);
+        self::assertStringContainsString('alipay.trade.royalty.relation.bind', $payload);
     }
 }

@@ -9,7 +9,7 @@ use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\TransferPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\Fund\TransferPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;

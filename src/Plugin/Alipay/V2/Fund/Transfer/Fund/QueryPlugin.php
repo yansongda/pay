@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer;
+namespace Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\Fund;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -16,14 +16,14 @@ class QueryPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][Fund][Transfer][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Fund][Transfer][Fund][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.fund.trans.common.query',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[Alipay][Fund][Transfer][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Fund][Transfer][Fund][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

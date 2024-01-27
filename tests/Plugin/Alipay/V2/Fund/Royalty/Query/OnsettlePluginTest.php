@@ -1,21 +1,21 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\Royalty;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\Royalty\Query;
 
 use Yansongda\Artful\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\V2\Fund\Royalty\QuerySettlePlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\V2\Fund\Royalty\Query\OnsettlePlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-class QuerySettlePluginTest extends TestCase
+class OnsettlePluginTest extends TestCase
 {
-    protected QuerySettlePlugin $plugin;
+    protected OnsettlePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QuerySettlePlugin();
+        $this->plugin = new OnsettlePlugin();
     }
 
     public function testNormal()
@@ -28,6 +28,6 @@ class QuerySettlePluginTest extends TestCase
         $payload = $result->getPayload()->toJson();
 
         self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.trade.order.settle.query', $payload);
+        self::assertStringContainsString('alipay.trade.order.onsettle.query', $payload);
     }
 }
