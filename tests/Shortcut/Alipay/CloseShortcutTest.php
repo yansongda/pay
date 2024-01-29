@@ -2,12 +2,13 @@
 
 namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\ClosePlugin as AgreementClosePlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\ClosePlugin as AgreementClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\ClosePlugin as AppClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\ClosePlugin as AuthorizationClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\ClosePlugin as WapClosePlugin;
@@ -18,7 +19,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\Pay\Web\ClosePlugin as WebClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Shortcut\Alipay\CloseShortcut;
 use Yansongda\Pay\Tests\TestCase;
 

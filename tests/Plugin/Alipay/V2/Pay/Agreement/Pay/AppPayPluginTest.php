@@ -1,10 +1,10 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Agreement;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Agreement\Pay;
 
 use Yansongda\Artful\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\AppPayPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\AppPayPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
 class AppPayPluginTest extends TestCase

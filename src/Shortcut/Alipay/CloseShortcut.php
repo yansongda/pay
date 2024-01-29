@@ -11,7 +11,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\ClosePlugin as AgreementClosePlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\ClosePlugin as AgreementClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\ClosePlugin as AppClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\ClosePlugin as AuthorizationClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\ClosePlugin as H5ClosePlugin;

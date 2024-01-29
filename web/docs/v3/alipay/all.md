@@ -24,6 +24,70 @@ $result = Pay::alipay()->pay($allPlugins, $params);
 
 ## 支付
 
+### APP 支付
+
+
+
+### 商家扣款
+
+#### 签约
+
+- 支付宝个人协议页面签约接口
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Sign\SignPlugin`
+
+  :::warning 注意
+  通常搭配 `\Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin` 插件并传参 `['_method' => 'GET']` 使用
+  :::
+
+- 支付宝个人代扣协议查询接口
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Sign\QueryPlugin`
+
+- 支付宝个人代扣协议解约接口
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Sign\UnsignPlugin`
+
+- 周期性扣款协议执行计划修改接口
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Sign\ModifyPlugin`
+
+#### 支付
+
+- app支付接口2.0
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\AppPayPlugin`
+
+  :::warning 注意
+  通常搭配 `\Yansongda\Pay\Plugin\Alipay\V2\ResponseInvokeStringPlugin` 插件使用
+  :::
+
+- 统一收单交易支付接口
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\PayPlugin`
+
+- 统一收单交易查询
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\QueryPlugin`
+
+- 统一收单交易退款接口
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\RefundPlugin`
+
+- 统一收单交易关闭接口
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\ClosePlugin`
+
+- 统一收单交易撤销接口
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\CancelPlugin`
+
+#### 账单
+
+- 查询对账单下载地址
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Bill\QueryUrlPlugin`
+
 ## 营销
 
 ### 红包

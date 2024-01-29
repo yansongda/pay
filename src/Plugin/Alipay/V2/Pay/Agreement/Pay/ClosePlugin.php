@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement;
+namespace Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -16,14 +16,14 @@ class ClosePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][Pay][Agreement][ClosePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Pay][Agreement][Pay][ClosePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.trade.close',
             'biz_content' => $rocket->getParams(),
         ]);
 
-        Logger::info('[Alipay][Pay][Agreement][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Pay][Agreement][Pay][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

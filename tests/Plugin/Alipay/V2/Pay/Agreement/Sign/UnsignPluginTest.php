@@ -1,21 +1,21 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Agreement;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Agreement\Sign;
 
 use Yansongda\Artful\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\PayPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Sign\UnsignPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-class PayPluginTest extends TestCase
+class UnsignPluginTest extends TestCase
 {
-    protected PayPlugin $plugin;
+    protected UnsignPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new PayPlugin();
+        $this->plugin = new UnsignPlugin();
     }
 
     public function testNormal()
@@ -26,7 +26,6 @@ class PayPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.trade.pay', $result->getPayload()->toJson());
-        self::assertStringContainsString('GENERAL_WITHHOLDING', $result->getPayload()->toJson());
+        self::assertStringContainsString('alipay.user.agreement.unsign', $result->getPayload()->toJson());
     }
 }

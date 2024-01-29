@@ -12,7 +12,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\RefundPlugin as FundTransferRefundPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\RefundPlugin as AgreementRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\RefundPlugin as AgreementRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\RefundPlugin as AppRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\RefundPlugin as AuthorizationRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\RefundPlugin as H5RefundPlugin;
