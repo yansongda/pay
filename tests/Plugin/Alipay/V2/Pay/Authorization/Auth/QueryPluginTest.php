@@ -1,21 +1,21 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Authorization;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Authorization\Auth;
 
 use Yansongda\Artful\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\RefundPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Auth\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-class RefundPluginTest extends TestCase
+class QueryPluginTest extends TestCase
 {
-    protected RefundPlugin $plugin;
+    protected QueryPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new RefundPlugin();
+        $this->plugin = new QueryPlugin();
     }
 
     public function testNormal()
@@ -26,6 +26,6 @@ class RefundPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.trade.refund', $result->getPayload()->toJson());
+        self::assertStringContainsString('alipay.fund.auth.operation.detail.query', $result->getPayload()->toJson());
     }
 }

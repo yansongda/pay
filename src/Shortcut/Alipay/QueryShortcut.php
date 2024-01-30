@@ -15,8 +15,8 @@ use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\Fund\QueryPlugin as TransferQue
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\QueryPlugin as AgreementQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\QueryPlugin as AppQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\QueryRefundPlugin as AppQueryRefundPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\QueryPlugin as AuthorizationQueryPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\QueryRefundPlugin as AuthorizationQueryRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Pay\QueryPlugin as AuthorizationQueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Pay\QueryRefundPlugin as AuthorizationQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Face\QueryPlugin as FaceQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\QueryPlugin as H5QueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\QueryRefundPlugin as H5QueryRefundPlugin;

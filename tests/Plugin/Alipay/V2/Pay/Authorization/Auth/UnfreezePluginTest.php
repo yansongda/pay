@@ -1,21 +1,21 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Authorization;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Authorization\Auth;
 
 use Yansongda\Artful\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\QueryPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Auth\UnfreezePlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-class QueryPluginTest extends TestCase
+class UnfreezePluginTest extends TestCase
 {
-    protected QueryPlugin $plugin;
+    protected UnfreezePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryPlugin();
+        $this->plugin = new UnfreezePlugin();
     }
 
     public function testNormal()
@@ -26,6 +26,6 @@ class QueryPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.trade.query', $result->getPayload()->toJson());
+        self::assertStringContainsString('alipay.fund.auth.order.unfreeze', $result->getPayload()->toJson());
     }
 }

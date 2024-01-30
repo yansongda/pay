@@ -1,10 +1,10 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Authorization;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Authorization\Auth;
 
 use Yansongda\Artful\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\AppFreezePlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Auth\AppFreezePlugin;
 use Yansongda\Pay\Tests\TestCase;
 
 class AppFreezePluginTest extends TestCase

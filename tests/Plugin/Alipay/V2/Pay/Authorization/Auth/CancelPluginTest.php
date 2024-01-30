@@ -1,21 +1,21 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Authorization;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Authorization\Auth;
 
 use Yansongda\Artful\Direction\ResponseDirection;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\ClosePlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Auth\CancelPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-class ClosePluginTest extends TestCase
+class CancelPluginTest extends TestCase
 {
-    protected ClosePlugin $plugin;
+    protected CancelPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new ClosePlugin();
+        $this->plugin = new CancelPlugin();
     }
 
     public function testNormal()
@@ -26,6 +26,6 @@ class ClosePluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.trade.close', $result->getPayload()->toJson());
+        self::assertStringContainsString('alipay.fund.auth.operation.cancel', $result->getPayload()->toJson());
     }
 }

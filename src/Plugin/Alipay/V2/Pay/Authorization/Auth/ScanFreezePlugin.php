@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization;
+namespace Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Auth;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -16,7 +16,7 @@ class ScanFreezePlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][Pay][Authorization][ScanFreezePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][Pay][Authorization][Auth][ScanFreezePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             'method' => 'alipay.fund.auth.order.voucher.create',
@@ -28,7 +28,7 @@ class ScanFreezePlugin implements PluginInterface
             ),
         ]);
 
-        Logger::info('[Alipay][Pay][Authorization][ScanFreezePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][Pay][Authorization][Auth][ScanFreezePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

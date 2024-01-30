@@ -14,7 +14,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\RefundPlugin as FundTransferRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\RefundPlugin as AgreementRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\RefundPlugin as AppRefundPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\RefundPlugin as AuthorizationRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Pay\RefundPlugin as AuthorizationRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\RefundPlugin as H5RefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Pos\RefundPlugin as PosRefundPlugin;

@@ -12,7 +12,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\CancelPlugin as AgreementCancelPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\CancelPlugin as AuthorizationCancelPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Auth\CancelPlugin as AuthorizationCancelPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\CancelPlugin as MiniCancelPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Pos\CancelPlugin as PosCancelPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Scan\CancelPlugin as ScanCancelPlugin;
