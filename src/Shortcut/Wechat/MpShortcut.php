@@ -11,6 +11,7 @@ use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\InvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\PayPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 
@@ -24,6 +25,7 @@ class MpShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            InvokePlugin::class,
             ResponsePlugin::class,
             VerifySignaturePlugin::class,
             ParserPlugin::class,

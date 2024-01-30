@@ -48,7 +48,7 @@ export default [
       { text: '取消', link: '/docs/v3/wechat/cancel' },
       { text: '接收回调', link: '/docs/v3/wechat/callback' },
       { text: '确认回调', link: '/docs/v3/wechat/response' },
-      { text: '更多便捷插件', link: '/docs/v3/wechat/more' }
+      { text: '所有内置插件', link: '/docs/v3/wechat/all' }
     ]
   },
   {

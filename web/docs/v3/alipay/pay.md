@@ -5,7 +5,7 @@
 |  method  |   说明   |      参数      |    返回值     |
 |:--------:|:------:|:------------:|:----------:|
 |   web    |  网页支付  | array $order |  Response  |
-|    h5    | 手机网站支付 | array $order |  Response  |
+|    h5    | H5 支付  | array $order |  Response  |
 |   app    | APP 支付 | array $order |  Response  |
 |   mini   | 小程序支付  | array $order | Collection |
 |   pos    |  刷卡支付  | array $order | Collection |
