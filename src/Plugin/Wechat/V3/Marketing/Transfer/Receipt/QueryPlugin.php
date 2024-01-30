@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Receipt;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -19,7 +19,7 @@ use function Yansongda\Pay\get_wechat_config;
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-signature/get-electronic-signature-by-out-no.html
  */
-class QueryReceiptPlugin implements PluginInterface
+class QueryPlugin implements PluginInterface
 {
     /**
      * @throws InvalidParamsException
@@ -28,7 +28,7 @@ class QueryReceiptPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Marketing][Transfer][QueryReceiptPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Marketing][Transfer][Receipt][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $outBatchNo = $rocket->getPayload()?->get('out_batch_no') ?? null;
         $config = get_wechat_config($rocket->getParams());
@@ -46,7 +46,7 @@ class QueryReceiptPlugin implements PluginInterface
             '_url' => 'v3/transfer/bill-receipt/'.$outBatchNo,
         ]);
 
-        Logger::info('[Wechat][Marketing][Transfer][QueryReceiptPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Marketing][Transfer][Receipt][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

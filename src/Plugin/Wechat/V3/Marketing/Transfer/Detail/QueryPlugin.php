@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Detail;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -19,7 +19,7 @@ use function Yansongda\Pay\get_wechat_config;
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-out-no.html
  */
-class QueryDetailPlugin implements PluginInterface
+class QueryPlugin implements PluginInterface
 {
     /**
      * @throws InvalidParamsException
@@ -28,7 +28,7 @@ class QueryDetailPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Marketing][Transfer][QueryDetailPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Marketing][Transfer][Detail][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $config = get_wechat_config($rocket->getParams());
         $payload = $rocket->getPayload();
@@ -48,7 +48,7 @@ class QueryDetailPlugin implements PluginInterface
             '_url' => 'v3/transfer/batches/out-batch-no/'.$outBatchNo.'/details/out-detail-no/'.$outDetailNo,
         ]);
 
-        Logger::info('[Wechat][Marketing][Transfer][QueryDetailPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Marketing][Transfer][Detail][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

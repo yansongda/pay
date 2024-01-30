@@ -1,23 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer\ReceiptDetail;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CreateReceiptPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\ReceiptDetail\CreatePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class CreateReceiptPluginTest extends TestCase
+class CreatePluginTest extends TestCase
 {
-    protected CreateReceiptPlugin $plugin;
+    protected CreatePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new CreateReceiptPlugin();
+        $this->plugin = new CreatePlugin();
     }
 
     public function testModeWrong()
@@ -27,7 +27,7 @@ class CreateReceiptPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
-        self::expectExceptionMessage('参数异常: 转账账单电子回单申请受理接口，只支持普通商户模式，当前配置为服务商模式');
+        self::expectExceptionMessage('参数异常: 受理转账明细电子回单，只支持普通商户模式，当前配置为服务商模式');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -43,7 +43,7 @@ class CreateReceiptPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/transfer/bill-receipt',
+            '_url' => 'v3/transfer-detail/electronic-receipts',
             'test' => 'yansongda',
         ], $result->getPayload()->all());
     }

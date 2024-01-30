@@ -334,6 +334,59 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Pay\Refund\RefundAbnormalPlugin`
 
+
+## 运营工具
+
+### 商家转账到零钱
+
+- 发起商家转账
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CreatePlugin`
+
+#### 查询转账批次单
+
+- 通过微信批次单号查询批次单
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Batch\QueryByWxPlugin`
+
+- 通过商家批次单号查询批次单
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Batch\QueryPlugin`
+
+#### 查询转账明细单
+
+- 通过微信明细单号查询明细单
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Detail\QueryByWxPlugin`
+
+- 通过商家明细单号查询明细单
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Detail\QueryPlugin`
+
+#### 申请转账电子回单
+
+- 转账账单电子回单申请受理接口
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Receipt\CreatePlugin`
+
+- 查询转账账单电子回单接口
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Receipt\QueryPlugin`
+
+#### 申请转账明细电子回单
+
+- 受理转账明细电子回单API
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\ReceiptDetail\CreatePlugin`
+
+- 查询转账明细电子回单受理结果API
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\ReceiptDetail\QueryPlugin`
+
+- 下载电子回单
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\DownloadReceiptPlugin`
+
 ## 委托代扣
 
 [文档](https://pay.weixin.qq.com/wiki/doc/api/wxpay_v2/papay/chapter1_1.shtml)

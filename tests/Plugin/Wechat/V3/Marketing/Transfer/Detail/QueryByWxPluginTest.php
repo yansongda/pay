@@ -1,23 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer\Detail;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\QueryDetailByWxPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Detail\QueryByWxPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryDetailByWxPluginTest extends TestCase
+class QueryByWxPluginTest extends TestCase
 {
-    protected QueryDetailByWxPlugin $plugin;
+    protected QueryByWxPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryDetailByWxPlugin();
+        $this->plugin = new QueryByWxPlugin();
     }
 
     public function testModeWrong()
