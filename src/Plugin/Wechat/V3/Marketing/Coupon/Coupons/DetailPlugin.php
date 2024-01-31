@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Coupons;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -12,7 +12,6 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
 use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_type_key;
 
@@ -20,7 +19,7 @@ use function Yansongda\Pay\get_wechat_type_key;
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/coupon/query-coupon.html
  * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/coupon/query-coupon.html
  */
-class QueryDetailPlugin implements PluginInterface
+class DetailPlugin implements PluginInterface
 {
     /**
      * @throws InvalidParamsException
@@ -29,7 +28,7 @@ class QueryDetailPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][V3][Marketing][Coupon][QueryDetailPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][V3][Marketing][Coupon][Coupons][DetailPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_wechat_config($params);
@@ -48,7 +47,7 @@ class QueryDetailPlugin implements PluginInterface
             '_service_url' => 'v3/marketing/favor/users/'.$openId.'/coupons/'.$couponId.'?appid='.$appId,
         ]);
 
-        Logger::info('[Wechat][V3][Marketing][Coupon][QueryDetailPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][V3][Marketing][Coupon][Coupons][DetailPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

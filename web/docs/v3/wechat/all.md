@@ -334,6 +334,9 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Pay\Refund\RefundAbnormalPlugin`
 
+  :::warning 注意
+  传递明文即可，内部会自动加密
+  :::
 
 ## 运营工具
 
@@ -386,6 +389,74 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 - 下载电子回单
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\DownloadReceiptPlugin`
+
+### 代金券
+
+#### 批次
+
+- 创建代金券批次
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\CreatePlugin`
+
+- 激活代金券批次
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\StartPlugin`
+
+- 暂停代金券批次
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\PausePlugin`
+
+- 重启代金券批次
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\RestartPlugin`
+
+- 条件查询批次列表
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\QueryPlugin`
+
+- 查询批次详情
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\QueryDetailPlugin`
+
+- 查询代金券可用商户
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\QueryMerchantsPlugin`
+
+- 查询代金券可用单品
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\QueryItemsPlugin`
+
+- 下载批次退款明细
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\QueryRefundFlowPlugin`
+
+- 下载批次核销明细
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\QueryUseFlowPlugin`
+
+#### 代金券
+
+- 根据商户号查用户的券
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Coupons\QueryUserPlugin`
+
+- 发放指定批次的代金券
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Coupons\SendPlugin`
+
+- 查询代金券详情
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Coupons\DetailPlugin`
+
+#### 消息通知地址
+
+- 查询消息通知地址
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Callback\QueryPlugin`
+
+- 设置消息通知地址
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Callback\SetPlugin`
 
 ## 委托代扣
 

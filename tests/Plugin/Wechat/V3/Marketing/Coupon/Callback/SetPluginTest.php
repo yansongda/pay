@@ -1,21 +1,21 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon\Callback;
 
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\SetCallbackPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Callback\SetPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class SetCallbackPluginTest extends TestCase
+class SetPluginTest extends TestCase
 {
-    protected SetCallbackPlugin $plugin;
+    protected SetPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new SetCallbackPlugin();
+        $this->plugin = new SetPlugin();
     }
 
     public function testNormalParams()

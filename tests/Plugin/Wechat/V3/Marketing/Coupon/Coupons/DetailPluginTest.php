@@ -1,23 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon\Coupons;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\QueryUserCouponsPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Coupons\DetailPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryUserCouponsPluginTest extends TestCase
+class DetailPluginTest extends TestCase
 {
-    protected QueryUserCouponsPlugin $plugin;
+    protected DetailPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryUserCouponsPlugin();
+        $this->plugin = new DetailPlugin();
     }
 
     public function testEmptyPayload()
@@ -26,7 +26,7 @@ class QueryUserCouponsPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 根据商户号查用户的券，参数缺少 `openid`');
+        self::expectExceptionMessage('参数异常: 查询代金券详情，参数缺少 `openid` 或 `coupon_id`');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -36,16 +36,16 @@ class QueryUserCouponsPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
             "openid" => "111",
-            'appid' => '222',
-            '_t' => 'a',
+            'coupon_id' => '222',
+            'appid' => '333',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/users/111/coupons?appid=222',
-            '_service_url' => 'v3/marketing/favor/users/111/coupons?appid=222',
+            '_url' => 'v3/marketing/favor/users/111/coupons/222?appid=333',
+            '_service_url' => 'v3/marketing/favor/users/111/coupons/222?appid=333',
         ], $result->getPayload()->all());
     }
 
@@ -54,15 +54,15 @@ class QueryUserCouponsPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
             "openid" => "111",
-            '_t' => 'a',
+            'coupon_id' => '222',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/users/111/coupons?appid=wx55955316af4ef13',
-            '_service_url' => 'v3/marketing/favor/users/111/coupons?appid=wx55955316af4ef13',
+            '_url' => 'v3/marketing/favor/users/111/coupons/222?appid=wx55955316af4ef13',
+            '_service_url' => 'v3/marketing/favor/users/111/coupons/222?appid=wx55955316af4ef13',
         ], $result->getPayload()->all());
     }
 }
