@@ -44,7 +44,7 @@ yii 扩展包请 [传送至这里](https://github.com/guanguans/yii-pay)
 
 ## 版本计划
 
-[https://pay.yansongda.cn/docs/v3/quick-start/planning](https://pay.yansongda.cn/docs/v3/quick-start/planning)
+[https://pay.yansongda.cn/docs/v3/overview/planning](https://pay.yansongda.cn/docs/v3/overview/planning)
 
 ## 详细文档
 
