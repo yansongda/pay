@@ -70,6 +70,9 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\DownloadBillPlugin`
 
+  :::warning 注意
+  此插件不需要验证微信签名，即，一共只需要 `[StartPlugin::class, DownloadBillPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class]` 插件
+  :::
 
 ### APP 支付
 
@@ -117,6 +120,9 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Pay\App\DownloadBillPlugin`
 
+  :::warning 注意
+  此插件不需要验证微信签名，即，一共只需要 `[StartPlugin::class, DownloadBillPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class]` 插件
+  :::
 
 ### H5 支付
 
@@ -156,6 +162,9 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Pay\H5\DownloadBillPlugin`
 
+  :::warning 注意
+  此插件不需要验证微信签名，即，一共只需要 `[StartPlugin::class, DownloadBillPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class]` 插件
+  :::
 
 ### Native 支付
 
@@ -195,6 +204,9 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\DownloadBillPlugin`
 
+  :::warning 注意
+  此插件不需要验证微信签名，即，一共只需要 `[StartPlugin::class, DownloadBillPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class]` 插件
+  :::
 
 ### 小程序支付
 
@@ -242,6 +254,9 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\DownloadBillPlugin`
 
+  :::warning 注意
+  此插件不需要验证微信签名，即，一共只需要 `[StartPlugin::class, DownloadBillPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class]` 插件
+  :::
 
 ### 合单支付
 
@@ -305,6 +320,9 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\DownloadBillPlugin`
 
+  :::warning 注意
+  此插件不需要验证微信签名，即，一共只需要 `[StartPlugin::class, DownloadBillPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class]` 插件
+  :::
 
 ### 资金/交易账单
 
@@ -319,6 +337,10 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 - 下载账单
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Pay\Bill\DownloadPlugin`
+
+  :::warning 注意
+  此插件不需要验证微信签名，即，一共只需要 `[StartPlugin::class, DownloadBillPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class]` 插件
+  :::
 
 ### 退款
 
@@ -390,6 +412,38 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\DownloadReceiptPlugin`
 
+### 平台收付通（余额查询）
+
+- 查询电商平台账户实时余额API
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceBalance\QueryPlugin`
+
+- 查询电商平台账户日终余额API
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceBalance\QueryDayEndPlugin`
+
+### 平台收付通（退款）
+
+- 申请退款
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\ApplyPlugin`
+
+- 查询单笔退款（按微信支付退款单号）
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\QueryByWxPlugin`
+
+- 查询单笔退款（按商户退款单号）
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\QueryPlugin`
+
+- 查询垫付回补结果
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\QueryReturnAdvancePlugin`
+
+- 垫付退款回补
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\ReturnAdvancePlugin`
+
 ### 代金券
 
 #### 批次
@@ -457,6 +511,60 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 - 设置消息通知地址
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Callback\SetPlugin`
+
+### 电子发票
+
+#### 公共API
+
+- 创建电子发票卡券模板
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\CreateCardTemplatePlugin`
+
+- 配置开发选项
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\UpdateConfigPlugin`
+
+- 查询商户配置的开发选项
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\QueryConfigPlugin`
+
+- 查询电子发票
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\QueryPlugin`
+
+- 获取抬头填写链接
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\GetTitleUrlPlugin`
+
+- 获取用户填写的抬头
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\QueryUserTitlePlugin`
+
+#### 区块链电子发票
+
+- 获取商户开票基础信息
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetBaseInformationPlugin`
+
+- 获取商户可开具的商品和服务税收分类编码对照表
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetTaxCodePlugin`
+
+- 开具电子发票
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\CreatePlugin`
+
+- 冲红电子发票
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\ReversePlugin`
+
+- 获取发票下载信息
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetDownloadInfoPlugin`
+
+- 下载发票文件
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\DownloadPlugin`
 
 ## 委托代扣
 

@@ -200,7 +200,7 @@ $result = Pay::alipay()->pay($allPlugins, $params);
   `\Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Sign\SignPlugin`
 
   :::warning 注意
-  通常搭配 `\Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin` 插件并传参 `['_method' => 'GET']` 使用
+  通常搭配 `\Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin` 插件并传参 `['_method' => 'GET']` 使用，以便直接返回协议字符串
   :::
 
 - 支付宝个人代扣协议查询接口
