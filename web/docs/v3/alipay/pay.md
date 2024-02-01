@@ -4,17 +4,17 @@
 
 |  method  |   说明   |      参数      |    返回值     |
 |:--------:|:------:|:------------:|:----------:|
-|   web    |  电脑支付  | array $order |  Response  |
-|   wap    | 手机网站支付 | array $order |  Response  |
+|   web    |  网页支付  | array $order |  Response  |
+|    h5    | H5 支付  | array $order |  Response  |
 |   app    | APP 支付 | array $order |  Response  |
+|   mini   | 小程序支付  | array $order | Collection |
 |   pos    |  刷卡支付  | array $order | Collection |
 |   scan   |  扫码支付  | array $order | Collection |
 | transfer |  账户转账  | array $order | Collection |
-|   mini   | 小程序支付  | array $order | Collection |
 
 更多接口调用请参考后续文档
 
-## 电脑支付
+## 网页支付
 
 ### 例子
 
@@ -49,7 +49,7 @@ return Pay::alipay()->web([
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open/028r8t?scene=22)，查看「请求参数」一栏。
 
-## 手机网站支付
+## H5 支付
 
 ### 例子
 
@@ -203,5 +203,5 @@ $result = Pay::alipay()->transfer([
 
 
 :::tip
-转账查询等，请参考 [查询](/docs/v3/alipay/find.md)
+转账查询等，请参考 [查询](/docs/v3/alipay/query.md)
 :::

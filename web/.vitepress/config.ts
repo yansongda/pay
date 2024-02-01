@@ -15,6 +15,7 @@ export default defineConfig({
     logo: '/images/logo2.png',
     nav: nav,
     sidebar: sidebar,
+    outline: [2, 3],
     socialLinks: [
       { icon: 'github', link: 'https://github.com/yansongda/pay' },
     ],

@@ -28,7 +28,7 @@ $result = Pay::wechat()->mp($order);
 // 后续调用不在本文档讨论范围内，请自行参考官方文档。
 ```
 
-## 手机网站支付
+## H5支付
 
 ```php
 Pay::config($config);
@@ -43,11 +43,11 @@ $order = [
         'payer_client_ip' => '1.2.4.8',
         'h5_info' => [
             'type' => 'Wap',
-        ]       
+        ]
     ],
 ];
 
-return Pay::wechat()->wap($order);
+return Pay::wechat()->h5($order);
 ```
 
 ## APP 支付
@@ -67,24 +67,7 @@ $order = [
 return Pay::wechat()->app($order);
 ```
 
-## 扫码支付
-
-```php
-Pay::config($config);
-
-$order = [
-    'out_trade_no' => time().'',
-    'description' => 'subject-测试',
-    'amount' => [
-        'total' => 1,
-    ],
-];
-
-$result = Pay::wechat()->scan($order);
-// 二维码内容： $qr = $result->code_url;
-```
-
-## 小程序
+## 小程序支付
 
 ```php
 Pay::config($config);
@@ -107,7 +90,42 @@ $result = Pay::wechat()->mini($order);
 // 后续调用不在本文档讨论范围内，请自行参考官方文档。
 ```
 
-## 账户转账
+## 刷卡支付（付款码，被扫码）
+
+```php
+Pay::config($config);
+
+$order = [
+    'out_trade_no' => time().'',
+    'body' => 'subject-测试',
+    'total_fee' => 1,
+    'spbill_create_ip' => '1.2.4.8',
+    'auth_code' => '134567890123456789',
+];
+
+$result = Pay::wechat()->pos($order);
+```
+
+## 扫码支付
+
+```php
+Pay::config($config);
+
+$order = [
+    'out_trade_no' => time().'',
+    'description' => 'subject-测试',
+    'amount' => [
+        'total' => 1,
+    ],
+];
+
+$result = Pay::wechat()->scan($order);
+// 二维码内容： $qr = $result->code_url;
+```
+
+## 转账
+
+即，商家转账到零钱
 
 ```php
 Pay::config($config);
@@ -132,30 +150,80 @@ $order = [
 $result = Pay::wechat()->transfer($order);
 ```
 
-## 刷卡支付（付款码，被扫码）
+## 退款
 
 ```php
 Pay::config($config);
 
 $order = [
-    'out_trade_no' => time().'',
-    'body' => 'subject-测试',
-    'total_fee' => 1,
-    'spbill_create_ip' => '1.2.4.8',
-    'auth_code' => '134567890123456789',
+    // app，h5，jsapi，native，mini，退款在微信支付中，都是统一的接口，可以不用指定
+    // 但是，如果你想指定，可以使用 _action 参数
+    // 注意，合单退款，需要指定 _action 为 combine
+    // '_action' => 'app', // 指定 app 退款
+    // '_action' => 'combine', // 指定 合单 退款
+    // '_action' => 'h5', // 指定 h5 退款
+    // '_action' => 'jsapi', // 指定 jsapi 退款，默认
+    // '_action' => 'mini', // 指定 小程序 退款
+    // '_action' => 'native', // 指定 native 退款
+    'out_refund_no' => time().'',
+    'reason' => 'test',
+    'amount' => [
+        'refund' => 1,
+        'total' => 1,
+        'currency' => 'CNY',
+    ],
 ];
 
-$result = Pay::wechat()->pos($order);
+$result = Pay::wechat()->refund($order);
 ```
 
-## 普通红包
+## 查询订单
 
-:::warning
-微信支付 v3 版 api 并不支红包，后续将接入微信支付 v2 版 API，敬请期待。如果确实有此需求，可以使用 [Pay 的 v2 版](/docs/v2/wechat/)
-:::
+```php
+Pay::config($config);
 
-## 裂变红包
+$order = [
+    'out_trade_no' => '123456789',
+];
 
-:::warning
-微信支付 v3 版 api 并不支持红包，后续将接入微信支付 v2 版 API，敬请期待。如果确实有此需求，可以使用 [Pay 的 v2 版](/docs/v2/wechat/)
-:::
+$result = Pay::wechat()->query($order);
+
+// 查询退款订单
+$order = [
+    '_action' => 'refund',
+    'out_refund_no' => '123456789',
+];
+$result = Pay::wechat()->query($order);
+
+// 查询合单订单
+$order = [
+    '_action' => 'combine',
+    'combine_out_trade_no' => '123456789',
+];
+$result = Pay::wechat()->query($order);
+
+// 查询转账订单
+$order = [
+    '_action' => 'transfer',
+    'out_batch_no' => '123456789',
+    'out_detail_no' => '123456789',
+];
+$result = Pay::wechat()->query($order);
+```
+
+## 微信回调处理
+
+```php
+Pay::config($this->config);
+
+$result = Pay::wechat()->callback();
+```
+
+## 响应微信回调
+
+```php
+Pay::config($this->config);
+
+return Pay::wechat()->success();
+```
+

@@ -6,6 +6,7 @@ export default [
       { text: '线上交流', link: '/docs/v3/overview/communication' },
       { text: '捐赠', link: '/docs/v3/overview/donate' },
       { text: '参与开发', link: '/docs/v3/overview/contribute' },
+      { text: '版本计划', link: '/docs/v3/overview/planning' },
       { text: '更新记录', link: '/docs/v3/overview/versions' },
       { text: '商业与企业服务', link: '/docs/v3/overview/business' }
     ]
@@ -27,13 +28,13 @@ export default [
     collapsed: false,
     items: [
       { text: '支付', link: '/docs/v3/alipay/pay' },
-      { text: '查询', link: '/docs/v3/alipay/find' },
+      { text: '查询', link: '/docs/v3/alipay/query' },
       { text: '退款', link: '/docs/v3/alipay/refund' },
       { text: '关闭', link: '/docs/v3/alipay/close' },
       { text: '取消', link: '/docs/v3/alipay/cancel' },
       { text: '接收回调', link: '/docs/v3/alipay/callback' },
       { text: '确认回调', link: '/docs/v3/alipay/response' },
-      { text: '更多便捷插件', link: '/docs/v3/alipay/more' },
+      { text: '所有内置插件', link: '/docs/v3/alipay/all' },
     ]
   },
   {
@@ -41,13 +42,13 @@ export default [
     collapsed: false,
     items: [
       { text: '支付', link: '/docs/v3/wechat/pay' },
-      { text: '查询', link: '/docs/v3/wechat/find' },
+      { text: '查询', link: '/docs/v3/wechat/query' },
       { text: '退款', link: '/docs/v3/wechat/refund' },
       { text: '关闭', link: '/docs/v3/wechat/close' },
       { text: '取消', link: '/docs/v3/wechat/cancel' },
       { text: '接收回调', link: '/docs/v3/wechat/callback' },
       { text: '确认回调', link: '/docs/v3/wechat/response' },
-      { text: '更多便捷插件', link: '/docs/v3/wechat/more' }
+      { text: '所有内置插件', link: '/docs/v3/wechat/all' }
     ]
   },
   {
@@ -55,23 +56,20 @@ export default [
     collapsed: false,
     items: [
       { text: '支付', link: '/docs/v3/unipay/pay' },
-      { text: '查询', link: '/docs/v3/unipay/find' },
+      { text: '查询', link: '/docs/v3/unipay/query' },
       { text: '退款', link: '/docs/v3/unipay/refund' },
       { text: '关闭', link: '/docs/v3/unipay/close' },
       { text: '取消', link: '/docs/v3/unipay/cancel' },
       { text: '接收回调', link: '/docs/v3/unipay/callback' },
       { text: '确认回调', link: '/docs/v3/unipay/response' },
-      { text: '更多便捷插件', link: '/docs/v3/unipay/more' }
+      { text: '所有内置插件', link: '/docs/v3/unipay/all' }
     ]
   },
   {
     text: '核心架构',
     collapsed: false,
     items: [
-      { text: '🚀 Rocket', link: '/docs/v3/kernel/rocket' },
-      { text: '🧪 Pipeline', link: '/docs/v3/kernel/pipeline' },
-      { text: '🔌 Plugin', link: '/docs/v3/kernel/plugin' },
-      { text: '💤 Shortcut', link: '/docs/v3/kernel/shortcut' }
+      { text: '核心思想', link: '/docs/v3/kernel/kernel' },
     ]
   },
   {
@@ -87,6 +85,7 @@ export default [
     text: '升级指南',
     collapsed: false,
     items: [
+      { text: 'v3.6 升级指南', link: '/docs/v3/upgrade/v3.6' },
       { text: 'v3.5 升级指南', link: '/docs/v3/upgrade/v3.5' },
       { text: 'v3.4 升级指南', link: '/docs/v3/upgrade/v3.4' },
       { text: 'v3.3 升级指南', link: '/docs/v3/upgrade/v3.3' },

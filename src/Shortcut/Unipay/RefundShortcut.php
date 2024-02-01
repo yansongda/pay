@@ -12,7 +12,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\RefundPlugin as QrCodeRefundPlugin;
-use Yansongda\Pay\Plugin\Unipay\Open\Pay\Web\RefundPlugin as OnlineGatewayRefundPlugin;
+use Yansongda\Pay\Plugin\Unipay\Open\Pay\Web\RefundPlugin as WebRefundPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin as QraAddPayloadSignaturePlugin;
@@ -39,14 +39,14 @@ class RefundShortcut implements ShortcutInterface
 
     protected function defaultPlugins(): array
     {
-        return $this->onlineGatewayPlugins();
+        return $this->webPlugins();
     }
 
-    protected function onlineGatewayPlugins(): array
+    protected function webPlugins(): array
     {
         return [
             StartPlugin::class,
-            OnlineGatewayRefundPlugin::class,
+            WebRefundPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,

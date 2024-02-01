@@ -1,10 +1,11 @@
 # 返回格式
 
-通过 `yansongda/pay` 调用任何方法最终只可能返回三种格式
+通过 `yansongda/pay` 调用任何方法最终返回的格式与 `yansongda/artful` 一致
+（因为 Pay 是基于 `yansongda/artful` 的），具体来说就是以下三种：
 
 - `\Psr\Http\Message\MessageInterface`
 - `\Yansongda\Supports\Collection`
-- `array`
+- `\Yansongda\Artful\Rocket`
 
 其中 `\Psr\Http\Message\MessageInterface` 最终 实例/接口 为
 
@@ -41,10 +42,24 @@ ThinkPHP 框架在 [https://github.com/top-think/framework/pull/2614](https://gi
 
 ## Collection
 
-默认情况下，支付宝、微信所有 API 调用场景下绝大多数方法最终都返回的是 `Collection` 实例。
+默认情况下，支付宝、微信、银联所有 API 调用场景下绝大多数方法最终都返回的是 `Collection` 实例。
 例如常用的「退款」「转账」「小程序支付」等。
 
 `Collection` 类提供了常用的快捷方法，具体 API 可参考源代码 [yansongda/supports](https://github.com/yansongda/supports)
+
+## Rocket
+
+一般情况下，此类不会返回，如果您有自定义的需求，可以在入参时传递 _return_rocket = true 即可。
+
+```php
+$params = [
+    '_return_rocket' => true,
+];
+
+Pay::config($config);
+
+$rocket = Pay::alipay()->app($params);
+```
 
 ## array
 

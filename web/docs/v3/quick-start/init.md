@@ -61,10 +61,6 @@ $config = [
             'mini_app_id' => '',
             // 选填-app 的 app_id
             'app_id' => '',
-            // 选填-合单 app_id
-            'combine_app_id' => '',
-            // 选填-合单商户号 
-            'combine_mch_id' => '',
             // 选填-服务商模式下，子公众号 的 app_id
             'sub_mp_app_id' => '',
             // 选填-服务商模式下，子 app 的 app_id
@@ -85,6 +81,8 @@ $config = [
         'default' => [
             // 必填-商户号
             'mch_id' => '777290058167151',
+            // 选填-商户密钥：为银联条码支付综合前置平台配置：https://up.95516.com/open/openapi?code=unionpay
+            'mch_secret_key' => '979da4cfccbae7923641daa5dd7047c2',
             // 必填-商户公私钥
             'mch_cert_path' => __DIR__.'/Cert/unipayAppCert.pfx',
             // 必填-商户公私钥密码
@@ -95,6 +93,7 @@ $config = [
             'return_url' => 'https://yansongda.cn/unipay/return',
             // 必填
             'notify_url' => 'https://yansongda.cn/unipay/notify',
+            'mode' => Pay::MODE_NORMAL,
         ],
     ],
     'logger' => [

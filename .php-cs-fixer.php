@@ -1,9 +1,7 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->exclude('tests')
-    ->exclude('vendor')
-    ->in(__DIR__);
+    ->in('src');
 
 return (new PhpCsFixer\Config())
     ->setUsingCache(false)
@@ -19,6 +17,5 @@ return (new PhpCsFixer\Config())
             'import_functions' => true,
         ],
         'multiline_whitespace_before_semicolons' => ['strategy' => 'no_multi_line'],
-        'fully_qualified_strict_types' => true,
     ])
     ->setFinder($finder);

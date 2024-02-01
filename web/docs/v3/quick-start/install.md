@@ -2,8 +2,7 @@
 
 ## 运行环境
 
-- PHP 8.0+
-- composer
+[各个版本说明](/docs/v3/overview/planning)
 
 ## 安装总结
 
@@ -12,14 +11,14 @@
 ### hyperf/laravel 用户
 
 ```shell
-composer require yansongda/pay:~3.5.0 -vvv
-composer require guzzlehttp/guzzle:^7.0 # 默认情况下，此包框架已自带，无需额外安装
+composer require yansongda/pay:~3.6.0 -vvv
+composer require guzzlehttp/guzzle:^7.0 # 默认情况下，相关框架已自带，无需额外安装
 ```
 
 ### 其它框架/无框架 用户
 
 ```shell
-composer require yansongda/pay:~3.5.0 -vvv
+composer require yansongda/pay:~3.6.0 -vvv
 composer require guzzlehttp/guzzle:^7.0
 composer require hyperf/pimple:~2.2.0  # 或者 composer require illuminate/container
 ```
@@ -27,7 +26,7 @@ composer require hyperf/pimple:~2.2.0  # 或者 composer require illuminate/cont
 ## 详细安装介绍
 
 ```shell
-composer require yansongda/pay:~3.5.0 -vvv
+composer require yansongda/pay:~3.6.0 -vvv
 ```
 
 由于 `yansongda/pay` 支持 PSR2、PSR3、PSR4、PSR7、PSR11、PSR14、PSR18 等各项标准，因此这里额外介绍下 PSR-11、PSR-18 的安装与使用。
@@ -53,7 +52,6 @@ composer require yansongda/pay:~3.5.0 -vvv
 ```shell
 composer require hyperf/pimple:~2.2.0
 ```
-
 
 如果您所使用的框架内有符合 `PSR-11` 的 `Container`，您需要在初始化 **之前**（即，调用 `Pay::config()` 方法之前）执行以下代码即可复用现有的 `Container`:
 
