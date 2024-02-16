@@ -1,4 +1,10 @@
-## v3.6.0 - TBD
+## v3.6.1
+
+### chore
+
+- chore: 升级 `yansongda/artful` 到 v1.0.9 修复 JsonPacker 为空时 packer 错误的问题(#937)
+
+## v3.6.0
 
 ### added
 
