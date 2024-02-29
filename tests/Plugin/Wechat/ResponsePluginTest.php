@@ -3,12 +3,11 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat;
 
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Direction\OriginResponseDirection;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidResponseException;
-use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
@@ -28,13 +27,12 @@ class ResponsePluginTest extends TestCase
         $destination = new Response();
 
         $rocket = new Rocket();
-        $rocket->setDirection(OriginResponseDirection::class);
-        $rocket->setDestination($destination);
-        $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
+        $rocket->setDestinationOrigin($destination);
+        $rocket->setDestination(new Collection());
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertSame($destination, $result->getDestination());
+        self::assertInstanceOf(Collection::class, $result->getDestination());
     }
 
     public function testOriginalResponseCodeErrorDestination()
@@ -42,26 +40,11 @@ class ResponsePluginTest extends TestCase
         $destination = new Response(500);
 
         $rocket = new Rocket();
-        $rocket->setDirection(OriginResponseDirection::class);
-        $rocket->setDestination($destination);
-        $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
+        $rocket->setDestinationOrigin($destination);
 
         self::expectException(InvalidResponseException::class);
         self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-
-    public function testCollectionDestination()
-    {
-        $destination = new Collection();
-
-        $rocket = new Rocket();
-        $rocket->setDestination($destination);
-        $rocket->setDestinationOrigin(new ServerRequest('POST', 'http://localhost'));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertSame($destination, $result->getDestination());
     }
 }

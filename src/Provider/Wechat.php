@@ -148,7 +148,7 @@ class Wechat implements ProviderInterface
         return array_merge(
             [StartPlugin::class],
             $plugins,
-            [AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, VerifySignaturePlugin::class, ParserPlugin::class],
+            [AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
         );
     }
 

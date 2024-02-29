@@ -43,8 +43,8 @@ class QueryShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
@@ -57,8 +57,8 @@ class QueryShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'app']));
     }
@@ -71,8 +71,8 @@ class QueryShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'combine']));
     }
@@ -85,8 +85,8 @@ class QueryShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['combine_out_trade_no' => '123abc']));
     }
@@ -99,8 +99,8 @@ class QueryShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'h5']));
     }
@@ -113,8 +113,8 @@ class QueryShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'jsapi']));
     }
@@ -127,8 +127,8 @@ class QueryShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'mini']));
     }
@@ -141,8 +141,8 @@ class QueryShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'native']));
     }
@@ -155,8 +155,8 @@ class QueryShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'refund']));
     }
@@ -169,8 +169,8 @@ class QueryShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'transfer']));
     }

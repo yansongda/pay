@@ -62,8 +62,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -76,8 +76,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -90,8 +90,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -104,8 +104,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -118,8 +118,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -132,8 +132,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -151,8 +151,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -165,8 +165,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -179,8 +179,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -193,8 +193,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -207,8 +207,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -221,8 +221,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }
@@ -235,8 +235,8 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }

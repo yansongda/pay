@@ -24,8 +24,8 @@ class TransferShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }

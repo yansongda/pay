@@ -36,8 +36,8 @@ class AppShortcutTest extends TestCase
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             InvokePlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
