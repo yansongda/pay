@@ -37,8 +37,8 @@ class CloseShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }
@@ -51,8 +51,8 @@ class CloseShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'combine']));
     }
@@ -65,8 +65,8 @@ class CloseShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['combine_out_trade_no' => '123abc']));
 
@@ -76,8 +76,8 @@ class CloseShortcutTest extends TestCase
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['sub_orders' => '123abc']));
     }

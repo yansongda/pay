@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Pay;
@@ -47,7 +48,7 @@ class WechatTest extends TestCase
         self::assertEquals(array_merge(
             [StartPlugin::class],
             $plugins,
-            [AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, VerifySignaturePlugin::class, ParserPlugin::class],
+            [AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
         ), Pay::wechat()->mergeCommonPlugins($plugins));
     }
 
@@ -71,6 +72,24 @@ class WechatTest extends TestCase
         Pay::wechat()->close(['out_trade_no' => '123']);
 
         self::assertTrue(true);
+    }
+
+    public function testCloseErrorResponseCode()
+    {
+        $response = new Response(
+            400,
+            [],
+            json_encode(['error' => 'error message']),
+        );
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($response);
+        Pay::set(HttpClientInterface::class, $http);
+
+        self::expectException(InvalidResponseException::class);
+        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::RESPONSE_CODE_WRONG);
+
+        Pay::wechat()->close(['out_trade_no' => '123']);
     }
 
     public function testCallback()

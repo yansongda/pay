@@ -26,8 +26,8 @@ class AppShortcut implements ShortcutInterface
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             InvokePlugin::class,
-            ResponsePlugin::class,
             VerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }

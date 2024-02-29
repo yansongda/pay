@@ -42,7 +42,7 @@ class ResponsePlugin implements PluginInterface
 
         if ($response instanceof ResponseInterface
             && ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300)) {
-            throw new InvalidResponseException(Exception::RESPONSE_CODE_WRONG);
+            throw new InvalidResponseException(Exception::RESPONSE_CODE_WRONG, '微信返回状态码异常，请检查参数是否错误', $rocket->getDestination());
         }
 
         return $response;
