@@ -38,13 +38,13 @@ class ResponsePlugin implements PluginInterface
      */
     protected function validateResponse(Rocket $rocket): null|Collection|MessageInterface
     {
-        $response = $rocket->getDestination();
+        $response = $rocket->getDestinationOrigin();
 
         if ($response instanceof ResponseInterface
             && ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300)) {
             throw new InvalidResponseException(Exception::RESPONSE_CODE_WRONG, '微信返回状态码异常，请检查参数是否错误', $rocket->getDestination());
         }
 
-        return $response;
+        return $rocket->getDestination();
     }
 }
