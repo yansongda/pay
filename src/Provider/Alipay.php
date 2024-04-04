@@ -143,7 +143,7 @@ class Alipay implements ProviderInterface
         );
     }
 
-    protected function getCallbackParams(array|ServerRequestInterface $contents = null): Collection
+    protected function getCallbackParams(null|array|ServerRequestInterface $contents = null): Collection
     {
         if (is_array($contents)) {
             return Collection::wrap($contents);

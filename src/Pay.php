@@ -60,7 +60,7 @@ class Pay
     /**
      * @throws ContainerException
      */
-    public static function config(array $config = [], Closure|ContainerInterface $container = null): bool
+    public static function config(array $config = [], null|Closure|ContainerInterface $container = null): bool
     {
         $result = Artful::config($config, $container);
 
