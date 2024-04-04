@@ -21,13 +21,15 @@ class TokenPluginTest extends TestCase
     public function testNormal()
     {
         $rocket = (new Rocket())
-            ->setParams([]);
+            ->setParams(['name' => 'yansongda']);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload()->toJson();
+        $payload = $result->getPayload();
 
         self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.system.oauth.token', $payload);
+        self::assertEquals('alipay.system.oauth.token', $payload->get('method'));
+        self::assertEquals('yansongda', $payload->get('name'));
+        self::assertFalse($payload->has('biz_content'));
     }
 }

@@ -18,10 +18,12 @@ class TokenPlugin implements PluginInterface
     {
         Logger::debug('[Alipay][Member][Authorization][TokenPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $rocket->mergePayload([
-            'method' => 'alipay.system.oauth.token',
-            'biz_content' => $rocket->getParams(),
-        ]);
+        $rocket->mergePayload(array_merge(
+            [
+                'method' => 'alipay.system.oauth.token',
+            ],
+            $rocket->getParams(),
+        ));
 
         Logger::info('[Alipay][Member][Authorization][TokenPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
