@@ -67,7 +67,7 @@ $order = [
     ],
 ];
 
-return Pay::wechat()->wap($order);
+return Pay::wechat()->h5($order);
 // $result->h5_url;
 ```
 

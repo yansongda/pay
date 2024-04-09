@@ -23,7 +23,7 @@
 
 - `app()` APP 支付
 - `web()` web 支付
-- `wap()` wap 支付
+- `h5()`  h5 支付
 - `success()` 响应回调
 
 微信中
