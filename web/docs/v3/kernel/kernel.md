@@ -47,7 +47,7 @@ $result = Pay::alipay()->pay($allPlugins, $params);
 
 指定快捷方式的 `action`，用于区分不同的场景，比如查询订单里有查询退款、转账等订单。
 
-例如，支付宝的 `query` 快捷方式 `action` 有 `app`，`wap`，`scan`，`transfer` 等。
+例如，支付宝的 `query` 快捷方式 `action` 有 `app`，`h5`，`scan`，`transfer` 等。
 
 ### _type
 

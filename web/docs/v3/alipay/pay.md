@@ -56,7 +56,7 @@ return Pay::alipay()->web([
 ```php
 Pay::config($this->config);
 
-return Pay::alipay()->wap([
+return Pay::alipay()->h5([
     'out_trade_no' => time(),
     'total_amount' => '0.01',
     'subject' => 'yansongda 测试 - 01',
@@ -71,7 +71,7 @@ return Pay::alipay()->wap([
 ```php
 Pay::config($this->config);
 
-return Pay::alipay()->wap([
+return Pay::alipay()->h5([
     'out_trade_no' => ''.time(),
     'total_amount' => '0.01',
     'subject' => 'yansongda 测试 - 1',
