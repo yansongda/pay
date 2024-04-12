@@ -61,9 +61,11 @@ class FunctionTest extends TestCase
     {
         $alipayPublicCertPath = __DIR__ . '/Cert/alipayPublicCert.crt';
         $alipayPublicCertCerPath = __DIR__ . '/Cert/alipayPublicCert.cer';
+        $alipayRootCertPath = __DIR__ . '/Cert/alipayRootCert.cer';
 
         self::assertEquals(file_get_contents($alipayPublicCertCerPath), get_public_cert($alipayPublicCertCerPath));
         self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_cert($alipayPublicCertPath));
+        self::assertEquals(file_get_contents($alipayRootCertPath), get_public_cert($alipayRootCertPath));
     }
 
     public function testGetPrivateCert()
@@ -232,7 +234,7 @@ class FunctionTest extends TestCase
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
         get_wechat_sign_v2(get_wechat_config(), []);
     }
-    
+
     public function testVerifyWechatSign()
     {
         $response = new Response(
