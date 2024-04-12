@@ -140,7 +140,7 @@ class StartPlugin implements PluginInterface
         }
 
         $sn = '';
-        $exploded = explode('-----END CERTIFICATE-----', file_get_contents($path));
+        $exploded = explode('-----END CERTIFICATE-----', get_public_cert($path));
 
         foreach ($exploded as $cert) {
             if (empty(trim($cert))) {
