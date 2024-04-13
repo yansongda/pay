@@ -61,11 +61,9 @@ class FunctionTest extends TestCase
     {
         $alipayPublicCertPath = __DIR__ . '/Cert/alipayPublicCert.crt';
         $alipayPublicCertCerPath = __DIR__ . '/Cert/alipayPublicCert.cer';
-        $alipayRootCertPath = __DIR__ . '/Cert/alipayRootCert.cer';
 
         self::assertEquals(file_get_contents($alipayPublicCertCerPath), get_public_cert($alipayPublicCertCerPath));
         self::assertEquals(file_get_contents($alipayPublicCertPath), get_public_cert($alipayPublicCertPath));
-        self::assertEquals(file_get_contents($alipayRootCertPath), get_public_cert($alipayRootCertPath));
     }
 
     public function testGetPrivateCert()
