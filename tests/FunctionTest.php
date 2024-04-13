@@ -232,7 +232,7 @@ class FunctionTest extends TestCase
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
         get_wechat_sign_v2(get_wechat_config(), []);
     }
-    
+
     public function testVerifyWechatSign()
     {
         $response = new Response(
