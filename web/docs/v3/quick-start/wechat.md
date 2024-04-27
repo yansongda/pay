@@ -96,11 +96,17 @@ $result = Pay::wechat()->mini($order);
 Pay::config($config);
 
 $order = [
+    'description' => '测试 - yansongda - 1',
     'out_trade_no' => time().'',
-    'body' => 'subject-测试',
-    'total_fee' => 1,
-    'spbill_create_ip' => '1.2.4.8',
-    'auth_code' => '134567890123456789',
+    'payer' => [
+        'auth_code' => 'xxxxxxxxxxx'
+    ],
+    'amount' => [
+        'total' => 1,
+    ],
+    'scene_info' => [
+        'id' => '5678'
+    ],
 ];
 
 $result = Pay::wechat()->pos($order);
