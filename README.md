@@ -87,7 +87,7 @@ yansongda/pay 100% 兼容 支付宝/微信/银联 所有功能（包括服务商
 
 ## 安装
 ```shell
-composer require yansongda/pay:~3.6.0 -vvv
+composer require yansongda/pay:~3.7.0 -vvv
 ```
 
 ## 深情一撇

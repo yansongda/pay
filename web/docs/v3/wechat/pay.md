@@ -176,11 +176,17 @@ $result = Pay::wechat()->mini($order);
 Pay::config($config);
 
 $order = [
+    'description' => '测试 - yansongda - 1',
     'out_trade_no' => time().'',
-    'body' => 'subject-测试',
-    'total_fee' => 1,
-    'spbill_create_ip' => '1.2.4.8',
-    'auth_code' => '134567890123456789',
+    'payer' => [
+        'auth_code' => 'xxxxxxxxxxx'
+    ],
+    'amount' => [
+        'total' => 1,
+    ],
+    'scene_info' => [
+        'id' => '5678'
+    ],
 ];
 
 $result = Pay::wechat()->pos($order);
@@ -190,7 +196,7 @@ $result = Pay::wechat()->pos($order);
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**，比如，`appid`，`sign` 等参数，大家只需传入订单类主观参数即可。
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_10&index=1)，查看「输入参数」一节。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/docs/merchant/apis/code-payment-v3/direct/code-pay.html)，查看「输入参数」一节。
 
 ## 扫码支付
 

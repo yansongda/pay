@@ -9,9 +9,9 @@ use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\StartPlugin;
-use Yansongda\Pay\Plugin\Wechat\V2\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\V2\Pay\Pos\PayPlugin;
-use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Pos\PayPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\PosShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
