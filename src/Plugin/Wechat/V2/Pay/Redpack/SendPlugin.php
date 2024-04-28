@@ -62,8 +62,8 @@ class SendPlugin implements PluginInterface
     protected function normal(array $config, array $params): array
     {
         return [
-            'appid' => $config[get_wechat_type_key($params)] ?? '',
-            'mchid' => $config['mch_id'] ?? '',
+            'wxappid' => $config[get_wechat_type_key($params)] ?? '',
+            'mch_id' => $config['mch_id'] ?? '',
         ];
     }
 

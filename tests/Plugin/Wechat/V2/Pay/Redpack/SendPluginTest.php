@@ -33,7 +33,7 @@ class SendPluginTest extends TestCase
         self::assertEquals('mmpaymkttransfers/sendredpack', $payload->get('_url'));
         self::assertEquals('application/xml', $payload->get('_content_type'));
         self::assertEquals('111', $payload->get('mch_billno'));
-        self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
+        self::assertEquals('wx55955316af4ef13', $payload->get('wxappid'));
         self::assertEquals('1600314069', $payload->get('mch_id'));
         self::assertNotEmpty($payload->get('nonce_str'));
     }
