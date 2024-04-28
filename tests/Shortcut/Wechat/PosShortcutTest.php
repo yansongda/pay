@@ -31,8 +31,8 @@ class PosShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             PayPlugin::class,
-            AddPayloadSignaturePlugin::class,
             AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
