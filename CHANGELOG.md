@@ -4,6 +4,10 @@
 
 - feat: 微信V2版本支持普通红包(#973)
 
+### chore
+
+- chore: 升级 `yansongda/artful` 到最新版解决 http 配置不生效的问题
+
 ## v3.7.1
 
 ### fixed
