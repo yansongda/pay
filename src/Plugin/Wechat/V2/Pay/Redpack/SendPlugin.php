@@ -27,7 +27,7 @@ class SendPlugin implements PluginInterface
     /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
-     * @throws Throwable 随机字符串生成失败
+     * @throws Throwable                随机字符串生成失败
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -71,13 +71,11 @@ class SendPlugin implements PluginInterface
     {
         $wechatTypeKey = get_wechat_type_key($params);
 
-        $data = [
+        return [
             'wxappid' => $config[$wechatTypeKey] ?? '',
             'mch_id' => $config['mch_id'] ?? '',
             'sub_mch_id' => $payload->get('sub_mch_id', $config['sub_mch_id'] ?? ''),
             'msgappid' => $config['sub_'.$wechatTypeKey],
         ];
-
-        return $data;
     }
 }
