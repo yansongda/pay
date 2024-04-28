@@ -3,9 +3,8 @@
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V2\Pay\Redpack;
 
 use Yansongda\Artful\Packer\XmlPacker;
-use Yansongda\Pay\Plugin\Wechat\V2\Pay\Pos\PayPlugin;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Coupons\SendPlugin;
+use Yansongda\Pay\Plugin\Wechat\V2\Pay\Redpack\SendPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
