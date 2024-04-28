@@ -105,7 +105,9 @@ $order = [
         'total' => 1,
     ],
     'scene_info' => [
-        'id' => '5678'
+        'store_info' => [
+            'id' => '5678'
+        ],
     ],
 ];
 
