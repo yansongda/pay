@@ -6,7 +6,7 @@
 
 ### chore
 
-- chore: 升级 `yansongda/artful` 到最新版解决 http 配置不生效的问题
+- chore: 升级 `yansongda/artful` 到最新版解决 http 配置不生效的问题(#974)
 
 ## v3.7.1
 
