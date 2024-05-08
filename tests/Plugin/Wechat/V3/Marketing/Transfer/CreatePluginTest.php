@@ -85,7 +85,8 @@ class CreatePluginTest extends TestCase
             "test" => "111",
             'transfer_detail_list' => [
                 [
-                    'user_name' => 'yansongda'
+                    'user_name' => 'yansongda',
+                    'foo' => 'bar',
                 ]
             ]
         ]));
@@ -102,5 +103,6 @@ class CreatePluginTest extends TestCase
         self::assertArrayHasKey('_serial_no', $payload);
         self::assertArrayHasKey('user_name', $payload['transfer_detail_list'][0]);
         self::assertNotEquals('yansongda', $payload['transfer_detail_list'][0]['user_name']);
+        self::assertEquals('bar', $payload['transfer_detail_list'][0]['foo']);
     }
 }
