@@ -1,3 +1,9 @@
+## v3.7.4
+
+### optimized
+
+- optimize: 使用 is_file 代替字符串结尾判断(#982)
+
 ## v3.7.3
 
 ### fixed
