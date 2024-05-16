@@ -8,8 +8,7 @@ export default defineConfig({
   description: '可能是我用过的最优雅的支付宝SDK、微信支付SDK、银联支付SDK 了; yansongda pay 让支付开发更简单',
   lastUpdated: true,
   head: [
-    ['link', { rel: 'icon', href: '/images/icon.png' }],
-    ['script', { defer: '', src: 'https://static.cloudflareinsights.com/beacon.min.js?token=0bff42137b6e45f0be5c8256c00cfc3a' }]
+    ['link', { rel: 'icon', href: '/images/icon.png' }]
   ],
   themeConfig: {
     logo: '/images/logo2.png',
