@@ -25,7 +25,6 @@ use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
-use Yansongda\Supports\Str;
 
 use function Yansongda\Artful\get_radar_body;
 use function Yansongda\Artful\get_radar_method;
@@ -37,12 +36,12 @@ function get_tenant(array $params = []): string
 
 function get_public_cert(string $key): string
 {
-    return Str::endsWith($key, ['.cer', '.crt', '.pem']) ? file_get_contents($key) : $key;
+    return is_file($key) ? file_get_contents($key) : $key;
 }
 
 function get_private_cert(string $key): string
 {
-    if (Str::endsWith($key, ['.crt', '.pem'])) {
+    if (is_file($key)) {
         return file_get_contents($key);
     }
 
