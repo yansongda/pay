@@ -14,7 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_wechat_type_key;
 
 /**
@@ -33,7 +33,7 @@ class ApplyPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $subMchId = $payload?->get('sub_mchid') ?? $config['sub_mch_id'] ?? '';
         $spAppId = $payload?->get('sp_appid') ?? $config[get_wechat_type_key($params)] ?? '';
 

@@ -15,7 +15,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/return-orders/create-return-order.html
@@ -33,11 +33,11 @@ class ReturnPlugin implements PluginInterface
         Logger::debug('[Wechat][Extend][ProfitSharing][ReturnPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账参数');
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账退回参数');
         }
 
         if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {

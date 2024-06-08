@@ -13,7 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/jsapi-payment/query-by-out-refund-no.html
@@ -31,7 +31,7 @@ class QueryRefundPlugin implements PluginInterface
         Logger::debug('[Wechat][Pay][Jsapi][QueryRefundPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $payload = $rocket->getPayload();
         $outRefundNo = $payload?->get('out_refund_no') ?? null;
 

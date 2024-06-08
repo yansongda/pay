@@ -19,7 +19,7 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_wechat_sign;
 use function Yansongda\Pay\get_wechat_type_key;
 
@@ -53,7 +53,7 @@ class JsapiInvokePlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDestination($this->getInvokeConfig($payload, $params, $config, $prepayId));

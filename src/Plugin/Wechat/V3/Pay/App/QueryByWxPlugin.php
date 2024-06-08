@@ -14,7 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/in-app-payment/query-by-wx-trade-no.html
@@ -32,7 +32,7 @@ class QueryByWxPlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Pay][App][QueryByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $payload = $rocket->getPayload();
         $transactionId = $payload?->get('transaction_id') ?? null;
 

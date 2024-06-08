@@ -14,7 +14,7 @@ use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Supports\Str;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_wechat_type_key;
 
 /**
@@ -32,7 +32,7 @@ class ContractOrderPlugin implements PluginInterface
         Logger::debug('[Wechat][V2][Papay][Direct][ContractOrderPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setPacker(XmlPacker::class)

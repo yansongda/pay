@@ -15,7 +15,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/stock/list-available-singleitems.html
@@ -33,7 +33,7 @@ class QueryItemsPlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Marketing][Coupon][Stock][QueryItemsPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $payload = $rocket->getPayload();
         $stockId = $payload?->get('stock_id') ?? null;
 
