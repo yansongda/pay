@@ -21,14 +21,12 @@ use function Yansongda\Pay\decrypt_wechat_contents;
 use function Yansongda\Pay\decrypt_wechat_resource;
 use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
 use function Yansongda\Pay\encrypt_wechat_contents;
-use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_private_cert;
 use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_public_cert;
 use function Yansongda\Pay\get_radar_url;
 use function Yansongda\Pay\get_tenant;
 use function Yansongda\Pay\get_unipay_body;
-use function Yansongda\Pay\get_unipay_config;
 use function Yansongda\Pay\get_unipay_sign_qra;
 use function Yansongda\Pay\get_unipay_url;
 use function Yansongda\Pay\get_wechat_body;
@@ -83,7 +81,7 @@ class FunctionTest extends TestCase
 
     public function testGetAlipayConfig()
     {
-        self::assertArrayHasKey('app_id', get_alipay_config());
+        self::assertArrayHasKey('app_id', get_provider_config('alipay'));
 
         Pay::clear();
 
@@ -94,14 +92,14 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config($config2);
-        self::assertEquals(['name' => 'yansongda'], get_alipay_config());
+        self::assertEquals(['name' => 'yansongda'], get_provider_config('alipay'));
 
-        self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1']));
+        self::assertEquals(['age' => 28], get_provider_config('alipay', ['_config' => 'c1']));
     }
 
     public function testVerifyAlipaySign()
     {
-        verify_alipay_sign(get_alipay_config(), json_encode([
+        verify_alipay_sign(get_provider_config('alipay'), json_encode([
             "code" => "10000",
             "msg" => "Success",
             "order_id" => "20231220110070000002150000657610",
@@ -125,14 +123,14 @@ class FunctionTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        verify_alipay_sign(get_alipay_config(), '', 'aaa');
+        verify_alipay_sign(get_provider_config('alipay'), '', 'aaa');
     }
 
     public function testVerifyAlipaySignEmpty()
     {
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
-        verify_alipay_sign(get_alipay_config(), '', '');
+        verify_alipay_sign(get_provider_config('alipay'), '', '');
     }
 
     public function testGetWechatConfig()
@@ -500,7 +498,7 @@ class FunctionTest extends TestCase
 
     public function testGetUnipayConfig()
     {
-        self::assertArrayHasKey('mch_id', get_unipay_config([]));
+        self::assertArrayHasKey('mch_id', get_provider_config('unipay'));
 
         Pay::clear();
 
@@ -511,9 +509,9 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config($config2);
-        self::assertEquals(['name' => 'yansongda'], get_unipay_config([]));
+        self::assertEquals(['name' => 'yansongda'], get_provider_config('unipay'));
 
-        self::assertEquals(['age' => 28], get_unipay_config(['_config' => 'c1']));
+        self::assertEquals(['age' => 28], get_provider_config('unipay', ['_config' => 'c1']));
     }
 
     public function testVerifyUnipaySign()
@@ -546,7 +544,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 -----END CERTIFICATE-----&traceNo=067402&traceTime=0908132206&txnAmt=1&txnSubType=01&txnTime=20220908132206&txnType=01&version=5.1.0";
         $sign = 'JeA4S2+6TbGo9yjXDUvV5A2E3oJbunoCcZ66exN6xR3OH/5PNDK1VSV1Mq7XhVdxzkTeREUveiOYHalqoagRkh71nsHVvruwGbk6azygXSaawuO5tF67UIqNd4Mbufwh1KhbVpEkKbOETUvRhFcdon0fulE97I83eMSk52INHt8E1xk8NdbhyUadSlp+Uv30AKx70PpQbTGmVS3PJfd+Whj0b7LnvZKeC+BS1kUOtIKlcZO+gBoTigvCIJqj51kBrcBCs+x+VaeGm7EYBBhGSERpfQhQ4n+eJBwLdBeZ0/dNbo3iELjvVMx0n9KoW4klvUJhaH5LALA8pV02SbZv4Q==';
 
-        verify_unipay_sign(get_unipay_config(), $contents, $sign);
+        verify_unipay_sign(get_provider_config('unipay'), $contents, $sign);
 
         self::assertTrue(true);
 
@@ -588,7 +586,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
     public function testGetUnipaySignQra()
     {
-        $config = get_unipay_config(['_config' => 'qra']);
+        $config = get_provider_config('unipay', ['_config' => 'qra']);
 
         $payload = [
             'out_trade_no' => 'pos-qra-20240106163401',
@@ -633,7 +631,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
             "version" => "2.0",
         ];
 
-        verify_unipay_sign_qra(get_unipay_config(['_config' => 'qra']), $payload);
+        verify_unipay_sign_qra(get_provider_config('unipay', ['_config' => 'qra']), $payload);
         self::assertTrue(true);
 
         self::expectException(InvalidConfigException::class);
@@ -662,7 +660,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        verify_unipay_sign_qra(get_unipay_config(['_config' => 'qra']), $payload);
+        verify_unipay_sign_qra(get_provider_config('unipay', ['_config' => 'qra']), $payload);
     }
 
     public function testVerifyUnipaySignQraEmpty()
@@ -685,6 +683,6 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
 
-        verify_unipay_sign_qra(get_unipay_config(['_config' => 'qra']), $payload);
+        verify_unipay_sign_qra(get_provider_config('unipay', ['_config' => 'qra']), $payload);
     }
 }
