@@ -14,7 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\InvalidSignException;
 
 use function Yansongda\Artful\should_do_http_request;
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\verify_wechat_sign_v2;
 
 class VerifySignaturePlugin implements PluginInterface
@@ -32,7 +32,7 @@ class VerifySignaturePlugin implements PluginInterface
 
         Logger::debug('[Wechat][V2][VerifySignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_wechat_config($rocket->getParams());
+        $config = get_provider_config('wechat', $rocket->getParams());
 
         if (!should_do_http_request($rocket->getDirection())) {
             return $rocket;

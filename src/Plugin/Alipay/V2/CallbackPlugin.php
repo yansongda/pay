@@ -16,7 +16,7 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\verify_alipay_sign;
 
 class CallbackPlugin implements PluginInterface
@@ -32,7 +32,7 @@ class CallbackPlugin implements PluginInterface
         Logger::debug('[Alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_alipay_config($params);
+        $config = get_provider_config('alipay', $params);
 
         $value = filter_params($params, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k);
 

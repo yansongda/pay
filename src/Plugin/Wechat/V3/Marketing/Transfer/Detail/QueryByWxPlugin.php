@@ -14,7 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-no.html
@@ -30,7 +30,7 @@ class QueryByWxPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Marketing][Transfer][Detail][QueryByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_wechat_config($rocket->getParams());
+        $config = get_provider_config('wechat', $rocket->getParams());
         $payload = $rocket->getPayload();
         $batchId = $payload?->get('batch_id') ?? null;
         $detailId = $payload?->get('detail_id') ?? null;

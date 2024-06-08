@@ -15,7 +15,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_wechat_type_key;
 
 /**
@@ -55,7 +55,7 @@ class GetTitleUrlPlugin implements PluginInterface
      */
     protected function getQuery(Collection $payload, array $params): Collection
     {
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
 
         return filter_params($payload)->merge([
             'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),

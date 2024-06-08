@@ -15,7 +15,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/jsapi-payment/create.html
@@ -33,7 +33,7 @@ class RefundPlugin implements PluginInterface
         Logger::debug('[Wechat][Pay][Jsapi][RefundPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {

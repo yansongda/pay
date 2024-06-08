@@ -3,6 +3,7 @@
 ### deprecated
 
 - deprecate: 微信 `StartPlugin` 改为使用 `yansongda/artful` 中的插件(#993)
+- deprecate: `get_wechat_config`, `get_alipay_config`, `get_unipay_config` 方法已废弃，使用 `get_provider_config` 方法代替(#994)
 
 ## v3.7.4
 

@@ -15,7 +15,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_unipay_config;
+use function Yansongda\Pay\get_provider_config;
 
 class AddPayloadSignaturePlugin implements PluginInterface
 {
@@ -29,7 +29,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
         Logger::debug('[Unipay][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_unipay_config($params);
+        $config = get_provider_config('unipay', $params);
         $payload = $rocket->getPayload();
 
         if (empty($payload) || $payload->isEmpty()) {

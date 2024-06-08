@@ -21,17 +21,15 @@ use function Yansongda\Pay\decrypt_wechat_contents;
 use function Yansongda\Pay\decrypt_wechat_resource;
 use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
 use function Yansongda\Pay\encrypt_wechat_contents;
-use function Yansongda\Pay\get_alipay_config;
 use function Yansongda\Pay\get_private_cert;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_public_cert;
 use function Yansongda\Pay\get_radar_url;
 use function Yansongda\Pay\get_tenant;
 use function Yansongda\Pay\get_unipay_body;
-use function Yansongda\Pay\get_unipay_config;
 use function Yansongda\Pay\get_unipay_sign_qra;
 use function Yansongda\Pay\get_unipay_url;
 use function Yansongda\Pay\get_wechat_body;
-use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_method;
 use function Yansongda\Pay\get_wechat_miniprogram_pay_sign;
 use function Yansongda\Pay\get_wechat_miniprogram_user_sign;
@@ -83,7 +81,7 @@ class FunctionTest extends TestCase
 
     public function testGetAlipayConfig()
     {
-        self::assertArrayHasKey('app_id', get_alipay_config());
+        self::assertArrayHasKey('app_id', get_provider_config('alipay'));
 
         Pay::clear();
 
@@ -94,14 +92,14 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config($config2);
-        self::assertEquals(['name' => 'yansongda'], get_alipay_config());
+        self::assertEquals(['name' => 'yansongda'], get_provider_config('alipay'));
 
-        self::assertEquals(['age' => 28], get_alipay_config(['_config' => 'c1']));
+        self::assertEquals(['age' => 28], get_provider_config('alipay', ['_config' => 'c1']));
     }
 
     public function testVerifyAlipaySign()
     {
-        verify_alipay_sign(get_alipay_config(), json_encode([
+        verify_alipay_sign(get_provider_config('alipay'), json_encode([
             "code" => "10000",
             "msg" => "Success",
             "order_id" => "20231220110070000002150000657610",
@@ -125,19 +123,19 @@ class FunctionTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        verify_alipay_sign(get_alipay_config(), '', 'aaa');
+        verify_alipay_sign(get_provider_config('alipay'), '', 'aaa');
     }
 
     public function testVerifyAlipaySignEmpty()
     {
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
-        verify_alipay_sign(get_alipay_config(), '', '');
+        verify_alipay_sign(get_provider_config('alipay'), '', '');
     }
 
     public function testGetWechatConfig()
     {
-        self::assertArrayHasKey('mp_app_id', get_wechat_config([]));
+        self::assertArrayHasKey('mp_app_id', get_provider_config('wechat', []));
 
         $config2 = [
             'wechat' => [
@@ -146,9 +144,9 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config(array_merge($config2, ['_force' => true]));
-        self::assertEquals(['name' => 'yansongda'], get_wechat_config([]));
+        self::assertEquals(['name' => 'yansongda'], get_provider_config('wechat', []));
 
-        self::assertEquals(['age' => 28], get_wechat_config(['_config' => 'c1']));
+        self::assertEquals(['age' => 28], get_provider_config('wechat', ['_config' => 'c1']));
     }
 
     public function testGetWechatMethod()
@@ -195,7 +193,7 @@ class FunctionTest extends TestCase
 
         self::assertEquals(
             'KzIgMgiop3nQJNdBVR2Xah/JUwVBLDFFajyXPiSN8b8YAYEA4FuWfaCgFJ52+WFed+PhOYWx/ZPih4RaEuuSdYB8eZwYUx7RZGMQZk0bKCctAjjPuf4pJN+f/WsXKjPIy3diqF5x7gyxwSCaKWP4/KjsHNqgQpiC8q1uC5xmElzuhzSwj88LIoLtkAuSmtUVvdAt0Nz41ECHZgHWSGR32TfBo902r8afdaVKkFde8IoqcEJJcp6sMxdDO5l9R5KEWxrJ1SjsXVrb0IPH8Nj7e6hfhq7pucxojPpzsC+ZWAYvufZkAQx3kTiFmY87T+QhkP9FesOfWvkIRL4E6MP6ug==',
-            get_wechat_sign(get_wechat_config([]), $contents)
+            get_wechat_sign(get_provider_config('wechat', []), $contents)
         );
 
         // test config error
@@ -216,7 +214,7 @@ class FunctionTest extends TestCase
     public function testGetWechatSignV2()
     {
         $params = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
-        self::assertEquals('3213848AED2C380749FD1D559555881D', get_wechat_sign_v2(get_wechat_config($params), $params));
+        self::assertEquals('3213848AED2C380749FD1D559555881D', get_wechat_sign_v2(get_provider_config('wechat', $params), $params));
 
         // test config error
         $config1 = [
@@ -230,7 +228,7 @@ class FunctionTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        get_wechat_sign_v2(get_wechat_config(), []);
+        get_wechat_sign_v2(get_provider_config('wechat'), []);
     }
 
     public function testVerifyWechatSign()
@@ -270,13 +268,13 @@ class FunctionTest extends TestCase
     public function testVerifyWechatSignV2()
     {
         $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => '3213848AED2C380749FD1D559555881D'];
-        verify_wechat_sign_v2(get_wechat_config(), $destination);
+        verify_wechat_sign_v2(get_provider_config('wechat'), $destination);
         self::assertTrue(true);
 
         $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
-        verify_wechat_sign_v2(get_wechat_config(), $destination);
+        verify_wechat_sign_v2(get_provider_config('wechat'), $destination);
     }
 
     public function testVerifyWechatSignV2EmptySecret()
@@ -296,14 +294,14 @@ class FunctionTest extends TestCase
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        verify_wechat_sign_v2(get_wechat_config(), $destination);
+        verify_wechat_sign_v2(get_provider_config('wechat'), $destination);
     }
 
     public function testEncryptWechatContents()
     {
         $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
         $contents = 'yansongda';
-        $result = encrypt_wechat_contents($contents, get_wechat_config([])['wechat_public_cert_path'][$serialNo]);
+        $result = encrypt_wechat_contents($contents, get_provider_config('wechat')['wechat_public_cert_path'][$serialNo]);
         self::assertIsString($result);
     }
 
@@ -311,7 +309,7 @@ class FunctionTest extends TestCase
     {
         $encrypted = 'WIesmK+dSJycwdhTTkNmv0Lk2wb9o7NGODovccjhyotNnRkEeh+sxRK1gNSRNMJJgkQ30m4HwcuweSO24mehFeXVNTVAKFVef/3FlHnYDZfE1c3mCLToEef7e8J/Z8TwFH1ecn3t+Jk9ZaBpQKNHdQ0Q8jcL7AnL48h0D9BcZxDekPqX6hNnKfISoKSv4TXFcgvBLFeAe4Q3KM0Snq0N5IvI86D9xZqVg6mY+Gfz0782ymQFxflau6Qxx3mJ+0etHMocNuCdgctVH390XYYMc0u+V2FCJ5cU5h/M/AxzP9ayrEO4l0ftaxL6lP0HjifNrkPcAAb+q9I67UepKO9iGw==';
 
-        $config = get_wechat_config();
+        $config = get_provider_config('wechat');
 
         self::assertEquals('yansongda', decrypt_wechat_contents($encrypted, $config));
         self::assertNull(decrypt_wechat_contents('invalid', $config));
@@ -400,7 +398,7 @@ class FunctionTest extends TestCase
             'nonce' => '4196a5b75276',
         ];
 
-        $result = decrypt_wechat_resource($resource, get_wechat_config());
+        $result = decrypt_wechat_resource($resource, get_provider_config('wechat'));
 
         self::assertTrue(false !== strpos($result['ciphertext'], '-----BEGIN CERTIFICATE-----'));
     }
@@ -475,18 +473,18 @@ class FunctionTest extends TestCase
     public function testGetWechatPublicKey()
     {
         $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
-        $result = get_wechat_public_key(get_wechat_config(), $serialNo);
+        $result = get_wechat_public_key(get_provider_config('wechat'), $serialNo);
         self::assertIsString($result);
 
         $serialNo = 'non-exist';
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND);
-        get_wechat_public_key(get_wechat_config(), $serialNo);
+        get_wechat_public_key(get_provider_config('wechat'), $serialNo);
     }
 
     public function testGetWechatMiniprogramPaySign()
     {
-        self::assertEquals('6bb3e49bb4744fc6817331333ffa435e0d1409c3c900a87637c98265445cbe96', get_wechat_miniprogram_pay_sign(get_wechat_config(), 'yansongda.cn', '{"name":"yansongda"}'));
+        self::assertEquals('6bb3e49bb4744fc6817331333ffa435e0d1409c3c900a87637c98265445cbe96', get_wechat_miniprogram_pay_sign(get_provider_config('wechat'), 'yansongda.cn', '{"name":"yansongda"}'));
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
@@ -500,7 +498,7 @@ class FunctionTest extends TestCase
 
     public function testGetUnipayConfig()
     {
-        self::assertArrayHasKey('mch_id', get_unipay_config([]));
+        self::assertArrayHasKey('mch_id', get_provider_config('unipay'));
 
         Pay::clear();
 
@@ -511,9 +509,9 @@ class FunctionTest extends TestCase
             ]
         ];
         Pay::config($config2);
-        self::assertEquals(['name' => 'yansongda'], get_unipay_config([]));
+        self::assertEquals(['name' => 'yansongda'], get_provider_config('unipay'));
 
-        self::assertEquals(['age' => 28], get_unipay_config(['_config' => 'c1']));
+        self::assertEquals(['age' => 28], get_provider_config('unipay', ['_config' => 'c1']));
     }
 
     public function testVerifyUnipaySign()
@@ -546,7 +544,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 -----END CERTIFICATE-----&traceNo=067402&traceTime=0908132206&txnAmt=1&txnSubType=01&txnTime=20220908132206&txnType=01&version=5.1.0";
         $sign = 'JeA4S2+6TbGo9yjXDUvV5A2E3oJbunoCcZ66exN6xR3OH/5PNDK1VSV1Mq7XhVdxzkTeREUveiOYHalqoagRkh71nsHVvruwGbk6azygXSaawuO5tF67UIqNd4Mbufwh1KhbVpEkKbOETUvRhFcdon0fulE97I83eMSk52INHt8E1xk8NdbhyUadSlp+Uv30AKx70PpQbTGmVS3PJfd+Whj0b7LnvZKeC+BS1kUOtIKlcZO+gBoTigvCIJqj51kBrcBCs+x+VaeGm7EYBBhGSERpfQhQ4n+eJBwLdBeZ0/dNbo3iELjvVMx0n9KoW4klvUJhaH5LALA8pV02SbZv4Q==';
 
-        verify_unipay_sign(get_unipay_config(), $contents, $sign);
+        verify_unipay_sign(get_provider_config('unipay'), $contents, $sign);
 
         self::assertTrue(true);
 
@@ -588,7 +586,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
     public function testGetUnipaySignQra()
     {
-        $config = get_unipay_config(['_config' => 'qra']);
+        $config = get_provider_config('unipay', ['_config' => 'qra']);
 
         $payload = [
             'out_trade_no' => 'pos-qra-20240106163401',
@@ -633,7 +631,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
             "version" => "2.0",
         ];
 
-        verify_unipay_sign_qra(get_unipay_config(['_config' => 'qra']), $payload);
+        verify_unipay_sign_qra(get_provider_config('unipay', ['_config' => 'qra']), $payload);
         self::assertTrue(true);
 
         self::expectException(InvalidConfigException::class);
@@ -662,7 +660,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        verify_unipay_sign_qra(get_unipay_config(['_config' => 'qra']), $payload);
+        verify_unipay_sign_qra(get_provider_config('unipay', ['_config' => 'qra']), $payload);
     }
 
     public function testVerifyUnipaySignQraEmpty()
@@ -685,6 +683,6 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
 
-        verify_unipay_sign_qra(get_unipay_config(['_config' => 'qra']), $payload);
+        verify_unipay_sign_qra(get_provider_config('unipay', ['_config' => 'qra']), $payload);
     }
 }

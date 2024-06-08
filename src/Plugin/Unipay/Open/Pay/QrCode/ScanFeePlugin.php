@@ -12,7 +12,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Artful\Rocket;
 
-use function Yansongda\Pay\get_unipay_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://open.unionpay.com/tjweb/acproduct/APIList?acpAPIId=796&apiservId=468&version=V2.2&bussType=0
@@ -28,7 +28,7 @@ class ScanFeePlugin implements PluginInterface
         Logger::debug('[Unipay][Pay][QrCode][ScanFeePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_unipay_config($params);
+        $config = get_provider_config('unipay', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setPacker(QueryPacker::class)

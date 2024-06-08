@@ -13,7 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_wechat_type_key;
 
 /**
@@ -32,7 +32,7 @@ class H5PayPlugin implements PluginInterface
         Logger::debug('[Wechat][Pay][Combine][H5PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {

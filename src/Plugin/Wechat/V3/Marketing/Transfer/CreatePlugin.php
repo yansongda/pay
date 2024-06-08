@@ -18,7 +18,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\encrypt_wechat_contents;
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_wechat_public_key;
 use function Yansongda\Pay\get_wechat_serial_no;
 use function Yansongda\Pay\get_wechat_type_key;
@@ -41,7 +41,7 @@ class CreatePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
 
         if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 发起商家转账，只支持普通商户模式，当前配置为服务商模式');

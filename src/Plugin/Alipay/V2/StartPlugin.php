@@ -15,7 +15,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
-use function Yansongda\Pay\get_alipay_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_public_cert;
 use function Yansongda\Pay\get_tenant;
 
@@ -45,7 +45,7 @@ class StartPlugin implements PluginInterface
     protected function getPayload(array $params): array
     {
         $tenant = get_tenant($params);
-        $config = get_alipay_config($params);
+        $config = get_provider_config('alipay', $params);
 
         return [
             'app_id' => $config['app_id'] ?? '',

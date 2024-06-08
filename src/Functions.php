@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
+use JetBrains\PhpStorm\Deprecated;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Artful\Contract\ConfigInterface;
@@ -63,6 +64,19 @@ function get_radar_url(array $config, ?Collection $payload): ?string
  * @throws ContainerException
  * @throws ServiceNotFoundException
  */
+function get_provider_config(string $provider, array $params = []): array
+{
+    /** @var ConfigInterface $config */
+    $config = Pay::get(ConfigInterface::class);
+
+    return $config->get($provider, [])[get_tenant($params)] ?? [];
+}
+
+/**
+ * @throws ContainerException
+ * @throws ServiceNotFoundException
+ */
+#[Deprecated(reason: '自 v3.7.5 开始废弃', replacement: 'get_provider_config')]
 function get_alipay_config(array $params = []): array
 {
     $alipay = Pay::get(ConfigInterface::class)->get('alipay');
@@ -113,6 +127,7 @@ function verify_alipay_sign(array $config, string $contents, string $sign): void
  * @throws ContainerException
  * @throws ServiceNotFoundException
  */
+#[Deprecated(reason: '自 v3.7.5 开始废弃', replacement: 'get_provider_config')]
 function get_wechat_config(array $params = []): array
 {
     $wechat = Pay::get(ConfigInterface::class)->get('wechat');
@@ -231,7 +246,7 @@ function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, a
     $body = (string) $message->getBody();
 
     $content = $timestamp."\n".$random."\n".$body."\n";
-    $public = get_wechat_config($params)['wechat_public_cert_path'][$wechatSerial] ?? null;
+    $public = get_provider_config('wechat', $params)['wechat_public_cert_path'][$wechatSerial] ?? null;
 
     if (empty($sign)) {
         throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 微信签名为空', ['headers' => $message->getHeaders(), 'body' => $body]);
@@ -308,7 +323,7 @@ function reload_wechat_public_certs(array $params, ?string $serialNo = null): st
         $params
     )->get('data', []);
 
-    $wechatConfig = get_wechat_config($params);
+    $wechatConfig = get_provider_config('wechat', $params);
 
     foreach ($data as $item) {
         $certs[$item['serial_no']] = decrypt_wechat_resource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
@@ -337,7 +352,7 @@ function get_wechat_public_certs(array $params = [], ?string $path = null): void
 {
     reload_wechat_public_certs($params);
 
-    $config = get_wechat_config($params);
+    $config = get_provider_config('wechat', $params);
 
     if (empty($path)) {
         var_dump($config['wechat_public_cert_path']);
@@ -418,12 +433,12 @@ function get_wechat_serial_no(array $params): string
         return $params['_serial_no'];
     }
 
-    $config = get_wechat_config($params);
+    $config = get_provider_config('wechat', $params);
 
     if (empty($config['wechat_public_cert_path'])) {
         reload_wechat_public_certs($params);
 
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
     }
 
     mt_srand();
@@ -466,6 +481,7 @@ function get_wechat_miniprogram_user_sign(string $sessionKey, string $payload): 
  * @throws ContainerException
  * @throws ServiceNotFoundException
  */
+#[Deprecated(reason: '自 v3.7.5 开始废弃', replacement: 'get_provider_config')]
 function get_unipay_config(array $params = []): array
 {
     $unipay = Pay::get(ConfigInterface::class)->get('unipay');

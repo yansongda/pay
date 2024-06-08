@@ -15,7 +15,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/electronic-receipt-api/query-electronic-receipt.html
@@ -32,7 +32,7 @@ class QueryPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][Transfer][ReceiptDetail][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
-        $config = get_wechat_config($rocket->getParams());
+        $config = get_provider_config('wechat', $rocket->getParams());
 
         if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 查询转账明细电子回单受理结果API，只支持普通商户模式，当前配置为服务商模式');

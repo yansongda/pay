@@ -14,8 +14,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
 use function Yansongda\Artful\get_radar_method;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_unipay_body;
-use function Yansongda\Pay\get_unipay_config;
 use function Yansongda\Pay\get_unipay_url;
 
 class AddRadarPlugin implements PluginInterface
@@ -30,7 +30,7 @@ class AddRadarPlugin implements PluginInterface
         Logger::debug('[Unipay][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_unipay_config($params);
+        $config = get_provider_config('unipay', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setRadar(new Request(

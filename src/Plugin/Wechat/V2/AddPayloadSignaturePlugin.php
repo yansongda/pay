@@ -13,7 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_wechat_sign_v2;
 
 class AddPayloadSignaturePlugin implements PluginInterface
@@ -27,7 +27,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     {
         Logger::debug('[Wechat][V2][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_wechat_config($rocket->getParams());
+        $config = get_provider_config('wechat', $rocket->getParams());
 
         $rocket->mergePayload([
             'sign' => get_wechat_sign_v2($config, filter_params($rocket->getPayload())->all()),
