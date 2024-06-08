@@ -96,6 +96,16 @@ $config = [
             'mode' => Pay::MODE_NORMAL,
         ],
     ],
+    'douyin' => [
+        'default' => [
+            // 必填-抖音开放平台应用的 小程序 app_id
+            'mini_app_id' => 'tt226e54d3bd581bf801',
+            // 必填-抖音开放平台应用的 小程序 app_secret
+            'mini_app_secret' => 'da880aa23bb2864d381484577e2ce474fb2818f4',
+            // 选填-抖音开放平台服务商id
+            'thirdparty_id' => ''
+        ],
+    ],
     'logger' => [
         'enable' => false,
         'file' => './logs/pay.log',
