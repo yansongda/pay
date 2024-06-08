@@ -1,3 +1,9 @@
+## TBD - v3.7.5
+
+### optimized
+
+- optimize: 微信 `StartPlugin` 改为使用 `yansongda/artful` 中的插件(#993)
+
 ## v3.7.4
 
 ### optimized

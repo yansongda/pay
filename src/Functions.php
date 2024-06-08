@@ -13,12 +13,12 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
-use Yansongda\Pay\Plugin\Wechat\StartPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Alipay;
@@ -574,4 +574,15 @@ function verify_unipay_sign_qra(array $config, array $destination): void
     if (get_unipay_sign_qra($config, $destination) !== $sign) {
         throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证银联签名失败', $destination);
     }
+}
+
+/**
+ * @throws ContainerException
+ * @throws ServiceNotFoundException
+ */
+function get_douyin_config(array $params = []): array
+{
+    $wechat = Pay::get(ConfigInterface::class)->get('douyin');
+
+    return $wechat[get_tenant($params)] ?? [];
 }
