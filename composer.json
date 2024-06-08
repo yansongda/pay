@@ -36,7 +36,8 @@
         "symfony/event-dispatcher": "^5.2.0",
         "symfony/psr-http-message-bridge": "^2.1",
         "hyperf/pimple": "^2.2",
-        "guzzlehttp/guzzle": "^7.0"
+        "guzzlehttp/guzzle": "^7.0",
+        "jetbrains/phpstorm-attributes": "^1.1"
     },
     "conflict": {
         "hyperf/framework": "<3.0"

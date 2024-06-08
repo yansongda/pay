@@ -575,14 +575,3 @@ function verify_unipay_sign_qra(array $config, array $destination): void
         throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证银联签名失败', $destination);
     }
 }
-
-/**
- * @throws ContainerException
- * @throws ServiceNotFoundException
- */
-function get_douyin_config(array $params = []): array
-{
-    $wechat = Pay::get(ConfigInterface::class)->get('douyin');
-
-    return $wechat[get_tenant($params)] ?? [];
-}

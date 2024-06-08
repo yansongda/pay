@@ -1,8 +1,8 @@
 ## TBD - v3.7.5
 
-### optimized
+### deprecated
 
-- optimize: 微信 `StartPlugin` 改为使用 `yansongda/artful` 中的插件(#993)
+- deprecate: 微信 `StartPlugin` 改为使用 `yansongda/artful` 中的插件(#993)
 
 ## v3.7.4
 
