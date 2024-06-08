@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat;
 
 use Closure;
+use JetBrains\PhpStorm\Deprecated;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
+#[Deprecated(reason: '自 v3.7.5 版本已废弃', replacement: '`yansongda/artful` 包中的 `Yansongda\Artful\Plugin\StartPlugin`')]
 class StartPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
