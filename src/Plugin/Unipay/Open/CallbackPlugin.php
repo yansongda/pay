@@ -15,7 +15,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\InvalidSignException;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_unipay_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\verify_unipay_sign;
 
 class CallbackPlugin implements PluginInterface
@@ -31,7 +31,7 @@ class CallbackPlugin implements PluginInterface
         Logger::debug('[Unipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_unipay_config($params);
+        $config = get_provider_config('unipay', $params);
 
         $rocket->setPayload($params);
 

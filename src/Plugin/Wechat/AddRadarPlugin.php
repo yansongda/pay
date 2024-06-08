@@ -14,8 +14,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Supports\Collection;
 
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_wechat_body;
-use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_method;
 use function Yansongda\Pay\get_wechat_url;
 
@@ -32,7 +32,7 @@ class AddRadarPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
 
         $rocket->setRadar(new Request(
             get_wechat_method($payload),

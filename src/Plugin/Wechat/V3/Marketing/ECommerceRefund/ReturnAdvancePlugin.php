@@ -14,7 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/partner/apis/ecommerce-refund/refunds/create-return-advance.html
@@ -32,7 +32,7 @@ class ReturnAdvancePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $refundId = $payload?->get('refund_id') ?? null;
 
         if (Pay::MODE_NORMAL === ($config['mode'] ?? Pay::MODE_NORMAL)) {

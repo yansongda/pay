@@ -26,7 +26,7 @@ class AddReceiverPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 缺少分账参数');
+        self::expectExceptionMessage('参数异常: 缺少添加分账接收方参数');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

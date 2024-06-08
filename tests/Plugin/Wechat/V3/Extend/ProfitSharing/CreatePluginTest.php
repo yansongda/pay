@@ -26,7 +26,7 @@ class CreatePluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 缺少分账参数');
+        self::expectExceptionMessage('参数异常: 缺少请求分账参数');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

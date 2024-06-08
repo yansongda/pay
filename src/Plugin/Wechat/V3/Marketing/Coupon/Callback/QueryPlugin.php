@@ -11,7 +11,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
-use function Yansongda\Pay\get_wechat_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/call-back-url/query-callback.html
@@ -28,7 +28,7 @@ class QueryPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][Coupon][Callback][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_wechat_config($params);
+        $config = get_provider_config('wechat', $params);
         $mchId = $rocket->getPayload()?->get('mchid') ?? $config['mch_id'] ?? 'null';
 
         $rocket->setPayload([

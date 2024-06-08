@@ -17,9 +17,9 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_public_cert;
 use function Yansongda\Pay\get_wechat_body;
-use function Yansongda\Pay\get_wechat_config;
 use function Yansongda\Pay\get_wechat_method;
 use function Yansongda\Pay\get_wechat_sign;
 use function Yansongda\Pay\get_wechat_url;
@@ -37,7 +37,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     {
         Logger::debug('[Wechat][V3][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_wechat_config($rocket->getParams());
+        $config = get_provider_config('wechat', $rocket->getParams());
         $payload = $rocket->getPayload();
 
         $timestamp = time();

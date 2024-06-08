@@ -14,7 +14,7 @@ use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Supports\Str;
 
-use function Yansongda\Pay\get_unipay_config;
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://up.95516.com/open/openapi/doc?index_1=1&index_2=1&chapter_1=235&chapter_2=254
@@ -31,7 +31,7 @@ class QueryPlugin implements PluginInterface
         Logger::debug('[Unipay][Qra][Scan][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_unipay_config($params);
+        $config = get_provider_config('unipay', $params);
 
         $rocket->setPacker(XmlPacker::class)
             ->mergePayload([

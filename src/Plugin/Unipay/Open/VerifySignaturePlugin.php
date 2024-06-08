@@ -15,7 +15,7 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\should_do_http_request;
-use function Yansongda\Pay\get_unipay_config;
+use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\verify_unipay_sign;
 
 class VerifySignaturePlugin implements PluginInterface
@@ -44,7 +44,7 @@ class VerifySignaturePlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-        $config = get_unipay_config($params);
+        $config = get_provider_config('unipay', $params);
 
         verify_unipay_sign(
             $config,

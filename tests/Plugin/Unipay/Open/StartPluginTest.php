@@ -7,7 +7,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
-use function Yansongda\Pay\get_unipay_config;
+use function Yansongda\Pay\get_provider_config;
 
 class StartPluginTest extends TestCase
 {
@@ -35,7 +35,7 @@ class StartPluginTest extends TestCase
         $rocket = (new Rocket())->setParams($params);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $config = get_unipay_config([]);
+        $config = get_provider_config('unipay');
 
         self::assertEquals($payload, $result->getPayload()->all());
         self::assertArrayHasKey('cert', $config['certs']);
