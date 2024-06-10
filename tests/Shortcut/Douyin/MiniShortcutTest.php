@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Shortcut\Douyin;
+namespace Yansongda\Pay\Tests\Shortcut\Douyin;
 
-use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
@@ -12,12 +11,23 @@ use Yansongda\Pay\Plugin\Douyin\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Douyin\ResponsePlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\PayPlugin;
+use Yansongda\Pay\Shortcut\Douyin\MiniShortcut;
+use Yansongda\Pay\Tests\TestCase;
 
-class MiniShortcut implements ShortcutInterface
+class MiniShortcutTest extends TestCase
 {
-    public function getPlugins(array $params): array
+    protected MiniShortcut $plugin;
+
+    protected function setUp(): void
     {
-        return [
+        parent::setUp();
+
+        $this->plugin = new MiniShortcut();
+    }
+
+    public function testDefault()
+    {
+        self::assertEquals([
             StartPlugin::class,
             PayPlugin::class,
             AddPayloadSignaturePlugin::class,
@@ -25,6 +35,6 @@ class MiniShortcut implements ShortcutInterface
             AddRadarPlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ];
+        ], $this->plugin->getPlugins([]));
     }
 }

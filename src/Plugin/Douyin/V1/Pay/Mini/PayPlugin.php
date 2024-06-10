@@ -61,7 +61,7 @@ class PayPlugin implements PluginInterface
     protected function service(Collection $payload, array $config): array
     {
         return [
-            'thirdparty_id' => $payload->get('thirdparty_id', $config['thirdparty_id'] ?? ''),
+            'thirdparty_id' => $payload->get('thirdparty_id', $config['mini_thirdparty_id'] ?? ''),
         ];
     }
 

@@ -32,7 +32,8 @@ class AddRadarPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         $rocket->setRadar(new Request(
-            get_radar_method(new Collection($params) ?? 'POST'),
+            // 这里因为支付宝的 payload 里不包含 _method，所以需要取 params 中的
+            get_radar_method(new Collection($params)) ?? 'POST',
             get_alipay_url($config, $payload),
             $this->getHeaders(),
             // 不能用 packer，支付宝接收的是 x-www-form-urlencoded 返回的又是 json，packer 用的是返回.

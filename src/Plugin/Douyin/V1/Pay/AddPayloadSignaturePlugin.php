@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Douyin\V1;
+namespace Yansongda\Pay\Plugin\Douyin\V1\Pay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -26,14 +26,14 @@ class AddPayloadSignaturePlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Douyin][V1][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Douyin][V1][Pay][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $config = get_provider_config('douyin', $rocket->getParams());
         $payload = $rocket->getPayload();
 
         $rocket->mergePayload(['sign' => $this->getSign($config, filter_params($payload))]);
 
-        Logger::info('[Douyin][V1][AddPayloadSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Douyin][V1][Pay][AddPayloadSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
