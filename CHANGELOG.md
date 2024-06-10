@@ -1,5 +1,9 @@
 ## TBD - v3.7.5
 
+### added
+
+- feat: 支持抖音支付(#996)
+
 ### deprecated
 
 - deprecate: 微信 `StartPlugin` 改为使用 `yansongda/artful` 中的插件(#993)
