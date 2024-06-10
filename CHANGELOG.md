@@ -4,6 +4,10 @@
 
 - feat: 支持抖音支付(#996)
 
+### optimized
+
+- optimize: 优化微信 `ResponsePlugin` 插件去除不必要的返回参数(#996)
+
 ### deprecated
 
 - deprecate: 微信 `StartPlugin` 改为使用 `yansongda/artful` 中的插件(#993)
