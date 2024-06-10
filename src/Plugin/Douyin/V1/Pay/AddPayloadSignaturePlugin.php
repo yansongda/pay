@@ -43,10 +43,10 @@ class AddPayloadSignaturePlugin implements PluginInterface
      */
     protected function getSign(array $config, Collection $payload): string
     {
-        $salt = $config['mini_salt'] ?? null;
+        $salt = $config['mch_secret_salt'] ?? null;
 
         if (empty($salt)) {
-            throw new InvalidConfigException(Exception::CONFIG_DOUYIN_INVALID, '配置异常: 缺少抖音配置 -- [mini_salt]');
+            throw new InvalidConfigException(Exception::CONFIG_DOUYIN_INVALID, '配置异常: 缺少抖音配置 -- [mch_secret_salt]');
         }
 
         foreach ($payload as $key => $value) {

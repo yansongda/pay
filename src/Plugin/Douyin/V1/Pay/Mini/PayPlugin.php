@@ -61,12 +61,12 @@ class PayPlugin implements PluginInterface
     protected function service(Collection $payload, array $config): array
     {
         return [
-            'thirdparty_id' => $payload->get('thirdparty_id', $config['mini_thirdparty_id'] ?? ''),
+            'thirdparty_id' => $payload->get('thirdparty_id', $config['thirdparty_id'] ?? ''),
         ];
     }
 
     protected function getNotifyUrl(array $config): ?string
     {
-        return empty($config['mini_notify_url']) ? null : $config['mini_notify_url'];
+        return empty($config['notify_url']) ? null : $config['notify_url'];
     }
 }
