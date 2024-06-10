@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Douyin;
+namespace Yansongda\Pay\Plugin\Douyin\V1\Pay;
 
 use Closure;
 use Psr\Http\Message\ResponseInterface;

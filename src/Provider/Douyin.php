@@ -24,8 +24,8 @@ use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Douyin\ResponsePlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 

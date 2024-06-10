@@ -1,9 +1,9 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Douyin;
+namespace Yansongda\Pay\Tests\Plugin\Douyin\V1\Pay;
 
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Plugin\Douyin\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

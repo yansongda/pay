@@ -7,10 +7,10 @@ namespace Yansongda\Pay\Tests\Shortcut\Douyin;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Plugin\Douyin\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Douyin\ResponsePlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\PayPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Douyin\MiniShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
