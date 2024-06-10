@@ -8,12 +8,10 @@ use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\InvokePlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\PayPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Douyin\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\ResponsePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\PayPlugin;
 
 class MiniShortcut implements ShortcutInterface
 {
@@ -22,11 +20,9 @@ class MiniShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             PayPlugin::class,
-            AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
-            InvokePlugin::class,
-            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];

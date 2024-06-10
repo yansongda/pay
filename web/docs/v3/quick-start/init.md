@@ -98,12 +98,19 @@ $config = [
     ],
     'douyin' => [
         'default' => [
-            // 必填-抖音开放平台应用的 小程序 app_id
+            // 必填-小程序 app_id
+            // 抖音开放平台 --> 小程序详情 --> 支付信息 --> 支付设置 --> 小程序appid
             'mini_app_id' => 'tt226e54d3bd581bf801',
-            // 必填-抖音开放平台应用的 小程序 app_secret
-            'mini_app_secret' => 'da880aa23bb2864d381484577e2ce474fb2818f4',
+            // 必填-支付 Token，用于支付回调签名
+            // 抖音开放平台 --> 小程序详情 --> 支付信息 --> 支付设置 --> Token(令牌)
+            'mini_token' => 'douyin_mini_token',
+            // 必填-支付 SALT，用于支付签名
+            // 抖音开放平台 --> 小程序详情 --> 支付信息 --> 支付设置 --> SALT
+            'mini_salt' => 'oDxWDBr4U7FAAQ8hnGDm29i4A6pbTMDKme4WLLvA',
             // 选填-抖音开放平台服务商id
-            'thirdparty_id' => ''
+            'mini_thirdparty_id' => '',
+            // 选填-抖音支付回调地址
+            'mini_notify_url' => 'https://yansongda.cn/douyin/notify',
         ],
     ],
     'logger' => [

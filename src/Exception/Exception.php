@@ -37,12 +37,16 @@ class Exception extends \Exception
 
     public const PARAMS_CALLBACK_REQUEST_INVALID = 9221;
 
+    public const PARAMS_DOUYIN_URL_MISSING = 9222;
+
     /**
      * 关于响应.
      */
     public const RESPONSE_CODE_WRONG = 9304;
 
     public const RESPONSE_MISSING_NECESSARY_PARAMS = 9305;
+
+    public const RESPONSE_BUSINESS_CODE_WRONG = 9306;
 
     /*
      * 关于配置.
@@ -52,6 +56,8 @@ class Exception extends \Exception
     public const CONFIG_WECHAT_INVALID = 9402;
 
     public const CONFIG_UNIPAY_INVALID = 9403;
+
+    public const CONFIG_DOUYIN_INVALID = 9404;
 
     /**
      * 关于签名.

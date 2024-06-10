@@ -16,30 +16,21 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
-use Yansongda\Pay\Plugin\Wechat\StartPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket mini(array $order)     小程序支付
+ * @method Collection|Rocket mini(array $order) 小程序支付
  */
 class Douyin implements ProviderInterface
 {
-    public const AUTH_TAG_LENGTH_BYTE = 16;
-
-    public const MCH_SECRET_KEY_LENGTH_BYTE = 32;
-
     public const URL = [
         Pay::MODE_NORMAL => 'https://developer.toutiao.com/',
         Pay::MODE_SANDBOX => 'https://open-sandbox.douyin.com/',

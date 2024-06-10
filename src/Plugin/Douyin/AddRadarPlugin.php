@@ -2,44 +2,45 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\V2;
+namespace Yansongda\Pay\Plugin\Douyin;
 
 use Closure;
 use GuzzleHttp\Psr7\Request;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Supports\Collection;
 
+use function Yansongda\Artful\get_radar_body;
 use function Yansongda\Artful\get_radar_method;
-use function Yansongda\Pay\get_alipay_url;
+use function Yansongda\Pay\get_douyin_url;
 use function Yansongda\Pay\get_provider_config;
 
 class AddRadarPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
+     * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Douyin][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('alipay', $params);
         $payload = $rocket->getPayload();
+        $config = get_provider_config('douyin', $params);
 
         $rocket->setRadar(new Request(
-            get_radar_method(new Collection($params) ?? 'POST'),
-            get_alipay_url($config, $payload),
+            get_radar_method($payload),
+            get_douyin_url($config, $payload),
             $this->getHeaders(),
-            // 不能用 packer，支付宝接收的是 x-www-form-urlencoded 返回的又是 json，packer 用的是返回.
-            $payload?->query() ?? '',
+            get_radar_body($payload),
         ));
 
-        Logger::info('[Alipay][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Douyin][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
@@ -47,8 +48,8 @@ class AddRadarPlugin implements PluginInterface
     protected function getHeaders(): array
     {
         return [
-            'Content-Type' => 'application/x-www-form-urlencoded',
             'User-Agent' => 'yansongda/pay-v3',
+            'Content-Type' => 'application/json; charset=utf-8',
         ];
     }
 }

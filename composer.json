@@ -22,8 +22,8 @@
         "ext-libxml": "*",
         "ext-json": "*",
         "ext-bcmath": "*",
-        "yansongda/artful": "~1.1.0",
-        "yansongda/supports": "~4.0.9"
+        "yansongda/artful": "~1.1.1",
+        "yansongda/supports": "~4.0.10"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",

@@ -13,6 +13,7 @@ use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Service\AlipayServiceProvider;
+use Yansongda\Pay\Service\DouyinServiceProvider;
 use Yansongda\Pay\Service\UnipayServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
 
@@ -42,6 +43,7 @@ class Pay
         AlipayServiceProvider::class,
         WechatServiceProvider::class,
         UnipayServiceProvider::class,
+        DouyinServiceProvider::class,
     ];
 
     /**
