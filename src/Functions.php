@@ -96,6 +96,27 @@ function get_alipay_url(array $config, ?Collection $payload): string
 }
 
 /**
+ * "{\"alipay_fund_trans_uni_transfer_response\":{\"code\":\"40002\",\"msg\":\"Invalid Arguments\",\"sub_code\":\"isv.invalid-app-id\",\"sub_msg\":\"无效的AppID参数\"}}".
+ */
+function get_alipay_error_response_message(array $contents): string
+{
+    // 格式化响应内容
+    foreach (array_keys($contents) as $key) {
+        if (str_ends_with($key, '_response')) {
+            $contents = $contents[$key];
+            break;
+        }
+    }
+
+    $code = $contents['code'] ?? '未知code';
+    $msg = $contents['msg'] ?? '未知异常';
+    $subCode = $contents['sub_code'] ?? '未知sub_code';
+    $subMsg = $contents['sub_msg'] ?? '未知sub_msg';
+
+    return sprintf('alipay-%s: %s; 错误详情-%s: %s;', $code, $msg, $subCode, $subMsg);
+}
+
+/**
  * @throws InvalidConfigException
  * @throws InvalidSignException
  */
