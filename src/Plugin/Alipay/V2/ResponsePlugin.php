@@ -6,21 +6,18 @@ namespace Yansongda\Pay\Plugin\Alipay\V2;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
-use Yansongda\Artful\Exception\Exception;
-use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\should_do_http_request;
-use function Yansongda\Pay\get_alipay_error_response_message;
 
 class ResponsePlugin implements PluginInterface
 {
     /**
      * @throws InvalidResponseException
-     * @throws InvalidParamsException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -37,16 +34,8 @@ class ResponsePlugin implements PluginInterface
             $sign = $destination->get('sign', '');
             $response = $destination->get($resultKey, $destination->all());
 
-            // 支付宝返回sign为空时候，非应用异常，属于网关错误。
-            // 例如AppID配置错误
-            if (empty($sign)) {
-                if (empty($response['code'])) {
-                    throw new InvalidParamsException(Exception::RESPONSE_EMPTY, '参数异常: 支付宝响应内容异常; 缺失code', $destination);
-                }
-
-                if ('10000' !== $response['code']) {
-                    throw new InvalidResponseException(Exception::RESPONSE_ERROR, sprintf('支付宝网关响应异常; %s', get_alipay_error_response_message($response)), $rocket->getDestination());
-                }
+            if (empty($sign) && '10000' !== ($response['code'] ?? '0')) {
+                throw new InvalidResponseException(Exception::RESPONSE_BUSINESS_CODE_WRONG, '支付宝网关响应异常: '.($response['sub_msg'] ?? $response['msg'] ?? '未知错误，请查看支付宝原始响应'), $rocket->getDestination());
             }
 
             $rocket->setDestination(new Collection(array_merge(

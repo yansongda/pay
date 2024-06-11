@@ -44,6 +44,8 @@ class Exception extends \Exception
 
     public const RESPONSE_MISSING_NECESSARY_PARAMS = 9305;
 
+    public const RESPONSE_BUSINESS_CODE_WRONG = 9306;
+
     /*
      * 关于配置.
      */

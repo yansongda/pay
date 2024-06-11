@@ -2,8 +2,8 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
 
-use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -88,7 +88,8 @@ class ResponsePluginTest extends TestCase
     public function testErrorResponseWithEmptySignKey()
     {
         self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_ERROR);
+        self::expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
+        self::expectExceptionMessage('支付宝网关响应异常: 无效的AppID参数');
 
         $destination = [
             'alipay_fund_trans_uni_transfer_response' => [
