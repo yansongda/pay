@@ -2,6 +2,8 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
 
+use Yansongda\Artful\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
@@ -81,5 +83,28 @@ class ResponsePluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
 
         self::assertEquals(array_merge(['_sign' => '123'], $destination), $result->getDestination()->all());
+    }
+
+    public function testErrorResponseWithEmptySignKey()
+    {
+        self::expectException(InvalidResponseException::class);
+        self::expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
+        self::expectExceptionMessage('支付宝网关响应异常: 无效的AppID参数');
+
+        $destination = [
+            'alipay_fund_trans_uni_transfer_response' => [
+                'code' => '40002',
+                'msg' => 'Invalid Arguments',
+                'sub_code' => 'isv.invalid-app-id',
+                'sub_msg' => '无效的AppID参数',
+            ],
+            'sign' => ''
+        ];
+
+        $rocket = (new Rocket())
+            ->mergePayload(['method' => 'alipay_fund_trans_uni_transfer'])
+            ->setDestination(new Collection($destination));
+
+        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
 }
