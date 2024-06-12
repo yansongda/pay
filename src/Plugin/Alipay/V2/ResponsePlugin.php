@@ -34,7 +34,7 @@ class ResponsePlugin implements PluginInterface
             $sign = $destination->get('sign', '');
             $response = $destination->get($resultKey, $destination->all());
 
-            if (empty($sign) && '10000' !== ($response['code'] ?? '0')) {
+            if (empty($sign) && '10000' !== ($response['code'] ?? 'null')) {
                 throw new InvalidResponseException(Exception::RESPONSE_BUSINESS_CODE_WRONG, '支付宝网关响应异常: '.($response['sub_msg'] ?? $response['msg'] ?? '未知错误，请查看支付宝原始响应'), $rocket->getDestination());
             }
 
