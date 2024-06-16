@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Combine;
 
+use Yansongda\Artful\Direction\OriginResponseDirection;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\ClosePlugin;
@@ -49,6 +50,7 @@ class ClosePluginTest extends TestCase
             'combine_appid' => '333',
             'name' => 'yansongda',
         ], $result->getPayload()->all());
+        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
     }
 
     public function testNormal()
@@ -66,5 +68,6 @@ class ClosePluginTest extends TestCase
             '_service_url' => 'v3/combine-transactions/out-trade-no/111/close',
             'combine_appid' => 'wx55955316af4ef13',
         ], $result->getPayload()->all());
+        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
     }
 }
