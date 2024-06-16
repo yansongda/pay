@@ -2,6 +2,7 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Jsapi;
 
+use Yansongda\Artful\Direction\OriginResponseDirection;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\ClosePlugin;
@@ -46,6 +47,7 @@ class ClosePluginTest extends TestCase
             '_service_url' => 'v3/pay/partner/transactions/out-trade-no/111/close',
             'mchid' => '1600314069',
         ], $result->getPayload()->all());
+        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
     }
 
     public function testServiceParams()
@@ -65,6 +67,7 @@ class ClosePluginTest extends TestCase
             'sp_mchid' => '1600314069',
             'sub_mchid' => '333',
         ], $result->getPayload()->all());
+        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
     }
 
     public function testService()
@@ -83,5 +86,6 @@ class ClosePluginTest extends TestCase
             'sp_mchid' => '1600314069',
             'sub_mchid' => '1600314070',
         ], $result->getPayload()->all());
+        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
     }
 }
