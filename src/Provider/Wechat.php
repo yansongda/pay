@@ -58,7 +58,7 @@ class Wechat implements ProviderInterface
      */
     public function __call(string $shortcut, array $params): null|Collection|MessageInterface|Rocket
     {
-        $plugin = '\\Yansongda\\Pay\\Shortcut\\Wechat\\'.Str::studly($shortcut).'Shortcut';
+        $plugin = '\Yansongda\Pay\Shortcut\Wechat\\'.Str::studly($shortcut).'Shortcut';
 
         return Artful::shortcut($plugin, ...$params);
     }
