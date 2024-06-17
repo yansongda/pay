@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Wechat\V3\Pay\App;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Direction\OriginResponseDirection;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
@@ -45,14 +46,15 @@ class ClosePlugin implements PluginInterface
             $data = $this->service($payload, $config);
         }
 
-        $rocket->setPayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/close',
-                '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/close',
-            ],
-            $data ?? $this->normal($config)
-        ));
+        $rocket->setDirection(OriginResponseDirection::class)
+            ->setPayload(array_merge(
+                [
+                    '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/close',
+                    '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/close',
+                    '_method' => 'POST',
+                ],
+                $data ?? $this->normal($config)
+            ));
 
         Logger::info('[Wechat][V3][Pay][App][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
