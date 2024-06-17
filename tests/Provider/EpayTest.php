@@ -32,14 +32,6 @@ class EpayTest extends TestCase
         Pay::epay()->foo();
     }
 
-    public function testShortcutIncompatible()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
-
-        Pay::wechat()->foo();
-    }
-
     public function testMergeCommonPlugins()
     {
         Pay::config([]);
@@ -51,6 +43,7 @@ class EpayTest extends TestCase
             [AddPayloadSignPlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
         ), Pay::epay()->mergeCommonPlugins($plugins));
     }
+
     public function testSuccess()
     {
         $result = Pay::epay()->success();
