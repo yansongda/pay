@@ -97,7 +97,6 @@ class EpayTest extends TestCase
 			'outTradeNo' => $outTradeNo,
 			'refundAmt' => 0.02,
 		]);
-		dd($result);
 	}
 
 	public function testRefund()
@@ -117,7 +116,6 @@ class EpayTest extends TestCase
 
 		self::assertArrayHasKey('orderStatus', $result->all());
 		self::assertEquals($outRefundNo, $result->get('outRefundNo'));
-		dd($result);
 	}
 
 

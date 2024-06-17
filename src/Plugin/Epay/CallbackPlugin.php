@@ -37,7 +37,7 @@ class CallbackPlugin implements PluginInterface
         $this->verifySign($config, $payload, $signature);
 
         $rocket->setDirection(NoHttpRequestDirection::class)
-			->setDestination($rocket->getPayload());
+            ->setDestination($rocket->getPayload());
 
         Logger::info('[epay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
