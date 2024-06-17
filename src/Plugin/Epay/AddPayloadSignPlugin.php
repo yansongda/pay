@@ -13,6 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
+
 use function Yansongda\Pay\get_provider_config;
 
 class AddPayloadSignPlugin implements PluginInterface

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Epay\Pay\Scan;
 
-use Yansongda\Pay\Plugin\Epay\GeneralPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Epay\GeneralPlugin;
 
 class QueryPlugin extends GeneralPlugin
 {

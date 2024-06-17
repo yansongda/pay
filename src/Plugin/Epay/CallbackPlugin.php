@@ -6,12 +6,12 @@ namespace Yansongda\Pay\Plugin\Epay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Exception\InvalidConfigException;
-use Yansongda\Pay\Exception\InvalidParamsException;
-use Yansongda\Pay\Exception\InvalidResponseException;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_provider_config;
@@ -60,7 +60,7 @@ class CallbackPlugin implements PluginInterface
             file_get_contents($publicCert)
         );
         if (!$result) {
-            throw new InvalidResponseException(Exception::SIGN_ERROR, 'Verify Epay Response Sign Failed', func_get_args());
+            throw new InvalidConfigException(Exception::SIGN_ERROR, 'Verify Epay Response Sign Failed', func_get_args());
         }
     }
 
