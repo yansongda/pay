@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Epay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
@@ -25,7 +26,7 @@ class CallbackPlugin implements PluginInterface
         $this->formatRequestAndParams($rocket);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('alipay', $params);
+        $config = get_provider_config('epay', $params);
 
         $payload = $rocket->getPayload();
         $signature = $payload->get('sign');
@@ -35,7 +36,8 @@ class CallbackPlugin implements PluginInterface
 
         $this->verifySign($config, $payload, $signature);
 
-        $rocket->setDestination($rocket->getPayload());
+        $rocket->setDirection(NoHttpRequestDirection::class)
+			->setDestination($rocket->getPayload());
 
         Logger::info('[epay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

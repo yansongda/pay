@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Plugin\Epay;
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
+use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\ContainerException;
 use Yansongda\Pay\Exception\InvalidConfigException;
@@ -29,7 +30,7 @@ class StartPlugin implements PluginInterface
         $params = $rocket->getParams();
         $config = get_provider_config('epay', $params);
 
-        $rocket->mergePayload(array_merge(
+        $rocket->setPacker(QueryPacker::class)->mergePayload(array_merge(
             $params,
             [
                 'createData' => date('Ymd'),

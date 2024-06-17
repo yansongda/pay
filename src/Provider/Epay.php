@@ -66,11 +66,7 @@ class Epay implements ProviderInterface
 
     public function cancel($order): Collection|Rocket
     {
-        $order = is_array($order) ? $order : ['outTradeNo' => $order];
-
-        Event::dispatch(new MethodCalled('epay', __METHOD__, $order, null));
-
-        return $this->__call('cancel', [$order]);
+		throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, 'Epay does not support cancel api');
     }
 
     public function close($order): Collection|Rocket
@@ -89,7 +85,7 @@ class Epay implements ProviderInterface
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new CallbackReceived('epay', $request, $params, null));
+        Event::dispatch(new CallbackReceived('epay', $request->all(), $params, null));
 
         return $this->pay(
             [CallbackPlugin::class],

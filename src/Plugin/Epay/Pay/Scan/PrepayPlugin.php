@@ -4,41 +4,39 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Plugin\Epay\Pay\Scan;
 
-use Yansongda\Artful\Exception\ContainerException;
+use Closure;
+use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Epay\GeneralPlugin;
 
 use function Yansongda\Pay\get_provider_config;
 
-class PrepayPlugin extends GeneralPlugin
+class PrepayPlugin implements PluginInterface
 {
-    protected function getService(): string
+    public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        return 'atPay';
-    }
+        Logger::debug('[Epay][Pay][Scan][PrepayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-    /**
-     * @throws ServiceNotFoundException
-     * @throws ContainerException
-     */
-    protected function doSomethingBefore(Rocket $rocket): void
-    {
-        if (!empty($rocket->getPayload()['notify_url'])) {
-            return;
+        $backUrl = $rocket->getPayload()['notify_url'] ?? null;
+        if (empty($backUrl)) {
+            $params = $rocket->getParams();
+            $config = get_provider_config('epay', $params);
+
+            $backUrl = $config['notify_url'] ?? null;
         }
 
-        $params = $rocket->getParams();
-        $config = get_provider_config('epay', $params);
-
-        $backUrl = $config['notify_url'] ?? null;
         if (!$backUrl) {
             throw new InvalidConfigException(Exception::CONFIG_EPAY_INVALID, 'Missing Epay Config -- [notify_url]');
         }
         $rocket->mergePayload([
+            'service' => 'atPay',
             'backUrl' => $backUrl,
         ]);
+
+        Logger::info('[Epay][Pay][Scan][PrepayPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
     }
 }
