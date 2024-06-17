@@ -84,6 +84,11 @@ yansongda/pay 100% 兼容 支付宝/微信/银联 所有功能（包括服务商
 - 刷卡支付
 - 扫码支付
 - ...
+- 
+### e融支付(江苏银行)
+
+- 聚合扫码支付(微信,支付宝,银联,e融)
+- ...
 
 ## 安装
 ```shell
@@ -267,6 +272,77 @@ class WechatController
     public function notifyCallback()
     {
         $pay = Pay::wechat($this->config);
+
+        try{
+            $data = $pay->callback(); // 是的，验签就这么简单！
+        } catch (\Exception $e) {
+            // $e->getMessage();
+        }
+        
+        return $pay->success();
+    }
+}
+```
+
+### e融支付(epay)
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Yansongda\Pay\Pay;
+
+class EpayController
+{
+    protected $config = [
+        'epay' => [
+            'default' => [
+                            // 服务代码
+            'svr_code' => '',
+            // 必填-合作商ID
+            'partner_id' => '',
+            // 必填-公私钥对编号
+            'public_key_code' => '00',
+            // 必填-商户私钥(加密签名)
+            'mch_secret_cert_path' => '',
+            // 必填-商户公钥证书路径(提供江苏银行进行验证签名用)
+            'mch_public_cert_path' => '',
+            // 必填-江苏银行的公钥(用于解密江苏银行返回的数据)
+            'epay_public_cert_path' => '',
+            //支付通知地址
+            'notify_url'            => '', 
+            // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:测试环境
+            'mode' => Pay::MODE_NORMAL,
+            ]
+        ],
+        'logger' => [ // optional
+            'enable' => false,
+            'file' => './logs/epay.log',
+            'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
+            'type' => 'single', // optional, 可选 daily.
+            'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
+        ],
+        'http' => [ // optional
+            'timeout' => 5.0,
+            'connect_timeout' => 5.0,
+            // 更多配置项请参考 [Guzzle](https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html)
+        ],
+    ];
+
+    public function index()
+    {
+        $order = [
+            'outTradeNo' => time().'',
+            'proInfo' => 'subject-测试',
+            'totalFee'=> 1,
+        ];
+
+        $pay = Pay::epay($this->config)->scan($order);
+    }
+
+    public function notifyCallback()
+    {
+        $pay = Pay::epay($this->config);
 
         try{
             $data = $pay->callback(); // 是的，验签就这么简单！

@@ -23,6 +23,7 @@ use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Alipay;
+use Yansongda\Pay\Provider\Epay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
@@ -590,4 +591,15 @@ function verify_unipay_sign_qra(array $config, array $destination): void
     if (get_unipay_sign_qra($config, $destination) !== $sign) {
         throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证银联签名失败', $destination);
     }
+}
+
+function get_epay_url(array $config, ?Collection $payload): string
+{
+    $url = get_radar_url($config, $payload) ?? '';
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    return Epay::URL[$config['mode'] ?? Pay::MODE_NORMAL];
 }
