@@ -23,7 +23,7 @@ class StartPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[epay][StartPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::info('[Epay][StartPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_provider_config('epay', $params);
@@ -43,7 +43,7 @@ class StartPlugin implements PluginInterface
                 'charset' => 'utf-8',
             ]
         ));
-        Logger::info('[epay][StartPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Epay][StartPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

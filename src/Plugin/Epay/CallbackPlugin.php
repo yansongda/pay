@@ -30,7 +30,7 @@ class CallbackPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[epay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::info('[Epay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->formatRequestAndParams($rocket);
 
@@ -48,7 +48,7 @@ class CallbackPlugin implements PluginInterface
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());
 
-        Logger::info('[epay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Epay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

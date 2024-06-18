@@ -24,7 +24,7 @@ class AddRadarPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::info('[epay][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::info('[Epay][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_provider_config('epay', $params);
@@ -37,7 +37,7 @@ class AddRadarPlugin implements PluginInterface
             $this->getBody($payload),
         ));
 
-        Logger::info('[epay][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Epay][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

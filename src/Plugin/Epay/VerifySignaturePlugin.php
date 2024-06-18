@@ -7,12 +7,11 @@ namespace Yansongda\Pay\Plugin\Epay;
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
-use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -24,9 +23,7 @@ class VerifySignaturePlugin implements PluginInterface
 {
     /**
      * @throws ServiceNotFoundException
-     * @throws InvalidConfigException
-     * @throws InvalidResponseException
-     * @throws ContainerException
+     * @throws ContainerException|InvalidSignException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -48,8 +45,7 @@ class VerifySignaturePlugin implements PluginInterface
     }
 
     /**
-     * @throws InvalidResponseException
-     * @throws InvalidConfigException
+     * @throws InvalidSignException
      */
     protected function verifySign(array $config, string $body): void
     {
@@ -57,12 +53,12 @@ class VerifySignaturePlugin implements PluginInterface
         $signatureData = $this->getSignatureData($body);
 
         if (!$signatureData['sign']) {
-            throw new InvalidResponseException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, 'Verify Epay Response Sign Failed: sign is empty', $body);
+            throw new InvalidSignException(Exception::RESPONSE_MISSING_NECESSARY_PARAMS, 'Verify Epay Response Sign Failed: sign is empty', $body);
         }
 
         $publicCert = $config['epay_public_cert_path'] ?? null;
         if (empty($publicCert)) {
-            throw new InvalidConfigException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, 'Missing Epay Config -- [epay_public_cert_path]');
+            throw new InvalidSignException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, 'Missing Epay Config -- [epay_public_cert_path]');
         }
         $result = 1 === openssl_verify(
             $signatureData['data'],
@@ -70,7 +66,7 @@ class VerifySignaturePlugin implements PluginInterface
             file_get_contents($publicCert)
         );
         if (!$result) {
-            throw new InvalidResponseException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, 'Verify Epay Response Sign Failed', func_get_args());
+            throw new InvalidSignException(Exception::SIGN_ERROR, 'Verify Epay Response Sign Failed', func_get_args());
         }
     }
 

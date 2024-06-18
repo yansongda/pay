@@ -67,7 +67,7 @@ class Epay implements ProviderInterface
     /**
      * @throws InvalidParamsException
      */
-    public function cancel($order): Collection|Rocket
+    public function cancel(array $order): Collection|Rocket
     {
         throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, 'Epay does not support cancel api');
     }
@@ -75,7 +75,7 @@ class Epay implements ProviderInterface
     /**
      * @throws InvalidParamsException
      */
-    public function close($order): Collection|Rocket
+    public function close(array $order): Collection|Rocket
     {
         throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, 'Epay does not support close api');
     }

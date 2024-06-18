@@ -139,7 +139,7 @@ class EpayTest extends TestCase
 
 	public function testCallback()
 	{
-		$playload = [
+		$payload = [
 			'partnerId'=> '6a13eab71c4f4b0aa4757eda6fc59710',
 			'orderStatus'=> '1',
 			'totalFee'=> '0.02',
@@ -151,7 +151,7 @@ class EpayTest extends TestCase
 			'signType'=> 'RSA',
 			'sign'=> 'DPKX4mZAVd/LwMDOt1OJgryBuPeH78y7B78smze+m+vvzae5MBf0O3BoTvVJQHD/RPVftHVvnYHeKvIjCC2bCrxoY9Sv2N8Hbr5HfjIikk0a2qaIQp6TTvecMP9JitzSuZP+sih+uxMkRM5Nrg8weGbePaQ6nODNWiSGDhV+Jq0='
 		];
-		$result = Pay::epay()->callback($playload);
+		$result = Pay::epay()->callback($payload);
 		self::assertNotEmpty($result->all());
 		self::assertArrayHasKey('outTradeNo', $result->all());
 		self::assertArrayHasKey('orderNo', $result->all());
