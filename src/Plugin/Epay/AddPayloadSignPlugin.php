@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Plugin\Epay;
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
@@ -21,7 +22,7 @@ class AddPayloadSignPlugin implements PluginInterface
     /**
      * @throws ServiceNotFoundException
      * @throws InvalidParamsException
-     * @throws ContainerException
+     * @throws ContainerException|InvalidConfigException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -61,7 +62,7 @@ class AddPayloadSignPlugin implements PluginInterface
         $privateCertPath = $config['mch_secret_cert_path'] ?? '';
 
         if (!$privateCertPath) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: epay支付配置文件中未找到 `mch_secret_cert_path` 配置项。可能插件用错顺序，应该先使用 `StartPlugin`');
+            throw new InvalidConfigException(Exception::CONFIG_EPAY_INVALID, '参数异常: epay支付配置文件中未找到 `mch_secret_cert_path` 配置项。可能插件用错顺序，应该先使用 `StartPlugin`');
         }
 
         return file_get_contents($privateCertPath);

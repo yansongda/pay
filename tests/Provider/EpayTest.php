@@ -22,11 +22,6 @@ use Yansongda\Pay\Plugin\Epay\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class EpayTest extends TestCase
 {
     public function testShortcutNotFound()
@@ -63,7 +58,6 @@ class EpayTest extends TestCase
 			'proInfo'    => '元仓充值',
 			'backUrl'    => 'http://47.242.204.179:8000/api/user/recharge/ePayNotice',
 		]);
-
 		self::assertArrayHasKey('payUrl', $result->all());
 	}
 

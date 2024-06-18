@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Plugin\Epay;
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
@@ -23,7 +24,7 @@ class VerifySignaturePlugin implements PluginInterface
 {
     /**
      * @throws ServiceNotFoundException
-     * @throws ContainerException|InvalidSignException
+     * @throws ContainerException|InvalidConfigException|InvalidSignException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -45,7 +46,7 @@ class VerifySignaturePlugin implements PluginInterface
     }
 
     /**
-     * @throws InvalidSignException
+     * @throws InvalidConfigException|InvalidSignException
      */
     protected function verifySign(array $config, string $body): void
     {
@@ -58,7 +59,7 @@ class VerifySignaturePlugin implements PluginInterface
 
         $publicCert = $config['epay_public_cert_path'] ?? null;
         if (empty($publicCert)) {
-            throw new InvalidSignException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, 'Missing Epay Config -- [epay_public_cert_path]');
+            throw new InvalidConfigException(Exception::CONFIG_EPAY_INVALID, 'Missing Epay Config -- [epay_public_cert_path]');
         }
         $result = 1 === openssl_verify(
             $signatureData['data'],
@@ -68,20 +69,6 @@ class VerifySignaturePlugin implements PluginInterface
         if (!$result) {
             throw new InvalidSignException(Exception::SIGN_ERROR, 'Verify Epay Response Sign Failed', func_get_args());
         }
-    }
-
-    protected function query(string $body): array
-    {
-        $result = [];
-        foreach (explode('&', $body) as $item) {
-            $pos = strpos($item, '=');
-            if (!$pos) {
-                continue;
-            }
-            $result[substr($item, 0, $pos)] = substr($item, $pos + 1);
-        }
-
-        return $result;
     }
 
     private function getSignatureData(string $body): array
