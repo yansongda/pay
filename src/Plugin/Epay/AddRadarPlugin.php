@@ -7,6 +7,8 @@ namespace Yansongda\Pay\Plugin\Epay;
 use Closure;
 use GuzzleHttp\Psr7\Request;
 use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Supports\Collection;
@@ -16,6 +18,10 @@ use function Yansongda\Pay\get_provider_config;
 
 class AddRadarPlugin implements PluginInterface
 {
+    /**
+     * @throws ServiceNotFoundException
+     * @throws ContainerException
+     */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::info('[epay][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);

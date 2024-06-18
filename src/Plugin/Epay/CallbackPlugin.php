@@ -7,9 +7,11 @@ namespace Yansongda\Pay\Plugin\Epay;
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
+use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
@@ -19,6 +21,13 @@ use function Yansongda\Pay\get_provider_config;
 
 class CallbackPlugin implements PluginInterface
 {
+    /**
+     * @throws ServiceNotFoundException
+     * @throws InvalidResponseException
+     * @throws InvalidConfigException
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::info('[epay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
@@ -44,6 +53,10 @@ class CallbackPlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @throws InvalidConfigException
+     * @throws InvalidResponseException
+     */
     protected function verifySign(array $config, Collection $payload, ?string $signature = null): void
     {
         if (!$signature) {

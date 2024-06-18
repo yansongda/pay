@@ -6,7 +6,6 @@ namespace Yansongda\Pay\Shortcut\Epay;
 
 use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Exception\InvalidParamsException;
 use Yansongda\Pay\Plugin\Epay\AddPayloadSignPlugin;
 use Yansongda\Pay\Plugin\Epay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Epay\Pay\Scan\RefundPlugin;
@@ -16,9 +15,6 @@ use Yansongda\Pay\Plugin\Epay\VerifySignaturePlugin;
 
 class RefundShortcut implements ShortcutInterface
 {
-    /**
-     * @throws InvalidParamsException
-     */
     public function getPlugins(array $params): array
     {
         return [

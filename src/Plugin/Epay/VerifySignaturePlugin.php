@@ -6,8 +6,10 @@ namespace Yansongda\Pay\Plugin\Epay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidResponseException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
@@ -20,6 +22,12 @@ use function Yansongda\Pay\get_provider_config;
 
 class VerifySignaturePlugin implements PluginInterface
 {
+    /**
+     * @throws ServiceNotFoundException
+     * @throws InvalidConfigException
+     * @throws InvalidResponseException
+     * @throws ContainerException
+     */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         /* @var Rocket $rocket */
@@ -39,6 +47,10 @@ class VerifySignaturePlugin implements PluginInterface
         return $rocket;
     }
 
+    /**
+     * @throws InvalidResponseException
+     * @throws InvalidConfigException
+     */
     protected function verifySign(array $config, string $body): void
     {
         // 解析签名

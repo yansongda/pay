@@ -41,7 +41,7 @@ class Epay implements ProviderInterface
 
     public function __call($name, $params)
     {
-        $plugin = '\\Yansongda\\Pay\\Shortcut\\Epay\\'.Str::studly($name).'Shortcut';
+        $plugin = '\Yansongda\Pay\Shortcut\Epay\\'.Str::studly($name).'Shortcut';
 
         return Artful::shortcut($plugin, ...$params);
     }
@@ -64,11 +64,17 @@ class Epay implements ProviderInterface
         );
     }
 
+    /**
+     * @throws InvalidParamsException
+     */
     public function cancel($order): Collection|Rocket
     {
         throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, 'Epay does not support cancel api');
     }
 
+    /**
+     * @throws InvalidParamsException
+     */
     public function close($order): Collection|Rocket
     {
         throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, 'Epay does not support close api');
@@ -81,6 +87,10 @@ class Epay implements ProviderInterface
         return $this->__call('refund', [$order]);
     }
 
+    /**
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     */
     public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection|Rocket
     {
         $request = $this->getCallbackParams($contents);
@@ -104,8 +114,6 @@ class Epay implements ProviderInterface
 
     public function query(array $order): Collection|Rocket
     {
-        $order = is_array($order) ? $order : ['outTradeNo' => $order];
-
         Event::dispatch(new MethodCalled('epay', __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);

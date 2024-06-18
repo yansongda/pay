@@ -6,7 +6,9 @@ namespace Yansongda\Pay\Plugin\Epay\Pay\Scan;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
@@ -15,6 +17,11 @@ use function Yansongda\Pay\get_provider_config;
 
 class PrepayPlugin implements PluginInterface
 {
+    /**
+     * @throws InvalidConfigException
+     * @throws ServiceNotFoundException
+     * @throws ContainerException
+     */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::debug('[Epay][Pay][Scan][PrepayPlugin] 插件开始装载', ['rocket' => $rocket]);
