@@ -596,7 +596,6 @@ function verify_unipay_sign_qra(array $config, array $destination): void
 function get_epay_url(array $config, ?Collection $payload): string
 {
     $url = get_radar_url($config, $payload) ?? '';
-
     if (str_starts_with($url, 'http')) {
         return $url;
     }
