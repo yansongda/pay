@@ -56,7 +56,6 @@ class EpayTest extends TestCase
 			'outTradeNo' => 'YC202406170003',
 			'totalFee'   => 0.01,
 			'proInfo'    => '元仓充值',
-			'backUrl'    => 'http://47.242.204.179:8000/api/user/recharge/ePayNotice',
 		]);
 		self::assertArrayHasKey('payUrl', $result->all());
 	}
