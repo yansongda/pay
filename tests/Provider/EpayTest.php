@@ -55,7 +55,7 @@ class EpayTest extends TestCase
 		$result = Pay::epay()->scan([
 			'outTradeNo' => 'YC202406170003',
 			'totalFee'   => 0.01,
-			'proInfo'    => '元仓充值',
+			'proInfo'    => '充值',
 		]);
 		self::assertArrayHasKey('payUrl', $result->all());
 	}
