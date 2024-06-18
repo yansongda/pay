@@ -42,11 +42,6 @@ class AddRadarPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function getMethod(array $params): string
-    {
-        return strtoupper($params['_method'] ?? 'POST');
-    }
-
     protected function getHeaders(): array
     {
         return [

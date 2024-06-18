@@ -47,6 +47,8 @@ class VerifySignaturePluginTest extends TestCase
 	public function testEmptySign()
 	{
 		self::expectException(InvalidSignException::class);
+		self::expectExceptionCode(Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
+
 		$body = 'errCode=1&field1=&field2=&field3=&orderNo=20240617144526400259379&orderStatus=1&outTradeNo=YC202406170003&partnerId=6a13eab71c4f4b0aa4757eda6fc59710&payUrl=http://weixintest.jsbchina.cn/epcs/qr/login.htm?qrCode=2018060611052793473720240617144526688568&respBizDate=20240617&respCode=000000&respMsg=交易成功&totalFee=0.01&validTime=2';
 
 		$rocket = (new Rocket())->setDestinationOrigin(new Response(200, [], $body));

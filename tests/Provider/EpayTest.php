@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Provider;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
@@ -125,7 +126,7 @@ class EpayTest extends TestCase
 	{
 		$this->expectException(InvalidParamsException::class);
 
-		Pay::epay()->cancel([
+		Pay::epay()->close([
 			'outTradeNo' => 'YC202406170003',
 		]);
 	}
@@ -145,6 +146,55 @@ class EpayTest extends TestCase
 			'sign'=> 'DPKX4mZAVd/LwMDOt1OJgryBuPeH78y7B78smze+m+vvzae5MBf0O3BoTvVJQHD/RPVftHVvnYHeKvIjCC2bCrxoY9Sv2N8Hbr5HfjIikk0a2qaIQp6TTvecMP9JitzSuZP+sih+uxMkRM5Nrg8weGbePaQ6nODNWiSGDhV+Jq0='
 		];
 		$result = Pay::epay()->callback($payload);
+		self::assertNotEmpty($result->all());
+		self::assertArrayHasKey('outTradeNo', $result->all());
+		self::assertArrayHasKey('orderNo', $result->all());
+		self::assertArrayHasKey('orderStatus', $result->all());
+		self::assertArrayHasKey('field3', $result->all());
+
+	}
+
+	public function testCallbackByFromGlobals()
+	{
+		$payload = [
+			'partnerId'=> '6a13eab71c4f4b0aa4757eda6fc59710',
+			'orderStatus'=> '1',
+			'totalFee'=> '0.02',
+			'outTradeNo'=> 'RC240613164110030316',
+			'orderNo'=> '20240613164114400729509',
+			'field1'=> '2',
+			'field2'=> '',
+			'field3'=> '20240613164139|20240613164134400800219',
+			'signType'=> 'RSA',
+			'sign'=> 'DPKX4mZAVd/LwMDOt1OJgryBuPeH78y7B78smze+m+vvzae5MBf0O3BoTvVJQHD/RPVftHVvnYHeKvIjCC2bCrxoY9Sv2N8Hbr5HfjIikk0a2qaIQp6TTvecMP9JitzSuZP+sih+uxMkRM5Nrg8weGbePaQ6nODNWiSGDhV+Jq0='
+		];
+		$_POST = array_merge($_POST, $payload);
+		$result = Pay::epay()->callback();
+		self::assertNotEmpty($result->all());
+		self::assertArrayHasKey('outTradeNo', $result->all());
+		self::assertArrayHasKey('orderNo', $result->all());
+		self::assertArrayHasKey('orderStatus', $result->all());
+		self::assertArrayHasKey('field3', $result->all());
+
+	}
+
+	public function testCallbackByServerRequest()
+	{
+		$payload = [
+			'partnerId'=> '6a13eab71c4f4b0aa4757eda6fc59710',
+			'orderStatus'=> '1',
+			'totalFee'=> '0.02',
+			'outTradeNo'=> 'RC240613164110030316',
+			'orderNo'=> '20240613164114400729509',
+			'field1'=> '2',
+			'field2'=> '',
+			'field3'=> '20240613164139|20240613164134400800219',
+			'signType'=> 'RSA',
+			'sign'=> 'DPKX4mZAVd/LwMDOt1OJgryBuPeH78y7B78smze+m+vvzae5MBf0O3BoTvVJQHD/RPVftHVvnYHeKvIjCC2bCrxoY9Sv2N8Hbr5HfjIikk0a2qaIQp6TTvecMP9JitzSuZP+sih+uxMkRM5Nrg8weGbePaQ6nODNWiSGDhV+Jq0='
+		];
+		$serverRequest = new ServerRequest('POST', 'http://localhost', [], null);
+		$serverRequest = $serverRequest->withParsedBody($payload);
+		$result = Pay::epay()->callback($serverRequest);
 		self::assertNotEmpty($result->all());
 		self::assertArrayHasKey('outTradeNo', $result->all());
 		self::assertArrayHasKey('orderNo', $result->all());
