@@ -46,7 +46,7 @@ use function Yansongda\Pay\verify_unipay_sign;
 use function Yansongda\Pay\verify_unipay_sign_qra;
 use function Yansongda\Pay\verify_wechat_sign;
 use function Yansongda\Pay\verify_wechat_sign_v2;
-use function Yansongda\Pay\get_epay_url;
+use function Yansongda\Pay\get_jsb_url;
 
 class FunctionTest extends TestCase
 {
@@ -689,8 +689,8 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
 	public function testGetEpayUrl()
 	{
-		self::assertEquals('https://yansongda.cn', get_epay_url([], new Collection(['_url' => 'https://yansongda.cn'])));
-		self::assertEquals('https://mybank.jsbchina.cn:577/eis/merchant/merchantServices.htm', get_epay_url(['mode' => Pay::MODE_NORMAL], new Collection()));
-		self::assertEquals('https://epaytest.jsbchina.cn:9999/eis/merchant/merchantServices.htm', get_epay_url(['mode' => Pay::MODE_SANDBOX], new Collection()));
+		self::assertEquals('https://yansongda.cn', get_jsb_url([], new Collection(['_url' => 'https://yansongda.cn'])));
+		self::assertEquals('https://mybank.jsbchina.cn:577/eis/merchant/merchantServices.htm', get_jsb_url(['mode' => Pay::MODE_NORMAL], new Collection()));
+		self::assertEquals('https://epaytest.jsbchina.cn:9999/eis/merchant/merchantServices.htm', get_jsb_url(['mode' => Pay::MODE_SANDBOX], new Collection()));
 	}
 }

@@ -85,7 +85,7 @@ yansongda/pay 100% 兼容 支付宝/微信/银联 所有功能（包括服务商
 - 扫码支付
 - ...
 - 
-### e融支付(江苏银行)
+### 江苏银行(e融支付)
 
 - 聚合扫码支付(微信,支付宝,银联,e融)
 - ...
@@ -284,7 +284,7 @@ class WechatController
 }
 ```
 
-### e融支付(epay)
+### 江苏银行(e融支付)
 ```php
 <?php
 
@@ -295,24 +295,24 @@ use Yansongda\Pay\Pay;
 class EpayController
 {
     protected $config = [
-        'epay' => [
+        'jsb' => [
             'default' => [
-                            // 服务代码
-            'svr_code' => '',
-            // 必填-合作商ID
-            'partner_id' => '',
-            // 必填-公私钥对编号
-            'public_key_code' => '00',
-            // 必填-商户私钥(加密签名)
-            'mch_secret_cert_path' => '',
-            // 必填-商户公钥证书路径(提供江苏银行进行验证签名用)
-            'mch_public_cert_path' => '',
-            // 必填-江苏银行的公钥(用于解密江苏银行返回的数据)
-            'epay_public_cert_path' => '',
-            //支付通知地址
-            'notify_url'            => '', 
-            // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:测试环境
-            'mode' => Pay::MODE_NORMAL,
+                // 服务代码
+                'svr_code' => '',
+                // 必填-合作商ID
+                'partner_id' => '',
+                // 必填-公私钥对编号
+                'public_key_code' => '00',
+                // 必填-商户私钥(加密签名)
+                'mch_secret_cert_path' => '',
+                // 必填-商户公钥证书路径(提供江苏银行进行验证签名用)
+                'mch_public_cert_path' => '',
+                // 必填-江苏银行的公钥(用于解密江苏银行返回的数据)
+                'jsb_public_cert_path' => '',
+                //支付通知地址
+                'notify_url'            => '', 
+                // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:测试环境
+                'mode' => Pay::MODE_NORMAL,
             ]
         ],
         'logger' => [ // optional
@@ -337,12 +337,12 @@ class EpayController
             'totalFee'=> 1,
         ];
 
-        $pay = Pay::epay($this->config)->scan($order);
+        $pay = Pay::jsb($this->config)->scan($order);
     }
 
     public function notifyCallback()
     {
-        $pay = Pay::epay($this->config);
+        $pay = Pay::jsb($this->config);
 
         try{
             $data = $pay->callback(); // 是的，验签就这么简单！
@@ -357,7 +357,7 @@ class EpayController
 
 ## 代码贡献
 
-由于测试及使用环境的限制，本项目中只开发了「支付宝」和「微信支付」的相关支付网关。
+由于测试及使用环境的限制，本项目中只开发了「支付宝」、「微信支付」、「银联」、「江苏银行」的相关支付网关。
 
 如果您有其它支付网关的需求，或者发现本项目中需要改进的代码，**_欢迎 Fork 并提交 PR！_**
 

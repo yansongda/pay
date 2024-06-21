@@ -55,7 +55,7 @@ class Exception extends \Exception
 
     public const CONFIG_UNIPAY_INVALID = 9403;
 
-    public const CONFIG_EPAY_INVALID = 9404;
+    public const CONFIG_JSB_INVALID = 9404;
 
     /**
      * 关于签名.

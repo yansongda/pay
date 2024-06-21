@@ -152,7 +152,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mode' => Pay::MODE_SANDBOX,
                 ],
             ],
-            'epay' => [
+            'jsb' => [
                 'default' => [
                     // 服务代码
                     'svr_code' => '',
@@ -165,7 +165,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     // 必填-商户公钥证书路径(提供江苏银行进行验证签名用)
                     'mch_public_cert_path' => __DIR__.'/Cert/EpayCert.cer',
                     // 必填-江苏银行的公钥(用于解密江苏银行返回的数据)
-                    'epay_public_cert_path' => __DIR__.'/Cert/jschina.cer',
+                    'jsb_public_cert_path' => __DIR__.'/Cert/jschina.cer',
                     'notify_url' => 'http://127.0.0.1:8000/epay/return',
                     // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:test环境,
                     'mode' => Pay::MODE_SANDBOX,
