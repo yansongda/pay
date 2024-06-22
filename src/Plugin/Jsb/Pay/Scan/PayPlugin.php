@@ -15,6 +15,9 @@ use Yansongda\Pay\Exception\Exception;
 
 use function Yansongda\Pay\get_provider_config;
 
+/**
+ * @see https://github.com/yansongda/pay/pull/1002
+ */
 class PayPlugin implements PluginInterface
 {
     /**

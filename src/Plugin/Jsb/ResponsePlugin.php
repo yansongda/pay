@@ -44,6 +44,7 @@ class ResponsePlugin implements PluginInterface
             && ($destinationOrigin->getStatusCode() < 200 || $destinationOrigin->getStatusCode() >= 300)) {
             throw new InvalidResponseException(Exception::RESPONSE_CODE_WRONG, '江苏银行返回状态码异常，请检查参数是否错误', $rocket->getDestination());
         }
+
         if ($destination instanceof Collection && '000000' !== $destination->get('respCode')) {
             throw new InvalidResponseException(Exception::RESPONSE_BUSINESS_CODE_WRONG, sprintf('江苏银行返回错误: respCode:%s respMsg:%s', $destination->get('respCode'), $destination->get('respMsg')), $rocket->getDestination());
         }

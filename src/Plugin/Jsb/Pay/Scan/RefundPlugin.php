@@ -9,6 +9,9 @@ use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
+/**
+ * @see https://github.com/yansongda/pay/pull/1002
+ */
 class RefundPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
