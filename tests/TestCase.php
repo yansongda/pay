@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests;
 
-use Hyperf\Pimple\ContainerFactory;
 use Hyperf\Context\ApplicationContext;
+use Hyperf\Pimple\ContainerFactory;
 use Yansongda\Pay\Pay;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class TestCase extends \PHPUnit\Framework\TestCase
 {
     protected function setUp(): void
@@ -16,9 +23,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'app_id' => '9021000122682882',
                     'app_secret_cert' => 'MIIEpAIBAAKCAQEApSA9oxvcqfbgpgkxXvyCpnxaR6TPaEMh/ij+PhF8180zL82ic4whkrRlcu1Y179AKEZNar71Ugi37fKcXWLerjPOeb8WHnZgNG19gkAcOIqZPRPpJ1eRtwKEclIzt+j3H/wgXWkD7BTr61RjuAcviyvDVbAJ/TPlMqXdJFIuJwZblN2WblIv+4Dm1iPOB+fVCU3rsgg4eajf3HrZ7sq6fBhQhO5krDmIIYGsFZ+fohEgnLkBaF0gqNUb5Yb4PBfaEcu8Hcwq+XyBSMOVOIABRPQVDedW2sE/2NsLkR62DaEe/Ri9VUDJe0pE39P+X22DicJ3E3yrxvdioMnLtDqEuwIDAQABAoIBAQCSHZ1tH9J7c8IGKkxNyROzToZ0rxn5IK6LwKp5MfBO5X1N56DArldnAcpjkDL1dn7HJK6Mrr1WAfD/1ZcX680wSReEE9r2ybkHq3tMLn7KaZp/uYavEYYXc1rP7n1lV/iVjPz2q16VIU5Bx0MWLQWdGPSYdlXggHNoBe1RnobIcCGOVe9HlzCBtWzGpCZvMlqRbCuWAdp14aCkaJqpRxG4PY9Kd/NzELvhnCd9k8e7G2qcwx6gAoXN8OXO8jmZg/6fOvFnrGl6CBp8sioe5F3R023fDum546IqS8EZdCl5T0gW/boTbSV8luitab65xBO3PmUI+V2OEFCL6WcJxawBAoGBAOZoft6/LatdoXzr8vh+rKzacUHw246fpacbgx0B5DDymM7hbhXbY/NoCWPgBJtV3XI3DtMJ5yvlEVDQvPfbSHRPx2XQknwrM7ly2SLbaC+tuhcvoG6F1RLWFx+y/583seSlVNuWC9KdpLTKzo8wl8Z4/kheLTBxTxL20NZu79XBAoGBALd3fNoXk5V+T16hnSinPtt2NEsZpn+4w07DikzcpdyjCL5PYjp/BppmX3xly96fCZh3MO3Vkuya1xgauMzxVKQlR/aD5yVmsqK7wxNTY1ZQM74B44/4Mks/8MG2r7o3DElA4/qIeMP4CwkWmYcuij7npm2bgIqFzS+4aGZfDRF7AoGAKMO2Jpy2bMo9BwgLzdFDpbVkMmF1xu8R9NXWRayO/eX+CSQzQOS281qlxqjcx8rSSiHZmpb28notrRmxRTzjvchbo/TZ5eQS262pIxSkg0L+WJnRjZxaDWIZZz9ZIIdPDv/9WnhakSHZAS+cihLz12aSvqUC4744WkeWvUmVX0ECgYAGLDoCKHrps7c96tgbzwy5W4/E2xcUAwZnNwMHNQFLnBymMouOhkmVlk4uJEqosdcjzxbRWbc4yLjl8bg4BQKhBzQVojh7tKnb+c9Fbi/QbqBfCzc519LxXzRdgCUHceSy7kD9Y+wUQ9szMhR2TOWP2kFqPKolfvz5Vw4EK7yH0wKBgQDerq9Pthbii7lNt528/q0cH9vOMn9z76o6jMMea9EibclVHtdcQBWLOn8Yw97k+WSXYGuUrQUWWQbyabZqWkkS4cEjJf5/DiwOuYdNVXg7FK56ucTczBA7lR4dnunPW6U1HbSWf0Cn4Y/cl/z7B5QBSQt0W38IYHSaf6/sqsV6SA==',
                     'app_auth_token' => '',
-                    'app_public_cert_path' => __DIR__ . '/Cert/alipayAppPublicCert.crt',
-                    'alipay_public_cert_path' => __DIR__ . '/Cert/alipayPublicCert.crt',
-                    'alipay_root_cert_path' => __DIR__ . '/Cert/alipayRootCert.crt',
+                    'app_public_cert_path' => __DIR__.'/Cert/alipayAppPublicCert.crt',
+                    'alipay_public_cert_path' => __DIR__.'/Cert/alipayPublicCert.crt',
+                    'alipay_root_cert_path' => __DIR__.'/Cert/alipayRootCert.crt',
                     'notify_url' => 'https://pay.yansongda.cn',
                     'return_url' => 'https://pay.yansongda.cn',
                 ],
@@ -144,7 +151,26 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_secret_key' => '979da4cfccbae7923641daa5dd7047c2',
                     'mode' => Pay::MODE_SANDBOX,
                 ],
-            ]
+            ],
+            'jsb' => [
+                'default' => [
+                    // 服务代码
+                    'svr_code' => '',
+                    // 必填-合作商ID
+                    'partner_id' => '6a13eab71c4f4b0aa4757eda6fc59710',
+                    // 必填-公私钥对编号
+                    'public_key_code' => '00',
+                    // 必填-商户私钥(加密签名)
+                    'mch_secret_cert_path' => __DIR__.'/Cert/EpayKey.pem',
+                    // 必填-商户公钥证书路径(提供江苏银行进行验证签名用)
+                    'mch_public_cert_path' => __DIR__.'/Cert/EpayCert.cer',
+                    // 必填-江苏银行的公钥(用于解密江苏银行返回的数据)
+                    'jsb_public_cert_path' => __DIR__.'/Cert/jschina.cer',
+                    'notify_url' => 'http://127.0.0.1:8000/epay/return',
+                    // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:test环境,
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+            ],
         ];
 
         // hyperf 单测时，未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个

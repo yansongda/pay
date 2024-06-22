@@ -8,6 +8,7 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
+use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 
@@ -34,6 +35,8 @@ class PayTest extends TestCase
         self::assertInstanceOf(Wechat::class, Pay::get(Wechat::class));
         self::assertInstanceOf(Unipay::class, Pay::get('unipay'));
         self::assertInstanceOf(Unipay::class, Pay::get(Unipay::class));
+        self::assertInstanceOf(Jsb::class, Pay::get('jsb'));
+        self::assertInstanceOf(Jsb::class, Pay::get(Jsb::class));
 
         // force
         $result1 = Pay::config(['name' => 'yansongda1', '_force' => true]);
