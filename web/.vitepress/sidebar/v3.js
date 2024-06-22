@@ -20,6 +20,7 @@ export default [
       { text: '支付宝', link: '/docs/v3/quick-start/alipay' },
       { text: '微信', link: '/docs/v3/quick-start/wechat' },
       { text: '银联', link: '/docs/v3/quick-start/unipay' },
+      { text: '江苏银行', link: '/docs/v3/quick-start/jsb' },
       { text: '返回格式', link: '/docs/v3/quick-start/return-format' }
     ]
   },
@@ -63,6 +64,18 @@ export default [
       { text: '接收回调', link: '/docs/v3/unipay/callback' },
       { text: '确认回调', link: '/docs/v3/unipay/response' },
       { text: '所有内置插件', link: '/docs/v3/unipay/all' }
+    ]
+  },
+  {
+    text: '江苏银行',
+    collapsed: true,
+    items: [
+      { text: '支付', link: '/docs/v3/jsb/pay' },
+      { text: '查询', link: '/docs/v3/jsb/query' },
+      { text: '退款', link: '/docs/v3/jsb/refund' },
+      { text: '接收回调', link: '/docs/v3/jsb/callback' },
+      { text: '确认回调', link: '/docs/v3/jsb/response' },
+      { text: '所有内置插件', link: '/docs/v3/jsb/all' }
     ]
   },
   {

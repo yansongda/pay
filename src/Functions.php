@@ -24,6 +24,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Douyin;
+use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
@@ -593,6 +594,44 @@ function verify_unipay_sign_qra(array $config, array $destination): void
     }
 }
 
+function get_jsb_url(array $config, ?Collection $payload): string
+{
+    $url = get_radar_url($config, $payload) ?? '';
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    return Jsb::URL[$config['mode'] ?? Pay::MODE_NORMAL];
+}
+
+/**
+ * @throws InvalidConfigException
+ * @throws InvalidSignException
+ */
+function verify_jsb_sign(array $config, string $content, string $sign): void
+{
+    if (empty($sign)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 江苏银行签名为空', func_get_args());
+    }
+
+    $publicCert = $config['jsb_public_cert_path'] ?? null;
+
+    if (empty($publicCert)) {
+        throw new InvalidConfigException(Exception::CONFIG_JSB_INVALID, '配置异常: 缺少配置参数 -- [jsb_public_cert_path]');
+    }
+
+    $result = 1 === openssl_verify(
+        $content,
+        base64_decode($sign),
+        get_public_cert($publicCert)
+    );
+
+    if (!$result) {
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证江苏银行签名失败', func_get_args());
+    }
+}
+
 /**
  * @throws InvalidParamsException
  */
@@ -602,10 +641,6 @@ function get_douyin_url(array $config, ?Collection $payload): string
 
     if (empty($url)) {
         throw new InvalidParamsException(Exception::PARAMS_DOUYIN_URL_MISSING, '参数异常: 抖音 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
-    }
-
-    if (str_starts_with($url, 'http')) {
-        return $url;
     }
 
     return Douyin::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;

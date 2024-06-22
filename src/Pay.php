@@ -11,10 +11,12 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Douyin;
+use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\DouyinServiceProvider;
+use Yansongda\Pay\Service\JsbServiceProvider;
 use Yansongda\Pay\Service\UnipayServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
 
@@ -22,6 +24,7 @@ use Yansongda\Pay\Service\WechatServiceProvider;
  * @method static Alipay alipay(array $config = [], $container = null)
  * @method static Wechat wechat(array $config = [], $container = null)
  * @method static Unipay unipay(array $config = [], $container = null)
+ * @method static Jsb    jsb(array $config = [], $container = null)
  * @method static Douyin douyin(array $config = [], $container = null)
  */
 class Pay
@@ -45,6 +48,7 @@ class Pay
         AlipayServiceProvider::class,
         WechatServiceProvider::class,
         UnipayServiceProvider::class,
+        JsbServiceProvider::class,
         DouyinServiceProvider::class,
     ];
 
