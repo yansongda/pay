@@ -40,14 +40,23 @@ class CancelPlugin implements PluginInterface
         if (empty($outTradeNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 付款码支付撤销订单，参数缺少 `out_trade_no`');
         }
-
-        $rocket->setPayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/reverse',
-            ],
-            $this->normal($params, $config)
-        ));
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+            $rocket->mergePayload(array_merge(
+                [
+                    '_method' => 'POST',
+                    '_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/reverse',
+                ],
+                $this->service($payload, $params, $config)
+            ));
+        }else{
+            $rocket->setPayload(array_merge(
+                [
+                    '_method' => 'POST',
+                    '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/reverse',
+                ],
+                $this->normal($params, $config)
+            ));
+        }
 
         Logger::info('[Wechat][V3][Pay][Pos][CancelPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -60,5 +69,14 @@ class CancelPlugin implements PluginInterface
             'appid' => $config[get_wechat_type_key($params)] ?? '',
             'mchid' => $config['mch_id'] ?? '',
         ];
+    }
+
+    protected function service(Collection $payload, array $params, array $config): array
+    {
+        $data = [
+            'sp_mchid' => $config['mch_id'] ?? '',
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
+        ];
+        return $data;
     }
 }

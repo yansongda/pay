@@ -29,17 +29,27 @@ class PayPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][V3][Pay][Pos][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
         $params = $rocket->getParams();
         $config = get_provider_config('wechat', $params);
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => 'v3/pay/transactions/codepay',
-            ],
-            $this->normal($params, $config)
-        ));
-
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+            $rocket->mergePayload(array_merge(
+                [
+                    '_method' => 'POST',
+                    '_url' => 'v3/pay/partner/transactions/codepay',
+                ],
+                $this->service($payload, $params, $config)
+            ));
+        }else{
+            $rocket->mergePayload(array_merge(
+                [
+                    '_method' => 'POST',
+                    '_url' => 'v3/pay/transactions/codepay',
+                ],
+                $this->normal($params, $config)
+            ));
+        }
         Logger::info('[Wechat][V3][Pay][Pos][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
@@ -52,4 +62,17 @@ class PayPlugin implements PluginInterface
             'mchid' => $config['mch_id'] ?? '',
         ];
     }
+
+    protected function service(Collection $payload, array $params, array $config): array
+    {
+        $configKey = get_wechat_type_key($params);
+
+        $data = [
+            'sp_appid' => $config[$configKey] ?? '',
+            'sp_mchid' => $config['mch_id'] ?? '',
+            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
+        ];
+        return $data;
+    }
+
 }
