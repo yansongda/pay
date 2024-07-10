@@ -8,15 +8,20 @@ use Closure;
 use Throwable;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/code-payment-v3/direct/code-pay.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/partner-code-payment-v3/partner/partner-code-pay.html
  */
 class PayPlugin implements PluginInterface
 {
@@ -33,23 +38,23 @@ class PayPlugin implements PluginInterface
         $params = $rocket->getParams();
         $config = get_provider_config('wechat', $params);
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
-            $rocket->mergePayload(array_merge(
-                [
-                    '_method' => 'POST',
-                    '_url' => 'v3/pay/partner/transactions/codepay',
-                ],
-                $this->service($payload, $params, $config)
-            ));
-        }else{
-            $rocket->mergePayload(array_merge(
-                [
-                    '_method' => 'POST',
-                    '_url' => 'v3/pay/transactions/codepay',
-                ],
-                $this->normal($params, $config)
-            ));
+        if (is_null($payload)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 付款码支付，参数为空');
         }
+
+        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+            $data = $this->service($payload, $params, $config);
+        }
+
+        $rocket->mergePayload(array_merge(
+            [
+                '_method' => 'POST',
+                '_url' => 'v3/pay/transactions/codepay',
+                '_service_url' => 'v3/pay/partner/transactions/codepay',
+            ],
+            $data ?? $this->normal($params, $config)
+        ));
+
         Logger::info('[Wechat][V3][Pay][Pos][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
@@ -67,12 +72,10 @@ class PayPlugin implements PluginInterface
     {
         $configKey = get_wechat_type_key($params);
 
-        $data = [
+        return [
             'sp_appid' => $config[$configKey] ?? '',
             'sp_mchid' => $config['mch_id'] ?? '',
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ];
-        return $data;
     }
-
 }

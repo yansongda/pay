@@ -13,12 +13,15 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
+use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/code-payment-v3/direct/reverse.html
+ * @see https://pay.weixin.qq.com/docs/partner/apis/partner-code-payment-v3/partner/partner-reverse.html
  */
 class CancelPlugin implements PluginInterface
 {
@@ -40,23 +43,19 @@ class CancelPlugin implements PluginInterface
         if (empty($outTradeNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 付款码支付撤销订单，参数缺少 `out_trade_no`');
         }
+
         if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
-            $rocket->mergePayload(array_merge(
-                [
-                    '_method' => 'POST',
-                    '_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/reverse',
-                ],
-                $this->service($payload, $params, $config)
-            ));
-        }else{
-            $rocket->setPayload(array_merge(
-                [
-                    '_method' => 'POST',
-                    '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/reverse',
-                ],
-                $this->normal($params, $config)
-            ));
+            $data = $this->service($payload, $params, $config);
         }
+
+        $rocket->setPayload(array_merge(
+            [
+                '_method' => 'POST',
+                '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/reverse',
+                '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/reverse',
+            ],
+            $data ?? $this->normal($params, $config)
+        ));
 
         Logger::info('[Wechat][V3][Pay][Pos][CancelPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
@@ -73,10 +72,12 @@ class CancelPlugin implements PluginInterface
 
     protected function service(Collection $payload, array $params, array $config): array
     {
-        $data = [
+        $configKey = get_wechat_type_key($params);
+
+        return [
+            'sp_appid' => $config[$configKey] ?? '',
             'sp_mchid' => $config['mch_id'] ?? '',
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
         ];
-        return $data;
     }
 }
