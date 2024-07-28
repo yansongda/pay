@@ -96,7 +96,6 @@ $config = [
             'mode' => Pay::MODE_NORMAL,
         ],
     ],
-<<<<<<< HEAD
     'douyin' => [
         'default' => [
             // 选填-商户号
@@ -116,7 +115,7 @@ $config = [
             // 选填-抖音支付回调地址
             'notify_url' => 'https://yansongda.cn/douyin/notify',
         ],
-=======
+    ],
     'jsb' => [
         'default' => [
             // 服务代码
@@ -135,8 +134,7 @@ $config = [
             'notify_url' => '',
             // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:测试环境
             'mode' => Pay::MODE_NORMAL,
-        ]
->>>>>>> master
+        ],
     ],
     'logger' => [
         'enable' => false,

@@ -19,6 +19,7 @@ export default [
       { text: '初始化', link: '/docs/v3/quick-start/init' },
       { text: '支付宝', link: '/docs/v3/quick-start/alipay' },
       { text: '微信', link: '/docs/v3/quick-start/wechat' },
+      { text: '支付宝', link: '/docs/v3/quick-start/douyin' },
       { text: '银联', link: '/docs/v3/quick-start/unipay' },
       { text: '江苏银行', link: '/docs/v3/quick-start/jsb' },
       { text: '返回格式', link: '/docs/v3/quick-start/return-format' }
@@ -53,8 +54,22 @@ export default [
     ]
   },
   {
-    text: '银联',
+    text: '抖音',
     collapsed: false,
+    items: [
+      { text: '支付', link: '/docs/v3/douyin/pay' },
+      { text: '查询', link: '/docs/v3/douyin/query' },
+      { text: '退款', link: '/docs/v3/wechat/refund' },
+      { text: '关闭', link: '/docs/v3/wechat/close' },
+      { text: '取消', link: '/docs/v3/wechat/cancel' },
+      { text: '接收回调', link: '/docs/v3/wechat/callback' },
+      { text: '确认回调', link: '/docs/v3/wechat/response' },
+      { text: '所有内置插件', link: '/docs/v3/wechat/all' }
+    ]
+  },
+  {
+    text: '银联',
+    collapsed: true,
     items: [
       { text: '支付', link: '/docs/v3/unipay/pay' },
       { text: '查询', link: '/docs/v3/unipay/query' },
