@@ -643,5 +643,9 @@ function get_douyin_url(array $config, ?Collection $payload): string
         throw new InvalidParamsException(Exception::PARAMS_DOUYIN_URL_MISSING, '参数异常: 抖音 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
     }
 
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
     return Douyin::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
 }

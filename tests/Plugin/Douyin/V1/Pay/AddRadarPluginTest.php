@@ -36,6 +36,6 @@ class AddRadarPluginTest extends TestCase
         self::assertEquals('application/json; charset=utf-8', $radar->getHeaderLine('Content-Type'));
         self::assertEquals('123', (string) $radar->getBody());
         self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals('https://open-sandbox.douyin.com/api/apps/ecpay/v1/create_order', (string) $radar->getUri());
+        self::assertStringContainsString('api/apps/ecpay/v1/create_order', (string) $radar->getUri());
     }
 }

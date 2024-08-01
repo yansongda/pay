@@ -209,6 +209,24 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'notify_url' => 'https://yansongda.cn/douyin/notify',
                     'mode' => Pay::MODE_SERVICE,
                 ],
+                'empty_salt' => [
+                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 产品管理 --> 商户号
+                    'mch_id' => '73744242495132490630',
+                    // 必填-支付 Token，用于支付回调签名
+                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
+                    'mch_secret_key' => 'douyin_mini_token',
+                    // 必填-支付 SALT，用于支付签名
+                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
+                    'mch_secret_salt' => '',
+                    // 必填-小程序 app_id
+                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 小程序appid
+                    'mini_app_id' => 'tt226e54d3bd581bf801',
+                    // 选填-抖音开放平台服务商id
+                    'thirdparty_id' => 'service_provider',
+                    // 选填-抖音支付回调地址
+                    'notify_url' => 'https://yansongda.cn/douyin/notify',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
             ],
         ];
 
