@@ -21,7 +21,7 @@ $order = [
     // '_action' => 'app', // app 退款
     // '_action' => 'combine', // 合单退款
     // '_action' => 'h5', // h5 退款
-    // '_action' => 'miniapp', // 小程序退款
+    // '_action' => 'mini', // 小程序退款
     // '_action' => 'native', // native 退款
 
 ];

@@ -13,7 +13,6 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
 use function Yansongda\Pay\get_provider_config;
@@ -36,7 +35,7 @@ class CallbackPlugin implements PluginInterface
 
         $value = filter_params($params, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k);
 
-        verify_alipay_sign($config, Collection::wrap($value)->sortKeys()->toString(), $params['sign'] ?? '');
+        verify_alipay_sign($config, $value->sortKeys()->toString(), $params['sign'] ?? '');
 
         $rocket->setPayload($params)
             ->setDirection(NoHttpRequestDirection::class)

@@ -12,6 +12,12 @@
 |   scan   |  扫码支付  | array $order | Collection |
 | transfer |   转账   | array $order | Collection |
 
+:::tip
+默认情况下，除 APP支付、小程序支付 外所使用的 appid 均是微信公众号的 appid，即配置文件中的 `mp_app_id` 参数
+
+如果想使用其他类型的 appid，则只需要在调用参数中增加 `_type` 参数即可，例如，如果想使用小程序的 appid，则：`['_type' => 'mini']`
+:::
+
 ## 公众号支付
 
 ### 例子

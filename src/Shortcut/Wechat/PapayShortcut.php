@@ -28,13 +28,13 @@ class PapayShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
 
-        if (method_exists($this, $action)) {
-            return $this->{$action}($params);
+        if (method_exists($this, $method)) {
+            return $this->{$method}($params);
         }
 
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Papay action [{$action}] not supported");
+        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
     }
 
     /**

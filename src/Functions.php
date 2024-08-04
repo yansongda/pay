@@ -23,6 +23,7 @@ use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Alipay;
+use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
@@ -596,6 +597,7 @@ function verify_unipay_sign_qra(array $config, array $destination): void
 function get_jsb_url(array $config, ?Collection $payload): string
 {
     $url = get_radar_url($config, $payload) ?? '';
+
     if (str_starts_with($url, 'http')) {
         return $url;
     }
@@ -628,4 +630,22 @@ function verify_jsb_sign(array $config, string $content, string $sign): void
     if (!$result) {
         throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证江苏银行签名失败', func_get_args());
     }
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_douyin_url(array $config, ?Collection $payload): string
+{
+    $url = get_radar_url($config, $payload);
+
+    if (empty($url)) {
+        throw new InvalidParamsException(Exception::PARAMS_DOUYIN_URL_MISSING, '参数异常: 抖音 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
+    }
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    return Douyin::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
 }

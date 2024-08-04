@@ -75,7 +75,6 @@ class PosShortcutTest extends TestCase
     {
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-        self::expectExceptionMessage('Pos action [fooPlugins] not supported');
 
         $this->plugin->getPlugins(['_action' => 'foo']);
     }

@@ -77,6 +77,11 @@ yansongda/pay 100% 兼容 支付宝/微信/银联 所有功能（包括服务商
 - 刷卡支付
 - ...
 
+### 抖音
+
+- 小程序支付
+- ...
+
 ### 银联
 
 - 手机网站支付
@@ -146,7 +151,9 @@ class AlipayController
 
     public function web()
     {
-        $result = Pay::alipay($this->config)->web([
+        Pay::config($this->config);
+        
+        $result = Pay::alipay()->web([
             'out_trade_no' => ''.time(),
             'total_amount' => '0.01',
             'subject' => 'yansongda 测试 - 1',
@@ -157,7 +164,9 @@ class AlipayController
 
     public function returnCallback()
     {
-        $data = Pay::alipay($this->config)->callback(); // 是的，验签就这么简单！
+        Pay::config($this->config);
+    
+        $data = Pay::alipay()->callback(); // 是的，验签就这么简单！
 
         // 订单号：$data->out_trade_no
         // 支付宝交易号：$data->trade_no
@@ -166,10 +175,10 @@ class AlipayController
 
     public function notifyCallback()
     {
-        $alipay = Pay::alipay($this->config);
-    
+        Pay::config($this->config);
+        
         try{
-            $data = $alipay->callback(); // 是的，验签就这么简单！
+            $data = Pay::alipay()->callback(); // 是的，验签就这么简单！
 
             // 请自行对 trade_status 进行判断及其它逻辑进行判断，在支付宝的业务通知中，只有交易通知状态为 TRADE_SUCCESS 或 TRADE_FINISHED 时，支付宝才会认定为买家付款成功。
             // 1、商户需要验证该通知数据中的out_trade_no是否为商户系统中创建的订单号；
@@ -177,11 +186,11 @@ class AlipayController
             // 3、校验通知中的seller_id（或者seller_email) 是否为out_trade_no这笔单据的对应的操作方（有的时候，一个商户可能有多个seller_id/seller_email）；
             // 4、验证app_id是否为该商户本身。
             // 5、其它业务逻辑情况
-        } catch (\Exception $e) {
-            // $e->getMessage();
+        } catch (\Throwable $e) {
+            dd($e);
         }
 
-        return $alipay->success();
+        return Pay::alipay()->success();
     }
 }
 ```
@@ -249,6 +258,8 @@ class WechatController
 
     public function index()
     {
+        Pay::config($this->config);
+        
         $order = [
             'out_trade_no' => time().'',
             'description' => 'subject-测试',
@@ -260,7 +271,7 @@ class WechatController
             ],
         ];
 
-        $pay = Pay::wechat($this->config)->mp($order);
+        $pay = Pay::wechat()->mp($order);
 
         // $pay->appId
         // $pay->timeStamp
@@ -269,17 +280,96 @@ class WechatController
         // $pay->signType
     }
 
-    public function notifyCallback()
+    public function callback()
     {
-        $pay = Pay::wechat($this->config);
-
+        Pay::config($this->config);
+        
         try{
-            $data = $pay->callback(); // 是的，验签就这么简单！
-        } catch (\Exception $e) {
-            // $e->getMessage();
+            $data = Pay::wechat()->callback(); // 是的，验签就这么简单！
+        } catch (\Throwable $e) {
+            dd($e);
         }
         
-        return $pay->success();
+        return Pay::wechat()->success();
+    }
+}
+```
+
+### 抖音
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Yansongda\Pay\Pay;
+
+class DouyinController
+{
+    protected $config = [
+        'douyin' => [
+            'default' => [
+                // 选填-商户号
+                // 抖音开放平台 --> 应用详情 --> 支付信息 --> 产品管理 --> 商户号
+                'mch_id' => '73744242495132490630',
+                // 必填-支付 Token，用于支付回调签名
+                // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
+                'mch_secret_token' => 'douyin_mini_token',
+                // 必填-支付 SALT，用于支付签名
+                // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
+                'mch_secret_salt' => 'oDxWDBr4U7FAAQ8hnGDm29i4A6pbTMDKme4WLLvA',
+                // 必填-小程序 app_id
+                // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 小程序appid
+                'mini_app_id' => 'tt226e54d3bd581bf801',
+                // 选填-抖音开放平台服务商id
+                'thirdparty_id' => '',
+                // 选填-抖音支付回调地址
+                'notify_url' => 'https://yansongda.cn/douyin/notify',
+            ],
+        ],
+        'logger' => [ // optional
+            'enable' => false,
+            'file' => './logs/alipay.log',
+            'level' => 'info', // 建议生产环境等级调整为 info，开发环境为 debug
+            'type' => 'single', // optional, 可选 daily.
+            'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
+        ],
+        'http' => [ // optional
+            'timeout' => 5.0,
+            'connect_timeout' => 5.0,
+            // 更多配置项请参考 [Guzzle](https://guzzle-cn.readthedocs.io/zh_CN/latest/request-options.html)
+        ],
+    ];
+
+    public function pay()
+    {
+        Pay::config($this->config);
+        
+        $result = Pay::douyin()->mini([
+            'out_order_no' => date('YmdHis').mt_rand(1000, 9999),
+            'total_amount' => 1,
+            'subject' => '闫嵩达 - test - subject - 01',
+            'body' => '闫嵩达 - test - body - 01',
+            'valid_time' => 600,
+            'expand_order_info' => json_encode([
+                'original_delivery_fee' => 15,
+                'actual_delivery_fee' => 10
+            ])
+        ]);
+        
+        return $result;
+    }
+
+    public function callback()
+    {
+        Pay::config($this->config);
+    
+        try{
+            $data = Pay::douyin()->callback(); // 是的，验签就这么简单！
+        } catch (\Throwable $e) {
+            dd($e)
+        }
+
+        return Pay::douyin()->success();
     }
 }
 ```
@@ -292,7 +382,7 @@ namespace App\Http\Controllers;
 
 use Yansongda\Pay\Pay;
 
-class EpayController
+class JsbController
 {
     protected $config = [
         'jsb' => [
@@ -331,33 +421,35 @@ class EpayController
 
     public function index()
     {
+        Pay::config($this->config);
+        
         $order = [
             'outTradeNo' => time().'',
             'proInfo' => 'subject-测试',
             'totalFee'=> 1,
         ];
 
-        $pay = Pay::jsb($this->config)->scan($order);
+        $pay = Pay::jsb()->scan($order);
     }
 
     public function notifyCallback()
     {
-        $pay = Pay::jsb($this->config);
+        Pay::config($this->config);
 
         try{
-            $data = $pay->callback(); // 是的，验签就这么简单！
-        } catch (\Exception $e) {
-            // $e->getMessage();
+            $data = Pay::jsb()->callback(); // 是的，验签就这么简单！
+        } catch (\Throwable $e) {
+            dd($e);
         }
         
-        return $pay->success();
+        return Pay::jsb()->success();
     }
 }
 ```
 
 ## 代码贡献
 
-由于测试及使用环境的限制，本项目中只开发了「支付宝」、「微信支付」、「银联」、「江苏银行」的相关支付网关。
+由于测试及使用环境的限制，本项目中只开发了「支付宝」、「微信支付」、「抖音支付」、「银联」、「江苏银行」的相关支付网关。
 
 如果您有其它支付网关的需求，或者发现本项目中需要改进的代码，**_欢迎 Fork 并提交 PR！_**
 

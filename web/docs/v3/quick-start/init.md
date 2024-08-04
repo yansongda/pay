@@ -96,6 +96,26 @@ $config = [
             'mode' => Pay::MODE_NORMAL,
         ],
     ],
+    'douyin' => [
+        'default' => [
+            // 选填-商户号
+            // 抖音开放平台 --> 应用详情 --> 支付信息 --> 产品管理 --> 商户号
+            'mch_id' => '73744242495132490630',
+            // 必填-支付 Token，用于支付回调签名
+            // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
+            'mch_secret_token' => 'douyin_mini_token',
+            // 必填-支付 SALT，用于支付签名
+            // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
+            'mch_secret_salt' => 'oDxWDBr4U7FAAQ8hnGDm29i4A6pbTMDKme4WLLvA',
+            // 必填-小程序 app_id
+            // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 小程序appid
+            'mini_app_id' => 'tt226e54d3bd581bf801',
+            // 选填-抖音开放平台服务商id
+            'thirdparty_id' => '',
+            // 选填-抖音支付回调地址
+            'notify_url' => 'https://yansongda.cn/douyin/notify',
+        ],
+    ],
     'jsb' => [
         'default' => [
             // 服务代码
@@ -114,7 +134,7 @@ $config = [
             'notify_url' => '',
             // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:测试环境
             'mode' => Pay::MODE_NORMAL,
-        ]
+        ],
     ],
     'logger' => [
         'enable' => false,

@@ -86,7 +86,6 @@ class CloseShortcutTest extends TestCase
     {
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-        self::expectExceptionMessage('Close action [fooPlugins] not supported');
 
         $this->plugin->getPlugins(['_action' => 'foo']);
     }

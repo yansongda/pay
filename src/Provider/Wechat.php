@@ -56,7 +56,7 @@ class Wechat implements ProviderInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function __call(string $shortcut, array $params): null|Collection|MessageInterface
+    public function __call(string $shortcut, array $params): null|Collection|MessageInterface|Rocket
     {
         $plugin = '\Yansongda\Pay\Shortcut\Wechat\\'.Str::studly($shortcut).'Shortcut';
 

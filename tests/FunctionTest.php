@@ -21,6 +21,7 @@ use function Yansongda\Pay\decrypt_wechat_contents;
 use function Yansongda\Pay\decrypt_wechat_resource;
 use function Yansongda\Pay\decrypt_wechat_resource_aes_256_gcm;
 use function Yansongda\Pay\encrypt_wechat_contents;
+use function Yansongda\Pay\get_douyin_url;
 use function Yansongda\Pay\get_private_cert;
 use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_public_cert;
@@ -42,6 +43,7 @@ use function Yansongda\Pay\get_wechat_type_key;
 use function Yansongda\Pay\get_wechat_url;
 use function Yansongda\Pay\reload_wechat_public_certs;
 use function Yansongda\Pay\verify_alipay_sign;
+use function Yansongda\Pay\verify_douyin_sign;
 use function Yansongda\Pay\verify_unipay_sign;
 use function Yansongda\Pay\verify_unipay_sign_qra;
 use function Yansongda\Pay\verify_wechat_sign;
@@ -566,10 +568,10 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
     public function testGetUnipayUrl()
     {
-        self::assertEquals('https://yansongda.cn', get_wechat_url([], new Collection(['_url' => 'https://yansongda.cn'])));
-        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', get_wechat_url([], new Collection(['_url' => 'api/v1/yansongda'])));
-        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['mode' => Pay::MODE_SERVICE], new Collection(['_service_url' => 'api/v1/service/yansongda'])));
-        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', get_wechat_url(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://yansongda.cn', get_unipay_url([], new Collection(['_url' => 'https://yansongda.cn'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/yansongda', get_unipay_url([], new Collection(['_url' => 'api/v1/yansongda'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', get_unipay_url(['mode' => Pay::MODE_SERVICE], new Collection(['_service_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', get_unipay_url(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_UNIPAY_URL_MISSING);
@@ -693,4 +695,16 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 		self::assertEquals('https://mybank.jsbchina.cn:577/eis/merchant/merchantServices.htm', get_jsb_url(['mode' => Pay::MODE_NORMAL], new Collection()));
 		self::assertEquals('https://epaytest.jsbchina.cn:9999/eis/merchant/merchantServices.htm', get_jsb_url(['mode' => Pay::MODE_SANDBOX], new Collection()));
 	}
+
+    public function testGetDouyinUrl()
+	{
+        self::assertEquals('https://yansongda.cn', get_douyin_url([], new Collection(['_url' => 'https://yansongda.cn'])));
+        self::assertEquals('https://developer.toutiao.com/api/v1/yansongda', get_douyin_url([], new Collection(['_url' => 'api/v1/yansongda'])));
+        self::assertEquals('https://developer.toutiao.com/api/v1/service/yansongda', get_douyin_url(['mode' => Pay::MODE_SERVICE], new Collection(['_service_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://developer.toutiao.com/api/v1/service/yansongda', get_douyin_url(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_DOUYIN_URL_MISSING);
+        get_douyin_url([], new Collection([]));
+   }
 }

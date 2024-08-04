@@ -37,6 +37,8 @@ class Exception extends \Exception
 
     public const PARAMS_CALLBACK_REQUEST_INVALID = 9221;
 
+    public const PARAMS_DOUYIN_URL_MISSING = 9222;
+
     /**
      * 关于响应.
      */
@@ -56,6 +58,8 @@ class Exception extends \Exception
     public const CONFIG_UNIPAY_INVALID = 9403;
 
     public const CONFIG_JSB_INVALID = 9404;
+
+    public const CONFIG_DOUYIN_INVALID = 9405;
 
     /**
      * 关于签名.
