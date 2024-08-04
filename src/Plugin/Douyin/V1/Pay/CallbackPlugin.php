@@ -17,7 +17,6 @@ use Yansongda\Pay\Exception\InvalidSignException;
 
 use function Yansongda\Artful\filter_params;
 use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\verify_douyin_sign;
 
 class CallbackPlugin implements PluginInterface
 {
