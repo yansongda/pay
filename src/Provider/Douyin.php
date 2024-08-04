@@ -83,17 +83,11 @@ class Douyin implements ProviderInterface
     }
 
     /**
-     * @throws ContainerException
      * @throws InvalidParamsException
-     * @throws ServiceNotFoundException
      */
     public function close(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('douyin', __METHOD__, $order, null));
-
-        $this->__call('close', [$order]);
-
-        return new Collection();
+        throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: 抖音不支持 close API');
     }
 
     /**

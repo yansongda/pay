@@ -720,5 +720,37 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         verify_douyin_sign(get_provider_config('douyin'), $contents, $body['msg_signature']);
 
         self::assertTrue(true);
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_EMPTY);
+        verify_douyin_sign(get_provider_config('douyin'), [], '');
+    }
+
+    public function testVerifyDouyinSignError()
+    {
+        $post = '{"msg":"{\"appid\":\"tt226e54d3bd581bf801\",\"cp_orderno\":\"202408041111312119\",\"cp_extra\":\"\",\"way\":\"2\",\"channel_no\":\"\",\"channel_gateway_no\":\"\",\"payment_order_no\":\"\",\"out_channel_order_no\":\"\",\"total_amount\":1,\"status\":\"SUCCESS\",\"seller_uid\":\"73744242495132490630\",\"extra\":\"\",\"item_id\":\"\",\"paid_at\":1722769986,\"message\":\"\",\"order_id\":\"7398108028895054107\"}","msg_signature":"840bdf067c1d6056becfe88735c8ebb7e1ab809c","nonce":"5280","timestamp":"1722769986","type":"payment"}';
+
+        $body = json_decode($post, true);
+
+        $contents = $body;
+        unset($contents['msg_signature'], $contents['type']);
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+        verify_douyin_sign(get_provider_config('douyin'), $contents, 'foo');
+    }
+
+    public function testVerifyDouyinSignConfigError()
+    {
+        $post = '{"msg":"{\"appid\":\"tt226e54d3bd581bf801\",\"cp_orderno\":\"202408041111312119\",\"cp_extra\":\"\",\"way\":\"2\",\"channel_no\":\"\",\"channel_gateway_no\":\"\",\"payment_order_no\":\"\",\"out_channel_order_no\":\"\",\"total_amount\":1,\"status\":\"SUCCESS\",\"seller_uid\":\"73744242495132490630\",\"extra\":\"\",\"item_id\":\"\",\"paid_at\":1722769986,\"message\":\"\",\"order_id\":\"7398108028895054107\"}","msg_signature":"840bdf067c1d6056becfe88735c8ebb7e1ab809c","nonce":"5280","timestamp":"1722769986","type":"payment"}';
+
+        $body = json_decode($post, true);
+
+        $contents = $body;
+        unset($contents['msg_signature'], $contents['type']);
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
+        verify_douyin_sign([], $contents, 'foo');
     }
 }

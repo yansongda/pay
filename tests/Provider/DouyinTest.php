@@ -4,7 +4,9 @@ namespace Yansongda\Pay\Tests\Provider;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
+use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -78,6 +80,22 @@ class DouyinTest extends TestCase
         self::assertEquals('7376826336364513572', $result->get('data.order_id'));
         self::assertEquals('CgwIARDPKBjKMCABKAESTgpMTgGUG+Ms5klBoqYlsymcJWNMvgWCR8XH+9OO5vFPSl2zZcVKFX0sKRuG9zxMNlT43OJotxNNHaO4KLMbiqo6HYxMiRS5tkoeILFzexoA.W', $result->get('data.order_token'));
         self::assertEquals('771c1952ffb5e0744fc0ad1337aafa6a', $payload->get('sign'));
+    }
+
+    public function testClose()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
+
+        Pay::douyin()->close([]);
+    }
+
+    public function testCancel()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
+
+        Pay::douyin()->cancel([]);
     }
 
     public function testQuery()
@@ -163,12 +181,24 @@ class DouyinTest extends TestCase
 
     public function testCallback()
     {
-        $callback = Pay::douyin()->callback(json_decode(
-            '{"msg":"{\"appid\":\"tt226e54d3bd581bf801\",\"cp_orderno\":\"202408041111312119\",\"cp_extra\":\"\",\"way\":\"2\",\"channel_no\":\"\",\"channel_gateway_no\":\"\",\"payment_order_no\":\"\",\"out_channel_order_no\":\"\",\"total_amount\":1,\"status\":\"SUCCESS\",\"seller_uid\":\"73744242495132490630\",\"extra\":\"\",\"item_id\":\"\",\"paid_at\":1722769986,\"message\":\"\",\"order_id\":\"7398108028895054107\"}","msg_signature":"840bdf067c1d6056becfe88735c8ebb7e1ab809c","nonce":"5280","timestamp":"1722769986","type":"payment"}',
-            true
-        ));
+        $post = '{"msg":"{\"appid\":\"tt226e54d3bd581bf801\",\"cp_orderno\":\"202408041111312119\",\"cp_extra\":\"\",\"way\":\"2\",\"channel_no\":\"\",\"channel_gateway_no\":\"\",\"payment_order_no\":\"\",\"out_channel_order_no\":\"\",\"total_amount\":1,\"status\":\"SUCCESS\",\"seller_uid\":\"73744242495132490630\",\"extra\":\"\",\"item_id\":\"\",\"paid_at\":1722769986,\"message\":\"\",\"order_id\":\"7398108028895054107\"}","msg_signature":"840bdf067c1d6056becfe88735c8ebb7e1ab809c","nonce":"5280","timestamp":"1722769986","type":"payment"}';
+
+        $callback = Pay::douyin()->callback(json_decode($post, true));
+        self::assertInstanceOf(Collection::class, $callback);
+        self::assertNotEmpty($callback->all());
+
+        $request = new ServerRequest('POST', 'https://yansongda.cn/unipay/notify', [], $post);
+        $callback = Pay::douyin()->callback($request);
 
         self::assertInstanceOf(Collection::class, $callback);
         self::assertNotEmpty($callback->all());
+    }
+
+    public function testSuccess()
+    {
+        $result = Pay::douyin()->success();
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertStringContainsString('success', (string) $result->getBody());
     }
 }
