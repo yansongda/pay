@@ -43,6 +43,7 @@ use function Yansongda\Pay\get_wechat_type_key;
 use function Yansongda\Pay\get_wechat_url;
 use function Yansongda\Pay\reload_wechat_public_certs;
 use function Yansongda\Pay\verify_alipay_sign;
+use function Yansongda\Pay\verify_douyin_sign;
 use function Yansongda\Pay\verify_unipay_sign;
 use function Yansongda\Pay\verify_unipay_sign_qra;
 use function Yansongda\Pay\verify_wechat_sign;
@@ -706,4 +707,18 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectExceptionCode(Exception::PARAMS_DOUYIN_URL_MISSING);
         get_douyin_url([], new Collection([]));
    }
+
+    public function testVerifyDouyinSign()
+    {
+        $post = '{"msg":"{\"appid\":\"tt226e54d3bd581bf801\",\"cp_orderno\":\"202408041111312119\",\"cp_extra\":\"\",\"way\":\"2\",\"channel_no\":\"\",\"channel_gateway_no\":\"\",\"payment_order_no\":\"\",\"out_channel_order_no\":\"\",\"total_amount\":1,\"status\":\"SUCCESS\",\"seller_uid\":\"73744242495132490630\",\"extra\":\"\",\"item_id\":\"\",\"paid_at\":1722769986,\"message\":\"\",\"order_id\":\"7398108028895054107\"}","msg_signature":"840bdf067c1d6056becfe88735c8ebb7e1ab809c","nonce":"5280","timestamp":"1722769986","type":"payment"}';
+
+        $body = json_decode($post, true);
+
+        $contents = $body;
+        unset($contents['msg_signature'], $contents['type']);
+
+        verify_douyin_sign(get_provider_config('douyin'), $contents, $body['msg_signature']);
+
+        self::assertTrue(true);
+    }
 }

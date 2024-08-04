@@ -25,6 +25,7 @@ use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -78,7 +79,7 @@ class Douyin implements ProviderInterface
      */
     public function cancel(array $order): Collection|Rocket
     {
-        throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: 微信不支持 cancel API');
+        throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: 抖音不支持 cancel API');
     }
 
     /**
@@ -115,12 +116,9 @@ class Douyin implements ProviderInterface
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new CallbackReceived('douyin', clone $request, $params, null));
+        Event::dispatch(new CallbackReceived('douyin', $request->all(), $params, null));
 
-        return $this->pay(
-            [CallbackPlugin::class],
-            ['_request' => $request, '_params' => $params]
-        );
+        return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
     }
 
     public function success(): ResponseInterface
@@ -128,7 +126,7 @@ class Douyin implements ProviderInterface
         return new Response(
             200,
             ['Content-Type' => 'application/json'],
-            json_encode(['code' => 'SUCCESS', 'message' => '成功']),
+            json_encode(['err_no' => 0, 'err_tips' => 'success']),
         );
     }
 
@@ -141,20 +139,22 @@ class Douyin implements ProviderInterface
         );
     }
 
-    protected function getCallbackParams(null|array|ServerRequestInterface $contents = null): ServerRequestInterface
+    protected function getCallbackParams(null|array|ServerRequestInterface $contents = null): Collection
     {
-        if (is_array($contents) && isset($contents['body'], $contents['headers'])) {
-            return new ServerRequest('POST', 'http://localhost', $contents['headers'], $contents['body']);
-        }
-
         if (is_array($contents)) {
-            return new ServerRequest('POST', 'http://localhost', [], json_encode($contents));
+            return Collection::wrap($contents);
         }
 
-        if ($contents instanceof ServerRequestInterface) {
-            return $contents;
+        if (!$contents instanceof ServerRequestInterface) {
+            $contents = ServerRequest::fromGlobals();
         }
 
-        return ServerRequest::fromGlobals();
+        $body = Collection::wrap($contents->getParsedBody());
+
+        if ($body->isNotEmpty()) {
+            return $body;
+        }
+
+        return Collection::wrapJson((string) $contents->getBody());
     }
 }

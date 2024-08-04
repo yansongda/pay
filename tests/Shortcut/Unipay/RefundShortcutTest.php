@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Tests\Shortcut\Unipay;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\RefundPlugin as QrCodeRefundPlugin;
@@ -72,8 +73,8 @@ class RefundShortcutTest extends TestCase
 
     public function testFoo()
     {
-        $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionMessage('Refund action [fooPlugins] not supported');
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
         $this->plugin->getPlugins(['_action' => 'foo']);
     }

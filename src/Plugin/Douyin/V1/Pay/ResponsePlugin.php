@@ -11,7 +11,6 @@ use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Supports\Collection;
 
 class ResponsePlugin implements PluginInterface
 {
@@ -23,11 +22,11 @@ class ResponsePlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[Douyin][ResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Douyin][V1][Pay][ResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $rocket->setDestination(new Collection($this->validateResponse($rocket)));
+        $this->validateResponse($rocket);
 
-        Logger::info('[Douyin][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Douyin][V1][Pay][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }
@@ -35,7 +34,7 @@ class ResponsePlugin implements PluginInterface
     /**
      * @throws InvalidResponseException
      */
-    protected function validateResponse(Rocket $rocket): array
+    protected function validateResponse(Rocket $rocket): void
     {
         $destination = $rocket->getDestination();
         $response = $rocket->getDestinationOrigin();
@@ -48,7 +47,5 @@ class ResponsePlugin implements PluginInterface
         if (0 !== $destination->get('err_no')) {
             throw new InvalidResponseException(Exception::RESPONSE_BUSINESS_CODE_WRONG, '抖音返回业务异常: '.$destination->get('err_tips'), $destination);
         }
-
-        return $destination->get('data', []);
     }
 }

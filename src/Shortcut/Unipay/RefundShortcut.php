@@ -28,13 +28,13 @@ class RefundShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $typeMethod = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
 
-        if (method_exists($this, $typeMethod)) {
-            return $this->{$typeMethod}();
+        if (method_exists($this, $method)) {
+            return $this->{$method}();
         }
 
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "Refund action [{$typeMethod}] not supported");
+        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
     }
 
     protected function defaultPlugins(): array

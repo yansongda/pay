@@ -23,14 +23,16 @@ class ResponsePluginTest extends TestCase
 
     public function testOriginalResponseDestination()
     {
+        $destination = ['err_no' => 0, 'err_tips' => 'ok', 'data' => ['foo' => 'bar']];
+
         $rocket = new Rocket();
         $rocket->setDestinationOrigin(new Response());
-        $rocket->setDestination(new Collection(['err_no' => 0, 'err_tips' => 'ok', 'data' => ['foo' => 'bar']]));
+        $rocket->setDestination(new Collection($destination));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertInstanceOf(Collection::class, $result->getDestination());
-        self::assertEquals(['foo' => 'bar'], $result->getDestination()->all());
+        self::assertEquals($destination, $result->getDestination()->all());
     }
 
     public function testOriginalResponseCodeErrorDestination()

@@ -27,7 +27,7 @@ class AddRadarPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Douyin][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Douyin][V1][Pay][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
@@ -40,7 +40,7 @@ class AddRadarPlugin implements PluginInterface
             get_radar_body($payload),
         ));
 
-        Logger::info('[Douyin][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Douyin][V1][Pay][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

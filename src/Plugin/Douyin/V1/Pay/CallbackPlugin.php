@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\V2;
+namespace Yansongda\Pay\Plugin\Douyin\V1\Pay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -16,32 +16,32 @@ use Yansongda\Pay\Exception\InvalidSignException;
 
 use function Yansongda\Artful\filter_params;
 use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\verify_alipay_sign;
+use function Yansongda\Pay\verify_douyin_sign;
 
 class CallbackPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
-     * @throws ServiceNotFoundException
      * @throws InvalidSignException
+     * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Douyin][V1][Pay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('alipay', $params);
+        $config = get_provider_config('douyin', $params);
 
-        $value = filter_params($params, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k);
+        $value = filter_params($params, fn ($k, $v) => '' !== $v && 'msg_signature' != $k && 'type' != $k);
 
-        verify_alipay_sign($config, $value->sortKeys()->toString(), $params['sign'] ?? '');
+        verify_douyin_sign($config, $value->all(), $params['msg_signature'] ?? '');
 
         $rocket->setPayload($params)
             ->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());
 
-        Logger::info('[Alipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Douyin][V1][Pay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

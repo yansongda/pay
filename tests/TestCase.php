@@ -178,7 +178,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_id' => '73744242495132490630',
                     // 必填-支付 Token，用于支付回调签名
                     // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
-                    'mch_secret_key' => 'douyin_mini_token',
+                    'mch_secret_token' => 'douyin_mini_token',
                     // 必填-支付 SALT，用于支付签名
                     // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
                     'mch_secret_salt' => 'oDxWDBr4U7FAAQ8hnGDm29i4A6pbTMDKme4WLLvA',
@@ -196,7 +196,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_id' => '73744242495132490630',
                     // 必填-支付 Token，用于支付回调签名
                     // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
-                    'mch_secret_key' => 'douyin_mini_token',
+                    'mch_secret_token' => 'douyin_mini_token',
                     // 必填-支付 SALT，用于支付签名
                     // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
                     'mch_secret_salt' => 'oDxWDBr4U7FAAQ8hnGDm29i4A6pbTMDKme4WLLvA',
@@ -214,7 +214,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_id' => '73744242495132490630',
                     // 必填-支付 Token，用于支付回调签名
                     // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
-                    'mch_secret_key' => 'douyin_mini_token',
+                    'mch_secret_token' => 'douyin_mini_token',
                     // 必填-支付 SALT，用于支付签名
                     // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
                     'mch_secret_salt' => '',

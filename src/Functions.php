@@ -649,3 +649,29 @@ function get_douyin_url(array $config, ?Collection $payload): string
 
     return Douyin::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
 }
+
+/**
+ * @throws InvalidConfigException
+ * @throws InvalidSignException
+ */
+function verify_douyin_sign(array $config, array $contents, string $sign): void
+{
+    if (empty($sign)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 验证抖音签名失败-抖音签名为空', func_get_args());
+    }
+
+    $contents['token'] = $config['mch_secret_token'] ?? null;
+
+    if (empty($contents['token'])) {
+        throw new InvalidConfigException(Exception::CONFIG_DOUYIN_INVALID, '配置异常: 缺少抖音配置 -- [mch_secret_token]');
+    }
+
+    sort($contents, SORT_STRING);
+    $data = trim(implode('', $contents));
+
+    $result = $sign === sha1($data);
+
+    if (!$result) {
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证抖音签名失败', func_get_args());
+    }
+}

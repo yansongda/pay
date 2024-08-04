@@ -12,12 +12,11 @@ use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryPlugin as MiniQueryPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryRefundPlugin as MiniQueryRefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
 use Yansongda\Supports\Str;
 
-class QueryShortcut implements ShortcutInterface
+class RefundShortcut implements ShortcutInterface
 {
     /**
      * @throws InvalidParamsException
@@ -38,29 +37,11 @@ class QueryShortcut implements ShortcutInterface
         return $this->miniPlugins();
     }
 
-    protected function refundPlugins(): array
-    {
-        return $this->refundMiniPlugins();
-    }
-
     protected function miniPlugins(): array
     {
         return [
             StartPlugin::class,
-            MiniQueryPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ];
-    }
-
-    protected function refundMiniPlugins(): array
-    {
-        return [
-            StartPlugin::class,
-            MiniQueryRefundPlugin::class,
+            MiniRefundPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Douyin;
+namespace Shortcut\Douyin;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
@@ -11,21 +11,20 @@ use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryPlugin as MiniQueryPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryRefundPlugin as MiniQueryRefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
-use Yansongda\Pay\Shortcut\Douyin\QueryShortcut;
+use Yansongda\Pay\Shortcut\Douyin\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class QueryShortcutTest extends TestCase
+class RefundShortcutTest extends TestCase
 {
-    protected QueryShortcut $plugin;
+    protected RefundShortcut $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryShortcut();
+        $this->plugin = new RefundShortcut();
     }
 
     public function testFoo()
@@ -40,7 +39,7 @@ class QueryShortcutTest extends TestCase
     {
         self::assertEquals([
             StartPlugin::class,
-            MiniQueryPlugin::class,
+            MiniRefundPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
@@ -49,42 +48,16 @@ class QueryShortcutTest extends TestCase
         ], $this->plugin->getPlugins([]));
     }
 
-    public function testRefund()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            MiniQueryRefundPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'refund']));
-    }
-
     public function testMini()
     {
         self::assertEquals([
             StartPlugin::class,
-            MiniQueryPlugin::class,
+            MiniRefundPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'mini']));
-    }
-
-    public function testRefundMini()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            MiniQueryRefundPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'refund_mini']));
     }
 }
