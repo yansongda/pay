@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 
 use function Yansongda\Artful\filter_params;
@@ -35,7 +36,7 @@ class CallbackPlugin implements PluginInterface
 
         $value = filter_params($params, fn ($k, $v) => '' !== $v && 'msg_signature' != $k && 'type' != $k);
 
-        verify_douyin_sign($config, $value->all(), $params['msg_signature'] ?? '');
+        $this->verifySign($config, $value->all(), $params['msg_signature'] ?? '');
 
         $rocket->setPayload($params)
             ->setDirection(NoHttpRequestDirection::class)
@@ -44,5 +45,31 @@ class CallbackPlugin implements PluginInterface
         Logger::info('[Douyin][V1][Pay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     * @throws InvalidSignException
+     */
+    protected function verifySign(array $config, array $contents, string $sign): void
+    {
+        if (empty($sign)) {
+            throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 验证抖音签名失败-抖音签名为空', func_get_args());
+        }
+
+        $contents['token'] = $config['mch_secret_token'] ?? null;
+
+        if (empty($contents['token'])) {
+            throw new InvalidConfigException(Exception::CONFIG_DOUYIN_INVALID, '配置异常: 缺少抖音配置 -- [mch_secret_token]');
+        }
+
+        sort($contents, SORT_STRING);
+        $data = trim(implode('', $contents));
+
+        $result = $sign === sha1($data);
+
+        if (!$result) {
+            throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证抖音签名失败', func_get_args());
+        }
     }
 }
