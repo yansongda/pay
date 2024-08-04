@@ -295,7 +295,6 @@ class WechatController
 }
 ```
 
-
 ### 抖音
 ```php
 <?php
