@@ -105,6 +105,8 @@ class RefundAbnormalPlugin implements PluginInterface
     {
         if ($payload->has('bank_account') && $payload->has('real_name')) {
             $data['_serial_no'] = get_wechat_serial_no($params);
+
+            $config = get_provider_config('wechat', $params);
             $publicKey = get_wechat_public_key($config, $data['_serial_no']);
 
             $data['real_name'] = encrypt_wechat_contents($payload->get('real_name'), $publicKey);

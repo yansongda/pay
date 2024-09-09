@@ -60,6 +60,8 @@ class CreatePlugin implements PluginInterface
     protected function encryptSensitiveData(?Collection $payload, array $params, array $config): array
     {
         $data['_serial_no'] = get_wechat_serial_no($params);
+
+        $config = get_provider_config('wechat', $params);
         $publicKey = get_wechat_public_key($config, $data['_serial_no']);
 
         $phone = $payload?->get('buyer_information.phone') ?? null;
