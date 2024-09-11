@@ -92,6 +92,8 @@ class CreatePlugin implements PluginInterface
     {
         $data['transfer_detail_list'] = $payload->get('transfer_detail_list', []);
         $data['_serial_no'] = get_wechat_serial_no($params);
+
+        $config = get_provider_config('wechat', $params);
         $publicKey = get_wechat_public_key($config, $data['_serial_no']);
 
         foreach ($data['transfer_detail_list'] as $key => $list) {
