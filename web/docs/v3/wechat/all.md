@@ -635,3 +635,108 @@ $result = Pay::wechat()->papay([
     'contract_id' => '签约ID',
 ])->toArray();
 ```
+
+
+## 扩展工具
+
+### 分账
+
+- 请求分账
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\CreatePlugin`
+
+- 查询分账结果
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\QueryPlugin`
+
+- 请求分账回退
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\ReturnPlugin`
+
+- 查询分账回退结果
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\QueryReturnPlugin`
+
+- 解冻剩余资金
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\UnfreezePlugin`
+
+- 查询剩余待分金额
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\QueryAmountsPlugin`
+
+- 添加分账接收方
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\AddReceiverPlugin`
+
+- 删除分账接收方
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\DeleteReceiverPlugin`
+
+- 「服务商」查询最大分账比例
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\QueryMerchantConfigsPlugin`
+
+- 申请分账账单
+
+  `暂无`
+
+- 下载账单
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\DownloadBillPlugin`
+
+### 消费者投诉2.0
+
+#### 主动查询投诉信息
+
+- 查询投诉单列表
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryPlugin`
+
+- 查询投诉单详情
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryDetailPlugin`
+
+- 查询投诉单协商历史
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryNegotiationPlugin`
+
+#### 实时获取投诉信息
+
+- 创建投诉通知回调
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\SetCallbackPlugin`
+
+- 查询投诉通知回调
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryCallbackPlugin`
+
+- 更新投诉通知回调
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\UpdateCallbackPlugin`
+
+- 删除投诉通知回调
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\DeleteCallbackPlugin`
+
+#### 商户处理用户投诉
+
+- 回复用户
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\ResponsePlugin`
+
+- 反馈处理完成
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\CompletePlugin`
+
+- 更新退款审批结果
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\UpdateRefundPlugin`
+
+#### 商户反馈图片
+
+- 图片请求接口
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryImagePlugin`
+
+
