@@ -546,7 +546,7 @@ $result = Pay::alipay()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Alipay\V2\Member\FaceVerification\ServerVerifyPlugin`
 
-#### OCR
+### OCR
 
 - 服务端OCR
 
