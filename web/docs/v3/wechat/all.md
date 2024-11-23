@@ -679,7 +679,7 @@ $result = Pay::wechat()->papay([
 
 - 申请分账账单
 
-  `暂无`
+  `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\GetBillPlugin`
 
 - 下载账单
 
