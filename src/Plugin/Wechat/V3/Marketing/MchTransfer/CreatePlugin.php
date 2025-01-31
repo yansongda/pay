@@ -57,7 +57,7 @@ class CreatePlugin implements PluginInterface
                 '_url' => 'v3/fund-app/mch-transfer/transfer-bills',
                 'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
             ],
-            $this->normal($params, $config, $payload)
+            $this->normal($params, $payload)
         ));
 
         Logger::info('[Wechat][Marketing][MchTransfer][CreatePlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -72,13 +72,13 @@ class CreatePlugin implements PluginInterface
      * @throws DecryptException
      * @throws InvalidConfigException
      */
-    protected function normal(array $params, array $config, Collection $payload): array
+    protected function normal(array $params, Collection $payload): array
     {
         if (!$payload->has('user_name')) {
             return [];
         }
 
-        return $this->encryptSensitiveData($params, $config, $payload);
+        return $this->encryptSensitiveData($params, $payload);
     }
 
     /**
@@ -88,10 +88,11 @@ class CreatePlugin implements PluginInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    protected function encryptSensitiveData(array $params, array $config, Collection $payload): array
+    protected function encryptSensitiveData(array $params, Collection $payload): array
     {
         $data['_serial_no'] = get_wechat_serial_no($params);
 
+        $config = get_provider_config('wechat', $params);
         $publicKey = get_wechat_public_key($config, $data['_serial_no']);
 
         $data['user_name'] = encrypt_wechat_contents($payload->get('user_name'), $publicKey);
