@@ -18,6 +18,7 @@ use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-out-no.html
+ * @deprecated since v3.7.12 and will be removed in v3.8.0.
  */
 class QueryPlugin implements PluginInterface
 {

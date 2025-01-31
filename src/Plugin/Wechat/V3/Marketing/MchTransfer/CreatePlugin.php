@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -24,8 +24,7 @@ use function Yansongda\Pay\get_wechat_serial_no;
 use function Yansongda\Pay\get_wechat_type_key;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/initiate-batch-transfer.html
- * @deprecated since v3.7.12 and will be removed in v3.8.0.
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012716434
  */
 class CreatePlugin implements PluginInterface
 {
@@ -38,7 +37,7 @@ class CreatePlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Marketing][Transfer][CreatePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Marketing][MchTransfer][CreatePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
@@ -55,13 +54,13 @@ class CreatePlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/transfer/batches',
+                '_url' => 'v3/fund-app/mch-transfer/transfer-bills',
                 'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
             ],
             $this->normal($params, $config, $payload)
         ));
 
-        Logger::info('[Wechat][Marketing][Transfer][CreatePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Marketing][MchTransfer][CreatePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
@@ -75,7 +74,7 @@ class CreatePlugin implements PluginInterface
      */
     protected function normal(array $params, array $config, Collection $payload): array
     {
-        if (!$payload->has('transfer_detail_list.0.user_name')) {
+        if (!$payload->has('user_name')) {
             return [];
         }
 
@@ -91,17 +90,11 @@ class CreatePlugin implements PluginInterface
      */
     protected function encryptSensitiveData(array $params, array $config, Collection $payload): array
     {
-        $data['transfer_detail_list'] = $payload->get('transfer_detail_list', []);
         $data['_serial_no'] = get_wechat_serial_no($params);
 
-        $config = get_provider_config('wechat', $params);
         $publicKey = get_wechat_public_key($config, $data['_serial_no']);
 
-        foreach ($data['transfer_detail_list'] as $key => $list) {
-            if (!empty($list['user_name'])) {
-                $data['transfer_detail_list'][$key]['user_name'] = encrypt_wechat_contents($list['user_name'], $publicKey);
-            }
-        }
+        $data['user_name'] = encrypt_wechat_contents($payload->get('user_name'), $publicKey);
 
         return $data;
     }
