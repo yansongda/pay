@@ -69,8 +69,8 @@ $config = [
             'sub_mini_app_id' => '',
             // 「选填」服务商模式下，子商户id
             'sub_mch_id' => '',
-            // 「选填」（适用于 2024-11 及之前开通微信支付的老商户）微信平台公钥证书路径，强烈建议 php-fpm 模式下配置此参数
-            // 「必填」微信支付公钥路径，key 填写形如 PUB_KEY_ID_0000000000000024101100397200000006 的公钥id，见 https://pay.weixin.qq.com/doc/v3/merchant/4013053249
+            // 「选填」（适用于 2024-11 及之前开通微信支付的老商户）微信支付平台证书序列号及证书路径，强烈建议 php-fpm 模式下配置此参数
+            // 「必填」微信支付公钥ID及证书路径，key 填写形如 PUB_KEY_ID_0000000000000024101100397200000006 的公钥id，见 https://pay.weixin.qq.com/doc/v3/merchant/4013053249
             'wechat_public_cert_path' => [
                 '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
                 'PUB_KEY_ID_0000000000000024101100397200000006' => __DIR__.'/Cert/publickey.pem',

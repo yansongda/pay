@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Batch;
 
 use Closure;
+use JetBrains\PhpStorm\Deprecated;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -20,6 +21,7 @@ use function Yansongda\Pay\get_provider_config;
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/get-transfer-batch-by-no.html
  */
+#[Deprecated(reason: '由于微信支付变更，自 v3.7.12 开始废弃, 并将在 v3.8.0 移除')]
 class QueryByWxPlugin implements PluginInterface
 {
     /**
