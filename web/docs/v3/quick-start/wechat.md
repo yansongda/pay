@@ -139,6 +139,21 @@ $result = Pay::wechat()->scan($order);
 Pay::config($config);
 
 $order = [
+    '_action' => 'mch_transfer', // 微信官方老版本下线后，此部分可省略
+    'out_bill_no' => time().'',
+    'transfer_scene_id' => '1001',
+    'openid' => 'MYE42l80oelYMDE34nYD456Xoy',
+    // 'user_name' => '闫嵩达'  // 明文传参即可，sdk 会自动加密
+    'transfer_amount' => 1,
+    'transfer_remark' => 'test',
+    'transfer_scene_report_infos' => [
+      ['info_type' => '活动名称', 'info_content' => '新会员有礼'],
+      ['info_type' => '奖励说明', 'info_content' => '注册会员抽奖一等奖'],
+    ],
+];
+
+// 以下为老版本调用方式，微信官方将于 2025年 3 月 31日 下线，建议使用新版本调用方式
+$order = [
     'out_batch_no' => time().'',
     'batch_name' => 'subject-测试',
     'batch_remark' => 'test',
