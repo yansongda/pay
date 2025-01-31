@@ -241,6 +241,21 @@ $result = Pay::wechat()->scan($order);
 Pay::config($config);
 
 $order = [
+    '_action' => 'mch_transfer', // 微信官方老版本下线后，此部分可省略
+    'out_bill_no' => time().'',
+    'transfer_scene_id' => '1001',
+    'openid' => 'MYE42l80oelYMDE34nYD456Xoy',
+    // 'user_name' => '闫嵩达'  // 明文传参即可，sdk 会自动加密
+    'transfer_amount' => 1,
+    'transfer_remark' => 'test',
+    'transfer_scene_report_infos' => [
+      ['info_type' => '活动名称', 'info_content' => '新会员有礼'],
+      ['info_type' => '奖励说明', 'info_content' => '注册会员抽奖一等奖'],
+    ],
+];
+
+// 以下为老版本调用方式，微信官方将于 2025年 3 月 31日 下线，建议使用新版本调用方式
+$order = [
     'out_batch_no' => time().'',
     'batch_name' => 'subject-测试',
     'batch_remark' => 'test',
@@ -264,4 +279,7 @@ $result = Pay::wechat()->transfer($order);
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**，比如，`appid`，`sign` 等参数，大家只需传入订单类主观参数即可。
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/initiate-batch-transfer.html)，查看「请求参数」一节。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考以下链接，查看「请求参数」一节：
+
+- [新版本](https://pay.weixin.qq.com/doc/v3/merchant/4012716434)
+- [老版本](https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/initiate-batch-transfer.html)
