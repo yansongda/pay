@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Shortcut\Wechat;
 
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
@@ -52,5 +54,13 @@ class TransferShortcutTest extends TestCase
             ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'mch_transfer']));
+    }
+
+    public function testFoo()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+
+        $this->plugin->getPlugins(['_action' => 'foo']);
     }
 }
