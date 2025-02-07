@@ -393,7 +393,7 @@ class AlipayTest extends TestCase
     {
         $callbackStr = '{"alipay_trade_app_pay_response":{"code":"10000","msg":"Success","app_id":"9021000143684235","auth_app_id":"9021000143684235","charset":"utf-8","timestamp":"2025-02-07 11:32:30","out_trade_no":"1738899034","total_amount":"0.15","trade_no":"2025020722001421110505273026","seller_id":"2088721057445526"},"sign":"RnlOZ9UvT/t+o+FHQk01HzwrNUos/5elZhiiEeQn2ggyofUXEeBkQ7ow4OtIGbfeeKU2mCkP+GSViwDBxcWsnUOBPvhoSENKsSBvA+rVW4xDcjEdG3v3+UUE4aE/yKGmvRI2wu6v8otMqsFZhmZOTgf3y9mo6C+alW7xT6TBAxCU9oI6Q0+jHS0hCF8UE4/XA89j+UhCK6/E9D/AJKn1Ytp3FhjY8xqDTZ/2zLZ5i1pHkZPWevXI7Bzstkut3qf43CdSPz8uqQvXkUd9Hm6XiI211Zno2SVuYuooZc4GhIBMA8kxptLRigAbH5A6Nw0+jpU86YzeCYLHVdJB5Njd5A==","sign_type":"RSA2"}';
 
-        $result = Pay::alipay()->callback(json_decode($callbackStr, true));
+        $result = Pay::alipay()->appCallback(json_decode($callbackStr, true));
         self::assertNotEmpty($result->all());
     }
 
