@@ -391,9 +391,26 @@ class AlipayTest extends TestCase
 
     public function testAppCallback()
     {
-        $callbackStr = '{"alipay_trade_app_pay_response":{"code":"10000","msg":"Success","app_id":"9021000143684235","auth_app_id":"9021000143684235","charset":"utf-8","timestamp":"2025-02-07 11:32:30","out_trade_no":"1738899034","total_amount":"0.15","trade_no":"2025020722001421110505273026","seller_id":"2088721057445526"},"sign":"RnlOZ9UvT/t+o+FHQk01HzwrNUos/5elZhiiEeQn2ggyofUXEeBkQ7ow4OtIGbfeeKU2mCkP+GSViwDBxcWsnUOBPvhoSENKsSBvA+rVW4xDcjEdG3v3+UUE4aE/yKGmvRI2wu6v8otMqsFZhmZOTgf3y9mo6C+alW7xT6TBAxCU9oI6Q0+jHS0hCF8UE4/XA89j+UhCK6/E9D/AJKn1Ytp3FhjY8xqDTZ/2zLZ5i1pHkZPWevXI7Bzstkut3qf43CdSPz8uqQvXkUd9Hm6XiI211Zno2SVuYuooZc4GhIBMA8kxptLRigAbH5A6Nw0+jpU86YzeCYLHVdJB5Njd5A==","sign_type":"RSA2"}';
+        // 服务端接收的APP同步回调参数结构
+        $appCallbackParams = [
+            'alipay_trade_app_pay_response' => [
+                'code' => '10000',
+                'msg' => 'Success',
+                'order_id' => '20231220110070000002150000657610',
+                'out_biz_no' => '2023122022560000',
+                'pay_date' => '2023-12-20 22:56:33',
+                'pay_fund_order_id' => '20231220110070001502150000660902',
+                'status' => 'SUCCESS',
+                'trans_amount' => '0.01',
+            ],
+            'sign' => 'eITxP5fZiJPB2+vZb90IRkv2iARxeNx/6Omxk7FStqflhG5lMoCvGjo2FZ6Szo1bGBMBReazZuqLaqsgomWAUO9onMVurB3enLbRvwUlpE7XEZaxk/sJYjgc2Y7pIAenvnLL9PEAiXmvUvuinUlvS9J2r1XysC0p/2wu7kEJ/GgZpFDIIYY9mdM6U1rGbi+RvirQXtQHmaEuuJWLA75NR1bvfG3L8znzW9xz1kOQqOWsQmD/bF1CDWbozNLwLCUmClRJz0Fj4mUYRF0zbW2VP8ZgHu1YvVKJ2+dWC9b+0o94URk7psIpc5NjiOM9Jsn6aoC2CfrJ/sqFMRCkYWzw6A==',
+            'sign_type' => 'RSA2',
+        ];
 
-        $result = Pay::alipay()->appCallback(json_decode($callbackStr, true));
+        // 如需指定租户，可以手动对结构增加以下项目
+        // $appCallbackParams['_config'] = 'default';
+
+        $result = Pay::alipay()->appCallback($appCallbackParams);
         self::assertNotEmpty($result->all());
     }
 

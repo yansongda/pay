@@ -33,7 +33,7 @@ class AppCallbackPlugin implements PluginInterface
         $params = $rocket->getParams();
         $config = get_provider_config('alipay', $params);
 
-        $value = filter_params($params['alipay_trade_app_pay_response'] ?? [], fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k);
+        $value = filter_params($params['alipay_trade_app_pay_response'] ?? []);
 
         verify_alipay_sign($config, $value->toJson(), $params['sign'] ?? '');
 
