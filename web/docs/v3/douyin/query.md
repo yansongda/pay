@@ -10,7 +10,7 @@
 Pay::config($config);
 
 $order = [
-    'out_trade_no' => '202408040747147327',
+    'out_order_no' => '202408040747147327',
     // '_action' => 'mini', // 查询小程序支付，默认
 ];
 
