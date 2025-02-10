@@ -134,9 +134,11 @@ class Alipay implements ProviderInterface
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function appCallback(array $params): Collection
+    public function appCallback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection
     {
-        return $this->pay([AppCallbackPlugin::class], $params);
+        $request = $this->getCallbackParams($contents);
+
+        return $this->pay([AppCallbackPlugin::class], $request->merge($params)->all());
     }
 
     public function success(): ResponseInterface

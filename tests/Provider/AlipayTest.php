@@ -391,7 +391,6 @@ class AlipayTest extends TestCase
 
     public function testAppCallback()
     {
-        // 服务端接收的APP同步回调参数结构
         $appCallbackParams = [
             'alipay_trade_app_pay_response' => [
                 'code' => '10000',
@@ -407,10 +406,14 @@ class AlipayTest extends TestCase
             'sign_type' => 'RSA2',
         ];
 
-        // 如需指定租户，可以手动对结构增加以下项目
-        // $appCallbackParams['_config'] = 'default';
+        $url = 'http://127.0.0.1:8000/alipay/app_verify';
+        $request = new ServerRequest('POST', $url);
+        $request = $request->withParsedBody($appCallbackParams);
 
-        $result = Pay::alipay()->appCallback($appCallbackParams);
+        $result = Pay::alipay()->appCallback($request);
+        self::assertNotEmpty($result->all());
+
+        $result = Pay::alipay()->appCallback($appCallbackParams, ['_config' => 'default']);
         self::assertNotEmpty($result->all());
     }
 
