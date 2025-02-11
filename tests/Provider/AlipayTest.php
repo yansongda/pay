@@ -415,6 +415,10 @@ class AlipayTest extends TestCase
 
         $result = Pay::alipay()->appCallback($appCallbackParams, ['_config' => 'default']);
         self::assertNotEmpty($result->all());
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_CALLBACK_REQUEST_INVALID);
+        Pay::alipay()->appCallback([]);
     }
 
     public function testMergeCommonPlugins()
