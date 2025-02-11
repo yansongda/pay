@@ -22,6 +22,7 @@ use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\AppCallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
@@ -127,6 +128,17 @@ class Alipay implements ProviderInterface
         Event::dispatch(new CallbackReceived('alipay', $request->all(), $params, null));
 
         return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
+    }
+
+    /**
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     */
+    public function appCallback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection
+    {
+        $request = $this->getCallbackParams($contents);
+
+        return $this->pay([AppCallbackPlugin::class], $request->merge($params)->all());
     }
 
     public function success(): ResponseInterface
