@@ -61,11 +61,11 @@ class AddPayloadSignaturePlugin implements PluginInterface
         $urlPath = parse_url($url, PHP_URL_PATH);
         $urlQuery = parse_url($url, PHP_URL_QUERY);
 
-        return get_wechat_method($payload)."\n".
-            $urlPath.(empty($urlQuery) ? '' : '?'.$urlQuery)."\n".
-            $timestamp."\n".
-            $random."\n".
-            get_wechat_body($payload)."\n";
+        return get_wechat_method($payload)."\n"
+            .$urlPath.(empty($urlQuery) ? '' : '?'.$urlQuery)."\n"
+            .$timestamp."\n"
+            .$random."\n"
+            .get_wechat_body($payload)."\n";
     }
 
     /**
