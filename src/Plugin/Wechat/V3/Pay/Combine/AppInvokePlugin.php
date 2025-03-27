@@ -87,10 +87,10 @@ class AppInvokePlugin implements PluginInterface
      */
     protected function getSign(Collection $invokeConfig, array $config): string
     {
-        $contents = $invokeConfig->get('appid', '')."\n".
-            $invokeConfig->get('timestamp', '')."\n".
-            $invokeConfig->get('noncestr', '')."\n".
-            $invokeConfig->get('prepayid', '')."\n";
+        $contents = $invokeConfig->get('appid', '')."\n"
+            .$invokeConfig->get('timestamp', '')."\n"
+            .$invokeConfig->get('noncestr', '')."\n"
+            .$invokeConfig->get('prepayid', '')."\n";
 
         return get_wechat_sign($config, $contents);
     }

@@ -48,9 +48,9 @@ function get_private_cert(string $key): string
         return file_get_contents($key);
     }
 
-    return "-----BEGIN RSA PRIVATE KEY-----\n".
-        wordwrap($key, 64, "\n", true).
-        "\n-----END RSA PRIVATE KEY-----";
+    return "-----BEGIN RSA PRIVATE KEY-----\n"
+        .wordwrap($key, 64, "\n", true)
+        ."\n-----END RSA PRIVATE KEY-----";
 }
 
 function get_radar_url(array $config, ?Collection $payload): ?string

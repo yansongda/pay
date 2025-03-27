@@ -22,9 +22,9 @@ class ResponseHtmlPlugin implements PluginInterface
 
         $radar = $rocket->getRadar();
 
-        $response = 'GET' === $radar->getMethod() ?
-            $this->buildRedirect($radar->getUri()->__toString(), $rocket->getPayload()) :
-            $this->buildHtml($radar->getUri()->__toString(), $rocket->getPayload());
+        $response = 'GET' === $radar->getMethod()
+            ? $this->buildRedirect($radar->getUri()->__toString(), $rocket->getPayload())
+            : $this->buildHtml($radar->getUri()->__toString(), $rocket->getPayload());
 
         $rocket->setDestination($response);
 

@@ -162,8 +162,8 @@ class Alipay implements ProviderInterface
         }
 
         if ($contents instanceof ServerRequestInterface) {
-            return Collection::wrap('GET' === $contents->getMethod() ? $contents->getQueryParams() :
-                $contents->getParsedBody());
+            return Collection::wrap('GET' === $contents->getMethod() ? $contents->getQueryParams()
+                : $contents->getParsedBody());
         }
 
         $request = ServerRequest::fromGlobals();
