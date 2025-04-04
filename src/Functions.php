@@ -28,6 +28,7 @@ use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Str;
 
 use function Yansongda\Artful\get_radar_body;
 use function Yansongda\Artful\get_radar_method;
@@ -46,6 +47,10 @@ function get_private_cert(string $key): string
 {
     if (is_file($key)) {
         return file_get_contents($key);
+    }
+
+    if (Str::startsWith($key, '-----BEGIN')) {
+        return $key;
     }
 
     return "-----BEGIN RSA PRIVATE KEY-----\n"
