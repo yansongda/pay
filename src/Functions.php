@@ -49,7 +49,7 @@ function get_private_cert(string $key): string
         return file_get_contents($key);
     }
 
-    if (Str::startsWith($key, '-----BEGIN')) {
+    if (Str::startsWith($key, '-----BEGIN PRIVATE KEY-----')) {
         return $key;
     }
 
