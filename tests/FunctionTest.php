@@ -72,6 +72,10 @@ class FunctionTest extends TestCase
         $appSecretCert = file_get_contents(__DIR__ . '/Cert/alipayAppSecret.txt');
 
         self::assertTrue(Str::contains(get_private_cert($appSecretCert), 'PRIVATE KEY'));
+
+        $wechatPrivateCert = file_get_contents(__DIR__ . '/Cert/wechatAppPrivateKey.pem');
+
+        self::assertTrue(Str::contains(get_private_cert($wechatPrivateCert), '-----BEGIN PRIVATE KEY-----'));
     }
 
     public function testGetRadarUrl()
