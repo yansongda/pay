@@ -89,7 +89,9 @@ class Wechat implements ProviderInterface
      */
     public function cancel(array $order): Collection|Rocket
     {
-        throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: 微信不支持 cancel API');
+        Event::dispatch(new MethodCalled('wechat', __METHOD__, $order, null));
+
+        return $this->__call('cancel', [$order]);
     }
 
     /**
