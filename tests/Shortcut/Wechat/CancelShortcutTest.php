@@ -56,4 +56,12 @@ class CancelShortcutTest extends TestCase
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'mch_transfer']));
     }
+
+    public function testFoo()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+
+        $this->plugin->getPlugins(['_action' => 'foo']);
+    }
 }
