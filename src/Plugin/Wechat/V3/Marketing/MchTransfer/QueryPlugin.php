@@ -33,18 +33,23 @@ class QueryPlugin implements PluginInterface
         $config = get_provider_config('wechat', $rocket->getParams());
         $payload = $rocket->getPayload();
         $outBillNo = $payload?->get('out_bill_no') ?? null;
+        $transferBillNo = $payload?->get('transfer_bill_no') ?? null;
 
         if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 通过商户单号查询转账单，只支持普通商户模式，当前配置为服务商模式');
         }
 
-        if (empty($outBillNo)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 通过商户单号查询转账单，参数缺少 `out_bill_no`');
+        if (!empty($outBillNo)) {
+            $url = 'v3/fund-app/mch-transfer/transfer-bills/out-bill-no/'.$outBillNo;
+        } else if (!empty($transferBillNo)) {
+            $url = 'v3/fund-app/mch-transfer/transfer-bills/transfer-bill-no/'.$transferBillNo;
+        } else {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 通过商户单号查询转账单，参数缺少 `out_bill_no`或`transfer_bill_no`');
         }
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/fund-app/mch-transfer/transfer-bills/out-bill-no/'.$outBillNo,
+            '_url' => $url,
         ]);
 
         Logger::info('[Wechat][Marketing][MchTransfer][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
