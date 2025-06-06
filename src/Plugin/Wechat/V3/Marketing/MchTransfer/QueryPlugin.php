@@ -41,7 +41,7 @@ class QueryPlugin implements PluginInterface
 
         if (!empty($outBillNo)) {
             $url = 'v3/fund-app/mch-transfer/transfer-bills/out-bill-no/'.$outBillNo;
-        } else if (!empty($transferBillNo)) {
+        } elseif (!empty($transferBillNo)) {
             $url = 'v3/fund-app/mch-transfer/transfer-bills/transfer-bill-no/'.$transferBillNo;
         } else {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 通过商户单号查询转账单，参数缺少 `out_bill_no`或`transfer_bill_no`');
