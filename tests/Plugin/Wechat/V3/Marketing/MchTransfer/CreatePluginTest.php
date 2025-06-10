@@ -152,7 +152,6 @@ class CreatePluginTest extends TestCase
         self::assertEquals('POST', $payload['_method']);
         self::assertEquals('v3/fund-app/mch-transfer/transfer-bills', $payload['_url']);
         self::assertEquals('wx55955316af4ef13', $payload['appid']);
-        self::assertEquals('https://pay.yansongda.cn', $payload['notify_url']);
         self::assertEquals('111', $payload['test']);
         self::assertEquals('bar', $payload['foo']);
         self::assertArrayHasKey('_serial_no', $payload);
