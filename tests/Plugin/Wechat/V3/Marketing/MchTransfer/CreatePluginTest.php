@@ -63,6 +63,7 @@ class CreatePluginTest extends TestCase
             '_url' => 'v3/fund-app/mch-transfer/transfer-bills',
             'test' => 'yansongda',
             'appid' => '1111',
+            'notify_url' => 'https://pay.yansongda.cn',
         ], $result->getPayload()->all());
     }
 
@@ -80,6 +81,7 @@ class CreatePluginTest extends TestCase
             '_url' => 'v3/fund-app/mch-transfer/transfer-bills',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
+            'notify_url' => 'https://pay.yansongda.cn',
         ], $result->getPayload()->all());
     }
 
@@ -100,6 +102,7 @@ class CreatePluginTest extends TestCase
         self::assertEquals('POST', $payload['_method']);
         self::assertEquals('v3/fund-app/mch-transfer/transfer-bills', $payload['_url']);
         self::assertEquals('wx55955316af4ef13', $payload['appid']);
+        self::assertEquals('https://pay.yansongda.cn', $payload['notify_url']);
         self::assertEquals('111', $payload['test']);
         self::assertEquals('bar', $payload['foo']);
         self::assertArrayHasKey('_serial_no', $payload);
@@ -154,5 +157,25 @@ class CreatePluginTest extends TestCase
         self::assertArrayHasKey('_serial_no', $payload);
         self::assertArrayHasKey('user_name', $payload);
         self::assertNotEquals('yansongda', $payload['user_name']);
+    }
+
+    public function testNormalParamsWithNotifyUrl()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection( [
+            "test" => "yansongda",
+            'appid' => '1111',
+            'notify_url' => 'https://yansongda.cn',
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertEquals([
+            '_method' => 'POST',
+            '_url' => 'v3/fund-app/mch-transfer/transfer-bills',
+            'test' => 'yansongda',
+            'appid' => '1111',
+            'notify_url' => 'https://yansongda.cn',
+        ], $result->getPayload()->all());
     }
 }
