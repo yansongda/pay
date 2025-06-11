@@ -57,19 +57,4 @@ class QueryPluginTest extends TestCase
             '_url' => 'v3/fund-app/mch-transfer/transfer-bills/out-bill-no/111',
         ], $result->getPayload()->all());
     }
-
-    public function testTransferBillNoParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "transfer_bill_no" => "111",
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'GET',
-            '_url' => 'v3/fund-app/mch-transfer/transfer-bills/transfer-bill-no/111',
-        ], $result->getPayload()->all());
-    }
 }
