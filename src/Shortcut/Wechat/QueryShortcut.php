@@ -13,6 +13,8 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\QueryByWxPlugin as MchTransferQueryByWxPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\QueryPlugin as MchTransferQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Detail\QueryPlugin as TransferQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\QueryPlugin as AppQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\QueryRefundPlugin as AppQueryRefundPlugin;
@@ -43,7 +45,7 @@ class QueryShortcut implements ShortcutInterface
         $method = Str::camel($params['_action'] ?? 'default').'Plugins';
 
         if (method_exists($this, $method)) {
-            return $this->{$method}();
+            return $this->{$method}($params);
         }
 
         throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
@@ -129,6 +131,26 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             NativeQueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function mchTransferPlugins(array $params): array
+    {
+        $query = MchTransferQueryPlugin::class;
+
+        if (isset($params['transfer_bill_no'])) {
+            $query = MchTransferQueryByWxPlugin::class;
+        }
+
+        return [
+            StartPlugin::class,
+            $query,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,

@@ -92,6 +92,10 @@ $order = [
     'out_batch_no' => '1217752501201407033233368018',
     'out_detail_no' => '1217752501201407033233368018',
     '_action' => 'transfer',
+
+    //'out_bill_no' => '1217752501201407033233368018', // 商户单号查询转账，与微信单号二选一
+    //'transfer_bill_no' => '1217752501201407033233368018', // 或微信单号查询转账，与商户单号二选一
+    //'_action' => 'mch_transfer', // 新版微信商家转账
 ];
 
 $result = Pay::wechat()->query($order);
@@ -99,5 +103,8 @@ $result = Pay::wechat()->query($order);
 
 ### 订单配置参数
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-out-no.html)，查看「请求参数」一栏。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考以下文档中「请求参数」一栏
+
+- [旧版](https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-detail/get-transfer-detail-by-out-no.html)
+- [新版](https://pay.weixin.qq.com/doc/v3/merchant/4012716437)
 
