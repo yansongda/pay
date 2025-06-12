@@ -56,6 +56,7 @@ class CreatePlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/fund-app/mch-transfer/transfer-bills',
                 'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
+                'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
             ],
             $this->normal($params, $payload)
         ));
