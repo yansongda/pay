@@ -7,9 +7,9 @@
 
   const companies: Company[] = [
     {
-      name: 'jetbrains',
-      link: 'https://www.jetbrains.com/',
-      image: '/images/companies/jetbrains.png'
+      name: '又拍云',
+      link: 'https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral',
+      image: '/images/companies/upyun_logo2.png'
     },
   ]
 </script>

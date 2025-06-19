@@ -13,7 +13,7 @@
 </template>
 
 <style scoped lang="scss">
-@import '../../css/home';
+@use '../../css/home';
 
 .home {
   .container {

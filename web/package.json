@@ -6,12 +6,12 @@
     "web:serve": "vitepress serve"
   },
   "devDependencies": {
-    "@types/node": "^22.15.29",
+    "@types/node": "^24.0.3",
     "fast-glob": "^3.3.3",
-    "sass": "^1.89.1",
+    "sass": "^1.89.2",
     "vite": "^6.3.5",
     "vitepress": "^1.6.3",
-    "vue": "^3.5.16"
+    "vue": "^3.5.17"
   },
   "pnpm": {
     "peerDependencyRules": {
@@ -21,5 +21,5 @@
       ]
     }
   },
-  "packageManager": "pnpm@9.15.4+sha512.b2dc20e2fc72b3e18848459b37359a32064663e5627a51e4c74b2c29dd8e8e0491483c3abb40789cfd578bf362fb6ba8261b05f0387d76792ed6e23ea3b1b6a0"
+  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
 }
