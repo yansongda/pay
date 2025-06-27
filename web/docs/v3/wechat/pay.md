@@ -241,7 +241,7 @@ $result = Pay::wechat()->scan($order);
 Pay::config($config);
 
 $order = [
-    '_action' => 'mch_transfer', // 微信官方老版本下线后，此部分可省略
+    '_action' => 'mch_transfer', // v3.8.0 之后，此部分可省略
     'out_bill_no' => time().'',
     'transfer_scene_id' => '1001',
     'openid' => 'MYE42l80oelYMDE34nYD456Xoy',
@@ -254,7 +254,7 @@ $order = [
     ],
 ];
 
-// 以下为老版本调用方式，微信官方将于 2025年 3 月 31日 下线，建议使用新版本调用方式
+// 以下为老版本调用方式，2025年1月15日之后新商户将不能申请，建议2025年1月15日之前的商户升级切换至新版本
 $order = [
     'out_batch_no' => time().'',
     'batch_name' => 'subject-测试',

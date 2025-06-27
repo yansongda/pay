@@ -6,7 +6,7 @@
     "web:serve": "vitepress serve"
   },
   "devDependencies": {
-    "@types/node": "^24.0.3",
+    "@types/node": "^24.0.4",
     "fast-glob": "^3.3.3",
     "sass": "^1.89.2",
     "vite": "^6.3.5",
