@@ -7,6 +7,10 @@ namespace Yansongda\Pay;
 use Closure;
 use Psr\Container\ContainerInterface;
 use Yansongda\Artful\Artful;
+use Yansongda\Artful\Event\ArtfulEnd;
+use Yansongda\Artful\Event\ArtfulStart;
+use Yansongda\Artful\Event\HttpEnd;
+use Yansongda\Artful\Event\HttpStart;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Provider\Alipay;
@@ -71,6 +75,13 @@ class Pay
     public static function config(array $config = [], null|Closure|ContainerInterface $container = null): bool
     {
         $result = Artful::config($config, $container);
+
+        if ($result) {
+            Event::addListener(ArtfulStart::class, [PayListener::class, 'artfulStart']);
+            Event::addListener(ArtfulEnd::class, [PayListener::class, 'artfulEnd']);
+            Event::addListener(HttpStart::class, [PayListener::class, 'httpStart']);
+            Event::addListener(HttpEnd::class, [PayListener::class, 'httpEnd']);
+        }
 
         foreach (self::$providers as $provider) {
             Artful::load($provider);

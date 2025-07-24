@@ -44,7 +44,7 @@ Event::addListener(PayStart::class, [new PayStartedListener(), 'sendEmail']);
 
 ### 支付开始
 
-- 事件类：Yansongda\Pay\Event\PayStarted
+- 事件类：Yansongda\Pay\Event\PayStart
 - 说明：此事件将在支付进入核心流程时进行抛出。此时 SDK 只进行了相关初始化操作，其它所有操作均未开始。
 - 额外数据：
     - $rocket (相关参数)
@@ -53,21 +53,21 @@ Event::addListener(PayStart::class, [new PayStartedListener(), 'sendEmail']);
 
 ### 支付完毕
 
-- 事件类：Yansongda\Pay\Event\PayFinish
+- 事件类：Yansongda\Pay\Event\PayEnd
 - 说明：此事件将在所有参数处理完毕时抛出。
 - 额外数据：
     - $rocket (相关参数)
 
 ### 开始调用API
 
-- 事件类：Yansongda\Pay\Event\ApiRequesting
+- 事件类：Yansongda\Pay\Event\HttpStart
 - 说明：此事件将在请求支付方的 API 前抛出。
 - 额外数据：
     - $rocket (相关参数)
 
 ### 调用API结束
 
-- 事件类：Yansongda\Pay\Event\ApiRequested
+- 事件类：Yansongda\Pay\Event\HttpEnd
 - 说明：此事件将在请求支付方的 API 完成之后抛出。
 - 额外数据：
     - $rocket (相关参数)
