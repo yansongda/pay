@@ -10,7 +10,6 @@ use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Artful\Artful;
-use Yansongda\Artful\Event;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
@@ -19,6 +18,7 @@ use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Pay;
@@ -84,7 +84,9 @@ class Wechat implements ProviderInterface
     }
 
     /**
+     * @throws ContainerException
      * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function cancel(array $order): Collection|Rocket
     {
