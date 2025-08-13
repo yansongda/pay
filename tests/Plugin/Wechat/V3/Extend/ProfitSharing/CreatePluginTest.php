@@ -39,8 +39,16 @@ class CreatePluginTest extends TestCase
     public function testNormalWithoutName()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
+        $rocket->setPayload(new Collection([
             "test" => "yansongda",
+            'receivers' => [
+                [
+                    'type' => 'PERSONAL_OPENID',
+                    'amount' => 100,
+                    'account' => 'openid1234567890',
+                    'description' => '分账测试',
+                ],
+            ],
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -51,6 +59,14 @@ class CreatePluginTest extends TestCase
             '_service_url' => 'v3/profitsharing/orders',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
+            'receivers' => [
+                [
+                    'type' => 'PERSONAL_OPENID',
+                    'amount' => 100,
+                    'account' => 'openid1234567890',
+                    'description' => '分账测试',
+                ],
+            ],
         ], $result->getPayload()->all());
     }
 
@@ -60,6 +76,10 @@ class CreatePluginTest extends TestCase
         $rocket->setPayload(new Collection([
             'receivers' => [
                 [
+                    'type' => 'PERSONAL_OPENID',
+                    'amount' => 100,
+                    'account' => 'openid1234567890',
+                    'description' => '分账测试',
                     'name' => 'yansongda',
                 ],
             ],
@@ -74,6 +94,10 @@ class CreatePluginTest extends TestCase
         self::assertEquals('v3/profitsharing/orders', $payload['_url']);
         self::assertEquals('v3/profitsharing/orders', $payload['_service_url']);
         self::assertEquals('wx55955316af4ef13', $payload['appid']);
+        self::assertEquals('PERSONAL_OPENID', $payload['receivers'][0]['type']);
+        self::assertEquals(100, $payload['receivers'][0]['amount']);
+        self::assertEquals('openid1234567890', $payload['receivers'][0]['account']);
+        self::assertEquals('分账测试', $payload['receivers'][0]['description']);
         self::assertArrayHasKey('_serial_no', $payload);
         self::assertArrayHasKey('name', $payload['receivers'][0]);
         self::assertNotEquals('yansongda', $payload['receivers'][0]['name']);
@@ -124,6 +148,10 @@ class CreatePluginTest extends TestCase
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
             'receivers' => [
                 [
+                    'type' => 'PERSONAL_OPENID',
+                    'amount' => 100,
+                    'account' => 'openid1234567890',
+                    'description' => '分账测试',
                     'name' => 'yansongda',
                 ],
             ],
@@ -138,6 +166,10 @@ class CreatePluginTest extends TestCase
         self::assertEquals('v3/profitsharing/orders', $payload['_url']);
         self::assertEquals('v3/profitsharing/orders', $payload['_service_url']);
         self::assertEquals('wx55955316af4ef13', $payload['appid']);
+        self::assertEquals('PERSONAL_OPENID', $payload['receivers'][0]['type']);
+        self::assertEquals(100, $payload['receivers'][0]['amount']);
+        self::assertEquals('openid1234567890', $payload['receivers'][0]['account']);
+        self::assertEquals('分账测试', $payload['receivers'][0]['description']);
         self::assertArrayHasKey('_serial_no', $payload);
         self::assertArrayHasKey('name', $payload['receivers'][0]);
         self::assertNotEquals('yansongda', $payload['receivers'][0]['name']);
