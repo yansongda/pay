@@ -46,7 +46,7 @@ class Douyin implements ProviderInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function __call(string $shortcut, array $params): null|Collection|MessageInterface|Rocket
+    public function __call(string $shortcut, array $params): Collection|MessageInterface|Rocket|null
     {
         $plugin = '\Yansongda\Pay\Shortcut\Douyin\\'.Str::studly($shortcut).'Shortcut';
 
@@ -57,7 +57,7 @@ class Douyin implements ProviderInterface
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function pay(array $plugins, array $params): null|Collection|MessageInterface|Rocket
+    public function pay(array $plugins, array $params): Collection|MessageInterface|Rocket|null
     {
         return Artful::artful($plugins, $params);
     }
@@ -106,7 +106,7 @@ class Douyin implements ProviderInterface
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection|Rocket
+    public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection|Rocket
     {
         $request = $this->getCallbackParams($contents);
 
@@ -133,7 +133,7 @@ class Douyin implements ProviderInterface
         );
     }
 
-    protected function getCallbackParams(null|array|ServerRequestInterface $contents = null): Collection
+    protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
     {
         if (is_array($contents)) {
             return Collection::wrap($contents);
