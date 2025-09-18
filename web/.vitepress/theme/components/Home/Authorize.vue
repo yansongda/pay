@@ -13,10 +13,6 @@
       <p>
         网站 <a href="https://pay.yansongda.cn">pay.yansongda.cn</a>（包括但不限于 `pay.yansongda.cn` 域名下所有文字、图片）以 <a href="https://creativecommons.org/licenses/by/4.0/deed.zh">CC BY SA 4.0 国际许可协议</a> 授权。
       </p>
-      <h2>鸣谢</h2>
-      <p>
-        本网站由 <a href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral"><img src="/images/companies/upyun_logo2.png" alt="又拍云" style="width: 50px; display: inline; vertical-align: middle;" /></a> 提供 CDN 加速服务。
-      </p>
     </div>
 
   </div>
