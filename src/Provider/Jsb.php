@@ -45,7 +45,7 @@ class Jsb implements ProviderInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function __call(string $name, array $params): null|Collection|MessageInterface|Rocket
+    public function __call(string $name, array $params): Collection|MessageInterface|Rocket|null
     {
         $plugin = '\Yansongda\Pay\Shortcut\Jsb\\'.Str::studly($name).'Shortcut';
 
@@ -56,7 +56,7 @@ class Jsb implements ProviderInterface
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function pay(array $plugins, array $params): null|Collection|MessageInterface|Rocket
+    public function pay(array $plugins, array $params): Collection|MessageInterface|Rocket|null
     {
         return Artful::artful($plugins, $params);
     }
@@ -102,7 +102,7 @@ class Jsb implements ProviderInterface
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection|Rocket
+    public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection|Rocket
     {
         $request = $this->getCallbackParams($contents);
 
