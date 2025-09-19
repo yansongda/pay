@@ -13,7 +13,7 @@
     { nickname: '**波', intent: '￥10.00' },
     { nickname: '*※', intent: '￥8.88' },
     { nickname: '往**', intent: '￥19.80' },
-    { nickname: '建*u', intent: '￥17.60' },
+    { nickname: '建*u', intent: '￥106.40' },
     { nickname: '*酱', intent: '￥20.00' },
     { nickname: '*※', intent: '￥10.00' },
     { nickname: 'N*s', intent: '￥10.00' },
@@ -22,7 +22,6 @@
     { nickname: '《建站管家》多语言建站系统 / **明', intent: '￥108.88', link: 'https://df81.com/' },
     { nickname: 'N*s', intent: '￥10.00' },
     { nickname: '*洋', intent: '￥99.00' },
-    { nickname: '建*u', intent: '￥88.80' },
   ]
 </script>
 
