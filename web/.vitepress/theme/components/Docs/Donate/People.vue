@@ -22,6 +22,7 @@
     { nickname: '《建站管家》多语言建站系统 / **明', intent: '￥108.88', link: 'https://df81.com/' },
     { nickname: 'N*s', intent: '￥10.00' },
     { nickname: '*洋', intent: '￥99.00' },
+    { nickname: '建*u', intent: '￥88.80' },
   ]
 </script>
 
