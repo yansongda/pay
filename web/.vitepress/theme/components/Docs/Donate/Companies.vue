@@ -6,6 +6,11 @@
   }
 
   const companies: Company[] = [
+    {
+      name: '又拍云',
+      link: 'https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral',
+      image: '/images/companies/upyun_logo2.png'
+    },
   ]
 </script>
 
