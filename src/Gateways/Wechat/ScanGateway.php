@@ -24,7 +24,9 @@ class ScanGateway extends Gateway
      */
     public function pay($endpoint, array $payload): Collection
     {
-        $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
+        if ('cli' !== php_sapi_name() && !isset($payload['spbill_create_ip'])) {
+            $payload['spbill_create_ip'] = Request::createFromGlobals()->server->get('SERVER_ADDR');
+        }
         $payload['trade_type'] = $this->getTradeType();
 
         Events::dispatch(new Events\PayStarted('Wechat', 'Scan', $endpoint, $payload));
