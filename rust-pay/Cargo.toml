@@ -1,0 +1,26 @@
+[package]
+name = "rust_pay"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Cryptography
+rsa = "0.9"
+sha2 = "0.10"
+md-5 = "0.10"
+base64 = "0.22"
+openssl = "0.10"
+aes-gcm = "0.10"
+
+# Utilities
+hex = "0.4"
+num-bigint = "0.4"
+
+# Error handling
+thiserror = "2.0"
+
+[dev-dependencies]
+criterion = "0.5"

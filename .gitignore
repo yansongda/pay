@@ -4,3 +4,5 @@ composer.lock
 .idea/
 .phpunit.cache/
 .phpunit.result.cache
+rust-pay/target/
+rust-pay/Cargo.lock
