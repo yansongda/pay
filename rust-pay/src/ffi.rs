@@ -10,9 +10,8 @@ use std::ptr;
 use crate::{
     sign_rsa_sha256, verify_rsa_sha256,
     sign_md5, 
-    encrypt_rsa_oaep, decrypt_rsa_oaep,
     decrypt_aes_256_gcm,
-    get_certificate_sn, get_root_certificate_sns,
+    get_certificate_sn,
     hex_to_dec,
 };
 

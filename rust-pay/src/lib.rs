@@ -29,8 +29,6 @@ pub use utils::{hex_to_dec, format_private_key};
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[test]
     fn test_basic_functionality() {
         // Basic smoke test
