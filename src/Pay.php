@@ -13,6 +13,8 @@ use Yansongda\Artful\Event\HttpEnd;
 use Yansongda\Artful\Event\HttpStart;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Config\Config;
+use Yansongda\Pay\Config\ConfigInterface;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
@@ -72,8 +74,13 @@ class Pay
     /**
      * @throws ContainerException
      */
-    public static function config(array $config = [], Closure|ContainerInterface|null $container = null): bool
+    public static function config(array|ConfigInterface $config = [], Closure|ContainerInterface|null $container = null): bool
     {
+        // Convert ConfigInterface to array if needed
+        if ($config instanceof ConfigInterface) {
+            $config = $config->toArray();
+        }
+
         $result = Artful::config($config, $container);
 
         if ($result) {
