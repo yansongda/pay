@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Yansongda\Pay\Plugin\Paypal\V1\Pay;
+
+use Closure;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidResponseException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Supports\Collection;
+
+class CallbackPlugin implements PluginInterface
+{
+    /**
+     * @throws ContainerException
+     * @throws InvalidResponseException
+     * @throws ServiceNotFoundException
+     */
+    public function assembly(Rocket $rocket, Closure $next): Rocket
+    {
+        Logger::debug('[Paypal][V1][Pay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+
+        $params = $rocket->getParams();
+
+        if (empty($params)) {
+            throw new InvalidResponseException(Exception::PARAMS_CALLBACK_REQUEST_INVALID, 'PayPal 回调参数为空');
+        }
+
+        $rocket->setPayload(Collection::wrap($params))
+            ->setDirection(NoHttpRequestDirection::class)
+            ->setDestination($rocket->getPayload());
+
+        Logger::info('[Paypal][V1][Pay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
+    }
+}

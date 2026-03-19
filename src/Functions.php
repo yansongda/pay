@@ -7,6 +7,7 @@ namespace Yansongda\Pay;
 use JetBrains\PhpStorm\Deprecated;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
@@ -25,6 +26,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
+use Yansongda\Pay\Provider\Paypal;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
@@ -653,4 +655,65 @@ function get_douyin_url(array $config, ?Collection $payload): string
     }
 
     return Douyin::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_paypal_url(array $config, ?Collection $payload): string
+{
+    $url = get_radar_url($config, $payload);
+
+    if (empty($url)) {
+        throw new InvalidParamsException(Exception::PARAMS_PAYPAL_URL_MISSING, '参数异常: PayPal `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
+    }
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    return Paypal::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+}
+
+/**
+ * @throws ContainerException
+ * @throws InvalidConfigException
+ * @throws InvalidParamsException
+ * @throws ServiceNotFoundException
+ */
+function get_paypal_access_token(array $params): string
+{
+    $config = get_provider_config('paypal', $params);
+
+    if (!empty($config['_access_token']) &&
+        !empty($config['_access_token_expiry']) &&
+        time() < (int) $config['_access_token_expiry']) {
+        return $config['_access_token'];
+    }
+
+    if (empty($config['client_id']) || empty($config['app_secret'])) {
+        throw new InvalidConfigException(Exception::CONFIG_PAYPAL_INVALID, '配置异常: 缺少 PayPal 配置 -- [client_id] or [app_secret]');
+    }
+
+    $result = Artful::artful([
+        \Yansongda\Artful\Plugin\StartPlugin::class,
+        \Yansongda\Pay\Plugin\Paypal\V1\GetAccessTokenPlugin::class,
+        \Yansongda\Pay\Plugin\Paypal\V1\AddRadarPlugin::class,
+        \Yansongda\Pay\Plugin\Paypal\V1\ResponsePlugin::class,
+        \Yansongda\Artful\Plugin\ParserPlugin::class,
+    ], $params);
+
+    $token = $result->get('access_token', '');
+    $expiresIn = $result->get('expires_in', 32400);
+
+    Pay::get(\Yansongda\Artful\Contract\ConfigInterface::class)->set(
+        'paypal.'.get_tenant($params).'._access_token',
+        $token
+    );
+    Pay::get(\Yansongda\Artful\Contract\ConfigInterface::class)->set(
+        'paypal.'.get_tenant($params).'._access_token_expiry',
+        time() + $expiresIn - 60
+    );
+
+    return $token;
 }

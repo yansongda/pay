@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Yansongda\Pay\Plugin\Paypal\V1\Pay;
+
+use Closure;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
+
+/**
+ * @see https://developer.paypal.com/docs/api/payments/v2/#captures_refund
+ */
+class RefundPlugin implements PluginInterface
+{
+    /**
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
+     */
+    public function assembly(Rocket $rocket, Closure $next): Rocket
+    {
+        Logger::debug('[Paypal][V1][Pay][RefundPlugin] 插件开始装载', ['rocket' => $rocket]);
+
+        $params = $rocket->getParams();
+        $payload = $rocket->getPayload();
+        $captureId = $params['capture_id'] ?? '';
+
+        $rocket->mergePayload(array_merge(
+            ['_method' => 'POST', '_url' => 'v2/payments/captures/'.$captureId.'/refund'],
+            array_filter([
+                'amount' => $payload->get('amount') ?? null,
+                'note_to_payer' => $payload->get('note_to_payer') ?? null,
+                'invoice_id' => $payload->get('invoice_id') ?? null,
+            ])
+        ));
+
+        Logger::info('[Paypal][V1][Pay][RefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
+    }
+}
