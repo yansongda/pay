@@ -42,7 +42,6 @@ class PayPlugin implements PluginInterface
                 'cancel_url' => $payload->get('cancel_url') ?? $config['cancel_url'] ?? null,
                 'brand_name' => $payload->get('brand_name') ?? $config['brand_name'] ?? null,
                 'landing_page' => $payload->get('landing_page') ?? null,
-                // 'PAY_NOW' shows Pay Now button; use 'CONTINUE' for billing agreements
                 'user_action' => $payload->get('user_action', 'PAY_NOW'),
             ]),
         ]);

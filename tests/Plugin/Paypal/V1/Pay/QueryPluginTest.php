@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Paypal\V1\Pay;
 
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V1\Pay\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -32,13 +34,14 @@ class QueryPluginTest extends TestCase
         self::assertStringContainsString('TEST_ORDER_456', $payload->get('_url'));
     }
 
-    public function testEmptyOrderId()
+    public function testMissingOrderId()
     {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection([]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('v2/checkout/orders/', $result->getPayload()->get('_url'));
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 }

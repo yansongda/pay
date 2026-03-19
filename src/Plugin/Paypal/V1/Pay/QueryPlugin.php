@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
 
 /**
  * @see https://developer.paypal.com/docs/api/orders/v2/#orders_get
@@ -28,6 +29,10 @@ class QueryPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $orderId = $params['order_id'] ?? '';
+
+        if (empty($orderId)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: PayPal 查询订单，缺少 order_id 参数');
+        }
 
         $rocket->mergePayload([
             '_method' => 'GET',

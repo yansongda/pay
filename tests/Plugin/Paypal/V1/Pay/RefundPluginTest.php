@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Paypal\V1\Pay;
 
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V1\Pay\RefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -44,5 +46,16 @@ class RefundPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals($amount, $payload->get('amount'));
+    }
+
+    public function testMissingCaptureId()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+
+        $rocket = new Rocket();
+        $rocket->setParams([])->setPayload(new Collection([]));
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 }

@@ -696,21 +696,21 @@ function get_paypal_access_token(array $params): string
     }
 
     $result = Artful::artful([
-        \Yansongda\Artful\Plugin\StartPlugin::class,
+        StartPlugin::class,
         \Yansongda\Pay\Plugin\Paypal\V1\GetAccessTokenPlugin::class,
         \Yansongda\Pay\Plugin\Paypal\V1\AddRadarPlugin::class,
         \Yansongda\Pay\Plugin\Paypal\V1\ResponsePlugin::class,
-        \Yansongda\Artful\Plugin\ParserPlugin::class,
+        ParserPlugin::class,
     ], $params);
 
     $token = $result->get('access_token', '');
     $expiresIn = $result->get('expires_in', 32400);
 
-    Pay::get(\Yansongda\Artful\Contract\ConfigInterface::class)->set(
+    Pay::get(ConfigInterface::class)->set(
         'paypal.'.get_tenant($params).'._access_token',
         $token
     );
-    Pay::get(\Yansongda\Artful\Contract\ConfigInterface::class)->set(
+    Pay::get(ConfigInterface::class)->set(
         'paypal.'.get_tenant($params).'._access_token_expiry',
         time() + $expiresIn - 60
     );

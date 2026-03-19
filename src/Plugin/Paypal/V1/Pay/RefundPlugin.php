@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
 
 /**
  * @see https://developer.paypal.com/docs/api/payments/v2/#captures_refund
@@ -29,6 +30,10 @@ class RefundPlugin implements PluginInterface
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
         $captureId = $params['capture_id'] ?? '';
+
+        if (empty($captureId)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: PayPal 退款，缺少 capture_id 参数');
+        }
 
         $rocket->mergePayload(array_merge(
             ['_method' => 'POST', '_url' => 'v2/payments/captures/'.$captureId.'/refund'],
