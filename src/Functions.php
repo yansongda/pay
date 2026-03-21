@@ -19,6 +19,7 @@ use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Plugin\Paypal\V2\GetAccessTokenPlugin;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
@@ -685,9 +686,9 @@ function get_paypal_access_token(array $params): string
 {
     $config = get_provider_config('paypal', $params);
 
-    if (!empty($config['_access_token']) &&
-        !empty($config['_access_token_expiry']) &&
-        time() < (int) $config['_access_token_expiry']) {
+    if (!empty($config['_access_token'])
+        && !empty($config['_access_token_expiry'])
+        && time() < (int) $config['_access_token_expiry']) {
         return $config['_access_token'];
     }
 
@@ -697,9 +698,9 @@ function get_paypal_access_token(array $params): string
 
     $result = Artful::artful([
         StartPlugin::class,
-        \Yansongda\Pay\Plugin\Paypal\V2\GetAccessTokenPlugin::class,
-        \Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin::class,
-        \Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin::class,
+        GetAccessTokenPlugin::class,
+        Plugin\Paypal\V2\AddRadarPlugin::class,
+        Plugin\Paypal\V2\ResponsePlugin::class,
         ParserPlugin::class,
     ], $params);
 
