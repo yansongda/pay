@@ -35,6 +35,7 @@ class CallbackPlugin implements PluginInterface
 
         $this->init($rocket);
 
+        /* @phpstan-ignore-next-line */
         verify_paypal_webhook_sign($rocket->getDestinationOrigin(), $rocket->getParams());
 
         $body = json_decode((string) $rocket->getDestination()->getBody(), true);
