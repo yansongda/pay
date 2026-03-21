@@ -1,5 +1,9 @@
 # PayPal 快速入门
 
+:::tip
+PayPal 的实现由 GitHub Copilot 生成
+:::
+
 在初始化完毕后，就可以直接方便的享受 `yansongda/pay` 带来的便利了。
 
 ## Web 支付（创建订单）

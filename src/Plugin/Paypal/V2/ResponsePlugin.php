@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Paypal\V1;
+namespace Yansongda\Pay\Plugin\Paypal\V2;
 
 use Closure;
 use Psr\Http\Message\ResponseInterface;
@@ -22,11 +22,11 @@ class ResponsePlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[Paypal][V1][ResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Paypal][V2][ResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->validateResponse($rocket);
 
-        Logger::info('[Paypal][V1][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Paypal][V2][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Paypal\V1\Pay;
+namespace Yansongda\Pay\Plugin\Paypal\V2\Pay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -14,9 +14,9 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
 /**
- * @see https://developer.paypal.com/docs/api/payments/v2/#refunds_get
+ * @see https://developer.paypal.com/docs/api/orders/v2/#orders_get
  */
-class QueryRefundPlugin implements PluginInterface
+class QueryPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
@@ -25,21 +25,21 @@ class QueryRefundPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Paypal][V1][Pay][QueryRefundPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Paypal][V2][Pay][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $refundId = $params['refund_id'] ?? '';
+        $orderId = $params['order_id'] ?? '';
 
-        if (empty($refundId)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: PayPal 查询退款，缺少 refund_id 参数');
+        if (empty($orderId)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: PayPal 查询订单，缺少 order_id 参数');
         }
 
         $rocket->mergePayload([
             '_method' => 'GET',
-            '_url' => 'v2/payments/refunds/'.$refundId,
+            '_url' => 'v2/checkout/orders/'.$orderId,
         ]);
 
-        Logger::info('[Paypal][V1][Pay][QueryRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Paypal][V2][Pay][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

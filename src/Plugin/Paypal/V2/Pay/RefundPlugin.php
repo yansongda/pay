@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Paypal\V1\Pay;
+namespace Yansongda\Pay\Plugin\Paypal\V2\Pay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -25,7 +25,7 @@ class RefundPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Paypal][V1][Pay][RefundPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Paypal][V2][Pay][RefundPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
@@ -44,7 +44,7 @@ class RefundPlugin implements PluginInterface
             ])
         ));
 
-        Logger::info('[Paypal][V1][Pay][RefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Paypal][V2][Pay][RefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

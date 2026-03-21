@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Paypal\V1;
+namespace Yansongda\Pay\Plugin\Paypal\V2;
 
 use Closure;
 use GuzzleHttp\Psr7\Request;
@@ -27,7 +27,7 @@ class AddRadarPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Paypal][V1][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Paypal][V2][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
@@ -40,7 +40,7 @@ class AddRadarPlugin implements PluginInterface
             $this->getBody($payload),
         ));
 
-        Logger::info('[Paypal][V1][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Paypal][V2][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

@@ -1,5 +1,9 @@
 # 接收 PayPal 回调
 
+:::tip
+PayPal 的实现由 GitHub Copilot 生成
+:::
+
 |   方法名    |               参数               |    返回值     |
 |:--------:|:------------------------------:|:----------:|
 | callback | 无/array/ServerRequestInterface | Collection |

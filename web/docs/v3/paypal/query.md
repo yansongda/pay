@@ -1,5 +1,9 @@
 # PayPal 查询订单
 
+:::tip
+PayPal 的实现由 GitHub Copilot 生成
+:::
+
 |  方法名  |      参数      |    返回值     |
 |:-----:|:------------:|:----------:|
 | query | array $order | Collection |

@@ -697,9 +697,9 @@ function get_paypal_access_token(array $params): string
 
     $result = Artful::artful([
         StartPlugin::class,
-        \Yansongda\Pay\Plugin\Paypal\V1\GetAccessTokenPlugin::class,
-        \Yansongda\Pay\Plugin\Paypal\V1\AddRadarPlugin::class,
-        \Yansongda\Pay\Plugin\Paypal\V1\ResponsePlugin::class,
+        \Yansongda\Pay\Plugin\Paypal\V2\GetAccessTokenPlugin::class,
+        \Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin::class,
+        \Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin::class,
         ParserPlugin::class,
     ], $params);
 

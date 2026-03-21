@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Paypal\V1\Pay;
+namespace Yansongda\Pay\Tests\Plugin\Paypal\V2\Pay;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Paypal\V1\Pay\RefundPlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\Pay\RefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

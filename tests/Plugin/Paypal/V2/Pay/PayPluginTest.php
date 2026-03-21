@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Paypal\V1\Pay;
+namespace Yansongda\Pay\Tests\Plugin\Paypal\V2\Pay;
 
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Plugin\Paypal\V1\Pay\PayPlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\Pay\PayPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 

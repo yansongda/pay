@@ -1,5 +1,9 @@
 # PayPal 支付
 
+:::tip
+PayPal 的实现由 GitHub Copilot 生成
+:::
+
 PayPal 支付目前直接内置支持以下快捷方式支付方法，对应的支付 method 如下：
 
 |  method  |   说明    |      参数      |    返回值     |
@@ -45,6 +49,17 @@ $approveUrl = collect($result->get('links'))->firstWhere('rel', 'approve')['href
 #### 订单配置参数
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**，比如，`_access_token` 等参数，大家只需传入订单类主观参数即可。
+
+如果您需要从外部传入 `access_token`（例如自行管理令牌），可以在订单参数中传入 `_access_token`：
+
+```php
+$order = [
+    '_access_token' => 'your-external-access-token',
+    'purchase_units' => [
+        // ...
+    ],
+];
+```
 
 所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://developer.paypal.com/docs/api/orders/v2/#orders_create)，查看「请求参数」一栏。
 

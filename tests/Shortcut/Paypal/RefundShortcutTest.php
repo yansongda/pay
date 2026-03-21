@@ -7,10 +7,10 @@ namespace Yansongda\Pay\Tests\Shortcut\Paypal;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Plugin\Paypal\V1\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Paypal\V1\ObtainAccessTokenPlugin;
-use Yansongda\Pay\Plugin\Paypal\V1\Pay\RefundPlugin;
-use Yansongda\Pay\Plugin\Paypal\V1\ResponsePlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\ObtainAccessTokenPlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\Pay\RefundPlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Paypal\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 

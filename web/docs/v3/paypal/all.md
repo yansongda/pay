@@ -1,5 +1,9 @@
 # PayPal 更多方便的插件
 
+:::tip
+PayPal 的实现由 GitHub Copilot 生成
+:::
+
 得益于 yansongda/pay 的基础架构和良好的插件机制，
 您可以自由的使用任何内置插件和自定义插件调用 PayPal 的任何 API。
 
@@ -28,20 +32,20 @@ $result = Pay::paypal()->pay($allPlugins, $params);
 
 - 创建订单
 
-  `\Yansongda\Pay\Plugin\Paypal\V1\Pay\PayPlugin`
+  `\Yansongda\Pay\Plugin\Paypal\V2\Pay\PayPlugin`
 
 - 捕获订单（完成扣款）
 
-  `\Yansongda\Pay\Plugin\Paypal\V1\Pay\CapturePlugin`
+  `\Yansongda\Pay\Plugin\Paypal\V2\Pay\CapturePlugin`
 
 - 查询订单
 
-  `\Yansongda\Pay\Plugin\Paypal\V1\Pay\QueryPlugin`
+  `\Yansongda\Pay\Plugin\Paypal\V2\Pay\QueryPlugin`
 
 - 退款申请
 
-  `\Yansongda\Pay\Plugin\Paypal\V1\Pay\RefundPlugin`
+  `\Yansongda\Pay\Plugin\Paypal\V2\Pay\RefundPlugin`
 
 - 查询退款
 
-  `\Yansongda\Pay\Plugin\Paypal\V1\Pay\QueryRefundPlugin`
+  `\Yansongda\Pay\Plugin\Paypal\V2\Pay\QueryRefundPlugin`

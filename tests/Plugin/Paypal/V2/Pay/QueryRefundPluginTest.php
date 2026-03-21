@@ -2,39 +2,39 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Paypal\V1\Pay;
+namespace Yansongda\Pay\Tests\Plugin\Paypal\V2\Pay;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Paypal\V1\Pay\QueryPlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\Pay\QueryRefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryPluginTest extends TestCase
+class QueryRefundPluginTest extends TestCase
 {
-    protected QueryPlugin $plugin;
+    protected QueryRefundPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryPlugin();
+        $this->plugin = new QueryRefundPlugin();
     }
 
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['order_id' => 'TEST_ORDER_456'])->setPayload(new Collection([]));
+        $rocket->setParams(['refund_id' => 'REF_789'])->setPayload(new Collection([]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
 
         self::assertEquals('GET', $payload->get('_method'));
-        self::assertStringContainsString('TEST_ORDER_456', $payload->get('_url'));
+        self::assertStringContainsString('REF_789', $payload->get('_url'));
     }
 
-    public function testMissingOrderId()
+    public function testMissingRefundId()
     {
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

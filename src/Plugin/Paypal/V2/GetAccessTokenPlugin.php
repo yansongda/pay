@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Paypal\V1;
+namespace Yansongda\Pay\Plugin\Paypal\V2;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -19,7 +19,7 @@ class GetAccessTokenPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Paypal][V1][GetAccessTokenPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Paypal][V2][GetAccessTokenPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
             '_method' => 'POST',
@@ -27,7 +27,7 @@ class GetAccessTokenPlugin implements PluginInterface
             '_auth_type' => 'basic',
         ]);
 
-        Logger::info('[Paypal][V1][GetAccessTokenPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Paypal][V2][GetAccessTokenPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

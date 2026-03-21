@@ -1,5 +1,9 @@
 # PayPal 退款
 
+:::tip
+PayPal 的实现由 GitHub Copilot 生成
+:::
+
 |  方法名   |      参数      |    返回值     |
 |:------:|:------------:|:----------:|
 | refund | array $order | Collection |

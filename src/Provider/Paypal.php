@@ -23,10 +23,10 @@ use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Paypal\V1\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Paypal\V1\ObtainAccessTokenPlugin;
-use Yansongda\Pay\Plugin\Paypal\V1\Pay\CallbackPlugin;
-use Yansongda\Pay\Plugin\Paypal\V1\ResponsePlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\ObtainAccessTokenPlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\Pay\CallbackPlugin;
+use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
