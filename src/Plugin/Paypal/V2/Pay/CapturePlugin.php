@@ -6,9 +6,7 @@ namespace Yansongda\Pay\Plugin\Paypal\V2\Pay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
-use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
@@ -19,9 +17,7 @@ use Yansongda\Pay\Exception\Exception;
 class CapturePlugin implements PluginInterface
 {
     /**
-     * @throws ContainerException
      * @throws InvalidParamsException
-     * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
