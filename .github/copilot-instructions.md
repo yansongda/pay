@@ -1,114 +1,131 @@
-# Copilot Instructions for yansongda/pay
+# yansongda/pay Copilot 指南
 
-## Project Overview
+## 项目概述
 
-`yansongda/pay` is a PHP payment SDK that provides a unified interface for multiple payment providers (Alipay, WeChat Pay, UnionPay, Douyin Pay, JSB, PayPal). It uses a **plugin pipeline architecture** powered by `yansongda/artful`.
+`yansongda/pay` 是一个 PHP 支付 SDK，为多个支付服务商（支付宝、微信支付、银联、抖音支付、江苏银行、PayPal）提供统一接口。基于 `yansongda/artful` 构建的**插件管道架构**。
 
-## Architecture
+## 核心原则
 
-### Plugin Pipeline
+- **安全第一**: 本类库与支付和金钱相关，API 安全是最高优先级。所有回调/Webhook 处理必须实现签名验证，确保数据真实性与完整性。
+- **代码一致性**: 新增的 Provider 应遵循现有 Provider 的代码结构和风格。
 
-Every payment operation flows through a plugin pipeline:
+## 架构
+
+### 插件管道
+
+每次支付操作都通过插件管道流转：
 
 ```
-StartPlugin → ObtainTokenPlugin → BusinessPlugin → AddPayloadBodyPlugin → AddRadarPlugin → ResponsePlugin → ParserPlugin
+StartPlugin → ObtainTokenPlugin → 业务插件 → AddPayloadBodyPlugin → AddRadarPlugin → ResponsePlugin → ParserPlugin
 ```
 
-- **StartPlugin** — initializes the `Rocket` payload
-- **ObtainTokenPlugin** — obtains authentication (access tokens, signatures, etc.)
-- **Business Plugins** — set the API endpoint URL, build request payload
-- **AddPayloadBodyPlugin** — serializes the payload into the HTTP body
-- **AddRadarPlugin** — builds the final HTTP request (PSR-7), sets auth headers
-- **ResponsePlugin** — validates HTTP response status codes
-- **ParserPlugin** — parses the raw response into a `Collection`
+- **StartPlugin** — 初始化 `Rocket` 载荷
+- **ObtainTokenPlugin** — 获取认证信息（access token、签名等）
+- **业务插件** — 设置 API 端点 URL，构建请求载荷
+- **AddPayloadBodyPlugin** — 将载荷序列化为 HTTP body
+- **AddRadarPlugin** — 构建最终 HTTP 请求（PSR-7），设置认证 header
+- **ResponsePlugin** — 校验 HTTP 响应状态码
+- **ParserPlugin** — 将原始响应解析为 `Collection`
 
-### Key Abstractions
+### 核心抽象
 
-- **`Rocket`** — the data carrier flowing through the pipeline; holds params, payload, radar (HTTP request), direction, and destination (response)
-- **`PluginInterface`** — each plugin implements `assembly(Rocket $rocket, Closure $next): Rocket`
-- **`ProviderInterface`** — each payment provider implements `pay`, `query`, `cancel`, `close`, `refund`, `callback`, `success`
-- **`ShortcutInterface`** — shortcuts return an array of plugin classes for common operations
-- **`Collection`** — `Yansongda\Supports\Collection` is used for structured data access throughout
+- **`Rocket`** — 在管道中流转的数据载体；包含 params、payload、radar（HTTP 请求）、direction 和 destination（响应）
+- **`PluginInterface`** — 每个插件实现 `assembly(Rocket $rocket, Closure $next): Rocket`
+- **`ProviderInterface`** — 每个支付服务商实现 `pay`、`query`、`cancel`、`close`、`refund`、`callback`、`success`
+- **`ShortcutInterface`** — 快捷方式返回常用操作的插件类数组
+- **`Collection`** — 使用 `Yansongda\Supports\Collection` 进行结构化数据访问
 
-### Directory Layout
+### 目录结构
 
 ```
 src/
-├── Contract/            # Interfaces (ProviderInterface, etc.)
-├── Event/               # Event classes (CallbackReceived, MethodCalled, etc.)
-├── Exception/           # Exception constants (Exception.php)
+├── Contract/            # 接口（ProviderInterface 等）
+├── Event/               # 事件类（CallbackReceived、MethodCalled 等）
+├── Exception/           # 异常常量（Exception.php）
 ├── Plugin/
 │   ├── {Provider}/
-│   │   ├── V{n}/        # Versioned by API version (V2, V3, etc.)
-│   │   │   ├── Pay/     # Payment-related plugins
+│   │   ├── V{n}/        # 按 API 版本分版（V2、V3 等）
+│   │   │   ├── Pay/     # 支付相关插件
 │   │   │   ├── AddRadarPlugin.php
 │   │   │   ├── ResponsePlugin.php
 │   │   │   └── ...
-├── Provider/            # Provider implementations (Alipay.php, Wechat.php, etc.)
-├── Service/             # Service providers for DI container registration
+├── Provider/            # 服务商实现（Alipay.php、Wechat.php 等）
+├── Service/             # DI 容器注册的服务提供者
 ├── Shortcut/
-│   └── {Provider}/      # Shortcut classes (WebShortcut, QueryShortcut, etc.)
+│   └── {Provider}/      # 快捷方式类（WebShortcut、QueryShortcut 等）
 ├── Traits/
-├── Functions.php        # Helper functions (get_{provider}_url, verify_{provider}_sign, etc.)
-└── Pay.php              # Main entry point
+├── Functions.php        # 辅助函数（get_{provider}_url、verify_{provider}_sign 等）
+└── Pay.php              # 主入口
 ```
 
-## Coding Standards
+## 编码规范
 
-### PHP Style
+### PHP 代码风格
 
-- **Strict types**: Every PHP file must have `declare(strict_types=1);`
-- **CS Fixer**: Run `composer cs-fix` — uses `@PhpCsFixer` ruleset
-- **Imports**: Always use `use` statements; never use FQCNs inline. Enable `global_namespace_import` for classes, constants, and functions
-- **Multi-line conditions**: Place `&&` / `||` operators at the **start** of continuation lines, not at the end
-- **PHPStan**: Run `composer analyse` — level 5, `phpstan.neon` config
+- **严格类型**: 每个 PHP 文件必须有 `declare(strict_types=1);`
+- **CS Fixer**: 运行 `composer cs-fix` — 使用 `@PhpCsFixer` 规则集
+- **导入**: 始终使用 `use` 语句；禁止在代码中使用完整命名空间。开启 `global_namespace_import`（类、常量和函数）
+- **多行条件**: `&&` / `||` 运算符放在续行的**开头**，不要放在行尾
+- **PHPStan**: 运行 `composer analyse` — 级别 5，使用 `phpstan.neon` 配置
 
-### Naming Conventions
+### 命名约定
 
-- **Plugins**: `{Action}Plugin.php` (e.g., `PayPlugin`, `RefundPlugin`, `QueryPlugin`, `CapturePlugin`, `CallbackPlugin`)
-- **Shortcuts**: `{Method}Shortcut.php` (e.g., `WebShortcut`, `QueryShortcut`, `RefundShortcut`)
-- **Providers**: `{ProviderName}.php` (e.g., `Paypal.php`, `Alipay.php`)
-- **Service providers**: `{ProviderName}ServiceProvider.php`
-- **Namespaces**: `Yansongda\Pay\Plugin\{Provider}\V{n}\Pay\{Plugin}` — version matches the provider's API version
+- **插件**: `{Action}Plugin.php`（如 `PayPlugin`、`RefundPlugin`、`QueryPlugin`、`CapturePlugin`、`CallbackPlugin`）
+- **快捷方式**: `{Method}Shortcut.php`（如 `WebShortcut`、`QueryShortcut`、`RefundShortcut`）
+- **服务商**: `{ProviderName}.php`（如 `Paypal.php`、`Alipay.php`）
+- **服务提供者**: `{ProviderName}ServiceProvider.php`
+- **命名空间**: `Yansongda\Pay\Plugin\{Provider}\V{n}\Pay\{Plugin}` — 版本号与服务商的 API 版本一致
 
-### Logging
+### 日志
 
-Use Chinese log messages with the pattern:
+使用中文日志消息，格式如下：
 
 ```php
 Logger::debug('[Provider][Version][Category][Plugin] 插件开始装载', ['rocket' => $rocket]);
 Logger::info('[Provider][Version][Category][Plugin] 插件装载完毕', ['rocket' => $rocket]);
 ```
 
-### Exceptions
+### 异常
 
-- Define exception code constants in `src/Exception/Exception.php`
-- Use `Yansongda\Artful\Exception\*` exception classes (InvalidParamsException, InvalidConfigException, etc.)
-- Provide Chinese error messages: `'参数异常: ...'`, `'配置异常: ...'`
+- 在 `src/Exception/Exception.php` 中定义异常代码常量
+- 使用 `Yansongda\Artful\Exception\*` 异常类（InvalidParamsException、InvalidConfigException 等）
+- 使用中文错误消息：`'参数异常: ...'`、`'配置异常: ...'`
 
-### Provider Config
+### 服务商配置
 
-Each provider config is stored under its key in the config array:
+每个服务商的配置存储在配置数组对应的 key 下：
 
 ```php
 'paypal' => [
     'default' => [
         'client_id' => '',
         'app_secret' => '',
-        'mode' => Pay::MODE_SANDBOX,  // MODE_NORMAL for production
+        'webhook_id' => '',
+        'mode' => Pay::MODE_SANDBOX,  // MODE_NORMAL 用于生产环境
     ],
 ],
 ```
 
-## Testing
+## 安全要求
 
-- **Framework**: PHPUnit 9.x — run with `composer test`
-- **Test location**: `tests/` mirrors `src/` structure
-- **Base class**: Extend `Yansongda\Pay\Tests\TestCase` which calls `Pay::config(...)` in `setUp()`
-- **Mocking**: Use Mockery for HTTP client mocking (`Yansongda\Artful\Contract\HttpClientInterface`)
-- **Config**: Test PayPal config is defined in `tests/TestCase.php` under `paypal.default`
+- **所有回调/Webhook 处理必须实现签名验证**。禁止直接信任传入的载荷数据，必须验证其来源的真实性。
+- 各服务商的签名验证方式不同：
+  - 支付宝：本地验证 RSA 签名
+  - 微信：本地验证证书签名
+  - PayPal：调用 `verify-webhook-signature` API 验证
+  - 抖音：本地验证 SHA1 签名
+  - 银联：本地验证证书签名
+- 回调处理应遵循已有 Provider 的模式：Provider 的 `callback()` 方法传递 `_request`（ServerRequestInterface）和 `_params` 到 CallbackPlugin，由插件负责签名验证。
 
-### Test Patterns
+## 测试
+
+- **框架**: PHPUnit 9.x — 运行 `composer test`
+- **测试位置**: `tests/` 目录结构与 `src/` 保持镜像
+- **基类**: 继承 `Yansongda\Pay\Tests\TestCase`，其 `setUp()` 中调用 `Pay::config(...)`
+- **Mock**: 使用 Mockery 模拟 HTTP 客户端（`Yansongda\Artful\Contract\HttpClientInterface`）
+- **配置**: 测试用 PayPal 配置定义在 `tests/TestCase.php` 的 `paypal.default` 中
+
+### 测试模式
 
 ```php
 class SomePluginTest extends TestCase
@@ -131,25 +148,26 @@ class SomePluginTest extends TestCase
 }
 ```
 
-## Documentation
+## 文档
 
-- **Location**: `web/docs/v3/{provider}/`
-- **Format**: VitePress Markdown
-- **Required pages** per provider: `pay.md`, `query.md`, `refund.md`, `cancel.md`, `close.md`, `callback.md`, `response.md`, `all.md`
-- **Quick start**: `web/docs/v3/quick-start/{provider}.md`
-- **Sidebar**: Update `web/.vitepress/sidebar/v3.js`
-- **Init config**: Add provider config block to `web/docs/v3/quick-start/init.md`
-- **CHANGELOG**: Follow existing format in `CHANGELOG.md` — group changes under version header
+- **位置**: `web/docs/v3/{provider}/`
+- **格式**: VitePress Markdown
+- **必需页面**（每个服务商）: `pay.md`、`query.md`、`refund.md`、`cancel.md`、`close.md`、`callback.md`、`response.md`、`all.md`
+- **快速入门**: `web/docs/v3/quick-start/{provider}.md`
+- **侧边栏**: 更新 `web/.vitepress/sidebar/v3.js`
+- **初始化配置**: 在 `web/docs/v3/quick-start/init.md` 中添加服务商配置块
+- **变更日志**: 遵循 `CHANGELOG.md` 中的现有格式 — 按版本号分组
+- **代码示例**: 文档中的代码示例应使用原生 PHP，保持框架无关性（不要使用 Laravel 特有的 `collect()` 等辅助函数）
 
-## Adding a New Provider
+## 新增服务商步骤
 
-1. Create plugins under `src/Plugin/{Provider}/V{n}/`
-2. Create provider class under `src/Provider/{Provider}.php` implementing `ProviderInterface`
-3. Create service provider under `src/Service/{Provider}ServiceProvider.php`
-4. Create shortcuts under `src/Shortcut/{Provider}/`
-5. Add helper functions to `src/Functions.php` (`get_{provider}_url`, `get_{provider}_access_token`, etc.)
-6. Register the provider in `src/Pay.php`
-7. Add exception constants to `src/Exception/Exception.php`
-8. Add tests mirroring the source structure under `tests/`
-9. Add documentation under `web/docs/v3/{provider}/`
-10. Update sidebar, init config, and CHANGELOG
+1. 在 `src/Plugin/{Provider}/V{n}/` 下创建插件
+2. 在 `src/Provider/{Provider}.php` 下创建服务商类，实现 `ProviderInterface`
+3. 在 `src/Service/{Provider}ServiceProvider.php` 下创建服务提供者
+4. 在 `src/Shortcut/{Provider}/` 下创建快捷方式
+5. 在 `src/Functions.php` 中添加辅助函数（`get_{provider}_url`、`verify_{provider}_sign` 等）
+6. 在 `src/Pay.php` 中注册服务商
+7. 在 `src/Exception/Exception.php` 中添加异常常量
+8. 在 `tests/` 下添加与源码结构对应的测试
+9. 在 `web/docs/v3/{provider}/` 下添加文档
+10. 更新侧边栏、初始化配置和变更日志

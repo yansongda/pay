@@ -110,9 +110,12 @@ class Paypal implements ProviderInterface
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new CallbackReceived('paypal', $request->all(), $params, null));
+        Event::dispatch(new CallbackReceived('paypal', clone $request, $params, null));
 
-        return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
+        return $this->pay(
+            [CallbackPlugin::class],
+            ['_request' => $request, '_params' => $params]
+        );
     }
 
     public function success(): ResponseInterface
@@ -129,22 +132,20 @@ class Paypal implements ProviderInterface
         );
     }
 
-    protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
+    protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
     {
+        if (is_array($contents) && isset($contents['body'], $contents['headers'])) {
+            return new ServerRequest('POST', 'http://localhost', $contents['headers'], $contents['body']);
+        }
+
         if (is_array($contents)) {
-            return Collection::wrap($contents);
+            return new ServerRequest('POST', 'http://localhost', [], json_encode($contents));
         }
 
-        if (!$contents instanceof ServerRequestInterface) {
-            $contents = ServerRequest::fromGlobals();
+        if ($contents instanceof ServerRequestInterface) {
+            return $contents;
         }
 
-        $body = Collection::wrap($contents->getParsedBody());
-
-        if ($body->isNotEmpty()) {
-            return $body;
-        }
-
-        return Collection::wrapJson((string) $contents->getBody());
+        return ServerRequest::fromGlobals();
     }
 }

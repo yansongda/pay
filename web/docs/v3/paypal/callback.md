@@ -8,6 +8,12 @@ PayPal 的实现由 GitHub Copilot 生成
 |:--------:|:------------------------------:|:----------:|
 | callback | 无/array/ServerRequestInterface | Collection |
 
+:::warning
+PayPal 回调处理会自动通过 PayPal 的 `verify-webhook-signature` API 验证 Webhook 签名，以确保回调数据的真实性和完整性。
+
+请务必在配置中填写 `webhook_id`（在 PayPal 后台创建 Webhook 后获取）。
+:::
+
 ## 例子
 
 ```php
@@ -35,7 +41,16 @@ $result = Pay::paypal()->callback();
 
 #### `array`
 
-也可以自行解析请求参数，传递一个 array 会自动进行后续处理
+也可以自行解析请求参数，传递一个 array 会自动进行后续处理。
+
+如果需要传递包含 headers 的请求信息，可以使用以下格式：
+
+```php
+$result = Pay::paypal()->callback([
+    'headers' => $request->getHeaders(),
+    'body' => (string)$request->getBody(),
+]);
+```
 
 ### 第二个参数
 

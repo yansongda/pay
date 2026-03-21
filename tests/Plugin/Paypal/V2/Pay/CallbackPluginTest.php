@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Paypal\V2\Pay;
 
-use Yansongda\Artful\Exception\InvalidResponseException;
+use GuzzleHttp\Psr7\ServerRequest;
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\CallbackPlugin;
@@ -21,12 +22,12 @@ class CallbackPluginTest extends TestCase
         $this->plugin = new CallbackPlugin();
     }
 
-    public function testEmptyParamsThrowsException()
+    public function testMissingRequestThrowsException()
     {
         $rocket = new Rocket();
         $rocket->setParams([]);
 
-        self::expectException(InvalidResponseException::class);
+        self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -34,13 +35,21 @@ class CallbackPluginTest extends TestCase
 
     public function testNormalCallback()
     {
-        $params = [
+        $body = json_encode([
             'event_type' => 'CHECKOUT.ORDER.APPROVED',
             'resource' => ['id' => 'ORDER_123', 'status' => 'APPROVED'],
-        ];
+        ]);
+
+        $request = new ServerRequest('POST', 'http://localhost', [
+            'PAYPAL-TRANSMISSION-ID' => 'test-id',
+            'PAYPAL-TRANSMISSION-TIME' => '2024-01-01T00:00:00Z',
+            'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
+            'PAYPAL-CERT-URL' => 'https://api.sandbox.paypal.com/v1/notifications/certs/CERT-123',
+            'PAYPAL-AUTH-ALGO' => 'SHA256withRSA',
+        ], $body);
 
         $rocket = new Rocket();
-        $rocket->setParams($params);
+        $rocket->setParams(['_request' => $request, '_params' => []]);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 

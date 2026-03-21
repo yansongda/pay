@@ -126,6 +126,9 @@ $config = [
             // 「必填」PayPal App Secret
             // 在 https://developer.paypal.com/dashboard/applications 中创建应用后获取
             'app_secret' => '',
+            // 「必填」PayPal Webhook ID
+            // 在 https://developer.paypal.com/dashboard/applications 中配置 Webhook 后获取，用于回调签名验证
+            'webhook_id' => '',
             // 「选填」支付完成后 PayPal 跳转的回调地址
             'return_url' => 'https://yansongda.cn/paypal/return',
             // 「选填」用户取消支付后 PayPal 跳转的取消地址

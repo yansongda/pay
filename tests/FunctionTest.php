@@ -51,6 +51,7 @@ use function Yansongda\Pay\verify_wechat_sign_v2;
 use function Yansongda\Pay\get_jsb_url;
 use function Yansongda\Pay\get_paypal_url;
 use function Yansongda\Pay\get_paypal_access_token;
+use function Yansongda\Pay\verify_paypal_webhook_sign;
 
 class FunctionTest extends TestCase
 {
@@ -765,5 +766,96 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::assertEquals('new_paypal_token_456', $token);
         self::assertEquals('new_paypal_token_456', Pay::get(ConfigInterface::class)->get('paypal.default._access_token'));
         self::assertNotEmpty(Pay::get(ConfigInterface::class)->get('paypal.default._access_token_expiry'));
+    }
+
+    public function testVerifyPaypalWebhookSignLocalhost()
+    {
+        $request = new ServerRequest('POST', 'http://localhost', [], '{}');
+
+        verify_paypal_webhook_sign($request, []);
+        self::assertTrue(true);
+    }
+
+    public function testVerifyPaypalWebhookSignMissingWebhookId()
+    {
+        Pay::get(ConfigInterface::class)->set('paypal.default.webhook_id', '');
+
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
+            'PAYPAL-TRANSMISSION-ID' => 'test-id',
+            'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
+        ], '{}');
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_PAYPAL_INVALID);
+
+        verify_paypal_webhook_sign($request, []);
+    }
+
+    public function testVerifyPaypalWebhookSignEmptySignature()
+    {
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [], '{}');
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_EMPTY);
+
+        verify_paypal_webhook_sign($request, []);
+    }
+
+    public function testVerifyPaypalWebhookSignSuccess()
+    {
+        $tokenResponse = new Response(200, [], json_encode([
+            'access_token' => 'verify_token_123',
+            'token_type' => 'Bearer',
+            'expires_in' => 32400,
+        ]));
+        $verifyResponse = new Response(200, [], json_encode([
+            'verification_status' => 'SUCCESS',
+        ]));
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($tokenResponse, $verifyResponse);
+
+        Pay::set(HttpClientInterface::class, $http);
+
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
+            'PAYPAL-TRANSMISSION-ID' => 'test-id',
+            'PAYPAL-TRANSMISSION-TIME' => '2024-01-01T00:00:00Z',
+            'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
+            'PAYPAL-CERT-URL' => 'https://api.sandbox.paypal.com/v1/notifications/certs/CERT-123',
+            'PAYPAL-AUTH-ALGO' => 'SHA256withRSA',
+        ], json_encode(['event_type' => 'CHECKOUT.ORDER.APPROVED']));
+
+        verify_paypal_webhook_sign($request, []);
+        self::assertTrue(true);
+    }
+
+    public function testVerifyPaypalWebhookSignFailure()
+    {
+        $tokenResponse = new Response(200, [], json_encode([
+            'access_token' => 'verify_token_123',
+            'token_type' => 'Bearer',
+            'expires_in' => 32400,
+        ]));
+        $verifyResponse = new Response(200, [], json_encode([
+            'verification_status' => 'FAILURE',
+        ]));
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($tokenResponse, $verifyResponse);
+
+        Pay::set(HttpClientInterface::class, $http);
+
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
+            'PAYPAL-TRANSMISSION-ID' => 'test-id',
+            'PAYPAL-TRANSMISSION-TIME' => '2024-01-01T00:00:00Z',
+            'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
+            'PAYPAL-CERT-URL' => 'https://api.sandbox.paypal.com/v1/notifications/certs/CERT-123',
+            'PAYPAL-AUTH-ALGO' => 'SHA256withRSA',
+        ], json_encode(['event_type' => 'CHECKOUT.ORDER.APPROVED']));
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        verify_paypal_webhook_sign($request, []);
     }
 }

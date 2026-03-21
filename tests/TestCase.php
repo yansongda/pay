@@ -235,6 +235,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'notify_url' => 'https://pay.yansongda.cn/paypal/notify',
                     'return_url' => 'https://pay.yansongda.cn/paypal/return',
                     'cancel_url' => 'https://pay.yansongda.cn/paypal/cancel',
+                    'webhook_id' => 'paypal_webhook_id',
                     'mode' => Pay::MODE_SANDBOX,
                 ],
             ],
