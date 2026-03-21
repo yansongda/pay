@@ -41,7 +41,13 @@ $order = [
 $result = Pay::paypal()->web($order);
 
 // 从 links 中获取用户授权跳转地址
-$approveUrl = collect($result->get('links'))->firstWhere('rel', 'approve')['href'];
+$approveUrl = '';
+foreach ($result->get('links', []) as $link) {
+    if ('approve' === ($link['rel'] ?? '')) {
+        $approveUrl = $link['href'];
+        break;
+    }
+}
 
 // 将用户重定向至 $approveUrl
 ```

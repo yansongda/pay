@@ -18,6 +18,9 @@ use Yansongda\Supports\Collection;
 class CallbackPlugin implements PluginInterface
 {
     /**
+     * @todo 当前实现未验证 PayPal Webhook 签名，建议生产环境中通过 PayPal 的
+     *       verify-webhook-signature API 进行验证以确保回调的真实性。
+     *
      * @throws ContainerException
      * @throws InvalidResponseException
      * @throws ServiceNotFoundException
