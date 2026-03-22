@@ -29,6 +29,7 @@ use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Pay\Provider\Paypal;
+use Yansongda\Pay\Provider\Stripe;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
@@ -784,4 +785,79 @@ function verify_paypal_webhook_sign(ServerRequestInterface $request, array $para
     if ('SUCCESS' !== $status) {
         throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证 PayPal 回调签名失败', ['headers' => $request->getHeaders(), 'body' => $body, 'verification_status' => $status]);
     }
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_stripe_url(array $config, ?Collection $payload): string
+{
+    $url = get_radar_url($config, $payload);
+
+    if (empty($url)) {
+        throw new InvalidParamsException(Exception::PARAMS_STRIPE_URL_MISSING, '参数异常: Stripe `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
+    }
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    return Stripe::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+}
+
+/**
+ * @throws InvalidConfigException
+ * @throws InvalidSignException
+ */
+function verify_stripe_webhook_sign(ServerRequestInterface $request, array $params): void
+{
+    if ('localhost' === $request->getUri()->getHost()) {
+        return;
+    }
+
+    $config = get_provider_config('stripe', $params);
+    $webhookSecret = $config['webhook_secret'] ?? null;
+
+    if (empty($webhookSecret)) {
+        throw new InvalidConfigException(Exception::CONFIG_STRIPE_INVALID, '配置异常: 缺少 Stripe 配置 -- [webhook_secret]');
+    }
+
+    $signatureHeader = $request->getHeaderLine('Stripe-Signature');
+    $body = (string) $request->getBody();
+
+    if (empty($signatureHeader)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: Stripe 回调签名为空', ['headers' => $request->getHeaders(), 'body' => $body]);
+    }
+
+    $parts = explode(',', $signatureHeader);
+    $timestamp = null;
+    $signatures = [];
+
+    foreach ($parts as $part) {
+        [$key, $value] = explode('=', $part, 2);
+        if ('t' === $key) {
+            $timestamp = $value;
+        } elseif ('v1' === $key) {
+            $signatures[] = $value;
+        }
+    }
+
+    if (empty($timestamp) || empty($signatures)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: Stripe 回调签名格式错误', ['headers' => $request->getHeaders(), 'body' => $body]);
+    }
+
+    if (abs(time() - (int) $timestamp) > 300) {
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Stripe 回调签名时间戳超时', ['timestamp' => $timestamp]);
+    }
+
+    $signedPayload = $timestamp.'.'.$body;
+    $expectedSignature = hash_hmac('sha256', $signedPayload, $webhookSecret);
+
+    foreach ($signatures as $signature) {
+        if (hash_equals($expectedSignature, $signature)) {
+            return;
+        }
+    }
+
+    throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证 Stripe 回调签名失败', ['headers' => $request->getHeaders(), 'body' => $body]);
 }

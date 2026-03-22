@@ -41,6 +41,8 @@ class Exception extends \Exception
 
     public const PARAMS_PAYPAL_URL_MISSING = 9223;
 
+    public const PARAMS_STRIPE_URL_MISSING = 9224;
+
     /**
      * 关于响应.
      */
@@ -64,6 +66,8 @@ class Exception extends \Exception
     public const CONFIG_DOUYIN_INVALID = 9405;
 
     public const CONFIG_PAYPAL_INVALID = 9406;
+
+    public const CONFIG_STRIPE_INVALID = 9407;
 
     /**
      * 关于签名.
