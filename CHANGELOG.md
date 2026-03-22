@@ -3,6 +3,7 @@
 ### added
 
 - feat: 新增 PayPal 支付 (#1127)
+- feat: 新增 Stripe 支付 (#1130)
 
 ## v3.7.19
 
