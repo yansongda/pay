@@ -228,6 +228,17 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mode' => Pay::MODE_SANDBOX,
                 ],
             ],
+            'paypal' => [
+                'default' => [
+                    'client_id' => 'paypal_client_id',
+                    'app_secret' => 'paypal_app_secret',
+                    'notify_url' => 'https://pay.yansongda.cn/paypal/notify',
+                    'return_url' => 'https://pay.yansongda.cn/paypal/return',
+                    'cancel_url' => 'https://pay.yansongda.cn/paypal/cancel',
+                    'webhook_id' => 'paypal_webhook_id',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+            ],
         ];
 
         // hyperf 单测时，未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个

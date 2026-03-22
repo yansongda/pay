@@ -118,6 +118,27 @@ $config = [
             'notify_url' => 'https://yansongda.cn/douyin/notify',
         ],
     ],
+    'paypal' => [
+        'default' => [
+            // 「必填」PayPal Client ID
+            // 在 https://developer.paypal.com/dashboard/applications 中创建应用后获取
+            'client_id' => '',
+            // 「必填」PayPal App Secret
+            // 在 https://developer.paypal.com/dashboard/applications 中创建应用后获取
+            'app_secret' => '',
+            // 「必填」PayPal Webhook ID
+            // 在 https://developer.paypal.com/dashboard/applications 中配置 Webhook 后获取，用于回调签名验证
+            'webhook_id' => '',
+            // 「选填」支付完成后 PayPal 跳转的回调地址
+            'return_url' => 'https://yansongda.cn/paypal/return',
+            // 「选填」用户取消支付后 PayPal 跳转的取消地址
+            'cancel_url' => 'https://yansongda.cn/paypal/cancel',
+            // 「选填」异步通知地址（如有需要请自行在 PayPal 后台配置 Webhook）
+            'notify_url' => 'https://yansongda.cn/paypal/notify',
+            // 「选填」默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:沙箱环境
+            'mode' => Pay::MODE_NORMAL,
+        ],
+    ],
     'jsb' => [
         'default' => [
             // 服务代码
