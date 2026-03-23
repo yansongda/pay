@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Paypal\V2\Pay;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
+use Mockery;
+use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -40,7 +45,20 @@ class CallbackPluginTest extends TestCase
             'resource' => ['id' => 'ORDER_123', 'status' => 'APPROVED'],
         ]);
 
-        $request = new ServerRequest('POST', 'http://localhost', [
+        $tokenResponse = new Response(200, [], json_encode([
+            'access_token' => 'test_token_123',
+            'token_type' => 'Bearer',
+            'expires_in' => 32400,
+        ]));
+        $verifyResponse = new Response(200, [], json_encode([
+            'verification_status' => 'SUCCESS',
+        ]));
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($tokenResponse, $verifyResponse);
+        Pay::set(HttpClientInterface::class, $http);
+
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
             'PAYPAL-TRANSMISSION-ID' => 'test-id',
             'PAYPAL-TRANSMISSION-TIME' => '2024-01-01T00:00:00Z',
             'PAYPAL-TRANSMISSION-SIG' => 'test-sig',

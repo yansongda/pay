@@ -247,7 +247,7 @@ class FunctionTest extends TestCase
             200,
             [
                 'Wechatpay-Nonce' => 'e59e78a6c3f7dfd7e84aabee71be0452',
-                'Wechatpay-Signature' => 'Bb10ZUsON47E/qLjecjk6ESLt7obZCvCCAXAEoD1Q+K548fz9h6YBgR3PZzviTmjsA3/r22qEC3r/yelFAn4pl4rJBGqrjo4ODJkOPlaDnHZwYotDvf6RcASpKB9ExCb33hAijHCiMzr9V9skNrj5F9eXc96lNZN3R5MVLsTF97nV922JIzyCrZ668khYPrn1jl5pCBpYDQ3rskgmZ+nnjg7M9vRAfTowEydSEGtsKjXUSaaKui2RDUuX8ZwxVcBTRng978Gh9s4mdRxs+mlv3gP1xQHdpa0mYMG0yGzLcWOTgrkt27sAwFnuXj9WtlEAgz/1DYntujKPxilMVGRow==',
+                'Wechatpay-Signature' => 'Ut3dG8cMx5W1lbSQhHay068F6khScuPQJM/Z9+suaaSkbYUspFRlkdp2VR/6w5UMvioN0EveSgfypQFVqmT6tI//cWrA1J9rlnKmZ+FgdCMqg7FQnpMRzc1Ap+3mZMtN9GrzYqp/UdgotX6HRfGL3hP8pG1YuijHNrL0QRS17bNYwZX8Mj3qLKUQRpqbfE+TC5yvzh1gEVPBFTwvZdZvXIQpjC/sB2QDSvo72CWgm4huh1h/kMzsrsO+wXXLqDfU01YX8aLbBrjvpcob50lc5XZ2WX5nBbpJXaRatIhBUmkR/ccrQhxWN7YqEobBGK/2DYhr6e6CvTgVdpZUUEcMFw==',
                 'Wechatpay-Timestamp' => '1626444144',
                 'Wechatpay-Serial' => '45F59D4DABF31918AFCEC556D5D2C6E376675D57',
             ],
@@ -256,15 +256,11 @@ class FunctionTest extends TestCase
         verify_wechat_sign($response, []);
         self::assertTrue(true);
 
-        $serverRequest = new ServerRequest('POST', 'http://localhost');
-        verify_wechat_sign($serverRequest, []);
-        self::assertTrue(true);
-
         $response = new Response(
             200,
             [
                 'Wechatpay-Nonce' => 'e59e78a6c3f7dfd7e84aabee71be0452',
-                'Wechatpay-Signature' => 'Bb10ZUsON47E/qLjecjk6ESLt7obZCvCCAXAEoD1Q+K548fz9h6YBgR3PZzviTmjsA3/r22qEC3r/yelFAn4pl4rJBGqrjo4ODJkOPlaDnHZwYotDvf6RcASpKB9ExCb33hAijHCiMzr9V9skNrj5F9eXc96lNZN3R5MVLsTF97nV922JIzyCrZ668khYPrn1jl5pCBpYDQ3rskgmZ+nnjg7M9vRAfTowEydSEGtsKjXUSaaKui2RDUuX8ZwxVcBTRng978Gh9s4mdRxs+mlv3gP1xQHdpa0mYMG0yGzLcWOTgrkt27sAwFnuXj9WtlEAgz/1DYntujKPxilMVGRow==',
+                'Wechatpay-Signature' => 'Ut3dG8cMx5W1lbSQhHay068F6khScuPQJM/Z9+suaaSkbYUspFRlkdp2VR/6w5UMvioN0EveSgfypQFVqmT6tI//cWrA1J9rlnKmZ+FgdCMqg7FQnpMRzc1Ap+3mZMtN9GrzYqp/UdgotX6HRfGL3hP8pG1YuijHNrL0QRS17bNYwZX8Mj3qLKUQRpqbfE+TC5yvzh1gEVPBFTwvZdZvXIQpjC/sB2QDSvo72CWgm4huh1h/kMzsrsO+wXXLqDfU01YX8aLbBrjvpcob50lc5XZ2WX5nBbpJXaRatIhBUmkR/ccrQhxWN7YqEobBGK/2DYhr6e6CvTgVdpZUUEcMFw==',
                 'Wechatpay-Timestamp' => '1626444144',
                 'Wechatpay-Serial' => '45F59D4DABF31918AFCEC556D5D2C6E376675D57',
             ],
@@ -766,14 +762,6 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::assertEquals('new_paypal_token_456', $token);
         self::assertEquals('new_paypal_token_456', Pay::get(ConfigInterface::class)->get('paypal.default._access_token'));
         self::assertNotEmpty(Pay::get(ConfigInterface::class)->get('paypal.default._access_token_expiry'));
-    }
-
-    public function testVerifyPaypalWebhookSignLocalhost()
-    {
-        $request = new ServerRequest('POST', 'http://localhost', [], '{}');
-
-        verify_paypal_webhook_sign($request, []);
-        self::assertTrue(true);
     }
 
     public function testVerifyPaypalWebhookSignMissingWebhookId()
