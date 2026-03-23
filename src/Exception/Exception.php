@@ -43,6 +43,8 @@ class Exception extends \Exception
 
     public const PARAMS_STRIPE_URL_MISSING = 9224;
 
+    public const PARAMS_STRIPE_BODY_INVALID = 9225;
+
     /**
      * 关于响应.
      */

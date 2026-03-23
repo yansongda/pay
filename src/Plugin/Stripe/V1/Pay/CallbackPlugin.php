@@ -42,7 +42,7 @@ class CallbackPlugin implements PluginInterface
         $body = json_decode($bodyString, true);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new InvalidParamsException(Exception::PARAMS_INVALID, '参数异常: Stripe 回调 body 不是合法 JSON');
+            throw new InvalidParamsException(Exception::PARAMS_STRIPE_BODY_INVALID, '参数异常: Stripe 回调 body 不是合法 JSON');
         }
 
         $rocket->setDirection(NoHttpRequestDirection::class)

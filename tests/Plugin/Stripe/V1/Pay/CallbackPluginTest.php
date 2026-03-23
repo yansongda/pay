@@ -41,7 +41,7 @@ class CallbackPluginTest extends TestCase
         $rocket->setParams(['_request' => $request, '_params' => []]);
 
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_INVALID);
+        self::expectExceptionCode(Exception::PARAMS_STRIPE_BODY_INVALID);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
