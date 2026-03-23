@@ -29,8 +29,8 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method static Collection|Rocket intent(array $order) PaymentIntent 支付
- * @method static Collection|Rocket web(array $order)    Checkout Session 支付
+ * @method Collection|Rocket intent(array $order) PaymentIntent 支付
+ * @method Collection|Rocket web(array $order)    Checkout Session 支付
  */
 class Stripe implements ProviderInterface
 {

@@ -834,7 +834,22 @@ function verify_stripe_webhook_sign(ServerRequestInterface $request, array $para
     $signatures = [];
 
     foreach ($parts as $part) {
-        [$key, $value] = explode('=', $part, 2);
+        $part = trim($part);
+
+        if ('' === $part) {
+            continue;
+        }
+
+        $pair = explode('=', $part, 2);
+
+        if (2 !== count($pair)) {
+            continue;
+        }
+
+        [$key, $value] = $pair;
+        $key = trim($key);
+        $value = trim($value);
+
         if ('t' === $key) {
             $timestamp = $value;
         } elseif ('v1' === $key) {

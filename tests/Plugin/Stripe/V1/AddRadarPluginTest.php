@@ -59,6 +59,23 @@ class AddRadarPluginTest extends TestCase
         self::assertEquals('', (string) $radar->getBody());
     }
 
+    public function testGetRequestWithQueryParams()
+    {
+        $payload = new Collection([
+            '_method' => 'GET',
+            '_url' => 'v1/payment_intents/pi_test123',
+            'expand' => ['charges'],
+        ]);
+
+        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $radar = $result->getRadar();
+
+        self::assertEquals('GET', $radar->getMethod());
+        self::assertStringContainsString('expand', (string) $radar->getUri());
+    }
+
     public function testPostBodyIsFormEncoded()
     {
         $payload = new Collection([

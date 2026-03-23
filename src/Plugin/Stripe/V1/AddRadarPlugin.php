@@ -36,7 +36,7 @@ class AddRadarPlugin implements PluginInterface
 
         $rocket->setRadar(new Request(
             get_radar_method($payload),
-            get_stripe_url($config, $payload),
+            get_stripe_url($config, $payload).$this->getQueryString($payload),
             $this->getHeaders($config, $payload),
             $this->getBody($payload),
         ));
@@ -74,5 +74,18 @@ class AddRadarPlugin implements PluginInterface
         }
 
         return http_build_query(filter_params($payload)->toArray());
+    }
+
+    protected function getQueryString(?Collection $payload): string
+    {
+        $method = strtoupper($payload?->get('_method') ?? 'GET');
+
+        if ('GET' !== $method) {
+            return '';
+        }
+
+        $params = filter_params($payload)->toArray();
+
+        return empty($params) ? '' : '?'.http_build_query($params);
     }
 }

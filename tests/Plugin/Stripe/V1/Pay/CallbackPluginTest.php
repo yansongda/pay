@@ -33,7 +33,18 @@ class CallbackPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testNormalCallback()
+    public function testInvalidJsonBodyThrowsException()
+    {
+        $request = new ServerRequest('POST', 'http://localhost', [], 'not-valid-json');
+
+        $rocket = new Rocket();
+        $rocket->setParams(['_request' => $request, '_params' => []]);
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_INVALID);
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
     {
         $body = json_encode([
             'id' => 'evt_test123',

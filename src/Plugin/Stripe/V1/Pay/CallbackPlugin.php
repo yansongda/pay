@@ -38,7 +38,12 @@ class CallbackPlugin implements PluginInterface
         /* @phpstan-ignore-next-line */
         verify_stripe_webhook_sign($rocket->getDestinationOrigin(), $rocket->getParams());
 
-        $body = json_decode((string) $rocket->getDestination()->getBody(), true);
+        $bodyString = (string) $rocket->getDestination()->getBody();
+        $body = json_decode($bodyString, true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new InvalidParamsException(Exception::PARAMS_INVALID, '参数异常: Stripe 回调 body 不是合法 JSON');
+        }
 
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->setPayload(new Collection($body))

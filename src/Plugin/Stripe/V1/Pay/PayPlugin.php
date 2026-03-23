@@ -6,9 +6,6 @@ namespace Yansongda\Pay\Plugin\Stripe\V1\Pay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
-use Yansongda\Artful\Exception\ContainerException;
-use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
@@ -17,11 +14,6 @@ use Yansongda\Artful\Rocket;
  */
 class PayPlugin implements PluginInterface
 {
-    /**
-     * @throws ContainerException
-     * @throws InvalidParamsException
-     * @throws ServiceNotFoundException
-     */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::debug('[Stripe][V1][Pay][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
