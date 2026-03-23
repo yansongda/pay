@@ -1,9 +1,61 @@
 # 初始化
 
-初始化有两种方式，大家可根据自己的习惯选择合适的方式。
+初始化有三种方式，大家可根据自己的习惯选择合适的方式。
 
 SDK 一旦初始化后，底层使用单例模式保存配置信息，所以，每次使用只需初始化一次即可，无需多次，后续重复初始化将不会生效
 当然，您也可以使用 `_force` 参数强制初始化覆盖原来的配置项。
+
+## 配置方式
+
+### 方式一：使用配置实体类 <Badge type="tip" text="推荐" />
+
+使用配置实体类是更加类型安全和面向对象的方式。
+
+```php
+use Yansongda\Pay\Pay;
+use Yansongda\Pay\Config\Config;
+use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Config\LoggerConfig;
+use Yansongda\Pay\Config\HttpConfig;
+
+$config = new Config(
+    alipay: new AlipayConfig(
+        app_id: '2016082000295641',
+        app_secret_cert: 'MIIEvAIBADANBgkqhkiG9w0BAQEF...',
+        app_public_cert_path: '/Users/yansongda/pay/cert/appCertPublicKey_2016082000295641.crt',
+        alipay_public_cert_path: '/Users/yansongda/pay/cert/alipayCertPublicKey_RSA2.crt',
+        alipay_root_cert_path: '/Users/yansongda/pay/cert/alipayRootCert.crt',
+        return_url: 'https://yansongda.cn/alipay/return',
+        notify_url: 'https://yansongda.cn/alipay/notify',
+        mode: Pay::MODE_NORMAL,
+    ),
+    wechat: new WechatConfig(
+        mch_id: '1234567890',
+        mch_secret_key: 'your-secret-key',
+        mch_secret_cert: 'your-secret-cert',
+        mch_public_cert_path: '/path/to/cert.pem',
+        notify_url: 'https://yansongda.cn/wechat/notify',
+        mp_app_id: '2016082000291234',
+        mode: Pay::MODE_NORMAL,
+    ),
+    logger: new LoggerConfig(
+        enable: true,
+        file: './logs/pay.log',
+        level: 'info',
+        type: 'single',
+        max_file: 30,
+    ),
+    http: new HttpConfig(
+        timeout: 5.0,
+        connect_timeout: 5.0,
+    ),
+);
+
+Pay::config($config);
+```
+
+### 方式二：使用数组配置
 
 假设有以下配置文件：
 
@@ -192,9 +244,7 @@ $config = [
 
 ## 初始化方式
 
-### 方式一 <Badge type="tip" text="推荐" />
-
-直接调用 `config` 方法初始化
+### 方式一：直接调用 `config` 方法初始化
 
 ```php
 Pay::config($config);
@@ -206,9 +256,7 @@ Pay::config($config);
 Pay::config(array_merge($config, ['_force' => true]));
 ```
 
-### 方式二
-
-在每次实际调用时顺便初始化
+### 方式二：在每次实际调用时顺便初始化
 
 ```php
 Pay::alipay($config)->web($order);
