@@ -43,8 +43,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
                     'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [
-                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
-                        '25F8AA5452D55497C24BA57DC81B1E5915DC2E77' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatAppPublicKey.pem',
                         'yansongda' => __DIR__.'/Cert/wechatPublicKey.crt',
                     ],
                     'mode' => Pay::MODE_NORMAL,

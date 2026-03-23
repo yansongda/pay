@@ -28,7 +28,7 @@ class CallbackPluginTest extends TestCase
                 'Wechatpay-Nonce' => 'e59e78a6c3f7dfd7e84aabee71be0452',
                 'Wechatpay-Signature' => 'NmmOwkXg89J9UP9gnoGeGZUdSflYhOzD/Imxv0SZf09+42Yn+u8DHQs/QcsOtD1O9hi38PizLnyMQ7NyqkQqVZCu7ID532FOiKkU6qIhrrCrm8w5ktJTXUorH8gEQtxZSKJ0Z0I/fsOBhnvoBRRlIyvEwoESAcJuyJYCgQuvFaqGYDOjLW7umTdO0vUZnH9TJfxfziLxwEYoH09D43H+hXL4oKAF+aIdAiWyS/CwnE4BB8j4NGsCi4v4cAZkJjqV45koAtzXVBzYjccURNSRUYOZv9IW7CqOFmOWsmAN5bVncs4S89lMNW+UIqNRx4tpIrU4CuX81V0tVFcweKnqNQ==',
                 'Wechatpay-Timestamp' => '1626444144',
-                'Wechatpay-Serial' => '25F8AA5452D55497C24BA57DC81B1E5915DC2E77',
+                'Wechatpay-Serial' => '45F59D4DABF31918AFCEC556D5D2C6E376675D57',
             ],
             json_encode([
                 'resource' => [

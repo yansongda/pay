@@ -58,7 +58,7 @@ class WechatTest extends TestCase
             200,
             [
                 'Wechatpay-Nonce' => 'e59e78a6c3f7dfd7e84aabee71be0452',
-                'Wechatpay-Signature' => 'Bb10ZUsON47E/qLjecjk6ESLt7obZCvCCAXAEoD1Q+K548fz9h6YBgR3PZzviTmjsA3/r22qEC3r/yelFAn4pl4rJBGqrjo4ODJkOPlaDnHZwYotDvf6RcASpKB9ExCb33hAijHCiMzr9V9skNrj5F9eXc96lNZN3R5MVLsTF97nV922JIzyCrZ668khYPrn1jl5pCBpYDQ3rskgmZ+nnjg7M9vRAfTowEydSEGtsKjXUSaaKui2RDUuX8ZwxVcBTRng978Gh9s4mdRxs+mlv3gP1xQHdpa0mYMG0yGzLcWOTgrkt27sAwFnuXj9WtlEAgz/1DYntujKPxilMVGRow==',
+                'Wechatpay-Signature' => 'Ut3dG8cMx5W1lbSQhHay068F6khScuPQJM/Z9+suaaSkbYUspFRlkdp2VR/6w5UMvioN0EveSgfypQFVqmT6tI//cWrA1J9rlnKmZ+FgdCMqg7FQnpMRzc1Ap+3mZMtN9GrzYqp/UdgotX6HRfGL3hP8pG1YuijHNrL0QRS17bNYwZX8Mj3qLKUQRpqbfE+TC5yvzh1gEVPBFTwvZdZvXIQpjC/sB2QDSvo72CWgm4huh1h/kMzsrsO+wXXLqDfU01YX8aLbBrjvpcob50lc5XZ2WX5nBbpJXaRatIhBUmkR/ccrQhxWN7YqEobBGK/2DYhr6e6CvTgVdpZUUEcMFw==',
                 'Wechatpay-Timestamp' => '1626444144',
                 'Wechatpay-Serial' => '45F59D4DABF31918AFCEC556D5D2C6E376675D57',
             ],
@@ -98,7 +98,7 @@ class WechatTest extends TestCase
             200,
             [
                 'Wechatpay-Nonce' => 'e59e78a6c3f7dfd7e84aabee71be0452',
-                'Wechatpay-Signature' => 'Bb10ZUsON47E/qLjecjk6ESLt7obZCvCCAXAEoD1Q+K548fz9h6YBgR3PZzviTmjsA3/r22qEC3r/yelFAn4pl4rJBGqrjo4ODJkOPlaDnHZwYotDvf6RcASpKB9ExCb33hAijHCiMzr9V9skNrj5F9eXc96lNZN3R5MVLsTF97nV922JIzyCrZ668khYPrn1jl5pCBpYDQ3rskgmZ+nnjg7M9vRAfTowEydSEGtsKjXUSaaKui2RDUuX8ZwxVcBTRng978Gh9s4mdRxs+mlv3gP1xQHdpa0mYMG0yGzLcWOTgrkt27sAwFnuXj9WtlEAgz/1DYntujKPxilMVGRow==',
+                'Wechatpay-Signature' => 'Ut3dG8cMx5W1lbSQhHay068F6khScuPQJM/Z9+suaaSkbYUspFRlkdp2VR/6w5UMvioN0EveSgfypQFVqmT6tI//cWrA1J9rlnKmZ+FgdCMqg7FQnpMRzc1Ap+3mZMtN9GrzYqp/UdgotX6HRfGL3hP8pG1YuijHNrL0QRS17bNYwZX8Mj3qLKUQRpqbfE+TC5yvzh1gEVPBFTwvZdZvXIQpjC/sB2QDSvo72CWgm4huh1h/kMzsrsO+wXXLqDfU01YX8aLbBrjvpcob50lc5XZ2WX5nBbpJXaRatIhBUmkR/ccrQhxWN7YqEobBGK/2DYhr6e6CvTgVdpZUUEcMFw==',
                 'Wechatpay-Timestamp' => '1626444144',
                 'Wechatpay-Serial' => '45F59D4DABF31918AFCEC556D5D2C6E376675D57',
             ],
@@ -141,7 +141,7 @@ class WechatTest extends TestCase
                 'Wechatpay-Nonce' => 'e59e78a6c3f7dfd7e84aabee71be0452',
                 'Wechatpay-Signature' => 'NmmOwkXg89J9UP9gnoGeGZUdSflYhOzD/Imxv0SZf09+42Yn+u8DHQs/QcsOtD1O9hi38PizLnyMQ7NyqkQqVZCu7ID532FOiKkU6qIhrrCrm8w5ktJTXUorH8gEQtxZSKJ0Z0I/fsOBhnvoBRRlIyvEwoESAcJuyJYCgQuvFaqGYDOjLW7umTdO0vUZnH9TJfxfziLxwEYoH09D43H+hXL4oKAF+aIdAiWyS/CwnE4BB8j4NGsCi4v4cAZkJjqV45koAtzXVBzYjccURNSRUYOZv9IW7CqOFmOWsmAN5bVncs4S89lMNW+UIqNRx4tpIrU4CuX81V0tVFcweKnqNQ==',
                 'Wechatpay-Timestamp' => '1626444144',
-                'Wechatpay-Serial' => '25F8AA5452D55497C24BA57DC81B1E5915DC2E77',
+                'Wechatpay-Serial' => '45F59D4DABF31918AFCEC556D5D2C6E376675D57',
             ],
             json_encode([
                 'resource' => [
