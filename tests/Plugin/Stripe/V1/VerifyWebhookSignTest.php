@@ -18,7 +18,7 @@ class VerifyWebhookSignTest extends TestCase
     {
         $request = new ServerRequest('POST', 'http://localhost', [], '{}');
 
-        // localhost should no longer skip verification — should throw for missing webhook secret config or empty sig
+        // localhost should no longer skip verification — missing Stripe-Signature should throw SIGN_EMPTY
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
 
