@@ -51,6 +51,7 @@ class VerifyWebhookSignTest extends TestCase
         ], '{}');
 
         self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
 
         verify_stripe_webhook_sign($request, []);
     }

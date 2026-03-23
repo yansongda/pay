@@ -858,7 +858,7 @@ function verify_stripe_webhook_sign(ServerRequestInterface $request, array $para
     }
 
     if (empty($timestamp) || empty($signatures)) {
-        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: Stripe 回调签名格式错误', ['headers' => $request->getHeaders(), 'body' => $body]);
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Stripe 回调签名格式错误', ['headers' => $request->getHeaders(), 'body' => $body]);
     }
 
     if (abs(time() - (int) $timestamp) > 300) {
