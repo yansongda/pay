@@ -35,7 +35,15 @@ class CallbackPluginTest extends TestCase
 
     public function testInvalidJsonBodyThrowsException()
     {
-        $request = new ServerRequest('POST', 'http://localhost', [], 'not-valid-json');
+        $body = 'not-valid-json';
+        $timestamp = time();
+        $webhookSecret = 'whsec_stripe_webhook_secret';
+        $expectedSig = hash_hmac('sha256', $timestamp.'.'.$body, $webhookSecret);
+        $signatureHeader = 't='.$timestamp.',v1='.$expectedSig;
+
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/stripe/notify', [
+            'Stripe-Signature' => $signatureHeader,
+        ], $body);
 
         $rocket = new Rocket();
         $rocket->setParams(['_request' => $request, '_params' => []]);
@@ -59,8 +67,14 @@ class CallbackPluginTest extends TestCase
             ],
         ]);
 
-        // localhost skips signature verification in CallbackPlugin
-        $request = new ServerRequest('POST', 'http://localhost', [], $body);
+        $timestamp = time();
+        $webhookSecret = 'whsec_stripe_webhook_secret';
+        $expectedSig = hash_hmac('sha256', $timestamp.'.'.$body, $webhookSecret);
+        $signatureHeader = 't='.$timestamp.',v1='.$expectedSig;
+
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/stripe/notify', [
+            'Stripe-Signature' => $signatureHeader,
+        ], $body);
 
         $rocket = new Rocket();
         $rocket->setParams(['_request' => $request, '_params' => []]);

@@ -14,14 +14,15 @@ use function Yansongda\Pay\verify_stripe_webhook_sign;
 
 class VerifyWebhookSignTest extends TestCase
 {
-    public function testLocalhostSkipsVerification()
+    public function testLocalhostNoLongerSkipsVerification()
     {
         $request = new ServerRequest('POST', 'http://localhost', [], '{}');
 
-        // Should not throw — localhost always skips verification
-        verify_stripe_webhook_sign($request, []);
+        // localhost should no longer skip verification — should throw for missing webhook secret config or empty sig
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_EMPTY);
 
-        self::assertTrue(true);
+        verify_stripe_webhook_sign($request, []);
     }
 
     public function testMissingWebhookSecretThrowsException()

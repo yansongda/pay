@@ -256,10 +256,6 @@ class FunctionTest extends TestCase
         verify_wechat_sign($response, []);
         self::assertTrue(true);
 
-        $serverRequest = new ServerRequest('POST', 'http://localhost');
-        verify_wechat_sign($serverRequest, []);
-        self::assertTrue(true);
-
         $response = new Response(
             200,
             [
@@ -766,14 +762,6 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::assertEquals('new_paypal_token_456', $token);
         self::assertEquals('new_paypal_token_456', Pay::get(ConfigInterface::class)->get('paypal.default._access_token'));
         self::assertNotEmpty(Pay::get(ConfigInterface::class)->get('paypal.default._access_token_expiry'));
-    }
-
-    public function testVerifyPaypalWebhookSignLocalhost()
-    {
-        $request = new ServerRequest('POST', 'http://localhost', [], '{}');
-
-        verify_paypal_webhook_sign($request, []);
-        self::assertTrue(true);
     }
 
     public function testVerifyPaypalWebhookSignMissingWebhookId()

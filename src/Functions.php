@@ -247,10 +247,6 @@ function get_wechat_sign_v2(array $config, array $payload, bool $upper = true): 
  */
 function verify_wechat_sign(ResponseInterface|ServerRequestInterface $message, array $params): void
 {
-    if ($message instanceof ServerRequestInterface && 'localhost' === $message->getUri()->getHost()) {
-        return;
-    }
-
     $wechatSerial = $message->getHeaderLine('Wechatpay-Serial');
     $timestamp = $message->getHeaderLine('Wechatpay-Timestamp');
     $random = $message->getHeaderLine('Wechatpay-Nonce');
@@ -730,10 +726,6 @@ function get_paypal_access_token(array $params): string
  */
 function verify_paypal_webhook_sign(ServerRequestInterface $request, array $params): void
 {
-    if ('localhost' === $request->getUri()->getHost()) {
-        return;
-    }
-
     $config = get_provider_config('paypal', $params);
 
     $webhookId = $config['webhook_id'] ?? null;
@@ -811,10 +803,6 @@ function get_stripe_url(array $config, ?Collection $payload): string
  */
 function verify_stripe_webhook_sign(ServerRequestInterface $request, array $params): void
 {
-    if ('localhost' === $request->getUri()->getHost()) {
-        return;
-    }
-
     $config = get_provider_config('stripe', $params);
     $webhookSecret = $config['webhook_secret'] ?? null;
 

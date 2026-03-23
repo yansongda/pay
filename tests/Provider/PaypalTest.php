@@ -2,8 +2,12 @@
 
 namespace Yansongda\Pay\Tests\Provider;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
+use Mockery;
 use Psr\Http\Message\ResponseInterface;
+use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
@@ -70,7 +74,20 @@ class PaypalTest extends TestCase
             'resource' => ['id' => 'ORDER_123', 'status' => 'APPROVED'],
         ]);
 
-        $request = new ServerRequest('POST', 'http://localhost', [
+        $tokenResponse = new Response(200, [], json_encode([
+            'access_token' => 'test_token_123',
+            'token_type' => 'Bearer',
+            'expires_in' => 32400,
+        ]));
+        $verifyResponse = new Response(200, [], json_encode([
+            'verification_status' => 'SUCCESS',
+        ]));
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($tokenResponse, $verifyResponse);
+        Pay::set(HttpClientInterface::class, $http);
+
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
             'PAYPAL-TRANSMISSION-ID' => 'test-id',
             'PAYPAL-TRANSMISSION-TIME' => '2024-01-01T00:00:00Z',
             'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
@@ -92,10 +109,26 @@ class PaypalTest extends TestCase
             'resource' => ['id' => 'CAPTURE_456', 'status' => 'COMPLETED'],
         ]);
 
+        $tokenResponse = new Response(200, [], json_encode([
+            'access_token' => 'test_token_456',
+            'token_type' => 'Bearer',
+            'expires_in' => 32400,
+        ]));
+        $verifyResponse = new Response(200, [], json_encode([
+            'verification_status' => 'SUCCESS',
+        ]));
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($tokenResponse, $verifyResponse);
+        Pay::set(HttpClientInterface::class, $http);
+
         $result = Pay::paypal()->callback([
             'headers' => [
                 'PAYPAL-TRANSMISSION-ID' => 'test-id',
+                'PAYPAL-TRANSMISSION-TIME' => '2024-01-01T00:00:00Z',
                 'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
+                'PAYPAL-CERT-URL' => 'https://api.sandbox.paypal.com/v1/notifications/certs/CERT-123',
+                'PAYPAL-AUTH-ALGO' => 'SHA256withRSA',
             ],
             'body' => $body,
         ]);

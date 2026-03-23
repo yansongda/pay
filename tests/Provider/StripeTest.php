@@ -60,8 +60,14 @@ class StripeTest extends TestCase
             ],
         ]);
 
-        // localhost skips signature verification
-        $request = new ServerRequest('POST', 'http://localhost', [], $body);
+        $timestamp = time();
+        $webhookSecret = 'whsec_stripe_webhook_secret';
+        $expectedSig = hash_hmac('sha256', $timestamp.'.'.$body, $webhookSecret);
+        $signatureHeader = 't='.$timestamp.',v1='.$expectedSig;
+
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/stripe/notify', [
+            'Stripe-Signature' => $signatureHeader,
+        ], $body);
 
         $result = Pay::stripe()->callback($request);
 
@@ -83,8 +89,13 @@ class StripeTest extends TestCase
             ],
         ]);
 
+        $timestamp = time();
+        $webhookSecret = 'whsec_stripe_webhook_secret';
+        $expectedSig = hash_hmac('sha256', $timestamp.'.'.$body, $webhookSecret);
+        $signatureHeader = 't='.$timestamp.',v1='.$expectedSig;
+
         $result = Pay::stripe()->callback([
-            'headers' => ['Stripe-Signature' => 'test-sig'],
+            'headers' => ['Stripe-Signature' => $signatureHeader],
             'body' => $body,
         ]);
 
