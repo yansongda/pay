@@ -239,6 +239,15 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mode' => Pay::MODE_SANDBOX,
                 ],
             ],
+            'stripe' => [
+                'default' => [
+                    'secret_key' => 'sk_test_stripe_secret',
+                    'webhook_secret' => 'whsec_stripe_webhook_secret',
+                    'success_url' => 'https://pay.yansongda.cn/stripe/success',
+                    'cancel_url' => 'https://pay.yansongda.cn/stripe/cancel',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+            ],
         ];
 
         // hyperf 单测时，未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个

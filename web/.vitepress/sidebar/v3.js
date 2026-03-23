@@ -21,6 +21,7 @@ export default [
       { text: '微信', link: '/docs/v3/quick-start/wechat' },
       { text: '抖音', link: '/docs/v3/quick-start/douyin' },
       { text: 'PayPal', link: '/docs/v3/quick-start/paypal' },
+      { text: 'Stripe', link: '/docs/v3/quick-start/stripe' },
       { text: '银联', link: '/docs/v3/quick-start/unipay' },
       { text: '江苏银行', link: '/docs/v3/quick-start/jsb' },
       { text: '返回格式', link: '/docs/v3/quick-start/return-format' }
@@ -80,6 +81,20 @@ export default [
       { text: '接收回调', link: '/docs/v3/paypal/callback' },
       { text: '确认回调', link: '/docs/v3/paypal/response' },
       { text: '所有内置插件', link: '/docs/v3/paypal/all' },
+    ]
+  },
+  {
+    text: 'Stripe',
+    collapsed: false,
+    items: [
+      { text: '支付', link: '/docs/v3/stripe/pay' },
+      { text: '查询', link: '/docs/v3/stripe/query' },
+      { text: '退款', link: '/docs/v3/stripe/refund' },
+      { text: '关闭', link: '/docs/v3/stripe/close' },
+      { text: '取消', link: '/docs/v3/stripe/cancel' },
+      { text: '接收回调', link: '/docs/v3/stripe/callback' },
+      { text: '确认回调', link: '/docs/v3/stripe/response' },
+      { text: '所有内置插件', link: '/docs/v3/stripe/all' },
     ]
   },
   {

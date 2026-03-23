@@ -139,6 +139,22 @@ $config = [
             'mode' => Pay::MODE_NORMAL,
         ],
     ],
+    'stripe' => [
+        'default' => [
+            // 「必填」Stripe Secret Key
+            // 在 https://dashboard.stripe.com/apikeys 中获取
+            'secret_key' => '',
+            // 「必填」Stripe Webhook Secret
+            // 在 https://dashboard.stripe.com/webhooks 中配置 Webhook 后获取，用于回调签名验证
+            'webhook_secret' => '',
+            // 「选填」支付完成后 Stripe 跳转的成功回调地址（Checkout Session 模式使用）
+            'success_url' => 'https://yansongda.cn/stripe/success',
+            // 「选填」用户取消支付后 Stripe 跳转的取消地址（Checkout Session 模式使用）
+            'cancel_url' => 'https://yansongda.cn/stripe/cancel',
+            // 「选填」默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:沙箱环境
+            'mode' => Pay::MODE_NORMAL,
+        ],
+    ],
     'jsb' => [
         'default' => [
             // 服务代码
