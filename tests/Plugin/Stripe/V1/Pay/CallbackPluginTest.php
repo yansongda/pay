@@ -45,6 +45,8 @@ class CallbackPluginTest extends TestCase
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
+
+    public function testNormalCallback()
     {
         $body = json_encode([
             'id' => 'evt_test123',
