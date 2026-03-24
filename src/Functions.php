@@ -135,6 +135,52 @@ function verify_alipay_sign(array $config, string $contents, string $sign): void
     }
 }
 
+function get_alipay_v3_url(array $config, ?Collection $payload): string
+{
+    $url = get_radar_url($config, $payload) ?? '';
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    $baseUrl = match ($config['mode'] ?? Pay::MODE_NORMAL) {
+        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com',
+        default => 'https://openapi.alipay.com',
+    };
+
+    return $baseUrl.($url ?: '');
+}
+
+/**
+ * @throws InvalidConfigException
+ * @throws InvalidSignException
+ */
+function verify_alipay_v3_sign(array $config, string $timestamp, string $nonce, string $body, string $sign): void
+{
+    if (empty($sign)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 验证支付宝 V3 签名失败-签名为空', func_get_args());
+    }
+
+    $public = $config['alipay_public_cert_path'] ?? null;
+
+    if (empty($public)) {
+        throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [alipay_public_cert_path]');
+    }
+
+    $content = $timestamp."\n".$nonce."\n".(empty($body) ? '' : $body)."\n";
+
+    $result = 1 === openssl_verify(
+        $content,
+        base64_decode($sign),
+        get_public_cert($public),
+        OPENSSL_ALGO_SHA256
+    );
+
+    if (!$result) {
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证支付宝 V3 签名失败', func_get_args());
+    }
+}
+
 /**
  * @throws ContainerException
  * @throws ServiceNotFoundException

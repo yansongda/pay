@@ -13,6 +13,7 @@ use Yansongda\Artful\Artful;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
@@ -28,8 +29,13 @@ use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin as AddRadarPluginV3;
+use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin as ResponsePluginV3;
+use Yansongda\Pay\Plugin\Alipay\V3\StartPlugin as StartPluginV3;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
+
+use function Yansongda\Pay\get_provider_config;
 
 /**
  * @method ResponseInterface|Rocket app(array $order)      APP 支付
@@ -48,6 +54,12 @@ class Alipay implements ProviderInterface
         Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
     ];
 
+    public const V3_URL = [
+        Pay::MODE_NORMAL => 'https://openapi.alipay.com',
+        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com',
+        Pay::MODE_SERVICE => 'https://openapi.alipay.com',
+    ];
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -55,7 +67,9 @@ class Alipay implements ProviderInterface
      */
     public function __call(string $shortcut, array $params): Collection|MessageInterface|Rocket|null
     {
-        $plugin = '\Yansongda\Pay\Shortcut\Alipay\\'.Str::studly($shortcut).'Shortcut';
+        $config = get_provider_config('alipay', $params[0] ?? []);
+        $version = 'v3' === ($config['api_version'] ?? '') ? 'V3\\' : '';
+        $plugin = '\Yansongda\Pay\Shortcut\Alipay\\'.$version.Str::studly($shortcut).'Shortcut';
 
         return Artful::shortcut($plugin, ...$params);
     }
@@ -152,6 +166,15 @@ class Alipay implements ProviderInterface
             [StartPlugin::class],
             $plugins,
             [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
+        );
+    }
+
+    public function mergeCommonPluginsV3(array $plugins): array
+    {
+        return array_merge(
+            [StartPluginV3::class],
+            $plugins,
+            [AddPayloadBodyPlugin::class, AddRadarPluginV3::class, ResponsePluginV3::class, ParserPlugin::class],
         );
     }
 
