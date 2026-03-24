@@ -17,6 +17,9 @@ use Yansongda\Supports\Collection;
 use function Yansongda\Artful\filter_params;
 use function Yansongda\Pay\get_provider_config;
 
+/**
+ * @deprecated Will be removed in V3.8.0. Use {@see \Yansongda\Pay\Plugin\Douyin\V1\Trade} instead.
+ */
 class AddPayloadSignaturePlugin implements PluginInterface
 {
     /**

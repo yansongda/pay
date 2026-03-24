@@ -230,6 +230,17 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'notify_url' => 'https://yansongda.cn/douyin/notify',
                     'mode' => Pay::MODE_SANDBOX,
                 ],
+                'trade' => [
+                    // 必填-应用 app_id（抖音新交易系统）
+                    'app_id' => 'tt_trade_app_id',
+                    // 必填-应用密钥（抖音新交易系统）
+                    'app_secret' => 'tt_trade_app_secret',
+                    // 选填-支付回调地址
+                    'notify_url' => 'https://yansongda.cn/douyin/trade/notify',
+                    // 选填-退款回调地址
+                    'refund_notify_url' => 'https://yansongda.cn/douyin/trade/refund/notify',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
             ],
             'paypal' => [
                 'default' => [

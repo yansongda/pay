@@ -16,6 +16,9 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
 use Yansongda\Supports\Str;
 
+/**
+ * @deprecated Will be removed in V3.8.0. Use {@see \Yansongda\Pay\Shortcut\Douyin\TradeRefundShortcut} instead.
+ */
 class RefundShortcut implements ShortcutInterface
 {
     /**

@@ -18,6 +18,8 @@ use Yansongda\Supports\Collection;
 use function Yansongda\Pay\get_provider_config;
 
 /**
+ * @deprecated Will be removed in V3.8.0. Use {@see \Yansongda\Pay\Plugin\Douyin\V1\Trade} instead.
+ *
  * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/ecpay/pay-list/query
  */
 class QueryPlugin implements PluginInterface

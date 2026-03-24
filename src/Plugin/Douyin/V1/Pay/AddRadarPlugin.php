@@ -18,6 +18,9 @@ use function Yansongda\Artful\get_radar_method;
 use function Yansongda\Pay\get_douyin_url;
 use function Yansongda\Pay\get_provider_config;
 
+/**
+ * @deprecated Will be removed in V3.8.0. Use {@see \Yansongda\Pay\Plugin\Douyin\V1\Trade} instead.
+ */
 class AddRadarPlugin implements PluginInterface
 {
     /**

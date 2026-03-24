@@ -10,17 +10,15 @@ use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryPlugin as MiniQueryPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryRefundPlugin as MiniQueryRefundPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\ObtainClientTokenPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\Pay\QueryCpsPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\Pay\QueryPlugin as TradeQueryPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\Refund\QueryRefundPlugin as TradeQueryRefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\ResponsePlugin;
 use Yansongda\Supports\Str;
 
-/**
- * @deprecated Will be removed in V3.8.0. Use {@see \Yansongda\Pay\Shortcut\Douyin\TradeQueryShortcut} instead.
- */
-class QueryShortcut implements ShortcutInterface
+class TradeQueryShortcut implements ShortcutInterface
 {
     /**
      * @throws InvalidParamsException
@@ -38,20 +36,15 @@ class QueryShortcut implements ShortcutInterface
 
     protected function defaultPlugins(): array
     {
-        return $this->miniPlugins();
+        return $this->orderPlugins();
     }
 
-    protected function refundPlugins(): array
-    {
-        return $this->refundMiniPlugins();
-    }
-
-    protected function miniPlugins(): array
+    protected function orderPlugins(): array
     {
         return [
             StartPlugin::class,
-            MiniQueryPlugin::class,
-            AddPayloadSignaturePlugin::class,
+            ObtainClientTokenPlugin::class,
+            TradeQueryPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
@@ -59,12 +52,25 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
-    protected function refundMiniPlugins(): array
+    protected function cpsPlugins(): array
     {
         return [
             StartPlugin::class,
-            MiniQueryRefundPlugin::class,
-            AddPayloadSignaturePlugin::class,
+            ObtainClientTokenPlugin::class,
+            QueryCpsPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function refundPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            ObtainClientTokenPlugin::class,
+            TradeQueryRefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
