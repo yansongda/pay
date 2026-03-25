@@ -64,14 +64,21 @@ class AddRadarPlugin implements PluginInterface
 
         $sign = $this->sign($signContent, $config);
 
+        $headers = [
+            'Authorization' => "ALIPAY-SHA256withRSA {$authString},sign={$sign}",
+            'Content-Type' => 'application/json; charset=utf-8',
+            'User-Agent' => 'yansongda/pay-v3',
+            'alipay-request-id' => $this->generateNonce(),
+        ];
+
+        if (!empty($appAuthToken)) {
+            $headers['alipay-app-auth-token'] = $appAuthToken;
+        }
+
         $rocket->setRadar(new Request(
             $method,
             $fullUrl,
-            [
-                'Authorization' => "ALIPAY-SHA256withRSA {$authString},sign={$sign}",
-                'Content-Type' => 'application/json; charset=utf-8',
-                'User-Agent' => 'yansongda/pay-v3',
-            ],
+            $headers,
             $body,
         ));
 

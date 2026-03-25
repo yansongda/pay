@@ -130,6 +130,39 @@ class AddRadarPluginTest extends TestCase
 
         $auth = $result->getRadar()->getHeaderLine('Authorization');
         self::assertStringContainsString('sign=', $auth);
+        self::assertEquals('test_app_auth_token', $result->getRadar()->getHeaderLine('alipay-app-auth-token'));
+    }
+
+    public function testAppAuthTokenNotSetWhenEmpty()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'v3'])
+            ->setPayload(new Collection([
+                '_url' => '/v3/alipay/trade/query',
+                '_method' => 'POST',
+                '_body' => '{}',
+            ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertEmpty($result->getRadar()->getHeaderLine('alipay-app-auth-token'));
+    }
+
+    public function testAlipayRequestId()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'v3'])
+            ->setPayload(new Collection([
+                '_url' => '/v3/alipay/trade/query',
+                '_method' => 'POST',
+                '_body' => '{}',
+            ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $requestId = $result->getRadar()->getHeaderLine('alipay-request-id');
+        self::assertNotEmpty($requestId);
+        self::assertMatchesRegularExpression('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/', $requestId);
     }
 
     public function testMissingSecretCert()
