@@ -44,7 +44,7 @@ class AddRadarPlugin implements PluginInterface
 
         $appId = $config['app_id'] ?? '';
         $appCertSn = $this->getAppCertSn(get_tenant($params), $config);
-        $nonce = $this->generateNonce();
+        $nonce = $this->generateUuid();
         $timestamp = (string) (int) (microtime(true) * 1000);
 
         $authString = "app_id={$appId},app_cert_sn={$appCertSn},nonce={$nonce},timestamp={$timestamp}";
@@ -68,7 +68,7 @@ class AddRadarPlugin implements PluginInterface
             'Authorization' => "ALIPAY-SHA256withRSA {$authString},sign={$sign}",
             'Content-Type' => 'application/json; charset=utf-8',
             'User-Agent' => 'yansongda/pay-v3',
-            'alipay-request-id' => $this->generateNonce(),
+            'alipay-request-id' => $this->generateUuid(),
         ];
 
         if (!empty($appAuthToken)) {
@@ -87,7 +87,7 @@ class AddRadarPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function generateNonce(): string
+    protected function generateUuid(): string
     {
         return sprintf(
             '%s-%s-%s-%s-%s',
