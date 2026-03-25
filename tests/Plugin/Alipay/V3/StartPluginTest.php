@@ -40,14 +40,14 @@ class StartPluginTest extends TestCase
         self::assertEquals('https://custom.notify.url', $result->getPayload()->get('notify_url'));
     }
 
-    public function testEmptyNotifyUrl()
+    public function testDefaultConfig()
     {
         $rocket = new Rocket();
         $rocket->setParams([]);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertNull($result->getPayload()->get('notify_url'));
+        self::assertEquals('https://pay.yansongda.cn', $result->getPayload()->get('notify_url'));
     }
 
     public function testAppAuthToken()
