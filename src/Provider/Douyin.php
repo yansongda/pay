@@ -36,7 +36,7 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket mini(array $order) 小程序支付（旧担保交易，即将下线）
+ * @method Collection|Rocket mini(array $order)      小程序支付（旧担保交易，即将下线）
  * @method Collection|Rocket tradeMini(array $order) 小程序支付（新交易系统）
  */
 class Douyin implements ProviderInterface

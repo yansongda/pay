@@ -18,7 +18,7 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
 use Yansongda\Supports\Str;
 
 /**
- * @deprecated Will be removed in V3.8.0. Use {@see \Yansongda\Pay\Shortcut\Douyin\TradeQueryShortcut} instead.
+ * @deprecated Will be removed in V3.8.0. Use {@see TradeQueryShortcut} instead.
  */
 class QueryShortcut implements ShortcutInterface
 {

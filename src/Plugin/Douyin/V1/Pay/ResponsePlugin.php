@@ -11,9 +11,10 @@ use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade;
 
 /**
- * @deprecated Will be removed in V3.8.0. Use {@see \Yansongda\Pay\Plugin\Douyin\V1\Trade} instead.
+ * @deprecated Will be removed in V3.8.0. Use {@see Trade} instead.
  */
 class ResponsePlugin implements PluginInterface
 {

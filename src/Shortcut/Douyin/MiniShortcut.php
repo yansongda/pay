@@ -14,7 +14,7 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\PayPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
 
 /**
- * @deprecated Will be removed in V3.8.0. Use {@see \Yansongda\Pay\Shortcut\Douyin\TradeMiniShortcut} instead.
+ * @deprecated Will be removed in V3.8.0. Use {@see TradeMiniShortcut} instead.
  */
 class MiniShortcut implements ShortcutInterface
 {
