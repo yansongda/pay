@@ -17,6 +17,9 @@ use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\AddRadarPlugin as TradeAddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\ObtainClientTokenPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\ResponsePlugin as TradeResponsePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -200,5 +203,73 @@ class DouyinTest extends TestCase
 
         self::assertInstanceOf(ResponseInterface::class, $result);
         self::assertStringContainsString('success', (string) $result->getBody());
+    }
+
+    public function testMergeTradeCommonPlugins()
+    {
+        Pay::config([]);
+        $plugins = [FooPluginStub::class];
+
+        self::assertEquals(array_merge(
+            [StartPlugin::class, ObtainClientTokenPlugin::class],
+            $plugins,
+            [AddPayloadBodyPlugin::class, TradeAddRadarPlugin::class, TradeResponsePlugin::class, ParserPlugin::class],
+        ), Pay::douyin()->mergeTradeCommonPlugins($plugins));
+    }
+
+    public function testTradeCallback()
+    {
+        $appSecret = 'tt_trade_app_secret';
+        $timestamp = '1722769986';
+        $nonce = '5280';
+        $msg = '{"order_id":"7398108028895054107","status":"SUCCESS"}';
+
+        $values = [$appSecret, $timestamp, $nonce, $msg];
+        sort($values, SORT_STRING);
+        $sign = sha1(implode('', $values));
+
+        $params = [
+            '_config' => 'trade',
+            'msg' => $msg,
+            'msg_signature' => $sign,
+            'nonce' => $nonce,
+            'timestamp' => $timestamp,
+            'type' => 'payment',
+        ];
+
+        $callback = Pay::douyin()->tradeCallback($params);
+        self::assertInstanceOf(Collection::class, $callback);
+        self::assertNotEmpty($callback->all());
+
+        $post = json_encode($params);
+        $request = new ServerRequest('POST', 'https://yansongda.cn/douyin/trade/notify', [], $post);
+        $callback = Pay::douyin()->tradeCallback($request, ['_config' => 'trade']);
+        self::assertInstanceOf(Collection::class, $callback);
+        self::assertNotEmpty($callback->all());
+    }
+
+    public function testTradeRefundCallback()
+    {
+        $appSecret = 'tt_trade_app_secret';
+        $timestamp = '1722769986';
+        $nonce = '5280';
+        $msg = '{"refund_no":"7398108028894988571","status":"SUCCESS"}';
+
+        $values = [$appSecret, $timestamp, $nonce, $msg];
+        sort($values, SORT_STRING);
+        $sign = sha1(implode('', $values));
+
+        $params = [
+            '_config' => 'trade',
+            'msg' => $msg,
+            'msg_signature' => $sign,
+            'nonce' => $nonce,
+            'timestamp' => $timestamp,
+            'type' => 'refund',
+        ];
+
+        $callback = Pay::douyin()->tradeRefundCallback($params);
+        self::assertInstanceOf(Collection::class, $callback);
+        self::assertNotEmpty($callback->all());
     }
 }

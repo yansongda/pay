@@ -734,9 +734,13 @@ function get_douyin_trade_sign(array $config, Collection $payload): string
 
     ksort($params);
 
-    $queryString = http_build_query($params);
+    $parts = [];
 
-    return hash_hmac('sha256', $queryString, $secret);
+    foreach ($params as $key => $value) {
+        $parts[] = $key.'='.$value;
+    }
+
+    return hash_hmac('sha256', implode('&', $parts), $secret);
 }
 
 /**

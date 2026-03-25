@@ -68,7 +68,15 @@ class AddRadarPlugin implements PluginInterface
             return '';
         }
 
-        return $payload?->get('_body') ?? '';
+        $body = $payload?->get('_body');
+
+        if (!empty($body)) {
+            return (string) $body;
+        }
+
+        $params = filter_params($payload)->toArray();
+
+        return empty($params) ? '' : (string) json_encode($params);
     }
 
     protected function getQueryString(?Collection $payload): string
