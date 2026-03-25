@@ -21,17 +21,9 @@ class QueryRefundPluginTest extends TestCase
 
     public function testNormal()
     {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            'out_trade_no' => 'test123',
-            'out_request_no' => 'refund123',
-        ]);
+        $result = $this->plugin->assembly((new Rocket())->setParams(['out_request_no' => 'test123']), fn ($rocket) => $rocket);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('/v3/alipay/trade/fastpay/refund/query', $result->getPayload()->get('_url'));
-        self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('test123', $result->getPayload()->get('out_trade_no'));
-        self::assertEquals('refund123', $result->getPayload()->get('out_request_no'));
+        self::assertEquals('alipay.trade.fastpay.refund.query', $result->getPayload()->get('method'));
+        self::assertEquals('test123', $result->getPayload()->get('biz_content')['out_request_no']);
     }
 }

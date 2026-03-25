@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Shortcut\Alipay\V3;
 
 use Yansongda\Artful\Contract\ShortcutInterface;
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\Pay\QueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\Pay\QueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\StartPlugin;
 
@@ -16,16 +19,26 @@ class QueryShortcut implements ShortcutInterface
 {
     public function getPlugins(array $params): array
     {
-        return $this->defaultPlugins();
-    }
+        if (isset($params['out_request_no'])) {
+            return [
+                StartPlugin::class,
+                QueryRefundPlugin::class,
+                FormatPayloadBizContentPlugin::class,
+                AddPayloadSignaturePlugin::class,
+                AddRadarPlugin::class,
+                VerifySignaturePlugin::class,
+                ResponsePlugin::class,
+                ParserPlugin::class,
+            ];
+        }
 
-    protected function defaultPlugins(): array
-    {
         return [
             StartPlugin::class,
             QueryPlugin::class,
-            AddPayloadBodyPlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];

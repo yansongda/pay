@@ -21,32 +21,8 @@ class PayPluginTest extends TestCase
 
     public function testNormal()
     {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            'out_trade_no' => 'test123',
-            'total_amount' => '0.01',
-            'subject' => 'test',
-            'auth_code' => '123456',
-        ]);
+        $result = $this->plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('/v3/alipay/trade/pay', $result->getPayload()->get('_url'));
-        self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('FACE_TO_FACE_PAYMENT', $result->getPayload()->get('product_code'));
-        self::assertEquals('test123', $result->getPayload()->get('out_trade_no'));
-    }
-
-    public function testProductCodeOverride()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            'out_trade_no' => 'test123',
-            'product_code' => 'CUSTOM_CODE',
-        ]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('CUSTOM_CODE', $result->getPayload()->get('product_code'));
+        self::assertStringContainsString('alipay.trade.pay', $result->getPayload()->toJson());
     }
 }

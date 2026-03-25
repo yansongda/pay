@@ -12,7 +12,6 @@ use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
@@ -90,6 +89,24 @@ class AlipayTest extends TestCase
         self::assertStringContainsString($body2, (string) $radar->getBody());
         self::assertStringContainsString($body3, (string) $radar->getBody());
         self::assertEquals('GET', $radar->getMethod());
+    }
+
+    public function testWebV3UsesGatewayCommonParams()
+    {
+        $result = Pay::alipay()->web([
+            '_config' => 'v3',
+            'out_trade_no' => 'web'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+            '_return_rocket' => true,
+        ]);
+
+        $body = (string) $result->getRadar()->getBody();
+
+        self::assertStringContainsString('app_id=9021000122682882', $body);
+        self::assertStringContainsString('method=alipay.trade.page.pay', $body);
+        self::assertStringContainsString('charset=utf-8', $body);
+        self::assertStringContainsString('version=1.0', $body);
     }
 
     public function testH5()
@@ -450,7 +467,7 @@ class AlipayTest extends TestCase
         self::assertEquals(array_merge(
             [\Yansongda\Pay\Plugin\Alipay\V3\StartPlugin::class],
             $plugins,
-            [AddPayloadBodyPlugin::class, \Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin::class, \Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin::class, ParserPlugin::class],
+            [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, \Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin::class, VerifySignaturePlugin::class, \Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin::class, ParserPlugin::class],
         ), Pay::alipay()->mergeCommonPluginsV3($plugins));
     }
 

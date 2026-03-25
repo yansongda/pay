@@ -13,7 +13,6 @@ use Yansongda\Artful\Artful;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
@@ -174,7 +173,7 @@ class Alipay implements ProviderInterface
         return array_merge(
             [StartPluginV3::class],
             $plugins,
-            [AddPayloadBodyPlugin::class, AddRadarPluginV3::class, ResponsePluginV3::class, ParserPlugin::class],
+            [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPluginV3::class, VerifySignaturePlugin::class, ResponsePluginV3::class, ParserPlugin::class],
         );
     }
 

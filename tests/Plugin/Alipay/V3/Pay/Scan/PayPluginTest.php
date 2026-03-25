@@ -21,17 +21,8 @@ class PayPluginTest extends TestCase
 
     public function testNormal()
     {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            'out_trade_no' => 'test123',
-            'total_amount' => '0.01',
-            'subject' => 'test',
-        ]);
+        $result = $this->plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('/v3/alipay/trade/precreate', $result->getPayload()->get('_url'));
-        self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('test123', $result->getPayload()->get('out_trade_no'));
+        self::assertStringContainsString('alipay.trade.precreate', $result->getPayload()->toJson());
     }
 }

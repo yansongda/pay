@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Shortcut\Alipay\V3;
 
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\Pay\QueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\Pay\QueryRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\StartPlugin;
 use Yansongda\Pay\Shortcut\Alipay\V3\QueryShortcut;
@@ -31,8 +34,26 @@ class QueryShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             QueryPlugin::class,
-            AddPayloadBodyPlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $result);
+    }
+
+    public function testRefundNormal()
+    {
+        $result = $this->shortcut->getPlugins(['out_request_no' => '202403250001']);
+
+        self::assertEquals([
+            StartPlugin::class,
+            QueryRefundPlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ], $result);
