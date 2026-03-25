@@ -23,6 +23,6 @@ class PayPluginTest extends TestCase
     {
         $result = $this->plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
 
-        self::assertStringContainsString('alipay.trade.precreate', $result->getPayload()->toJson());
+        self::assertSame('/v3/alipay/trade/precreate', $result->getPayload()->get('_url'));
     }
 }

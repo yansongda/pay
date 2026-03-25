@@ -23,7 +23,8 @@ class QueryPluginTest extends TestCase
     {
         $result = $this->plugin->assembly((new Rocket())->setParams(['out_trade_no' => 'test123']), fn ($rocket) => $rocket);
 
-        self::assertEquals('alipay.trade.query', $result->getPayload()->get('method'));
-        self::assertEquals('test123', $result->getPayload()->get('biz_content')['out_trade_no']);
+        self::assertEquals('POST', $result->getPayload()->get('_method'));
+        self::assertEquals('/v3/alipay/trade/query', $result->getPayload()->get('_url'));
+        self::assertEquals('test123', $result->getPayload()->get('_body')['out_trade_no']);
     }
 }

@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Shortcut\Alipay\V3;
 
 use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\Pay\CancelPlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\StartPlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\V3\CancelShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -33,7 +32,6 @@ class CancelShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             CancelPlugin::class,
-            FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,

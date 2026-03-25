@@ -28,9 +28,12 @@ use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\AddPayloadSignaturePlugin as AddPayloadSignaturePluginV3;
 use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin as AddRadarPluginV3;
+use Yansongda\Pay\Plugin\Alipay\V3\CallbackPlugin as CallbackPluginV3;
 use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin as ResponsePluginV3;
 use Yansongda\Pay\Plugin\Alipay\V3\StartPlugin as StartPluginV3;
+use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin as VerifySignaturePluginV3;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -137,10 +140,17 @@ class Alipay implements ProviderInterface
     public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection
     {
         $request = $this->getCallbackParams($contents);
+        $all = $request->merge($params)->all();
 
         Event::dispatch(new CallbackReceived('alipay', $request->all(), $params, null));
 
-        return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
+        $config = get_provider_config('alipay', $all);
+
+        if ('v3' === ($config['api_version'] ?? '')) {
+            return $this->pay([CallbackPluginV3::class], $all);
+        }
+
+        return $this->pay([CallbackPlugin::class], $all);
     }
 
     /**
@@ -173,7 +183,7 @@ class Alipay implements ProviderInterface
         return array_merge(
             [StartPluginV3::class],
             $plugins,
-            [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPluginV3::class, VerifySignaturePlugin::class, ResponsePluginV3::class, ParserPlugin::class],
+            [AddPayloadSignaturePluginV3::class, AddRadarPluginV3::class, VerifySignaturePluginV3::class, ResponsePluginV3::class, ParserPlugin::class],
         );
     }
 

@@ -6,6 +6,9 @@ namespace Yansongda\Pay\Plugin\Alipay\V3\Pay\H5;
 
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\PayPlugin as PayPluginV2;
 
+/**
+ * @see https://opendocs.alipay.com/open/29ae8cb6_alipay.trade.wap.pay?pathHash=0a6313c7&ref=api&scene=21
+ */
 class PayPlugin extends PayPluginV2
 {
 }

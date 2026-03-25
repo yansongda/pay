@@ -10,6 +10,12 @@
 
 ## 查询普通支付订单
 
+:::tip
+Alipay V3 的服务端查询能力已按官方 open-v3 REST API 实现，普通交易查询走 `POST /v3/alipay/trade/query`，转账查询走 `GET /v3/alipay/fund/trans/common/query`。
+
+`_action` 仍可用于兼容不同支付场景，但在 V3 下普通交易查询会统一走同一个 REST 端点。
+:::
+
 ```php
 Pay::config($this->config);
 
@@ -29,16 +35,13 @@ $result = Pay::alipay()->query($order);
 
 ### 配置参数
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考以下 API 查看「请求参数」一栏。
-
-- [网页订单](https://opendocs.alipay.com/open/bff76748_alipay.trade.query?pathHash=e3ddce1d&ref=api&scene=23)
-- [APP 订单](https://opendocs.alipay.com/open/82ea786a_alipay.trade.query?pathHash=0745ecea&ref=api&scene=23)
-- [小程序订单](https://opendocs.alipay.com/open/6f534d7f_alipay.trade.query?pathHash=98c03720&ref=api&scene=23)
-- [刷卡订单](https://opendocs.alipay.com/open/6f534d7f_alipay.trade.query?pathHash=98c03720&ref=api&scene=23)
-- [扫码订单](https://opendocs.alipay.com/open/02ekfh?pathHash=925e7dfc&ref=api&scene=23)
-- [H5 订单](https://opendocs.alipay.com/open/4e2d51d1_alipay.trade.query?pathHash=8abc6ffe&ref=api&scene=common)
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open-v3/02s2bo)，查看「请求参数」一栏。
 
 ## 查询退款订单
+
+:::tip
+Alipay V3 退款查询统一走 `POST /v3/alipay/trade/fastpay/refund/query`。
+:::
 
 ```php
 Pay::config($this->config);
@@ -60,14 +63,7 @@ $result = Pay::alipay()->query($order);
 
 ### 配置参数
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考以下 API 查看「请求参数」一栏。
-
-- [网页订单](https://opendocs.alipay.com/open/357441a2_alipay.trade.fastpay.refund.query?pathHash=01981dca&ref=api&scene=common)
-- [APP 订单](https://opendocs.alipay.com/open/8c776df6_alipay.trade.fastpay.refund.query?pathHash=fb6e1894&ref=api&scene=common)
-- [小程序订单](https://opendocs.alipay.com/mini/4a0fb7bf_alipay.trade.fastpay.refund.query?pathHash=2e6cbb7c&ref=api&scene=common)
-- [刷卡订单](https://opendocs.alipay.com/open/c1cb8815_alipay.trade.fastpay.refund.query?pathHash=6557d527&ref=api&scene=common)
-- [扫码订单](https://opendocs.alipay.com/open/02ekfl?pathHash=a223936b&ref=api&scene=common)
-- [H5 订单](https://opendocs.alipay.com/open/7be83133_alipay.trade.fastpay.refund.query?pathHash=7cf4fed5&ref=api&scene=common)
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open-v3/02s7k7)，查看「请求参数」一栏。
 
 ## 查询转账订单
 
@@ -84,4 +80,4 @@ $result = Pay::alipay()->query($order);
 
 ### 配置参数
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open/58a29899_alipay.fund.trans.common.query?pathHash=aad07c6d&ref=api&scene=f9fece54d41f49cbbd00dc73655a01a4)，查看「请求参数」一栏。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open-v3/02a68g)，查看「请求参数」一栏。

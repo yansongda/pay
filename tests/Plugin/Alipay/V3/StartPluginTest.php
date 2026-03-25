@@ -33,22 +33,9 @@ class StartPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('9021000122682882', $payload->get('app_id'));
-        self::assertEquals('JSON', $payload->get('format'));
-        self::assertEquals('utf-8', $payload->get('charset'));
-        self::assertEquals('RSA2', $payload->get('sign_type'));
-        self::assertEquals('1.0', $payload->get('version'));
-        self::assertEquals('https://pay.yansongda.cn', $payload->get('notify_url'));
-        self::assertEquals('https://pay.yansongda.cn', $payload->get('return_url'));
-    }
-
-    public function testNotifyUrlFromParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'v3', '_notify_url' => 'https://custom.notify.url']);
-
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-
-        self::assertEquals('https://custom.notify.url', $result->getPayload()->get('notify_url'));
+        self::assertEquals('POST', $payload->get('_method'));
+        self::assertEquals('application/json', $payload->get('_headers')['Accept']);
+        self::assertEquals('yansongda/pay-v3', $payload->get('_headers')['User-Agent']);
     }
 
     public function testAppAuthToken()

@@ -6,12 +6,12 @@ namespace Yansongda\Pay\Tests\Shortcut\Alipay\V3;
 
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\Pay\H5\PayPlugin;
-use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
-use Yansongda\Pay\Plugin\Alipay\V3\StartPlugin;
 use Yansongda\Pay\Shortcut\Alipay\V3\H5Shortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -32,7 +32,7 @@ class H5ShortcutTest extends TestCase
 
         self::assertEquals([
             StartPlugin::class,
-            H5Plugin::class,
+            PayPlugin::class,
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,

@@ -10,6 +10,10 @@
 
 ## 取消订单操作
 
+:::tip
+Alipay V3 撤销订单统一走 `POST /v3/alipay/trade/cancel`。
+:::
+
 ```php
 Pay::config($this->config);
 
@@ -25,8 +29,4 @@ $result = Pay::alipay()->cancel($order);
 
 ### 配置参数
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考以下 API 查看「请求参数」一栏。
-
-- [刷卡订单](https://opendocs.alipay.com/open/13399511_alipay.trade.cancel?pathHash=b0a8222c&ref=api&scene=common)
-- [扫码订单](https://opendocs.alipay.com/open/02ekfi?pathHash=45b45d97&ref=api&scene=common)
-- [小程序订单](https://opendocs.alipay.com/mini/05xunj?pathHash=ca2a9ea6&ref=api&scene=common)
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open-v3/02s3k0)，查看「请求参数」一栏。

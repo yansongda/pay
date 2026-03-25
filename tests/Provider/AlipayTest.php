@@ -20,6 +20,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\Pay\Scan\CreatePlugin as ScanCreatePluginV3;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -107,6 +108,188 @@ class AlipayTest extends TestCase
         self::assertStringContainsString('method=alipay.trade.page.pay', $body);
         self::assertStringContainsString('charset=utf-8', $body);
         self::assertStringContainsString('version=1.0', $body);
+    }
+
+    public function testTransferV3()
+    {
+        $body = '{"code":"10000","msg":"Success","order_id":"20231226110070000002150000683137","out_biz_no":"2023122621450001"}';
+        $timestamp = '1711353600000';
+        $nonce = 'test_nonce_1234567890';
+        $content = $timestamp."\n".$nonce."\n".$body."\n";
+        openssl_sign($content, $sign, \Yansongda\Pay\get_private_cert(\Yansongda\Pay\get_provider_config('alipay', ['_config' => 'v3_sign'])['app_secret_cert']), OPENSSL_ALGO_SHA256);
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [
+            'alipay-timestamp' => $timestamp,
+            'alipay-nonce' => $nonce,
+            'alipay-signature' => base64_encode($sign),
+        ], $body));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::alipay()->transfer([
+            '_config' => 'v3_sign',
+            'out_biz_no' => '2023122621450001',
+            'trans_amount' => '0.01',
+            '_return_rocket' => true,
+        ]);
+
+        self::assertEquals('POST', $result->getRadar()->getMethod());
+        self::assertEquals('https://openapi.alipay.com/v3/alipay/fund/trans/uni/transfer', (string) $result->getRadar()->getUri());
+        self::assertStringContainsString('Authorization', json_encode($result->getRadar()->getHeaders()));
+        self::assertEqualsCanonicalizing([
+            'code' => '10000',
+            'msg' => 'Success',
+            'order_id' => '20231226110070000002150000683137',
+            'out_biz_no' => '2023122621450001',
+        ], $result->getDestination()->all());
+    }
+
+    public function testQueryTransferV3()
+    {
+        $body = '{"code":"10000","msg":"Success","order_id":"20231226110070000002150000683137","out_biz_no":"2023122621450001"}';
+        $timestamp = '1711353600000';
+        $nonce = 'test_nonce_1234567890';
+        $content = $timestamp."\n".$nonce."\n".$body."\n";
+        openssl_sign($content, $sign, \Yansongda\Pay\get_private_cert(\Yansongda\Pay\get_provider_config('alipay', ['_config' => 'v3_sign'])['app_secret_cert']), OPENSSL_ALGO_SHA256);
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [
+            'alipay-timestamp' => $timestamp,
+            'alipay-nonce' => $nonce,
+            'alipay-signature' => base64_encode($sign),
+        ], $body));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::alipay()->query([
+            '_config' => 'v3_sign',
+            '_action' => 'transfer',
+            'out_biz_no' => '2023122621450001',
+            '_return_rocket' => true,
+        ]);
+
+        self::assertEquals('GET', $result->getRadar()->getMethod());
+        self::assertStringStartsWith('https://openapi.alipay.com/v3/alipay/fund/trans/common/query?', (string) $result->getRadar()->getUri());
+        self::assertStringContainsString('out_biz_no=2023122621450001', (string) $result->getRadar()->getUri());
+        self::assertEqualsCanonicalizing([
+            'code' => '10000',
+            'msg' => 'Success',
+            'order_id' => '20231226110070000002150000683137',
+            'out_biz_no' => '2023122621450001',
+        ], $result->getDestination()->all());
+    }
+
+    public function testQueryV3()
+    {
+        $body = '{"code":"10000","msg":"Success","out_trade_no":"1703141270"}';
+        $timestamp = '1711353600000';
+        $nonce = 'test_nonce_1234567890';
+        $content = $timestamp."\n".$nonce."\n".$body."\n";
+        openssl_sign($content, $sign, \Yansongda\Pay\get_private_cert(\Yansongda\Pay\get_provider_config('alipay', ['_config' => 'v3_sign'])['app_secret_cert']), OPENSSL_ALGO_SHA256);
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [
+            'alipay-timestamp' => $timestamp,
+            'alipay-nonce' => $nonce,
+            'alipay-signature' => base64_encode($sign),
+        ], $body));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::alipay()->query([
+            '_config' => 'v3_sign',
+            'out_trade_no' => '1703141270',
+            '_return_rocket' => true,
+        ]);
+
+        self::assertEquals('POST', $result->getRadar()->getMethod());
+        self::assertEquals('https://openapi.alipay.com/v3/alipay/trade/query', (string) $result->getRadar()->getUri());
+        self::assertEqualsCanonicalizing([
+            'code' => '10000',
+            'msg' => 'Success',
+            'out_trade_no' => '1703141270',
+        ], $result->getDestination()->all());
+    }
+
+    public function testRefundV3()
+    {
+        $body = '{"code":"10000","msg":"Success","out_trade_no":"1703141270","refund_fee":"0.01"}';
+        $timestamp = '1711353600000';
+        $nonce = 'test_nonce_1234567890';
+        $content = $timestamp."\n".$nonce."\n".$body."\n";
+        openssl_sign($content, $sign, \Yansongda\Pay\get_private_cert(\Yansongda\Pay\get_provider_config('alipay', ['_config' => 'v3_sign'])['app_secret_cert']), OPENSSL_ALGO_SHA256);
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [
+            'alipay-timestamp' => $timestamp,
+            'alipay-nonce' => $nonce,
+            'alipay-signature' => base64_encode($sign),
+        ], $body));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::alipay()->refund([
+            '_config' => 'v3_sign',
+            'out_trade_no' => '1703141270',
+            'refund_amount' => '0.01',
+            '_return_rocket' => true,
+        ]);
+
+        self::assertEquals('POST', $result->getRadar()->getMethod());
+        self::assertEquals('https://openapi.alipay.com/v3/alipay/trade/refund', (string) $result->getRadar()->getUri());
+        self::assertEqualsCanonicalizing([
+            'code' => '10000',
+            'msg' => 'Success',
+            'out_trade_no' => '1703141270',
+            'refund_fee' => '0.01',
+        ], $result->getDestination()->all());
+    }
+
+    public function testMergeCommonPluginsV3WithScanCreatePlugin()
+    {
+        $plugins = [FooPluginStub::class, ScanCreatePluginV3::class];
+
+        self::assertEquals([
+            \Yansongda\Pay\Plugin\Alipay\V3\StartPlugin::class,
+            FooPluginStub::class,
+            ScanCreatePluginV3::class,
+            \Yansongda\Pay\Plugin\Alipay\V3\AddPayloadSignaturePlugin::class,
+            \Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin::class,
+            \Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin::class,
+            \Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin::class,
+            ParserPlugin::class,
+        ], Pay::alipay()->mergeCommonPluginsV3($plugins));
+    }
+
+    public function testCallbackV3()
+    {
+        $post = [
+            '_config' => 'v3',
+            'gmt_create' => '2023-12-21 16:26:32',
+            'charset' => 'utf-8',
+            'gmt_payment' => '2023-12-21 16:26:43',
+            'notify_time' => '2023-12-21 16:26:45',
+            'subject' => 'yansongda+测试 - 1',
+            'sign' => 'Rs7SszD15WqbdJsGZPN+HpCBcQzBCkJx0ccNeg1rpUxyTVA1ps2vJ4sLhaa7O+lliTj6N1MSGqc8cK6JSs7nPg731RAOfneirtrqrlW2u0m15kWAKrVjgPGLUMtK/eT15e/6NcxsWra/bsZaan+nFDzO8xceOwy96W+qVUtTPfBRBp9Zjryi5oIONOifGMALD284YbNC3qq2eyqVysF+zgk+/MtuHk2Eh/fL7UbClHQXQ2hD686Dt8bR949TNMbkWCYXstmjVBO55qF8xhaoF/b5zAe5/O/13g/QlwDXBcF3XwJpbFWrBehoFFCnJhR/xXZ0E+D2Vsw1oAQ3l+R2dQ==',
+            'buyer_id' => '2088722003899169',
+            'invoice_amount' => '0.01',
+            'version' => '1.0',
+            'notify_id' => '2023122101222162644199160501632046',
+            'fund_bill_list' => '[{"amount":"0.01","fundChannel":"ALIPAYACCOUNT"}]',
+            'notify_type' => 'trade_status_sync',
+            'out_trade_no' => '1703147160',
+            'total_amount' => '0.01',
+            'trade_status' => 'TRADE_SUCCESS',
+            'trade_no' => '2023122122001499160501589436',
+            'auth_app_id' => '9021000122682882',
+            'receipt_amount' => '0.01',
+            'point_amount' => '0.00',
+            'app_id' => '9021000122682882',
+            'buyer_pay_amount' => '0.01',
+            'sign_type' => 'RSA2',
+            'seller_id' => '2088721003899159',
+        ];
+
+        $result = Pay::alipay()->callback($post);
+
+        self::assertNotEmpty($result->all());
     }
 
     public function testH5()
@@ -467,7 +650,7 @@ class AlipayTest extends TestCase
         self::assertEquals(array_merge(
             [\Yansongda\Pay\Plugin\Alipay\V3\StartPlugin::class],
             $plugins,
-            [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, \Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin::class, VerifySignaturePlugin::class, \Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin::class, ParserPlugin::class],
+            [\Yansongda\Pay\Plugin\Alipay\V3\AddPayloadSignaturePlugin::class, \Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin::class, \Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin::class, \Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin::class, ParserPlugin::class],
         ), Pay::alipay()->mergeCommonPluginsV3($plugins));
     }
 
