@@ -720,6 +720,9 @@ function get_douyin_client_token(array $params): string
 }
 
 /**
+ * Build HMAC-SHA256 sign for Douyin Trade API.
+ * Use raw key=value concatenation (not URL-encoded) as required by the API specification.
+ *
  * @throws InvalidConfigException
  */
 function get_douyin_trade_sign(array $config, Collection $payload): string
