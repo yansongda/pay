@@ -8,22 +8,19 @@ use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\PayPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\ObtainClientTokenPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\Refund\RefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\ResponsePlugin;
 
-/**
- * @deprecated Will be removed in V3.8.0. Use {@see TradeMiniShortcut} instead.
- */
-class MiniShortcut implements ShortcutInterface
+class TradeRefundShortcut implements ShortcutInterface
 {
     public function getPlugins(array $params): array
     {
         return [
             StartPlugin::class,
-            PayPlugin::class,
-            AddPayloadSignaturePlugin::class,
+            ObtainClientTokenPlugin::class,
+            RefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,

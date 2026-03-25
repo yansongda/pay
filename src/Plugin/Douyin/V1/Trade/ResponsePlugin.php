@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Douyin\V1\Pay;
+namespace Yansongda\Pay\Plugin\Douyin\V1\Trade;
 
 use Closure;
 use Psr\Http\Message\ResponseInterface;
@@ -11,11 +11,7 @@ use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Douyin\V1\Trade;
 
-/**
- * @deprecated Will be removed in V3.8.0. Use {@see Trade} instead.
- */
 class ResponsePlugin implements PluginInterface
 {
     /**
@@ -26,11 +22,11 @@ class ResponsePlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[Douyin][V1][Pay][ResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Douyin][V1][Trade][ResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->validateResponse($rocket);
 
-        Logger::info('[Douyin][V1][Pay][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Douyin][V1][Trade][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }

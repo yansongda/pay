@@ -1,3 +1,13 @@
+## v3.7.21
+
+### added
+
+- feat: 新增抖音新交易系统支付 (#1132)
+
+### deprecated
+
+- deprecate: 抖音旧担保支付（`Plugin\Douyin\V1\Pay`）标记为废弃，将于 V3.8.0 删除 (#1132)
+
 ## v3.7.20
 
 ### added

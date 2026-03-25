@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Douyin\V1\Pay;
+namespace Yansongda\Pay\Plugin\Douyin\V1\Trade;
 
 use Closure;
 use Psr\Http\Message\ResponseInterface;
@@ -11,12 +11,8 @@ use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Douyin\V1\Trade;
 
-/**
- * @deprecated Will be removed in V3.8.0. Use {@see Trade} instead.
- */
-class ResponsePlugin implements PluginInterface
+class GetClientTokenResponsePlugin implements PluginInterface
 {
     /**
      * @throws InvalidResponseException
@@ -26,11 +22,11 @@ class ResponsePlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[Douyin][V1][Pay][ResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Douyin][V1][Trade][GetClientTokenResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $this->validateResponse($rocket);
 
-        Logger::info('[Douyin][V1][Pay][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Douyin][V1][Trade][GetClientTokenResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }
@@ -48,8 +44,8 @@ class ResponsePlugin implements PluginInterface
             throw new InvalidResponseException(Exception::RESPONSE_CODE_WRONG, '抖音返回状态码异常，请检查参数是否错误', $destination);
         }
 
-        if (0 !== $destination->get('err_no')) {
-            throw new InvalidResponseException(Exception::RESPONSE_BUSINESS_CODE_WRONG, '抖音返回业务异常: '.$destination->get('err_tips'), $destination);
+        if (0 !== (int) $destination->get('data.error_code')) {
+            throw new InvalidResponseException(Exception::RESPONSE_BUSINESS_CODE_WRONG, '抖音获取 client_token 失败: '.$destination->get('data.description'), $destination);
         }
     }
 }

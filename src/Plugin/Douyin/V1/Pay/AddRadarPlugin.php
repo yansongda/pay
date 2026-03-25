@@ -12,12 +12,16 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade;
 
 use function Yansongda\Artful\get_radar_body;
 use function Yansongda\Artful\get_radar_method;
 use function Yansongda\Pay\get_douyin_url;
 use function Yansongda\Pay\get_provider_config;
 
+/**
+ * @deprecated Will be removed in V3.8.0. Use {@see Trade} instead.
+ */
 class AddRadarPlugin implements PluginInterface
 {
     /**

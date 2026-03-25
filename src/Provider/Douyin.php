@@ -27,11 +27,17 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\AddRadarPlugin as TradeAddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\ObtainClientTokenPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\Pay\CallbackPlugin as TradePayCallbackPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\Refund\CallbackPlugin as TradeRefundCallbackPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\ResponsePlugin as TradeResponsePlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket mini(array $order) 小程序支付
+ * @method Collection|Rocket mini(array $order)      小程序支付（旧担保交易，即将下线）
+ * @method Collection|Rocket tradeMini(array $order) 小程序支付（新交易系统）
  */
 class Douyin implements ProviderInterface
 {
@@ -39,6 +45,12 @@ class Douyin implements ProviderInterface
         Pay::MODE_NORMAL => 'https://developer.toutiao.com/',
         Pay::MODE_SANDBOX => 'https://open-sandbox.douyin.com/',
         Pay::MODE_SERVICE => 'https://developer.toutiao.com/',
+    ];
+
+    public const TRADE_URL = [
+        Pay::MODE_NORMAL => 'https://open.douyin.com/',
+        Pay::MODE_SANDBOX => 'https://open-sandbox.douyin.com/',
+        Pay::MODE_SERVICE => 'https://open.douyin.com/',
     ];
 
     /**
@@ -115,6 +127,32 @@ class Douyin implements ProviderInterface
         return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
     }
 
+    /**
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     */
+    public function tradeCallback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection|Rocket
+    {
+        $request = $this->getCallbackParams($contents);
+
+        Event::dispatch(new CallbackReceived('douyin', $request->all(), $params, null));
+
+        return $this->pay([TradePayCallbackPlugin::class], $request->merge($params)->all());
+    }
+
+    /**
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     */
+    public function tradeRefundCallback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection|Rocket
+    {
+        $request = $this->getCallbackParams($contents);
+
+        Event::dispatch(new CallbackReceived('douyin', $request->all(), $params, null));
+
+        return $this->pay([TradeRefundCallbackPlugin::class], $request->merge($params)->all());
+    }
+
     public function success(): ResponseInterface
     {
         return new Response(
@@ -130,6 +168,15 @@ class Douyin implements ProviderInterface
             [StartPlugin::class],
             $plugins,
             [AddPayloadSignaturePlugin::class, AddPayloadBodyPlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class],
+        );
+    }
+
+    public function mergeTradeCommonPlugins(array $plugins): array
+    {
+        return array_merge(
+            [StartPlugin::class, ObtainClientTokenPlugin::class],
+            $plugins,
+            [AddPayloadBodyPlugin::class, TradeAddRadarPlugin::class, TradeResponsePlugin::class, ParserPlugin::class],
         );
     }
 

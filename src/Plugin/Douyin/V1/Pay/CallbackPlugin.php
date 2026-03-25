@@ -14,10 +14,14 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade;
 
 use function Yansongda\Artful\filter_params;
 use function Yansongda\Pay\get_provider_config;
 
+/**
+ * @deprecated Will be removed in V3.8.0. Use {@see Trade} instead.
+ */
 class CallbackPlugin implements PluginInterface
 {
     /**

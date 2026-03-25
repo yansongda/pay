@@ -19,6 +19,8 @@ use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\GetClientTokenPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade\GetClientTokenResponsePlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\GetAccessTokenPlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\VerifyWebhookSignPlugin;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
@@ -654,6 +656,127 @@ function get_douyin_url(array $config, ?Collection $payload): string
     }
 
     return Douyin::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_douyin_trade_url(array $config, ?Collection $payload): string
+{
+    $url = get_radar_url($config, $payload);
+
+    if (empty($url)) {
+        throw new InvalidParamsException(Exception::PARAMS_DOUYIN_URL_MISSING, '参数异常: 抖音交易系统 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
+    }
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    return Douyin::TRADE_URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+}
+
+/**
+ * @throws ContainerException
+ * @throws InvalidConfigException
+ * @throws InvalidParamsException
+ * @throws ServiceNotFoundException
+ */
+function get_douyin_client_token(array $params): string
+{
+    $config = get_provider_config('douyin', $params);
+
+    if (!empty($config['_access_token'])
+        && !empty($config['_access_token_expiry'])
+        && time() < (int) $config['_access_token_expiry']) {
+        return $config['_access_token'];
+    }
+
+    if (empty($config['app_id']) || empty($config['app_secret'])) {
+        throw new InvalidConfigException(Exception::CONFIG_DOUYIN_INVALID, '配置异常: 缺少抖音交易系统配置 -- [app_id] or [app_secret]');
+    }
+
+    $result = Artful::artful([
+        StartPlugin::class,
+        GetClientTokenPlugin::class,
+        Plugin\Douyin\V1\Trade\AddRadarPlugin::class,
+        GetClientTokenResponsePlugin::class,
+        ParserPlugin::class,
+    ], $params);
+
+    $token = $result->get('data.access_token', '');
+    $expiresIn = $result->get('data.expires_in', 7200);
+
+    Pay::get(ConfigInterface::class)->set(
+        'douyin.'.get_tenant($params).'._access_token',
+        $token
+    );
+    Pay::get(ConfigInterface::class)->set(
+        'douyin.'.get_tenant($params).'._access_token_expiry',
+        time() + $expiresIn - 60
+    );
+
+    return $token;
+}
+
+/**
+ * Build HMAC-SHA256 sign for Douyin Trade API.
+ * Use raw key=value concatenation (not URL-encoded) as required by the API specification.
+ *
+ * @throws InvalidConfigException
+ */
+function get_douyin_trade_sign(array $config, Collection $payload): string
+{
+    $secret = $config['app_secret'] ?? null;
+
+    if (empty($secret)) {
+        throw new InvalidConfigException(Exception::CONFIG_DOUYIN_INVALID, '配置异常: 缺少抖音交易系统配置 -- [app_secret]');
+    }
+
+    $params = $payload->filter(fn ($v, $k) => !str_starts_with((string) $k, '_') && '' !== $v && null !== $v && 'sign' !== $k)->all();
+
+    ksort($params);
+
+    $parts = [];
+
+    foreach ($params as $key => $value) {
+        $parts[] = $key.'='.$value;
+    }
+
+    return hash_hmac('sha256', implode('&', $parts), $secret);
+}
+
+/**
+ * @throws InvalidConfigException
+ * @throws InvalidSignException
+ */
+function verify_douyin_trade_sign(array $config, array $params): void
+{
+    $secret = $config['app_secret'] ?? null;
+
+    if (empty($secret)) {
+        throw new InvalidConfigException(Exception::CONFIG_DOUYIN_INVALID, '配置异常: 缺少抖音交易系统配置 -- [app_secret]');
+    }
+
+    $sign = $params['msg_signature'] ?? '';
+
+    if (empty($sign)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 验证抖音交易系统回调签名失败-签名为空', $params);
+    }
+
+    $timestamp = $params['timestamp'] ?? '';
+    $nonce = $params['nonce'] ?? '';
+    $msg = is_array($params['msg'] ?? '') ? json_encode($params['msg'], JSON_UNESCAPED_UNICODE) : ($params['msg'] ?? '');
+
+    $values = [$secret, $timestamp, $nonce, $msg];
+    sort($values, SORT_STRING);
+    $signStr = implode('', $values);
+
+    $expected = sha1($signStr);
+
+    if (!hash_equals($expected, $sign)) {
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证抖音交易系统回调签名失败', $params);
+    }
 }
 
 /**

@@ -13,11 +13,13 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Douyin\V1\Trade;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Pay\get_provider_config;
 
 /**
+ * @deprecated Will be removed in V3.8.0. Use {@see Trade} instead.
  * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/ecpay/pay-list/query
  */
 class QueryPlugin implements PluginInterface
