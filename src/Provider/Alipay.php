@@ -20,17 +20,16 @@ use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AppCallbackPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\AddPayloadSignaturePlugin as AddPayloadSignaturePluginV3;
 use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin as AddRadarPluginV3;
-use Yansongda\Pay\Plugin\Alipay\V3\CallbackPlugin as CallbackPluginV3;
 use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin as ResponsePluginV3;
 use Yansongda\Pay\Plugin\Alipay\V3\StartPlugin as StartPluginV3;
 use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin as VerifySignaturePluginV3;
@@ -143,12 +142,6 @@ class Alipay implements ProviderInterface
         $all = $request->merge($params)->all();
 
         Event::dispatch(new CallbackReceived('alipay', $request->all(), $params, null));
-
-        $config = get_provider_config('alipay', $all);
-
-        if ('v3' === ($config['api_version'] ?? '')) {
-            return $this->pay([CallbackPluginV3::class], $all);
-        }
 
         return $this->pay([CallbackPlugin::class], $all);
     }

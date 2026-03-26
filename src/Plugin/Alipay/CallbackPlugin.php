@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\V3;
+namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -28,7 +28,7 @@ class CallbackPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Alipay][V3][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $config = get_provider_config('alipay', $params);
@@ -41,7 +41,7 @@ class CallbackPlugin implements PluginInterface
             ->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());
 
-        Logger::info('[Alipay][V3][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Alipay][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
