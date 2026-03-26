@@ -1,43 +1,28 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Shortcut\Alipay;
+declare(strict_types=1);
 
+namespace Yansongda\Pay\Shortcut\Alipay\Gateway;
+
+use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\Pay\App\InvokePayPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\ResponseInvokeStringPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\StartPlugin;
-use Yansongda\Pay\Shortcut\Alipay\AppShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
-class AppShortcutTest extends TestCase
+class AppShortcut implements ShortcutInterface
 {
-    protected AppShortcut $shortcut;
-
-    protected function setUp(): void
+    public function getPlugins(array $params): array
     {
-        parent::setUp();
-
-        $this->shortcut = new AppShortcut();
-    }
-
-    public function testNormal(): void
-    {
-        $result = $this->shortcut->getPlugins([]);
-
-        self::assertEquals([
+        return [
             StartPlugin::class,
             InvokePayPlugin::class,
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             ResponseInvokeStringPlugin::class,
             ParserPlugin::class,
-        ], $result);
+        ];
     }
 }

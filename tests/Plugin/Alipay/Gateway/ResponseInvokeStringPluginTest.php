@@ -1,9 +1,11 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
+declare(strict_types=1);
 
-use Yansongda\Pay\Plugin\Alipay\V2\ResponseInvokeStringPlugin;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\Gateway;
+
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\Gateway\ResponseInvokeStringPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
 /**
@@ -25,14 +27,11 @@ class ResponseInvokeStringPluginTest extends TestCase
     public function testNormal(): void
     {
         $payload = [
-            'name' => "yansongda",
+            'name' => 'yansongda',
             'age' => 30,
         ];
 
-        $rocket = new Rocket();
-        $rocket->mergePayload($payload);
-
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+        $result = $this->plugin->assembly((new Rocket())->mergePayload($payload), fn ($rocket) => $rocket);
 
         self::assertEquals(http_build_query($payload), $result->getDestination()->getBody()->getContents());
     }

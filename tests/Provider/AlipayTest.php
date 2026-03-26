@@ -405,6 +405,24 @@ class AlipayTest extends TestCase
         self::assertStringContainsString($body3, (string) $result->getBody());
     }
 
+    public function testAppV3(): void
+    {
+        $result = Pay::alipay()->app([
+            '_config' => 'v3',
+            'out_trade_no' => 'web'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+        ]);
+
+        $body = (string) $result->getBody();
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertStringContainsString('app_id=9021000122682882', $body);
+        self::assertStringContainsString('method=alipay.trade.app.pay', $body);
+        self::assertStringContainsString('charset=utf-8', $body);
+        self::assertStringContainsString('version=1.0', $body);
+    }
+
     public function testScan()
     {
         $response = [

@@ -1,6 +1,8 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Shortcut\Alipay;
+declare(strict_types=1);
+
+namespace Yansongda\Pay\Tests\Shortcut\Alipay\Gateway;
 
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\AddPayloadSignaturePlugin;
@@ -8,7 +10,7 @@ use Yansongda\Pay\Plugin\Alipay\Gateway\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\Pay\App\InvokePayPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\ResponseInvokeStringPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\StartPlugin;
-use Yansongda\Pay\Shortcut\Alipay\AppShortcut;
+use Yansongda\Pay\Shortcut\Alipay\Gateway\AppShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
 /**
@@ -29,8 +31,6 @@ class AppShortcutTest extends TestCase
 
     public function testNormal(): void
     {
-        $result = $this->shortcut->getPlugins([]);
-
         self::assertEquals([
             StartPlugin::class,
             InvokePayPlugin::class,
@@ -38,6 +38,6 @@ class AppShortcutTest extends TestCase
             AddPayloadSignaturePlugin::class,
             ResponseInvokeStringPlugin::class,
             ParserPlugin::class,
-        ], $result);
+        ], $this->shortcut->getPlugins([]));
     }
 }
