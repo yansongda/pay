@@ -14,6 +14,11 @@ use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\V3\PosShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PosShortcutTest extends TestCase
 {
     protected PosShortcut $shortcut;
@@ -25,7 +30,7 @@ class PosShortcutTest extends TestCase
         $this->shortcut = new PosShortcut();
     }
 
-    public function testNormal()
+    public function testNormal(): void
     {
         $result = $this->shortcut->getPlugins([]);
 

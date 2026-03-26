@@ -457,6 +457,49 @@ class AlipayTest extends TestCase
         self::assertEqualsCanonicalizing($response['alipay_trade_precreate_response'], $result->getDestination()->except('_sign')->all());
     }
 
+    public function testPosV3(): void
+    {
+        $body = '{"code":"10000","msg":"Success","trade_no":"2024032622001499160501586202","out_trade_no":"1704093802","buyer_logon_id":"ifv***@sandbox.com","buyer_user_id":"2088722003899169","receipt_amount":"0.01"}';
+        $timestamp = '1711353600000';
+        $nonce = 'test_nonce_1234567890';
+        $content = $timestamp."\n".$nonce."\n".$body."\n";
+        openssl_sign($content, $sign, \Yansongda\Pay\get_private_cert(\Yansongda\Pay\get_provider_config('alipay', ['_config' => 'v3_sign'])['app_secret_cert']), OPENSSL_ALGO_SHA256);
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [
+            'alipay-timestamp' => $timestamp,
+            'alipay-nonce' => $nonce,
+            'alipay-signature' => base64_encode($sign),
+        ], $body));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::alipay()->pos([
+            '_config' => 'v3_sign',
+            'out_trade_no' => '1704093802',
+            'auth_code' => '284776044441477959',
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+            '_return_rocket' => true,
+        ]);
+
+        $body = (string) $result->getRadar()->getBody();
+
+        self::assertSame('POST', $result->getRadar()->getMethod());
+        self::assertSame('https://openapi.alipay.com/v3/alipay/trade/pay', (string) $result->getRadar()->getUri());
+        self::assertStringContainsString('"scene":"bar_code"', $body);
+        self::assertStringContainsString('"auth_code":"284776044441477959"', $body);
+        self::assertStringContainsString('"out_trade_no":"1704093802"', $body);
+        self::assertEqualsCanonicalizing([
+            'code' => '10000',
+            'msg' => 'Success',
+            'trade_no' => '2024032622001499160501586202',
+            'out_trade_no' => '1704093802',
+            'buyer_logon_id' => 'ifv***@sandbox.com',
+            'buyer_user_id' => '2088722003899169',
+            'receipt_amount' => '0.01',
+        ], $result->getDestination()->all());
+    }
+
     public function testTransfer()
     {
         $response = [

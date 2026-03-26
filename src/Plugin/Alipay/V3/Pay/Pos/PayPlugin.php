@@ -21,7 +21,12 @@ class PayPlugin implements PluginInterface
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/v3/alipay/trade/pay',
-            '_body' => $rocket->getParams(),
+            '_body' => array_merge(
+                [
+                    'scene' => 'bar_code',
+                ],
+                $rocket->getParams(),
+            ),
         ]);
 
         Logger::info('[Alipay][V3][Pay][Pos][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
