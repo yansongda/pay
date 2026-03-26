@@ -2,39 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Alipay\V3;
+namespace Yansongda\Pay\Shortcut\Alipay\Gateway;
 
+use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\Gateway\Pay\H5\HtmlPayPlugin;
+use Yansongda\Pay\Plugin\Alipay\Gateway\Pay\Web\HtmlPayPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\ResponseHtmlPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\StartPlugin;
-use Yansongda\Pay\Shortcut\Alipay\V3\H5Shortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
-class H5ShortcutTest extends TestCase
+class WebShortcut implements ShortcutInterface
 {
-    protected H5Shortcut $shortcut;
-
-    protected function setUp(): void
+    public function getPlugins(array $params): array
     {
-        parent::setUp();
-
-        $this->shortcut = new H5Shortcut();
-    }
-
-    public function testNormal(): void
-    {
-        $result = $this->shortcut->getPlugins([]);
-
-        self::assertEquals([
+        return [
             StartPlugin::class,
             HtmlPayPlugin::class,
             FormatPayloadBizContentPlugin::class,
@@ -42,6 +25,6 @@ class H5ShortcutTest extends TestCase
             AddRadarPlugin::class,
             ResponseHtmlPlugin::class,
             ParserPlugin::class,
-        ], $result);
+        ];
     }
 }

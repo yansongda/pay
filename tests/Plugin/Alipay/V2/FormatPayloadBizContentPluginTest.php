@@ -7,6 +7,11 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class FormatPayloadBizContentPluginTest extends TestCase
 {
     protected FormatPayloadBizContentPlugin $plugin;
@@ -18,7 +23,7 @@ class FormatPayloadBizContentPluginTest extends TestCase
         $this->plugin = new FormatPayloadBizContentPlugin();
     }
 
-    public function testSignNormal()
+    public function testSignNormal(): void
     {
         $payload = [
             "biz_content" => ['out_trade_no' => "yansongda-1622986519"],
@@ -27,12 +32,12 @@ class FormatPayloadBizContentPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection($payload));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
 
         self::assertEquals('{"out_trade_no":"yansongda-1622986519"}', $result->getPayload()->get('biz_content'));
     }
 
-    public function testSignUnderlineParams()
+    public function testSignUnderlineParams(): void
     {
         $payload = [
             "biz_content" => ['out_trade_no' => "yansongda-1622986519", '_method' => 'get', '_ignore' => true],
@@ -41,7 +46,7 @@ class FormatPayloadBizContentPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection($payload));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
 
         self::assertEquals('{"out_trade_no":"yansongda-1622986519"}', $result->getPayload()->get('biz_content'));
     }

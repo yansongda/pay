@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Alipay\V3;
+namespace Yansongda\Pay\Tests\Shortcut\Alipay\Gateway;
 
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\AddPayloadSignaturePlugin;
@@ -11,7 +11,7 @@ use Yansongda\Pay\Plugin\Alipay\Gateway\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\Pay\H5\HtmlPayPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\ResponseHtmlPlugin;
 use Yansongda\Pay\Plugin\Alipay\Gateway\StartPlugin;
-use Yansongda\Pay\Shortcut\Alipay\V3\H5Shortcut;
+use Yansongda\Pay\Shortcut\Alipay\Gateway\H5Shortcut;
 use Yansongda\Pay\Tests\TestCase;
 
 /**
@@ -32,8 +32,6 @@ class H5ShortcutTest extends TestCase
 
     public function testNormal(): void
     {
-        $result = $this->shortcut->getPlugins([]);
-
         self::assertEquals([
             StartPlugin::class,
             HtmlPayPlugin::class,
@@ -42,6 +40,6 @@ class H5ShortcutTest extends TestCase
             AddRadarPlugin::class,
             ResponseHtmlPlugin::class,
             ParserPlugin::class,
-        ], $result);
+        ], $this->shortcut->getPlugins([]));
     }
 }

@@ -1,0 +1,71 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Yansongda\Pay\Plugin\Alipay\Gateway;
+
+use Closure;
+use GuzzleHttp\Psr7\Response;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
+use Yansongda\Supports\Collection;
+
+class ResponseHtmlPlugin implements PluginInterface
+{
+    public function assembly(Rocket $rocket, Closure $next): Rocket
+    {
+        /* @var Rocket $rocket */
+        $rocket = $next($rocket);
+
+        Logger::debug('[Alipay][Gateway][ResponseHtmlPlugin] 插件开始装载', ['rocket' => $rocket]);
+
+        $radar = $rocket->getRadar();
+
+        $response = 'GET' === $radar->getMethod()
+            ? $this->buildRedirect($radar->getUri()->__toString(), $rocket->getPayload())
+            : $this->buildHtml($radar->getUri()->__toString(), $rocket->getPayload());
+
+        $rocket->setDestination($response);
+
+        Logger::info('[Alipay][Gateway][ResponseHtmlPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $rocket;
+    }
+
+    protected function buildRedirect(string $endpoint, Collection $payload): Response
+    {
+        $url = $endpoint.(!str_contains($endpoint, '?') ? '?' : '&').$payload->query();
+
+        $content = sprintf(
+            '<!DOCTYPE html>
+                    <html lang="en">
+                        <head>
+                            <meta charset="UTF-8" />
+                            <meta http-equiv="refresh" content="0;url=\'%1$s\'" />
+
+                            <title>Redirecting to %1$s</title>
+                        </head>
+                        <body>
+                            Redirecting to %1$s.
+                        </body>
+                    </html>',
+            htmlspecialchars($url, ENT_QUOTES)
+        );
+
+        return new Response(302, ['Location' => $url], $content);
+    }
+
+    protected function buildHtml(string $endpoint, Collection $payload): Response
+    {
+        $html = "<form id='alipay_submit' name='alipay_submit' action='".$endpoint."' method='POST'>";
+        foreach ($payload->all() as $key => $val) {
+            $val = str_replace("'", '&apos;', $val);
+            $html .= "<input type='hidden' name='".$key."' value='".$val."'/>";
+        }
+        $html .= "<input type='submit' value='ok' style='display:none;'></form>";
+        $html .= "<script>document.forms['alipay_submit'].submit();</script>";
+
+        return new Response(200, [], $html);
+    }
+}

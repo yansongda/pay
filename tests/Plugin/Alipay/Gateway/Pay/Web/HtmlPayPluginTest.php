@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V3\Pay\Web;
+namespace Yansongda\Pay\Tests\Plugin\Alipay\Gateway\Pay\Web;
 
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Plugin\Alipay\V3\Pay\Web\PayPlugin;
+use Yansongda\Pay\Plugin\Alipay\Gateway\Pay\Web\HtmlPayPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
 /**
@@ -14,15 +14,15 @@ use Yansongda\Pay\Tests\TestCase;
  *
  * @coversNothing
  */
-class PayPluginTest extends TestCase
+class HtmlPayPluginTest extends TestCase
 {
-    protected PayPlugin $plugin;
+    protected HtmlPayPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new PayPlugin();
+        $this->plugin = new HtmlPayPlugin();
     }
 
     public function testNormal(): void

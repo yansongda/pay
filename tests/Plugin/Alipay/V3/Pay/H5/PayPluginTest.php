@@ -9,6 +9,11 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V3\Pay\H5\PayPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PayPluginTest extends TestCase
 {
     protected PayPlugin $plugin;
@@ -20,7 +25,7 @@ class PayPluginTest extends TestCase
         $this->plugin = new PayPlugin();
     }
 
-    public function testNormal()
+    public function testNormal(): void
     {
         $result = $this->plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
 

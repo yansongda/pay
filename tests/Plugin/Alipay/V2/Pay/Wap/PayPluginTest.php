@@ -7,6 +7,11 @@ use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\PayPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PayPluginTest extends TestCase
 {
     protected PayPlugin $plugin;
@@ -18,12 +23,9 @@ class PayPluginTest extends TestCase
         $this->plugin = new PayPlugin();
     }
 
-    public function testNormal()
+    public function testNormal(): void
     {
-        $rocket = (new Rocket())
-            ->setParams([]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $result = $this->plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
 
         self::assertEquals(ResponseDirection::class, $result->getDirection());
         self::assertStringContainsString('alipay.trade.wap.pay', $result->getPayload()->toJson());

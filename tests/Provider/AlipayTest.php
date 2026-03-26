@@ -110,6 +110,20 @@ class AlipayTest extends TestCase
         self::assertStringContainsString('version=1.0', $body);
     }
 
+    public function testWebV3(): void
+    {
+        $result = Pay::alipay()->web([
+            '_config' => 'v3',
+            'out_trade_no' => 'web'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+        ]);
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertStringContainsString('alipay_submit', (string) $result->getBody());
+        self::assertStringContainsString('alipay.trade.page.pay', (string) $result->getBody());
+    }
+
     public function testTransferV3()
     {
         $body = '{"code":"10000","msg":"Success","order_id":"20231226110070000002150000683137","out_biz_no":"2023122621450001"}';
@@ -337,6 +351,40 @@ class AlipayTest extends TestCase
         self::assertStringContainsString($body2, (string) $radar->getBody());
         self::assertStringContainsString($body3, (string) $radar->getBody());
         self::assertEquals('GET', $radar->getMethod());
+    }
+
+    public function testH5V3UsesGatewayCommonParams(): void
+    {
+        $result = Pay::alipay()->h5([
+            '_config' => 'v3',
+            'out_trade_no' => 'web'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+            'quit_url' => 'https://yansongda.cn',
+            '_return_rocket' => true,
+        ]);
+
+        $body = (string) $result->getRadar()->getBody();
+
+        self::assertStringContainsString('app_id=9021000122682882', $body);
+        self::assertStringContainsString('method=alipay.trade.wap.pay', $body);
+        self::assertStringContainsString('charset=utf-8', $body);
+        self::assertStringContainsString('version=1.0', $body);
+    }
+
+    public function testH5V3(): void
+    {
+        $result = Pay::alipay()->h5([
+            '_config' => 'v3',
+            'out_trade_no' => 'web'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - 01',
+            'quit_url' => 'https://yansongda.cn',
+        ]);
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertStringContainsString('alipay_submit', (string) $result->getBody());
+        self::assertStringContainsString('alipay.trade.wap.pay', (string) $result->getBody());
     }
 
     public function testApp()

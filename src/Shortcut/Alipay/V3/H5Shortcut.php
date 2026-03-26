@@ -4,29 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Shortcut\Alipay\V3;
 
-use Yansongda\Artful\Contract\ShortcutInterface;
-use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\V3\Pay\H5\PayPlugin;
+use Yansongda\Pay\Shortcut\Alipay\Gateway\H5Shortcut as GatewayH5Shortcut;
 
-class H5Shortcut implements ShortcutInterface
+class H5Shortcut extends GatewayH5Shortcut
 {
-    public function getPlugins(array $params): array
-    {
-        return [
-            StartPlugin::class,
-            PayPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ];
-    }
 }
