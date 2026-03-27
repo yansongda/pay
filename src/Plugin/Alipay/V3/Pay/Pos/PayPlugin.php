@@ -47,7 +47,7 @@ class PayPlugin implements PluginInterface
             [
                 '_method' => 'POST',
                 '_url' => 'v3/alipay/trade/pay',
-                'scene' => 'bar_code',
+                'scene' => $payload->get('scene', 'bar_code'),
             ],
             $data ?? []
         ));
