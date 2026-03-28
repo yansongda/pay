@@ -9,7 +9,6 @@ use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
@@ -17,14 +16,13 @@ use Yansongda\Pay\Exception\InvalidSignException;
 
 use function Yansongda\Artful\should_do_http_request;
 use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\verify_alipay_v3_sign;
+use function Yansongda\Pay\verify_alipay_sign;
 
 class VerifySignaturePlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
-     * @throws InvalidParamsException
      * @throws InvalidSignException
      * @throws ServiceNotFoundException
      */
@@ -42,11 +40,14 @@ class VerifySignaturePlugin implements PluginInterface
         $response = $rocket->getDestinationOrigin();
         $config = get_provider_config('alipay', $rocket->getParams());
 
-        verify_alipay_v3_sign(
+        $body = (string) $response->getBody();
+        $content = $response->getHeaderLine('alipay-timestamp')."\n"
+            .$response->getHeaderLine('alipay-nonce')."\n"
+            .(empty($body) ? '' : $body)."\n";
+
+        verify_alipay_sign(
             $config,
-            $response->getHeaderLine('alipay-timestamp'),
-            $response->getHeaderLine('alipay-nonce'),
-            (string) $response->getBody(),
+            $content,
             $response->getHeaderLine('alipay-signature'),
         );
 

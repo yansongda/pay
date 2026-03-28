@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\V3;
 
 use Closure;
-use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
@@ -15,7 +14,9 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Supports\Collection;
 
-use function Yansongda\Pay\get_alipay_v3_url;
+use function Yansongda\Pay\get_alipay_body;
+use function Yansongda\Pay\get_alipay_method;
+use function Yansongda\Pay\get_alipay_url;
 use function Yansongda\Pay\get_provider_config;
 
 class AddRadarPlugin implements PluginInterface
@@ -32,13 +33,12 @@ class AddRadarPlugin implements PluginInterface
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
         $config = get_provider_config('alipay', $params);
-        $body = $this->getBody($payload, $params);
 
         $rocket->setRadar(new Request(
-            strtoupper($payload?->get('_method', 'POST') ?? 'POST'),
-            get_alipay_v3_url($config, $payload),
-            $this->getHeaders($payload, $params, $body),
-            $body,
+            get_alipay_method($payload),
+            get_alipay_url($config, $payload),
+            $this->getHeaders($payload),
+            get_alipay_body($payload),
         ));
 
         Logger::info('[Alipay][V3][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);
@@ -46,59 +46,26 @@ class AddRadarPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function getHeaders(?Collection $payload, array $params, string|MultipartStream $body): array
+    protected function getHeaders(?Collection $payload): array
     {
-        $headers = $payload?->get('_headers', []);
+        $headers = array_merge([
+            'Accept' => 'application/json, text/plain, application/x-gzip',
+            'User-Agent' => 'yansongda/pay-v3',
+            'Content-Type' => 'application/json; charset=utf-8',
+        ], $payload?->get('_headers', []) ?? []);
 
-        if (!empty($params['_multipart'])) {
-            if ($body instanceof MultipartStream) {
-                $headers['Content-Type'] = 'multipart/form-data; boundary='.$body->getBoundary();
-            }
-
-            return $headers;
+        if (!empty($authorization = $payload?->get('_authorization'))) {
+            $headers['Authorization'] = $authorization;
         }
 
-        if (!empty($body) && !isset($headers['Content-Type']) && 'GET' !== strtoupper($payload->get('_method', 'POST'))) {
-            $headers['Content-Type'] = 'application/json';
+        if (!empty($accept = $payload?->get('_accept'))) {
+            $headers['Accept'] = $accept;
+        }
+
+        if (!empty($contentType = $payload?->get('_content_type'))) {
+            $headers['Content-Type'] = $contentType;
         }
 
         return $headers;
-    }
-
-    protected function getBody(?Collection $payload, array $params): string|MultipartStream
-    {
-        if (!empty($params['_multipart'])) {
-            $multipartData = $params['_multipart'];
-            $body = $this->formatBody($payload);
-
-            if ('' !== $body) {
-                array_unshift($multipartData, [
-                    'name' => 'data',
-                    'contents' => $body,
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                    ],
-                ]);
-            }
-
-            return new MultipartStream($multipartData, uniqid('alipay_', true));
-        }
-
-        return $this->formatBody($payload);
-    }
-
-    protected function formatBody(?Collection $payload): string
-    {
-        $body = $payload?->get('_body');
-
-        if ($body instanceof Collection) {
-            return json_encode($body->all(), JSON_UNESCAPED_UNICODE) ?: '';
-        }
-
-        if (is_array($body) || is_object($body)) {
-            return json_encode($body, JSON_UNESCAPED_UNICODE) ?: '';
-        }
-
-        return is_string($body) ? $body : '';
     }
 }

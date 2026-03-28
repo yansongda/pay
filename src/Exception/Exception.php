@@ -19,10 +19,12 @@ class Exception extends \Exception
 
     public const PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED = 9212;
 
+    // todo: v3.8.0 将 PARAMS_XXX_XXX_MISSING 同意替代为 PARAMS_INTERNAL_NECESSARY_PARAMS_MISSING
     public const PARAMS_WECHAT_URL_MISSING = 9213;
 
     public const PARAMS_WECHAT_BODY_MISSING = 9214;
 
+    // todo: v3.8.0 用 CONFIG_WECHAT_INVALID 替代
     public const PARAMS_WECHAT_SERIAL_NOT_FOUND = 9215;
 
     public const PARAMS_UNIPAY_URL_MISSING = 9216;
@@ -45,6 +47,10 @@ class Exception extends \Exception
 
     public const PARAMS_STRIPE_BODY_INVALID = 9225;
 
+    public const PARAMS_ALIPAY_URL_MISSING = 9226;
+
+    public const PARAMS_ALIPAY_BODY_MISSING = 9227;
+
     /**
      * 关于响应.
      */
@@ -57,6 +63,8 @@ class Exception extends \Exception
     /*
      * 关于配置.
      */
+    public const CONFIG_INVALID = 9400;
+
     public const CONFIG_ALIPAY_INVALID = 9401;
 
     public const CONFIG_WECHAT_INVALID = 9402;

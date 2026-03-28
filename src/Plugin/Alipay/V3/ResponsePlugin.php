@@ -38,16 +38,18 @@ class ResponsePlugin implements PluginInterface
     {
         $response = $rocket->getDestinationOrigin();
 
-        if (!($response instanceof ResponseInterface)
+        if ((!($response instanceof ResponseInterface))
             || ($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
             return;
         }
 
-        $body = json_decode((string) $response->getBody(), true);
-        $message = is_array($body)
-            ? ($body['sub_msg'] ?? $body['message'] ?? $body['msg'] ?? '未知错误，请查看支付宝原始响应')
-            : '未知错误，请查看支付宝原始响应';
+        $destination = $rocket->getDestination();
+        $message = sprintf(
+            '支付宝返回状态码异常，请检查参数是否错误。code: %s, message: %s',
+            $destination->get('code', '未知'),
+            $destination->get('message', '未知'),
+        );
 
-        throw new InvalidResponseException(Exception::RESPONSE_CODE_WRONG, '支付宝 V3 响应异常: '.$message, $rocket->getDestination());
+        throw new InvalidResponseException(Exception::RESPONSE_CODE_WRONG, $message, $rocket->getDestination());
     }
 }

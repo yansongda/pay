@@ -50,15 +50,9 @@ use function Yansongda\Pay\get_provider_config;
 class Alipay implements ProviderInterface
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
-        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com/gateway.do?charset=utf-8',
-        Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
-    ];
-
-    public const V3_URL = [
-        Pay::MODE_NORMAL => 'https://openapi.alipay.com',
-        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com',
-        Pay::MODE_SERVICE => 'https://openapi.alipay.com',
+        Pay::MODE_NORMAL => 'https://openapi.alipay.com/',
+        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com/',
+        Pay::MODE_SERVICE => 'https://openapi.alipay.com/',
     ];
 
     /**
