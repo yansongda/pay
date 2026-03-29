@@ -37,8 +37,9 @@ class Certification
     public static function sns(array|string $certs): array
     {
         $results = [];
+        $inputCertsIsString = is_string($certs);
 
-        if (is_string($certs)) {
+        if ($inputCertsIsString) {
             $certs = explode('-----END CERTIFICATE-----', get_public_cert($certs));
         }
 
@@ -47,7 +48,11 @@ class Certification
                 continue;
             }
 
-            $results[] = self::sn(is_string($certs) ? ($cert.'-----END CERTIFICATE-----') : $cert);
+            $sn = self::sn($inputCertsIsString ? ($cert.'-----END CERTIFICATE-----') : $cert);
+
+            if (!empty($sn)) {
+                $results[] = $sn;
+            }
         }
 
         return $results;
