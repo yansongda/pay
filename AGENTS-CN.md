@@ -1,5 +1,7 @@
 # AGENTS-CN.md — yansongda/pay 编码代理指南
 
+> 本文件的任何更新必须同步至 `AGENTS.md`。
+>
 > 另见：`.github/copilot-instructions.md` 获取完整项目指南。
 
 ## 项目概述
@@ -135,6 +137,7 @@ Logger::info('[Provider][Version][Category][Plugin] 插件装载完毕', ['rocke
 - **断言**：使用 `self::assert*()`（不用 `$this->assert*()`）
 - **类注解**：测试类添加 `@internal` 和 `@coversNothing`
 - **HTTP Mock**：使用 Mockery 模拟 `GuzzleHttp\Client`，通过 `Pay::set(HttpClientInterface::class, $http)` 注入
+- **代码质量**：测试代码（`tests/` 目录）**豁免** PHPStan 静态分析和 PHP-CS-Fixer 代码风格检查
 
 ```php
 $http = Mockery::mock(Client::class);

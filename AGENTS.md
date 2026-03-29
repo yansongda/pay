@@ -1,5 +1,7 @@
 # AGENTS.md — Coding Agent Guide for yansongda/pay
 
+> Any updates to this file must be synchronized to `AGENTS-CN.md`.
+>
 > See also: `.github/copilot-instructions.md` for the full project guide (in Chinese).
 
 ## Project Overview
@@ -135,6 +137,7 @@ Logger::info('[Provider][Version][Category][Plugin] 插件装载完毕', ['rocke
 - **Assertions**: use `self::assert*()` (not `$this->assert*()`)
 - **Class annotations**: `@internal` and `@coversNothing` on test classes
 - **HTTP mocking**: Mockery on `GuzzleHttp\Client`, inject via `Pay::set(HttpClientInterface::class, $http)`
+- **Code quality**: Test code (`tests/` directory) is **exempt** from PHPStan static analysis and PHP-CS-Fixer style checks
 
 ```php
 $http = Mockery::mock(Client::class);
