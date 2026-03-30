@@ -32,6 +32,7 @@ use Yansongda\Pay\Provider\Paypal;
 use Yansongda\Pay\Provider\Stripe;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
+use Yansongda\Pay\Util\Certification;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -88,6 +89,19 @@ function get_provider_config(string $provider, array $params = []): array
  * @throws ContainerException
  * @throws ServiceNotFoundException
  */
+function get_config_value(string $key, array|string $config, ?Collection $payload = null): mixed
+{
+    if (is_string($config)) {
+        $config = get_provider_config($config, $payload->all());
+    }
+
+    return $payload?->get('_'.$key) ?? $config[$key] ?? null;
+}
+
+/**
+ * @throws ContainerException
+ * @throws ServiceNotFoundException
+ */
 #[Deprecated(reason: '自 v3.7.5 开始废弃', replacement: 'get_provider_config')]
 function get_alipay_config(array $params = []): array
 {
@@ -96,6 +110,14 @@ function get_alipay_config(array $params = []): array
     return $alipay[get_tenant($params)] ?? [];
 }
 
+function get_alipay_method(?Collection $payload): string
+{
+    return get_radar_method($payload) ?? 'POST';
+}
+
+/**
+ * @throws InvalidParamsException
+ */
 function get_alipay_url(array $config, ?Collection $payload): string
 {
     $url = get_radar_url($config, $payload) ?? '';
@@ -104,7 +126,97 @@ function get_alipay_url(array $config, ?Collection $payload): string
         return $url;
     }
 
-    return Alipay::URL[$config['mode'] ?? Pay::MODE_NORMAL];
+    // todo: v3.8.0 发布后，支付宝相关接口将强制使用 v3 版本，届时可以删除此处兼容逻辑
+    if ('v3' !== ($config['version'] ?? '')) {
+        $url = 'gateway.do?charset=utf-8';
+    }
+
+    if (empty($url)) {
+        throw new InvalidParamsException(Exception::PARAMS_ALIPAY_URL_MISSING, '参数异常: 支付宝 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
+    }
+
+    return Alipay::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_alipay_body(?Collection $payload): mixed
+{
+    $body = get_radar_body($payload);
+
+    if (is_null($body)) {
+        throw new InvalidParamsException(Exception::PARAMS_ALIPAY_BODY_MISSING, '参数异常: 支付宝 `_body` 参数缺失：你可能用错插件顺序，应该先使用 `AddPayloadBodyPlugin`');
+    }
+
+    return $body;
+}
+
+/**
+ * @throws ContainerException
+ * @throws InvalidConfigException
+ * @throws ServiceNotFoundException
+ */
+function get_alipay_app_public_cert_sn(string $tenant, array $config): string
+{
+    if (!empty($config['app_public_cert_sn'])) {
+        return $config['app_public_cert_sn'];
+    }
+
+    $path = $config['app_public_cert_path'] ?? null;
+
+    if (is_null($path)) {
+        throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
+    }
+
+    $sn = Certification::sn($path);
+
+    Pay::get(ConfigInterface::class)->set('alipay.'.$tenant.'.app_public_cert_sn', $sn);
+
+    return $sn;
+}
+
+/**
+ * @throws ContainerException
+ * @throws InvalidConfigException
+ * @throws ServiceNotFoundException
+ */
+function get_alipay_root_cert_sn(string $tenant, array $config): string
+{
+    if (!empty($config['alipay_root_cert_sn'])) {
+        return $config['alipay_root_cert_sn'];
+    }
+
+    $path = $config['alipay_root_cert_path'] ?? null;
+
+    if (is_null($path)) {
+        throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [alipay_root_cert_path]');
+    }
+
+    $sns = Certification::sns($path);
+    $sns = implode('_', $sns);
+
+    Pay::get(ConfigInterface::class)->set('alipay.'.$tenant.'.alipay_root_cert_sn', $sns);
+
+    return $sns;
+}
+
+/**
+ * @throws InvalidConfigException
+ */
+function get_alipay_sign(array $config, string $contents): string
+{
+    $privateKey = $config['app_secret_cert'] ?? null;
+
+    if (empty($privateKey)) {
+        throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_secret_cert]');
+    }
+
+    $privateKey = get_private_cert($privateKey);
+
+    openssl_sign($contents, $sign, $privateKey, OPENSSL_ALGO_SHA256);
+
+    return base64_encode($sign);
 }
 
 /**
@@ -462,7 +574,7 @@ function get_wechat_public_key(array $config, string $serialNo): string
     $publicKey = $config['wechat_public_cert_path'][$serialNo] ?? null;
 
     if (empty($publicKey)) {
-        throw new InvalidParamsException(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND, '参数异常: 微信公钥序列号未找到 - '.$serialNo);
+        throw new InvalidParamsException(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND, '配置异常: 微信公钥序列号未找到 - '.$serialNo);
     }
 
     return $publicKey;

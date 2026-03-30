@@ -1,0 +1,74 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Yansongda\Pay\Tests\Shortcut\Alipay\V3;
+
+use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\Fund\Transfer\Fund\QueryPlugin as TransferQueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\Pay\QueryPlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\Pay\QueryRefundPlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\StartPlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin;
+use Yansongda\Pay\Shortcut\Alipay\V3\QueryShortcut;
+use Yansongda\Pay\Tests\TestCase;
+
+class QueryShortcutTest extends TestCase
+{
+    protected QueryShortcut $shortcut;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->shortcut = new QueryShortcut();
+    }
+
+    public function testNormal()
+    {
+        $result = $this->shortcut->getPlugins([]);
+
+        self::assertEquals([
+            StartPlugin::class,
+            QueryPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $result);
+    }
+
+    public function testRefundNormal()
+    {
+        $result = $this->shortcut->getPlugins(['out_request_no' => '202403250001']);
+
+        self::assertEquals([
+            StartPlugin::class,
+            QueryRefundPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $result);
+    }
+
+    public function testTransferNormal()
+    {
+        $result = $this->shortcut->getPlugins(['_action' => 'transfer']);
+
+        self::assertEquals([
+            StartPlugin::class,
+            TransferQueryPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $result);
+    }
+}
