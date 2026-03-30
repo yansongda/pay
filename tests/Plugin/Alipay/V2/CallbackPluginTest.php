@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
 
 use GuzzleHttp\Psr7\ServerRequest;
-use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
+use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
