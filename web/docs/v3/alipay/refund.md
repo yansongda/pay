@@ -10,12 +10,6 @@
 
 ## 普通退款操作
 
-:::tip
-Alipay V3 的退款与退款查询已按官方 open-v3 REST API 实现，分别走 `POST /v3/alipay/trade/refund` 与 `POST /v3/alipay/trade/fastpay/refund/query`。
-
-`_action` 仍可用于兼容不同支付场景，但在 V3 下退款请求会统一走同一个 REST 端点。
-:::
-
 ```php
 Pay::config($this->config);
 
@@ -33,4 +27,11 @@ $result = Pay::alipay()->refund([
 
 ### 配置参数
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open-v3/05xskz)，查看「请求参数」一栏。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考以下 API 查看「请求参数」一栏。
+
+- [网页订单](https://opendocs.alipay.com/open/f60979b3_alipay.trade.refund?pathHash=e4c921a7&ref=api&scene=common)
+- [APP 订单](https://opendocs.alipay.com/open/6c0cdd7d_alipay.trade.refund?pathHash=4081e89c&ref=api&scene=common)
+- [小程序订单](https://opendocs.alipay.com/mini/05xskz?pathHash=b18b975d&ref=api&scene=common)
+- [刷卡订单](https://opendocs.alipay.com/open/3aea9b48_alipay.trade.refund?pathHash=04122275&ref=api&scene=common)
+- [扫码订单](https://opendocs.alipay.com/open/02ekfk?pathHash=b45b14f7&ref=api&scene=common)
+- [H5 订单](https://opendocs.alipay.com/open/4b7cc5db_alipay.trade.refund?pathHash=d98b006d&ref=api&scene=common)

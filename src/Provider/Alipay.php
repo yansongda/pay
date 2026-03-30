@@ -20,23 +20,16 @@ use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AppCallbackPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\V3\AddPayloadSignaturePlugin as AddPayloadSignaturePluginV3;
-use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin as AddRadarPluginV3;
-use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin as ResponsePluginV3;
-use Yansongda\Pay\Plugin\Alipay\V3\StartPlugin as StartPluginV3;
-use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin as VerifySignaturePluginV3;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
-
-use function Yansongda\Pay\get_provider_config;
 
 /**
  * @method ResponseInterface|Rocket app(array $order)      APP 支付
@@ -50,9 +43,9 @@ use function Yansongda\Pay\get_provider_config;
 class Alipay implements ProviderInterface
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://openapi.alipay.com/',
-        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com/',
-        Pay::MODE_SERVICE => 'https://openapi.alipay.com/',
+        Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
+        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com/gateway.do?charset=utf-8',
+        Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
     ];
 
     /**
@@ -62,9 +55,7 @@ class Alipay implements ProviderInterface
      */
     public function __call(string $shortcut, array $params): Collection|MessageInterface|Rocket|null
     {
-        $config = get_provider_config('alipay', $params[0] ?? []);
-        $version = 'v3' === ($config['api_version'] ?? '') ? 'V3\\' : '';
-        $plugin = '\Yansongda\Pay\Shortcut\Alipay\\'.$version.Str::studly($shortcut).'Shortcut';
+        $plugin = '\Yansongda\Pay\Shortcut\Alipay\\'.Str::studly($shortcut).'Shortcut';
 
         return Artful::shortcut($plugin, ...$params);
     }
@@ -133,11 +124,10 @@ class Alipay implements ProviderInterface
     public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection
     {
         $request = $this->getCallbackParams($contents);
-        $all = $request->merge($params)->all();
 
         Event::dispatch(new CallbackReceived('alipay', $request->all(), $params, null));
 
-        return $this->pay([CallbackPlugin::class], $all);
+        return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
     }
 
     /**
@@ -162,15 +152,6 @@ class Alipay implements ProviderInterface
             [StartPlugin::class],
             $plugins,
             [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        );
-    }
-
-    public function mergeCommonPluginsV3(array $plugins): array
-    {
-        return array_merge(
-            [StartPluginV3::class],
-            $plugins,
-            [AddPayloadSignaturePluginV3::class, AddRadarPluginV3::class, VerifySignaturePluginV3::class, ResponsePluginV3::class, ParserPlugin::class],
         );
     }
 

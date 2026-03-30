@@ -14,15 +14,6 @@
 
 更多接口调用请参考后续文档
 
-:::tip
-当前 Alipay V3 支付能力分为两类：
-
-- `web` / `h5` / `app` 仍走 gateway 兼容模式，便于继续返回表单、唤起串等前台结果；
-- `mini` / `pos` / `scan` / `transfer` 已切换为官方 open-v3 REST API。
-
-因此本文档中的前台支付文档链接仍指向支付宝对应的官方拉起支付文档；服务端交易类能力则优先指向 open-v3 文档。
-:::
-
 ## 网页支付
 
 ### 例子
@@ -137,7 +128,7 @@ return $result->get('trade_no');  // 支付宝交易号
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**，比如，`product_code` 等参数。
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open-v3/04n6a3)，查看「请求参数」一栏。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open/02ekfj?ref=api&scene=de4d6a1e0c6e423b9eefa7c3a6dcb7a5)，查看「请求参数」一栏。
 
 小程序支付接入文档：[https://docs.alipay.com/mini/introduce/pay](https://opendocs.alipay.com/mini/introduce/pay)。
 
@@ -160,13 +151,9 @@ $result = Pay::alipay()->pos([
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**，比如，`product_code` 等参数。
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open-v3/02s3xk)，查看「请求参数」一栏。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open/02ekfp?ref=api&scene=32)，查看「请求参数」一栏。
 
 ## 扫码支付
-
-:::tip
-当前 `scan` 快捷方式默认走 `POST /v3/alipay/trade/precreate`。如需服务端先创建交易再继续后续流程，可直接使用插件 `\Yansongda\Pay\Plugin\Alipay\V3\Pay\Scan\CreatePlugin` 组合到 `mergeCommonPluginsV3()` 中调用。
-:::
 
 ### 例子
 
@@ -186,13 +173,9 @@ return $result->qr_code; // 二维码 url
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**，比如，`product_code` 等参数。
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open-v3/02s4f0)，查看「请求参数」一栏。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open/02ekfg?ref=api&scene=19)，查看「请求参数」一栏。
 
 ## 账户转账
-
-:::tip
-在 Alipay V3 中，`transfer` 已按官方 open-v3 REST API 实现，走 `POST /v3/alipay/fund/trans/uni/transfer`。
-:::
 
 ### 例子
 
@@ -216,70 +199,9 @@ $result = Pay::alipay()->transfer([
 
 **所有订单配置中，客观参数均不用配置，扩展包已经为大家自动处理了**
 
-所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/open-v3/02a67f)，查看「请求参数」一栏。
+所有订单配置参数和官方无任何差别，兼容所有功能，所有参数请参考[这里](https://opendocs.alipay.com/apis/api_28/alipay.fund.trans.uni.transfer)，查看「请求参数」一栏。
 
 
 :::tip
 转账查询等，请参考 [查询](/docs/v3/alipay/query.md)
-:::
-
-## 账单下载地址
-
-:::tip
-支付宝官方 V3 SDK 已提供 `GET /v3/alipay/data/dataservice/bill/downloadurl/query`。当前仓库可通过自定义插件组合 `\Yansongda\Pay\Plugin\Alipay\V3\Data\Dataservice\Bill\DownloadUrl\QueryPlugin` 调用。
-:::
-
-```php
-use Yansongda\Pay\Plugin\Alipay\V3\Data\Dataservice\Bill\DownloadUrl\QueryPlugin;
-
-Pay::config($this->config);
-
-$plugins = Pay::alipay()->mergeCommonPluginsV3([
-    QueryPlugin::class,
-]);
-
-$result = Pay::alipay()->pay($plugins, [
-    'bill_type' => 'trade',
-    'bill_date' => '2025-05-01',
-]);
-```
-
-## 电子回单
-
-:::tip
-支付宝官方 V3 SDK 已提供电子回单相关端点：
-
-- `POST /v3/alipay/data/bill/ereceipt/apply`
-- `GET /v3/alipay/data/bill/ereceipt/query`
-
-当前仓库可通过自定义插件组合 `\Yansongda\Pay\Plugin\Alipay\V3\Data\Bill\Ereceipt\ApplyPlugin` 与 `\Yansongda\Pay\Plugin\Alipay\V3\Data\Bill\Ereceipt\QueryPlugin` 调用。
-:::
-
-```php
-use Yansongda\Pay\Plugin\Alipay\V3\Data\Bill\Ereceipt\ApplyPlugin;
-use Yansongda\Pay\Plugin\Alipay\V3\Data\Bill\Ereceipt\QueryPlugin;
-
-Pay::config($this->config);
-
-$applyPlugins = Pay::alipay()->mergeCommonPluginsV3([
-    ApplyPlugin::class,
-]);
-
-$applyResult = Pay::alipay()->pay($applyPlugins, [
-    'type' => 'TRANSFER',
-]);
-
-$queryPlugins = Pay::alipay()->mergeCommonPluginsV3([
-    QueryPlugin::class,
-]);
-
-$queryResult = Pay::alipay()->pay($queryPlugins, [
-    'file_id' => '202603250001',
-]);
-```
-
-## 尚未迁移到 V3 的转账账户能力
-
-:::tip
-`alipay.fund.account.query` 当前未在支付宝官方 V3 SDK 文档中确认到明确等价的 REST 端点，因此仓库中的 `\Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\QueryAccountPlugin` 仍继续保留为 V2 能力。
 :::
