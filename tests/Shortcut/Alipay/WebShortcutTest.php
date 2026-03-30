@@ -2,21 +2,16 @@
 
 namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
+use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\Pay\Web\PayPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Plugin\Alipay\Gateway\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\Gateway\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\Gateway\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\Gateway\Pay\Web\HtmlPayPlugin;
-use Yansongda\Pay\Plugin\Alipay\Gateway\ResponseHtmlPlugin;
-use Yansongda\Pay\Plugin\Alipay\Gateway\StartPlugin;
 use Yansongda\Pay\Shortcut\Alipay\WebShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class WebShortcutTest extends TestCase
 {
     protected WebShortcut $shortcut;
@@ -28,13 +23,13 @@ class WebShortcutTest extends TestCase
         $this->shortcut = new WebShortcut();
     }
 
-    public function testNormal(): void
+    public function testNormal()
     {
         $result = $this->shortcut->getPlugins([]);
 
         self::assertEquals([
             StartPlugin::class,
-            HtmlPayPlugin::class,
+            PayPlugin::class,
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,

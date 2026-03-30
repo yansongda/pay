@@ -7,11 +7,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class AddPayloadSignaturePluginTest extends TestCase
 {
     protected AddPayloadSignaturePlugin $plugin;
@@ -23,7 +18,7 @@ class AddPayloadSignaturePluginTest extends TestCase
         $this->plugin = new AddPayloadSignaturePlugin();
     }
 
-    public function testSignNormal(): void
+    public function testSignNormal()
     {
         $payload = [
             "app_id" => "9021000122682882",
@@ -44,7 +39,7 @@ class AddPayloadSignaturePluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams([])->setPayload(new Collection($payload));
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertSame($sign, $result->getPayload()->get('sign'));
     }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Shortcut\Alipay\V3;
 
-use Yansongda\Pay\Shortcut\Alipay\Gateway\WebShortcut as GatewayWebShortcut;
+use Yansongda\Pay\Shortcut\Alipay\WebShortcut as V2WebShortcut;
 
-class WebShortcut extends GatewayWebShortcut
+class WebShortcut extends V2WebShortcut
 {
 }
