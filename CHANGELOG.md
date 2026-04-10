@@ -1,4 +1,4 @@
-## v3.8.0 - 2026-04-10
+## v3.8.0 - TBD
 
 ### BREAKING CHANGES
 
