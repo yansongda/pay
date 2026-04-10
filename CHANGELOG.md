@@ -16,6 +16,10 @@
 - `get_wechat_config()` 函数
 - `get_unipay_config()` 函数
 
+### Added
+
+- feat: 增加 PHP 8.5 支持
+
 ### Changed
 
 - `Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\*` → `Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\*`
