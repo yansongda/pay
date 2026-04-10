@@ -13,7 +13,7 @@ use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\CancelPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CancelPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\CancelShortcut;
 use Yansongda\Pay\Tests\TestCase;
@@ -41,20 +41,6 @@ class CancelShortcutTest extends TestCase
             ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
-    }
-
-    public function testMchTransfer()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CancelPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'mch_transfer']));
     }
 
     public function testFoo()

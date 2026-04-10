@@ -1,23 +1,23 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer\Receipt;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Receipt\CreatePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CancelPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class CreatePluginTest extends TestCase
+class CancelPluginTest extends TestCase
 {
-    protected CreatePlugin $plugin;
+    protected CancelPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new CreatePlugin();
+        $this->plugin = new CancelPlugin();
     }
 
     public function testModeWrong()
@@ -27,24 +27,34 @@ class CreatePluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
-        self::expectExceptionMessage('参数异常: 转账账单电子回单申请受理接口，只支持普通商户模式，当前配置为服务商模式');
+        self::expectExceptionMessage('参数异常: 撤销转账，只支持普通商户模式，当前配置为服务商模式');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testNormal()
+    public function testEmptyPayload()
+    {
+        $rocket = new Rocket();
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        self::expectExceptionMessage('参数异常: 撤销转账，参数缺少 `out_bill_no`');
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testNormalParams()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "test" => "yansongda",
+            "out_bill_no" => "111",
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/transfer/bill-receipt',
-            'test' => 'yansongda',
+            '_url' => 'v3/fund-app/mch-transfer/transfer-bills/out-bill-no/111/cancel',
         ], $result->getPayload()->all());
     }
 }

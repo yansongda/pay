@@ -1,3 +1,25 @@
+## v3.8.0 - 2026-04-10
+
+### BREAKING CHANGES
+
+- change: 最低 PHP 版本要求从 8.0 升级到 8.2
+- delete: 移除废弃函数 `get_alipay_config`、`get_wechat_config`、`get_unipay_config`，请使用 `get_provider_config` 代替
+- delete: 移除废弃的 `Wechat\StartPlugin`，请使用 `Yansongda\Artful\Plugin\StartPlugin` 代替
+- delete: 移除废弃的微信 Transfer 插件（因微信支付 API 变更）
+- change: 重命名 `MchTransfer` 命名空间为 `Transfer`
+
+### Removed
+
+- `src/Plugin/Wechat/StartPlugin.php`
+- `src/Plugin/Wechat/V3/Marketing/Transfer/` 目录
+- `get_alipay_config()` 函数
+- `get_wechat_config()` 函数
+- `get_unipay_config()` 函数
+
+### Changed
+
+- `Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\*` → `Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\*`
+
 ## v3.7.20
 
 ### added

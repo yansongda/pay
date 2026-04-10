@@ -13,9 +13,8 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\QueryByWxPlugin as MchTransferQueryByWxPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\QueryPlugin as MchTransferQueryPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Detail\QueryPlugin as TransferQueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\QueryByWxPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\QueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\QueryPlugin as AppQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\QueryRefundPlugin as AppQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\QueryPlugin as CombineQueryPlugin;
@@ -140,12 +139,12 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
-    protected function mchTransferPlugins(array $params): array
+    protected function transferPlugins(array $params): array
     {
-        $query = MchTransferQueryPlugin::class;
+        $query = QueryPlugin::class;
 
         if (isset($params['transfer_bill_no'])) {
-            $query = MchTransferQueryByWxPlugin::class;
+            $query = QueryByWxPlugin::class;
         }
 
         return [
@@ -240,20 +239,6 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             NativeQueryRefundPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ];
-    }
-
-    protected function transferPlugins(): array
-    {
-        return [
-            StartPlugin::class,
-            TransferQueryPlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,

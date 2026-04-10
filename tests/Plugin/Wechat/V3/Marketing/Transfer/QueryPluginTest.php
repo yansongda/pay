@@ -1,11 +1,11 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer\ReceiptDetail;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\ReceiptDetail\QueryPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
@@ -27,7 +27,7 @@ class QueryPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
-        self::expectExceptionMessage('参数异常: 查询转账明细电子回单受理结果API，只支持普通商户模式，当前配置为服务商模式');
+        self::expectExceptionMessage('参数异常: 通过商户单号查询转账单，只支持普通商户模式，当前配置为服务商模式');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -38,7 +38,7 @@ class QueryPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 查询转账明细电子回单受理结果API，参数为空');
+        self::expectExceptionMessage('参数异常: 通过商户单号查询转账单，参数缺少 `out_bill_no`');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -47,16 +47,14 @@ class QueryPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "out_batch_no" => "111",
-            'out_detail_no' => '222',
-            '_t' => 'a',
+            "out_bill_no" => "111",
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/transfer-detail/electronic-receipts?out_batch_no=111&out_detail_no=222',
+            '_url' => 'v3/fund-app/mch-transfer/transfer-bills/out-bill-no/111',
         ], $result->getPayload()->all());
     }
 }

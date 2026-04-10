@@ -13,7 +13,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\CreatePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CreatePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
@@ -39,20 +39,6 @@ class TransferShortcut implements ShortcutInterface
     }
 
     public function transferPlugins(): array
-    {
-        return [
-            StartPlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CreatePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ];
-    }
-
-    public function mchTransferPlugins(): array
     {
         return [
             StartPlugin::class,

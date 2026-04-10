@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer;
 
 use Closure;
-use JetBrains\PhpStorm\Deprecated;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
@@ -25,9 +24,8 @@ use function Yansongda\Pay\get_wechat_serial_no;
 use function Yansongda\Pay\get_wechat_type_key;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/batch-transfer-to-balance/transfer-batch/initiate-batch-transfer.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012716434
  */
-#[Deprecated(reason: '由于微信支付变更，自 v3.7.12 开始废弃, 并将在 v3.8.0 移除')]
 class CreatePlugin implements PluginInterface
 {
     /**
@@ -56,8 +54,9 @@ class CreatePlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/transfer/batches',
+                '_url' => 'v3/fund-app/mch-transfer/transfer-bills',
                 'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
+                'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
             ],
             $this->normal($params, $payload)
         ));
@@ -76,7 +75,7 @@ class CreatePlugin implements PluginInterface
      */
     protected function normal(array $params, Collection $payload): array
     {
-        if (!$payload->has('transfer_detail_list.0.user_name')) {
+        if (!$payload->has('user_name')) {
             return [];
         }
 
@@ -92,17 +91,12 @@ class CreatePlugin implements PluginInterface
      */
     protected function encryptSensitiveData(array $params, Collection $payload): array
     {
-        $data['transfer_detail_list'] = $payload->get('transfer_detail_list', []);
         $data['_serial_no'] = get_wechat_serial_no($params);
 
         $config = get_provider_config('wechat', $params);
         $publicKey = get_wechat_public_key($config, $data['_serial_no']);
 
-        foreach ($data['transfer_detail_list'] as $key => $list) {
-            if (!empty($list['user_name'])) {
-                $data['transfer_detail_list'][$key]['user_name'] = encrypt_wechat_contents($list['user_name'], $publicKey);
-            }
-        }
+        $data['user_name'] = encrypt_wechat_contents($payload->get('user_name'), $publicKey);
 
         return $data;
     }

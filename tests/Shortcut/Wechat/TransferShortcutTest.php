@@ -12,7 +12,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\CreatePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CreatePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\TransferShortcut;
 use Yansongda\Pay\Tests\TestCase;
@@ -32,20 +32,6 @@ class TransferShortcutTest extends TestCase
     {
         self::assertEquals([
             StartPlugin::class,
-            \Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CreatePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
-
-    public function testMch()
-    {
-        self::assertEquals([
-            StartPlugin::class,
             CreatePlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
@@ -53,7 +39,7 @@ class TransferShortcutTest extends TestCase
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'mch_transfer']));
+        ], $this->plugin->getPlugins(['_action' => 'transfer']));
     }
 
     public function testFoo()

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -36,7 +36,7 @@ class InvokeJsapiPlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[Wechat][V3][Marketing][MchTransfer][InvokeJsapiPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][V3][Marketing][Transfer][InvokeJsapiPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $config = get_provider_config('wechat', $rocket->getParams());
         $destination = $rocket->getDestination();
@@ -47,7 +47,7 @@ class InvokeJsapiPlugin implements PluginInterface
         }
 
         if (is_null($packageInfo)) {
-            Logger::error('[Wechat][V3][Marketing][MchTransfer][InvokeJsapiPlugin] JSAPI调起用户确认收款失败：响应缺少 `package_info` 参数，请自行检查参数是否符合微信要求', $destination?->all() ?? null);
+            Logger::error('[Wechat][V3][Marketing][Transfer][InvokeJsapiPlugin] JSAPI调起用户确认收款失败：响应缺少 `package_info` 参数，请自行检查参数是否符合微信要求', $destination?->all() ?? null);
 
             throw new InvalidResponseException(Exception::RESPONSE_MISSING_NECESSARY_PARAMS, $destination?->get('fail_reason') ?? 'JSAPI调起用户确认收款失败：响应缺少 `package_info` 参数，请自行检查参数是否符合微信要求', $destination?->all() ?? null);
         }
@@ -58,7 +58,7 @@ class InvokeJsapiPlugin implements PluginInterface
 
         $rocket->setDestination($this->getInvokeConfig($payload, $params, $config, $packageInfo));
 
-        Logger::info('[Wechat][V3][Marketing][MchTransfer][InvokeJsapiPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][V3][Marketing][Transfer][InvokeJsapiPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }

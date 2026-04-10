@@ -1,11 +1,11 @@
 <?php
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer\Detail;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Detail\QueryByWxPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\QueryByWxPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
@@ -27,7 +27,7 @@ class QueryByWxPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
-        self::expectExceptionMessage('参数异常: 通过微信明细单号查询明细单，只支持普通商户模式，当前配置为服务商模式');
+        self::expectExceptionMessage('参数异常: 通过微信单号查询转账单，只支持普通商户模式，当前配置为服务商模式');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -38,7 +38,7 @@ class QueryByWxPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 通过微信明细单号查询明细单，参数缺少 `batch_id` 或 `detail_id`');
+        self::expectExceptionMessage('参数异常: 通过微信单号查询转账单，参数缺少 `transfer_bill_no`');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -47,15 +47,14 @@ class QueryByWxPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection( [
-            "batch_id" => "111",
-            'detail_id' => '222',
+            "transfer_bill_no" => "111",
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/transfer/batches/batch-id/111/details/detail-id/222',
+            '_url' => 'v3/fund-app/mch-transfer/transfer-bills/transfer-bill-no/111',
         ], $result->getPayload()->all());
     }
 }
