@@ -13,7 +13,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\CancelPlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CancelPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
@@ -35,10 +35,10 @@ class CancelShortcut implements ShortcutInterface
 
     protected function defaultPlugins(): array
     {
-        return $this->mchTransferPlugins();
+        return $this->transferPlugins();
     }
 
-    protected function mchTransferPlugins(): array
+    protected function transferPlugins(): array
     {
         return [
             StartPlugin::class,

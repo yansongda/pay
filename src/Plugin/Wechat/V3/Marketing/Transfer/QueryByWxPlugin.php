@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer;
+namespace Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -28,7 +28,7 @@ class QueryByWxPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Wechat][Marketing][MchTransfer][QueryByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Marketing][Transfer][QueryByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $config = get_provider_config('wechat', $rocket->getParams());
         $payload = $rocket->getPayload();
@@ -47,7 +47,7 @@ class QueryByWxPlugin implements PluginInterface
             '_url' => 'v3/fund-app/mch-transfer/transfer-bills/transfer-bill-no/'.$transferBillNo,
         ]);
 
-        Logger::info('[Wechat][Marketing][MchTransfer][QueryByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Marketing][Transfer][QueryByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

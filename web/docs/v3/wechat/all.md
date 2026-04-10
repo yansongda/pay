@@ -362,56 +362,6 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
 ## 运营工具
 
-### 商家转账到零钱
-
-- 发起商家转账
-
-  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CreatePlugin`
-
-#### 查询转账批次单
-
-- 通过微信批次单号查询批次单
-
-  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Batch\QueryByWxPlugin`
-
-- 通过商家批次单号查询批次单
-
-  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Batch\QueryPlugin`
-
-#### 查询转账明细单
-
-- 通过微信明细单号查询明细单
-
-  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Detail\QueryByWxPlugin`
-
-- 通过商家明细单号查询明细单
-
-  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Detail\QueryPlugin`
-
-#### 申请转账电子回单
-
-- 转账账单电子回单申请受理接口
-
-  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Receipt\CreatePlugin`
-
-- 查询转账账单电子回单接口
-
-  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\Receipt\QueryPlugin`
-
-#### 申请转账明细电子回单
-
-- 受理转账明细电子回单API
-
-  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\ReceiptDetail\CreatePlugin`
-
-- 查询转账明细电子回单受理结果API
-
-  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\ReceiptDetail\QueryPlugin`
-
-- 下载电子回单
-
-  `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\DownloadReceiptPlugin`
-
 ### 平台收付通（余额查询）
 
 - 查询电商平台账户实时余额API
@@ -738,5 +688,4 @@ $result = Pay::wechat()->papay([
 - 图片请求接口
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryImagePlugin`
-
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
-use JetBrains\PhpStorm\Deprecated;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Artful\Artful;
@@ -84,18 +83,6 @@ function get_provider_config(string $provider, array $params = []): array
     return $config->get($provider, [])[get_tenant($params)] ?? [];
 }
 
-/**
- * @throws ContainerException
- * @throws ServiceNotFoundException
- */
-#[Deprecated(reason: '自 v3.7.5 开始废弃', replacement: 'get_provider_config')]
-function get_alipay_config(array $params = []): array
-{
-    $alipay = Pay::get(ConfigInterface::class)->get('alipay');
-
-    return $alipay[get_tenant($params)] ?? [];
-}
-
 function get_alipay_url(array $config, ?Collection $payload): string
 {
     $url = get_radar_url($config, $payload) ?? '';
@@ -133,18 +120,6 @@ function verify_alipay_sign(array $config, string $contents, string $sign): void
     if (!$result) {
         throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证支付宝签名失败', func_get_args());
     }
-}
-
-/**
- * @throws ContainerException
- * @throws ServiceNotFoundException
- */
-#[Deprecated(reason: '自 v3.7.5 开始废弃', replacement: 'get_provider_config')]
-function get_wechat_config(array $params = []): array
-{
-    $wechat = Pay::get(ConfigInterface::class)->get('wechat');
-
-    return $wechat[get_tenant($params)] ?? [];
 }
 
 function get_wechat_method(?Collection $payload): string
@@ -483,18 +458,6 @@ function get_wechat_miniprogram_pay_sign(array $config, string $url, string $pay
 function get_wechat_miniprogram_user_sign(string $sessionKey, string $payload): string
 {
     return hash_hmac('sha256', $payload, $sessionKey);
-}
-
-/**
- * @throws ContainerException
- * @throws ServiceNotFoundException
- */
-#[Deprecated(reason: '自 v3.7.5 开始废弃', replacement: 'get_provider_config')]
-function get_unipay_config(array $params = []): array
-{
-    $unipay = Pay::get(ConfigInterface::class)->get('unipay');
-
-    return $unipay[get_tenant($params)] ?? [];
 }
 
 /**

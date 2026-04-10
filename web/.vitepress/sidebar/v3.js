@@ -57,7 +57,7 @@ export default [
   },
   {
     text: '抖音',
-    collapsed: false,
+    collapsed: true,
     items: [
       { text: '支付', link: '/docs/v3/douyin/pay' },
       { text: '查询', link: '/docs/v3/douyin/query' },
@@ -71,7 +71,7 @@ export default [
   },
   {
     text: 'PayPal',
-    collapsed: false,
+    collapsed: true,
     items: [
       { text: '支付', link: '/docs/v3/paypal/pay' },
       { text: '查询', link: '/docs/v3/paypal/query' },
@@ -85,7 +85,7 @@ export default [
   },
   {
     text: 'Stripe',
-    collapsed: false,
+    collapsed: true,
     items: [
       { text: '支付', link: '/docs/v3/stripe/pay' },
       { text: '查询', link: '/docs/v3/stripe/query' },
