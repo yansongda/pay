@@ -1,4 +1,4 @@
-﻿# Airwallex 快速开始
+# Airwallex 快速开始
 
 ## 配置
 

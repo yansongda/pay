@@ -46,7 +46,7 @@ class Airwallex implements ProviderInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    public function __call(string $shortcut, array $params): Collection|MessageInterface|Rocket|null
+    public function __call(string $shortcut, array $params): null|Collection|MessageInterface|Rocket
     {
         $plugin = '\Yansongda\Pay\Shortcut\Airwallex\\'.Str::studly($shortcut).'Shortcut';
 
@@ -57,7 +57,7 @@ class Airwallex implements ProviderInterface
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function pay(array $plugins, array $params): Collection|MessageInterface|Rocket|null
+    public function pay(array $plugins, array $params): null|Collection|MessageInterface|Rocket
     {
         return Artful::artful($plugins, $params);
     }
@@ -110,7 +110,7 @@ class Airwallex implements ProviderInterface
      * @throws ContainerException
      * @throws InvalidParamsException
      */
-    public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection|Rocket
+    public function callback(null|array|ServerRequestInterface $contents = null, ?array $params = null): Collection|Rocket
     {
         $request = $this->getCallbackParams($contents);
 
@@ -136,7 +136,7 @@ class Airwallex implements ProviderInterface
         );
     }
 
-    protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
+    protected function getCallbackParams(null|array|ServerRequestInterface $contents = null): ServerRequestInterface
     {
         if (is_array($contents) && isset($contents['body'], $contents['headers'])) {
             return new ServerRequest('POST', 'http://localhost', $contents['headers'], $contents['body']);

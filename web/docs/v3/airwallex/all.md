@@ -1,4 +1,4 @@
-﻿# Airwallex 更多方便的插件
+# Airwallex 更多方便的插件
 
 得益于 `yansongda/pay` 的基础架构和插件机制，
 你可以自由组合内置插件或自定义插件来调用 Airwallex API。

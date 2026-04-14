@@ -1,4 +1,4 @@
-﻿# Airwallex 支付
+# Airwallex 支付
 
 Airwallex 当前内置支持以下支付方式：
 

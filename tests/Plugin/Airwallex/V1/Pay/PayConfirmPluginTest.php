@@ -50,4 +50,43 @@ class PayConfirmPluginTest extends TestCase
         self::assertEquals('redirect', $result->getDestination()->get('next_action_type'));
         self::assertEquals('https://pay.example.com/redirect', $result->getDestination()->get('pay_url'));
     }
+
+    public function testNormalizePayUrlFromRenderQrcode()
+    {
+        $rocket = (new Rocket())
+            ->setPayload(new Collection([
+                '_native_api' => false,
+            ]))
+            ->setDestination(new Collection([
+                'id' => 'int_test456',
+                'next_action' => [
+                    'type' => 'render_qrcode',
+                    'qrcode_url' => 'weixin://wxpay/bizpayurl?pr=test',
+                ],
+            ]));
+
+        $result = (new PayConfirmPlugin())->assembly($rocket, fn ($rocket) => $rocket);
+
+        self::assertEquals('render_qrcode', $result->getDestination()->get('next_action_type'));
+        self::assertEquals('weixin://wxpay/bizpayurl?pr=test', $result->getDestination()->get('pay_url'));
+    }
+
+    public function testNormalizePayUrlFromUnknownAction()
+    {
+        $rocket = (new Rocket())
+            ->setPayload(new Collection([
+                '_native_api' => false,
+            ]))
+            ->setDestination(new Collection([
+                'id' => 'int_test789',
+                'next_action' => [
+                    'type' => 'display_details',
+                ],
+            ]));
+
+        $result = (new PayConfirmPlugin())->assembly($rocket, fn ($rocket) => $rocket);
+
+        self::assertEquals('display_details', $result->getDestination()->get('next_action_type'));
+        self::assertEquals('', $result->getDestination()->get('pay_url'));
+    }
 }

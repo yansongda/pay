@@ -1,4 +1,4 @@
-﻿export default [
+export default [
   {
     text: '概述',
     collapsed: false,

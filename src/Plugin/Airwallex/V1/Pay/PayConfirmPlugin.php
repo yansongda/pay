@@ -55,7 +55,7 @@ class PayConfirmPlugin implements PluginInterface
             'payment_intent_id' => $destination->get('id'),
         ]);
 
-        $confirmPayload = array_merge($rocket->getParams(), [
+        $confirmPayload = array_merge($payload instanceof Collection ? $payload->all() : [], [
             'payment_intent_id' => $destination->get('id'),
         ]);
 

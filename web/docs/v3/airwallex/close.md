@@ -1,4 +1,4 @@
-﻿# Airwallex 关闭
+# Airwallex 关闭
 
 :::danger
 当前 Airwallex Provider 未实现 `close()`。

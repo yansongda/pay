@@ -1,4 +1,4 @@
-﻿# 确认 Airwallex 回调
+# 确认 Airwallex 回调
 
 处理完 Airwallex Webhook 后，可以直接返回：
 
