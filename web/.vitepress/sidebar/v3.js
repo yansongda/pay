@@ -1,4 +1,4 @@
-export default [
+﻿export default [
   {
     text: '概述',
     collapsed: false,
@@ -24,6 +24,7 @@ export default [
       { text: 'Stripe', link: '/docs/v3/quick-start/stripe' },
       { text: '银联', link: '/docs/v3/quick-start/unipay' },
       { text: '江苏银行', link: '/docs/v3/quick-start/jsb' },
+      { text: 'Airwallex', link: '/docs/v3/quick-start/airwallex' },
       { text: '返回格式', link: '/docs/v3/quick-start/return-format' }
     ]
   },
@@ -122,6 +123,20 @@ export default [
       { text: '确认回调', link: '/docs/v3/jsb/response' },
       { text: '所有内置插件', link: '/docs/v3/jsb/all' }
     ]
+  },
+  {
+    text: 'Airwallex',
+    collapsed: true,
+    items: [
+      { text: '支付', link: '/docs/v3/airwallex/pay' },
+      { text: '查询', link: '/docs/v3/airwallex/query' },
+      { text: '退款', link: '/docs/v3/airwallex/refund' },
+      { text: '关闭', link: '/docs/v3/airwallex/close' },
+      { text: '取消', link: '/docs/v3/airwallex/cancel' },
+      { text: '接收回调', link: '/docs/v3/airwallex/callback' },
+      { text: '确认回调', link: '/docs/v3/airwallex/response' },
+      { text: '所有内置插件', link: '/docs/v3/airwallex/all' },
+    ],
   },
   {
     text: '核心架构',
