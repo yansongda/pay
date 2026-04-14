@@ -38,6 +38,8 @@ class PayConfirmPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         if (!$payload?->get('_native_api', false)) {
+            $this->normalizeDestination($rocket);
+
             Logger::info('[Airwallex][V1][Pay][PayConfirmPlugin] 未开启 Native API，跳过 confirm', ['rocket' => $rocket]);
 
             return $rocket;
@@ -73,8 +75,37 @@ class PayConfirmPlugin implements PluginInterface
                 ->setDestination($result);
         }
 
+        $this->normalizeDestination($rocket);
+
         Logger::info('[Airwallex][V1][Pay][PayConfirmPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
+    }
+
+    protected function normalizeDestination(Rocket $rocket): void
+    {
+        $destination = $rocket->getDestination();
+
+        if (!$destination instanceof Collection) {
+            return;
+        }
+
+        $nextActionType = strval($destination->get('next_action.type', ''));
+        $payUrl = $this->getPayUrl($destination);
+
+        $destination->put('payment_intent_id', $destination->get('id'));
+        $destination->put('next_action_type', $nextActionType);
+        $destination->put('pay_url', $payUrl);
+    }
+
+    protected function getPayUrl(Collection $destination): string
+    {
+        $nextActionType = strval($destination->get('next_action.type', ''));
+
+        return match ($nextActionType) {
+            'render_qrcode' => strval($destination->get('next_action.qrcode_url', $destination->get('next_action.url', ''))),
+            'redirect' => strval($destination->get('next_action.url', '')),
+            default => '',
+        };
     }
 }

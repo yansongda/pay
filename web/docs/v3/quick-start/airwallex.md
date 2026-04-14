@@ -80,6 +80,51 @@ $result = Pay::airwallex()->intent($order);
 1. 创建 Payment Intent：`/api/v1/pa/payment_intents/create`
 2. 确认 Payment Intent：`/api/v1/pa/payment_intents/{id}/confirm`
 
+如果你做的是微信支付、支付宝香港、支付宝中国这类跳转或二维码场景，
+可以按下面方式传入：
+
+```php
+$order = [
+    '_native_api' => true,
+    'amount' => 100,
+    'currency' => 'USD',
+    'merchant_order_id' => 'order_20260414_001',
+    'payment_method' => [
+        'type' => 'wechatpay',
+        'wechatpay' => [
+            'flow' => 'mobile_web',
+        ],
+    ],
+];
+
+$result = Pay::airwallex()->intent($order);
+```
+
+支付确认后，通常可从响应里的 `next_action` 取出支付链接：
+
+```php
+$payUrl = '';
+$type = $result->get('next_action.type', '');
+
+switch ($type) {
+    case 'render_qrcode':
+        $payUrl = $result->get('next_action.qrcode_url')
+            ?? $result->get('next_action.url', '');
+        break;
+    case 'redirect':
+        $payUrl = $result->get('next_action.url', '');
+        break;
+}
+```
+
+SDK 也会额外补充便捷字段，业务里可以直接读取：
+
+```php
+$payUrl = $result->get('pay_url');
+$paymentIntentId = $result->get('payment_intent_id');
+$nextActionType = $result->get('next_action_type');
+```
+
 ## 查询
 
 ```php

@@ -160,6 +160,192 @@ $order = [
 ];
 ```
 
+### `_native_api = true` 时的移动端支付方式示例
+
+除了银行卡，Airwallex Native API 也常用于服务端确认以下支付方式：
+
+- `wechatpay`
+- `alipayhk`
+- `alipaycn`
+
+参照常见业务写法，可以这样组织参数：
+
+```php
+$order = [
+    '_native_api' => true,
+    'amount' => 100,
+    'currency' => 'USD',
+    'merchant_order_id' => 'order_20260414_001',
+    'payment_method' => [
+        'type' => 'wechatpay',
+        'wechatpay' => [
+            'flow' => 'mobile_web',
+        ],
+    ],
+];
+
+$result = Pay::airwallex()->intent($order);
+```
+
+如果是支付宝香港：
+
+```php
+$order = [
+    '_native_api' => true,
+    'amount' => 100,
+    'currency' => 'USD',
+    'merchant_order_id' => 'order_20260414_001',
+    'payment_method' => [
+        'type' => 'alipayhk',
+        'alipayhk' => [
+            'flow' => 'mobile_web',
+            'os_type' => 'android', // ios / android
+        ],
+    ],
+];
+```
+
+如果是支付宝中国：
+
+```php
+$order = [
+    '_native_api' => true,
+    'amount' => 100,
+    'currency' => 'USD',
+    'merchant_order_id' => 'order_20260414_001',
+    'payment_method' => [
+        'type' => 'alipaycn',
+        'alipaycn' => [
+            'flow' => 'qrcode', // 或 mobile_web
+        ],
+    ],
+];
+```
+
+### `_native_api = true` 时 `payment_method` 常见字段说明
+
+#### `payment_method.type`
+
+支付方式类型，常见值：
+
+- `wechatpay`
+- `alipayhk`
+- `alipaycn`
+- `card`
+
+#### `payment_method.{type}.flow`
+
+支付拉起方式，常见值：
+
+- `mobile_web`
+- `qrcode`
+
+#### `payment_method.alipayhk.os_type`
+
+支付宝香港场景下常见需要指定终端系统：
+
+- `ios`
+- `android`
+
+## Native API 响应说明
+
+启用 `_native_api => true` 后，Airwallex 在确认支付成功返回时，
+通常会在 `next_action` 中给出下一步动作。
+
+为了便于业务直接使用，SDK 会在保留 Airwallex 原始响应字段的同时，额外补充以下便捷字段：
+
+- `payment_intent_id`：等同于响应中的 `id`
+- `next_action_type`：等同于 `next_action.type`
+- `pay_url`：从 `next_action.qrcode_url` 或 `next_action.url` 自动提取
+
+常见结构如下：
+
+```php
+$result = Pay::airwallex()->intent($order);
+
+$type = $result->get('next_action.type');
+```
+
+典型处理方式：
+
+```php
+$payUrl = '';
+$type = $result->get('next_action.type', '');
+
+switch ($type) {
+    case 'render_qrcode':
+        $payUrl = $result->get('next_action.qrcode_url')
+            ?? $result->get('next_action.url', '');
+        break;
+    case 'redirect':
+        $payUrl = $result->get('next_action.url', '');
+        break;
+}
+```
+
+也就是说，业务上通常可以取：
+
+- `next_action.qrcode_url`
+- `next_action.url`
+
+也可以直接使用 SDK 整理好的：
+
+- `payment_intent_id`
+- `next_action_type`
+- `pay_url`
+
+并整理成你自己的 `pay_url` 返回给前端。
+
+### 推荐的业务封装示例
+
+```php
+$order = [
+    '_native_api' => true,
+    'amount' => 100,
+    'currency' => 'USD',
+    'merchant_order_id' => 'order_20260414_001',
+    'payment_method' => [
+        'type' => 'wechatpay',
+        'wechatpay' => [
+            'flow' => 'mobile_web',
+        ],
+    ],
+];
+
+$result = Pay::airwallex()->intent($order);
+
+$payUrl = '';
+$type = $result->get('next_action.type', '');
+
+switch ($type) {
+    case 'render_qrcode':
+        $payUrl = $result->get('next_action.qrcode_url')
+            ?? $result->get('next_action.url', '');
+        break;
+    case 'redirect':
+        $payUrl = $result->get('next_action.url', '');
+        break;
+}
+
+return [
+    'pay_url' => $payUrl,
+    'raw' => $result,
+];
+```
+
+如果你直接使用 SDK 补充好的便捷字段，则可以简化为：
+
+```php
+$result = Pay::airwallex()->intent($order);
+
+return [
+    'payment_intent_id' => $result->get('payment_intent_id'),
+    'pay_url' => $result->get('pay_url'),
+    'next_action_type' => $result->get('next_action_type'),
+    'raw' => $result,
+];
+```
+
 :::warning
 `_native_api = true` 仅适用于已开通 Airwallex Native API 权限的账号。
 
