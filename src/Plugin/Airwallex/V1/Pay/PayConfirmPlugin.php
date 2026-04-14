@@ -35,6 +35,14 @@ class PayConfirmPlugin implements PluginInterface
 
         Logger::debug('[Airwallex][V1][Pay][PayConfirmPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        $payload = $rocket->getPayload();
+
+        if (!$payload?->get('_native_api', false)) {
+            Logger::info('[Airwallex][V1][Pay][PayConfirmPlugin] 未开启 Native API，跳过 confirm', ['rocket' => $rocket]);
+
+            return $rocket;
+        }
+
         $destination = $rocket->getDestination();
 
         if (!$destination instanceof Collection) {

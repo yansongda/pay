@@ -43,7 +43,39 @@ $order = [
 $result = Pay::airwallex()->intent($order);
 ```
 
-`intent()` 会自动完成以下两步：
+默认情况下，`intent()` 只会创建 Payment Intent：
+
+1. 调用 `/api/v1/pa/payment_intents/create`
+2. 返回前端 Airwallex 组件继续支付所需的数据，例如 `id`、`client_secret` 等
+
+适用于 Airwallex.js、Elements、Hosted Payment Page 等前端集成场景。
+
+### Native API 模式
+
+如果你已经获得 Airwallex Native API 权限，并且希望由服务端继续确认支付，需要显式传入 `_native_api`：
+
+```php
+$order = [
+    '_native_api' => true,
+    'amount' => 100,
+    'currency' => 'USD',
+    'merchant_order_id' => 'order_20260414_001',
+    'payment_method' => [
+        'type' => 'card',
+        'card' => [
+            'number' => '4111111111111111',
+            'expiry_month' => '12',
+            'expiry_year' => '2030',
+            'name' => 'John Doe',
+            'cvc' => '123',
+        ],
+    ],
+];
+
+$result = Pay::airwallex()->intent($order);
+```
+
+传入 `_native_api => true` 后，SDK 会继续执行：
 
 1. 创建 Payment Intent：`/api/v1/pa/payment_intents/create`
 2. 确认 Payment Intent：`/api/v1/pa/payment_intents/{id}/confirm`
