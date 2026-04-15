@@ -21,4 +21,14 @@ class QueryRefundPluginTest extends TestCase
         self::assertEquals('GET', $result->getPayload()->get('_method'));
         self::assertEquals('api/v1/pa/refunds/ref_test123', $result->getPayload()->get('_url'));
     }
+
+    public function testUseId()
+    {
+        $result = (new QueryRefundPlugin())->assembly(
+            (new Rocket())->setPayload(new Collection(['id' => 'ref_test456'])),
+            fn ($rocket) => $rocket
+        );
+
+        self::assertEquals('api/v1/pa/refunds/ref_test456', $result->getPayload()->get('_url'));
+    }
 }

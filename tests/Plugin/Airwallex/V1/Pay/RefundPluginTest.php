@@ -25,4 +25,22 @@ class RefundPluginTest extends TestCase
         self::assertEquals('api/v1/pa/refunds/create', $result->getPayload()->get('_url'));
         self::assertEquals('int_test123', $result->getPayload()->get('payment_intent_id'));
     }
+
+    public function testUseIdAndOptionalFields()
+    {
+        $result = (new RefundPlugin())->assembly(
+            (new Rocket())->setPayload(new Collection([
+                'id' => 'int_test456',
+                'request_id' => 'req_refund_456',
+                'reason' => 'requested_by_customer',
+                'metadata' => ['biz_order_id' => 'biz_123'],
+            ])),
+            fn ($rocket) => $rocket
+        );
+
+        self::assertEquals('int_test456', $result->getPayload()->get('payment_intent_id'));
+        self::assertEquals('req_refund_456', $result->getPayload()->get('request_id'));
+        self::assertEquals('requested_by_customer', $result->getPayload()->get('reason'));
+        self::assertEquals(['biz_order_id' => 'biz_123'], $result->getPayload()->get('metadata'));
+    }
 }

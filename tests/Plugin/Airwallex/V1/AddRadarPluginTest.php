@@ -50,4 +50,21 @@ class AddRadarPluginTest extends TestCase
         self::assertEquals('Bearer airwallex_access_token', $radar->getHeaderLine('Authorization'));
         self::assertStringContainsString('api-demo.airwallex.com', (string) $radar->getUri());
     }
+
+    public function testOnBehalfOfAndBody()
+    {
+        $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
+            '_method' => 'POST',
+            '_url' => 'api/v1/pa/payment_intents/create',
+            '_access_token' => 'airwallex_access_token',
+            '_on_behalf_of' => 'acct_123',
+            '_body' => '{"amount":100}',
+        ]));
+
+        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+        $radar = $result->getRadar();
+
+        self::assertEquals('acct_123', $radar->getHeaderLine('x-on-behalf-of'));
+        self::assertEquals('{"amount":100}', (string) $radar->getBody());
+    }
 }

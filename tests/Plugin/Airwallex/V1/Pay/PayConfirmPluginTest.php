@@ -144,4 +144,30 @@ class PayConfirmPluginTest extends TestCase
         self::assertEquals('https://pay.example.com/native-redirect', $result->getDestination()->get('pay_url'));
         self::assertEquals('https://pay.yansongda.cn/native-return', $result->getDestination()->get('return_url'));
     }
+
+    public function testSkipWhenDestinationIsNotCollection()
+    {
+        $rocket = (new Rocket())
+            ->setPayload(new Collection([
+                '_native_api' => true,
+            ]))
+            ->setDestination(new Response(200, [], '{"id":"int_resp_123"}'));
+
+        $result = (new PayConfirmPlugin())->assembly($rocket, fn ($rocket) => $rocket);
+
+        self::assertInstanceOf(Response::class, $result->getDestination());
+    }
+
+    public function testSkipNormalizeWhenDestinationIsNotCollection()
+    {
+        $rocket = (new Rocket())
+            ->setPayload(new Collection([
+                '_native_api' => false,
+            ]))
+            ->setDestination(new Response(200, [], '{"id":"int_resp_456"}'));
+
+        $result = (new PayConfirmPlugin())->assembly($rocket, fn ($rocket) => $rocket);
+
+        self::assertInstanceOf(Response::class, $result->getDestination());
+    }
 }

@@ -102,6 +102,21 @@ class AirwallexTest extends TestCase
         self::assertEquals('payment_intent.failed', $result->get('name'));
     }
 
+    public function testGetCallbackParamsWithPlainArrayPayload()
+    {
+        $provider = Pay::airwallex();
+        $method = new \ReflectionMethod($provider, 'getCallbackParams');
+        $method->setAccessible(true);
+
+        $request = $method->invoke($provider, [
+            'id' => 'evt_test789',
+            'name' => 'payment_intent.created',
+        ]);
+
+        self::assertInstanceOf(ServerRequest::class, $request);
+        self::assertStringContainsString('payment_intent.created', (string) $request->getBody());
+    }
+
     public function testQuery()
     {
         $tokenResponse = new Response(201, [], json_encode([
