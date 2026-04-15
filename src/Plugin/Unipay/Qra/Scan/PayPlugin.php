@@ -12,6 +12,9 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Supports\Str;
 
+/**
+ * @see https://up.95516.com/open/openapi/doc?index_1=1&index_2=1&chapter_1=235&chapter_2=253
+ */
 class PayPlugin implements PluginInterface
 {
     use ProviderConfigTrait;
