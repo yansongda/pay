@@ -13,15 +13,16 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/partner/apis/ecommerce-refund/refunds/create-refund.html
  */
 class ApplyPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -33,9 +34,9 @@ class ApplyPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $subMchId = $payload?->get('sub_mchid') ?? $config['sub_mch_id'] ?? '';
-        $spAppId = $payload?->get('sp_appid') ?? $config[get_wechat_type_key($params)] ?? '';
+        $spAppId = $payload?->get('sp_appid') ?? $config[self::getWechatTypeKey($params)] ?? '';
 
         if (Pay::MODE_NORMAL === ($config['mode'] ?? Pay::MODE_NORMAL)) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE, '参数异常: 平台收付通（退款）-申请退款，只支持服务商模式，当前配置为普通商户模式');

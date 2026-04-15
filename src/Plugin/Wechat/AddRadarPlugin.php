@@ -13,14 +13,13 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_body;
-use function Yansongda\Pay\get_wechat_method;
-use function Yansongda\Pay\get_wechat_url;
 
 class AddRadarPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -32,13 +31,13 @@ class AddRadarPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
 
         $rocket->setRadar(new Request(
-            get_wechat_method($payload),
-            get_wechat_url($config, $payload),
+            self::getWechatMethod($payload),
+            self::getWechatUrl($config, $payload),
             $this->getHeaders($payload),
-            get_wechat_body($payload),
+            self::getWechatBody($payload),
         ));
 
         Logger::info('[Wechat][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -16,15 +16,16 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/doc/v3/merchant/4012719578
  */
 class InvokeIosPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidResponseException
@@ -38,7 +39,7 @@ class InvokeIosPlugin implements PluginInterface
 
         Logger::debug('[Wechat][V3][Marketing][Transfer][InvokeIosPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_provider_config('wechat', $rocket->getParams());
+        $config = self::getProviderConfig('wechat', $rocket->getParams());
         $destination = $rocket->getDestination();
         $packageInfo = $destination?->get('package_info');
 
@@ -53,7 +54,7 @@ class InvokeIosPlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDestination($this->getInvokeConfig($payload, $params, $config, $packageInfo));
@@ -68,7 +69,7 @@ class InvokeIosPlugin implements PluginInterface
         return new Config([
             'businessType' => 'requestMerchantTransfer',
             'query' => http_build_query([
-                'appId' => $payload?->get('_invoke_appId') ?? $config[get_wechat_type_key($params)] ?? '',
+                'appId' => $payload?->get('_invoke_appId') ?? $config[self::getWechatTypeKey($params)] ?? '',
                 'mchId' => $payload?->get('_invoke_mchId') ?? $config['mch_id'] ?? '',
                 'package' => $packageInfo,
             ]),

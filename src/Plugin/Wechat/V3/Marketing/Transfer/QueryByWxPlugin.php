@@ -13,14 +13,16 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/doc/v3/merchant/4012716457
  */
 class QueryByWxPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws InvalidParamsException
      * @throws ContainerException
@@ -30,7 +32,7 @@ class QueryByWxPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Marketing][Transfer][QueryByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_provider_config('wechat', $rocket->getParams());
+        $config = self::getProviderConfig('wechat', $rocket->getParams());
         $payload = $rocket->getPayload();
         $transferBillNo = $payload?->get('transfer_bill_no') ?? null;
 

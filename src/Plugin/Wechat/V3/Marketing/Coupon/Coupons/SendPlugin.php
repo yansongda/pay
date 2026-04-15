@@ -13,9 +13,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/coupon/send-coupon.html
@@ -23,6 +22,8 @@ use function Yansongda\Pay\get_wechat_type_key;
  */
 class SendPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws InvalidParamsException
      * @throws ContainerException
@@ -33,7 +34,7 @@ class SendPlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Marketing][Coupon][Coupons][SendPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
         $openId = $payload?->get('openid') ?? null;
 
@@ -58,7 +59,7 @@ class SendPlugin implements PluginInterface
     protected function normal(Collection $payload, array $params, array $config): array
     {
         if (empty($payload->get('appid'))) {
-            $payload->set('appid', $config[get_wechat_type_key($params)] ?? '');
+            $payload->set('appid', $config[self::getWechatTypeKey($params)] ?? '');
         }
 
         if (empty($payload->get('stock_creator_mchid'))) {

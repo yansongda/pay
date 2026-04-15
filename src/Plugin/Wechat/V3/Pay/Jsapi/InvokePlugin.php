@@ -18,10 +18,8 @@ use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_sign;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/jsapi-payment/jsapi-transfer-payment.html
@@ -29,6 +27,8 @@ use function Yansongda\Pay\get_wechat_type_key;
  */
 class InvokePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -53,7 +53,7 @@ class InvokePlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDestination($this->getInvokeConfig($payload, $params, $config, $prepayId));
@@ -92,15 +92,15 @@ class InvokePlugin implements PluginInterface
             .$invokeConfig->get('nonceStr', '')."\n"
             .$invokeConfig->get('package', '')."\n";
 
-        return get_wechat_sign($config, $contents);
+        return self::getWechatSign($config, $contents);
     }
 
     protected function getAppId(?Collection $payload, array $config, array $params): string
     {
         if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
-            return $payload?->get('_invoke_appid') ?? $config['sub_'.get_wechat_type_key($params)] ?? '';
+            return $payload?->get('_invoke_appid') ?? $config['sub_'.self::getWechatTypeKey($params)] ?? '';
         }
 
-        return $payload?->get('_invoke_appid') ?? $config[get_wechat_type_key($params)] ?? '';
+        return $payload?->get('_invoke_appid') ?? $config[self::getWechatTypeKey($params)] ?? '';
     }
 }

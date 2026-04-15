@@ -18,9 +18,8 @@ use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_sign;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/app-transfer-payment.html
@@ -28,6 +27,8 @@ use function Yansongda\Pay\get_wechat_sign;
  */
 class AppInvokePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -52,7 +53,7 @@ class AppInvokePlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDestination($this->getInvokeConfig($payload, $config, $prepayId));
@@ -92,7 +93,7 @@ class AppInvokePlugin implements PluginInterface
             .$invokeConfig->get('noncestr', '')."\n"
             .$invokeConfig->get('prepayid', '')."\n";
 
-        return get_wechat_sign($config, $contents);
+        return self::getWechatSign($config, $contents);
     }
 
     protected function getAppId(?Collection $payload, array $config): string

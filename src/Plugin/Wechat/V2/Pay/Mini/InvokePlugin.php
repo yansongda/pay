@@ -18,15 +18,16 @@ use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_sign_v2;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=7_7&index=5
  */
 class InvokePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws Exception
@@ -51,7 +52,7 @@ class InvokePlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDestination($this->getInvokeConfig($payload, $config, $prepayId));
@@ -75,7 +76,7 @@ class InvokePlugin implements PluginInterface
             'signType' => 'MD5',
         ]);
 
-        $invokeConfig->set('paySign', get_wechat_sign_v2($config, $invokeConfig->all()));
+        $invokeConfig->set('paySign', self::getWechatSignV2($config, $invokeConfig->all()));
 
         return $invokeConfig;
     }

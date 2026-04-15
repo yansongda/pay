@@ -15,15 +15,16 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/api/tools/cash_coupon_sl.php?chapter=13_4&index=3
  */
 class SendPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
@@ -34,7 +35,7 @@ class SendPlugin implements PluginInterface
         Logger::debug('[Wechat][V2][Pay][Redpack][SendPlugin] 插件开始装载', ['rocket' => $rocket]);
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
 
         if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
             $data = $this->service($payload, $config, $params);
@@ -62,14 +63,14 @@ class SendPlugin implements PluginInterface
     protected function normal(array $config, array $params): array
     {
         return [
-            'wxappid' => $config[get_wechat_type_key($params)] ?? '',
+            'wxappid' => $config[self::getWechatTypeKey($params)] ?? '',
             'mch_id' => $config['mch_id'] ?? '',
         ];
     }
 
     protected function service(Collection $payload, array $config, array $params): array
     {
-        $wechatTypeKey = get_wechat_type_key($params);
+        $wechatTypeKey = self::getWechatTypeKey($params);
 
         return [
             'wxappid' => $config[$wechatTypeKey] ?? '',

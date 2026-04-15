@@ -14,17 +14,16 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\encrypt_wechat_contents;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_public_key;
-use function Yansongda\Pay\get_wechat_serial_no;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/fapiao/fapiao-applications/issue-fapiao-applications.html
  */
 class CreatePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws DecryptException
@@ -38,7 +37,7 @@ class CreatePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
 
         $rocket->mergePayload(array_merge([
             '_method' => 'POST',
@@ -59,20 +58,20 @@ class CreatePlugin implements PluginInterface
      */
     protected function encryptSensitiveData(?Collection $payload, array $params, array $config): array
     {
-        $data['_serial_no'] = get_wechat_serial_no($params);
+        $data['_serial_no'] = self::getWechatSerialNo($params);
 
-        $config = get_provider_config('wechat', $params);
-        $publicKey = get_wechat_public_key($config, $data['_serial_no']);
+        $config = self::getProviderConfig('wechat', $params);
+        $publicKey = self::getWechatPublicKey($config, $data['_serial_no']);
 
         $phone = $payload?->get('buyer_information.phone') ?? null;
         $email = $payload?->get('buyer_information.email') ?? null;
 
         if (!is_null($phone)) {
-            $data['buyer_information']['phone'] = encrypt_wechat_contents($phone, $publicKey);
+            $data['buyer_information']['phone'] = self::encryptWechatContents($phone, $publicKey);
         }
 
         if (!is_null($email)) {
-            $data['buyer_information']['email'] = encrypt_wechat_contents($email, $publicKey);
+            $data['buyer_information']['email'] = self::encryptWechatContents($email, $publicKey);
         }
 
         return $data;

@@ -14,9 +14,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Traits\WechatTrait;
 
-use function Yansongda\Pay\decrypt_wechat_contents;
-use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaints/query-complaint-v2.html
@@ -24,6 +23,8 @@ use function Yansongda\Pay\get_provider_config;
  */
 class QueryDetailPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws InvalidParamsException
      * @throws InvalidConfigException
@@ -56,7 +57,7 @@ class QueryDetailPlugin implements PluginInterface
         $destination = $rocket->getDestination();
 
         if ($destination instanceof Collection && !empty($payerPhone = $destination->get('payer_phone'))) {
-            $decryptPayerPhone = decrypt_wechat_contents($payerPhone, get_provider_config('wechat', $rocket->getParams()));
+            $decryptPayerPhone = self::decryptWechatContents($payerPhone, self::getProviderConfig('wechat', $rocket->getParams()));
 
             if (empty($decryptPayerPhone)) {
                 throw new InvalidConfigException(Exception::DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID, '参数异常: 查询投诉单详情，参数 `payer_phone` 解密失败');
