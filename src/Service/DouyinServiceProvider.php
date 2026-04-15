@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
-use Yansongda\Artful\Contract\ServiceProviderInterface;
-use Yansongda\Artful\Exception\ContainerException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Douyin;
 
-class DouyinServiceProvider implements ServiceProviderInterface
+class DouyinServiceProvider extends AbstractServiceProvider
 {
-    /**
-     * @throws ContainerException
-     */
-    public function register(mixed $data = null): void
+    protected function getProviderClass(): string
     {
-        $service = new Douyin();
+        return Douyin::class;
+    }
 
-        Pay::set(Douyin::class, $service);
-        Pay::set('douyin', $service);
+    protected function getProviderName(): string
+    {
+        return 'douyin';
     }
 }

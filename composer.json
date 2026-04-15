@@ -45,10 +45,7 @@
     "autoload": {
         "psr-4": {
             "Yansongda\\Pay\\": "src"
-        },
-        "files": [
-            "src/Functions.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {

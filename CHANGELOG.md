@@ -7,9 +7,12 @@
 - delete: 移除废弃的 `Wechat\StartPlugin`，请使用 `Yansongda\Artful\Plugin\StartPlugin` 代替 (#1139)
 - delete: 移除废弃的微信 Transfer 插件（因微信支付 API 变更） (#1139)
 - change: 重命名 `MchTransfer` 命名空间为 `Transfer` (#1139)
+- delete: 删除 `src/Functions.php` 文件，所有辅助函数已迁移到对应的 Trait (#1142, #1143, #1144)
 
 ### Removed
 
+- `src/Functions.php` (#1142, #1143, #1144, #1145)
+- `tests/FunctionTest.php` - 测试已迁移到 Trait 测试 (#1142, #1143, #1144, #1145)
 - `src/Plugin/Wechat/StartPlugin.php` (#1139)
 - `src/Plugin/Wechat/V3/Marketing/Transfer/` 目录 (#1139)
 - `get_alipay_config()` 函数 (#1139)
@@ -19,10 +22,24 @@
 ### Added
 
 - feat: 增加 PHP 8.5 支持 (#1139)
+- feat: 新增 `Yansongda\Pay\Service\AbstractServiceProvider` 基类 (#1142)
+- feat: 新增 `Yansongda\Pay\CertManager` 类用于证书缓存管理 (#1142)
+- feat: 新增 Trait 系统替代 Functions.php (#1142, #1143, #1144)
+  - `AlipayTrait` - 支付宝相关方法
+  - `WechatTrait` - 微信相关方法
+  - `UnipayTrait` - 银联相关方法
+  - `DouyinTrait` - 抖音相关方法
+  - `PaypalTrait` - PayPal 相关方法
+  - `JsbTrait` - 江苏银行相关方法
+  - `StripeTrait` - Stripe 相关方法
+  - `ProviderConfigTrait` - Provider 配置方法
+  - `SupportServiceProviderTrait` - ServiceProvider 支持方法
 
 ### Changed
 
 - `Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\*` → `Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\*` (#1139)
+- 所有 Plugin 已迁移使用 Trait 方法代替 Functions.php 函数调用 (#1142, #1143, #1144)
+- 所有 ServiceProvider 继承 `AbstractServiceProvider` 基类 (#1145)
 
 ## v3.7.20
 

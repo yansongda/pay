@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
-use Yansongda\Artful\Contract\ServiceProviderInterface;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Paypal;
 
-class PaypalServiceProvider implements ServiceProviderInterface
+class PaypalServiceProvider extends AbstractServiceProvider
 {
-    public function register(mixed $data = null): void
+    protected function getProviderClass(): string
     {
-        $service = new Paypal();
+        return Paypal::class;
+    }
 
-        Pay::set(Paypal::class, $service);
-        Pay::set('paypal', $service);
+    protected function getProviderName(): string
+    {
+        return 'paypal';
     }
 }
