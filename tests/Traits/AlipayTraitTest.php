@@ -11,7 +11,6 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\AlipayTrait;
-use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Supports\Collection;
 
 class AlipayTraitStub
@@ -23,10 +22,10 @@ class AlipayTraitTest extends TestCase
 {
     public function testVerifyAlipaySignSuccess(): void
     {
-        ProviderConfigTrait::getProviderConfig('alipay');
+        AlipayTraitStub::getProviderConfig('alipay');
         
         AlipayTraitStub::verifyAlipaySign(
-            ProviderConfigTrait::getProviderConfig('alipay'),
+            AlipayTraitStub::getProviderConfig('alipay'),
             json_encode([
                 "code" => "10000",
                 "msg" => "Success",
@@ -55,14 +54,14 @@ class AlipayTraitTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        AlipayTraitStub::verifyAlipaySign(ProviderConfigTrait::getProviderConfig('alipay'), '', 'aaa');
+        AlipayTraitStub::verifyAlipaySign(AlipayTraitStub::getProviderConfig('alipay'), '', 'aaa');
     }
 
     public function testVerifyAlipaySignEmpty(): void
     {
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
-        AlipayTraitStub::verifyAlipaySign(ProviderConfigTrait::getProviderConfig('alipay'), '', '');
+        AlipayTraitStub::verifyAlipaySign(AlipayTraitStub::getProviderConfig('alipay'), '', '');
     }
 
     public function testGetAlipayUrlDefault(): void

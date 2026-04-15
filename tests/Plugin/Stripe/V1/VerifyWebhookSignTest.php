@@ -11,6 +11,11 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\StripeTrait;
 
+class StripeTraitStub
+{
+    use StripeTrait;
+}
+
 class VerifyWebhookSignTest extends TestCase
 {
     public function testLocalhostNoLongerSkipsVerification()
@@ -20,7 +25,7 @@ class VerifyWebhookSignTest extends TestCase
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
 
-        StripeTrait::verifyStripeWebhookSign($request, []);
+        StripeTraitStub::verifyStripeWebhookSign($request, []);
     }
 
     public function testMissingWebhookSecretThrowsException()
@@ -30,7 +35,7 @@ class VerifyWebhookSignTest extends TestCase
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_STRIPE_INVALID);
 
-        StripeTrait::verifyStripeWebhookSign($request, ['_config' => 'no_webhook_secret']);
+        StripeTraitStub::verifyStripeWebhookSign($request, ['_config' => 'no_webhook_secret']);
     }
 
     public function testEmptySignatureHeaderThrowsException()
@@ -40,7 +45,7 @@ class VerifyWebhookSignTest extends TestCase
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
 
-        StripeTrait::verifyStripeWebhookSign($request, []);
+        StripeTraitStub::verifyStripeWebhookSign($request, []);
     }
 
     public function testMalformedSignatureHeaderThrowsException()
@@ -52,7 +57,7 @@ class VerifyWebhookSignTest extends TestCase
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        StripeTrait::verifyStripeWebhookSign($request, []);
+        StripeTraitStub::verifyStripeWebhookSign($request, []);
     }
 
     public function testExpiredTimestampThrowsException()
@@ -67,7 +72,7 @@ class VerifyWebhookSignTest extends TestCase
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        StripeTrait::verifyStripeWebhookSign($request, []);
+        StripeTraitStub::verifyStripeWebhookSign($request, []);
     }
 
     public function testWrongSignatureThrowsException()
@@ -82,7 +87,7 @@ class VerifyWebhookSignTest extends TestCase
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        StripeTrait::verifyStripeWebhookSign($request, []);
+        StripeTraitStub::verifyStripeWebhookSign($request, []);
     }
 
     public function testValidSignaturePasses()
@@ -98,7 +103,7 @@ class VerifyWebhookSignTest extends TestCase
             'Stripe-Signature' => $signatureHeader,
         ], $body);
 
-        StripeTrait::verifyStripeWebhookSign($request, []);
+        StripeTraitStub::verifyStripeWebhookSign($request, []);
 
         self::assertTrue(true);
     }

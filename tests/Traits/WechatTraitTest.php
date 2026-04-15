@@ -73,7 +73,7 @@ class WechatTraitTest extends TestCase
 
         self::assertEquals(
             'KzIgMgiop3nQJNdBVR2Xah/JUwVBLDFFajyXPiSN8b8YAYEA4FuWfaCgFJ52+WFed+PhOYWx/ZPih4RaEuuSdYB8eZwYUx7RZGMQZk0bKCctAjjPuf4pJN+f/WsXKjPIy3diqF5x7gyxwSCaKWP4/KjsHNqgQpiC8q1uC5xmElzuhzSwj88LIoLtkAuSmtUVvdAt0Nz41ECHZgHWSGR32TfBo902r8afdaVKkFde8IoqcEJJcp6sMxdDO5l9R5KEWxrJ1SjsXVrb0IPH8Nj7e6hfhq7pucxojPpzsC+ZWAYvufZkAQx3kTiFmY87T+QhkP9FesOfWvkIRL4E6MP6ug==',
-            WechatTraitStub::getWechatSign(ProviderConfigTrait::getProviderConfig('wechat', []), $contents)
+            WechatTraitStub::getWechatSign(WechatTraitStub::getProviderConfig('wechat', []), $contents)
         );
 
         // test config error
@@ -94,7 +94,7 @@ class WechatTraitTest extends TestCase
     public function testGetWechatSignV2(): void
     {
         $params = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
-        self::assertEquals('3213848AED2C380749FD1D559555881D', WechatTraitStub::getWechatSignV2(ProviderConfigTrait::getProviderConfig('wechat', $params), $params));
+        self::assertEquals('3213848AED2C380749FD1D559555881D', WechatTraitStub::getWechatSignV2(WechatTraitStub::getProviderConfig('wechat', $params), $params));
 
         // test config error
         $config1 = [
@@ -108,7 +108,7 @@ class WechatTraitTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        WechatTraitStub::getWechatSignV2(ProviderConfigTrait::getProviderConfig('wechat'), []);
+        WechatTraitStub::getWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), []);
     }
 
     public function testVerifyWechatSign(): void
@@ -144,13 +144,13 @@ class WechatTraitTest extends TestCase
     public function testVerifyWechatSignV2(): void
     {
         $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => '3213848AED2C380749FD1D559555881D'];
-        WechatTraitStub::verifyWechatSignV2(ProviderConfigTrait::getProviderConfig('wechat'), $destination);
+        WechatTraitStub::verifyWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), $destination);
         self::assertTrue(true);
 
         $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
-        WechatTraitStub::verifyWechatSignV2(ProviderConfigTrait::getProviderConfig('wechat'), $destination);
+        WechatTraitStub::verifyWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), $destination);
     }
 
     public function testVerifyWechatSignV2EmptySecret(): void
@@ -170,14 +170,14 @@ class WechatTraitTest extends TestCase
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        WechatTraitStub::verifyWechatSignV2(ProviderConfigTrait::getProviderConfig('wechat'), $destination);
+        WechatTraitStub::verifyWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), $destination);
     }
 
     public function testEncryptWechatContents(): void
     {
         $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
         $contents = 'yansongda';
-        $result = WechatTraitStub::encryptWechatContents($contents, ProviderConfigTrait::getProviderConfig('wechat')['wechat_public_cert_path'][$serialNo]);
+        $result = WechatTraitStub::encryptWechatContents($contents, WechatTraitStub::getProviderConfig('wechat')['wechat_public_cert_path'][$serialNo]);
         self::assertIsString($result);
     }
 
@@ -185,7 +185,7 @@ class WechatTraitTest extends TestCase
     {
         $encrypted = 'WIesmK+dSJycwdhTTkNmv0Lk2wb9o7NGODovccjhyotNnRkEeh+sxRK1gNSRNMJJgkQ30m4HwcuweSO24mehFeXVNTVAKFVef/3FlHnYDZfE1c3mCLToEef7e8J/Z8TwFH1ecn3t+Jk9ZaBpQKNHdQ0Q8jcL7AnL48h0D9BcZxDekPqX6hNnKfISoKSv4TXFcgvBLFeAe4Q3KM0Snq0N5IvI86D9xZqVg6mY+Gfz0782ymQFxflau6Qxx3mJ+0etHMocNuCdgctVH390XYYMc0u+V2FCJ5cU5h/M/AxzP9ayrEO4l0ftaxL6lP0HjifNrkPcAAb+q9I67UepKO9iGw==';
 
-        $config = ProviderConfigTrait::getProviderConfig('wechat');
+        $config = WechatTraitStub::getProviderConfig('wechat');
 
         self::assertEquals('yansongda', WechatTraitStub::decryptWechatContents($encrypted, $config));
         self::assertNull(WechatTraitStub::decryptWechatContents('invalid', $config));
@@ -274,7 +274,7 @@ class WechatTraitTest extends TestCase
             'nonce' => '4196a5b75276',
         ];
 
-        $result = WechatTraitStub::decryptWechatResource($resource, ProviderConfigTrait::getProviderConfig('wechat'));
+        $result = WechatTraitStub::decryptWechatResource($resource, WechatTraitStub::getProviderConfig('wechat'));
 
         self::assertTrue(false !== strpos($result['ciphertext'], '-----BEGIN CERTIFICATE-----'));
     }
@@ -349,18 +349,18 @@ class WechatTraitTest extends TestCase
     public function testGetWechatPublicKey(): void
     {
         $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
-        $result = WechatTraitStub::getWechatPublicKey(ProviderConfigTrait::getProviderConfig('wechat'), $serialNo);
+        $result = WechatTraitStub::getWechatPublicKey(WechatTraitStub::getProviderConfig('wechat'), $serialNo);
         self::assertIsString($result);
 
         $serialNo = 'non-exist';
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND);
-        WechatTraitStub::getWechatPublicKey(ProviderConfigTrait::getProviderConfig('wechat'), $serialNo);
+        WechatTraitStub::getWechatPublicKey(WechatTraitStub::getProviderConfig('wechat'), $serialNo);
     }
 
     public function testGetWechatMiniprogramPaySign(): void
     {
-        self::assertEquals('6bb3e49bb4744fc6817331333ffa435e0d1409c3c900a87637c98265445cbe96', WechatTraitStub::getWechatMiniprogramPaySign(ProviderConfigTrait::getProviderConfig('wechat'), 'yansongda.cn', '{"name":"yansongda"}'));
+        self::assertEquals('6bb3e49bb4744fc6817331333ffa435e0d1409c3c900a87637c98265445cbe96', WechatTraitStub::getWechatMiniprogramPaySign(WechatTraitStub::getProviderConfig('wechat'), 'yansongda.cn', '{"name":"yansongda"}'));
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);

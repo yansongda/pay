@@ -45,7 +45,7 @@ trait StripeTrait
      */
     public static function verifyStripeWebhookSign(ServerRequestInterface $request, array $params): void
     {
-        $config = self::getProviderConfig('stripe', $params);
+        $config = static::getProviderConfig('stripe', $params);
         $webhookSecret = $config['webhook_secret'] ?? null;
 
         if (empty($webhookSecret)) {
