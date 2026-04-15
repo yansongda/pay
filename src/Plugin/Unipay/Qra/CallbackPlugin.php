@@ -13,13 +13,14 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Traits\UnipayTrait;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\verify_unipay_sign_qra;
 
 class CallbackPlugin implements PluginInterface
 {
+    use UnipayTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -31,11 +32,11 @@ class CallbackPlugin implements PluginInterface
         Logger::debug('[Unipay][Qra][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('unipay', $params);
+        $config = self::getProviderConfig('unipay', $params);
         $destination = filter_params($params);
 
         if (isset($params['status']) && 0 == $params['status']) {
-            verify_unipay_sign_qra($config, $destination->all());
+            self::verifyUnipaySignQra($config, $destination->all());
         }
 
         $rocket->setPayload($params)

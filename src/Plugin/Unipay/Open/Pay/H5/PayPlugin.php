@@ -11,14 +11,15 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-
-use function Yansongda\Pay\get_provider_config;
+use Yansongda\Pay\Traits\UnipayTrait;
 
 /**
  * @see https://open.unionpay.com/tjweb/acproduct/APIList?apiservId=453&acpAPIId=334&bussType=0
  */
 class PayPlugin implements PluginInterface
 {
+    use UnipayTrait;
+
     /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
@@ -28,7 +29,7 @@ class PayPlugin implements PluginInterface
         Logger::debug('[Unipay][Pay][H5][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('unipay', $params);
+        $config = self::getProviderConfig('unipay', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDirection(ResponseDirection::class)

@@ -12,14 +12,15 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\get_private_cert;
-use function Yansongda\Pay\get_provider_config;
 
 class AddPayloadSignPlugin implements PluginInterface
 {
+    use JsbTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -31,7 +32,7 @@ class AddPayloadSignPlugin implements PluginInterface
         Logger::info('[Jsb][AddPayloadSignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('jsb', $params);
+        $config = self::getProviderConfig('jsb', $params);
         $payload = $rocket->getPayload();
 
         if (empty($payload) || $payload->isEmpty()) {
@@ -46,7 +47,7 @@ class AddPayloadSignPlugin implements PluginInterface
 
         $rocket->mergePayload([
             'signType' => 'RSA',
-            'sign' => $this->getSignature(get_private_cert($privateCertPath), $payload),
+            'sign' => $this->getSignature(CertManager::getPrivateCert($privateCertPath), $payload),
         ]);
 
         Logger::info('[Jsb][AddPayloadSignPlugin] 插件装载完毕', ['rocket' => $rocket]);

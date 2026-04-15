@@ -12,14 +12,15 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
-use function Yansongda\Pay\get_provider_config;
+use Yansongda\Pay\Traits\JsbTrait;
 
 /**
  * @see https://github.com/yansongda/pay/pull/1002
  */
 class PayPlugin implements PluginInterface
 {
+    use JsbTrait;
+
     /**
      * @throws InvalidConfigException
      * @throws ServiceNotFoundException
@@ -30,7 +31,7 @@ class PayPlugin implements PluginInterface
         Logger::debug('[Jsb][Pay][Scan][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('jsb', $params);
+        $config = self::getProviderConfig('jsb', $params);
         $backUrl = $rocket->getPayload()['notify_url'] ?? $config['notify_url'] ?? null;
 
         if (!$backUrl) {
