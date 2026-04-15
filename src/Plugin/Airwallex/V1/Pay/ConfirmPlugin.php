@@ -23,7 +23,7 @@ class ConfirmPlugin implements PluginInterface
         Logger::debug('[Airwallex][V1][Pay][ConfirmPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
-        $paymentIntentId = $payload?->get('payment_intent_id', $payload?->get('id'));
+        $paymentIntentId = $payload?->get('payment_intent_id', $payload->get('id'));
 
         if (empty($paymentIntentId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Airwallex 确认支付缺少必要参数 -- [payment_intent_id] or [id]');

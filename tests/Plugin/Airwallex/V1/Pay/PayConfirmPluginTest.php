@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Airwallex\V1\Pay;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
+use Mockery;
 use Yansongda\Artful\Rocket;
+use Yansongda\Artful\Contract\HttpClientInterface;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Airwallex\V1\Pay\PayConfirmPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -88,5 +93,55 @@ class PayConfirmPluginTest extends TestCase
 
         self::assertEquals('display_details', $result->getDestination()->get('next_action_type'));
         self::assertEquals('', $result->getDestination()->get('pay_url'));
+    }
+
+    public function testConfirmWithNativeApiKeepsCreatePayloadFields()
+    {
+        $tokenResponse = new Response(201, [], json_encode([
+            'token' => 'native_airwallex_token',
+            'expires_at' => gmdate('Y-m-d\\TH:i:sO', time() + 1800),
+        ]));
+        $confirmResponse = new Response(201, [], json_encode([
+            'id' => 'int_native_123',
+            'status' => 'REQUIRES_CUSTOMER_ACTION',
+            'next_action' => [
+                'type' => 'redirect',
+                'url' => 'https://pay.example.com/native-redirect',
+            ],
+            'return_url' => 'https://pay.yansongda.cn/native-return',
+        ]));
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($tokenResponse, $confirmResponse);
+        Pay::set(HttpClientInterface::class, $http);
+
+        $rocket = (new Rocket())
+            ->setParams([
+                'amount' => 100,
+                'currency' => 'USD',
+                'merchant_order_id' => 'order_native_123',
+            ])
+            ->setPayload(new Collection([
+                '_native_api' => true,
+                'request_id' => 'req_native_123',
+                'return_url' => 'https://pay.yansongda.cn/native-return',
+                'payment_method' => [
+                    'type' => 'wechatpay',
+                    'wechatpay' => [
+                        'flow' => 'qrcode',
+                    ],
+                ],
+            ]))
+            ->setDestination(new Collection([
+                'id' => 'int_native_123',
+                'client_secret' => 'cs_native_123',
+            ]));
+
+        $result = (new PayConfirmPlugin())->assembly($rocket, fn ($rocket) => $rocket);
+
+        self::assertEquals('int_native_123', $result->getParams()['payment_intent_id']);
+        self::assertEquals('redirect', $result->getDestination()->get('next_action_type'));
+        self::assertEquals('https://pay.example.com/native-redirect', $result->getDestination()->get('pay_url'));
+        self::assertEquals('https://pay.yansongda.cn/native-return', $result->getDestination()->get('return_url'));
     }
 }
