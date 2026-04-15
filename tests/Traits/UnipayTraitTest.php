@@ -16,7 +16,6 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
-use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Pay\Traits\UnipayTrait;
 use Yansongda\Supports\Collection;
 
@@ -57,7 +56,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 -----END CERTIFICATE-----&traceNo=067402&traceTime=0908132206&txnAmt=1&txnSubType=01&txnTime=20220908132206&txnType=01&version=5.1.0";
         $sign = 'JeA4S2+6TbGo9yjXDUvV5A2E3oJbunoCcZ66exN6xR3OH/5PNDK1VSV1Mq7XhVdxzkTeREUveiOYHalqoagRkh71nsHVvruwGbk6azygXSaawuO5tF67UIqNd4Mbufwh1KhbVpEkKbOETUvRhFcdon0fulE97I83eMSk52INHt8E1xk8NdbhyUadSlp+Uv30AKx70PpQbTGmVS3PJfd+Whj0b7LnvZKeC+BS1kUOtIKlcZO+gBoTigvCIJqj51kBrcBCs+x+VaeGm7EYBBhGSERpfQhQ4n+eJBwLdBeZ0/dNbo3iELjvVMx0n9KoW4klvUJhaH5LALA8pV02SbZv4Q==';
 
-        UnipayTraitStub::verifyUnipaySign(ProviderConfigTrait::getProviderConfig('unipay'), $contents, $sign);
+        UnipayTraitStub::verifyUnipaySign(UnipayTraitStub::getProviderConfig('unipay'), $contents, $sign);
 
         self::assertTrue(true);
 
@@ -99,7 +98,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
     public function testGetUnipaySignQra(): void
     {
-        $config = ProviderConfigTrait::getProviderConfig('unipay', ['_config' => 'qra']);
+        $config = UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']);
 
         $payload = [
             'out_trade_no' => 'pos-qra-20240106163401',
@@ -144,7 +143,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
             "version" => "2.0",
         ];
 
-        UnipayTraitStub::verifyUnipaySignQra(ProviderConfigTrait::getProviderConfig('unipay', ['_config' => 'qra']), $payload);
+        UnipayTraitStub::verifyUnipaySignQra(UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']), $payload);
         self::assertTrue(true);
 
         self::expectException(InvalidConfigException::class);
@@ -173,7 +172,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        UnipayTraitStub::verifyUnipaySignQra(ProviderConfigTrait::getProviderConfig('unipay', ['_config' => 'qra']), $payload);
+        UnipayTraitStub::verifyUnipaySignQra(UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']), $payload);
     }
 
     public function testVerifyUnipaySignQraEmpty(): void
@@ -196,6 +195,6 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
 
-        UnipayTraitStub::verifyUnipaySignQra(ProviderConfigTrait::getProviderConfig('unipay', ['_config' => 'qra']), $payload);
+        UnipayTraitStub::verifyUnipaySignQra(UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']), $payload);
     }
 }

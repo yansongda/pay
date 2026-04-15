@@ -26,7 +26,7 @@ trait ProviderConfigTrait
         /** @var ConfigInterface $config */
         $config = Pay::get(ConfigInterface::class);
 
-        return $config->get($provider, [])[self::getTenant($params)] ?? [];
+        return $config->get($provider, [])[static::getTenant($params)] ?? [];
     }
 
     public static function getRadarUrl(array $config, ?Collection $payload): ?string
