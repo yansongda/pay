@@ -12,9 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
+use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/native-prepay.html
@@ -22,6 +20,8 @@ use function Yansongda\Pay\get_wechat_type_key;
  */
 class NativePayPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -32,7 +32,7 @@ class NativePayPlugin implements PluginInterface
         Logger::debug('[Wechat][Pay][Combine][NativePayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {
@@ -44,7 +44,7 @@ class NativePayPlugin implements PluginInterface
             '_url' => 'v3/combine-transactions/native',
             '_service_url' => 'v3/combine-transactions/native',
             'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
-            'combine_appid' => $payload->get('combine_appid', $config[get_wechat_type_key($params)] ?? ''),
+            'combine_appid' => $payload->get('combine_appid', $config[self::getWechatTypeKey($params)] ?? ''),
             'combine_mchid' => $payload->get('combine_mchid', $config['mch_id'] ?? ''),
         ]);
 

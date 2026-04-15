@@ -13,14 +13,15 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-
-use function Yansongda\Pay\get_provider_config;
+use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://pay.weixin.qq.com/docs/partner/apis/ecommerce-balance/accounts/query-balance.html
  */
 class QueryPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws InvalidParamsException
      * @throws ContainerException
@@ -30,7 +31,7 @@ class QueryPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Marketing][ECommerceBalance][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_provider_config('wechat', $rocket->getParams());
+        $config = self::getProviderConfig('wechat', $rocket->getParams());
         $accountType = $rocket->getPayload()?->get('account_type') ?? null;
 
         if (Pay::MODE_NORMAL === ($config['mode'] ?? Pay::MODE_NORMAL)) {

@@ -15,18 +15,18 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
-
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_sign_v2;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_12&index=2
  */
 class InvokePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws Exception
@@ -51,7 +51,7 @@ class InvokePlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDestination($this->getInvokeConfig($payload, $config, $prepayId));
@@ -76,7 +76,7 @@ class InvokePlugin implements PluginInterface
             'timestamp' => time().'',
         ]);
 
-        $invokeConfig->set('sign', get_wechat_sign_v2($config, $invokeConfig->all()));
+        $invokeConfig->set('sign', self::getWechatSignV2($config, $invokeConfig->all()));
 
         return $invokeConfig;
     }

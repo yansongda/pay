@@ -15,12 +15,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\encrypt_wechat_contents;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_public_key;
-use function Yansongda\Pay\get_wechat_serial_no;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/refund/refunds/create-abnormal-refund.html
@@ -28,6 +24,8 @@ use function Yansongda\Pay\get_wechat_serial_no;
  */
 class RefundAbnormalPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws DecryptException
@@ -41,7 +39,7 @@ class RefundAbnormalPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $refundId = $payload?->get('refund_id') ?? null;
 
         if (empty($refundId)) {
@@ -104,13 +102,13 @@ class RefundAbnormalPlugin implements PluginInterface
     protected function encryptSensitiveData(array $params, array $config, Collection $payload): array
     {
         if ($payload->has('bank_account') && $payload->has('real_name')) {
-            $data['_serial_no'] = get_wechat_serial_no($params);
+            $data['_serial_no'] = self::getWechatSerialNo($params);
 
-            $config = get_provider_config('wechat', $params);
-            $publicKey = get_wechat_public_key($config, $data['_serial_no']);
+            $config = self::getProviderConfig('wechat', $params);
+            $publicKey = self::getWechatPublicKey($config, $data['_serial_no']);
 
-            $data['real_name'] = encrypt_wechat_contents($payload->get('real_name'), $publicKey);
-            $data['bank_account'] = encrypt_wechat_contents($payload->get('bank_account'), $publicKey);
+            $data['real_name'] = self::encryptWechatContents($payload->get('real_name'), $publicKey);
+            $data['bank_account'] = self::encryptWechatContents($payload->get('bank_account'), $publicKey);
         }
 
         return $data ?? [];

@@ -14,12 +14,14 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Traits\WechatTrait;
 
 use function Yansongda\Artful\should_do_http_request;
-use function Yansongda\Pay\verify_wechat_sign;
 
 class VerifySignaturePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -39,7 +41,7 @@ class VerifySignaturePlugin implements PluginInterface
             return $rocket;
         }
 
-        verify_wechat_sign($rocket->getDestinationOrigin(), $rocket->getParams());
+        self::verifyWechatSign($rocket->getDestinationOrigin(), $rocket->getParams());
 
         Logger::info('[Wechat][V3][VerifySignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
 

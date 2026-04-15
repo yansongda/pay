@@ -17,14 +17,13 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\decrypt_wechat_resource;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\verify_wechat_sign;
 
 class CallbackPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -42,13 +41,13 @@ class CallbackPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /* @phpstan-ignore-next-line */
-        verify_wechat_sign($rocket->getDestinationOrigin(), $params);
+        self::verifyWechatSign($rocket->getDestinationOrigin(), $params);
 
         $body = json_decode((string) $rocket->getDestination()->getBody(), true);
 
         $rocket->setDirection(NoHttpRequestDirection::class)->setPayload(new Collection($body));
 
-        $body['resource'] = decrypt_wechat_resource($body['resource'] ?? [], get_provider_config('wechat', $params));
+        $body['resource'] = self::decryptWechatResource($body['resource'] ?? [], self::getProviderConfig('wechat', $params));
 
         $rocket->setDestination(new Collection($body));
 

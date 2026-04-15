@@ -12,8 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
-use function Yansongda\Pay\get_provider_config;
+use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/stock/start-stock.html
@@ -21,6 +20,8 @@ use function Yansongda\Pay\get_provider_config;
  */
 class StartPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -31,7 +32,7 @@ class StartPlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Marketing][Coupon][Stock][StartPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
         $stockId = $payload?->get('stock_id') ?? null;
 

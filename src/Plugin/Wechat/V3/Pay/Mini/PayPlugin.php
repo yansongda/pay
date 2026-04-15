@@ -13,9 +13,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/mini-prepay.html
@@ -23,6 +22,8 @@ use function Yansongda\Pay\get_provider_config;
  */
 class PayPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -34,7 +35,7 @@ class PayPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
 
         if (is_null($payload)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Mini 下单，参数为空');

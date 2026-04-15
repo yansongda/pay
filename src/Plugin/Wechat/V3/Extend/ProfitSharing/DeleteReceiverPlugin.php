@@ -13,10 +13,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/receivers/delete-receiver.html
@@ -24,6 +22,8 @@ use function Yansongda\Pay\get_wechat_type_key;
  */
 class DeleteReceiverPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -34,7 +34,7 @@ class DeleteReceiverPlugin implements PluginInterface
         Logger::debug('[Wechat][Extend][ProfitSharing][DeleteReceiverPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {
@@ -62,13 +62,13 @@ class DeleteReceiverPlugin implements PluginInterface
     protected function normal(array $params, array $config): array
     {
         return [
-            'appid' => $config[get_wechat_type_key($params)] ?? '',
+            'appid' => $config[self::getWechatTypeKey($params)] ?? '',
         ];
     }
 
     protected function service(Collection $payload, array $params, array $config): array
     {
-        $wechatTypeKEY = get_wechat_type_key($params);
+        $wechatTypeKEY = self::getWechatTypeKey($params);
 
         $data = [
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),

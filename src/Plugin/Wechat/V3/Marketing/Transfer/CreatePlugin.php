@@ -15,19 +15,16 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\encrypt_wechat_contents;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_public_key;
-use function Yansongda\Pay\get_wechat_serial_no;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/doc/v3/merchant/4012716434
  */
 class CreatePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws DecryptException
@@ -41,7 +38,7 @@ class CreatePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
 
         if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 发起商家转账，只支持普通商户模式，当前配置为服务商模式');
@@ -55,7 +52,7 @@ class CreatePlugin implements PluginInterface
             [
                 '_method' => 'POST',
                 '_url' => 'v3/fund-app/mch-transfer/transfer-bills',
-                'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
+                'appid' => $payload->get('appid', $config[self::getWechatTypeKey($params)] ?? ''),
                 'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
             ],
             $this->normal($params, $payload)
@@ -91,12 +88,12 @@ class CreatePlugin implements PluginInterface
      */
     protected function encryptSensitiveData(array $params, Collection $payload): array
     {
-        $data['_serial_no'] = get_wechat_serial_no($params);
+        $data['_serial_no'] = self::getWechatSerialNo($params);
 
-        $config = get_provider_config('wechat', $params);
-        $publicKey = get_wechat_public_key($config, $data['_serial_no']);
+        $config = self::getProviderConfig('wechat', $params);
+        $publicKey = self::getWechatPublicKey($config, $data['_serial_no']);
 
-        $data['user_name'] = encrypt_wechat_contents($payload->get('user_name'), $publicKey);
+        $data['user_name'] = self::encryptWechatContents($payload->get('user_name'), $publicKey);
 
         return $data;
     }

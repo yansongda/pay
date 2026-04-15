@@ -15,12 +15,10 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
-
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_sign;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/mini-transfer-payment.html
@@ -28,6 +26,8 @@ use function Yansongda\Pay\get_wechat_sign;
  */
 class MiniInvokePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -52,7 +52,7 @@ class MiniInvokePlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDestination($this->getInvokeConfig($payload, $config, $prepayId));
@@ -91,7 +91,7 @@ class MiniInvokePlugin implements PluginInterface
             .$invokeConfig->get('nonceStr', '')."\n"
             .$invokeConfig->get('package', '')."\n";
 
-        return get_wechat_sign($config, $contents);
+        return self::getWechatSign($config, $contents);
     }
 
     protected function getAppId(?Collection $payload, array $config): string

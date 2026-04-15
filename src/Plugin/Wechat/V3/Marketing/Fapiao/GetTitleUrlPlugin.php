@@ -12,17 +12,18 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/fapiao/user-title/acquire-fapiao-title-url.html
  */
 class GetTitleUrlPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -55,10 +56,10 @@ class GetTitleUrlPlugin implements PluginInterface
      */
     protected function getQuery(Collection $payload, array $params): Collection
     {
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
 
         return filter_params($payload)->merge([
-            'appid' => $payload->get('appid', $config[get_wechat_type_key($params)] ?? ''),
+            'appid' => $payload->get('appid', $config[self::getWechatTypeKey($params)] ?? ''),
         ]);
     }
 }

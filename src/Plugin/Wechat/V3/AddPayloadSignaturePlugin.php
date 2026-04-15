@@ -14,18 +14,16 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
-use function Yansongda\Pay\get_provider_config;
 use function Yansongda\Pay\get_public_cert;
-use function Yansongda\Pay\get_wechat_body;
-use function Yansongda\Pay\get_wechat_method;
-use function Yansongda\Pay\get_wechat_sign;
-use function Yansongda\Pay\get_wechat_url;
 
 class AddPayloadSignaturePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -37,7 +35,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     {
         Logger::debug('[Wechat][V3][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_provider_config('wechat', $rocket->getParams());
+        $config = self::getProviderConfig('wechat', $rocket->getParams());
         $payload = $rocket->getPayload();
 
         $timestamp = time();
@@ -57,15 +55,15 @@ class AddPayloadSignaturePlugin implements PluginInterface
      */
     protected function getSignatureContent(array $config, ?Collection $payload, int $timestamp, string $random): string
     {
-        $url = get_wechat_url($config, $payload);
+        $url = self::getWechatUrl($config, $payload);
         $urlPath = parse_url($url, PHP_URL_PATH);
         $urlQuery = parse_url($url, PHP_URL_QUERY);
 
-        return get_wechat_method($payload)."\n"
+        return self::getWechatMethod($payload)."\n"
             .$urlPath.(empty($urlQuery) ? '' : '?'.$urlQuery)."\n"
             .$timestamp."\n"
             .$random."\n"
-            .get_wechat_body($payload)."\n";
+            .self::getWechatBody($payload)."\n";
     }
 
     /**
@@ -91,7 +89,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
             $random,
             $timestamp,
             $ssl['serialNumberHex'],
-            get_wechat_sign($config, $contents),
+            self::getWechatSign($config, $contents),
         );
 
         return 'WECHATPAY2-SHA256-RSA2048 '.$auth;

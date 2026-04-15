@@ -12,8 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
-use function Yansongda\Pay\get_provider_config;
+use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/return-orders/query-return-order.html
@@ -21,6 +20,8 @@ use function Yansongda\Pay\get_provider_config;
  */
 class QueryReturnPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -30,7 +31,7 @@ class QueryReturnPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Extend][ProfitSharing][QueryReturnPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_provider_config('wechat', $rocket->getParams());
+        $config = self::getProviderConfig('wechat', $rocket->getParams());
         $payload = $rocket->getPayload();
         $outOrderNo = $payload?->get('out_order_no') ?? null;
         $outReturnNo = $payload?->get('out_return_no') ?? null;

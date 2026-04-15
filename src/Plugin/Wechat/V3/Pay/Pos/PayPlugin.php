@@ -14,10 +14,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/code-payment-v3/direct/code-pay.html
@@ -25,6 +23,8 @@ use function Yansongda\Pay\get_wechat_type_key;
  */
 class PayPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
@@ -36,7 +36,7 @@ class PayPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
 
         if (is_null($payload)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 付款码支付，参数为空');
@@ -63,14 +63,14 @@ class PayPlugin implements PluginInterface
     protected function normal(array $params, array $config): array
     {
         return [
-            'appid' => $config[get_wechat_type_key($params)] ?? '',
+            'appid' => $config[self::getWechatTypeKey($params)] ?? '',
             'mchid' => $config['mch_id'] ?? '',
         ];
     }
 
     protected function service(Collection $payload, array $params, array $config): array
     {
-        $configKey = get_wechat_type_key($params);
+        $configKey = self::getWechatTypeKey($params);
 
         return [
             'sp_appid' => $config[$configKey] ?? '',

@@ -11,15 +11,15 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
+use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/api/wxpay_v2/papay/chapter3_3.shtml
  */
 class MiniOnlyContractPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
@@ -29,12 +29,12 @@ class MiniOnlyContractPlugin implements PluginInterface
         Logger::debug('[Wechat][V2][Papay][Direct][OnlyContractPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->mergePayload([
-                'appid' => $config[get_wechat_type_key($params)] ?? '',
+                'appid' => $config[self::getWechatTypeKey($params)] ?? '',
                 'mch_id' => $config['mch_id'] ?? '',
                 'notify_url' => $payload?->get('notify_url') ?? $config['notify_url'] ?? '',
                 'timestamp' => time(),

@@ -14,9 +14,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/in-app-payment/close-order.html
@@ -24,6 +23,8 @@ use function Yansongda\Pay\get_provider_config;
  */
 class ClosePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -34,7 +35,7 @@ class ClosePlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Pay][App][ClosePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
         $outTradeNo = $payload?->get('out_trade_no') ?? null;
 

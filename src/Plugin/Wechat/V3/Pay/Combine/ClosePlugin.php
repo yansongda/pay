@@ -13,9 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
+use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/close-order.html
@@ -23,6 +21,8 @@ use function Yansongda\Pay\get_wechat_type_key;
  */
 class ClosePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -33,7 +33,7 @@ class ClosePlugin implements PluginInterface
         Logger::debug('[Wechat][Pay][Combine][ClosePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
         $combineOutTradeNo = $payload?->get('combine_out_trade_no') ?? null;
 
@@ -46,7 +46,7 @@ class ClosePlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
                 '_service_url' => 'v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
-                'combine_appid' => $payload->get('combine_appid', $config[get_wechat_type_key($params)] ?? ''),
+                'combine_appid' => $payload->get('combine_appid', $config[self::getWechatTypeKey($params)] ?? ''),
             ])
             ->exceptPayload('combine_out_trade_no');
 

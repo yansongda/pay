@@ -13,14 +13,15 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-
-use function Yansongda\Pay\get_provider_config;
+use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://pay.weixin.qq.com/docs/partner/apis/ecommerce-refund/refunds/query-return-advance.html
  */
 class QueryReturnAdvancePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -32,7 +33,7 @@ class QueryReturnAdvancePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $refundId = $payload?->get('refund_id') ?? null;
 
         if (Pay::MODE_NORMAL === ($config['mode'] ?? Pay::MODE_NORMAL)) {

@@ -12,16 +12,16 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Str;
-
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=9_02
  */
 class QueryPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
@@ -32,13 +32,13 @@ class QueryPlugin implements PluginInterface
         Logger::debug('[Wechat][V2][Pay][Pos][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
 
         $rocket->setPacker(XmlPacker::class)
             ->mergePayload([
                 '_url' => 'pay/orderquery',
                 '_content_type' => 'application/xml',
-                'appid' => $config[get_wechat_type_key($params)] ?? '',
+                'appid' => $config[self::getWechatTypeKey($params)] ?? '',
                 'mch_id' => $config['mch_id'] ?? '',
                 'nonce_str' => Str::random(32),
                 'sign_type' => 'MD5',

@@ -12,8 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
-use function Yansongda\Pay\get_provider_config;
+use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaints/response-complaint-v2.html
@@ -21,6 +20,8 @@ use function Yansongda\Pay\get_provider_config;
  */
 class ResponsePlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws InvalidParamsException
      * @throws ContainerException
@@ -30,7 +31,7 @@ class ResponsePlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Extend][Complaints][ResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_provider_config('wechat', $rocket->getParams());
+        $config = self::getProviderConfig('wechat', $rocket->getParams());
         $payload = $rocket->getPayload();
         $complaintId = $payload?->get('complaint_id') ?? null;
 

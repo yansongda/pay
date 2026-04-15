@@ -15,13 +15,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\encrypt_wechat_contents;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_wechat_public_key;
-use function Yansongda\Pay\get_wechat_serial_no;
-use function Yansongda\Pay\get_wechat_type_key;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/receivers/add-receiver.html
@@ -29,6 +24,8 @@ use function Yansongda\Pay\get_wechat_type_key;
  */
 class AddReceiverPlugin implements PluginInterface
 {
+    use WechatTrait;
+
     /**
      * @throws ContainerException
      * @throws DecryptException
@@ -41,7 +38,7 @@ class AddReceiverPlugin implements PluginInterface
         Logger::debug('[Wechat][Extend][ProfitSharing][AddReceiverPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('wechat', $params);
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {
@@ -76,7 +73,7 @@ class AddReceiverPlugin implements PluginInterface
     protected function normal(Collection $payload, array $params, array $config): array
     {
         $data = [
-            'appid' => $config[get_wechat_type_key($params)] ?? '',
+            'appid' => $config[self::getWechatTypeKey($params)] ?? '',
         ];
 
         if (!$payload->has('name')) {
@@ -95,7 +92,7 @@ class AddReceiverPlugin implements PluginInterface
      */
     protected function service(Collection $payload, array $params, array $config): array
     {
-        $wechatTypeKey = get_wechat_type_key($params);
+        $wechatTypeKey = self::getWechatTypeKey($params);
 
         $data = [
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
@@ -122,12 +119,12 @@ class AddReceiverPlugin implements PluginInterface
      */
     protected function encryptSensitiveData(array $params, array $config, Collection $payload): array
     {
-        $data['_serial_no'] = get_wechat_serial_no($params);
+        $data['_serial_no'] = self::getWechatSerialNo($params);
 
-        $config = get_provider_config('wechat', $params);
-        $publicKey = get_wechat_public_key($config, $data['_serial_no']);
+        $config = self::getProviderConfig('wechat', $params);
+        $publicKey = self::getWechatPublicKey($config, $data['_serial_no']);
 
-        $data['name'] = encrypt_wechat_contents($payload->get('name'), $publicKey);
+        $data['name'] = self::encryptWechatContents($payload->get('name'), $publicKey);
 
         return $data;
     }
