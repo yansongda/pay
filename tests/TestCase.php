@@ -251,6 +251,21 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mode' => Pay::MODE_SANDBOX,
                 ],
             ],
+            'bestpay' => [
+                'default' => [
+                    // 必填-商户号
+                    'merchant_no' => 'bestpay_merchant_no',
+                    // 必填-平台编号
+                    'platform' => 'HELIPAY',
+                    // 必填-APP KEY（用于签名）
+                    'app_key' => 'bestpay_app_key_123456',
+                    // 选填-异步通知地址
+                    'notify_url' => 'https://pay.yansongda.cn/bestpay/notify',
+                    // 选填-同步跳转地址（H5 支付时使用）
+                    'return_url' => 'https://pay.yansongda.cn/bestpay/return',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+            ],
         ];
 
         // hyperf 单测时，未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个

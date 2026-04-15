@@ -25,6 +25,7 @@ use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
 use Yansongda\Pay\Provider\Alipay;
+use Yansongda\Pay\Provider\Bestpay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Pay\Provider\Paypal;
@@ -826,4 +827,49 @@ function verify_stripe_webhook_sign(ServerRequestInterface $request, array $para
     }
 
     throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证 Stripe 回调签名失败', ['headers' => $request->getHeaders(), 'body' => $body]);
+}
+
+/**
+ * @throws InvalidParamsException
+ */
+function get_bestpay_url(array $config, ?Collection $payload): string
+{
+    $url = get_radar_url($config, $payload);
+
+    if (empty($url)) {
+        throw new InvalidParamsException(Exception::PARAMS_BESTPAY_URL_MISSING, '参数异常: 翼支付 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
+    }
+
+    if (str_starts_with($url, 'http')) {
+        return $url;
+    }
+
+    return Bestpay::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+}
+
+/**
+ * @throws InvalidConfigException
+ * @throws InvalidSignException
+ */
+function verify_bestpay_sign(array $config, array $params, string $sign): void
+{
+    if (empty($sign)) {
+        throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 翼支付签名为空', func_get_args());
+    }
+
+    $appKey = $config['app_key'] ?? null;
+
+    if (empty($appKey)) {
+        throw new InvalidConfigException(Exception::CONFIG_BESTPAY_INVALID, '配置异常: 缺少翼支付配置 -- [app_key]');
+    }
+
+    $filtered = array_filter($params, fn ($v) => '' !== $v && null !== $v);
+    ksort($filtered);
+
+    $queryString = http_build_query($filtered).'&key='.$appKey;
+    $expected = strtolower(md5($queryString));
+
+    if (!hash_equals($expected, strtolower($sign))) {
+        throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证翼支付签名失败', func_get_args());
+    }
 }
