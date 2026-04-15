@@ -14,11 +14,10 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
-
-use function Yansongda\Pay\get_public_cert;
 
 class AddPayloadSignaturePlugin implements PluginInterface
 {
@@ -77,7 +76,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_public_cert_path]');
         }
 
-        $ssl = openssl_x509_parse(get_public_cert($mchPublicCertPath));
+        $ssl = openssl_x509_parse(CertManager::getPublicCert($mchPublicCertPath));
 
         if (empty($ssl['serialNumberHex'])) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 解析微信配置 [mch_public_cert_path] 出错');

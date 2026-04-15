@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
-use Yansongda\Artful\Contract\ServiceProviderInterface;
-use Yansongda\Artful\Exception\ContainerException;
-use Yansongda\Pay\Pay;
+use Yansongda\Pay\Service\AbstractServiceProvider;
 use Yansongda\Pay\Provider\Unipay;
 
-class UnipayServiceProvider implements ServiceProviderInterface
+class UnipayServiceProvider extends AbstractServiceProvider
 {
-    /**
-     * @throws ContainerException
-     */
-    public function register(mixed $data = null): void
+    protected function getProviderClass(): string
     {
-        $service = new Unipay();
+        return Unipay::class;
+    }
 
-        Pay::set(Unipay::class, $service);
-        Pay::set('unipay', $service);
+    protected function getProviderName(): string
+    {
+        return 'unipay';
     }
 }

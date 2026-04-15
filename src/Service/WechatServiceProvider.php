@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
-use Yansongda\Artful\Contract\ServiceProviderInterface;
-use Yansongda\Artful\Exception\ContainerException;
-use Yansongda\Pay\Pay;
+use Yansongda\Pay\Service\AbstractServiceProvider;
 use Yansongda\Pay\Provider\Wechat;
 
-class WechatServiceProvider implements ServiceProviderInterface
+class WechatServiceProvider extends AbstractServiceProvider
 {
-    /**
-     * @throws ContainerException
-     */
-    public function register(mixed $data = null): void
+    protected function getProviderClass(): string
     {
-        $service = new Wechat();
+        return Wechat::class;
+    }
 
-        Pay::set(Wechat::class, $service);
-        Pay::set('wechat', $service);
+    protected function getProviderName(): string
+    {
+        return 'wechat';
     }
 }

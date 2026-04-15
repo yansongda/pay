@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
-use Yansongda\Artful\Contract\ServiceProviderInterface;
-use Yansongda\Artful\Exception\ContainerException;
-use Yansongda\Pay\Pay;
+use Yansongda\Pay\Service\AbstractServiceProvider;
 use Yansongda\Pay\Provider\Alipay;
 
-class AlipayServiceProvider implements ServiceProviderInterface
+class AlipayServiceProvider extends AbstractServiceProvider
 {
-    /**
-     * @throws ContainerException
-     */
-    public function register(mixed $data = null): void
+    protected function getProviderClass(): string
     {
-        $service = new Alipay();
+        return Alipay::class;
+    }
 
-        Pay::set(Alipay::class, $service);
-        Pay::set('alipay', $service);
+    protected function getProviderName(): string
+    {
+        return 'alipay';
     }
 }

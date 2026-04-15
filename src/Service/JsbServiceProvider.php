@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
-use Yansongda\Artful\Contract\ServiceProviderInterface;
-use Yansongda\Artful\Exception\ContainerException;
-use Yansongda\Pay\Pay;
+use Yansongda\Pay\Service\AbstractServiceProvider;
 use Yansongda\Pay\Provider\Jsb;
 
-class JsbServiceProvider implements ServiceProviderInterface
+class JsbServiceProvider extends AbstractServiceProvider
 {
-    /**
-     * @throws ContainerException
-     */
-    public function register(mixed $data = null): void
+    protected function getProviderClass(): string
     {
-        $service = new Jsb();
+        return Jsb::class;
+    }
 
-        Pay::set(Jsb::class, $service);
-        Pay::set('jsb', $service);
+    protected function getProviderName(): string
+    {
+        return 'jsb';
     }
 }

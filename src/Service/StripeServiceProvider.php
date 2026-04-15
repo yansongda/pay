@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
-use Yansongda\Artful\Contract\ServiceProviderInterface;
-use Yansongda\Pay\Pay;
+use Yansongda\Pay\Service\AbstractServiceProvider;
 use Yansongda\Pay\Provider\Stripe;
 
-class StripeServiceProvider implements ServiceProviderInterface
+class StripeServiceProvider extends AbstractServiceProvider
 {
-    public function register(mixed $data = null): void
+    protected function getProviderClass(): string
     {
-        $service = new Stripe();
+        return Stripe::class;
+    }
 
-        Pay::set(Stripe::class, $service);
-        Pay::set('stripe', $service);
+    protected function getProviderName(): string
+    {
+        return 'stripe';
     }
 }
