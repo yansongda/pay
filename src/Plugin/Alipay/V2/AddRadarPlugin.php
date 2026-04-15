@@ -12,14 +12,15 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Traits\AlipayTrait;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\get_radar_method;
-use function Yansongda\Pay\get_alipay_url;
-use function Yansongda\Pay\get_provider_config;
 
 class AddRadarPlugin implements PluginInterface
 {
+    use AlipayTrait;
+
     /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
@@ -29,13 +30,13 @@ class AddRadarPlugin implements PluginInterface
         Logger::debug('[Alipay][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('alipay', $params);
+        $config = self::getProviderConfig('alipay', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setRadar(new Request(
             // 这里因为支付宝的 payload 里不包含 _method，所以需要取 params 中的
             get_radar_method(new Collection($params)) ?? 'POST',
-            get_alipay_url($config, $payload),
+            self::getAlipayUrl($config, $payload),
             $this->getHeaders($params),
             // 不能用 artful 中 get_radar_body 方法
             // 来自 AddPayloadBodyPlugin 插件通过 packer 生成的 _body

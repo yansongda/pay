@@ -12,15 +12,16 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Traits\StripeTrait;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
 use function Yansongda\Artful\get_radar_method;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_stripe_url;
 
 class AddRadarPlugin implements PluginInterface
 {
+    use StripeTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -32,11 +33,11 @@ class AddRadarPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_provider_config('stripe', $params);
+        $config = self::getProviderConfig('stripe', $params);
 
         $rocket->setRadar(new Request(
             get_radar_method($payload),
-            get_stripe_url($config, $payload).$this->getQueryString($payload),
+            self::getStripeUrl($config, $payload).$this->getQueryString($payload),
             $this->getHeaders($config, $payload),
             $this->getBody($payload),
         ));

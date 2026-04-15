@@ -9,10 +9,10 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Pay;
 
-use function Yansongda\Pay\get_provider_config;
-
 trait SupportServiceProviderTrait
 {
+    use ProviderConfigTrait;
+
     /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
@@ -20,7 +20,7 @@ trait SupportServiceProviderTrait
     protected function loadAlipayServiceProvider(Rocket $rocket): void
     {
         $params = $rocket->getParams();
-        $config = get_provider_config('alipay', $params);
+        $config = self::getProviderConfig('alipay', $params);
         $serviceProviderId = $config['service_provider_id'] ?? null;
 
         if (Pay::MODE_SERVICE !== ($config['mode'] ?? Pay::MODE_NORMAL)

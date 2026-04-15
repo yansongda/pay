@@ -16,12 +16,13 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Traits\StripeTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\verify_stripe_webhook_sign;
 
 class CallbackPlugin implements PluginInterface
 {
+    use StripeTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -36,7 +37,7 @@ class CallbackPlugin implements PluginInterface
         $this->init($rocket);
 
         /* @phpstan-ignore-next-line */
-        verify_stripe_webhook_sign($rocket->getDestinationOrigin(), $rocket->getParams());
+        self::verifyStripeWebhookSign($rocket->getDestinationOrigin(), $rocket->getParams());
 
         $bodyString = (string) $rocket->getDestination()->getBody();
         $body = json_decode($bodyString, true);
