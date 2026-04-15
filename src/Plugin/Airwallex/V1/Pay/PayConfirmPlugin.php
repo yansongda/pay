@@ -21,6 +21,10 @@ use Yansongda\Pay\Plugin\Airwallex\V1\ObtainAccessTokenPlugin;
 use Yansongda\Pay\Plugin\Airwallex\V1\ResponsePlugin;
 use Yansongda\Supports\Collection;
 
+/**
+ * @see https://www.airwallex.com/docs/api/payments/payment_intents/create
+ * @see https://www.airwallex.com/docs/api/payments/payment_intents/confirm
+ */
 class PayConfirmPlugin implements PluginInterface
 {
     /**

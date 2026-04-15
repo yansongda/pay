@@ -1,5 +1,10 @@
 # Airwallex 查询
 
+> 官方文档：
+> [Retrieve PaymentIntent](https://www.airwallex.com/docs/api/payments/payment_intents/create/retrieve)
+> [Refunds](https://www.airwallex.com/docs/api/payments/refunds/create)
+
+
 | 方法名 | 参数 | 返回值 |
 |:--:|:--:|:--:|
 | query | array $order | Collection |

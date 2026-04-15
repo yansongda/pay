@@ -1,5 +1,9 @@
 # 接收 Airwallex 回调
 
+> 官方文档：
+> [Listen for webhook events](https://www.airwallex.com/docs/developer-tools/webhooks/listen-for-webhook-events)
+
+
 | 方法名 | 参数 | 返回值 |
 |:--:|:--:|:--:|
 | callback | null/array/ServerRequestInterface | Collection |

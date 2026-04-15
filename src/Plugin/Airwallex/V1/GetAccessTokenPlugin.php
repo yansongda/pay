@@ -9,6 +9,9 @@ use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
+/**
+ * @see https://www.airwallex.com/docs/api/introduction
+ */
 class GetAccessTokenPlugin implements PluginInterface
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket

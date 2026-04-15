@@ -15,6 +15,9 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Airwallex\V1\VerifyWebhookSignPlugin;
 use Yansongda\Supports\Collection;
 
+/**
+ * @see https://www.airwallex.com/docs/developer-tools/webhooks/listen-for-webhook-events
+ */
 class CallbackPlugin implements PluginInterface
 {
     /**

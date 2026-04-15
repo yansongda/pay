@@ -15,6 +15,9 @@ use Yansongda\Artful\Rocket;
 
 use function Yansongda\Pay\get_airwallex_access_token;
 
+/**
+ * @see https://www.airwallex.com/docs/api/introduction
+ */
 class ObtainAccessTokenPlugin implements PluginInterface
 {
     /**

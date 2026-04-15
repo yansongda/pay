@@ -15,6 +15,9 @@ use Yansongda\Pay\Exception\InvalidSignException;
 
 use function Yansongda\Pay\verify_airwallex_webhook_sign;
 
+/**
+ * @see https://www.airwallex.com/docs/developer-tools/webhooks/listen-for-webhook-events
+ */
 class VerifyWebhookSignPlugin implements PluginInterface
 {
     /**

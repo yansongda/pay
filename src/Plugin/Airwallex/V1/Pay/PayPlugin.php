@@ -15,7 +15,7 @@ use function Yansongda\Pay\get_airwallex_request_id;
 use function Yansongda\Pay\get_provider_config;
 
 /**
- * @see https://www.airwallex.com/docs/payments/get-started/quickstart
+ * @see https://www.airwallex.com/docs/api/payments/payment_intents/create
  */
 class PayPlugin implements PluginInterface
 {

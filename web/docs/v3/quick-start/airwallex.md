@@ -1,5 +1,11 @@
 # Airwallex 快速开始
 
+> 官方文档：
+> [API Introduction](https://www.airwallex.com/docs/api/introduction)
+> [Using PaymentIntents API](https://www.airwallex.com/docs/api/payments/payment_intents/create)
+> [Native API](https://www.airwallex.com/docs/api/payments/payment_intents/create)
+
+
 ## 配置
 
 ```php

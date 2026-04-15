@@ -1,5 +1,10 @@
 # Airwallex 支付
 
+> 官方文档：
+> [Using PaymentIntents API](https://www.airwallex.com/docs/api/payments/payment_intents/create)
+> [Native API](https://www.airwallex.com/docs/api/payments/payment_intents/create)
+
+
 Airwallex 当前内置支持以下支付方式：
 
 | method | 说明 | 参数 | 返回值 |

@@ -11,6 +11,9 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
+/**
+ * @see https://www.airwallex.com/docs/api/payments/refunds/retrieve
+ */
 class QueryRefundPlugin implements PluginInterface
 {
     /**

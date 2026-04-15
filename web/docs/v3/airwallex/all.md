@@ -1,5 +1,11 @@
 # Airwallex 更多方便的插件
 
+> 官方文档：
+> [API Introduction](https://www.airwallex.com/docs/api/introduction)
+> [Using PaymentIntents API](https://www.airwallex.com/docs/api/payments/payment_intents/create)
+> [Listen for webhook events](https://www.airwallex.com/docs/developer-tools/webhooks/listen-for-webhook-events)
+
+
 得益于 `yansongda/pay` 的基础架构和插件机制，
 你可以自由组合内置插件或自定义插件来调用 Airwallex API。
 

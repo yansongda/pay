@@ -18,6 +18,9 @@ use function Yansongda\Artful\get_radar_method;
 use function Yansongda\Pay\get_airwallex_url;
 use function Yansongda\Pay\get_provider_config;
 
+/**
+ * @see https://www.airwallex.com/docs/api/introduction
+ */
 class AddRadarPlugin implements PluginInterface
 {
     /**

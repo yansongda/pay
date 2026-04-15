@@ -13,6 +13,9 @@ use Yansongda\Pay\Exception\Exception;
 
 use function Yansongda\Pay\get_airwallex_request_id;
 
+/**
+ * @see https://www.airwallex.com/docs/api/payments/payment_intents/cancel
+ */
 class CancelPlugin implements PluginInterface
 {
     /**

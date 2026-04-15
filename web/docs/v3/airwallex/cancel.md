@@ -1,5 +1,9 @@
 # Airwallex 取消
 
+> 官方文档：
+> [Cancellations](https://www.airwallex.com/docs/api/payments/payment_intents/cancel)
+
+
 | 方法名 | 参数 | 返回值 |
 |:--:|:--:|:--:|
 | cancel | array $order | Collection |
