@@ -15,9 +15,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Supports\Collection;
 use Yansongda\Pay\Traits\WechatTrait;
-
+use Yansongda\Supports\Collection;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/receivers/add-receiver.html

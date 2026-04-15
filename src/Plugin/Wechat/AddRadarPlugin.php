@@ -12,9 +12,8 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Supports\Collection;
 use Yansongda\Pay\Traits\WechatTrait;
-
+use Yansongda\Supports\Collection;
 
 class AddRadarPlugin implements PluginInterface
 {

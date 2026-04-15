@@ -14,7 +14,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
-
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/native-prepay.html
  * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/orders/native-prepay.html

@@ -11,9 +11,9 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Traits\WechatTrait;
 
 use function Yansongda\Artful\filter_params;
-use Yansongda\Pay\Traits\WechatTrait;
 
 class AddPayloadSignaturePlugin implements PluginInterface
 {

@@ -13,9 +13,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Supports\Collection;
 use Yansongda\Pay\Traits\WechatTrait;
-
+use Yansongda\Supports\Collection;
 
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/create.html

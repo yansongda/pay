@@ -15,7 +15,6 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 
-
 /**
  * @see https://pay.weixin.qq.com/docs/partner/apis/ecommerce-balance/accounts/query-balance.html
  */

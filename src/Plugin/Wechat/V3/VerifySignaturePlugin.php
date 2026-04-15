@@ -14,9 +14,9 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Traits\WechatTrait;
 
 use function Yansongda\Artful\should_do_http_request;
-use Yansongda\Pay\Traits\WechatTrait;
 
 class VerifySignaturePlugin implements PluginInterface
 {

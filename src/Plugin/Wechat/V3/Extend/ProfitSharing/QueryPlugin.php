@@ -14,7 +14,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
-
 /**
  * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/orders/query-order.html
  * @see https://pay.weixin.qq.com/docs/partner/apis/profit-sharing/orders/query-order.html

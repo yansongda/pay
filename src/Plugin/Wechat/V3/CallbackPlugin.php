@@ -17,9 +17,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Supports\Collection;
 use Yansongda\Pay\Traits\WechatTrait;
-
+use Yansongda\Supports\Collection;
 
 class CallbackPlugin implements PluginInterface
 {
