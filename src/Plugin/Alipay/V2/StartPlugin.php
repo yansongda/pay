@@ -12,15 +12,15 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_public_cert;
-use function Yansongda\Pay\get_tenant;
+use Yansongda\Pay\Traits\AlipayTrait;
 
 class StartPlugin implements PluginInterface
 {
+    use AlipayTrait;
+
     /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
@@ -44,8 +44,8 @@ class StartPlugin implements PluginInterface
      */
     protected function getPayload(array $params): array
     {
-        $tenant = get_tenant($params);
-        $config = get_provider_config('alipay', $params);
+        $tenant = self::getTenant($params);
+        $config = self::getProviderConfig('alipay', $params);
 
         return [
             'app_id' => $config['app_id'] ?? '',
@@ -109,7 +109,7 @@ class StartPlugin implements PluginInterface
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
         }
 
-        $ssl = openssl_x509_parse(get_public_cert($path));
+        $ssl = openssl_x509_parse(CertManager::getPublicCert($path));
 
         if (false === $ssl) {
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 解析 `app_public_cert_path` 失败');
@@ -140,7 +140,7 @@ class StartPlugin implements PluginInterface
         }
 
         $sn = '';
-        $exploded = explode('-----END CERTIFICATE-----', get_public_cert($path));
+        $exploded = explode('-----END CERTIFICATE-----', CertManager::getPublicCert($path));
 
         foreach ($exploded as $cert) {
             if (empty(trim($cert))) {

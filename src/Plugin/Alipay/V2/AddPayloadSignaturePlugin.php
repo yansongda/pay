@@ -11,13 +11,14 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Exception\Exception;
-
-use function Yansongda\Pay\get_private_cert;
-use function Yansongda\Pay\get_provider_config;
+use Yansongda\Pay\Traits\AlipayTrait;
 
 class AddPayloadSignaturePlugin implements PluginInterface
 {
+    use AlipayTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -57,12 +58,12 @@ class AddPayloadSignaturePlugin implements PluginInterface
      */
     protected function getPrivateKey(array $params): string
     {
-        $privateKey = get_provider_config('alipay', $params)['app_secret_cert'] ?? null;
+        $privateKey = self::getProviderConfig('alipay', $params)['app_secret_cert'] ?? null;
 
         if (is_null($privateKey)) {
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_secret_cert]');
         }
 
-        return get_private_cert($privateKey);
+        return CertManager::getPrivateCert($privateKey);
     }
 }

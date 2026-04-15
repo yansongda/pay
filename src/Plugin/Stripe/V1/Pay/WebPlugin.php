@@ -11,14 +11,15 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-
-use function Yansongda\Pay\get_provider_config;
+use Yansongda\Pay\Traits\StripeTrait;
 
 /**
  * @see https://stripe.com/docs/api/checkout/sessions/create
  */
 class WebPlugin implements PluginInterface
 {
+    use StripeTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -30,7 +31,7 @@ class WebPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_provider_config('stripe', $params);
+        $config = self::getProviderConfig('stripe', $params);
 
         $rocket->mergePayload([
             '_method' => 'POST',
