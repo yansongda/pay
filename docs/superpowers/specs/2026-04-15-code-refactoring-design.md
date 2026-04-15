@@ -626,6 +626,7 @@ public function testClearCache(): void
 3. 添加边界条件测试
 4. 运行 `composer test` 确保全部通过
 5. 运行 `composer analyse` 确保无新增错误
+6. 运行 `composer cs-fix` 确保代码风格一致性（如有差异需修复）
 
 ---
 
@@ -652,6 +653,7 @@ public function testClearCache(): void
 |-------|------|
 | 单元测试 | `composer test` 全部通过 |
 | 静态分析 | `composer analyse` Level 5 无错误 |
+| 代码风格 | `composer cs-fix` 无差异输出 |
 | 代码覆盖率 | 新增 Trait 和边界测试覆盖率 > 80% |
 | 文件删除 | Functions.php 已删除 |
 | 类型声明 | 所有 Shortcut 方法有完整类型声明 |
