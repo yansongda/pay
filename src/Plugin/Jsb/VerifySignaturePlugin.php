@@ -12,16 +12,17 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 use function Yansongda\Artful\should_do_http_request;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\verify_jsb_sign;
 
 class VerifySignaturePlugin implements PluginInterface
 {
+    use JsbTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -37,12 +38,12 @@ class VerifySignaturePlugin implements PluginInterface
 
         if (should_do_http_request($rocket->getDirection())) {
             $params = $rocket->getParams();
-            $config = get_provider_config('jsb', $params);
+            $config = self::getProviderConfig('jsb', $params);
 
             $body = (string) $rocket->getDestinationOrigin()->getBody();
             $signatureData = $this->getSignatureData($body);
 
-            verify_jsb_sign($config, $signatureData['data'] ?? '', $signatureData['sign'] ?? '');
+            self::verifyJsbSign($config, $signatureData['data'] ?? '', $signatureData['sign'] ?? '');
         }
 
         Logger::info('[Jsb][VerifySignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);

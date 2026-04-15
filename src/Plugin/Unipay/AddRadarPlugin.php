@@ -12,14 +12,14 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Traits\UnipayTrait;
 
 use function Yansongda\Artful\get_radar_method;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\get_unipay_body;
-use function Yansongda\Pay\get_unipay_url;
 
 class AddRadarPlugin implements PluginInterface
 {
+    use UnipayTrait;
+
     /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
@@ -30,14 +30,14 @@ class AddRadarPlugin implements PluginInterface
         Logger::debug('[Unipay][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('unipay', $params);
+        $config = self::getProviderConfig('unipay', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setRadar(new Request(
             get_radar_method($payload) ?? 'POST',
-            get_unipay_url($config, $payload),
+            self::getUnipayUrl($config, $payload),
             $this->getHeaders(),
-            get_unipay_body($payload),
+            self::getUnipayBody($payload),
         ));
 
         Logger::info('[Unipay][AddRadarPlugin] 插件装载完毕', ['rocket' => $rocket]);

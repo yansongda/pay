@@ -13,15 +13,16 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\DouyinTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\get_provider_config;
 
 /**
  * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/ecpay/pay-list/query
  */
 class QueryPlugin implements PluginInterface
 {
+    use DouyinTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -33,7 +34,7 @@ class QueryPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
-        $config = get_provider_config('douyin', $params);
+        $config = self::getProviderConfig('douyin', $params);
 
         if (is_null($payload)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 抖音小程序查询订单，参数为空');

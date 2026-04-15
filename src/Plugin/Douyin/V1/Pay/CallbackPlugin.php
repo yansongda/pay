@@ -14,12 +14,14 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Traits\DouyinTrait;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_provider_config;
 
 class CallbackPlugin implements PluginInterface
 {
+    use DouyinTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -31,7 +33,7 @@ class CallbackPlugin implements PluginInterface
         Logger::debug('[Douyin][V1][Pay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('douyin', $params);
+        $config = self::getProviderConfig('douyin', $params);
 
         $value = filter_params($params, fn ($k, $v) => '' !== $v && 'msg_signature' != $k && 'type' != $k);
 

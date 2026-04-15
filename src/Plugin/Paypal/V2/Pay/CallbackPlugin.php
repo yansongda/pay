@@ -16,12 +16,13 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Traits\PaypalTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\verify_paypal_webhook_sign;
 
 class CallbackPlugin implements PluginInterface
 {
+    use PaypalTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -36,7 +37,7 @@ class CallbackPlugin implements PluginInterface
         $this->init($rocket);
 
         /* @phpstan-ignore-next-line */
-        verify_paypal_webhook_sign($rocket->getDestinationOrigin(), $rocket->getParams());
+        self::verifyPaypalWebhookSign($rocket->getDestinationOrigin(), $rocket->getParams());
 
         $body = json_decode((string) $rocket->getDestination()->getBody(), true);
 

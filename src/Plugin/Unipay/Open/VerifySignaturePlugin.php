@@ -12,14 +12,15 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Traits\UnipayTrait;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\should_do_http_request;
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\verify_unipay_sign;
 
 class VerifySignaturePlugin implements PluginInterface
 {
+    use UnipayTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -44,9 +45,9 @@ class VerifySignaturePlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-        $config = get_provider_config('unipay', $params);
+        $config = self::getProviderConfig('unipay', $params);
 
-        verify_unipay_sign(
+        self::verifyUnipaySign(
             $config,
             $destination->except('signature')->sortKeys()->toString(),
             $destination->get('signature', ''),

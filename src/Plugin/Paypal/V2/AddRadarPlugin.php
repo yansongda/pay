@@ -12,14 +12,15 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Traits\PaypalTrait;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\get_radar_method;
-use function Yansongda\Pay\get_paypal_url;
-use function Yansongda\Pay\get_provider_config;
 
 class AddRadarPlugin implements PluginInterface
 {
+    use PaypalTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -31,11 +32,11 @@ class AddRadarPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_provider_config('paypal', $params);
+        $config = self::getProviderConfig('paypal', $params);
 
         $rocket->setRadar(new Request(
             get_radar_method($payload),
-            get_paypal_url($config, $payload),
+            self::getPaypalUrl($config, $payload),
             $this->getHeaders($config, $payload),
             $this->getBody($payload),
         ));

@@ -15,13 +15,13 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Collection;
-
-use function Yansongda\Pay\get_provider_config;
-use function Yansongda\Pay\verify_jsb_sign;
 
 class CallbackPlugin implements PluginInterface
 {
+    use JsbTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -36,7 +36,7 @@ class CallbackPlugin implements PluginInterface
         $this->formatRequestAndParams($rocket);
 
         $params = $rocket->getParams();
-        $config = get_provider_config('jsb', $params);
+        $config = self::getProviderConfig('jsb', $params);
 
         $payload = $rocket->getPayload();
         $signature = $payload->get('sign');
@@ -44,7 +44,7 @@ class CallbackPlugin implements PluginInterface
         $payload->forget('sign');
         $payload->forget('signType');
 
-        verify_jsb_sign($config, $payload->sortKeys()->toString(), $signature);
+        self::verifyJsbSign($config, $payload->sortKeys()->toString(), $signature);
 
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());

@@ -12,13 +12,15 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Traits\DouyinTrait;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
-use function Yansongda\Pay\get_provider_config;
 
 class AddPayloadSignaturePlugin implements PluginInterface
 {
+    use DouyinTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -28,7 +30,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     {
         Logger::debug('[Douyin][V1][Pay][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $config = get_provider_config('douyin', $rocket->getParams());
+        $config = self::getProviderConfig('douyin', $rocket->getParams());
         $payload = $rocket->getPayload();
 
         $rocket->mergePayload(['sign' => $this->getSign($config, filter_params($payload))]);

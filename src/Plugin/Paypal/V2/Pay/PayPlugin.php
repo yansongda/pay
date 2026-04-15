@@ -11,14 +11,15 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-
-use function Yansongda\Pay\get_provider_config;
+use Yansongda\Pay\Traits\PaypalTrait;
 
 /**
  * @see https://developer.paypal.com/docs/api/orders/v2/#orders_create
  */
 class PayPlugin implements PluginInterface
 {
+    use PaypalTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
@@ -30,7 +31,7 @@ class PayPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = get_provider_config('paypal', $params);
+        $config = self::getProviderConfig('paypal', $params);
 
         $rocket->mergePayload([
             '_method' => 'POST',

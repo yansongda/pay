@@ -12,11 +12,12 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-
-use function Yansongda\Pay\get_paypal_access_token;
+use Yansongda\Pay\Traits\PaypalTrait;
 
 class ObtainAccessTokenPlugin implements PluginInterface
 {
+    use PaypalTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -32,7 +33,7 @@ class ObtainAccessTokenPlugin implements PluginInterface
         $token = $params['_access_token'] ?? '';
 
         if (empty($token)) {
-            $token = get_paypal_access_token($params);
+            $token = self::getPaypalAccessToken($params);
         }
 
         $rocket->mergePayload(['_access_token' => $token]);
