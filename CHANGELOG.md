@@ -11,7 +11,8 @@
 
 ### Removed
 
-- `src/Functions.php` (#1142, #1143, #1144)
+- `src/Functions.php` (#1142, #1143, #1144, #1145)
+- `tests/FunctionTest.php` - 测试已迁移到 Trait 测试 (#1142, #1143, #1144, #1145)
 - `src/Plugin/Wechat/StartPlugin.php` (#1139)
 - `src/Plugin/Wechat/V3/Marketing/Transfer/` 目录 (#1139)
 - `get_alipay_config()` 函数 (#1139)
@@ -22,7 +23,7 @@
 
 - feat: 增加 PHP 8.5 支持 (#1139)
 - feat: 新增 `Yansongda\Pay\Service\AbstractServiceProvider` 基类 (#1142)
-- feat: 新增 `Yansongda\Pay\Service\CertManager` 类用于证书缓存管理 (#1142)
+- feat: 新增 `Yansongda\Pay\CertManager` 类用于证书缓存管理 (#1142)
 - feat: 新增 Trait 系统替代 Functions.php (#1142, #1143, #1144)
   - `AlipayTrait` - 支付宝相关方法
   - `WechatTrait` - 微信相关方法
@@ -38,7 +39,7 @@
 
 - `Yansongda\Pay\Plugin\Wechat\V3\Marketing\MchTransfer\*` → `Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\*` (#1139)
 - 所有 Plugin 已迁移使用 Trait 方法代替 Functions.php 函数调用 (#1142, #1143, #1144)
-- 所有 ServiceProvider 继承 `AbstractServiceProvider` 基类 (#1142)
+- 所有 ServiceProvider 继承 `AbstractServiceProvider` 基类 (#1145)
 
 ## v3.7.20
 

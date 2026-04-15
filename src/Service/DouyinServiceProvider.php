@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
-use Yansongda\Pay\Service\AbstractServiceProvider;
 use Yansongda\Pay\Provider\Douyin;
 
 class DouyinServiceProvider extends AbstractServiceProvider
