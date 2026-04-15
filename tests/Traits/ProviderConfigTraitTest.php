@@ -24,7 +24,7 @@ class ProviderConfigTraitTest extends TestCase
 
     public function testGetTenantCustom(): void
     {
-        self::assertSame('service_provider', ProviderConfigTraitStub::getTenant(['_config' => 'service_provider']));
+        self::assertSame('yansongda', ProviderConfigTraitStub::getTenant(['_config' => 'yansongda']));
     }
 
     public function testGetProviderConfigDefault(): void
@@ -35,12 +35,70 @@ class ProviderConfigTraitTest extends TestCase
         );
     }
 
+    public function testGetProviderConfigAlipay(): void
+    {
+        self::assertArrayHasKey('app_id', ProviderConfigTraitStub::getProviderConfig('alipay'));
+
+        PayFacade::clear();
+
+        $config2 = [
+            'alipay' => [
+                'default' => ['name' => 'yansongda'],
+                'c1' => ['age' => 28]
+            ]
+        ];
+        PayFacade::config($config2);
+        self::assertEquals(['name' => 'yansongda'], ProviderConfigTraitStub::getProviderConfig('alipay'));
+
+        self::assertEquals(['age' => 28], ProviderConfigTraitStub::getProviderConfig('alipay', ['_config' => 'c1']));
+    }
+
+    public function testGetProviderConfigWechat(): void
+    {
+        self::assertArrayHasKey('mp_app_id', ProviderConfigTraitStub::getProviderConfig('wechat', []));
+
+        $config2 = [
+            'wechat' => [
+                'default' => ['name' => 'yansongda'],
+                'c1' => ['age' => 28]
+            ]
+        ];
+        PayFacade::config(array_merge($config2, ['_force' => true]));
+        self::assertEquals(['name' => 'yansongda'], ProviderConfigTraitStub::getProviderConfig('wechat', []));
+
+        self::assertEquals(['age' => 28], ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'c1']));
+    }
+
+    public function testGetProviderConfigUnipay(): void
+    {
+        self::assertArrayHasKey('mch_id', ProviderConfigTraitStub::getProviderConfig('unipay'));
+
+        PayFacade::clear();
+
+        $config2 = [
+            'unipay' => [
+                'default' => ['name' => 'yansongda'],
+                'c1' => ['age' => 28]
+            ]
+        ];
+        PayFacade::config($config2);
+        self::assertEquals(['name' => 'yansongda'], ProviderConfigTraitStub::getProviderConfig('unipay'));
+
+        self::assertEquals(['age' => 28], ProviderConfigTraitStub::getProviderConfig('unipay', ['_config' => 'c1']));
+    }
+
     public function testGetProviderConfigCustomTenant(): void
     {
         self::assertSame(
             PayFacade::get(ConfigInterface::class)->get('wechat', [])['service_provider'] ?? [],
             ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'service_provider'])
         );
+    }
+
+    public function testGetRadarUrlNull(): void
+    {
+        self::assertNull(ProviderConfigTraitStub::getRadarUrl([], null));
+        self::assertNull(ProviderConfigTraitStub::getRadarUrl([], new Collection()));
     }
 
     public function testGetRadarUrlNormal(): void

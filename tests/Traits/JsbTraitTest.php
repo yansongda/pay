@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\JsbTrait;
@@ -18,25 +20,16 @@ class JsbTraitStub
 
 class JsbTraitTest extends TestCase
 {
-    public function testGetJsbUrlWithHttp(): void
+    public function testGetJsbUrl(): void
     {
-        self::assertSame(
-            'https://example.com/jsb',
-            JsbTraitStub::getJsbUrl([], new Collection(['_url' => 'https://example.com/jsb']))
-        );
-    }
-
-    public function testGetJsbUrlDefault(): void
-    {
-        self::assertSame(
-            \Yansongda\Pay\Provider\Jsb::URL[Pay::MODE_NORMAL],
-            JsbTraitStub::getJsbUrl([], new Collection())
-        );
+        self::assertEquals('https://yansongda.cn', JsbTraitStub::getJsbUrl([], new Collection(['_url' => 'https://yansongda.cn'])));
+        self::assertEquals('https://mybank.jsbchina.cn:577/eis/merchant/merchantServices.htm', JsbTraitStub::getJsbUrl(['mode' => Pay::MODE_NORMAL], new Collection()));
+        self::assertEquals('https://epaytest.jsbchina.cn:9999/eis/merchant/merchantServices.htm', JsbTraitStub::getJsbUrl(['mode' => Pay::MODE_SANDBOX], new Collection()));
     }
 
     public function testVerifyJsbSignEmpty(): void
     {
-        self::expectException(\Yansongda\Pay\Exception\InvalidSignException::class);
+        self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
 
         JsbTraitStub::verifyJsbSign(['jsb_public_cert_path' => 'x'], 'content', '');
