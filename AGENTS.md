@@ -57,9 +57,9 @@ cd web && pnpm web:dev
 cd web && pnpm web:build
 ```
 
-- 本地开发环境：优先用 Docker/container，镜像 `registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine`
-- 测试环境：PHPUnit 9.x + Mockery；测试前需安装 `hyperf/pimple`
-- CI 矩阵：PHP 8.1-8.4 + Laravel/Hyperf/Default
+- **本地开发环境**：优先本地 PHP 环境；若无 PHP，使用 Container 作为备选，详见 `.agents/skills/container-dev/SKILL.md`
+- **测试环境**：PHPUnit 11.x + Mockery 1.6；测试前需安装 `hyperf/pimple`
+- **CI 矩阵**：PHP 8.2-8.5 + Laravel/Hyperf/Default
 
 ## 核心架构
 - 插件管道：`StartPlugin → ObtainTokenPlugin → 业务插件 → AddPayloadBodyPlugin → AddRadarPlugin → ResponsePlugin → ParserPlugin`

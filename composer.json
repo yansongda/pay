@@ -26,15 +26,15 @@
         "yansongda/supports": "~4.0.10"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0",
-        "mockery/mockery": "^1.4",
+        "phpunit/phpunit": "^11.5",
+        "mockery/mockery": "^1.6",
         "friendsofphp/php-cs-fixer": "^3.44",
         "phpstan/phpstan": "^1.0.0 || ^2.0.0",
-        "monolog/monolog": "^2.2",
-        "symfony/var-dumper": "^5.1",
-        "symfony/http-foundation": "^5.2.0",
-        "symfony/event-dispatcher": "^5.2.0",
-        "symfony/psr-http-message-bridge": "^2.1",
+        "monolog/monolog": "^3.0",
+        "symfony/var-dumper": "^6.4",
+        "symfony/http-foundation": "^6.4",
+        "symfony/event-dispatcher": "^6.4",
+        "symfony/psr-http-message-bridge": "^6.4",
         "hyperf/pimple": "^2.2",
         "guzzlehttp/guzzle": "^7.0",
         "jetbrains/phpstorm-attributes": "^1.1"

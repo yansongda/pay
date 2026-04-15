@@ -6,13 +6,13 @@ namespace Yansongda\Pay\Tests;
 
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Pimple\ContainerFactory;
+use PHPUnit\Framework\Attributes\CoversNothing;
 use Yansongda\Pay\Pay;
 
 /**
  * @internal
- *
- * @coversNothing
  */
+#[CoversNothing]
 class TestCase extends \PHPUnit\Framework\TestCase
 {
     protected function setUp(): void

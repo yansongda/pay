@@ -477,7 +477,7 @@ function verify_unipay_sign(array $config, string $contents, string $sign, ?stri
     $result = 1 === openssl_verify(
         hash('sha256', $contents),
         base64_decode($sign),
-        get_public_cert($signPublicKeyCert ?? $public ?? ''),
+        get_public_cert($signPublicKeyCert ?? $public),
         'sha256'
     );
 
