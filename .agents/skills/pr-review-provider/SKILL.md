@@ -129,7 +129,7 @@ $rocket->mergePayload(array_filter([
 
 ### 4. 数组回调的处理
 
-**仅适用于 Stripe/Wechat/Paypal/Jsb**（构造 `ServerRequest` 并验签）：
+**仅适用于 Stripe/Wechat/Paypal**（构造 `ServerRequest` 并验签）：
 
 `getCallbackParams()` 处理逻辑：
 

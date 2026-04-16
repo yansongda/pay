@@ -89,8 +89,8 @@ cd web && pnpm web:build
 | 配置/租户 | `ProviderConfigTrait::getProviderConfig()`、`ProviderConfigTrait::getTenant()` |
 | URL 构建 | `AlipayTrait::getAlipayUrl()`、`WechatTrait::getWechatUrl()`、`StripeTrait::getStripeUrl()` |
 | 签名验证 | `AlipayTrait::verifyAlipaySign()`、`WechatTrait::verifyWechatSign()`、`StripeTrait::verifyStripeWebhookSign()` |
-| 证书处理 | `CertManager::getPublicCert()`、`getPrivateCert()` |
-| 微信专用 | `WechatTrait::decryptWechatResource()`、`reloadWechatPublicCerts()` |
+| 证书处理 | `CertManager::getPublicCert()`、`CertManager::getPrivateCert()` |
+| 微信专用 | `WechatTrait::decryptWechatResource()`、`WechatTrait::reloadWechatPublicCerts()` |
 
 ### 测试模式
 ```php

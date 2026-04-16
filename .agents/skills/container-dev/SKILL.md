@@ -31,8 +31,8 @@ registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine
 | 代码风格修复 | `php-cs-fixer fix ./src` |
 | Composer 更新 | `composer update --with-all-dependencies` |
 | 安装依赖 | `composer install` |
-| Web 文档开发 | `pnpm web:dev` |
-| Web 文档构建 | `pnpm web:build` |
+| Web 文档开发 | `pnpm web:dev`（需本地 Node 或 Node 容器） |
+| Web 文档构建 | `pnpm web:build`（需本地 Node 或 Node 容器） |
 
 ---
 
