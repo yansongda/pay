@@ -10,14 +10,15 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
-use function Yansongda\Pay\get_airwallex_request_id;
+use Yansongda\Pay\Traits\AirwallexTrait;
 
 /**
  * @see https://www.airwallex.com/docs/api/payments/payment_intents/cancel
  */
 class CancelPlugin implements PluginInterface
 {
+    use AirwallexTrait;
+
     /**
      * @throws InvalidParamsException
      */
@@ -35,7 +36,7 @@ class CancelPlugin implements PluginInterface
         $rocket->mergePayload(array_filter([
             '_method' => 'POST',
             '_url' => 'api/v1/pa/payment_intents/'.$id.'/cancel',
-            'request_id' => $payload->get('request_id', get_airwallex_request_id()),
+            'request_id' => $payload->get('request_id', self::getAirwallexRequestId()),
             'cancellation_reason' => $payload->get('cancellation_reason'),
         ], static fn ($value) => !is_null($value)));
 

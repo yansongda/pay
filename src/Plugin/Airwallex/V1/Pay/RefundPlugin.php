@@ -10,14 +10,15 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
-use function Yansongda\Pay\get_airwallex_request_id;
+use Yansongda\Pay\Traits\AirwallexTrait;
 
 /**
  * @see https://www.airwallex.com/docs/api/payments/refunds/create
  */
 class RefundPlugin implements PluginInterface
 {
+    use AirwallexTrait;
+
     /**
      * @throws InvalidParamsException
      */
@@ -35,7 +36,7 @@ class RefundPlugin implements PluginInterface
         $rocket->mergePayload(array_filter([
             '_method' => 'POST',
             '_url' => 'api/v1/pa/refunds/create',
-            'request_id' => $payload->get('request_id', get_airwallex_request_id()),
+            'request_id' => $payload->get('request_id', self::getAirwallexRequestId()),
             'payment_intent_id' => $paymentIntentId,
             'amount' => $payload->get('amount'),
             'reason' => $payload->get('reason'),

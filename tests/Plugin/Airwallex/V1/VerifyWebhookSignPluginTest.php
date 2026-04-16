@@ -12,11 +12,19 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Airwallex\V1\VerifyWebhookSignPlugin;
 use Yansongda\Pay\Tests\TestCase;
-
-use function Yansongda\Pay\verify_airwallex_webhook_sign;
+use Yansongda\Pay\Traits\AirwallexTrait;
 
 class VerifyWebhookSignPluginTest extends TestCase
 {
+    protected static function verifyWebhookSign(ServerRequest $request, array $params = []): void
+    {
+        $verifier = new class() {
+            use AirwallexTrait;
+        };
+
+        $verifier::verifyAirwallexWebhookSign($request, $params);
+    }
+
     public function testMissingWebhookSecretThrowsException()
     {
         $request = new ServerRequest('POST', 'https://example.com', [], '{}');
@@ -24,7 +32,7 @@ class VerifyWebhookSignPluginTest extends TestCase
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_AIRWALLEX_INVALID);
 
-        verify_airwallex_webhook_sign($request, ['_config' => 'no_webhook_secret']);
+        self::verifyWebhookSign($request, ['_config' => 'no_webhook_secret']);
     }
 
     public function testMissingSignatureThrowsException()
@@ -34,7 +42,7 @@ class VerifyWebhookSignPluginTest extends TestCase
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
 
-        verify_airwallex_webhook_sign($request, []);
+        self::verifyWebhookSign($request, []);
     }
 
     public function testWrongSignatureThrowsException()
@@ -47,7 +55,7 @@ class VerifyWebhookSignPluginTest extends TestCase
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        verify_airwallex_webhook_sign($request, []);
+        self::verifyWebhookSign($request, []);
     }
 
     public function testValidSignaturePasses()
@@ -60,7 +68,7 @@ class VerifyWebhookSignPluginTest extends TestCase
             'x-signature' => $signature,
         ], $body);
 
-        verify_airwallex_webhook_sign($request, []);
+        self::verifyWebhookSign($request, []);
 
         self::assertTrue(true);
     }

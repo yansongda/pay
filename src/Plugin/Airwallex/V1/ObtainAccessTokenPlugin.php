@@ -12,14 +12,15 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-
-use function Yansongda\Pay\get_airwallex_access_token;
+use Yansongda\Pay\Traits\AirwallexTrait;
 
 /**
  * @see https://www.airwallex.com/docs/api/introduction
  */
 class ObtainAccessTokenPlugin implements PluginInterface
 {
+    use AirwallexTrait;
+
     /**
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -31,7 +32,7 @@ class ObtainAccessTokenPlugin implements PluginInterface
         Logger::debug('[Airwallex][V1][ObtainAccessTokenPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
-            '_access_token' => get_airwallex_access_token($rocket->getParams()),
+            '_access_token' => self::getAirwallexAccessToken($rocket->getParams()),
         ]);
 
         Logger::info('[Airwallex][V1][ObtainAccessTokenPlugin] 插件装载完毕', ['rocket' => $rocket]);

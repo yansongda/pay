@@ -12,14 +12,15 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-
-use function Yansongda\Pay\verify_airwallex_webhook_sign;
+use Yansongda\Pay\Traits\AirwallexTrait;
 
 /**
  * @see https://www.airwallex.com/docs/developer-tools/webhooks/listen-for-webhook-events
  */
 class VerifyWebhookSignPlugin implements PluginInterface
 {
+    use AirwallexTrait;
+
     /**
      * @throws InvalidParamsException
      * @throws InvalidSignException
@@ -35,7 +36,7 @@ class VerifyWebhookSignPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_CALLBACK_REQUEST_INVALID, '参数异常: Airwallex 回调请求不正确');
         }
 
-        verify_airwallex_webhook_sign($request, $params['_params'] ?? []);
+        self::verifyAirwallexWebhookSign($request, $params['_params'] ?? []);
 
         Logger::info('[Airwallex][V1][VerifyWebhookSignPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

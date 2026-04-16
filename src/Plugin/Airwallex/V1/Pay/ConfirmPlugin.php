@@ -10,14 +10,15 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-
-use function Yansongda\Pay\get_airwallex_request_id;
+use Yansongda\Pay\Traits\AirwallexTrait;
 
 /**
  * @see https://www.airwallex.com/docs/api/payments/payment_intents/confirm
  */
 class ConfirmPlugin implements PluginInterface
 {
+    use AirwallexTrait;
+
     /**
      * @throws InvalidParamsException
      */
@@ -35,7 +36,7 @@ class ConfirmPlugin implements PluginInterface
         $rocket->mergePayload(array_filter([
             '_method' => 'POST',
             '_url' => 'api/v1/pa/payment_intents/'.$paymentIntentId.'/confirm',
-            'request_id' => $payload->get('request_id', get_airwallex_request_id()),
+            'request_id' => $payload->get('request_id', self::getAirwallexRequestId()),
             'payment_method' => $payload->get('payment_method'),
             'payment_method_options' => $payload->get('payment_method_options'),
             'customer_id' => $payload->get('customer_id'),
