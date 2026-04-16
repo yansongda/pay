@@ -86,7 +86,7 @@ cd web && pnpm web:build
 ### Trait 方法
 | 功能类型 | Trait 方法 |
 |---|---|
-| 配置/租户 | `ProviderConfigTrait::getProviderConfig()`、`getTenant()` |
+| 配置/租户 | `ProviderConfigTrait::getProviderConfig()`、`ProviderConfigTrait::getTenant()` |
 | URL 构建 | `AlipayTrait::getAlipayUrl()`、`WechatTrait::getWechatUrl()`、`StripeTrait::getStripeUrl()` |
 | 签名验证 | `AlipayTrait::verifyAlipaySign()`、`WechatTrait::verifyWechatSign()`、`StripeTrait::verifyStripeWebhookSign()` |
 | 证书处理 | `CertManager::getPublicCert()`、`getPrivateCert()` |
@@ -118,10 +118,14 @@ $httpClient->shouldReceive('sendRequest')->andReturn(new Response(200, [], '{"co
 | 微信 | 本地证书签名验证 | `WechatTrait::verifyWechatSign()` |
 | PayPal | 调用 `verify-webhook-signature` API | `PaypalTrait::verifyPaypalWebhookSign()` |
 | Stripe | 本地 HMAC-SHA256 验证 | `StripeTrait::verifyStripeWebhookSign()` |
-| 抖音 | 本地 SHA1 验证 | `DouyinTrait::verifySign()` |
+| 抖音 | 本地 SHA1 验证 | —（在 `CallbackPlugin::verifySign()` 中实现） |
 | 银联 | 本地证书签名验证 | `UnipayTrait::verifyUnipaySign()` |
 
-回调处理：Provider 的 `callback()` 方法传递 `_request`（`ServerRequestInterface`）到 `CallbackPlugin`，由插件负责验证。
+回调处理：
+- **Stripe/Wechat/Paypal**：Provider 的 `callback()` 传递 `_request`（`ServerRequestInterface`）到 `CallbackPlugin`
+- **Alipay/Douyin/Unipay**：`callback()` 返回 `Collection`，直接 merge 到 params
+
+由 `CallbackPlugin` 负责签名验证。
 
 ## 新增 Provider 步骤
 1. 在 `src/Plugin/{Provider}/V{n}/` 下创建插件

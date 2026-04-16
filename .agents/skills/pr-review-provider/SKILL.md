@@ -115,19 +115,21 @@ $rocket->mergePayload(array_filter([
 |----------|------------|--------------|
 | Stripe | `StripeTrait::verifyStripeWebhookSign()` | `webhook_secret` |
 | PayPal | `PaypalTrait::verifyPaypalWebhookSign()` | `webhook_id` + OAuth |
-| 微信 | `WechatTrait::verifyWechatSign()` | `mch_secret_cert`、`wechat_public_cert_path` |
-| 抖音 | `DouyinTrait::verifySign()` | `mch_secret_token`、`mch_secret_salt` |
-| 银联 | `UnipayTrait::verifyUnipaySign()` | `mch_secret_cert_path`、前端公钥证书 |
+| 微信 | `WechatTrait::verifyWechatSign()` | `mch_secret_cert`、`wechat_public_cert_path`（可预置或运行时拉取） |
+| 抖音 | —（在 `CallbackPlugin::verifySign()` 中实现） | `mch_secret_token`、`mch_secret_salt` |
+| 银联 | `UnipayTrait::verifyUnipaySign()` | `unipay_public_cert_path` |
 | 支付宝 | `AlipayTrait::verifyAlipaySign()` | `alipay_public_cert_path` |
 
 **检查点**：
-- CallbackPlugin 是否调用 Trait 提供的签名验证方法
+- CallbackPlugin 是否调用 Trait 提供或 Plugin 自身实现的签名验证方法
 - 签名算法是否与官方文档一致（对照 `@see` 链接）
 - 配置缺失时抛异常
 - 签名为空时抛异常
 - 使用 `hash_equals` 防时序攻击
 
 ### 4. 数组回调的处理
+
+**仅适用于 Stripe/Wechat/Paypal/Jsb**（构造 `ServerRequest` 并验签）：
 
 `getCallbackParams()` 处理逻辑：
 
@@ -139,6 +141,11 @@ $rocket->mergePayload(array_filter([
 | `null` | 从 `ServerRequest::fromGlobals()` 获取 |
 
 **结论**：数组回调只有提供完整 `headers` + `body` 才能通过验签；否则验签阶段抛异常。
+
+**Alipay/Douyin/Unipay 不同**：
+- `getCallbackParams()` 返回 `Collection`（从 query/parsedBody 取值）
+- 直接 merge 到 params，不构造 `ServerRequest`
+- CallbackPlugin 从 params 中取值验签
 
 ### 5. 加密资源解密（微信）
 

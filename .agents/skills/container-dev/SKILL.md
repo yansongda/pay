@@ -95,7 +95,7 @@ cd web && pnpm web:dev
 
 # 方案2: 使用 Node 容器
 docker run --rm -v "$(pwd)/web":/app -w /app \
-  node:18-alpine \
+  node:20-alpine \
   sh -c "npm install -g pnpm && pnpm install && pnpm web:dev"
 ```
 
