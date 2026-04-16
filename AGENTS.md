@@ -1,7 +1,3 @@
-**Generated:** 2026-04-11
-**Commit:** 5c4c509
-**Branch:** master
-
 # yansongda/pay AGENTS.md
 
 ## OVERVIEW
