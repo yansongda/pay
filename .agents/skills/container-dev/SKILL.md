@@ -1,6 +1,6 @@
 ---
 name: container-dev
-description: "Use this when local PHP environment is unavailable. Fallback container-based development environment for yansongda/pay project."
+description: "Use when local PHP environment is unavailable. Fallback container-based development environment for yansongda/pay project."
 ---
 
 # Container-based Local Development (Fallback)
@@ -11,100 +11,143 @@ description: "Use this when local PHP environment is unavailable. Fallback conta
 
 **优先本地环境**：先检查本地是否有 PHP/composer，有则直接使用。
 
-**容器作为备选**：仅在本地环境不可用时使用容器（Apple Container 或 Docker）。
+**容器作为备选**：仅在本地环境不可用时使用容器。
 
-## 镜像
+## 快速参考
+
+### 镜像
 
 ```
 registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine
 ```
 
-## Apple Container 命令
+### 常用命令
 
-### 正常情况（网络正常）
+| 任务 | 命令 |
+|------|------|
+| 运行测试 | `composer test` |
+| PHPStan 分析 | `composer analyse` |
+| 代码风格检查 | `composer cs-fix`（**仅检查，不修复**） |
+| 代码风格修复 | `php-cs-fixer fix ./src` |
+| Composer 更新 | `composer update --with-all-dependencies` |
+| 安装依赖 | `composer install` |
+| Web 文档开发 | `pnpm web:dev`（需本地 Node 或 Node 容器） |
+| Web 文档构建 | `pnpm web:build`（需本地 Node 或 Node 容器） |
+
+---
+
+## Apple Container
+
+### 基本模板
 
 ```bash
 container run --rm -v "$(pwd)":/app -w /app \
   registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
-  YOUR_COMMAND
+  COMMAND
 ```
 
-### 网络异常时（DNS 问题）
+### DNS 问题处理
 
-如果 container 网络出现 DNS 解析失败（如 `198.18.0.x` 地址、连接超时），添加 DNS 配置：
+若出现 DNS 解析失败（`198.18.0.x` 地址、连接超时），添加 DNS fix：
 
 ```bash
 container run --rm -v "$(pwd)":/app -w /app \
   registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
-  sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && YOUR_COMMAND"
+  sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && COMMAND"
 ```
 
-### 常用命令示例
+### PHP 命令示例
 
 ```bash
-# 运行测试
+# 测试（需 DNS fix + COMPOSER_ALLOW_SUPERUSER）
 container run --rm -v "$(pwd)":/app -w /app \
   registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
   sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && COMPOSER_ALLOW_SUPERUSER=1 composer test"
-
-# Composer update
-container run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
-  sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && composer update --with-all-dependencies"
 
 # PHPStan 分析
 container run --rm -v "$(pwd)":/app -w /app \
   registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
   sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && COMPOSER_ALLOW_SUPERUSER=1 composer analyse"
 
-# CS-Fixer
+# 代码风格检查（仅查看差异）
 container run --rm -v "$(pwd)":/app -w /app \
   registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
   sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && COMPOSER_ALLOW_SUPERUSER=1 composer cs-fix"
+
+# 代码风格修复
+container run --rm -v "$(pwd)":/app -w /app \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && COMPOSER_ALLOW_SUPERUSER=1 php-cs-fixer fix ./src"
+
+# Composer update
+container run --rm -v "$(pwd)":/app -w /app \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && composer update --with-all-dependencies"
 ```
 
-## Docker 命令
+### Web 文档命令
 
-Docker 命令与 Apple Container 类似，只需将 `container` 替换为 `docker`：
+Web 文档使用 pnpm，镜像中无 Node.js，需使用 Node 镜像或本地运行。
+
+**注意**：`web/package.json` 要求 Node `>=20.12.0`，请确保使用的镜像版本满足此约束。
 
 ```bash
-# 运行测试
+# 方案1: 本地运行（推荐）
+cd web && pnpm web:dev
+
+# 方案2: 使用 Node 容器（版本 >=20.12.0）
+docker run --rm -v "$(pwd)/web":/app -w /app \
+  node:20-alpine \
+  sh -c "npm install -g pnpm && pnpm install && pnpm web:dev"
+```
+
+---
+
+## Docker
+
+Docker 命令类似，通常不需要 DNS fix：
+
+```bash
+# 测试
 docker run --rm -v "$(pwd)":/app -w /app \
   registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
   composer test
-
-# Composer update
-docker run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
-  composer update --with-all-dependencies
 
 # PHPStan 分析
 docker run --rm -v "$(pwd)":/app -w /app \
   registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
   composer analyse
 
-# CS-Fixer
+# 代码风格检查
 docker run --rm -v "$(pwd)":/app -w /app \
   registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
   composer cs-fix
+
+# 代码风格修复
+docker run --rm -v "$(pwd)":/app -w /app \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  php-cs-fixer fix ./src
 ```
 
-**注意**：Docker 通常不需要 DNS fix，网络配置更稳定。
+---
 
 ## DNS 问题诊断（Apple Container）
 
 **症状**：
 - `curl error 28 Connection timed out`
 - DNS 解析返回 `198.18.0.x`（基准测试保留地址）
-- `nslookup` 显示 Server 为 `192.168.64.1:53`
 
-**原因**：Container 系统 DNS 解析器异常，无法正确解析公网域名。
+**原因**：Container 系统 DNS 解析器异常。
 
 **解决**：手动写入 `nameserver 8.8.8.8` 到 `/etc/resolv.conf`。
 
+---
+
 ## 注意事项
 
-- 使用 `COMPOSER_ALLOW_SUPERUSER=1` 运行 composer 脚本命令
-- 容器内网络可能无法访问某些 CDN，测试中可能出现 PHP warning，不影响核心功能
-- Apple Container 需先启动系统服务：`container system start`
-- Docker 需确保 Docker Desktop 或 Docker daemon 已启动
+- `COMPOSER_ALLOW_SUPERUSER=1`：容器内运行 composer 脚本必须
+- `composer cs-fix`：**仅检查并显示差异**，不自动修复
+- `php-cs-fixer fix ./src`：实际修复代码风格
+- Apple Container 需先启动：`container system start`
+- Docker 需确保 Docker Desktop 或 daemon 已启动
+- 容器内网络可能无法访问某些 CDN，测试中可能出现 PHP warning（不影响核心功能）

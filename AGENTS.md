@@ -1,11 +1,7 @@
-**Generated:** 2026-04-11
-**Commit:** 5c4c509
-**Branch:** master
-
 # yansongda/pay AGENTS.md
 
 ## OVERVIEW
-PHP 支付 SDK，支持支付宝、微信、银联、抖音、江苏银行、PayPal 等多服务商。项目基于插件管道架构，重点关注支付流程、回调验签和 Provider 扩展一致性。
+PHP 支付 SDK，支持支付宝、微信、银联、抖音、江苏银行、PayPal、Stripe 等多服务商。项目基于插件管道架构，重点关注支付流程、回调验签和 Provider 扩展一致性。
 
 ## STRUCTURE
 ```text
@@ -18,7 +14,6 @@ src/
 ├── Service/
 ├── Shortcut/{Provider}/
 ├── Traits/
-├── Functions.php
 └── Pay.php
 ```
 
@@ -62,7 +57,7 @@ cd web && pnpm web:build
 - **CI 矩阵**：PHP 8.2-8.5 + Laravel/Hyperf/Default
 
 ## 核心架构
-- 插件管道：`StartPlugin → ObtainTokenPlugin → 业务插件 → AddPayloadBodyPlugin → AddRadarPlugin → ResponsePlugin → ParserPlugin`
+- 插件管道：`StartPlugin → [前置插件] → 业务插件 → [后置插件] → ParserPlugin`（各 Provider 差异较大，详见各 Provider 的 `mergeCommonPlugins`）
 - `Rocket`（`Yansongda\Artful\Rocket`）承载 params、payload、radar、destination
 - `PluginInterface` 实现 `assembly(Rocket $rocket, Closure $next): Rocket`
 - `ProviderInterface` 实现 `pay`、`query`、`cancel`、`close`、`refund`、`callback`、`success`
@@ -78,8 +73,9 @@ cd web && pnpm web:build
 |---|---|---|
 | 插件 | `{Action}Plugin.php` | `PayPlugin`、`RefundPlugin` |
 | 快捷方式 | `{Method}Shortcut.php` | `WebShortcut`、`QueryShortcut` |
-| 服务商 | `{ProviderName}.php` | `Paypal.php`、`Alipay.php` |
-| 服务提供者 | `{ProviderName}ServiceProvider.php` | `PaypalServiceProvider.php` |
+| Provider | `{ProviderName}.php` | `Paypal.php`、`Stripe.php` |
+| Trait | `{Provider}Trait.php` | `WechatTrait`、`StripeTrait` |
+| ServiceProvider | `{ProviderName}ServiceProvider.php` | `PaypalServiceProvider.php` |
 | 命名空间 | `Yansongda\Pay\Plugin\{Provider}\V{n}\Pay\{Plugin}` | 版本号与 API 版本一致 |
 
 ### 其他约定
@@ -87,14 +83,14 @@ cd web && pnpm web:build
 - 日志使用中文消息：`[Provider][Version][Category][Plugin]`
 - 异常在 `src/Exception/Exception.php` 定义常量，使用 `Yansongda\Artful\Exception\*`，消息保持中文
 
-### 辅助函数
-| 函数类型 | 主要函数 |
+### Trait 方法
+| 功能类型 | Trait 方法 |
 |---|---|
-| 配置/租户 | `get_tenant()`、`get_provider_config()` |
-| URL 构建 | `get_alipay_url()`、`get_wechat_url()`、`get_unipay_url()` |
-| 签名验证 | `verify_alipay_sign()`、`verify_wechat_sign()` |
-| 证书处理 | `get_public_cert()`、`get_private_cert()` |
-| 微信专用 | `decrypt_wechat_resource()`、`reload_wechat_public_certs()` |
+| 配置/租户 | `ProviderConfigTrait::getProviderConfig()`、`ProviderConfigTrait::getTenant()` |
+| URL 构建 | `AlipayTrait::getAlipayUrl()`、`WechatTrait::getWechatUrl()`、`UnipayTrait::getUnipayUrl()`、`StripeTrait::getStripeUrl()` |
+| 签名验证 | `AlipayTrait::verifyAlipaySign()`、`WechatTrait::verifyWechatSign()`、`StripeTrait::verifyStripeWebhookSign()` |
+| 证书处理 | `CertManager::getPublicCert()`、`CertManager::getPrivateCert()` |
+| 微信专用 | `WechatTrait::decryptWechatResource()`、`WechatTrait::reloadWechatPublicCerts()` |
 
 ### 测试模式
 ```php
@@ -116,22 +112,27 @@ $httpClient->shouldReceive('sendRequest')->andReturn(new Response(200, [], '{"co
 ## 安全要点
 **所有回调/Webhook 必须验证签名**。
 
-| Provider | 验证方式 |
-|---|---|
-| 支付宝 | 本地 RSA 验证 |
-| 微信 | 本地证书签名验证 |
-| PayPal | 调用 `verify-webhook-signature` API |
-| 抖音 | 本地 SHA1 验证 |
-| 银联 | 本地证书签名验证 |
+| Provider | 验证方式 | Trait 方法 |
+|---|---|---|
+| 支付宝 | 本地 RSA 验证 | `AlipayTrait::verifyAlipaySign()` |
+| 微信 | 本地证书签名验证 | `WechatTrait::verifyWechatSign()` |
+| PayPal | 调用 `verify-webhook-signature` API | `PaypalTrait::verifyPaypalWebhookSign()` |
+| Stripe | 本地 HMAC-SHA256 验证 | `StripeTrait::verifyStripeWebhookSign()` |
+| 抖音 | 本地 SHA1 验证 | —（在 `CallbackPlugin::verifySign()` 中实现） |
+| 银联 | 本地证书签名验证 | `UnipayTrait::verifyUnipaySign()` |
 
-回调处理：Provider 的 `callback()` 方法传递 `_request`（`ServerRequestInterface`）到 `CallbackPlugin`，由插件负责验证。
+回调处理：
+- **Stripe/Wechat/Paypal**：`callback()` 传递 `_request`（`ServerRequestInterface`）和 `_params` 到 `CallbackPlugin`
+- **Alipay/Douyin/Unipay/Jsb**：通过 `getCallbackParams()` 获取 `Collection`，并 merge 到 params
+
+由 `CallbackPlugin` 负责签名验证。
 
 ## 新增 Provider 步骤
 1. 在 `src/Plugin/{Provider}/V{n}/` 下创建插件
 2. 在 `src/Provider/{Provider}.php` 下创建服务商类，实现 `ProviderInterface`
 3. 在 `src/Service/{Provider}ServiceProvider.php` 下创建服务提供者
 4. 在 `src/Shortcut/{Provider}/` 下创建快捷方式
-5. 在 `src/Functions.php` 中添加辅助函数（`get_{provider}_url`、`verify_{provider}_sign` 等）
+5. 在 `src/Traits/{Provider}Trait.php` 中添加 Trait 方法（`get{Provider}Url`、`verify{Provider}WebhookSign` 等）
 6. 在 `src/Pay.php` 中注册服务商
 7. 在 `src/Exception/Exception.php` 中添加异常常量
 8. 在 `tests/` 下添加与源码结构对应的测试
