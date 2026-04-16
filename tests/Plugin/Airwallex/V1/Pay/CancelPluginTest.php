@@ -21,6 +21,7 @@ class CancelPluginTest extends TestCase
         self::assertEquals('POST', $result->getPayload()->get('_method'));
         self::assertEquals('api/v1/pa/payment_intents/int_test123/cancel', $result->getPayload()->get('_url'));
         self::assertNotEmpty($result->getPayload()->get('request_id'));
+        self::assertFalse($result->getPayload()->has('cancellation_reason'));
     }
 
     public function testUseIdAndCancellationReason()

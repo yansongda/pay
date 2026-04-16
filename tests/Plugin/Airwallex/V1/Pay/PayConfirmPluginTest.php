@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Yansongda\Artful\Rocket;
 use Yansongda\Artful\Contract\HttpClientInterface;
+use Psr\Http\Message\RequestInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Airwallex\V1\Pay\PayConfirmPlugin;
 use Yansongda\Pay\Tests\TestCase;
@@ -143,6 +144,65 @@ class PayConfirmPluginTest extends TestCase
         self::assertEquals('redirect', $result->getDestination()->get('next_action_type'));
         self::assertEquals('https://pay.example.com/native-redirect', $result->getDestination()->get('pay_url'));
         self::assertEquals('https://pay.yansongda.cn/native-return', $result->getDestination()->get('return_url'));
+    }
+
+    public function testConfirmWithNativeApiUsesTenantConfig()
+    {
+        $tokenResponse = new Response(201, [], json_encode([
+            'token' => 'secondary_airwallex_token',
+            'expires_at' => gmdate('Y-m-d\\TH:i:sO', time() + 1800),
+        ]));
+        $confirmResponse = new Response(201, [], json_encode([
+            'id' => 'int_secondary_123',
+            'next_action' => [
+                'type' => 'redirect',
+                'url' => 'https://pay.example.com/secondary-redirect',
+            ],
+        ]));
+
+        $http = Mockery::mock(HttpClientInterface::class);
+        $http->shouldReceive('sendRequest')
+            ->once()
+            ->ordered()
+            ->withArgs(function (RequestInterface $request): bool {
+                self::assertSame('airwallex_secondary_client_id', $request->getHeaderLine('x-client-id'));
+                self::assertSame('airwallex_secondary_api_key', $request->getHeaderLine('x-api-key'));
+
+                return true;
+            })
+            ->andReturn($tokenResponse);
+        $http->shouldReceive('sendRequest')
+            ->once()
+            ->ordered()
+            ->withArgs(function (RequestInterface $request): bool {
+                self::assertSame('Bearer secondary_airwallex_token', $request->getHeaderLine('Authorization'));
+
+                return true;
+            })
+            ->andReturn($confirmResponse);
+        Pay::set(HttpClientInterface::class, $http);
+
+        $rocket = (new Rocket())
+            ->setParams([
+                '_config' => 'secondary',
+                'amount' => 100,
+                'currency' => 'USD',
+                'merchant_order_id' => 'order_secondary_123',
+            ])
+            ->setPayload(new Collection([
+                '_native_api' => true,
+                'request_id' => 'req_secondary_123',
+                'return_url' => 'https://pay.yansongda.cn/airwallex/secondary-return',
+            ]))
+            ->setDestination(new Collection([
+                'id' => 'int_secondary_123',
+            ]));
+
+        $result = (new PayConfirmPlugin())->assembly($rocket, fn ($rocket) => $rocket);
+
+        self::assertSame('secondary', $result->getParams()['_config']);
+        self::assertSame('int_secondary_123', $result->getParams()['payment_intent_id']);
+        self::assertSame('https://pay.example.com/secondary-redirect', $result->getDestination()->get('pay_url'));
     }
 
     public function testSkipWhenDestinationIsNotCollection()

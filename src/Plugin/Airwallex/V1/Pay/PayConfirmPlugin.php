@@ -59,10 +59,6 @@ class PayConfirmPlugin implements PluginInterface
             'payment_intent_id' => $destination->get('id'),
         ]);
 
-        $confirmPayload = array_merge($payload instanceof Collection ? $payload->all() : [], [
-            'payment_intent_id' => $destination->get('id'),
-        ]);
-
         $result = Artful::artful([
             StartPlugin::class,
             ObtainAccessTokenPlugin::class,
@@ -71,7 +67,7 @@ class PayConfirmPlugin implements PluginInterface
             AddRadarPlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ], $confirmPayload);
+        ], $confirmParams);
 
         if ($result instanceof Collection) {
             $rocket->setParams($confirmParams)
