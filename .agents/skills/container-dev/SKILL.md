@@ -87,13 +87,15 @@ container run --rm -v "$(pwd)":/app -w /app \
 
 ### Web 文档命令
 
-Web 文档使用 pnpm，镜像中无 Node.js，需使用 Node 镜像或本地运行：
+Web 文档使用 pnpm，镜像中无 Node.js，需使用 Node 镜像或本地运行。
+
+**注意**：`web/package.json` 要求 Node `>=20.12.0`，请确保使用的镜像版本满足此约束。
 
 ```bash
 # 方案1: 本地运行（推荐）
 cd web && pnpm web:dev
 
-# 方案2: 使用 Node 容器
+# 方案2: 使用 Node 容器（版本 >=20.12.0）
 docker run --rm -v "$(pwd)/web":/app -w /app \
   node:20-alpine \
   sh -c "npm install -g pnpm && pnpm install && pnpm web:dev"

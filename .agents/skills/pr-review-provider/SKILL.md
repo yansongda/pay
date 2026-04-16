@@ -49,7 +49,7 @@ yansongda/pay 新增/修改 Provider 时的 Code Review 专用检查清单。基
 | 检查项 | 要求 |
 |--------|------|
 | `declare(strict_types=1)` | 每个文件必须有 |
-| `use` 导入 | 禁止直接写完整命名空间（如 `\Yansongda\Pay\...`） |
+| `use` 导入 | 除动态类名字符串/反射场景外，禁止直接写完整命名空间（如 `\Yansongda\Pay\...`） |
 | 多行条件 | `&&` / `||` 放在续行开头 |
 
 ### 命名规范
@@ -175,7 +175,7 @@ StartPlugin → [前置插件] → 业务插件 → [后置插件] → ParserPlu
 | Stripe | 无 | `AddRadarPlugin` → `ResponsePlugin` |
 | PayPal | `ObtainAccessTokenPlugin` | `AddPayloadBodyPlugin` → `AddRadarPlugin` → `ResponsePlugin` |
 | 微信 | 无 | `AddPayloadBodyPlugin` → `AddPayloadSignaturePlugin` → `AddRadarPlugin` → `VerifySignaturePlugin` → `ResponsePlugin` |
-| 支付宝 | 无 | `FormatPayloadBizContentPlugin` → `AddPayloadSignaturePlugin` → `AddRadarPlugin` → `ResponsePlugin` |
+| 支付宝 | 无 | `FormatPayloadBizContentPlugin` → `AddPayloadSignaturePlugin` → `AddRadarPlugin` → `VerifySignaturePlugin` → `ResponsePlugin` |
 
 **注意**：不同 Provider 管道差异较大，不要按固定模板审查。
 
@@ -226,7 +226,11 @@ public const URL = [
 callback 方法必须触发事件：
 
 ```php
+// Stripe/Wechat/Paypal（ServerRequestInterface）
 Event::dispatch(new CallbackReceived('provider', clone $request, $params, null));
+
+// Alipay/Douyin/Unipay/Jsb（Collection）
+Event::dispatch(new CallbackReceived('provider', $request->all(), $params, null));
 ```
 
 其他方法触发：
