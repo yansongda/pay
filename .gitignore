@@ -4,3 +4,4 @@ composer.lock
 .idea/
 .phpunit.cache/
 .phpunit.result.cache
+.sisyphus/
