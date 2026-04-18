@@ -30,6 +30,29 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'return_url' => 'https://pay.yansongda.cn',
                 ],
             ],
+            'airwallex' => [
+                'default' => [
+                    'client_id' => 'airwallex_client_id',
+                    'api_key' => 'airwallex_api_key',
+                    'webhook_secret' => 'airwallex_webhook_secret',
+                    'return_url' => 'https://pay.yansongda.cn/airwallex/return',
+                    'api_version' => '2024-06-14',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+                'secondary' => [
+                    'client_id' => 'airwallex_secondary_client_id',
+                    'api_key' => 'airwallex_secondary_api_key',
+                    'webhook_secret' => 'airwallex_secondary_webhook_secret',
+                    'return_url' => 'https://pay.yansongda.cn/airwallex/secondary-return',
+                    'api_version' => '2024-06-14',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+                'no_webhook_secret' => [
+                    'client_id' => 'airwallex_client_id',
+                    'api_key' => 'airwallex_api_key',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+            ],
             'wechat' => [
                 'default' => [
                     'app_id' => 'yansongda',
