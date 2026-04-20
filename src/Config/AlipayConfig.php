@@ -7,62 +7,115 @@ namespace Yansongda\Pay\Config;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Supports\Config as BaseConfig;
 
-class AlipayConfig extends BaseConfig implements ProviderConfigInterface
+class AlipayConfig extends AbstractConfig
 {
-    private string $tenant;
+    private string $app_id = '';
+    private string $app_secret_cert = '';
+    private string $app_public_cert_path = '';
+    private string $alipay_public_cert_path = '';
+    private string $alipay_root_cert_path = '';
+    private ?string $notify_url = null;
+    private ?string $return_url = null;
+    private ?string $app_auth_token = null;
+    private ?string $app_public_cert_sn = null;
+    private ?string $alipay_root_cert_sn = null;
+    private ?string $service_provider_id = null;
+    private int $mode = Pay::MODE_NORMAL;
 
-    /**
-     * @throws InvalidConfigException
-     */
-    public function __construct(array $values, string $tenant = 'default')
+    public function setAppId(string $value): void
     {
-        parent::__construct($values);
-
-        $this->tenant = $tenant;
-
-        $this->validateRequired();
+        $this->app_id = $value;
     }
 
-    public function getTenant(): string
+    public function setAppSecretCert(string $value): void
     {
-        return $this->tenant;
+        $this->app_secret_cert = $value;
+    }
+
+    public function setAppPublicCertPath(string $value): void
+    {
+        $this->app_public_cert_path = $value;
+    }
+
+    public function setAlipayPublicCertPath(string $value): void
+    {
+        $this->alipay_public_cert_path = $value;
+    }
+
+    public function setAlipayRootCertPath(string $value): void
+    {
+        $this->alipay_root_cert_path = $value;
+    }
+
+    public function setNotifyUrl(?string $value): void
+    {
+        $this->notify_url = $value;
+    }
+
+    public function setReturnUrl(?string $value): void
+    {
+        $this->return_url = $value;
+    }
+
+    public function setAppAuthToken(?string $value): void
+    {
+        $this->app_auth_token = $value;
+    }
+
+    public function setAppPublicCertSn(?string $value): void
+    {
+        $this->app_public_cert_sn = $value;
+    }
+
+    public function setAlipayRootCertSn(?string $value): void
+    {
+        $this->alipay_root_cert_sn = $value;
+    }
+
+    public function setServiceProviderId(?string $value): void
+    {
+        $this->service_provider_id = $value;
+    }
+
+    public function setMode(int $value): void
+    {
+        $this->mode = $value;
     }
 
     public function getAppId(): string
     {
-        return $this->get('app_id', '');
+        return $this->app_id;
     }
 
     public function getAppSecretCert(): string
     {
-        return $this->get('app_secret_cert', '');
+        return $this->app_secret_cert;
     }
 
     public function getAppPublicCertPath(): string
     {
-        return $this->get('app_public_cert_path', '');
+        return $this->app_public_cert_path;
     }
 
     public function getAlipayPublicCertPath(): string
     {
-        return $this->get('alipay_public_cert_path', '');
+        return $this->alipay_public_cert_path;
     }
 
     public function getAlipayRootCertPath(): string
     {
-        return $this->get('alipay_root_cert_path', '');
+        return $this->alipay_root_cert_path;
     }
 
     public function getNotifyUrl(): ?string
     {
-        return $this->get('notify_url');
+        return $this->notify_url;
     }
 
     public function getReturnUrl(): ?string
     {
-        return $this->get('return_url');
+        return $this->return_url;
     }
 
     /**
@@ -70,7 +123,7 @@ class AlipayConfig extends BaseConfig implements ProviderConfigInterface
      */
     public function getAppAuthToken(): ?string
     {
-        return $this->get('app_auth_token');
+        return $this->app_auth_token;
     }
 
     /**
@@ -78,7 +131,7 @@ class AlipayConfig extends BaseConfig implements ProviderConfigInterface
      */
     public function getAppPublicCertSn(): ?string
     {
-        return $this->get('app_public_cert_sn');
+        return $this->app_public_cert_sn;
     }
 
     /**
@@ -86,7 +139,7 @@ class AlipayConfig extends BaseConfig implements ProviderConfigInterface
      */
     public function getAlipayRootCertSn(): ?string
     {
-        return $this->get('alipay_root_cert_sn');
+        return $this->alipay_root_cert_sn;
     }
 
     /**
@@ -94,45 +147,23 @@ class AlipayConfig extends BaseConfig implements ProviderConfigInterface
      */
     public function getServiceProviderId(): ?string
     {
-        return $this->get('service_provider_id');
+        return $this->service_provider_id;
     }
 
-    /**
-     * 默认返回 MODE_NORMAL.
-     */
     public function getMode(): int
     {
-        return $this->get('mode', Pay::MODE_NORMAL);
+        return $this->mode;
     }
 
-    /**
-     * 设置应用公钥证书序列号.
-     */
-    public function setAppPublicCertSn(string $sn): void
-    {
-        $this->set('app_public_cert_sn', $sn);
-    }
-
-    /**
-     * 设置支付宝根证书序列号.
-     */
-    public function setAlipayRootCertSn(string $sn): void
-    {
-        $this->set('alipay_root_cert_sn', $sn);
-    }
-
-    /**
-     * @throws InvalidConfigException
-     */
-    private function validateRequired(): void
+    protected function validateRequired(): void
     {
         $required = ['app_id', 'app_secret_cert', 'app_public_cert_path', 'alipay_public_cert_path', 'alipay_root_cert_path'];
 
-        foreach ($required as $key) {
-            if (empty($this->get($key))) {
+        foreach ($required as $prop) {
+            if (empty($this->{$prop})) {
                 throw new InvalidConfigException(
                     Exception::CONFIG_ALIPAY_INVALID,
-                    "配置异常: 缺少支付宝配置 -- [{$key}]"
+                    "配置异常: 缺少支付宝配置 -- [{$prop}]"
                 );
             }
         }

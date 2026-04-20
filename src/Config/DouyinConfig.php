@@ -7,74 +7,90 @@ namespace Yansongda\Pay\Config;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Supports\Config as BaseConfig;
 
-class DouyinConfig extends BaseConfig implements ProviderConfigInterface
+class DouyinConfig extends AbstractConfig
 {
-    private string $tenant;
+    private ?string $mch_id = null;
+    private string $mch_secret_token = '';
+    private string $mch_secret_salt = '';
+    private string $mini_app_id = '';
+    private ?string $thirdparty_id = null;
+    private ?string $notify_url = null;
+    private int $mode = Pay::MODE_NORMAL;
 
-    /**
-     * @throws InvalidConfigException
-     */
-    public function __construct(array $values, string $tenant = 'default')
+    public function setMchId(?string $value): void
     {
-        parent::__construct($values);
-
-        $this->tenant = $tenant;
-
-        $this->validateRequired();
+        $this->mch_id = $value;
     }
 
-    public function getTenant(): string
+    public function setMchSecretToken(string $value): void
     {
-        return $this->tenant;
+        $this->mch_secret_token = $value;
+    }
+
+    public function setMchSecretSalt(string $value): void
+    {
+        $this->mch_secret_salt = $value;
+    }
+
+    public function setMiniAppId(string $value): void
+    {
+        $this->mini_app_id = $value;
+    }
+
+    public function setThirdpartyId(?string $value): void
+    {
+        $this->thirdparty_id = $value;
+    }
+
+    public function setNotifyUrl(?string $value): void
+    {
+        $this->notify_url = $value;
+    }
+
+    public function setMode(int $value): void
+    {
+        $this->mode = $value;
     }
 
     public function getMchId(): ?string
     {
-        return $this->get('mch_id');
+        return $this->mch_id;
     }
 
     public function getMchSecretToken(): string
     {
-        return $this->get('mch_secret_token', '');
+        return $this->mch_secret_token;
     }
 
     public function getMchSecretSalt(): string
     {
-        return $this->get('mch_secret_salt', '');
+        return $this->mch_secret_salt;
     }
 
     public function getMiniAppId(): string
     {
-        return $this->get('mini_app_id', '');
+        return $this->mini_app_id;
     }
 
     public function getThirdpartyId(): ?string
     {
-        return $this->get('thirdparty_id');
+        return $this->thirdparty_id;
     }
 
     public function getNotifyUrl(): ?string
     {
-        return $this->get('notify_url');
+        return $this->notify_url;
     }
 
-    /**
-     * 默认返回 MODE_NORMAL.
-     */
     public function getMode(): int
     {
-        return $this->get('mode', Pay::MODE_NORMAL);
+        return $this->mode;
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
-    private function validateRequired(): void
+    protected function validateRequired(): void
     {
-        // 只验证 mini_app_id，其他字段在 Plugin 中检查
-        if (empty($this->get('mini_app_id'))) {
+        if (empty($this->mini_app_id)) {
             throw new InvalidConfigException(
                 Exception::CONFIG_DOUYIN_INVALID,
                 '配置异常: 缺少抖音配置 -- [mini_app_id]'

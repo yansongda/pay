@@ -7,109 +7,129 @@ namespace Yansongda\Pay\Config;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Supports\Config as BaseConfig;
 
-class PaypalConfig extends BaseConfig implements ProviderConfigInterface
+class PaypalConfig extends AbstractConfig
 {
-    private string $tenant;
+    private string $client_id = '';
+    private string $app_secret = '';
+    private ?string $webhook_id = null;
+    private ?string $notify_url = null;
+    private ?string $return_url = null;
+    private ?string $cancel_url = null;
+    private ?string $brand_name = null;
+    private int $mode = Pay::MODE_NORMAL;
+    private ?string $_access_token = null;
+    private ?int $_access_token_expiry = null;
 
-    /**
-     * @throws InvalidConfigException
-     */
-    public function __construct(array $values, string $tenant = 'default')
+    public function setClientId(string $value): void
     {
-        parent::__construct($values);
-
-        $this->tenant = $tenant;
-
-        $this->validateRequired();
+        $this->client_id = $value;
     }
 
-    public function getTenant(): string
+    public function setAppSecret(string $value): void
     {
-        return $this->tenant;
+        $this->app_secret = $value;
+    }
+
+    public function setWebhookId(?string $value): void
+    {
+        $this->webhook_id = $value;
+    }
+
+    public function setNotifyUrl(?string $value): void
+    {
+        $this->notify_url = $value;
+    }
+
+    public function setReturnUrl(?string $value): void
+    {
+        $this->return_url = $value;
+    }
+
+    public function setCancelUrl(?string $value): void
+    {
+        $this->cancel_url = $value;
+    }
+
+    public function setBrandName(?string $value): void
+    {
+        $this->brand_name = $value;
+    }
+
+    public function setMode(int $value): void
+    {
+        $this->mode = $value;
+    }
+
+    public function setAccessToken(?string $value): void
+    {
+        $this->_access_token = $value;
+    }
+
+    public function setAccessTokenExpiry(?int $value): void
+    {
+        $this->_access_token_expiry = $value;
     }
 
     public function getClientId(): string
     {
-        return $this->get('client_id', '');
+        return $this->client_id;
     }
 
     public function getAppSecret(): string
     {
-        return $this->get('app_secret', '');
+        return $this->app_secret;
     }
 
     public function getWebhookId(): ?string
     {
-        return $this->get('webhook_id');
+        return $this->webhook_id;
     }
 
     public function getNotifyUrl(): ?string
     {
-        return $this->get('notify_url');
+        return $this->notify_url;
     }
 
-    /**
-     * 支付成功后的跳转地址.
-     */
     public function getReturnUrl(): ?string
     {
-        return $this->get('return_url');
+        return $this->return_url;
     }
 
-    /**
-     * 支付取消后的跳转地址.
-     */
     public function getCancelUrl(): ?string
     {
-        return $this->get('cancel_url');
+        return $this->cancel_url;
     }
 
-    /**
-     * 品牌名称.
-     */
     public function getBrandName(): ?string
     {
-        return $this->get('brand_name');
+        return $this->brand_name;
     }
 
-    /**
-     * 默认返回 MODE_NORMAL.
-     */
     public function getMode(): int
     {
-        return $this->get('mode', Pay::MODE_NORMAL);
+        return $this->mode;
     }
 
-    /**
-     * 获取动态存储的 access_token.
-     */
     public function getAccessToken(): ?string
     {
-        return $this->get('_access_token');
+        return $this->_access_token;
     }
 
-    /**
-     * 获取动态存储的 access_token 过期时间.
-     */
     public function getAccessTokenExpiry(): ?int
     {
-        return $this->get('_access_token_expiry');
+        return $this->_access_token_expiry;
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
-    private function validateRequired(): void
+    protected function validateRequired(): void
     {
         $required = ['client_id', 'app_secret'];
 
-        foreach ($required as $key) {
-            if (empty($this->get($key))) {
+        foreach ($required as $prop) {
+            if (empty($this->{$prop})) {
                 throw new InvalidConfigException(
                     Exception::CONFIG_PAYPAL_INVALID,
-                    "配置异常: 缺少 PayPal 配置 -- [{$key}]"
+                    "配置异常: 缺少 PayPal 配置 -- [{$prop}]"
                 );
             }
         }
