@@ -13,6 +13,7 @@ use Yansongda\Artful\Event\HttpEnd;
 use Yansongda\Artful\Event\HttpStart;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Config\ProviderConfigInterface;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
@@ -93,8 +94,12 @@ class Pay
      */
     public static function config(array|Config $config = [], Closure|ContainerInterface|null $container = null): bool
     {
-        $configObject = is_array($config) ? new Config($config) : $config;
-        $result = Artful::config($configObject->all(), $container);
+        if (is_array($config) && Artful::hasContainer() && !($config['_force'] ?? false)) {
+            return false;
+        }
+
+        $configObject = is_array($config) ? new Config(self::mergeConfig($config)) : $config;
+        $result = Artful::config(self::exportConfig($configObject->all()), $container);
 
         if ($result) {
             Artful::set(Config::class, $configObject);
@@ -109,6 +114,55 @@ class Pay
         }
 
         return $result;
+    }
+
+    private static function mergeConfig(array $config): array
+    {
+        if (!($config['_force'] ?? false) || !Artful::hasContainer()) {
+            return $config;
+        }
+
+        try {
+            $current = self::get(Config::class);
+        } catch (ContainerException|ServiceNotFoundException) {
+            return $config;
+        }
+
+        return array_replace_recursive(self::exportConfig($current->all()), $config);
+    }
+
+    private static function exportConfig(mixed $config): mixed
+    {
+        if ($config instanceof ProviderConfigInterface) {
+            return self::filterNullConfigValues($config->toArray());
+        }
+
+        if (!is_array($config)) {
+            return $config;
+        }
+
+        foreach ($config as $key => $value) {
+            $config[$key] = self::exportConfig($value);
+        }
+
+        return $config;
+    }
+
+    private static function filterNullConfigValues(array $config): array
+    {
+        foreach ($config as $key => $value) {
+            if (null === $value) {
+                unset($config[$key]);
+
+                continue;
+            }
+
+            if (is_array($value)) {
+                $config[$key] = self::filterNullConfigValues($value);
+            }
+        }
+
+        return $config;
     }
 
     /**

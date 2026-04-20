@@ -6,6 +6,8 @@ use Hyperf\Pimple\ContainerFactory;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Config;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Jsb;
@@ -42,6 +44,77 @@ class PayTest extends TestCase
         $result1 = Pay::config(['name' => 'yansongda1', '_force' => true]);
         self::assertTrue($result1);
         self::assertEquals('yansongda1', Pay::get(ConfigInterface::class)->get('name'));
+    }
+
+    public function testConfigSkipsPartialProviderValidationWithoutForce(): void
+    {
+        Pay::config([
+            'wechat' => [
+                'default' => [
+                    'mch_id' => '1600314069',
+                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
+                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
+                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'notify_url' => 'https://pay.yansongda.cn/original',
+                    'mp_app_id' => 'wx-original',
+                ],
+            ],
+        ]);
+
+        $result = Pay::config([
+            'wechat' => [
+                'default' => [
+                    'mp_app_id' => 'wx-updated',
+                ],
+            ],
+        ]);
+
+        $wechatConfig = Pay::get(ConfigInterface::class)->get('wechat.default');
+        $typedWechatConfig = Pay::get(Config::class)->getProviderConfig('wechat');
+
+        self::assertFalse($result);
+        self::assertIsArray($wechatConfig);
+        self::assertSame('wx-original', $wechatConfig['mp_app_id']);
+        self::assertInstanceOf(WechatConfig::class, $typedWechatConfig);
+        self::assertSame('wx-original', $typedWechatConfig->getMpAppId());
+        self::assertSame('1600314069', $typedWechatConfig->getMchId());
+        self::assertSame('https://pay.yansongda.cn/original', $typedWechatConfig->getNotifyUrl());
+    }
+
+    public function testConfigMergesProviderPartialOverrideWithForce(): void
+    {
+        Pay::config([
+            'wechat' => [
+                'default' => [
+                    'mch_id' => '1600314069',
+                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
+                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
+                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'notify_url' => 'https://pay.yansongda.cn/original',
+                    'mp_app_id' => 'wx-original',
+                ],
+            ],
+        ]);
+
+        $result = Pay::config([
+            '_force' => true,
+            'wechat' => [
+                'default' => [
+                    'mp_app_id' => 'wx-updated',
+                ],
+            ],
+        ]);
+
+        $wechatConfig = Pay::get(ConfigInterface::class)->get('wechat.default');
+        $typedWechatConfig = Pay::get(Config::class)->getProviderConfig('wechat');
+
+        self::assertTrue($result);
+        self::assertIsArray($wechatConfig);
+        self::assertSame('wx-updated', $wechatConfig['mp_app_id']);
+        self::assertInstanceOf(WechatConfig::class, $typedWechatConfig);
+        self::assertSame('wx-updated', $typedWechatConfig->getMpAppId());
+        self::assertSame('1600314069', $typedWechatConfig->getMchId());
+        self::assertSame('https://pay.yansongda.cn/original', $typedWechatConfig->getNotifyUrl());
     }
 
     public function testDirectCallStatic()

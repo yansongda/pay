@@ -9,4 +9,6 @@ interface ProviderConfigInterface
     public function getTenant(): string;
 
     public function getMode(): int;
+
+    public function toArray(): array;
 }

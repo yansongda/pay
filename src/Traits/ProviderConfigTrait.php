@@ -30,7 +30,7 @@ trait ProviderConfigTrait
         $providerConfig = $config->get($provider, [])[static::getTenant($params)] ?? [];
 
         if ($providerConfig instanceof ProviderConfigInterface) {
-            return $providerConfig->get();
+            return $providerConfig->toArray();
         }
 
         return $providerConfig;
