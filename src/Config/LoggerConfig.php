@@ -12,7 +12,7 @@ class LoggerConfig extends AbstractConfig
     private string $file = './logs/pay.log';
     private string $level = 'info';
     private string $type = 'single';
-    private int $max_file = 30;
+    private int $maxFile = 30;
 
     public function setEnable(bool $value): void
     {
@@ -36,7 +36,7 @@ class LoggerConfig extends AbstractConfig
 
     public function setMaxFile(int $value): void
     {
-        $this->max_file = $value;
+        $this->maxFile = $value;
     }
 
     public function isEnable(): bool
@@ -66,7 +66,7 @@ class LoggerConfig extends AbstractConfig
 
     public function getMaxFile(): int
     {
-        return $this->max_file;
+        return $this->maxFile;
     }
 
     public function getMode(): int

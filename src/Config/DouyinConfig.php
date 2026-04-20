@@ -10,42 +10,42 @@ use Yansongda\Pay\Pay;
 
 class DouyinConfig extends AbstractConfig
 {
-    private ?string $mch_id = null;
-    private string $mch_secret_token = '';
-    private string $mch_secret_salt = '';
-    private string $mini_app_id = '';
-    private ?string $thirdparty_id = null;
-    private ?string $notify_url = null;
+    private ?string $mchId = null;
+    private string $mchSecretToken = '';
+    private string $mchSecretSalt = '';
+    private string $miniAppId = '';
+    private ?string $thirdpartyId = null;
+    private ?string $notifyUrl = null;
     private int $mode = Pay::MODE_NORMAL;
 
     public function setMchId(?string $value): void
     {
-        $this->mch_id = $value;
+        $this->mchId = $value;
     }
 
     public function setMchSecretToken(string $value): void
     {
-        $this->mch_secret_token = $value;
+        $this->mchSecretToken = $value;
     }
 
     public function setMchSecretSalt(string $value): void
     {
-        $this->mch_secret_salt = $value;
+        $this->mchSecretSalt = $value;
     }
 
     public function setMiniAppId(string $value): void
     {
-        $this->mini_app_id = $value;
+        $this->miniAppId = $value;
     }
 
     public function setThirdpartyId(?string $value): void
     {
-        $this->thirdparty_id = $value;
+        $this->thirdpartyId = $value;
     }
 
     public function setNotifyUrl(?string $value): void
     {
-        $this->notify_url = $value;
+        $this->notifyUrl = $value;
     }
 
     public function setMode(int $value): void
@@ -55,32 +55,32 @@ class DouyinConfig extends AbstractConfig
 
     public function getMchId(): ?string
     {
-        return $this->mch_id;
+        return $this->mchId;
     }
 
     public function getMchSecretToken(): string
     {
-        return $this->mch_secret_token;
+        return $this->mchSecretToken;
     }
 
     public function getMchSecretSalt(): string
     {
-        return $this->mch_secret_salt;
+        return $this->mchSecretSalt;
     }
 
     public function getMiniAppId(): string
     {
-        return $this->mini_app_id;
+        return $this->miniAppId;
     }
 
     public function getThirdpartyId(): ?string
     {
-        return $this->thirdparty_id;
+        return $this->thirdpartyId;
     }
 
     public function getNotifyUrl(): ?string
     {
-        return $this->notify_url;
+        return $this->notifyUrl;
     }
 
     public function getMode(): int
@@ -90,7 +90,7 @@ class DouyinConfig extends AbstractConfig
 
     protected function validateRequired(): void
     {
-        if (empty($this->mini_app_id)) {
+        if (empty($this->miniAppId)) {
             throw new InvalidConfigException(
                 Exception::CONFIG_DOUYIN_INVALID,
                 '配置异常: 缺少抖音配置 -- [mini_app_id]'

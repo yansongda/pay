@@ -10,49 +10,49 @@ use Yansongda\Pay\Pay;
 
 class UnipayConfig extends AbstractConfig
 {
-    private string $mch_cert_path = '';
-    private string $mch_cert_password = '';
-    private ?string $unipay_public_cert_path = null;
-    private ?string $mch_secret_key = null;
-    private ?string $notify_url = null;
-    private ?string $mch_id = null;
-    private ?string $return_url = null;
+    private string $mchCertPath = '';
+    private string $mchCertPassword = '';
+    private ?string $unipayPublicCertPath = null;
+    private ?string $mchSecretKey = null;
+    private ?string $notifyUrl = null;
+    private ?string $mchId = null;
+    private ?string $returnUrl = null;
     private array $certs = [];
     private int $mode = Pay::MODE_NORMAL;
 
     public function setMchCertPath(string $value): void
     {
-        $this->mch_cert_path = $value;
+        $this->mchCertPath = $value;
     }
 
     public function setMchCertPassword(string $value): void
     {
-        $this->mch_cert_password = $value;
+        $this->mchCertPassword = $value;
     }
 
     public function setUnipayPublicCertPath(?string $value): void
     {
-        $this->unipay_public_cert_path = $value;
+        $this->unipayPublicCertPath = $value;
     }
 
     public function setMchSecretKey(?string $value): void
     {
-        $this->mch_secret_key = $value;
+        $this->mchSecretKey = $value;
     }
 
     public function setNotifyUrl(?string $value): void
     {
-        $this->notify_url = $value;
+        $this->notifyUrl = $value;
     }
 
     public function setMchId(?string $value): void
     {
-        $this->mch_id = $value;
+        $this->mchId = $value;
     }
 
     public function setReturnUrl(?string $value): void
     {
-        $this->return_url = $value;
+        $this->returnUrl = $value;
     }
 
     public function setCerts(array $value): void
@@ -67,37 +67,37 @@ class UnipayConfig extends AbstractConfig
 
     public function getMchCertPath(): string
     {
-        return $this->mch_cert_path;
+        return $this->mchCertPath;
     }
 
     public function getMchCertPassword(): string
     {
-        return $this->mch_cert_password;
+        return $this->mchCertPassword;
     }
 
     public function getUnipayPublicCertPath(): ?string
     {
-        return $this->unipay_public_cert_path;
+        return $this->unipayPublicCertPath;
     }
 
     public function getMchSecretKey(): ?string
     {
-        return $this->mch_secret_key;
+        return $this->mchSecretKey;
     }
 
     public function getNotifyUrl(): ?string
     {
-        return $this->notify_url;
+        return $this->notifyUrl;
     }
 
     public function getMchId(): ?string
     {
-        return $this->mch_id;
+        return $this->mchId;
     }
 
     public function getReturnUrl(): ?string
     {
-        return $this->return_url;
+        return $this->returnUrl;
     }
 
     public function getCerts(): array
@@ -112,17 +112,17 @@ class UnipayConfig extends AbstractConfig
 
     protected function validateRequired(): void
     {
-        if (!empty($this->mch_secret_key)) {
+        if (!empty($this->mchSecretKey)) {
             return;
         }
 
-        $required = ['mch_cert_path', 'mch_cert_password'];
+        $required = ['mchCertPath' => 'mch_cert_path', 'mchCertPassword' => 'mch_cert_password'];
 
-        foreach ($required as $prop) {
+        foreach ($required as $prop => $key) {
             if (empty($this->{$prop})) {
                 throw new InvalidConfigException(
                     Exception::CONFIG_UNIPAY_INVALID,
-                    "配置异常: 缺少银联配置 -- [{$prop}]"
+                    "配置异常: 缺少银联配置 -- [{$key}]"
                 );
             }
         }

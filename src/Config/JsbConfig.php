@@ -10,48 +10,48 @@ use Yansongda\Pay\Pay;
 
 class JsbConfig extends AbstractConfig
 {
-    private string $svr_code = '';
-    private string $partner_id = '';
-    private string $public_key_code = '';
-    private string $mch_secret_cert_path = '';
-    private ?string $mch_public_cert_path = null;
-    private string $jsb_public_cert_path = '';
-    private ?string $notify_url = null;
+    private string $svrCode = '';
+    private string $partnerId = '';
+    private string $publicKeyCode = '';
+    private string $mchSecretCertPath = '';
+    private ?string $mchPublicCertPath = null;
+    private string $jsbPublicCertPath = '';
+    private ?string $notifyUrl = null;
     private int $mode = Pay::MODE_NORMAL;
 
     public function setSvrCode(string $value): void
     {
-        $this->svr_code = $value;
+        $this->svrCode = $value;
     }
 
     public function setPartnerId(string $value): void
     {
-        $this->partner_id = $value;
+        $this->partnerId = $value;
     }
 
     public function setPublicKeyCode(string $value): void
     {
-        $this->public_key_code = $value;
+        $this->publicKeyCode = $value;
     }
 
     public function setMchSecretCertPath(string $value): void
     {
-        $this->mch_secret_cert_path = $value;
+        $this->mchSecretCertPath = $value;
     }
 
     public function setMchPublicCertPath(?string $value): void
     {
-        $this->mch_public_cert_path = $value;
+        $this->mchPublicCertPath = $value;
     }
 
     public function setJsbPublicCertPath(string $value): void
     {
-        $this->jsb_public_cert_path = $value;
+        $this->jsbPublicCertPath = $value;
     }
 
     public function setNotifyUrl(?string $value): void
     {
-        $this->notify_url = $value;
+        $this->notifyUrl = $value;
     }
 
     public function setMode(int $value): void
@@ -61,37 +61,37 @@ class JsbConfig extends AbstractConfig
 
     public function getSvrCode(): string
     {
-        return $this->svr_code;
+        return $this->svrCode;
     }
 
     public function getPartnerId(): string
     {
-        return $this->partner_id;
+        return $this->partnerId;
     }
 
     public function getPublicKeyCode(): string
     {
-        return $this->public_key_code;
+        return $this->publicKeyCode;
     }
 
     public function getMchSecretCertPath(): string
     {
-        return $this->mch_secret_cert_path;
+        return $this->mchSecretCertPath;
     }
 
     public function getMchPublicCertPath(): ?string
     {
-        return $this->mch_public_cert_path;
+        return $this->mchPublicCertPath;
     }
 
     public function getJsbPublicCertPath(): string
     {
-        return $this->jsb_public_cert_path;
+        return $this->jsbPublicCertPath;
     }
 
     public function getNotifyUrl(): ?string
     {
-        return $this->notify_url;
+        return $this->notifyUrl;
     }
 
     public function getMode(): int
@@ -101,13 +101,18 @@ class JsbConfig extends AbstractConfig
 
     protected function validateRequired(): void
     {
-        $required = ['partner_id', 'public_key_code', 'mch_secret_cert_path', 'jsb_public_cert_path'];
+        $required = [
+            'partnerId' => 'partner_id',
+            'publicKeyCode' => 'public_key_code',
+            'mchSecretCertPath' => 'mch_secret_cert_path',
+            'jsbPublicCertPath' => 'jsb_public_cert_path',
+        ];
 
-        foreach ($required as $prop) {
+        foreach ($required as $prop => $key) {
             if (empty($this->{$prop})) {
                 throw new InvalidConfigException(
                     Exception::CONFIG_JSB_INVALID,
-                    "配置异常: 缺少江苏银行配置 -- [{$prop}]"
+                    "配置异常: 缺少江苏银行配置 -- [{$key}]"
                 );
             }
         }

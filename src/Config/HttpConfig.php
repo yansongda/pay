@@ -9,7 +9,7 @@ use Yansongda\Pay\Pay;
 class HttpConfig extends AbstractConfig
 {
     private float $timeout = 5.0;
-    private float $connect_timeout = 5.0;
+    private float $connectTimeout = 5.0;
 
     public function setTimeout(float $value): void
     {
@@ -18,7 +18,7 @@ class HttpConfig extends AbstractConfig
 
     public function setConnectTimeout(float $value): void
     {
-        $this->connect_timeout = $value;
+        $this->connectTimeout = $value;
     }
 
     public function getTimeout(): float
@@ -28,7 +28,7 @@ class HttpConfig extends AbstractConfig
 
     public function getConnectTimeout(): float
     {
-        return $this->connect_timeout;
+        return $this->connectTimeout;
     }
 
     public function getMode(): int

@@ -10,36 +10,36 @@ use Yansongda\Pay\Pay;
 
 class StripeConfig extends AbstractConfig
 {
-    private string $secret_key = '';
-    private ?string $webhook_secret = null;
-    private ?string $notify_url = null;
-    private ?string $success_url = null;
-    private ?string $cancel_url = null;
+    private string $secretKey = '';
+    private ?string $webhookSecret = null;
+    private ?string $notifyUrl = null;
+    private ?string $successUrl = null;
+    private ?string $cancelUrl = null;
     private int $mode = Pay::MODE_NORMAL;
 
     public function setSecretKey(string $value): void
     {
-        $this->secret_key = $value;
+        $this->secretKey = $value;
     }
 
     public function setWebhookSecret(?string $value): void
     {
-        $this->webhook_secret = $value;
+        $this->webhookSecret = $value;
     }
 
     public function setNotifyUrl(?string $value): void
     {
-        $this->notify_url = $value;
+        $this->notifyUrl = $value;
     }
 
     public function setSuccessUrl(?string $value): void
     {
-        $this->success_url = $value;
+        $this->successUrl = $value;
     }
 
     public function setCancelUrl(?string $value): void
     {
-        $this->cancel_url = $value;
+        $this->cancelUrl = $value;
     }
 
     public function setMode(int $value): void
@@ -49,27 +49,27 @@ class StripeConfig extends AbstractConfig
 
     public function getSecretKey(): string
     {
-        return $this->secret_key;
+        return $this->secretKey;
     }
 
     public function getWebhookSecret(): ?string
     {
-        return $this->webhook_secret;
+        return $this->webhookSecret;
     }
 
     public function getNotifyUrl(): ?string
     {
-        return $this->notify_url;
+        return $this->notifyUrl;
     }
 
     public function getSuccessUrl(): ?string
     {
-        return $this->success_url;
+        return $this->successUrl;
     }
 
     public function getCancelUrl(): ?string
     {
-        return $this->cancel_url;
+        return $this->cancelUrl;
     }
 
     public function getMode(): int
@@ -79,7 +79,7 @@ class StripeConfig extends AbstractConfig
 
     protected function validateRequired(): void
     {
-        if (empty($this->secret_key)) {
+        if (empty($this->secretKey)) {
             throw new InvalidConfigException(
                 Exception::CONFIG_STRIPE_INVALID,
                 '配置异常: 缺少 Stripe 配置 -- [secret_key]'

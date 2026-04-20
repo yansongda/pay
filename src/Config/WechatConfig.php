@@ -12,96 +12,96 @@ use Yansongda\Pay\Provider\Wechat;
 
 class WechatConfig extends AbstractConfig
 {
-    private string $mch_id = '';
-    private string $mch_secret_key = '';
-    private string $mch_secret_cert = '';
-    private string $mch_public_cert_path = '';
-    private string $notify_url = '';
-    private ?string $mch_secret_key_v2 = null;
-    private ?string $mp_app_id = null;
-    private ?string $mini_app_id = null;
-    private ?string $app_id = null;
-    private ?string $sub_mch_id = null;
-    private ?string $sub_mp_app_id = null;
-    private ?string $sub_mini_app_id = null;
-    private ?string $sub_app_id = null;
-    private array $wechat_public_cert_path = [];
-    private ?string $mini_app_key_virtual_pay = null;
+    private string $mchId = '';
+    private string $mchSecretKey = '';
+    private string $mchSecretCert = '';
+    private string $mchPublicCertPath = '';
+    private string $notifyUrl = '';
+    private ?string $mchSecretKeyV2 = null;
+    private ?string $mpAppId = null;
+    private ?string $miniAppId = null;
+    private ?string $appId = null;
+    private ?string $subMchId = null;
+    private ?string $subMpAppId = null;
+    private ?string $subMiniAppId = null;
+    private ?string $subAppId = null;
+    private array $wechatPublicCertPath = [];
+    private ?string $miniAppKeyVirtualPay = null;
     private int $mode = Pay::MODE_NORMAL;
 
     public function setMchId(string $value): void
     {
-        $this->mch_id = $value;
+        $this->mchId = $value;
     }
 
     public function setMchSecretKey(string $value): void
     {
-        $this->mch_secret_key = $value;
+        $this->mchSecretKey = $value;
     }
 
     public function setMchSecretCert(string $value): void
     {
-        $this->mch_secret_cert = $value;
+        $this->mchSecretCert = $value;
     }
 
     public function setMchPublicCertPath(string $value): void
     {
-        $this->mch_public_cert_path = $value;
+        $this->mchPublicCertPath = $value;
     }
 
     public function setNotifyUrl(string $value): void
     {
-        $this->notify_url = $value;
+        $this->notifyUrl = $value;
     }
 
     public function setMchSecretKeyV2(?string $value): void
     {
-        $this->mch_secret_key_v2 = $value;
+        $this->mchSecretKeyV2 = $value;
     }
 
     public function setMpAppId(?string $value): void
     {
-        $this->mp_app_id = $value;
+        $this->mpAppId = $value;
     }
 
     public function setMiniAppId(?string $value): void
     {
-        $this->mini_app_id = $value;
+        $this->miniAppId = $value;
     }
 
     public function setAppId(?string $value): void
     {
-        $this->app_id = $value;
+        $this->appId = $value;
     }
 
     public function setSubMchId(?string $value): void
     {
-        $this->sub_mch_id = $value;
+        $this->subMchId = $value;
     }
 
     public function setSubMpAppId(?string $value): void
     {
-        $this->sub_mp_app_id = $value;
+        $this->subMpAppId = $value;
     }
 
     public function setSubMiniAppId(?string $value): void
     {
-        $this->sub_mini_app_id = $value;
+        $this->subMiniAppId = $value;
     }
 
     public function setSubAppId(?string $value): void
     {
-        $this->sub_app_id = $value;
+        $this->subAppId = $value;
     }
 
     public function setWechatPublicCertPath(array $value): void
     {
-        $this->wechat_public_cert_path = $value;
+        $this->wechatPublicCertPath = $value;
     }
 
     public function setMiniAppKeyVirtualPay(?string $value): void
     {
-        $this->mini_app_key_virtual_pay = $value;
+        $this->miniAppKeyVirtualPay = $value;
     }
 
     public function setMode(int $value): void
@@ -111,72 +111,72 @@ class WechatConfig extends AbstractConfig
 
     public function getMchId(): string
     {
-        return $this->mch_id;
+        return $this->mchId;
     }
 
     public function getMchSecretKey(): string
     {
-        return $this->mch_secret_key;
+        return $this->mchSecretKey;
     }
 
     public function getMchSecretCert(): string
     {
-        return $this->mch_secret_cert;
+        return $this->mchSecretCert;
     }
 
     public function getMchPublicCertPath(): string
     {
-        return $this->mch_public_cert_path;
+        return $this->mchPublicCertPath;
     }
 
     public function getNotifyUrl(): string
     {
-        return $this->notify_url;
+        return $this->notifyUrl;
     }
 
     public function getMchSecretKeyV2(): ?string
     {
-        return $this->mch_secret_key_v2;
+        return $this->mchSecretKeyV2;
     }
 
     public function getMpAppId(): ?string
     {
-        return $this->mp_app_id;
+        return $this->mpAppId;
     }
 
     public function getMiniAppId(): ?string
     {
-        return $this->mini_app_id;
+        return $this->miniAppId;
     }
 
     public function getAppId(): ?string
     {
-        return $this->app_id;
+        return $this->appId;
     }
 
     public function getSubMchId(): ?string
     {
-        return $this->sub_mch_id;
+        return $this->subMchId;
     }
 
     public function getSubMpAppId(): ?string
     {
-        return $this->sub_mp_app_id;
+        return $this->subMpAppId;
     }
 
     public function getSubMiniAppId(): ?string
     {
-        return $this->sub_mini_app_id;
+        return $this->subMiniAppId;
     }
 
     public function getSubAppId(): ?string
     {
-        return $this->sub_app_id;
+        return $this->subAppId;
     }
 
     public function getMiniAppKeyVirtualPay(): ?string
     {
-        return $this->mini_app_key_virtual_pay;
+        return $this->miniAppKeyVirtualPay;
     }
 
     /**
@@ -184,7 +184,7 @@ class WechatConfig extends AbstractConfig
      */
     public function getWechatPublicCertPath(): array
     {
-        return $this->wechat_public_cert_path;
+        return $this->wechatPublicCertPath;
     }
 
     public function getMode(): int
@@ -203,7 +203,7 @@ class WechatConfig extends AbstractConfig
             return $cert;
         }
 
-        return $this->wechat_public_cert_path[$serialNo] ?? null;
+        return $this->wechatPublicCertPath[$serialNo] ?? null;
     }
 
     /**
@@ -215,7 +215,7 @@ class WechatConfig extends AbstractConfig
     {
         $fromCertManager = CertManager::getAllBySerial('wechat', $this->tenant);
 
-        return array_merge($this->wechat_public_cert_path, $fromCertManager);
+        return array_merge($this->wechatPublicCertPath, $fromCertManager);
     }
 
     /**
@@ -233,7 +233,7 @@ class WechatConfig extends AbstractConfig
      */
     public function validateForV2(): void
     {
-        if (empty($this->mch_secret_key_v2)) {
+        if (empty($this->mchSecretKeyV2)) {
             throw new InvalidConfigException(
                 Exception::CONFIG_WECHAT_INVALID,
                 '配置异常: 缺少微信配置 -- [mch_secret_key_v2]'
@@ -248,7 +248,7 @@ class WechatConfig extends AbstractConfig
      */
     public function validateForMp(): void
     {
-        if (empty($this->mp_app_id)) {
+        if (empty($this->mpAppId)) {
             throw new InvalidConfigException(
                 Exception::CONFIG_WECHAT_INVALID,
                 '配置异常: 缺少微信配置 -- [mp_app_id]'
@@ -263,7 +263,7 @@ class WechatConfig extends AbstractConfig
      */
     public function validateForMini(): void
     {
-        if (empty($this->mini_app_id)) {
+        if (empty($this->miniAppId)) {
             throw new InvalidConfigException(
                 Exception::CONFIG_WECHAT_INVALID,
                 '配置异常: 缺少微信配置 -- [mini_app_id]'
@@ -273,25 +273,30 @@ class WechatConfig extends AbstractConfig
 
     protected function validateRequired(): void
     {
-        $required = ['mch_id', 'mch_secret_key', 'mch_secret_cert', 'mch_public_cert_path'];
+        $required = [
+            'mchId' => 'mch_id',
+            'mchSecretKey' => 'mch_secret_key',
+            'mchSecretCert' => 'mch_secret_cert',
+            'mchPublicCertPath' => 'mch_public_cert_path',
+        ];
 
-        foreach ($required as $prop) {
+        foreach ($required as $prop => $key) {
             if (empty($this->{$prop})) {
                 throw new InvalidConfigException(
                     Exception::CONFIG_WECHAT_INVALID,
-                    "配置异常: 缺少微信配置 -- [{$prop}]"
+                    "配置异常: 缺少微信配置 -- [{$key}]"
                 );
             }
         }
 
-        if (Wechat::MCH_SECRET_KEY_LENGTH_BYTE !== strlen($this->mch_secret_key)) {
+        if (Wechat::MCH_SECRET_KEY_LENGTH_BYTE !== strlen($this->mchSecretKey)) {
             throw new InvalidConfigException(
                 Exception::CONFIG_WECHAT_INVALID,
                 '配置异常: mch_secret_key 长度应为 32 字节'
             );
         }
 
-        if (Pay::MODE_SERVICE === $this->mode && empty($this->sub_mch_id)) {
+        if (Pay::MODE_SERVICE === $this->mode && empty($this->subMchId)) {
             throw new InvalidConfigException(
                 Exception::CONFIG_WECHAT_INVALID,
                 '配置异常: 服务商模式下缺少 [sub_mch_id]'
