@@ -7,84 +7,107 @@ namespace Yansongda\Pay\Config;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Supports\Config as BaseConfig;
 
-class JsbConfig extends BaseConfig implements ProviderConfigInterface
+class JsbConfig extends AbstractConfig
 {
-    private string $tenant;
+    private string $svr_code = '';
+    private string $partner_id = '';
+    private string $public_key_code = '';
+    private string $mch_secret_cert_path = '';
+    private ?string $mch_public_cert_path = null;
+    private string $jsb_public_cert_path = '';
+    private ?string $notify_url = null;
+    private int $mode = Pay::MODE_NORMAL;
 
-    /**
-     * @throws InvalidConfigException
-     */
-    public function __construct(array $values, string $tenant = 'default')
+    public function setSvrCode(string $value): void
     {
-        parent::__construct($values);
-
-        $this->tenant = $tenant;
-
-        $this->validateRequired();
+        $this->svr_code = $value;
     }
 
-    public function getTenant(): string
+    public function setPartnerId(string $value): void
     {
-        return $this->tenant;
+        $this->partner_id = $value;
+    }
+
+    public function setPublicKeyCode(string $value): void
+    {
+        $this->public_key_code = $value;
+    }
+
+    public function setMchSecretCertPath(string $value): void
+    {
+        $this->mch_secret_cert_path = $value;
+    }
+
+    public function setMchPublicCertPath(?string $value): void
+    {
+        $this->mch_public_cert_path = $value;
+    }
+
+    public function setJsbPublicCertPath(string $value): void
+    {
+        $this->jsb_public_cert_path = $value;
+    }
+
+    public function setNotifyUrl(?string $value): void
+    {
+        $this->notify_url = $value;
+    }
+
+    public function setMode(int $value): void
+    {
+        $this->mode = $value;
     }
 
     public function getSvrCode(): string
     {
-        return $this->get('svr_code', '');
+        return $this->svr_code;
     }
 
     public function getPartnerId(): string
     {
-        return $this->get('partner_id', '');
+        return $this->partner_id;
     }
 
     public function getPublicKeyCode(): string
     {
-        return $this->get('public_key_code', '');
+        return $this->public_key_code;
     }
 
     public function getMchSecretCertPath(): string
     {
-        return $this->get('mch_secret_cert_path', '');
+        return $this->mch_secret_cert_path;
     }
 
     public function getMchPublicCertPath(): ?string
     {
-        return $this->get('mch_public_cert_path');
+        return $this->mch_public_cert_path;
     }
 
     public function getJsbPublicCertPath(): string
     {
-        return $this->get('jsb_public_cert_path', '');
+        return $this->jsb_public_cert_path;
     }
 
     public function getNotifyUrl(): ?string
     {
-        return $this->get('notify_url');
+        return $this->notify_url;
     }
 
-    /**
-     * 默认返回 MODE_NORMAL.
-     */
     public function getMode(): int
     {
-        return $this->get('mode', Pay::MODE_NORMAL);
+        return $this->mode;
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
-    private function validateRequired(): void
+    protected function validateRequired(): void
     {
         $required = ['partner_id', 'public_key_code', 'mch_secret_cert_path', 'jsb_public_cert_path'];
 
-        foreach ($required as $key) {
-            if (empty($this->get($key))) {
+        foreach ($required as $prop) {
+            if (empty($this->{$prop})) {
                 throw new InvalidConfigException(
                     Exception::CONFIG_JSB_INVALID,
-                    "配置异常: 缺少江苏银行配置 -- [{$key}]"
+                    "配置异常: 缺少江苏银行配置 -- [{$prop}]"
                 );
             }
         }
