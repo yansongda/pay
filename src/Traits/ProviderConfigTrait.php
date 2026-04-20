@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Traits;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Config\ProviderConfigInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
@@ -26,7 +27,13 @@ trait ProviderConfigTrait
         /** @var ConfigInterface $config */
         $config = Pay::get(ConfigInterface::class);
 
-        return $config->get($provider, [])[static::getTenant($params)] ?? [];
+        $providerConfig = $config->get($provider, [])[static::getTenant($params)] ?? [];
+
+        if ($providerConfig instanceof ProviderConfigInterface) {
+            return $providerConfig->toArray();
+        }
+
+        return $providerConfig;
     }
 
     public static function getRadarUrl(array $config, ?Collection $payload): ?string

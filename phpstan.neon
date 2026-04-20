@@ -11,3 +11,9 @@ parameters:
         - '#Trait Yansongda\\Pay\\Traits\\PaypalTrait is used zero times#'
         - '#Trait Yansongda\\Pay\\Traits\\UnipayTrait is used zero times#'
         - '#Trait Yansongda\\Pay\\Traits\\WechatTrait is used zero times#'
+        # Config class refactoring: ProviderConfigInterface returns concrete Config classes at runtime
+        - '#Parameter .* expects .*Config, .*ProviderConfigInterface given#'
+        - '#Call to an undefined method .*ProviderConfigInterface::#'
+        - '#Instanceof between .*Config and .*Config will always evaluate to true#'
+        # Config getter methods return non-null values, ?? is for backward compatibility
+        - '#Expression on left side of \?\? is not nullable#'
