@@ -40,6 +40,17 @@ use Yansongda\Pay\Service\WechatServiceProvider;
 class Pay
 {
     /**
+     * Provider 名称常量.
+     */
+    public const PROVIDER_WECHAT = 'wechat';
+    public const PROVIDER_ALIPAY = 'alipay';
+    public const PROVIDER_UNIPAY = 'unipay';
+    public const PROVIDER_JSB = 'jsb';
+    public const PROVIDER_DOUYIN = 'douyin';
+    public const PROVIDER_PAYPAL = 'paypal';
+    public const PROVIDER_STRIPE = 'stripe';
+
+    /**
      * 正常模式.
      */
     public const MODE_NORMAL = 0;
@@ -80,11 +91,13 @@ class Pay
     /**
      * @throws ContainerException
      */
-    public static function config(array $config = [], Closure|ContainerInterface|null $container = null): bool
+    public static function config(array|Config $config = [], Closure|ContainerInterface|null $container = null): bool
     {
-        $result = Artful::config($config, $container);
+        $configObject = is_array($config) ? new Config($config) : $config;
+        $result = Artful::config($configObject->all(), $container);
 
         if ($result) {
+            Artful::set(Config::class, $configObject);
             Event::addListener(ArtfulStart::class, [PayListener::class, 'artfulStart']);
             Event::addListener(ArtfulEnd::class, [PayListener::class, 'artfulEnd']);
             Event::addListener(HttpStart::class, [PayListener::class, 'httpStart']);
