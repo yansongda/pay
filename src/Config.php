@@ -13,7 +13,6 @@ use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 use Yansongda\Supports\Config as BaseConfig;
 
 class Config extends BaseConfig
