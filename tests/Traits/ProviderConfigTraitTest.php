@@ -183,4 +183,15 @@ class ProviderConfigTraitTest extends TestCase
             )
         );
     }
+
+    public function testGetRadarUrlSandbox(): void
+    {
+        self::assertSame(
+            'https://sandbox.yansongda.cn',
+            ProviderConfigTraitStub::getRadarUrl(
+                ['mode' => PayFacade::MODE_SANDBOX],
+                new Collection(['_url' => 'https://yansongda.cn', '_sandbox_url' => 'https://sandbox.yansongda.cn'])
+            )
+        );
+    }
 }

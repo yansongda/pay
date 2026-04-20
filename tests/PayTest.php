@@ -142,6 +142,24 @@ class PayTest extends TestCase
         self::assertEquals(28, Pay::get('age'));
     }
 
+    public function testConfigWithForceFallsBackWhenCurrentTypedConfigUnavailable(): void
+    {
+        if (!class_exists(ContainerFactory::class)) {
+            self::markTestSkipped('ContainerFactory not available.');
+        }
+
+        Pay::clear();
+        Pay::setContainer((new ContainerFactory())());
+
+        $result = Pay::config([
+            '_force' => true,
+            'age' => 28,
+        ]);
+
+        self::assertTrue($result);
+        self::assertSame(28, Pay::get(ConfigInterface::class)->get('age'));
+    }
+
     public function testMagicCallNotFoundService()
     {
         self::expectException(ServiceNotFoundException::class);

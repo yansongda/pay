@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
@@ -16,6 +17,7 @@ class WechatConfigTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        CertManager::clearCache();
         $this->validConfig = [
             'mch_id' => 'test_mch_id',
             'mch_secret_key' => '12345678901234567890123456789012',
@@ -227,6 +229,19 @@ class WechatConfigTest extends TestCase
         self::assertNull($config->getPublicKeyBySerial('UNKNOWN'));
     }
 
+    public function testPublicKeyBySerialPrefersCertManagerCache(): void
+    {
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'wechat_public_cert_path' => [
+                'ABC123' => '/path/to/cert.pem',
+            ],
+        ]));
+
+        CertManager::setBySerial('wechat', 'default', 'ABC123', 'cached-cert-content');
+
+        self::assertSame('cached-cert-content', $config->getPublicKeyBySerial('ABC123'));
+    }
+
     public function testAllPublicCerts(): void
     {
         $config = new WechatConfig(array_merge($this->validConfig, [
@@ -238,5 +253,30 @@ class WechatConfigTest extends TestCase
         $certs = $config->getAllPublicCerts();
         self::assertArrayHasKey('ABC123', $certs);
         self::assertSame('/path/to/cert.pem', $certs['ABC123']);
+    }
+
+    public function testAllPublicCertsMergesCertManagerCache(): void
+    {
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'wechat_public_cert_path' => [
+                'ABC123' => '/path/to/cert.pem',
+            ],
+        ]));
+
+        CertManager::setBySerial('wechat', 'default', 'DEF456', 'cached-cert-content');
+
+        self::assertSame([
+            'ABC123' => '/path/to/cert.pem',
+            'DEF456' => 'cached-cert-content',
+        ], $config->getAllPublicCerts());
+    }
+
+    public function testSetPublicCertBySerial(): void
+    {
+        $config = new WechatConfig($this->validConfig);
+
+        $config->setPublicCertBySerial('DEF456', 'cached-cert-content');
+
+        self::assertSame('cached-cert-content', CertManager::getBySerial('wechat', 'default', 'DEF456'));
     }
 }
