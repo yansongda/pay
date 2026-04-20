@@ -103,7 +103,7 @@ class RefundPluginTest extends TestCase
             '_url' => 'v3/refund/domestic/refunds',
             '_service_url' => 'v3/refund/domestic/refunds',
             'name' => 'yansongda',
-            'notify_url' => null,
+            'notify_url' => 'https://pay.yansongda.cn',
             'sub_mchid' => '1600314070',
         ], $result->getPayload()->all());
     }
