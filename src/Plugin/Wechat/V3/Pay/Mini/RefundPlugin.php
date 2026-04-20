@@ -50,7 +50,7 @@ class RefundPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/refund/domestic/refunds',
                 '_service_url' => 'v3/refund/domestic/refunds',
-                'notify_url' => $payload->get('notify_url', Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL) ? null : ($config['notify_url'] ?? null)),
+                'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
             ],
             $data ?? $this->normal()
         ));
