@@ -17,9 +17,8 @@ class WechatConfigTest extends TestCase
     {
         parent::setUp();
         $this->validConfig = [
-            'app_id' => 'test_app_id',
             'mch_id' => 'test_mch_id',
-            'mch_secret_key' => '32ByteSecretKeyForTesting12345',
+            'mch_secret_key' => '12345678901234567890123456789012',
             'mch_secret_cert' => 'test_cert',
             'mch_public_cert_path' => 'test_path',
             'notify_url' => 'https://test.com',
@@ -32,7 +31,7 @@ class WechatConfigTest extends TestCase
 
         self::assertSame('default', $config->getTenant());
         self::assertSame('test_mch_id', $config->getMchId());
-        self::assertSame('32ByteSecretKeyForTesting12345', $config->getMchSecretKey());
+        self::assertSame('12345678901234567890123456789012', $config->getMchSecretKey());
         self::assertSame('test_cert', $config->getMchSecretCert());
         self::assertSame('test_path', $config->getMchPublicCertPath());
         self::assertSame('https://test.com', $config->getNotifyUrl());
@@ -46,15 +45,26 @@ class WechatConfigTest extends TestCase
         self::assertSame('custom_tenant', $config->getTenant());
     }
 
+    public function testConstructWithoutNotifyUrl(): void
+    {
+        $config = new WechatConfig([
+            'mch_id' => 'test_mch_id',
+            'mch_secret_key' => '12345678901234567890123456789012',
+            'mch_secret_cert' => 'test_cert',
+            'mch_public_cert_path' => 'test_path',
+        ]);
+
+        self::assertSame('', $config->getNotifyUrl());
+    }
+
     public function testConstructMissingRequired(): void
     {
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
 
         new WechatConfig([
-            'app_id' => 'test_app_id',
             // missing mch_id
-            'mch_secret_key' => '32ByteSecretKeyForTesting12345',
+            'mch_secret_key' => '12345678901234567890123456789012',
             'mch_secret_cert' => 'test_cert',
             'mch_public_cert_path' => 'test_path',
             'notify_url' => 'https://test.com',
@@ -67,7 +77,6 @@ class WechatConfigTest extends TestCase
         $this->expectExceptionMessage('配置异常: mch_secret_key 长度应为 32 字节');
 
         new WechatConfig([
-            'app_id' => 'test_app_id',
             'mch_id' => 'test_mch_id',
             'mch_secret_key' => 'short_key', // 9 bytes, not 32
             'mch_secret_cert' => 'test_cert',
@@ -82,9 +91,8 @@ class WechatConfigTest extends TestCase
         $this->expectExceptionMessage('配置异常: 服务商模式下缺少 [sub_mch_id]');
 
         new WechatConfig([
-            'app_id' => 'test_app_id',
             'mch_id' => 'test_mch_id',
-            'mch_secret_key' => '32ByteSecretKeyForTesting12345',
+            'mch_secret_key' => '12345678901234567890123456789012',
             'mch_secret_cert' => 'test_cert',
             'mch_public_cert_path' => 'test_path',
             'notify_url' => 'https://test.com',
@@ -96,9 +104,8 @@ class WechatConfigTest extends TestCase
     public function testConstructServiceModeWithSubMchId(): void
     {
         $config = new WechatConfig([
-            'app_id' => 'test_app_id',
             'mch_id' => 'test_mch_id',
-            'mch_secret_key' => '32ByteSecretKeyForTesting12345',
+            'mch_secret_key' => '12345678901234567890123456789012',
             'mch_secret_cert' => 'test_cert',
             'mch_public_cert_path' => 'test_path',
             'notify_url' => 'https://test.com',
@@ -147,13 +154,13 @@ class WechatConfigTest extends TestCase
 
     public function testValidateForV2(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $config = new WechatConfig(array_merge($this->validConfig, [
             'mch_secret_key_v2' => 'v2_key',
         ]));
 
-        // 不应抛出异常
         $config->validateForV2();
-        self::assertTrue(true);
     }
 
     public function testValidateForV2Missing(): void
@@ -168,12 +175,13 @@ class WechatConfigTest extends TestCase
 
     public function testValidateForMp(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $config = new WechatConfig(array_merge($this->validConfig, [
             'mp_app_id' => 'mp_app_id',
         ]));
 
         $config->validateForMp();
-        self::assertTrue(true);
     }
 
     public function testValidateForMpMissing(): void
@@ -188,12 +196,13 @@ class WechatConfigTest extends TestCase
 
     public function testValidateForMini(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $config = new WechatConfig(array_merge($this->validConfig, [
             'mini_app_id' => 'mini_app_id',
         ]));
 
         $config->validateForMini();
-        self::assertTrue(true);
     }
 
     public function testValidateForMiniMissing(): void
