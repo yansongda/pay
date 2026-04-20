@@ -46,6 +46,22 @@ class StripeConfig extends BaseConfig implements ProviderConfigInterface
     }
 
     /**
+     * 支付成功后的跳转地址.
+     */
+    public function getSuccessUrl(): ?string
+    {
+        return $this->get('success_url');
+    }
+
+    /**
+     * 支付取消后的跳转地址.
+     */
+    public function getCancelUrl(): ?string
+    {
+        return $this->get('cancel_url');
+    }
+
+    /**
      * 默认返回 MODE_NORMAL.
      */
     public function getMode(): int

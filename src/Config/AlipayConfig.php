@@ -66,11 +66,59 @@ class AlipayConfig extends BaseConfig implements ProviderConfigInterface
     }
 
     /**
+     * 第三方应用授权 token.
+     */
+    public function getAppAuthToken(): ?string
+    {
+        return $this->get('app_auth_token');
+    }
+
+    /**
+     * 应用公钥证书序列号（缓存值）.
+     */
+    public function getAppPublicCertSn(): ?string
+    {
+        return $this->get('app_public_cert_sn');
+    }
+
+    /**
+     * 支付宝根证书序列号（缓存值）.
+     */
+    public function getAlipayRootCertSn(): ?string
+    {
+        return $this->get('alipay_root_cert_sn');
+    }
+
+    /**
+     * 服务商模式下的服务商 id.
+     */
+    public function getServiceProviderId(): ?string
+    {
+        return $this->get('service_provider_id');
+    }
+
+    /**
      * 默认返回 MODE_NORMAL.
      */
     public function getMode(): int
     {
         return $this->get('mode', Pay::MODE_NORMAL);
+    }
+
+    /**
+     * 设置应用公钥证书序列号.
+     */
+    public function setAppPublicCertSn(string $sn): void
+    {
+        $this->set('app_public_cert_sn', $sn);
+    }
+
+    /**
+     * 设置支付宝根证书序列号.
+     */
+    public function setAlipayRootCertSn(string $sn): void
+    {
+        $this->set('alipay_root_cert_sn', $sn);
     }
 
     /**

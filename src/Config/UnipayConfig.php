@@ -56,6 +56,32 @@ class UnipayConfig extends BaseConfig implements ProviderConfigInterface
     }
 
     /**
+     * 商户号.
+     */
+    public function getMchId(): ?string
+    {
+        return $this->get('mch_id');
+    }
+
+    /**
+     * 前台回调地址.
+     */
+    public function getReturnUrl(): ?string
+    {
+        return $this->get('return_url');
+    }
+
+    /**
+     * 证书配置数组.
+     *
+     * @return array<string, string>
+     */
+    public function getCerts(): array
+    {
+        return $this->get('certs', []);
+    }
+
+    /**
      * 默认返回 MODE_NORMAL.
      */
     public function getMode(): int
