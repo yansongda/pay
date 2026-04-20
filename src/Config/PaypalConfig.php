@@ -51,6 +51,30 @@ class PaypalConfig extends BaseConfig implements ProviderConfigInterface
     }
 
     /**
+     * 支付成功后的跳转地址.
+     */
+    public function getReturnUrl(): ?string
+    {
+        return $this->get('return_url');
+    }
+
+    /**
+     * 支付取消后的跳转地址.
+     */
+    public function getCancelUrl(): ?string
+    {
+        return $this->get('cancel_url');
+    }
+
+    /**
+     * 品牌名称.
+     */
+    public function getBrandName(): ?string
+    {
+        return $this->get('brand_name');
+    }
+
+    /**
      * 默认返回 MODE_NORMAL.
      */
     public function getMode(): int
