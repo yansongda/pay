@@ -70,11 +70,68 @@ class CertManagerTest extends TestCase
 
     public function testClearCache(): void
     {
-        $path = __DIR__.'/Cert/alipayPublicCert.crt';
+        $source = __DIR__.'/Cert/alipayPublicCert.crt';
+        $path = sys_get_temp_dir().'/'.uniqid('cert-manager-clear-', true).'.crt';
 
-        $first = CertManager::getPublicCert($path);
+        copy($source, $path);
+
+        try {
+            $first = CertManager::getPublicCert($path);
+            file_put_contents($path, 'changed-cert-content');
+
+            CertManager::clearCache();
+
+            Assert::assertNotSame($first, CertManager::getPublicCert($path));
+            Assert::assertSame('changed-cert-content', CertManager::getPublicCert($path));
+        } finally {
+            if (is_file($path)) {
+                unlink($path);
+            }
+        }
+    }
+
+    public function testClearCacheClearsSerialCache(): void
+    {
+        CertManager::setBySerial('wechat', 'default', 'serial-1', 'cert-content');
+
+        Assert::assertTrue(CertManager::hasBySerial('wechat', 'default', 'serial-1'));
+
         CertManager::clearCache();
 
-        Assert::assertSame($first, CertManager::getPublicCert($path));
+        Assert::assertFalse(CertManager::hasBySerial('wechat', 'default', 'serial-1'));
+        Assert::assertNull(CertManager::getBySerial('wechat', 'default', 'serial-1'));
+    }
+
+    public function testSetAllBySerialAndGetAllBySerial(): void
+    {
+        CertManager::setAllBySerial('wechat', 'default', [
+            'serial-1' => 'cert-1',
+            'serial-2' => 'cert-2',
+        ]);
+
+        Assert::assertSame([
+            'serial-1' => 'cert-1',
+            'serial-2' => 'cert-2',
+        ], CertManager::getAllBySerial('wechat', 'default'));
+    }
+
+    public function testClearBySerial(): void
+    {
+        CertManager::setBySerial('wechat', 'default', 'serial-1', 'cert-content');
+        CertManager::clearBySerial('wechat', 'default');
+
+        Assert::assertSame([], CertManager::getAllBySerial('wechat', 'default'));
+        Assert::assertFalse(CertManager::hasBySerial('wechat', 'default', 'serial-1'));
+    }
+
+    public function testClearAllBySerial(): void
+    {
+        CertManager::setBySerial('wechat', 'default', 'serial-1', 'cert-content');
+        CertManager::setBySerial('alipay', 'tenant-a', 'serial-2', 'cert-content-2');
+
+        CertManager::clearAllBySerial();
+
+        Assert::assertSame([], CertManager::getAllBySerial('wechat', 'default'));
+        Assert::assertSame([], CertManager::getAllBySerial('alipay', 'tenant-a'));
     }
 }
