@@ -90,7 +90,7 @@ class PayPluginTest extends TestCase
             "sp_appid" => "yansongdaa",
             'sp_mchid' => '1600314069',
             'sub_mchid' => '1600314070',
-            'notify_url' => '',
+            'notify_url' => 'https://pay.yansongda.cn',
             'name' => 'yansongda',
         ], $result->getPayload()->all());
     }
