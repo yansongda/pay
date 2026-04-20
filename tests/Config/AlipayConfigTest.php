@@ -91,6 +91,8 @@ class AlipayConfigTest extends TestCase
 
         $config->setAppPublicCertSn('serial_123');
         self::assertSame('serial_123', $config->getAppPublicCertSn());
+        self::assertSame('serial_123', $config->toArray()['_app_public_cert_sn'] ?? null);
+        self::assertArrayNotHasKey('app_public_cert_sn', $config->toArray());
     }
 
     public function testSetAlipayRootCertSn(): void
@@ -101,6 +103,34 @@ class AlipayConfigTest extends TestCase
 
         $config->setAlipayRootCertSn('root_serial_456');
         self::assertSame('root_serial_456', $config->getAlipayRootCertSn());
+        self::assertSame('root_serial_456', $config->toArray()['_alipay_root_cert_sn'] ?? null);
+        self::assertArrayNotHasKey('alipay_root_cert_sn', $config->toArray());
+    }
+
+    public function testToArrayKeepsBackwardCompatibleSnakeCaseKeys(): void
+    {
+        $config = new AlipayConfig(array_merge($this->validConfig, [
+            'notify_url' => 'https://notify.com',
+            'return_url' => 'https://return.com',
+            'app_auth_token' => 'auth_token',
+            'service_provider_id' => 'sp_id',
+        ]));
+
+        self::assertSame([
+            'app_id' => 'test_app_id',
+            'app_secret_cert' => 'test_secret',
+            'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+            'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+            'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+            'notify_url' => 'https://notify.com',
+            'return_url' => 'https://return.com',
+            'app_auth_token' => 'auth_token',
+            '_app_public_cert_sn' => null,
+            '_alipay_root_cert_sn' => null,
+            'service_provider_id' => 'sp_id',
+            'mode' => Pay::MODE_NORMAL,
+            'tenant' => 'default',
+        ], $config->toArray());
     }
 
     public function testModeSandbox(): void

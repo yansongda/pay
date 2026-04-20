@@ -122,4 +122,29 @@ class ConfigTest extends TestCase
         $wechatConfig = $config->getProviderConfig('wechat', 'test_tenant');
         self::assertSame($existingConfig, $wechatConfig);
     }
+
+    public function testProviderConfigToArrayUsesSnakeCaseExternalKeys(): void
+    {
+        $config = new Config([
+            'alipay' => [
+                'default' => [
+                    'app_id' => 'test_app_id',
+                    'app_secret_cert' => 'test_secret',
+                    'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+                    'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+                    'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+                ],
+            ],
+        ]);
+
+        /** @var AlipayConfig $alipayConfig */
+        $alipayConfig = $config->getProviderConfig('alipay');
+        $alipayConfig->setAppPublicCertSn('serial_123');
+        $alipayConfig->setAlipayRootCertSn('root_serial_456');
+
+        self::assertSame('serial_123', $alipayConfig->toArray()['_app_public_cert_sn'] ?? null);
+        self::assertSame('root_serial_456', $alipayConfig->toArray()['_alipay_root_cert_sn'] ?? null);
+        self::assertArrayNotHasKey('appPublicCertSn', $alipayConfig->toArray());
+        self::assertArrayNotHasKey('alipayRootCertSn', $alipayConfig->toArray());
+    }
 }
