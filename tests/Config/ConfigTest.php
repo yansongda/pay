@@ -19,7 +19,7 @@ class ConfigTest extends TestCase
                 'default' => [
                     'app_id' => 'test_app_id',
                     'mch_id' => 'test_mch_id',
-                    'mch_secret_key' => '32ByteSecretKeyForTesting12345',
+                    'mch_secret_key' => '12345678901234567890123456789012',
                     'mch_secret_cert' => 'test_cert',
                     'mch_public_cert_path' => 'test_path',
                     'notify_url' => 'https://test.com',
@@ -46,6 +46,7 @@ class ConfigTest extends TestCase
             ],
         ]);
 
+        /** @var AlipayConfig $alipayConfig */
         $alipayConfig = $config->getProviderConfig('alipay');
         self::assertInstanceOf(AlipayConfig::class, $alipayConfig);
         self::assertSame('test_app_id', $alipayConfig->getAppId());
@@ -65,6 +66,7 @@ class ConfigTest extends TestCase
             ],
         ]);
 
+        /** @var AlipayConfig $alipayConfig */
         $alipayConfig = $config->getProviderConfig('alipay', 'tenant1');
         self::assertSame('tenant1_app_id', $alipayConfig->getAppId());
     }
@@ -105,7 +107,7 @@ class ConfigTest extends TestCase
         $existingConfig = new WechatConfig([
             'app_id' => 'existing_app_id',
             'mch_id' => 'existing_mch_id',
-            'mch_secret_key' => '32ByteSecretKeyForTesting12345',
+            'mch_secret_key' => '12345678901234567890123456789012',
             'mch_secret_cert' => 'existing_cert',
             'mch_public_cert_path' => 'existing_path',
             'notify_url' => 'https://existing.com',
