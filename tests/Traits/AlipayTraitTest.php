@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Traits;
 
-use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
@@ -50,11 +49,11 @@ class AlipayTraitTest extends TestCase
                 ],
             ]
         ];
-        Pay::config(array_merge($config1, ['_force' => true]));
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        AlipayTraitStub::verifyAlipaySign(AlipayTraitStub::getProviderConfig('alipay'), '', 'aaa');
+
+        Pay::config(array_merge($config1, ['_force' => true]));
     }
 
     public function testVerifyAlipaySignEmpty(): void

@@ -6,7 +6,6 @@ namespace Yansongda\Pay\Tests\Traits;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\ConfigInterface;
@@ -18,7 +17,6 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
-use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
@@ -84,11 +82,11 @@ class WechatTraitTest extends TestCase
                 ],
             ]
         ];
-        Pay::config(array_merge($config1, ['_force' => true]));
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        WechatTraitStub::getWechatSign([], '', '');
+
+        Pay::config(array_merge($config1, ['_force' => true]));
     }
 
     public function testGetWechatSignV2(): void

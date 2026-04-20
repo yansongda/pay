@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Contract\ConfigInterface;
+use Yansongda\Pay\Config\ProviderConfigInterface;
 use Yansongda\Pay\Pay as PayFacade;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\ProviderConfigTrait;
@@ -30,7 +31,7 @@ class ProviderConfigTraitTest extends TestCase
     public function testGetProviderConfigDefault(): void
     {
         self::assertSame(
-            PayFacade::get(ConfigInterface::class)->get('alipay', [])[ProviderConfigTraitStub::getTenant()]?->get() ?? [],
+            PayFacade::get(ConfigInterface::class)->get('alipay', [])[ProviderConfigTraitStub::getTenant()] ?? [],
             ProviderConfigTraitStub::getProviderConfig('alipay')
         );
     }
@@ -124,9 +125,38 @@ class ProviderConfigTraitTest extends TestCase
     public function testGetProviderConfigCustomTenant(): void
     {
         self::assertSame(
-            PayFacade::get(ConfigInterface::class)->get('wechat', [])['service_provider']?->get() ?? [],
+            PayFacade::get(ConfigInterface::class)->get('wechat', [])['service_provider'] ?? [],
             ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'service_provider'])
         );
+    }
+
+    public function testGetProviderConfigUsesExplicitArrayExportContract(): void
+    {
+        $config = new class implements ProviderConfigInterface {
+            public function getTenant(): string
+            {
+                return 'default';
+            }
+
+            public function getMode(): int
+            {
+                return PayFacade::MODE_NORMAL;
+            }
+
+            public function toArray(): array
+            {
+                return ['foo' => 'bar'];
+            }
+        };
+
+        PayFacade::config([
+            '_force' => true,
+            'custom' => [
+                'default' => $config,
+            ],
+        ]);
+
+        self::assertSame(['foo' => 'bar'], ProviderConfigTraitStub::getProviderConfig('custom'));
     }
 
     public function testGetRadarUrlNull(): void
