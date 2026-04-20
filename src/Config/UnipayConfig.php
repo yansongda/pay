@@ -7,100 +7,122 @@ namespace Yansongda\Pay\Config;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Supports\Config as BaseConfig;
 
-class UnipayConfig extends BaseConfig implements ProviderConfigInterface
+class UnipayConfig extends AbstractConfig
 {
-    private string $tenant;
+    private string $mch_cert_path = '';
+    private string $mch_cert_password = '';
+    private ?string $unipay_public_cert_path = null;
+    private ?string $mch_secret_key = null;
+    private ?string $notify_url = null;
+    private ?string $mch_id = null;
+    private ?string $return_url = null;
+    private array $certs = [];
+    private int $mode = Pay::MODE_NORMAL;
 
-    /**
-     * @throws InvalidConfigException
-     */
-    public function __construct(array $values, string $tenant = 'default')
+    public function setMchCertPath(string $value): void
     {
-        parent::__construct($values);
-
-        $this->tenant = $tenant;
-
-        $this->validateRequired();
+        $this->mch_cert_path = $value;
     }
 
-    public function getTenant(): string
+    public function setMchCertPassword(string $value): void
     {
-        return $this->tenant;
+        $this->mch_cert_password = $value;
+    }
+
+    public function setUnipayPublicCertPath(?string $value): void
+    {
+        $this->unipay_public_cert_path = $value;
+    }
+
+    public function setMchSecretKey(?string $value): void
+    {
+        $this->mch_secret_key = $value;
+    }
+
+    public function setNotifyUrl(?string $value): void
+    {
+        $this->notify_url = $value;
+    }
+
+    public function setMchId(?string $value): void
+    {
+        $this->mch_id = $value;
+    }
+
+    public function setReturnUrl(?string $value): void
+    {
+        $this->return_url = $value;
+    }
+
+    public function setCerts(array $value): void
+    {
+        $this->certs = $value;
+    }
+
+    public function setMode(int $value): void
+    {
+        $this->mode = $value;
     }
 
     public function getMchCertPath(): string
     {
-        return $this->get('mch_cert_path', '');
+        return $this->mch_cert_path;
     }
 
     public function getMchCertPassword(): string
     {
-        return $this->get('mch_cert_password', '');
+        return $this->mch_cert_password;
     }
 
     public function getUnipayPublicCertPath(): ?string
     {
-        return $this->get('unipay_public_cert_path');
+        return $this->unipay_public_cert_path;
     }
 
     public function getMchSecretKey(): ?string
     {
-        return $this->get('mch_secret_key');
+        return $this->mch_secret_key;
     }
 
     public function getNotifyUrl(): ?string
     {
-        return $this->get('notify_url');
+        return $this->notify_url;
     }
 
-    /**
-     * 商户号.
-     */
     public function getMchId(): ?string
     {
-        return $this->get('mch_id');
+        return $this->mch_id;
     }
 
-    /**
-     * 前台回调地址.
-     */
     public function getReturnUrl(): ?string
     {
-        return $this->get('return_url');
+        return $this->return_url;
     }
 
-    /**
-     * 证书配置数组.
-     *
-     * @return array<string, string>
-     */
     public function getCerts(): array
     {
-        return $this->get('certs', []);
+        return $this->certs;
     }
 
-    /**
-     * 默认返回 MODE_NORMAL.
-     */
     public function getMode(): int
     {
-        return $this->get('mode', Pay::MODE_NORMAL);
+        return $this->mode;
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
-    private function validateRequired(): void
+    protected function validateRequired(): void
     {
+        if (!empty($this->mch_secret_key)) {
+            return;
+        }
+
         $required = ['mch_cert_path', 'mch_cert_password'];
 
-        foreach ($required as $key) {
-            if (empty($this->get($key))) {
+        foreach ($required as $prop) {
+            if (empty($this->{$prop})) {
                 throw new InvalidConfigException(
                     Exception::CONFIG_UNIPAY_INVALID,
-                    "配置异常: 缺少银联配置 -- [{$key}]"
+                    "配置异常: 缺少银联配置 -- [{$prop}]"
                 );
             }
         }

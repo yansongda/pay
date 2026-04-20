@@ -7,82 +7,83 @@ namespace Yansongda\Pay\Config;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Supports\Config as BaseConfig;
 
-class StripeConfig extends BaseConfig implements ProviderConfigInterface
+class StripeConfig extends AbstractConfig
 {
-    private string $tenant;
+    private string $secret_key = '';
+    private ?string $webhook_secret = null;
+    private ?string $notify_url = null;
+    private ?string $success_url = null;
+    private ?string $cancel_url = null;
+    private int $mode = Pay::MODE_NORMAL;
 
-    /**
-     * @throws InvalidConfigException
-     */
-    public function __construct(array $values, string $tenant = 'default')
+    public function setSecretKey(string $value): void
     {
-        parent::__construct($values);
-
-        $this->tenant = $tenant;
-
-        $this->validateRequired();
+        $this->secret_key = $value;
     }
 
-    public function getTenant(): string
+    public function setWebhookSecret(?string $value): void
     {
-        return $this->tenant;
+        $this->webhook_secret = $value;
+    }
+
+    public function setNotifyUrl(?string $value): void
+    {
+        $this->notify_url = $value;
+    }
+
+    public function setSuccessUrl(?string $value): void
+    {
+        $this->success_url = $value;
+    }
+
+    public function setCancelUrl(?string $value): void
+    {
+        $this->cancel_url = $value;
+    }
+
+    public function setMode(int $value): void
+    {
+        $this->mode = $value;
     }
 
     public function getSecretKey(): string
     {
-        return $this->get('secret_key', '');
+        return $this->secret_key;
     }
 
     public function getWebhookSecret(): ?string
     {
-        return $this->get('webhook_secret');
+        return $this->webhook_secret;
     }
 
     public function getNotifyUrl(): ?string
     {
-        return $this->get('notify_url');
+        return $this->notify_url;
     }
 
-    /**
-     * 支付成功后的跳转地址.
-     */
     public function getSuccessUrl(): ?string
     {
-        return $this->get('success_url');
+        return $this->success_url;
     }
 
-    /**
-     * 支付取消后的跳转地址.
-     */
     public function getCancelUrl(): ?string
     {
-        return $this->get('cancel_url');
+        return $this->cancel_url;
     }
 
-    /**
-     * 默认返回 MODE_NORMAL.
-     */
     public function getMode(): int
     {
-        return $this->get('mode', Pay::MODE_NORMAL);
+        return $this->mode;
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
-    private function validateRequired(): void
+    protected function validateRequired(): void
     {
-        $required = ['secret_key'];
-
-        foreach ($required as $key) {
-            if (empty($this->get($key))) {
-                throw new InvalidConfigException(
-                    Exception::CONFIG_STRIPE_INVALID,
-                    "配置异常: 缺少 Stripe 配置 -- [{$key}]"
-                );
-            }
+        if (empty($this->secret_key)) {
+            throw new InvalidConfigException(
+                Exception::CONFIG_STRIPE_INVALID,
+                '配置异常: 缺少 Stripe 配置 -- [secret_key]'
+            );
         }
     }
 }
