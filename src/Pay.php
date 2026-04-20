@@ -116,6 +116,33 @@ class Pay
         return $result;
     }
 
+    /**
+     * @throws ContainerException
+     */
+    public static function set(string $name, mixed $value): void
+    {
+        Artful::set($name, $value);
+    }
+
+    /**
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     */
+    public static function get(string $service): mixed
+    {
+        return Artful::get($service);
+    }
+
+    public static function setContainer(Closure|ContainerInterface|null $container): void
+    {
+        Artful::setContainer($container);
+    }
+
+    public static function clear(): void
+    {
+        Artful::clear();
+    }
+
     private static function mergeConfig(array $config): array
     {
         if (!($config['_force'] ?? false) || !Artful::hasContainer()) {
@@ -163,32 +190,5 @@ class Pay
         }
 
         return $config;
-    }
-
-    /**
-     * @throws ContainerException
-     */
-    public static function set(string $name, mixed $value): void
-    {
-        Artful::set($name, $value);
-    }
-
-    /**
-     * @throws ContainerException
-     * @throws ServiceNotFoundException
-     */
-    public static function get(string $service): mixed
-    {
-        return Artful::get($service);
-    }
-
-    public static function setContainer(Closure|ContainerInterface|null $container): void
-    {
-        Artful::setContainer($container);
-    }
-
-    public static function clear(): void
-    {
-        Artful::clear();
     }
 }
