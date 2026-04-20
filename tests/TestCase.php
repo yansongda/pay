@@ -60,6 +60,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
                     'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
                     'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [
                         '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
                     ],
@@ -76,6 +77,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
                     'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
                     'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [
                         '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
                     ],
@@ -92,6 +94,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
                     'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
                     'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [
                         '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
                     ],
@@ -109,6 +112,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
                     'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
                     'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [
                         '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
                     ],
@@ -127,6 +131,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
                     'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
                     'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [],
                     'mode' => Pay::MODE_NORMAL,
                 ],
