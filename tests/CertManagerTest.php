@@ -101,4 +101,37 @@ class CertManagerTest extends TestCase
         Assert::assertFalse(CertManager::hasBySerial('wechat', 'default', 'serial-1'));
         Assert::assertNull(CertManager::getBySerial('wechat', 'default', 'serial-1'));
     }
+
+    public function testSetAllBySerialAndGetAllBySerial(): void
+    {
+        CertManager::setAllBySerial('wechat', 'default', [
+            'serial-1' => 'cert-1',
+            'serial-2' => 'cert-2',
+        ]);
+
+        Assert::assertSame([
+            'serial-1' => 'cert-1',
+            'serial-2' => 'cert-2',
+        ], CertManager::getAllBySerial('wechat', 'default'));
+    }
+
+    public function testClearBySerial(): void
+    {
+        CertManager::setBySerial('wechat', 'default', 'serial-1', 'cert-content');
+        CertManager::clearBySerial('wechat', 'default');
+
+        Assert::assertSame([], CertManager::getAllBySerial('wechat', 'default'));
+        Assert::assertFalse(CertManager::hasBySerial('wechat', 'default', 'serial-1'));
+    }
+
+    public function testClearAllBySerial(): void
+    {
+        CertManager::setBySerial('wechat', 'default', 'serial-1', 'cert-content');
+        CertManager::setBySerial('alipay', 'tenant-a', 'serial-2', 'cert-content-2');
+
+        CertManager::clearAllBySerial();
+
+        Assert::assertSame([], CertManager::getAllBySerial('wechat', 'default'));
+        Assert::assertSame([], CertManager::getAllBySerial('alipay', 'tenant-a'));
+    }
 }
