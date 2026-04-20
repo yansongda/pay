@@ -68,7 +68,7 @@ class UnfreezePlugin implements PluginInterface
     {
         return [
             'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
-            'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? null),
+            'notify_url' => $payload->get('notify_url', null),
         ];
     }
 }

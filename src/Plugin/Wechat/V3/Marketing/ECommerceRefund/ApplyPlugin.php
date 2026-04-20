@@ -50,7 +50,7 @@ class ApplyPlugin implements PluginInterface
             '_service_url' => 'v3/ecommerce/refunds/apply',
             'sub_mchid' => $subMchId,
             'sp_appid' => $spAppId,
-            'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? null),
+            'notify_url' => $payload->get('notify_url', null),
         ]);
 
         Logger::info('[Wechat][V3][Marketing][ECommerceRefund][ApplyPlugin] 插件装载完毕', ['rocket' => $rocket]);
