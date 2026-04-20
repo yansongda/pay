@@ -50,7 +50,7 @@ class PayPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/pay/transactions/jsapi',
                 '_service_url' => 'v3/pay/partner/transactions/jsapi',
-                'notify_url' => $payload->get('notify_url', Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL) ? '' : ($config['notify_url'] ?? '')),
+                'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
             ],
             $data ?? $this->normal($config, $params)
         ));
