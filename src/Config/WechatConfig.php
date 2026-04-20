@@ -179,6 +179,14 @@ class WechatConfig extends AbstractConfig
         return $this->mini_app_key_virtual_pay;
     }
 
+    /**
+     * @return array<string, string>
+     */
+    public function getWechatPublicCertPath(): array
+    {
+        return $this->wechat_public_cert_path;
+    }
+
     public function getMode(): int
     {
         return $this->mode;
@@ -265,7 +273,7 @@ class WechatConfig extends AbstractConfig
 
     protected function validateRequired(): void
     {
-        $required = ['mch_id', 'mch_secret_key', 'mch_secret_cert', 'mch_public_cert_path', 'notify_url'];
+        $required = ['mch_id', 'mch_secret_key', 'mch_secret_cert', 'mch_public_cert_path'];
 
         foreach ($required as $prop) {
             if (empty($this->{$prop})) {
