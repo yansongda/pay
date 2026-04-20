@@ -52,6 +52,7 @@ class CertManager
     public static function clearCache(): void
     {
         self::$cache = [];
+        self::$certs = [];
     }
 
     /**
