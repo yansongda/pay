@@ -13,6 +13,7 @@ use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Supports\Config as BaseConfig;
 
 class Config extends BaseConfig
@@ -21,13 +22,13 @@ class Config extends BaseConfig
      * Provider 配置类映射.
      */
     private const PROVIDER_CONFIG_MAP = [
-        'wechat' => WechatConfig::class,
-        'alipay' => AlipayConfig::class,
-        'unipay' => UnipayConfig::class,
-        'jsb' => JsbConfig::class,
-        'douyin' => DouyinConfig::class,
-        'paypal' => PaypalConfig::class,
-        'stripe' => StripeConfig::class,
+        Pay::PROVIDER_WECHAT => WechatConfig::class,
+        Pay::PROVIDER_ALIPAY => AlipayConfig::class,
+        Pay::PROVIDER_UNIPAY => UnipayConfig::class,
+        Pay::PROVIDER_JSB => JsbConfig::class,
+        Pay::PROVIDER_DOUYIN => DouyinConfig::class,
+        Pay::PROVIDER_PAYPAL => PaypalConfig::class,
+        Pay::PROVIDER_STRIPE => StripeConfig::class,
     ];
 
     public function __construct(array $items = [])
