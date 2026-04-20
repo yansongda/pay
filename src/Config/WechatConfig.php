@@ -207,7 +207,7 @@ class WechatConfig extends AbstractConfig
     }
 
     /**
-     * 合合配置文件 wechat_public_cert_path 和 CertManager 缓存.
+     * 合并配置文件 wechat_public_cert_path 和 CertManager 缓存.
      *
      * @return array<string, string>
      */
