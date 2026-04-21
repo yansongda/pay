@@ -7,6 +7,7 @@ namespace Yansongda\Pay;
 use Closure;
 use Psr\Container\ContainerInterface;
 use Yansongda\Artful\Artful;
+use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Event\ArtfulEnd;
 use Yansongda\Artful\Event\ArtfulStart;
 use Yansongda\Artful\Event\HttpEnd;
@@ -94,16 +95,29 @@ class Pay
     public static function config(array|Config $config = [], Closure|ContainerInterface|null $container = null): bool
     {
         // Early return check for array input (avoid validation for partial configs)
-        if (is_array($config) && Artful::hasContainer() && !($config['_force'] ?? false)) {
-            return false;
+        // Only return false if already configured (ConfigInterface bound) and not forced
+        if (is_array($config) && !($config['_force'] ?? false)) {
+            try {
+                if (Artful::has(ConfigInterface::class)) {
+                    return false;
+                }
+            } catch (ContainerException|ServiceNotFoundException) {
+                // Container not found or ConfigInterface not bound, proceed with config
+            }
         }
 
         $configObject = is_array($config) ? new Config($config) : $config;
         $runtimeConfig = $configObject->all();
 
         // For Config instance input, check force from runtime config
-        if (!is_array($config) && Artful::hasContainer() && !($runtimeConfig['_force'] ?? false)) {
-            return false;
+        if (!is_array($config) && !($runtimeConfig['_force'] ?? false)) {
+            try {
+                if (Artful::has(ConfigInterface::class)) {
+                    return false;
+                }
+            } catch (ContainerException|ServiceNotFoundException) {
+                // Container not found or ConfigInterface not bound, proceed with config
+            }
         }
 
         $result = Artful::config($runtimeConfig, $container);
