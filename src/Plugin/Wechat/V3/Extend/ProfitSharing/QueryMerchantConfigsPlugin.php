@@ -33,9 +33,8 @@ class QueryMerchantConfigsPlugin implements PluginInterface
         Logger::debug('[Wechat][Extend][ProfitSharing][QueryMerchantConfigsPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
-        $config = self::getProviderConfig('wechat', $rocket->getParams());
-
         /** @var WechatConfig $config */
+        $config = self::getProviderConfig('wechat', $rocket->getParams());
         $subMchId = $payload?->get('sub_mch_id') ?? ($config->getSubMchId() ?? 'null');
 
         if (Pay::MODE_NORMAL === $config->getMode()) {

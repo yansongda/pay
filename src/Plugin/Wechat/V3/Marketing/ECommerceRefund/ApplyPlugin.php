@@ -34,9 +34,8 @@ class ApplyPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = self::getProviderConfig('wechat', $params);
-
         /** @var WechatConfig $config */
+        $config = self::getProviderConfig('wechat', $params);
         $subMchId = $payload?->get('sub_mchid') ?? ($config->getSubMchId() ?? '');
         $spAppId = $payload?->get('sp_appid') ?? ($config->getMpAppId() ?? '');
 

@@ -57,8 +57,8 @@ class GetTitleUrlPlugin implements PluginInterface
      */
     protected function getQuery(Collection $payload, array $params): Collection
     {
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
-        /* @var WechatConfig $config */
 
         return filter_params($payload)->merge([
             'appid' => $payload->get('appid', match (self::getWechatTypeKey($params)) {

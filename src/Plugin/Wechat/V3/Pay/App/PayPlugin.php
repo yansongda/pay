@@ -36,8 +36,8 @@ class PayPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
-        /* @var WechatConfig $config */
 
         if (is_null($payload)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: APP下单，参数为空');

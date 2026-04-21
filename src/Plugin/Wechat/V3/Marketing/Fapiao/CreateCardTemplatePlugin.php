@@ -29,9 +29,8 @@ class CreateCardTemplatePlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Marketing][Fapiao][CreateCardTemplatePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = self::getProviderConfig('wechat', $params);
-
         /** @var WechatConfig $config */
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->mergePayload([

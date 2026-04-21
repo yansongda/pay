@@ -35,9 +35,8 @@ class RefundPlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Pay][H5][RefundPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
-        $config = self::getProviderConfig('wechat', $params);
-
         /** @var WechatConfig $config */
+        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {

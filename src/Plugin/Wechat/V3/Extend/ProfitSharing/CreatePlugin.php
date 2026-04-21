@@ -74,7 +74,7 @@ class CreatePlugin implements PluginInterface
     protected function normal(Collection $payload, array $params, WechatConfig $config): array
     {
         $data = [
-            'appid' => $config->getMpAppId() ?? '',
+            'appid' => self::getWechatAppIdByType($config, self::getWechatTypeKey($params)) ?? '',
         ];
 
         if (!$payload->has('receivers.0.name')) {

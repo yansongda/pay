@@ -34,9 +34,8 @@ class QueryReturnAdvancePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
-        $config = self::getProviderConfig('wechat', $params);
-
         /** @var WechatConfig $config */
+        $config = self::getProviderConfig('wechat', $params);
         $refundId = $payload?->get('refund_id') ?? null;
 
         if (Pay::MODE_NORMAL === $config->getMode()) {

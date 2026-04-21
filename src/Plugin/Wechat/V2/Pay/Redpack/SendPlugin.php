@@ -35,9 +35,9 @@ class SendPlugin implements PluginInterface
         Logger::debug('[Wechat][V2][Pay][Redpack][SendPlugin] 插件开始装载', ['rocket' => $rocket]);
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 
-        /** @var WechatConfig $config */
         if (Pay::MODE_SERVICE === $config->getMode()) {
             $data = $this->service($payload, $config, $params);
         }

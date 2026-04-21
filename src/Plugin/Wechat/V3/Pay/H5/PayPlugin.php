@@ -36,8 +36,8 @@ class PayPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
-        /* @var WechatConfig $config */
 
         if (is_null($payload)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: H5 下单，参数为空');
@@ -67,7 +67,7 @@ class PayPlugin implements PluginInterface
     protected function normal(array $params, WechatConfig $config): array
     {
         return [
-            'appid' => $config->getMpAppId() ?? '',
+            'appid' => self::getWechatAppIdByType($config, self::getWechatTypeKey($params)) ?? '',
             'mchid' => $config->getMchId(),
         ];
     }
