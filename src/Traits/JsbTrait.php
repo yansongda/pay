@@ -9,7 +9,6 @@ use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Supports\Collection;
 

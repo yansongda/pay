@@ -7,7 +7,6 @@ namespace Yansongda\Pay\Traits;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Supports\Collection;
 

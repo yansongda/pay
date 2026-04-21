@@ -3,18 +3,15 @@
 namespace Yansongda\Pay\Tests\Plugin\Jsb;
 
 use GuzzleHttp\Psr7\ServerRequest;
-use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Jsb\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
-use Yansongda\Supports\Config;
 
 class CallbackPluginTest extends TestCase
 {
@@ -127,7 +124,10 @@ class CallbackPluginTest extends TestCase
 	{
 		self::expectException(InvalidConfigException::class);
 		self::expectExceptionCode(Exception::CONFIG_JSB_INVALID);
-		Pay::set(ConfigInterface::class, new Config());
+		/** @var JsbConfig $config */
+		$config = CallbackPlugin::getProviderConfig('jsb');
+		self::assertInstanceOf(JsbConfig::class, $config);
+		$config->setJsbPublicCertPath('');
 		$payload = [
 			'partnerId'=> '6a13eab71c4f4b0aa4757eda6fc59710',
 			'orderStatus'=> '1',

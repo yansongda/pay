@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\PaypalConfig;
 use Yansongda\Pay\Traits\PaypalTrait;
 use Yansongda\Supports\Collection;
 
@@ -36,7 +37,7 @@ class AddRadarPlugin implements PluginInterface
 
         $rocket->setRadar(new Request(
             get_radar_method($payload),
-            self::getPaypalUrl($config, $payload),
+            self::getPaypalUrl($config instanceof PaypalConfig ? $config : $config->toArray(), $payload),
             $this->getHeaders($config, $payload),
             $this->getBody($payload),
         ));
@@ -46,7 +47,7 @@ class AddRadarPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function getHeaders(array $config, ?Collection $payload): array
+    protected function getHeaders(PaypalConfig $config, ?Collection $payload): array
     {
         $headers = [
             'User-Agent' => 'yansongda/pay-v3',
@@ -54,8 +55,8 @@ class AddRadarPlugin implements PluginInterface
         ];
 
         if ('basic' === $payload?->get('_auth_type')) {
-            $clientId = $config['client_id'] ?? '';
-            $appSecret = $config['app_secret'] ?? '';
+            $clientId = $config->getClientId();
+            $appSecret = $config->getAppSecret();
             $headers['Authorization'] = 'Basic '.base64_encode($clientId.':'.$appSecret);
             $headers['Content-Type'] = 'application/x-www-form-urlencoded';
         } else {

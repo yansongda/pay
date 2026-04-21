@@ -12,7 +12,6 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Stripe;
 use Yansongda\Supports\Collection;
 

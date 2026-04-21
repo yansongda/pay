@@ -27,22 +27,45 @@ class PaypalTraitStub
 
 class PaypalTraitTest extends TestCase
 {
+    private function getPaypalConfig(): PaypalConfig
+    {
+        $config = PaypalTraitStub::getProviderConfig('paypal', []);
+
+        self::assertInstanceOf(PaypalConfig::class, $config);
+
+        return $config;
+    }
+
     public function testGetPaypalUrl(): void
     {
-        self::assertEquals('https://yansongda.cn', PaypalTraitStub::getPaypalUrl([], new Collection(['_url' => 'https://yansongda.cn'])));
-        self::assertEquals('https://api-m.paypal.com/v2/checkout/orders', PaypalTraitStub::getPaypalUrl([], new Collection(['_url' => 'v2/checkout/orders'])));
-        self::assertEquals('https://api-m.sandbox.paypal.com/v2/checkout/orders', PaypalTraitStub::getPaypalUrl(['mode' => Pay::MODE_SANDBOX], new Collection(['_url' => 'v2/checkout/orders'])));
+        self::assertEquals('https://yansongda.cn', PaypalTraitStub::getPaypalUrl(new PaypalConfig([
+            'client_id' => 'paypal_client_id',
+            'app_secret' => 'paypal_app_secret',
+        ]), new Collection(['_url' => 'https://yansongda.cn'])));
+        self::assertEquals('https://api-m.paypal.com/v2/checkout/orders', PaypalTraitStub::getPaypalUrl(new PaypalConfig([
+            'client_id' => 'paypal_client_id',
+            'app_secret' => 'paypal_app_secret',
+        ]), new Collection(['_url' => 'v2/checkout/orders'])));
+        self::assertEquals('https://api-m.sandbox.paypal.com/v2/checkout/orders', PaypalTraitStub::getPaypalUrl(new PaypalConfig([
+            'client_id' => 'paypal_client_id',
+            'app_secret' => 'paypal_app_secret',
+            'mode' => Pay::MODE_SANDBOX,
+        ]), new Collection(['_url' => 'v2/checkout/orders'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_PAYPAL_URL_MISSING);
-        PaypalTraitStub::getPaypalUrl([], new Collection([]));
+        PaypalTraitStub::getPaypalUrl(new PaypalConfig([
+            'client_id' => 'paypal_client_id',
+            'app_secret' => 'paypal_app_secret',
+        ]), new Collection([]));
     }
 
     public function testGetPaypalAccessTokenCached(): void
     {
-        $paypalConfig = PaypalTraitStub::getProviderConfig('paypal', []);
-        $paypalConfig->set('access_token', 'cached_token_123');
-        $paypalConfig->set('access_token_expiry', time() + 3600);
+        $paypalConfig = $this->getPaypalConfig();
+
+        $paypalConfig->setAccessToken('cached_token_123');
+        $paypalConfig->setAccessTokenExpiry(time() + 3600);
 
         $token = PaypalTraitStub::getPaypalAccessToken([]);
 
@@ -51,10 +74,14 @@ class PaypalTraitTest extends TestCase
 
     public function testGetPaypalAccessTokenMissingConfig(): void
     {
+        $paypalConfig = $this->getPaypalConfig();
+        $paypalConfig->setClientId('');
+        $paypalConfig->setAppSecret('');
+
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_PAYPAL_INVALID);
 
-        PaypalTraitStub::getPaypalAccessToken(['_config' => 'empty_paypal']);
+        PaypalTraitStub::getPaypalAccessToken([]);
     }
 
     public function testGetPaypalAccessTokenFresh(): void
@@ -81,13 +108,15 @@ class PaypalTraitTest extends TestCase
         $paypalConfig = Pay::get(ConfigInterface::class)->get('paypal.default');
 
         self::assertInstanceOf(PaypalConfig::class, $paypalConfig);
-        self::assertEquals('new_paypal_token_456', $paypalConfig['access_token']);
-        self::assertNotEmpty($paypalConfig['access_token_expiry']);
+        self::assertEquals('new_paypal_token_456', $paypalConfig->getAccessToken());
+        self::assertNotEmpty($paypalConfig->getAccessTokenExpiry());
     }
 
     public function testVerifyPaypalWebhookSignMissingWebhookId(): void
     {
-        PaypalTraitStub::getProviderConfig('paypal', [])->set('webhook_id', '');
+        $paypalConfig = $this->getPaypalConfig();
+
+        $paypalConfig->setWebhookId('');
 
         $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
             'PAYPAL-TRANSMISSION-ID' => 'test-id',

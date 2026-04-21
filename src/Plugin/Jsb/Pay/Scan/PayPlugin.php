@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\JsbTrait;
 
@@ -31,8 +32,10 @@ class PayPlugin implements PluginInterface
         Logger::debug('[Jsb][Pay][Scan][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var JsbConfig $config */
         $config = self::getProviderConfig('jsb', $params);
-        $backUrl = $rocket->getPayload()['notify_url'] ?? $config['notify_url'] ?? null;
+        $backUrl = $rocket->getPayload()['notify_url'] ?? $config->getNotifyUrl();
 
         if (!$backUrl) {
             throw new InvalidConfigException(Exception::CONFIG_JSB_INVALID, '配置异常: 缺少配置参数 -- [notify_url]');

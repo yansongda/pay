@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
+use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Collection;
@@ -32,6 +33,8 @@ class AddPayloadSignPlugin implements PluginInterface
         Logger::info('[Jsb][AddPayloadSignPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var JsbConfig $config */
         $config = self::getProviderConfig('jsb', $params);
         $payload = $rocket->getPayload();
 
@@ -39,7 +42,7 @@ class AddPayloadSignPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少支付必要参数。可能插件用错顺序，应该先使用 `业务插件`');
         }
 
-        $privateCertPath = $config['mch_secret_cert_path'] ?? '';
+        $privateCertPath = $config->getMchSecretCertPath();
 
         if (empty($privateCertPath)) {
             throw new InvalidConfigException(Exception::CONFIG_JSB_INVALID, '配置异常: 缺少配置参数 --  [mch_secret_cert_path]');

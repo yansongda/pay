@@ -3,15 +3,13 @@
 namespace Yansongda\Pay\Tests\Plugin\Jsb;
 
 use GuzzleHttp\Psr7\Response;
-use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Jsb\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
-use Yansongda\Supports\Config;
 
 class VerifySignaturePluginTest extends TestCase
 {
@@ -74,7 +72,10 @@ class VerifySignaturePluginTest extends TestCase
 		$body = 'errCode=1&field1=&field2=&field3=&orderNo=20240617144526400259379&orderStatus=1&outTradeNo=YC202406170003&partnerId=6a13eab71c4f4b0aa4757eda6fc59710&payUrl=http://weixintest.jsbchina.cn/epcs/qr/login.htm?qrCode=2018060611052793473720240617144526688568&respBizDate=20240617&respCode=000000&respMsg=交易成功&totalFee=0.01&validTime=2&signType=RSA&sign=jN3Ha6J9UUIe9M0L/XeexEdaRL9GB6nMV12wNC7LQvTS6V4nKHj4Qzw6M8cNsA9L0Tb3QFT83B0qO3FJnruDrcHKqBLZb4FkoKKN/WiDBuA2UZQjG4+CBejoGJWfpkWSsei9tXUk36TB27lc2ZlYXSEwuuDwM7M9yvlYysc3fjg=';
 
 		$rocket = (new Rocket())->setDestinationOrigin(new Response(200, [], $body));
-		Pay::set(ConfigInterface::class, new Config());
+		/** @var JsbConfig $config */
+		$config = VerifySignaturePlugin::getProviderConfig('jsb');
+		self::assertInstanceOf(JsbConfig::class, $config);
+		$config->setJsbPublicCertPath('');
 		self::expectException(InvalidConfigException::class);
 		self::expectExceptionCode(Exception::CONFIG_JSB_INVALID);
 		self::expectExceptionMessage('配置异常: 缺少配置参数 -- [jsb_public_cert_path]');

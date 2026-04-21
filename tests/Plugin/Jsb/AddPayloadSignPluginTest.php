@@ -2,16 +2,14 @@
 
 namespace Yansongda\Pay\Tests\Plugin\Jsb;
 
-use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Jsb\AddPayloadSignPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
-use Yansongda\Supports\Config;
 
 class AddPayloadSignPluginTest extends TestCase
 {
@@ -53,7 +51,10 @@ class AddPayloadSignPluginTest extends TestCase
 		$rocket = new Rocket();
 		$rocket->setParams([])->setPayload(new Collection($payload));
 
-		Pay::set(ConfigInterface::class, new Config());
+		/** @var JsbConfig $config */
+		$config = AddPayloadSignPlugin::getProviderConfig('jsb');
+		self::assertInstanceOf(JsbConfig::class, $config);
+		$config->setMchSecretCertPath('');
 		self::expectException(InvalidConfigException::class);
 		self::expectExceptionCode(Exception::CONFIG_JSB_INVALID);
 		self::expectExceptionMessage('配置异常: 缺少配置参数 --  [mch_secret_cert_path]');

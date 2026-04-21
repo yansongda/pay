@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Traits\DouyinTrait;
@@ -52,13 +53,13 @@ class CallbackPlugin implements PluginInterface
      * @throws InvalidConfigException
      * @throws InvalidSignException
      */
-    protected function verifySign(array $config, array $contents, string $sign): void
+    protected function verifySign(DouyinConfig $config, array $contents, string $sign): void
     {
         if (empty($sign)) {
             throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 验证抖音签名失败-抖音签名为空', func_get_args());
         }
 
-        $contents['token'] = $config['mch_secret_token'] ?? null;
+        $contents['token'] = $config->getMchSecretToken();
 
         if (empty($contents['token'])) {
             throw new InvalidConfigException(Exception::CONFIG_DOUYIN_INVALID, '配置异常: 缺少抖音配置 -- [mch_secret_token]');

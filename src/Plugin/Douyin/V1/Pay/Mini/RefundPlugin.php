@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\ProviderConfigInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\DouyinTrait;
@@ -40,7 +41,7 @@ class RefundPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 抖音小程序退款订单，参数为空');
         }
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        if (Pay::MODE_SERVICE === $config->getMode()) {
             $data = $this->service($payload, $config);
         }
 
@@ -48,7 +49,7 @@ class RefundPlugin implements PluginInterface
             [
                 '_method' => 'POST',
                 '_url' => 'api/apps/ecpay/v1/create_refund',
-                'app_id' => $config['mini_app_id'] ?? '',
+                'app_id' => $config->get('mini_app_id', ''),
                 'notify_url' => $payload->get('notify_url') ?? $this->getNotifyUrl($config),
             ],
             $data ?? [],
@@ -59,15 +60,15 @@ class RefundPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function service(Collection $payload, array $config): array
+    protected function service(Collection $payload, ProviderConfigInterface $config): array
     {
         return [
-            'thirdparty_id' => $payload->get('thirdparty_id', $config['thirdparty_id'] ?? ''),
+            'thirdparty_id' => $payload->get('thirdparty_id', $config->get('thirdparty_id', '')),
         ];
     }
 
-    protected function getNotifyUrl(array $config): ?string
+    protected function getNotifyUrl(ProviderConfigInterface $config): ?string
     {
-        return empty($config['notify_url']) ? null : $config['notify_url'];
+        return $config->get('notify_url');
     }
 }

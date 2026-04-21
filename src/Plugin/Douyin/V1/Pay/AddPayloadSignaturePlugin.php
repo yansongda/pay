@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\DouyinTrait;
 use Yansongda\Supports\Collection;
@@ -43,9 +44,9 @@ class AddPayloadSignaturePlugin implements PluginInterface
     /**
      * @throws InvalidConfigException
      */
-    protected function getSign(array $config, Collection $payload): string
+    protected function getSign(DouyinConfig $config, Collection $payload): string
     {
-        $salt = $config['mch_secret_salt'] ?? null;
+        $salt = $config->getMchSecretSalt();
 
         if (empty($salt)) {
             throw new InvalidConfigException(Exception::CONFIG_DOUYIN_INVALID, '配置异常: 缺少抖音配置 -- [mch_secret_salt]');

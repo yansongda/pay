@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Traits\StripeTrait;
 
 /**
@@ -31,14 +32,16 @@ class WebPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
+
+        /** @var StripeConfig $config */
         $config = self::getProviderConfig('stripe', $params);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => 'v1/checkout/sessions',
             'mode' => $payload->get('mode', 'payment'),
-            'success_url' => $payload->get('success_url') ?? $config['success_url'] ?? null,
-            'cancel_url' => $payload->get('cancel_url') ?? $config['cancel_url'] ?? null,
+            'success_url' => $payload->get('success_url') ?? $config->getSuccessUrl(),
+            'cancel_url' => $payload->get('cancel_url') ?? $config->getCancelUrl(),
         ]);
 
         Logger::info('[Stripe][V1][Pay][WebPlugin] 插件装载完毕', ['rocket' => $rocket]);

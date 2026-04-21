@@ -34,6 +34,7 @@ class AddRadarPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
+
         /** @var StripeConfig $config */
         $config = self::getProviderConfig('stripe', $params);
 
