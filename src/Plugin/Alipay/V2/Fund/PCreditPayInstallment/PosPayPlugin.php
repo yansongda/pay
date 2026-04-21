@@ -10,14 +10,12 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Traits\SupportServiceProviderTrait;
 
 /**
  * @see https://opendocs.alipay.com/open/02np90?pathHash=d2a20943&ref=api&scene=32
  */
 class PosPayPlugin implements PluginInterface
 {
-    use SupportServiceProviderTrait;
 
     /**
      * @throws ContainerException

@@ -4,17 +4,41 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Traits;
 
+use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Supports\Collection;
 
 trait AlipayTrait
 {
     use ProviderConfigTrait;
+
+    /**
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     */
+    protected function loadAlipayServiceProvider(Rocket $rocket): void
+    {
+        $params = $rocket->getParams();
+        $config = self::getProviderConfig('alipay', $params);
+        $serviceProviderId = $config->getServiceProviderId();
+
+        if (Pay::MODE_SERVICE !== $config->getMode()
+            || empty($serviceProviderId)) {
+            return;
+        }
+
+        $rocket->mergeParams([
+            'extend_params' => array_merge($params['extend_params'] ?? [], ['sys_service_provider_id' => $serviceProviderId]),
+        ]);
+    }
 
     public static function verifyAlipaySign(AlipayConfig $config, string $contents, string $sign): void
     {
