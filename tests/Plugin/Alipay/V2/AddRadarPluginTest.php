@@ -28,7 +28,7 @@ class AddRadarPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('https://openapi.alipay.com/gateway.do?charset=utf-8', (string) $result->getRadar()->getUri());
-        self::stringContains('name=yansongda', (string) $result->getRadar()->getBody());
+        self::assertStringContainsString('name=yansongda', (string) $result->getRadar()->getBody());
         self::assertEquals('POST', $result->getRadar()->getMethod());
     }
 

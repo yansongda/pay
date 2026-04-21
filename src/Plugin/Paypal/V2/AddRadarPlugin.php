@@ -37,7 +37,7 @@ class AddRadarPlugin implements PluginInterface
 
         $rocket->setRadar(new Request(
             get_radar_method($payload),
-            self::getPaypalUrl($config instanceof PaypalConfig ? $config : $config->toArray(), $payload),
+            self::getPaypalUrl($config, $payload),
             $this->getHeaders($config, $payload),
             $this->getBody($payload),
         ));

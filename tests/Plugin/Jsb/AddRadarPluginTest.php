@@ -28,7 +28,7 @@ class AddRadarPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('https://epaytest.jsbchina.cn:9999/eis/merchant/merchantServices.htm', (string) $result->getRadar()->getUri());
-        self::stringContains('name=yansongda', (string) $result->getRadar()->getBody());
+        self::assertStringContainsString('name=yansongda', (string) $result->getRadar()->getBody());
         self::assertEquals('POST', $result->getRadar()->getMethod());
 
         // 是否存在Content-Type和User-Agent
