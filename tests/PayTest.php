@@ -6,7 +6,6 @@ use Hyperf\Pimple\ContainerFactory;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
-use Yansongda\Pay\Config;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
@@ -40,13 +39,13 @@ class PayTest extends TestCase
         self::assertInstanceOf(Jsb::class, Pay::get('jsb'));
         self::assertInstanceOf(Jsb::class, Pay::get(Jsb::class));
 
-        // force
-        $result1 = Pay::config(['name' => 'yansongda1', '_force' => true]);
-        self::assertTrue($result1);
-        self::assertEquals('yansongda1', Pay::get(ConfigInterface::class)->get('name'));
+        // Task 2: without force, calling config() again returns false and does not mutate
+        $result1 = Pay::config(['name' => 'yansongda1']);
+        self::assertFalse($result1);
+        self::assertEquals('yansongda', Pay::get(ConfigInterface::class)->get('name'));
     }
 
-    public function testConfigSkipsPartialProviderValidationWithoutForce(): void
+    public function testConfigReturnsFalseWithoutForceWhenContainerExists(): void
     {
         Pay::config([
             'wechat' => [
@@ -61,6 +60,7 @@ class PayTest extends TestCase
             ],
         ]);
 
+        // Task 2: Without force, config() returns false and does not mutate runtime config
         $result = Pay::config([
             'wechat' => [
                 'default' => [
@@ -70,18 +70,15 @@ class PayTest extends TestCase
         ]);
 
         $wechatConfig = Pay::get(ConfigInterface::class)->get('wechat.default');
-        $typedWechatConfig = Pay::get(Config::class)->getProviderConfig('wechat');
 
         self::assertFalse($result);
-        self::assertIsArray($wechatConfig);
-        self::assertSame('wx-original', $wechatConfig['mp_app_id']);
-        self::assertInstanceOf(WechatConfig::class, $typedWechatConfig);
-        self::assertSame('wx-original', $typedWechatConfig->getMpAppId());
-        self::assertSame('1600314069', $typedWechatConfig->getMchId());
-        self::assertSame('https://pay.yansongda.cn/original', $typedWechatConfig->getNotifyUrl());
+        self::assertInstanceOf(WechatConfig::class, $wechatConfig);
+        self::assertSame('wx-original', $wechatConfig->getMpAppId());
+        self::assertSame('1600314069', $wechatConfig->getMchId());
+        self::assertSame('https://pay.yansongda.cn/original', $wechatConfig->getNotifyUrl());
     }
 
-    public function testConfigMergesProviderPartialOverrideWithForce(): void
+    public function testConfigReplacesRuntimeConfigWithForce(): void
     {
         Pay::config([
             'wechat' => [
@@ -96,25 +93,27 @@ class PayTest extends TestCase
             ],
         ]);
 
+        // Task 2: With force, config() replaces runtime config based only on new payload
         $result = Pay::config([
             '_force' => true,
             'wechat' => [
                 'default' => [
                     'mp_app_id' => 'wx-updated',
+                    'mch_id' => '1600314069',
+                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
+                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
+                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
                 ],
             ],
         ]);
 
         $wechatConfig = Pay::get(ConfigInterface::class)->get('wechat.default');
-        $typedWechatConfig = Pay::get(Config::class)->getProviderConfig('wechat');
 
         self::assertTrue($result);
-        self::assertIsArray($wechatConfig);
-        self::assertSame('wx-updated', $wechatConfig['mp_app_id']);
-        self::assertInstanceOf(WechatConfig::class, $typedWechatConfig);
-        self::assertSame('wx-updated', $typedWechatConfig->getMpAppId());
-        self::assertSame('1600314069', $typedWechatConfig->getMchId());
-        self::assertSame('https://pay.yansongda.cn/original', $typedWechatConfig->getNotifyUrl());
+        self::assertInstanceOf(WechatConfig::class, $wechatConfig);
+        self::assertSame('wx-updated', $wechatConfig->getMpAppId());
+        // notify_url was not in the new payload, so it's empty string (default) not preserved from old
+        self::assertSame('', $wechatConfig->getNotifyUrl());
     }
 
     public function testDirectCallStatic()
@@ -147,5 +146,44 @@ class PayTest extends TestCase
         self::expectException(ServiceNotFoundException::class);
 
         Pay::foo1([]);
+    }
+
+    public function testConfigStoresTypedObjectsInRuntimeConfig(): void
+    {
+        Pay::config([
+            'wechat' => [
+                'default' => [
+                    'mch_id' => '1600314069',
+                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
+                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
+                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'notify_url' => 'https://pay.yansongda.cn/notify',
+                    'mp_app_id' => 'wx-test',
+                ],
+            ],
+            'logger' => [
+                'enable' => false,
+                'file' => './logs/wechat.log',
+                'level' => 'info',
+            ],
+            'http' => [
+                'timeout' => 5.0,
+                'connect_timeout' => 5.0,
+            ],
+        ]);
+
+        // Task 1 + Task 2: Provider tenant nodes are typed config objects accessible via ConfigInterface
+        $wechatConfig = Pay::get(ConfigInterface::class)->get('wechat.default');
+        self::assertInstanceOf(WechatConfig::class, $wechatConfig);
+        self::assertSame('wx-test', $wechatConfig->getMpAppId());
+
+        // Shared runtime config should remain as plain arrays
+        $loggerConfig = Pay::get(ConfigInterface::class)->get('logger');
+        $httpConfig = Pay::get(ConfigInterface::class)->get('http');
+
+        self::assertIsArray($loggerConfig);
+        self::assertIsArray($httpConfig);
+        self::assertSame('./logs/wechat.log', $loggerConfig['file']);
+        self::assertSame(5.0, $httpConfig['timeout']);
     }
 }
