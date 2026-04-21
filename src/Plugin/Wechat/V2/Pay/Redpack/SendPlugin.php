@@ -36,8 +36,9 @@ class SendPlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+        /** @var WechatConfig $config */
 
-        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_SERVICE === ($config->getMode())) {
             $data = $this->service($payload, $config, $params);
         }
 
@@ -48,8 +49,8 @@ class SendPlugin implements PluginInterface
                     '_content_type' => 'application/xml',
                     'nonce_str' => Str::random(32),
                     '_http' => [
-                        'ssl_key' => $config instanceof WechatConfig ? $config->getMchSecretCert() : $config['mch_secret_cert'],
-                        'cert' => $config instanceof WechatConfig ? $config->getMchPublicCertPath() : $config['mch_public_cert_path'],
+                        'ssl_key' => $config->getMchSecretCert(),
+                        'cert' => $config->getMchPublicCertPath(),
                     ],
                 ],
                 $data ?? $this->normal($config, $params)
@@ -60,41 +61,37 @@ class SendPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array|WechatConfig $config, array $params): array
+    protected function normal(WechatConfig $config, array $params): array
     {
         return [
             'wxappid' => $this->getAppId($config, self::getWechatTypeKey($params)),
-            'mch_id' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
+            'mch_id' => $config->getMchId(),
         ];
     }
 
-    protected function service(Collection $payload, array|WechatConfig $config, array $params): array
+    protected function service(Collection $payload, WechatConfig $config, array $params): array
     {
         $wechatTypeKey = self::getWechatTypeKey($params);
 
         return [
             'wxappid' => $this->getAppId($config, $wechatTypeKey),
-            'mch_id' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
-            'sub_mch_id' => $payload->get('sub_mch_id', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
+            'mch_id' => $config->getMchId(),
+            'sub_mch_id' => $payload->get('sub_mch_id', $config->getSubMchId() ?? ''),
             'msgappid' => $this->getSubAppId($config, $wechatTypeKey),
         ];
     }
 
-    protected function getAppId(array|WechatConfig $config, string $wechatTypeKey): string
+    protected function getAppId(WechatConfig $config, string $wechatTypeKey): string
     {
-        return $config instanceof WechatConfig ? match ($wechatTypeKey) {
+        return match ($wechatTypeKey) {
             'mini_app_id' => $config->getMiniAppId() ?? '',
             'app_id' => $config->getAppId() ?? '',
             default => $config->getMpAppId() ?? '',
-        } : ($config[$wechatTypeKey] ?? '');
+        };
     }
 
-    protected function getSubAppId(array|WechatConfig $config, string $wechatTypeKey): string
+    protected function getSubAppId(WechatConfig $config, string $wechatTypeKey): string
     {
-        return $config instanceof WechatConfig ? match ($wechatTypeKey) {
-            'mini_app_id' => $config->getSubMiniAppId() ?? '',
-            'app_id' => $config->getSubAppId() ?? '',
-            default => $config->getSubMpAppId() ?? '',
-        } : ($config['sub_'.$wechatTypeKey] ?? '');
+        return match ($wechatTypeKey) { 'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '', };
     }
 }

@@ -55,12 +55,12 @@ class QueryUserPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(Collection $payload, array $params, array|WechatConfig $config): string
+    protected function normal(Collection $payload, array $params, WechatConfig $config): string
     {
         $appId = $payload->get('appid');
 
         if (is_null($appId)) {
-            $payload->set('appid', $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''));
+            $payload->set('appid', $config->getMpAppId() ?? '');
         }
 
         return filter_params($payload)->except('openid')->query();

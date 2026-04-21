@@ -31,6 +31,7 @@ class SetPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+        /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
 
         $rocket->mergePayload(array_merge(
@@ -38,8 +39,8 @@ class SetPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/marketing/favor/callbacks',
                 '_service_url' => 'v3/marketing/favor/callbacks',
-                'mchid' => $payload?->get('mchid') ?? ($config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? '')),
-                'notify_url' => $payload?->get('notify_url') ?? ($config instanceof WechatConfig ? $config->getNotifyUrl() : ($config['notify_url'] ?? '')),
+                'mchid' => $payload?->get('mchid') ?? ($config->getMchId()),
+                'notify_url' => $payload?->get('notify_url') ?? ($config->getNotifyUrl()),
             ],
         ));
 

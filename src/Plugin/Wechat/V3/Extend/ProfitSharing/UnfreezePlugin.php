@@ -42,7 +42,7 @@ class UnfreezePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账解冻剩余资金参数');
         }
 
-        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_SERVICE === ($config->getMode())) {
             $data = $this->service($payload, $config);
         }
 

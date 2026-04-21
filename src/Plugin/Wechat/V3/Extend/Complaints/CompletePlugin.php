@@ -33,6 +33,7 @@ class CompletePlugin implements PluginInterface
         Logger::debug('[Wechat][Extend][Complaints][CompletePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $config = self::getProviderConfig('wechat', $rocket->getParams());
+        /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
         $complaintId = $payload?->get('complaint_id') ?? null;
 
@@ -44,7 +45,7 @@ class CompletePlugin implements PluginInterface
             '_method' => 'POST',
             '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/complete',
             '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/complete',
-            'complainted_mchid' => $payload->get('complainted_mchid') ?? ($config instanceof WechatConfig ? $config->getMchId() : $config['mch_id']),
+            'complainted_mchid' => $payload->get('complainted_mchid') ?? ($config->getMchId()),
         ]);
 
         Logger::info('[Wechat][Extend][Complaints][CompletePlugin] 插件装载完毕', ['rocket' => $rocket]);

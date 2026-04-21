@@ -34,10 +34,15 @@ class DetailPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+        /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
         $openId = $payload?->get('openid') ?? null;
         $couponId = $payload?->get('coupon_id') ?? null;
-        $appId = $payload?->get('appid') ?? ($config instanceof WechatConfig ? $config->getMpAppId() ?? 'null' : ($config[self::getWechatTypeKey($params)] ?? 'null'));
+        $appId = $payload?->get('appid') ?? match (self::getWechatTypeKey($params)) {
+            'mini_app_id' => $config->getMiniAppId() ?? 'null',
+            'app_id' => $config->getAppId() ?? 'null',
+            default => $config->getMpAppId() ?? 'null',
+        };
 
         if (empty($openId) || empty($couponId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询代金券详情，参数缺少 `openid` 或 `coupon_id`');

@@ -33,10 +33,11 @@ class QueryReturnPlugin implements PluginInterface
         Logger::debug('[Wechat][Extend][ProfitSharing][QueryReturnPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $config = self::getProviderConfig('wechat', $rocket->getParams());
+        /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
         $outOrderNo = $payload?->get('out_order_no') ?? null;
         $outReturnNo = $payload?->get('out_return_no') ?? null;
-        $subMchId = $payload?->get('sub_mchid') ?? ($config instanceof WechatConfig ? $config->getSubMchId() ?? 'null' : ($config['sub_mch_id'] ?? 'null'));
+        $subMchId = $payload?->get('sub_mchid') ?? ($config->getSubMchId() ?? 'null');
 
         if (empty($outOrderNo) || empty($outReturnNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询分账结果, 缺少必要参数 `out_order_no`, `out_return_no`');

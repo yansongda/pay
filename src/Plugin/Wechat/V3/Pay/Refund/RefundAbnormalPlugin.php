@@ -47,7 +47,7 @@ class RefundAbnormalPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 发起异常退款，参数缺少 `refund_id`');
         }
 
-        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_SERVICE === ($config->getMode())) {
             $data = $this->service($params, $config, $payload);
         }
 
@@ -72,7 +72,7 @@ class RefundAbnormalPlugin implements PluginInterface
      * @throws DecryptException
      * @throws InvalidConfigException
      */
-    protected function normal(array $params, array|WechatConfig $config, Collection $payload): array
+    protected function normal(array $params, WechatConfig $config, Collection $payload): array
     {
         return $this->encryptSensitiveData($params, $config, $payload);
     }
@@ -84,10 +84,10 @@ class RefundAbnormalPlugin implements PluginInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    protected function service(array $params, array|WechatConfig $config, Collection $payload): array
+    protected function service(array $params, WechatConfig $config, Collection $payload): array
     {
         $data = [
-            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
+            'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
         ];
 
         return array_merge($data, $this->encryptSensitiveData($params, $config, $payload));
@@ -100,7 +100,7 @@ class RefundAbnormalPlugin implements PluginInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    protected function encryptSensitiveData(array $params, array|WechatConfig $config, Collection $payload): array
+    protected function encryptSensitiveData(array $params, WechatConfig $config, Collection $payload): array
     {
         if ($payload->has('bank_account') && $payload->has('real_name')) {
             $data['_serial_no'] = self::getWechatSerialNo($params);

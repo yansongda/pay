@@ -34,9 +34,10 @@ class QueryMerchantConfigsPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
         $config = self::getProviderConfig('wechat', $rocket->getParams());
-        $subMchId = $payload?->get('sub_mch_id') ?? ($config instanceof WechatConfig ? $config->getSubMchId() ?? 'null' : ($config['sub_mch_id'] ?? 'null'));
+        /** @var WechatConfig $config */
+        $subMchId = $payload?->get('sub_mch_id') ?? ($config->getSubMchId() ?? 'null');
 
-        if (Pay::MODE_NORMAL === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_NORMAL === ($config->getMode())) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE, '参数异常: 查询最大分账比例，只支持服务商模式，当前配置为普通商户模式');
         }
 

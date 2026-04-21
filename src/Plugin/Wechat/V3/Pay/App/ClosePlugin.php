@@ -44,7 +44,7 @@ class ClosePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: App 关闭订单，参数缺少 `out_trade_no`');
         }
 
-        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_SERVICE === ($config->getMode())) {
             $data = $this->service($payload, $config);
         }
 
@@ -63,18 +63,18 @@ class ClosePlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array|WechatConfig $config): array
+    protected function normal(WechatConfig $config): array
     {
         return [
-            'mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
+            'mchid' => $config->getMchId(),
         ];
     }
 
-    protected function service(Collection $payload, array|WechatConfig $config): array
+    protected function service(Collection $payload, WechatConfig $config): array
     {
         return [
-            'sp_mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
-            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
+            'sp_mchid' => $config->getMchId(),
+            'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
         ];
     }
 }

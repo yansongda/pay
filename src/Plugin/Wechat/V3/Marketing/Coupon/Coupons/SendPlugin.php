@@ -56,14 +56,14 @@ class SendPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(Collection $payload, array $params, array|WechatConfig $config): array
+    protected function normal(Collection $payload, array $params, WechatConfig $config): array
     {
         if (empty($payload->get('appid'))) {
-            $payload->set('appid', $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''));
+            $payload->set('appid', $config->getMpAppId() ?? '');
         }
 
         if (empty($payload->get('stock_creator_mchid'))) {
-            $payload->set('stock_creator_mchid', $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''));
+            $payload->set('stock_creator_mchid', $config->getMchId());
         }
 
         return $payload->except('openid')->all();

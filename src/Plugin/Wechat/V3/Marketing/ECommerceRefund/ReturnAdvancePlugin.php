@@ -35,9 +35,10 @@ class ReturnAdvancePlugin implements PluginInterface
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
         $config = self::getProviderConfig('wechat', $params);
+        /** @var WechatConfig $config */
         $refundId = $payload?->get('refund_id') ?? null;
 
-        if (Pay::MODE_NORMAL === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_NORMAL === ($config->getMode())) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE, '参数异常: 平台收付通（退款）-垫付退款回补，只支持服务商模式，当前配置为普通商户模式');
         }
 
@@ -48,7 +49,7 @@ class ReturnAdvancePlugin implements PluginInterface
         $rocket->setPayload([
             '_method' => 'POST',
             '_service_url' => 'v3/ecommerce/refunds/'.$refundId.'/return-advance',
-            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
+            'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
         ]);
 
         Logger::info('[Wechat][V3][Marketing][ECommerceRefund][ReturnAdvancePlugin] 插件装载完毕', ['rocket' => $rocket]);

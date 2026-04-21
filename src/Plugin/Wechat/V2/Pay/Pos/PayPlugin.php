@@ -34,17 +34,14 @@ class PayPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+        /** @var WechatConfig $config */
 
         $rocket->setPacker(XmlPacker::class)
             ->mergePayload([
                 '_url' => 'pay/micropay',
                 '_content_type' => 'application/xml',
-                'appid' => $config instanceof WechatConfig ? match (self::getWechatTypeKey($params)) {
-                    'mini_app_id' => $config->getMiniAppId() ?? '',
-                    'app_id' => $config->getAppId() ?? '',
-                    default => $config->getMpAppId() ?? '',
-                } : ($config[self::getWechatTypeKey($params)] ?? ''),
-                'mch_id' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
+                'appid' => match (self::getWechatTypeKey($params)) { 'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '', },
+                'mch_id' => $config->getMchId(),
                 'nonce_str' => Str::random(32),
                 'sign_type' => 'MD5',
             ]);

@@ -53,18 +53,18 @@ class QueryByWxPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array|WechatConfig $config): string
+    protected function normal(WechatConfig $config): string
     {
         return http_build_query([
-            'mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? 'null'),
+            'mchid' => $config->getMchId(),
         ]);
     }
 
-    protected function service(Collection $payload, array|WechatConfig $config): string
+    protected function service(Collection $payload, WechatConfig $config): string
     {
         return http_build_query([
-            'sp_mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? 'null'),
-            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? 'null' : ($config['sub_mch_id'] ?? 'null')),
+            'sp_mchid' => $config->getMchId(),
+            'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? 'null'),
         ]);
     }
 }

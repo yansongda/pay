@@ -55,12 +55,12 @@ class QueryMerchantsPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    public function normal(Collection $payload, array|WechatConfig $config): string
+    public function normal(Collection $payload, WechatConfig $config): string
     {
         $stockCreatorMchId = $payload->get('stock_creator_mchid');
 
         if (is_null($stockCreatorMchId)) {
-            $payload->set('stock_creator_mchid', $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''));
+            $payload->set('stock_creator_mchid', $config->getMchId());
         }
 
         return filter_params($payload)->except('stock_id')->query();

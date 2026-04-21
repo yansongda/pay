@@ -36,13 +36,14 @@ class RefundPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+        /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: H5 退款申请，参数为空');
         }
 
-        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : $config['mode'])) {
+        if (Pay::MODE_SERVICE === ($config->getMode())) {
             $data = $this->service($payload, $config);
         }
 
@@ -53,7 +54,7 @@ class RefundPlugin implements PluginInterface
                 '_service_url' => 'v3/refund/domestic/refunds',
                 'notify_url' => $payload->has('notify_url')
                     ? $payload->get('notify_url')
-                    : (($config instanceof WechatConfig && Pay::MODE_SERVICE === $config->getMode()) ? null : ($config instanceof WechatConfig ? $config->getNotifyUrl() : ($config['notify_url'] ?? null))),
+                    : (Pay::MODE_SERVICE === $config->getMode() ? null : $config->getNotifyUrl()),
             ],
             $data ?? $this->normal()
         ));
@@ -68,10 +69,10 @@ class RefundPlugin implements PluginInterface
         return [];
     }
 
-    protected function service(Collection $payload, array|WechatConfig $config): array
+    protected function service(Collection $payload, WechatConfig $config): array
     {
         return [
-            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
+            'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
         ];
     }
 }

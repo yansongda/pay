@@ -42,7 +42,7 @@ class DeleteReceiverPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账参数');
         }
 
-        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_SERVICE === ($config->getMode())) {
             $data = $this->service($payload, $params, $config);
         }
 
@@ -60,24 +60,24 @@ class DeleteReceiverPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array $params, array|WechatConfig $config): array
+    protected function normal(array $params, WechatConfig $config): array
     {
         return [
-            'appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''),
+            'appid' => $config->getMpAppId() ?? '',
         ];
     }
 
-    protected function service(Collection $payload, array $params, array|WechatConfig $config): array
+    protected function service(Collection $payload, array $params, WechatConfig $config): array
     {
         $wechatTypeKEY = self::getWechatTypeKey($params);
 
         $data = [
-            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
-            'appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[$wechatTypeKEY] ?? ''),
+            'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
+            'appid' => match ($wechatTypeKEY) { 'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '', },
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = $config instanceof WechatConfig ? $config->getSubMpAppId() ?? '' : ($config['sub_'.$wechatTypeKEY] ?? '');
+            $data['sub_appid'] = match ($wechatTypeKEY) { 'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '', };
         }
 
         return $data;

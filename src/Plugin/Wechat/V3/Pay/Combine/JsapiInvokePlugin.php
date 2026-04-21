@@ -67,7 +67,7 @@ class JsapiInvokePlugin implements PluginInterface
      * @throws InvalidConfigException
      * @throws Throwable              生成随机串失败
      */
-    protected function getInvokeConfig(?Collection $payload, array $params, array|WechatConfig $config, string $prepayId): Config
+    protected function getInvokeConfig(?Collection $payload, array $params, WechatConfig $config, string $prepayId): Config
     {
         $invokeConfig = new Config([
             'appId' => $this->getAppId($payload, $config, $params),
@@ -85,7 +85,7 @@ class JsapiInvokePlugin implements PluginInterface
     /**
      * @throws InvalidConfigException
      */
-    protected function getSign(Collection $invokeConfig, array|WechatConfig $config): string
+    protected function getSign(Collection $invokeConfig, WechatConfig $config): string
     {
         $contents = $invokeConfig->get('appId', '')."\n"
             .$invokeConfig->get('timeStamp', '')."\n"
@@ -95,12 +95,12 @@ class JsapiInvokePlugin implements PluginInterface
         return self::getWechatSign($config, $contents);
     }
 
-    protected function getAppId(?Collection $payload, array|WechatConfig $config, array $params): string
+    protected function getAppId(?Collection $payload, WechatConfig $config, array $params): string
     {
-        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
-            return $payload?->get('_invoke_appid') ?? ($config instanceof WechatConfig ? $config->getSubMpAppId() ?? '' : ($config['sub_'.self::getWechatTypeKey($params)] ?? ''));
+        if (Pay::MODE_SERVICE === ($config->getMode())) {
+            return $payload?->get('_invoke_appid') ?? ($config->getSubMpAppId() ?? '');
         }
 
-        return $payload?->get('_invoke_appid') ?? ($config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''));
+        return $payload?->get('_invoke_appid') ?? ($config->getMpAppId() ?? '');
     }
 }

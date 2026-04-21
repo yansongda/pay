@@ -67,7 +67,7 @@ class InvokePlugin implements PluginInterface
      * @throws InvalidConfigException
      * @throws Throwable              生成随机串失败
      */
-    protected function getInvokeConfig(?Collection $payload, array $params, array|WechatConfig $config, string $prepayId): Config
+    protected function getInvokeConfig(?Collection $payload, array $params, WechatConfig $config, string $prepayId): Config
     {
         $invokeConfig = new Config([
             'appId' => $this->getAppId($payload, $config, $params),
@@ -85,7 +85,7 @@ class InvokePlugin implements PluginInterface
     /**
      * @throws InvalidConfigException
      */
-    protected function getSign(Collection $invokeConfig, array|WechatConfig $config): string
+    protected function getSign(Collection $invokeConfig, WechatConfig $config): string
     {
         $contents = $invokeConfig->get('appId', '')."\n"
             .$invokeConfig->get('timeStamp', '')."\n"
@@ -95,30 +95,22 @@ class InvokePlugin implements PluginInterface
         return self::getWechatSign($config, $contents);
     }
 
-    protected function getAppId(?Collection $payload, array|WechatConfig $config, array $params): string
+    protected function getAppId(?Collection $payload, WechatConfig $config, array $params): string
     {
-        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_SERVICE === ($config->getMode())) {
             return $payload?->get('_invoke_appid') ?? $this->getSubAppId($config, self::getWechatTypeKey($params));
         }
 
         return $payload?->get('_invoke_appid') ?? $this->getAppIdByType($config, self::getWechatTypeKey($params));
     }
 
-    protected function getAppIdByType(array|WechatConfig $config, string $wechatTypeKey): string
+    protected function getAppIdByType(WechatConfig $config, string $wechatTypeKey): string
     {
-        return $config instanceof WechatConfig ? match ($wechatTypeKey) {
-            'mini_app_id' => $config->getMiniAppId() ?? '',
-            'app_id' => $config->getAppId() ?? '',
-            default => $config->getMpAppId() ?? '',
-        } : ($config[$wechatTypeKey] ?? '');
+        return match ($wechatTypeKey) { 'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '', };
     }
 
-    protected function getSubAppId(array|WechatConfig $config, string $wechatTypeKey): string
+    protected function getSubAppId(WechatConfig $config, string $wechatTypeKey): string
     {
-        return $config instanceof WechatConfig ? match ($wechatTypeKey) {
-            'mini_app_id' => $config->getSubMiniAppId() ?? '',
-            'app_id' => $config->getSubAppId() ?? '',
-            default => $config->getSubMpAppId() ?? '',
-        } : ($config['sub_'.$wechatTypeKey] ?? '');
+        return match ($wechatTypeKey) { 'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '', };
     }
 }

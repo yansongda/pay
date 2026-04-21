@@ -35,10 +35,11 @@ class ApplyPlugin implements PluginInterface
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
         $config = self::getProviderConfig('wechat', $params);
-        $subMchId = $payload?->get('sub_mchid') ?? ($config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? ''));
-        $spAppId = $payload?->get('sp_appid') ?? ($config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''));
+        /** @var WechatConfig $config */
+        $subMchId = $payload?->get('sub_mchid') ?? ($config->getSubMchId() ?? '');
+        $spAppId = $payload?->get('sp_appid') ?? ($config->getMpAppId() ?? '');
 
-        if (Pay::MODE_NORMAL === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_NORMAL === ($config->getMode())) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE, '参数异常: 平台收付通（退款）-申请退款，只支持服务商模式，当前配置为普通商户模式');
         }
 
@@ -51,7 +52,7 @@ class ApplyPlugin implements PluginInterface
             '_service_url' => 'v3/ecommerce/refunds/apply',
             'sub_mchid' => $subMchId,
             'sp_appid' => $spAppId,
-            'notify_url' => $payload->get('notify_url') ?? ($config instanceof WechatConfig ? $config->getNotifyUrl() : null),
+            'notify_url' => $payload->get('notify_url') ?? ($config->getNotifyUrl()),
         ]);
 
         Logger::info('[Wechat][V3][Marketing][ECommerceRefund][ApplyPlugin] 插件装载完毕', ['rocket' => $rocket]);

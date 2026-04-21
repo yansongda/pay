@@ -47,7 +47,7 @@ class ClosePlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
                 '_service_url' => 'v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
-                'combine_appid' => $payload->get('combine_appid', $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? '')),
+                'combine_appid' => $payload->get('combine_appid', $config->getMpAppId() ?? ''),
             ])
             ->exceptPayload('combine_out_trade_no');
 

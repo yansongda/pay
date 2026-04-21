@@ -56,7 +56,7 @@ class CreatePlugin implements PluginInterface
      * @throws ServiceNotFoundException
      * @throws DecryptException
      */
-    protected function encryptSensitiveData(?Collection $payload, array $params, array|WechatConfig $config): array
+    protected function encryptSensitiveData(?Collection $payload, array $params, WechatConfig $config): array
     {
         $data['_serial_no'] = self::getWechatSerialNo($params);
         $publicKey = self::getWechatPublicKey($config, $data['_serial_no']);

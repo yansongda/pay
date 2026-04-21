@@ -36,7 +36,7 @@ class PausePlugin implements PluginInterface
         $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
         $stockId = $payload?->get('stock_id') ?? null;
-        $stockCreatorMchId = $payload?->get('stock_creator_mchid') ?? ($config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''));
+        $stockCreatorMchId = $payload?->get('stock_creator_mchid') ?? ($config->getMchId());
 
         if (empty($stockId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 暂停代金券批次，参数缺少 `stock_id`');

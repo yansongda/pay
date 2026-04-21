@@ -34,20 +34,21 @@ class ContractOrderPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+        /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
 
         $rocket->setPacker(XmlPacker::class)
             ->mergePayload([
                 '_url' => 'pay/contractorder',
                 '_content_type' => 'application/xml',
-                'appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''),
-                'mch_id' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
-                'contract_appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''),
-                'contract_mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
+                'appid' => $config->getMpAppId() ?? '',
+                'mch_id' => $config->getMchId(),
+                'contract_appid' => $config->getMpAppId() ?? '',
+                'contract_mchid' => $config->getMchId(),
                 'nonce_str' => Str::random(32),
                 'sign_type' => 'MD5',
-                'notify_url' => $payload?->get('notify_url') ?? ($config instanceof WechatConfig ? $config->getNotifyUrl() : ($config['notify_url'] ?? '')),
-                'contract_notify_url' => $payload?->get('contract_notify_url') ?? ($config instanceof WechatConfig ? $config->getNotifyUrl() : ($config['notify_url'] ?? '')),
+                'notify_url' => $payload?->get('notify_url') ?? ($config->getNotifyUrl()),
+                'contract_notify_url' => $payload?->get('contract_notify_url') ?? ($config->getNotifyUrl()),
             ]);
 
         Logger::info('[Wechat][V2][Papay][Direct][ContractOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);

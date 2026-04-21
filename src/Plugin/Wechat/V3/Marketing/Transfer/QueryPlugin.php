@@ -36,7 +36,7 @@ class QueryPlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $outBillNo = $payload?->get('out_bill_no') ?? null;
 
-        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_SERVICE === ($config->getMode())) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 通过商户单号查询转账单，只支持普通商户模式，当前配置为服务商模式');
         }
 

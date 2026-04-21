@@ -35,7 +35,7 @@ class QueryPlugin implements PluginInterface
         $config = self::getProviderConfig('wechat', $rocket->getParams());
         $accountType = $rocket->getPayload()?->get('account_type') ?? null;
 
-        if (Pay::MODE_NORMAL === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+        if (Pay::MODE_NORMAL === ($config->getMode())) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE, '参数异常: 查询电商平台账户实时余额，只支持服务商模式，当前配置为普通商户模式');
         }
 

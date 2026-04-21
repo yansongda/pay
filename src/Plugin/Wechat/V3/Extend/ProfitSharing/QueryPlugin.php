@@ -33,10 +33,11 @@ class QueryPlugin implements PluginInterface
         Logger::debug('[Wechat][Extend][ProfitSharing][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $config = self::getProviderConfig('wechat', $rocket->getParams());
+        /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
         $outOrderNo = $payload?->get('out_order_no') ?? null;
         $transactionId = $payload?->get('transaction_id') ?? null;
-        $subMchId = $payload?->get('sub_mchid') ?? ($config instanceof WechatConfig ? $config->getSubMchId() ?? 'null' : ($config['sub_mch_id'] ?? 'null'));
+        $subMchId = $payload?->get('sub_mchid') ?? ($config->getSubMchId() ?? 'null');
 
         if (empty($outOrderNo) || empty($transactionId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询分账结果, 缺少必要参数 `out_order_no`, `transaction_id`');

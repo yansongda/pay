@@ -140,10 +140,6 @@ trait WechatTrait
         $body = (string) $message->getBody();
         $wechatConfig = self::getProviderConfig('wechat', $params);
 
-        if (!$wechatConfig instanceof WechatConfig) {
-            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 微信配置类型错误');
-        }
-
         $content = $timestamp."\n".$random."\n".$body."\n";
         $public = $wechatConfig->getPublicKeyBySerial($wechatSerial);
 
@@ -226,15 +222,11 @@ trait WechatTrait
 
         $wechatConfig = self::getProviderConfig('wechat', $params);
 
-        if (!$wechatConfig instanceof WechatConfig) {
-            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 微信配置类型错误');
-        }
-
         foreach ($data as $item) {
             $certs[$item['serial_no']] = self::decryptWechatResource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
         }
 
-        $wechatConfig->set('wechat_public_cert_path', $wechatConfig->getWechatPublicCertPath() + ($certs ?? []));
+        $wechatConfig->setWechatPublicCertPath($wechatConfig->getWechatPublicCertPath() + ($certs ?? []));
 
         if (!is_null($serialNo) && empty($certs[$serialNo])) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 获取微信 wechat_public_cert_path 配置失败');
@@ -255,10 +247,6 @@ trait WechatTrait
         self::reloadWechatPublicCerts($params);
 
         $config = self::getProviderConfig('wechat', $params);
-
-        if (!$config instanceof WechatConfig) {
-            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 微信配置类型错误');
-        }
 
         if (empty($path)) {
             var_dump($config->getWechatPublicCertPath());
@@ -341,19 +329,12 @@ trait WechatTrait
 
         $config = self::getProviderConfig('wechat', $params);
 
-        if (!$config instanceof WechatConfig) {
-            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 微信配置类型错误');
-        }
         $certs = $config->getWechatPublicCertPath();
 
         if (empty($certs)) {
             self::reloadWechatPublicCerts($params);
 
             $config = self::getProviderConfig('wechat', $params);
-
-            if (!$config instanceof WechatConfig) {
-                throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 微信配置类型错误');
-            }
 
             $certs = $config->getWechatPublicCertPath();
         }

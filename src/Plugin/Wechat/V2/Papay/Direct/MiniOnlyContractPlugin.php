@@ -31,13 +31,14 @@ class MiniOnlyContractPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+        /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
 
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->mergePayload([
-                'appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''),
-                'mch_id' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
-                'notify_url' => $payload?->get('notify_url') ?? ($config instanceof WechatConfig ? $config->getNotifyUrl() : ($config['notify_url'] ?? '')),
+                'appid' => $config->getMpAppId() ?? '',
+                'mch_id' => $config->getMchId(),
+                'notify_url' => $payload?->get('notify_url') ?? ($config->getNotifyUrl()),
                 'timestamp' => time(),
             ]);
 
