@@ -12,6 +12,7 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -64,7 +65,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
         self::expectExceptionMessage('配置异常： 缺少银联配置 -- [unipay_public_cert_path]');
         Artful::get(ConfigInterface::class)->set('unipay.default.unipay_public_cert_path', null);
-        UnipayTraitStub::verifyUnipaySign([], $contents, $sign);
+        UnipayTraitStub::verifyUnipaySign(new UnipayConfig(['mch_secret_key' => 'foo']), $contents, $sign);
     }
 
     public function testVerifyUnipaySignEmpty(): void
@@ -72,19 +73,21 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
         self::expectExceptionMessage('签名异常: 银联签名为空');
-        UnipayTraitStub::verifyUnipaySign([], '', '');
+        UnipayTraitStub::verifyUnipaySign(new UnipayConfig(['mch_secret_key' => 'foo']), '', '');
     }
 
     public function testGetUnipayUrl(): void
     {
-        self::assertEquals('https://yansongda.cn', UnipayTraitStub::getUnipayUrl([], new Collection(['_url' => 'https://yansongda.cn'])));
-        self::assertEquals('https://gateway.95516.com/api/v1/yansongda', UnipayTraitStub::getUnipayUrl([], new Collection(['_url' => 'api/v1/yansongda'])));
-        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(['mode' => Pay::MODE_SERVICE], new Collection(['_service_url' => 'api/v1/service/yansongda'])));
-        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
+        $config = new UnipayConfig(['mch_secret_key' => 'foo']);
+
+        self::assertEquals('https://yansongda.cn', UnipayTraitStub::getUnipayUrl($config, new Collection(['_url' => 'https://yansongda.cn'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/yansongda', UnipayTraitStub::getUnipayUrl($config, new Collection(['_url' => 'api/v1/yansongda'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => Pay::MODE_SERVICE]), new Collection(['_service_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => Pay::MODE_SERVICE]), new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_UNIPAY_URL_MISSING);
-        UnipayTraitStub::getUnipayUrl([], new Collection([]));
+        UnipayTraitStub::getUnipayUrl($config, new Collection([]));
     }
 
     public function testGetUnipayBody(): void
@@ -98,6 +101,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
     public function testGetUnipaySignQra(): void
     {
+        /** @var UnipayConfig $config */
         $config = UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']);
 
         $payload = [
@@ -122,7 +126,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
-        UnipayTraitStub::getUnipaySignQra([], $payload);
+        UnipayTraitStub::getUnipaySignQra(new UnipayConfig(['mch_cert_path' => 'foo', 'mch_cert_password' => 'bar']), $payload);
     }
 
     public function testVerifyUnipaySignQra(): void
@@ -143,12 +147,15 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
             "version" => "2.0",
         ];
 
-        UnipayTraitStub::verifyUnipaySignQra(UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']), $payload);
+        /** @var UnipayConfig $config */
+        $config = UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']);
+
+        UnipayTraitStub::verifyUnipaySignQra($config, $payload);
         self::assertTrue(true);
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
-        UnipayTraitStub::getUnipaySignQra([], $payload);
+        UnipayTraitStub::verifyUnipaySignQra(new UnipayConfig(['mch_cert_path' => 'foo', 'mch_cert_password' => 'bar']), $payload);
     }
 
     public function testVerifyUnipaySignQraWrong(): void
@@ -172,7 +179,10 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
-        UnipayTraitStub::verifyUnipaySignQra(UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']), $payload);
+        /** @var UnipayConfig $config */
+        $config = UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']);
+
+        UnipayTraitStub::verifyUnipaySignQra($config, $payload);
     }
 
     public function testVerifyUnipaySignQraEmpty(): void
@@ -195,6 +205,9 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);
 
-        UnipayTraitStub::verifyUnipaySignQra(UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']), $payload);
+        /** @var UnipayConfig $config */
+        $config = UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']);
+
+        UnipayTraitStub::verifyUnipaySignQra($config, $payload);
     }
 }

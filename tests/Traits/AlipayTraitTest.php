@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\AlipayTrait;
 use Yansongda\Supports\Collection;
@@ -19,6 +21,18 @@ class AlipayTraitStub
 
 class AlipayTraitTest extends TestCase
 {
+    protected function getAlipayConfig(int $mode = Pay::MODE_NORMAL): AlipayConfig
+    {
+        return new AlipayConfig([
+            'app_id' => 'app_id',
+            'app_secret_cert' => 'app_secret_cert',
+            'app_public_cert_path' => 'app_public_cert_path',
+            'alipay_public_cert_path' => 'alipay_public_cert_path',
+            'alipay_root_cert_path' => 'alipay_root_cert_path',
+            'mode' => $mode,
+        ], 'default');
+    }
+
     public function testVerifyAlipaySignSuccess(): void
     {
         AlipayTraitStub::getProviderConfig('alipay');
@@ -66,16 +80,16 @@ class AlipayTraitTest extends TestCase
     public function testGetAlipayUrlDefault(): void
     {
         self::assertSame(
-            \Yansongda\Pay\Provider\Alipay::URL[Pay::MODE_NORMAL],
-            AlipayTraitStub::getAlipayUrl([], null)
+            Alipay::URL[Pay::MODE_NORMAL],
+            AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(), null)
         );
     }
 
     public function testGetAlipayUrlSandbox(): void
     {
         self::assertSame(
-            \Yansongda\Pay\Provider\Alipay::URL[Pay::MODE_SANDBOX],
-            AlipayTraitStub::getAlipayUrl(['mode' => Pay::MODE_SANDBOX], null)
+            Alipay::URL[Pay::MODE_SANDBOX],
+            AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(Pay::MODE_SANDBOX), null)
         );
     }
 
@@ -83,7 +97,7 @@ class AlipayTraitTest extends TestCase
     {
         self::assertSame(
             'https://example.com/alipay',
-            AlipayTraitStub::getAlipayUrl([], new Collection(['_url' => 'https://example.com/alipay']))
+            AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(), new Collection(['_url' => 'https://example.com/alipay']))
         );
     }
 }

@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Traits\StripeTrait;
 use Yansongda\Supports\Collection;
 
@@ -33,6 +34,7 @@ class AddRadarPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
+        /** @var StripeConfig $config */
         $config = self::getProviderConfig('stripe', $params);
 
         $rocket->setRadar(new Request(
@@ -47,9 +49,9 @@ class AddRadarPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function getHeaders(array $config, ?Collection $payload): array
+    protected function getHeaders(StripeConfig $config, ?Collection $payload): array
     {
-        $secretKey = $config['secret_key'] ?? '';
+        $secretKey = $config->getSecretKey();
 
         $headers = [
             'User-Agent' => 'yansongda/pay-v3',

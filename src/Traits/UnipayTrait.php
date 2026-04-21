@@ -7,9 +7,9 @@ namespace Yansongda\Pay\Traits;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\CertManager;
+use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Supports\Collection;
 
@@ -22,9 +22,9 @@ trait UnipayTrait
     /**
      * @throws InvalidParamsException
      */
-    public static function getUnipayUrl(array $config, ?Collection $payload): string
+    public static function getUnipayUrl(UnipayConfig $config, ?Collection $payload): string
     {
-        $url = self::getRadarUrl($config, $payload);
+        $url = self::getRadarUrl($config->toArray(), $payload);
 
         if (empty($url)) {
             throw new InvalidParamsException(Exception::PARAMS_UNIPAY_URL_MISSING, '参数异常: 银联 `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
@@ -34,7 +34,7 @@ trait UnipayTrait
             return $url;
         }
 
-        return Unipay::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+        return Unipay::URL[$config->getMode()].$url;
     }
 
     /**
@@ -55,13 +55,13 @@ trait UnipayTrait
      * @throws InvalidConfigException
      * @throws InvalidSignException
      */
-    public static function verifyUnipaySign(array $config, string $contents, string $sign, ?string $signPublicKeyCert = null): void
+    public static function verifyUnipaySign(UnipayConfig $config, string $contents, string $sign, ?string $signPublicKeyCert = null): void
     {
         if (empty($sign)) {
             throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 银联签名为空', func_get_args());
         }
 
-        if (empty($signPublicKeyCert) && empty($public = $config['unipay_public_cert_path'] ?? null)) {
+        if (empty($signPublicKeyCert) && empty($public = $config->getUnipayPublicCertPath())) {
             throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常： 缺少银联配置 -- [unipay_public_cert_path]');
         }
 
@@ -80,9 +80,9 @@ trait UnipayTrait
     /**
      * @throws InvalidConfigException
      */
-    public static function getUnipaySignQra(array $config, array $payload): string
+    public static function getUnipaySignQra(UnipayConfig $config, array $payload): string
     {
-        $key = $config['mch_secret_key'] ?? null;
+        $key = $config->getMchSecretKey();
 
         if (empty($key)) {
             throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 缺少银联配置 -- [mch_secret_key]');
@@ -103,7 +103,7 @@ trait UnipayTrait
      * @throws InvalidConfigException
      * @throws InvalidSignException
      */
-    public static function verifyUnipaySignQra(array $config, array $destination): void
+    public static function verifyUnipaySignQra(UnipayConfig $config, array $destination): void
     {
         $sign = $destination['sign'] ?? null;
 
@@ -111,7 +111,7 @@ trait UnipayTrait
             throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 银联签名为空', $destination);
         }
 
-        $key = $config['mch_secret_key'] ?? null;
+        $key = $config->getMchSecretKey();
 
         if (empty($key)) {
             throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 缺少银联配置 -- [mch_secret_key]');
