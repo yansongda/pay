@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -41,7 +42,7 @@ class DeleteReceiverPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账参数');
         }
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
             $data = $this->service($payload, $params, $config);
         }
 
@@ -59,24 +60,24 @@ class DeleteReceiverPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array $params, array $config): array
+    protected function normal(array $params, array|WechatConfig $config): array
     {
         return [
-            'appid' => $config[self::getWechatTypeKey($params)] ?? '',
+            'appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''),
         ];
     }
 
-    protected function service(Collection $payload, array $params, array $config): array
+    protected function service(Collection $payload, array $params, array|WechatConfig $config): array
     {
         $wechatTypeKEY = self::getWechatTypeKey($params);
 
         $data = [
-            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
-            'appid' => $config[$wechatTypeKEY] ?? '',
+            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
+            'appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[$wechatTypeKEY] ?? ''),
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = $config['sub_'.$wechatTypeKEY] ?? '';
+            $data['sub_appid'] = $config instanceof WechatConfig ? $config->getSubMpAppId() ?? '' : ($config['sub_'.$wechatTypeKEY] ?? '');
         }
 
         return $data;

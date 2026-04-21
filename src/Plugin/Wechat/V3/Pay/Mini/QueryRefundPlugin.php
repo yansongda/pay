@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
@@ -40,7 +41,7 @@ class QueryRefundPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Mini 查询退款订单，参数缺少 `out_refund_no`');
         }
 
-        $subMchId = $payload->get('sub_mchid', $config['sub_mch_id'] ?? '');
+        $subMchId = $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? ''));
 
         $rocket->setPayload([
             '_method' => 'GET',

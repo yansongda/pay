@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Str;
 
@@ -39,14 +40,14 @@ class ContractOrderPlugin implements PluginInterface
             ->mergePayload([
                 '_url' => 'pay/contractorder',
                 '_content_type' => 'application/xml',
-                'appid' => $config[self::getWechatTypeKey($params)] ?? '',
-                'mch_id' => $config['mch_id'] ?? '',
-                'contract_appid' => $config[self::getWechatTypeKey($params)] ?? '',
-                'contract_mchid' => $config['mch_id'] ?? '',
+                'appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''),
+                'mch_id' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
+                'contract_appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''),
+                'contract_mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
                 'nonce_str' => Str::random(32),
                 'sign_type' => 'MD5',
-                'notify_url' => $payload?->get('notify_url') ?? $config['notify_url'] ?? '',
-                'contract_notify_url' => $payload?->get('contract_notify_url') ?? $config['notify_url'] ?? '',
+                'notify_url' => $payload?->get('notify_url') ?? ($config instanceof WechatConfig ? $config->getNotifyUrl() : ($config['notify_url'] ?? '')),
+                'contract_notify_url' => $payload?->get('contract_notify_url') ?? ($config instanceof WechatConfig ? $config->getNotifyUrl() : ($config['notify_url'] ?? '')),
             ]);
 
         Logger::info('[Wechat][V2][Papay][Direct][ContractOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);

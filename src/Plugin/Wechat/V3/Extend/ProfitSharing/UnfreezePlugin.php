@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -41,7 +42,7 @@ class UnfreezePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账解冻剩余资金参数');
         }
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
             $data = $this->service($payload, $config);
         }
 
@@ -64,11 +65,11 @@ class UnfreezePlugin implements PluginInterface
         return [];
     }
 
-    protected function service(Collection $payload, array $config): array
+    protected function service(Collection $payload, array|WechatConfig $config): array
     {
         return [
-            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
-            'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? null),
+            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
+            'notify_url' => $payload->get('notify_url'),
         ];
     }
 }

@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -43,7 +44,7 @@ class ClosePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: H5 关闭订单，参数缺少 `out_trade_no`');
         }
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
             $data = $this->service($payload, $config);
         }
 
@@ -62,18 +63,18 @@ class ClosePlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array $config): array
+    protected function normal(array|WechatConfig $config): array
     {
         return [
-            'mchid' => $config['mch_id'] ?? '',
+            'mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
         ];
     }
 
-    protected function service(Collection $payload, array $config): array
+    protected function service(Collection $payload, array|WechatConfig $config): array
     {
         return [
-            'sp_mchid' => $config['mch_id'] ?? '',
-            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
+            'sp_mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
+            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
         ];
     }
 }

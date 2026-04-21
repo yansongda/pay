@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Str;
 
@@ -38,8 +39,12 @@ class PayPlugin implements PluginInterface
             ->mergePayload([
                 '_url' => 'pay/micropay',
                 '_content_type' => 'application/xml',
-                'appid' => $config[self::getWechatTypeKey($params)] ?? '',
-                'mch_id' => $config['mch_id'] ?? '',
+                'appid' => $config instanceof WechatConfig ? match (self::getWechatTypeKey($params)) {
+                    'mini_app_id' => $config->getMiniAppId() ?? '',
+                    'app_id' => $config->getAppId() ?? '',
+                    default => $config->getMpAppId() ?? '',
+                } : ($config[self::getWechatTypeKey($params)] ?? ''),
+                'mch_id' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
                 'nonce_str' => Str::random(32),
                 'sign_type' => 'MD5',
             ]);

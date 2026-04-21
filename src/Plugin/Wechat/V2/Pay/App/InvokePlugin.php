@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -65,7 +66,7 @@ class InvokePlugin implements PluginInterface
      * @throws InvalidConfigException
      * @throws Throwable              生成随机串失败
      */
-    protected function getInvokeConfig(?Collection $payload, array $config, string $prepayId): Config
+    protected function getInvokeConfig(?Collection $payload, array|WechatConfig $config, string $prepayId): Config
     {
         $invokeConfig = new Config([
             'appid' => $this->getAppId($payload, $config),
@@ -81,17 +82,17 @@ class InvokePlugin implements PluginInterface
         return $invokeConfig;
     }
 
-    protected function getAppId(?Collection $payload, array $config): string
+    protected function getAppId(?Collection $payload, array|WechatConfig $config): string
     {
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
-            return $payload?->get('_invoke_appid') ?? $config['sub_app_id'] ?? '';
+        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
+            return $payload?->get('_invoke_appid') ?? ($config instanceof WechatConfig ? $config->getSubAppId() ?? '' : ($config['sub_app_id'] ?? ''));
         }
 
-        return $payload?->get('_invoke_appid') ?? $config['app_id'] ?? '';
+        return $payload?->get('_invoke_appid') ?? ($config instanceof WechatConfig ? $config->getAppId() ?? '' : ($config['app_id'] ?? ''));
     }
 
-    protected function getPartnerId(?Collection $payload, array $config): string
+    protected function getPartnerId(?Collection $payload, array|WechatConfig $config): string
     {
-        return $payload?->get('_invoke_partnerid') ?? $config['mch_id'] ?? '';
+        return $payload?->get('_invoke_partnerid') ?? ($config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''));
     }
 }

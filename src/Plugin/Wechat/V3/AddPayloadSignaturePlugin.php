@@ -14,6 +14,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
@@ -52,7 +53,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     /**
      * @throws InvalidParamsException
      */
-    protected function getSignatureContent(array $config, ?Collection $payload, int $timestamp, string $random): string
+    protected function getSignatureContent(WechatConfig $config, ?Collection $payload, int $timestamp, string $random): string
     {
         $url = self::getWechatUrl($config, $payload);
         $urlPath = parse_url($url, PHP_URL_PATH);
@@ -68,9 +69,9 @@ class AddPayloadSignaturePlugin implements PluginInterface
     /**
      * @throws InvalidConfigException
      */
-    protected function getSignature(array $config, int $timestamp, string $random, string $contents): string
+    protected function getSignature(WechatConfig $config, int $timestamp, string $random, string $contents): string
     {
-        $mchPublicCertPath = $config['mch_public_cert_path'] ?? null;
+        $mchPublicCertPath = $config->getMchPublicCertPath();
 
         if (empty($mchPublicCertPath)) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_public_cert_path]');
@@ -84,7 +85,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
 
         $auth = sprintf(
             'mchid="%s",nonce_str="%s",timestamp="%d",serial_no="%s",signature="%s"',
-            $config['mch_id'] ?? '',
+            $config->getMchId(),
             $random,
             $timestamp,
             $ssl['serialNumberHex'],

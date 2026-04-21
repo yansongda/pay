@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
@@ -32,10 +33,12 @@ class RestartPlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Marketing][Coupon][Stock][RestartPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
         $stockId = $payload?->get('stock_id') ?? null;
-        $stockCreatorMchId = $payload?->get('stock_creator_mchid') ?? $config['mch_id'] ?? '';
+        $stockCreatorMchId = $payload?->get('stock_creator_mchid') ?? $config->getMchId();
 
         if (empty($stockId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 激活代金券，参数缺少 `stock_id`');

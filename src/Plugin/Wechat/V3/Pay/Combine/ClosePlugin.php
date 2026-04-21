@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
@@ -46,7 +47,7 @@ class ClosePlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
                 '_service_url' => 'v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
-                'combine_appid' => $payload->get('combine_appid', $config[self::getWechatTypeKey($params)] ?? ''),
+                'combine_appid' => $payload->get('combine_appid', $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? '')),
             ])
             ->exceptPayload('combine_out_trade_no');
 

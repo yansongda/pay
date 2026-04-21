@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
@@ -45,7 +46,7 @@ class AddReceiverPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少添加分账接收方参数');
         }
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
             $data = $this->service($payload, $params, $config);
         }
 
@@ -70,10 +71,10 @@ class AddReceiverPlugin implements PluginInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    protected function normal(Collection $payload, array $params, array $config): array
+    protected function normal(Collection $payload, array $params, array|WechatConfig $config): array
     {
         $data = [
-            'appid' => $config[self::getWechatTypeKey($params)] ?? '',
+            'appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''),
         ];
 
         if (!$payload->has('name')) {
@@ -90,17 +91,17 @@ class AddReceiverPlugin implements PluginInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    protected function service(Collection $payload, array $params, array $config): array
+    protected function service(Collection $payload, array $params, array|WechatConfig $config): array
     {
         $wechatTypeKey = self::getWechatTypeKey($params);
 
         $data = [
-            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
-            'appid' => $config[$wechatTypeKey] ?? '',
+            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
+            'appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[$wechatTypeKey] ?? ''),
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = $config['sub_'.$wechatTypeKey] ?? '';
+            $data['sub_appid'] = $config instanceof WechatConfig ? $config->getSubMpAppId() ?? '' : ($config['sub_'.$wechatTypeKey] ?? '');
         }
 
         if (!$payload->has('name')) {
@@ -117,7 +118,7 @@ class AddReceiverPlugin implements PluginInterface
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
-    protected function encryptSensitiveData(array $params, array $config, Collection $payload): array
+    protected function encryptSensitiveData(array $params, array|WechatConfig $config, Collection $payload): array
     {
         $data['_serial_no'] = self::getWechatSerialNo($params);
 

@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
@@ -54,12 +55,12 @@ class QueryMerchantsPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    public function normal(Collection $payload, array $config): string
+    public function normal(Collection $payload, array|WechatConfig $config): string
     {
         $stockCreatorMchId = $payload->get('stock_creator_mchid');
 
         if (is_null($stockCreatorMchId)) {
-            $payload->set('stock_creator_mchid', $config['mch_id'] ?? '');
+            $payload->set('stock_creator_mchid', $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''));
         }
 
         return filter_params($payload)->except('stock_id')->query();

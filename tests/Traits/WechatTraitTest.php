@@ -34,6 +34,7 @@ class WechatTraitTest extends TestCase
         self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', WechatTraitStub::getWechatUrl([], new Collection(['_url' => 'api/v1/yansongda'])));
         self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', WechatTraitStub::getWechatUrl(['mode' => Pay::MODE_SERVICE], new Collection(['_service_url' => 'api/v1/service/yansongda'])));
         self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', WechatTraitStub::getWechatUrl(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', WechatTraitStub::getWechatUrl(WechatTraitStub::getProviderConfig('wechat'), new Collection(['_url' => 'api/v1/yansongda'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_URL_MISSING);
@@ -98,10 +99,24 @@ class WechatTraitTest extends TestCase
         // test config error
         $config1 = [
             'wechat' => [
-                'default' => [
-                    'mch_secret_key_v2' => ''
-                ],
-            ]
+                'default' => array_merge((new WechatConfig([
+                    'app_id' => 'yansongda',
+                    'mp_app_id' => 'wx55955316af4ef13',
+                    'mch_id' => '1600314069',
+                    'mini_app_id' => 'wx55955316af4ef14',
+                    'mini_app_key_virtual_pay' => 'yansongda',
+                    'mch_secret_key_v2' => 'yansongda',
+                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
+                    'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
+                    'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+                    'notify_url' => 'https://pay.yansongda.cn',
+                    'wechat_public_cert_path' => [
+                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+                        'yansongda' => __DIR__.'/../Cert/wechatPublicKey.crt',
+                    ],
+                    'mode' => Pay::MODE_NORMAL,
+                ]))->toArray(), ['mch_secret_key_v2' => '']),
+            ],
         ];
         Pay::config(array_merge($config1, ['_force' => true]));
 
@@ -176,7 +191,10 @@ class WechatTraitTest extends TestCase
     {
         $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
         $contents = 'yansongda';
-        $result = WechatTraitStub::encryptWechatContents($contents, WechatTraitStub::getProviderConfig('wechat')['wechat_public_cert_path'][$serialNo]);
+        $config = WechatTraitStub::getProviderConfig('wechat');
+
+        self::assertInstanceOf(WechatConfig::class, $config);
+        $result = WechatTraitStub::encryptWechatContents($contents, $config->getPublicKeyBySerial($serialNo) ?? '');
         self::assertIsString($result);
     }
 
@@ -192,7 +210,10 @@ class WechatTraitTest extends TestCase
 
     public function testReloadWechatPublicCerts(): void
     {
-        $existingCert = WechatTraitStub::getProviderConfig('wechat', [])['wechat_public_cert_path']['yansongda'];
+        $config = WechatTraitStub::getProviderConfig('wechat', []);
+
+        self::assertInstanceOf(WechatConfig::class, $config);
+        $existingCert = $config->getPublicKeyBySerial('yansongda');
 
         $response = new Response(
             200,
@@ -226,8 +247,8 @@ class WechatTraitTest extends TestCase
         $wechatConfig = Artful::get(ConfigInterface::class)->get('wechat.default');
 
         self::assertInstanceOf(WechatConfig::class, $wechatConfig);
-        self::assertSame($existingCert, $wechatConfig['wechat_public_cert_path']['yansongda']);
-        self::assertArrayHasKey('test-45F59D4DABF31918AFCEC556D5D2C6E376675D57', $wechatConfig['wechat_public_cert_path']);
+        self::assertSame($existingCert, $wechatConfig->getPublicKeyBySerial('yansongda'));
+        self::assertArrayHasKey('test-45F59D4DABF31918AFCEC556D5D2C6E376675D57', $wechatConfig->getWechatPublicCertPath());
     }
 
     public function testGetWechatPublicCerts(): void
@@ -282,6 +303,15 @@ class WechatTraitTest extends TestCase
         $result = WechatTraitStub::decryptWechatResource($resource, WechatTraitStub::getProviderConfig('wechat'));
 
         self::assertTrue(false !== strpos($result['ciphertext'], '-----BEGIN CERTIFICATE-----'));
+    }
+
+    public function testGetWechatPublicCertsWithTypedConfig(): void
+    {
+        $config = WechatTraitStub::getProviderConfig('wechat');
+
+        self::assertInstanceOf(WechatConfig::class, $config);
+
+        self::assertEquals(realpath(__DIR__.'/../Cert/wechatAppPublicKey.pem'), realpath($config->getPublicKeyBySerial('45F59D4DABF31918AFCEC556D5D2C6E376675D57') ?? ''));
     }
 
     public function testDecryptWechatResourceAes256Gcm(): void

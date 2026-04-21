@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
@@ -43,7 +44,7 @@ class ResponsePlugin implements PluginInterface
             '_method' => 'POST',
             '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/response',
             '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/response',
-            'complainted_mchid' => $payload->get('complainted_mchid', $config['mch_id']),
+            'complainted_mchid' => $payload->get('complainted_mchid', $config instanceof WechatConfig ? $config->getMchId() : $config['mch_id']),
         ])->exceptPayload('complaint_id');
 
         Logger::info('[Wechat][Extend][Complaints][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -14,6 +14,7 @@ use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\CertManager;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
@@ -40,9 +41,9 @@ trait WechatTrait
     /**
      * @throws InvalidParamsException
      */
-    public static function getWechatUrl(array $config, ?Collection $payload): string
+    public static function getWechatUrl(array|WechatConfig $config, ?Collection $payload): string
     {
-        $url = self::getRadarUrl($config, $payload);
+        $url = self::getRadarUrl($config instanceof WechatConfig ? $config->toArray() : $config, $payload);
 
         if (empty($url)) {
             throw new InvalidParamsException(Exception::PARAMS_WECHAT_URL_MISSING, '参数异常: 微信 `_url` 或 `_service_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
@@ -52,7 +53,7 @@ trait WechatTrait
             return $url;
         }
 
-        return Wechat::URL[$config['mode'] ?? Pay::MODE_NORMAL].$url;
+        return Wechat::URL[$config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL)].$url;
     }
 
     /**
@@ -83,9 +84,9 @@ trait WechatTrait
     /**
      * @throws InvalidConfigException
      */
-    public static function getWechatSign(array $config, string $contents): string
+    public static function getWechatSign(array|WechatConfig $config, string $contents): string
     {
-        $privateKey = $config['mch_secret_cert'] ?? null;
+        $privateKey = $config instanceof WechatConfig ? $config->getMchSecretCert() : ($config['mch_secret_cert'] ?? null);
 
         if (empty($privateKey)) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_cert]');
@@ -101,9 +102,9 @@ trait WechatTrait
     /**
      * @throws InvalidConfigException
      */
-    public static function getWechatSignV2(array $config, array $payload, bool $upper = true): string
+    public static function getWechatSignV2(array|WechatConfig $config, array $payload, bool $upper = true): string
     {
-        $key = $config['mch_secret_key_v2'] ?? null;
+        $key = $config instanceof WechatConfig ? $config->getMchSecretKeyV2() : ($config['mch_secret_key_v2'] ?? null);
 
         if (empty($key)) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key_v2]');
@@ -137,9 +138,14 @@ trait WechatTrait
         $random = $message->getHeaderLine('Wechatpay-Nonce');
         $sign = $message->getHeaderLine('Wechatpay-Signature');
         $body = (string) $message->getBody();
+        $wechatConfig = self::getProviderConfig('wechat', $params);
+
+        if (!$wechatConfig instanceof WechatConfig) {
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 微信配置类型错误');
+        }
 
         $content = $timestamp."\n".$random."\n".$body."\n";
-        $public = self::getProviderConfig('wechat', $params)['wechat_public_cert_path'][$wechatSerial] ?? null;
+        $public = $wechatConfig->getPublicKeyBySerial($wechatSerial);
 
         if (empty($sign)) {
             throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 微信签名为空', ['headers' => $message->getHeaders(), 'body' => $body]);
@@ -165,7 +171,7 @@ trait WechatTrait
      * @throws InvalidConfigException
      * @throws InvalidSignException
      */
-    public static function verifyWechatSignV2(array $config, array $destination): void
+    public static function verifyWechatSignV2(array|WechatConfig $config, array $destination): void
     {
         $sign = $destination['sign'] ?? null;
 
@@ -173,7 +179,7 @@ trait WechatTrait
             throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 微信签名为空', $destination);
         }
 
-        $key = $config['mch_secret_key_v2'] ?? null;
+        $key = $config instanceof WechatConfig ? $config->getMchSecretKeyV2() : ($config['mch_secret_key_v2'] ?? null);
 
         if (empty($key)) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key_v2]');
@@ -193,9 +199,11 @@ trait WechatTrait
         return null;
     }
 
-    public static function decryptWechatContents(string $encrypted, array $config): ?string
+    public static function decryptWechatContents(string $encrypted, array|WechatConfig $config): ?string
     {
-        if (openssl_private_decrypt(base64_decode($encrypted), $decrypted, CertManager::getPrivateCert($config['mch_secret_cert'] ?? ''), OPENSSL_PKCS1_OAEP_PADDING)) {
+        $privateKey = $config instanceof WechatConfig ? $config->getMchSecretCert() : ($config['mch_secret_cert'] ?? '');
+
+        if (openssl_private_decrypt(base64_decode($encrypted), $decrypted, CertManager::getPrivateCert($privateKey), OPENSSL_PKCS1_OAEP_PADDING)) {
             return $decrypted;
         }
 
@@ -217,6 +225,10 @@ trait WechatTrait
         )->get('data', []);
 
         $wechatConfig = self::getProviderConfig('wechat', $params);
+
+        if (!$wechatConfig instanceof WechatConfig) {
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 微信配置类型错误');
+        }
 
         foreach ($data as $item) {
             $certs[$item['serial_no']] = self::decryptWechatResource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
@@ -244,13 +256,17 @@ trait WechatTrait
 
         $config = self::getProviderConfig('wechat', $params);
 
+        if (!$config instanceof WechatConfig) {
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 微信配置类型错误');
+        }
+
         if (empty($path)) {
-            var_dump($config['wechat_public_cert_path']);
+            var_dump($config->getWechatPublicCertPath());
 
             return;
         }
 
-        foreach ($config['wechat_public_cert_path'] as $serialNo => $cert) {
+        foreach ($config->getWechatPublicCertPath() as $serialNo => $cert) {
             file_put_contents($path.'/'.$serialNo.'.crt', $cert);
         }
     }
@@ -259,10 +275,10 @@ trait WechatTrait
      * @throws InvalidConfigException
      * @throws DecryptException
      */
-    public static function decryptWechatResource(array $resource, array $config): array
+    public static function decryptWechatResource(array $resource, array|WechatConfig $config): array
     {
         $ciphertext = base64_decode($resource['ciphertext'] ?? '');
-        $secret = $config['mch_secret_key'] ?? null;
+        $secret = $config instanceof WechatConfig ? $config->getMchSecretKey() : ($config['mch_secret_key'] ?? null);
 
         if (strlen($ciphertext) <= Wechat::AUTH_TAG_LENGTH_BYTE) {
             throw new DecryptException(Exception::DECRYPT_WECHAT_CIPHERTEXT_PARAMS_INVALID, '加解密异常: ciphertext 位数过短');
@@ -325,23 +341,36 @@ trait WechatTrait
 
         $config = self::getProviderConfig('wechat', $params);
 
-        if (empty($config['wechat_public_cert_path'])) {
+        if (!$config instanceof WechatConfig) {
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 微信配置类型错误');
+        }
+        $certs = $config->getWechatPublicCertPath();
+
+        if (empty($certs)) {
             self::reloadWechatPublicCerts($params);
 
             $config = self::getProviderConfig('wechat', $params);
+
+            if (!$config instanceof WechatConfig) {
+                throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 微信配置类型错误');
+            }
+
+            $certs = $config->getWechatPublicCertPath();
         }
 
         mt_srand();
 
-        return strval(array_rand($config['wechat_public_cert_path']));
+        return strval(array_rand($certs));
     }
 
     /**
      * @throws InvalidParamsException
      */
-    public static function getWechatPublicKey(array $config, string $serialNo): string
+    public static function getWechatPublicKey(array|WechatConfig $config, string $serialNo): string
     {
-        $publicKey = $config['wechat_public_cert_path'][$serialNo] ?? null;
+        $publicKey = $config instanceof WechatConfig
+            ? $config->getPublicKeyBySerial($serialNo)
+            : ($config['wechat_public_cert_path'][$serialNo] ?? null);
 
         if (empty($publicKey)) {
             throw new InvalidParamsException(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND, '参数异常: 微信公钥序列号未找到 - '.$serialNo);
@@ -353,13 +382,15 @@ trait WechatTrait
     /**
      * @throws InvalidConfigException
      */
-    public static function getWechatMiniprogramPaySign(array $config, string $url, string $payload): string
+    public static function getWechatMiniprogramPaySign(array|WechatConfig $config, string $url, string $payload): string
     {
-        if (empty($config['mini_app_key_virtual_pay'])) {
+        $miniAppKeyVirtualPay = $config instanceof WechatConfig ? $config->getMiniAppKeyVirtualPay() : ($config['mini_app_key_virtual_pay'] ?? null);
+
+        if (empty($miniAppKeyVirtualPay)) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mini_app_key_virtual_pay]');
         }
 
-        return hash_hmac('sha256', $url.'&'.$payload, $config['mini_app_key_virtual_pay']);
+        return hash_hmac('sha256', $url.'&'.$payload, $miniAppKeyVirtualPay);
     }
 
     public static function getWechatMiniprogramUserSign(string $sessionKey, string $payload): string

@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
@@ -55,11 +56,9 @@ class CreatePlugin implements PluginInterface
      * @throws ServiceNotFoundException
      * @throws DecryptException
      */
-    protected function encryptSensitiveData(?Collection $payload, array $params, array $config): array
+    protected function encryptSensitiveData(?Collection $payload, array $params, array|WechatConfig $config): array
     {
         $data['_serial_no'] = self::getWechatSerialNo($params);
-
-        $config = self::getProviderConfig('wechat', $params);
         $publicKey = self::getWechatPublicKey($config, $data['_serial_no']);
 
         $phone = $payload?->get('buyer_information.phone') ?? null;

@@ -10,6 +10,7 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
@@ -30,7 +31,7 @@ class CreatePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
-        $belongMerchant = $rocket->getPayload()?->get('belong_merchant') ?? $config['mch_id'];
+        $belongMerchant = $rocket->getPayload()?->get('belong_merchant') ?? ($config instanceof WechatConfig ? $config->getMchId() : $config['mch_id']);
 
         $rocket->mergePayload([
             '_method' => 'POST',

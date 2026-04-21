@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
@@ -59,7 +60,11 @@ class GetTitleUrlPlugin implements PluginInterface
         $config = self::getProviderConfig('wechat', $params);
 
         return filter_params($payload)->merge([
-            'appid' => $payload->get('appid', $config[self::getWechatTypeKey($params)] ?? ''),
+            'appid' => $payload->get('appid', $config instanceof WechatConfig ? match (self::getWechatTypeKey($params)) {
+                'mini_app_id' => $config->getMiniAppId() ?? '',
+                'app_id' => $config->getAppId() ?? '',
+                default => $config->getMpAppId() ?? '',
+            } : ($config[self::getWechatTypeKey($params)] ?? '')),
         ]);
     }
 }

@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -44,7 +45,7 @@ class CancelPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 付款码支付撤销订单，参数缺少 `out_trade_no`');
         }
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
             $data = $this->service($payload, $params, $config);
         }
 
@@ -62,22 +63,22 @@ class CancelPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array $params, array $config): array
+    protected function normal(array $params, array|WechatConfig $config): array
     {
         return [
-            'appid' => $config[self::getWechatTypeKey($params)] ?? '',
-            'mchid' => $config['mch_id'] ?? '',
+            'appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''),
+            'mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
         ];
     }
 
-    protected function service(Collection $payload, array $params, array $config): array
+    protected function service(Collection $payload, array $params, array|WechatConfig $config): array
     {
         $configKey = self::getWechatTypeKey($params);
 
         return [
-            'sp_appid' => $config[$configKey] ?? '',
-            'sp_mchid' => $config['mch_id'] ?? '',
-            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
+            'sp_appid' => $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[$configKey] ?? ''),
+            'sp_mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
+            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
         ];
     }
 }

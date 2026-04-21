@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
@@ -35,7 +36,7 @@ class QueryReturnPlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $outOrderNo = $payload?->get('out_order_no') ?? null;
         $outReturnNo = $payload?->get('out_return_no') ?? null;
-        $subMchId = $payload?->get('sub_mchid') ?? $config['sub_mch_id'] ?? 'null';
+        $subMchId = $payload?->get('sub_mchid') ?? ($config instanceof WechatConfig ? $config->getSubMchId() ?? 'null' : ($config['sub_mch_id'] ?? 'null'));
 
         if (empty($outOrderNo) || empty($outReturnNo)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询分账结果, 缺少必要参数 `out_order_no`, `out_return_no`');

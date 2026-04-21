@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
@@ -54,12 +55,12 @@ class QueryUserPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(Collection $payload, array $params, array $config): string
+    protected function normal(Collection $payload, array $params, array|WechatConfig $config): string
     {
         $appId = $payload->get('appid');
 
         if (is_null($appId)) {
-            $payload->set('appid', $config[self::getWechatTypeKey($params)] ?? '');
+            $payload->set('appid', $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? ''));
         }
 
         return filter_params($payload)->except('openid')->query();

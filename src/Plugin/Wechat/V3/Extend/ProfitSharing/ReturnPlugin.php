@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -41,7 +42,7 @@ class ReturnPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账退回参数');
         }
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
             $data = $this->service($payload, $config);
         }
 
@@ -59,18 +60,18 @@ class ReturnPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(Collection $payload, array $config): array
+    protected function normal(Collection $payload, array|WechatConfig $config): array
     {
         return [
-            'return_mchid' => $payload->get('return_mchid', $config['mch_id'] ?? ''),
+            'return_mchid' => $payload->get('return_mchid', $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? '')),
         ];
     }
 
-    protected function service(Collection $payload, array $config): array
+    protected function service(Collection $payload, array|WechatConfig $config): array
     {
         return [
-            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
-            'return_mchid' => $payload->get('return_mchid', $config['mch_id'] ?? ''),
+            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
+            'return_mchid' => $payload->get('return_mchid', $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? '')),
         ];
     }
 }

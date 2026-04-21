@@ -10,6 +10,7 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
@@ -37,8 +38,8 @@ class SetPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/marketing/favor/callbacks',
                 '_service_url' => 'v3/marketing/favor/callbacks',
-                'mchid' => $payload?->get('mchid') ?? $config['mch_id'] ?? '',
-                'notify_url' => $payload?->get('notify_url') ?? $config['notify_url'] ?? '',
+                'mchid' => $payload?->get('mchid') ?? ($config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? '')),
+                'notify_url' => $payload?->get('notify_url') ?? ($config instanceof WechatConfig ? $config->getNotifyUrl() : ($config['notify_url'] ?? '')),
             ],
         ));
 

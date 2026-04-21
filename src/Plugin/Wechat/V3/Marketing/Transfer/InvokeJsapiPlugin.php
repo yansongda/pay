@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -42,7 +43,7 @@ class InvokeJsapiPlugin implements PluginInterface
         $destination = $rocket->getDestination();
         $packageInfo = $destination?->get('package_info');
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: JSAPI调起用户确认收款，只支持普通商户模式，当前配置为服务商模式');
         }
 
@@ -63,11 +64,11 @@ class InvokeJsapiPlugin implements PluginInterface
         return $rocket;
     }
 
-    protected function getInvokeConfig(?Collection $payload, array $params, array $config, string $packageInfo): Config
+    protected function getInvokeConfig(?Collection $payload, array $params, array|WechatConfig $config, string $packageInfo): Config
     {
         return new Config([
-            'appId' => $payload?->get('_invoke_appId') ?? $config[self::getWechatTypeKey($params)] ?? '',
-            'mchId' => $payload?->get('_invoke_mchId') ?? $config['mch_id'] ?? '',
+            'appId' => $payload?->get('_invoke_appId') ?? ($config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? '')),
+            'mchId' => $payload?->get('_invoke_mchId') ?? ($config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? '')),
             'package' => $packageInfo,
         ]);
     }

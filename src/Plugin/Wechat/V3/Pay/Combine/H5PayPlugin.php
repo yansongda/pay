@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
@@ -43,9 +44,9 @@ class H5PayPlugin implements PluginInterface
             '_method' => 'POST',
             '_url' => 'v3/combine-transactions/h5',
             '_service_url' => 'v3/combine-transactions/h5',
-            'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
-            'combine_appid' => $payload->get('combine_appid', $config[self::getWechatTypeKey($params)] ?? ''),
-            'combine_mchid' => $payload->get('combine_mchid', $config['mch_id'] ?? ''),
+            'notify_url' => $payload->get('notify_url', $config instanceof WechatConfig ? $config->getNotifyUrl() : ($config['notify_url'] ?? '')),
+            'combine_appid' => $payload->get('combine_appid', $config instanceof WechatConfig ? $config->getMpAppId() ?? '' : ($config[self::getWechatTypeKey($params)] ?? '')),
+            'combine_mchid' => $payload->get('combine_mchid', $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? '')),
         ]);
 
         Logger::info('[Wechat][Pay][Combine][H5PayPlugin] 插件装载完毕', ['rocket' => $rocket]);

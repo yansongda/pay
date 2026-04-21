@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -41,7 +42,7 @@ class PayPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: APP下单，参数为空');
         }
 
-        if (Pay::MODE_SERVICE === ($config['mode'] ?? Pay::MODE_NORMAL)) {
+        if (Pay::MODE_SERVICE === ($config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL))) {
             $data = $this->service($payload, $config);
         }
 
@@ -50,7 +51,9 @@ class PayPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/pay/transactions/app',
                 '_service_url' => 'v3/pay/partner/transactions/app',
-                'notify_url' => $payload->get('notify_url', $config['notify_url'] ?? ''),
+                'notify_url' => $payload->has('notify_url')
+                    ? $payload->get('notify_url')
+                    : (($config instanceof WechatConfig && Pay::MODE_SERVICE === $config->getMode()) ? '' : ($config instanceof WechatConfig ? $config->getNotifyUrl() : ($config['notify_url'] ?? ''))),
             ],
             $data ?? $this->normal($config)
         ));
@@ -60,20 +63,20 @@ class PayPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function normal(array $config): array
+    protected function normal(array|WechatConfig $config): array
     {
         return [
-            'appid' => $config['app_id'] ?? '',
-            'mchid' => $config['mch_id'] ?? '',
+            'appid' => $config instanceof WechatConfig ? $config->getAppId() ?? '' : ($config['app_id'] ?? ''),
+            'mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
         ];
     }
 
-    protected function service(Collection $payload, array $config): array
+    protected function service(Collection $payload, array|WechatConfig $config): array
     {
         return [
-            'sp_appid' => $config['app_id'] ?? '',
-            'sp_mchid' => $config['mch_id'] ?? '',
-            'sub_mchid' => $payload->get('sub_mchid', $config['sub_mch_id'] ?? ''),
+            'sp_appid' => $config instanceof WechatConfig ? $config->getAppId() ?? '' : ($config['app_id'] ?? ''),
+            'sp_mchid' => $config instanceof WechatConfig ? $config->getMchId() : ($config['mch_id'] ?? ''),
+            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
         ];
     }
 }
