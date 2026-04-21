@@ -98,8 +98,8 @@ class StartPlugin implements PluginInterface
      */
     protected function getAppCertSn(AlipayConfig $config): string
     {
-        if (!empty($config->get('_app_public_cert_sn'))) {
-            return $config->get('_app_public_cert_sn');
+        if (!empty($config->getAppPublicCertSn())) {
+            return $config->getAppPublicCertSn();
         }
 
         $path = $config->getAppPublicCertPath();
@@ -116,7 +116,7 @@ class StartPlugin implements PluginInterface
 
         $result = $this->getCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
 
-        $config->set('_app_public_cert_sn', $result);
+        $config->setAppPublicCertSn($result);
 
         return $result;
     }
@@ -128,8 +128,8 @@ class StartPlugin implements PluginInterface
      */
     protected function getAlipayRootCertSn(AlipayConfig $config): string
     {
-        if (!empty($config->get('_alipay_root_cert_sn'))) {
-            return $config->get('_alipay_root_cert_sn');
+        if (!empty($config->getAlipayRootCertSn())) {
+            return $config->getAlipayRootCertSn();
         }
 
         $path = $config->getAlipayRootCertPath();
@@ -161,7 +161,7 @@ class StartPlugin implements PluginInterface
 
         $result = substr($sn, 0, -1);
 
-        $config->set('_alipay_root_cert_sn', $result);
+        $config->setAlipayRootCertSn($result);
 
         return $result;
     }

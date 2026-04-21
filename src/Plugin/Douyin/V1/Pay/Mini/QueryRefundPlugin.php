@@ -11,7 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\ProviderConfigInterface;
+use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\DouyinTrait;
@@ -49,7 +49,7 @@ class QueryRefundPlugin implements PluginInterface
             [
                 '_method' => 'POST',
                 '_url' => 'api/apps/ecpay/v1/query_refund',
-                'app_id' => $config->get('mini_app_id', ''),
+                'app_id' => $config->getMiniAppId(),
             ],
             $data ?? [],
         ));
@@ -59,10 +59,10 @@ class QueryRefundPlugin implements PluginInterface
         return $next($rocket);
     }
 
-    protected function service(Collection $payload, ProviderConfigInterface $config): array
+    protected function service(Collection $payload, DouyinConfig $config): array
     {
         return [
-            'thirdparty_id' => $payload->get('thirdparty_id', $config->get('thirdparty_id', '')),
+            'thirdparty_id' => $payload->get('thirdparty_id', $config->getThirdpartyId() ?? ''),
         ];
     }
 }
