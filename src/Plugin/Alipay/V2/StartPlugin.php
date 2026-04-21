@@ -104,7 +104,7 @@ class StartPlugin implements PluginInterface
 
         $path = $config->getAppPublicCertPath();
 
-        if (is_null($path) || empty($path)) {
+        if (empty($path)) {
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
         }
 
@@ -134,7 +134,7 @@ class StartPlugin implements PluginInterface
 
         $path = $config->getAlipayRootCertPath();
 
-        if (is_null($path) || empty($path)) {
+        if (empty($path)) {
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [alipay_root_cert_path]');
         }
 

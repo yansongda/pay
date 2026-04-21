@@ -3,13 +3,13 @@
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
 
 use Yansongda\Artful\Contract\ConfigInterface;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
-use Yansongda\Supports\Config;
 
 class StartPluginTest extends TestCase
 {
@@ -100,11 +100,15 @@ class StartPluginTest extends TestCase
     {
         $rocket = new Rocket();
 
-        Pay::set(ConfigInterface::class, new Config());
+        // typed config 在构造时验证必填字段，所以无法创建缺少必填字段的配置
+        // 这个测试改为验证证书路径不存在时的异常
+        /** @var AlipayConfig $alipayConfig */
+        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+        $alipayConfig->setAppPublicCertPath('/nonexistent/path/cert.crt');
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        self::expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
+        self::expectExceptionMessage('配置异常: 解析 `app_public_cert_path` 失败');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -112,10 +116,9 @@ class StartPluginTest extends TestCase
     public function testWrongAppPublicCertPath()
     {
         $rocket = new Rocket();
-        $config = Pay::get(ConfigInterface::class);
-        $config->set('alipay.default.app_public_cert_path', __DIR__.'/../../Cert/foo');
-
-        Pay::set(ConfigInterface::class, $config);
+        /** @var AlipayConfig $alipayConfig */
+        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+        $alipayConfig->setAppPublicCertPath(__DIR__.'/../../Cert/foo');
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
@@ -127,9 +130,9 @@ class StartPluginTest extends TestCase
     public function testMissingAlipayRootPath()
     {
         $rocket = new Rocket();
-        $config = Pay::get(ConfigInterface::class);
-
-        $config->set('alipay.default.alipay_root_cert_path', null);
+        /** @var AlipayConfig $alipayConfig */
+        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+        $alipayConfig->setAlipayRootCertPath('');
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
@@ -141,9 +144,9 @@ class StartPluginTest extends TestCase
     public function testWrongAlipayRootPath()
     {
         $rocket = new Rocket();
-        $config = Pay::get(ConfigInterface::class);
-
-        $config->set('alipay.default.alipay_root_cert_path', __DIR__.'/../../../Cert/foo');
+        /** @var AlipayConfig $alipayConfig */
+        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+        $alipayConfig->setAlipayRootCertPath(__DIR__.'/../../../Cert/foo');
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
@@ -159,8 +162,9 @@ class StartPluginTest extends TestCase
 
         self::assertEquals('e90dd23a37c5c7b616e003970817ff82', $payload->get('app_cert_sn'));
 
-        $config = Pay::get(ConfigInterface::class);
-        $config->set('alipay.default.app_public_cert_path', null);
+        /** @var AlipayConfig $alipayConfig */
+        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+        $alipayConfig->setAppPublicCertPath('');
 
         $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
@@ -175,8 +179,9 @@ class StartPluginTest extends TestCase
 
         self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
 
-        $config = Pay::get(ConfigInterface::class);
-        $config->set('alipay.default.alipay_root_cert_path', null);
+        /** @var AlipayConfig $alipayConfig */
+        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+        $alipayConfig->setAlipayRootCertPath('');
 
         $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
@@ -184,10 +189,11 @@ class StartPluginTest extends TestCase
         self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
     }
 
-    public function testAlipayRootCertSnString()
+public function testAlipayRootCertSnString()
     {
-        $config = Pay::get(ConfigInterface::class);
-        $config->set('alipay.default.alipay_root_cert_path', '-----BEGIN CERTIFICATE-----
+        /** @var AlipayConfig $alipayConfig */
+        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+        $alipayConfig->setAlipayRootCertPath('-----BEGIN CERTIFICATE-----
 MIIBszCCAVegAwIBAgIIaeL+wBcKxnswDAYIKoEcz1UBg3UFADAuMQswCQYDVQQG
 EwJDTjEOMAwGA1UECgwFTlJDQUMxDzANBgNVBAMMBlJPT1RDQTAeFw0xMjA3MTQw
 MzExNTlaFw00MjA3MDcwMzExNTlaMC4xCzAJBgNVBAYTAkNOMQ4wDAYDVQQKDAVO
@@ -257,7 +263,7 @@ MIIDxTCCAq2gAwIBAgIUEMdk6dVgOEIS2cCP0Q43P90Ps5YwDQYJKoZIhvcNAQEF
 BQAwajELMAkGA1UEBhMCQ04xEzARBgNVBAoMCmlUcnVzQ2hpbmExHDAaBgNVBAsM
 E0NoaW5hIFRydXN0IE5ldHdvcmsxKDAmBgNVBAMMH2lUcnVzQ2hpbmEgQ2xhc3Mg
 MiBSb290IENBIC0gRzMwHhcNMTMwNDE4MDkzNjU2WhcNMzMwNDE4MDkzNjU2WjBq
-MQswCQYDVQQGEwJDTjETMBEGA1UECgwKaVRydXNDaGluYTEcMBoGA1UECwwTQ2hp
+MQswCQYDVQQGEwJDTjETMBEGA1UECgwKaVRydXNCaGluYTEcMBoGA1UECwwTQ2hp
 bmEgVHJ1c3QgTmV0d29yazEoMCYGA1UEAwwfaVRydXNDaGluYSBDbGFzcyAyIFJv
 b3QgQ0EgLSBHMzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOPPShpV
 nJbMqqCw6Bz1kehnoPst9pkr0V9idOwU2oyS47/HjJXk9Rd5a9xfwkPO88trUpz5

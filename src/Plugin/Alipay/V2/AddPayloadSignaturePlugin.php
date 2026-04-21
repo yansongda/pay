@@ -58,7 +58,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
      */
     protected function getPrivateKey(array $params): string
     {
-        $privateKey = self::getProviderConfig('alipay', $params)['app_secret_cert'] ?? null;
+        $privateKey = self::getProviderConfig('alipay', $params)->get('app_secret_cert');
 
         if (is_null($privateKey)) {
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_secret_cert]');

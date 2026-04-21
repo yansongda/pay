@@ -75,10 +75,6 @@ class Pay
         StripeServiceProvider::class,
     ];
 
-    /**
-     * @throws ContainerException
-     * @throws ServiceNotFoundException
-     */
     public static function __callStatic(string $service, array $config = [])
     {
         if (!empty($config)) {
@@ -147,10 +143,6 @@ class Pay
         Artful::set($name, $value);
     }
 
-    /**
-     * @throws ContainerException
-     * @throws ServiceNotFoundException
-     */
     public static function get(string $service): mixed
     {
         return Artful::get($service);

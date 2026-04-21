@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Traits;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\CertManager;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Supports\Collection;
 
