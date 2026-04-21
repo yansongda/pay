@@ -11,12 +11,14 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Traits\AlipayTrait;
 
 /**
  * @see https://opendocs.alipay.com/open/29ae8cb6_alipay.trade.wap.pay?pathHash=0a6313c7&ref=api&scene=21
  */
 class PayPlugin implements PluginInterface
 {
+    use AlipayTrait;
 
     /**
      * @throws ContainerException

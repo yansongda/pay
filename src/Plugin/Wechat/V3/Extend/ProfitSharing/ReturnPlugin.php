@@ -42,7 +42,7 @@ class ReturnPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账退回参数');
         }
 
-        if (Pay::MODE_SERVICE === ($config->getMode())) {
+        if (Pay::MODE_SERVICE === $config->getMode()) {
             $data = $this->service($payload, $config);
         }
 

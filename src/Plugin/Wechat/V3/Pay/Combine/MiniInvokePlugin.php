@@ -97,7 +97,7 @@ class MiniInvokePlugin implements PluginInterface
 
     protected function getAppId(?Collection $payload, WechatConfig $config): string
     {
-        if (Pay::MODE_SERVICE === ($config->getMode())) {
+        if (Pay::MODE_SERVICE === $config->getMode()) {
             return $payload?->get('_invoke_appid') ?? ($config->getSubMiniAppId() ?? '');
         }
 

@@ -10,7 +10,6 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
@@ -31,7 +30,7 @@ class QueryPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
-        $mchId = $rocket->getPayload()?->get('mchid') ?? ($config->getMchId());
+        $mchId = $rocket->getPayload()?->get('mchid') ?? $config->getMchId();
 
         $rocket->setPayload([
             '_method' => 'GET',

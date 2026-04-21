@@ -20,26 +20,6 @@ trait AlipayTrait
 {
     use ProviderConfigTrait;
 
-    /**
-     * @throws ContainerException
-     * @throws ServiceNotFoundException
-     */
-    protected function loadAlipayServiceProvider(Rocket $rocket): void
-    {
-        $params = $rocket->getParams();
-        $config = self::getProviderConfig('alipay', $params);
-        $serviceProviderId = $config->getServiceProviderId();
-
-        if (Pay::MODE_SERVICE !== $config->getMode()
-            || empty($serviceProviderId)) {
-            return;
-        }
-
-        $rocket->mergeParams([
-            'extend_params' => array_merge($params['extend_params'] ?? [], ['sys_service_provider_id' => $serviceProviderId]),
-        ]);
-    }
-
     public static function verifyAlipaySign(AlipayConfig $config, string $contents, string $sign): void
     {
         if ('' === $sign) {
@@ -67,5 +47,25 @@ trait AlipayTrait
         }
 
         return Alipay::URL[$config->getMode()];
+    }
+
+    /**
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     */
+    protected function loadAlipayServiceProvider(Rocket $rocket): void
+    {
+        $params = $rocket->getParams();
+        $config = self::getProviderConfig('alipay', $params);
+        $serviceProviderId = $config->getServiceProviderId();
+
+        if (Pay::MODE_SERVICE !== $config->getMode()
+            || empty($serviceProviderId)) {
+            return;
+        }
+
+        $rocket->mergeParams([
+            'extend_params' => array_merge($params['extend_params'] ?? [], ['sys_service_provider_id' => $serviceProviderId]),
+        ]);
     }
 }

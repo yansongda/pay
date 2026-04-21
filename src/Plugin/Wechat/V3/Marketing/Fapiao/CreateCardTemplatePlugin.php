@@ -30,6 +30,7 @@ class CreateCardTemplatePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+
         /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
 

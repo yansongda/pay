@@ -42,7 +42,7 @@ class DeleteReceiverPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账参数');
         }
 
-        if (Pay::MODE_SERVICE === ($config->getMode())) {
+        if (Pay::MODE_SERVICE === $config->getMode()) {
             $data = $this->service($payload, $params, $config);
         }
 
@@ -73,11 +73,15 @@ class DeleteReceiverPlugin implements PluginInterface
 
         $data = [
             'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
-            'appid' => match ($wechatTypeKEY) { 'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '', },
+            'appid' => match ($wechatTypeKEY) {
+                'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '',
+            },
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = match ($wechatTypeKEY) { 'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '', };
+            $data['sub_appid'] = match ($wechatTypeKEY) {
+                'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '',
+            };
         }
 
         return $data;

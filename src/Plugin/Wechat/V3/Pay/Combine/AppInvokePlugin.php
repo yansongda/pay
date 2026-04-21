@@ -98,7 +98,7 @@ class AppInvokePlugin implements PluginInterface
 
     protected function getAppId(?Collection $payload, WechatConfig $config): string
     {
-        if (Pay::MODE_SERVICE === ($config->getMode())) {
+        if (Pay::MODE_SERVICE === $config->getMode()) {
             return $payload?->get('_invoke_appid') ?? ($config->getSubAppId() ?? '');
         }
 
@@ -107,6 +107,6 @@ class AppInvokePlugin implements PluginInterface
 
     protected function getPartnerId(?Collection $payload, WechatConfig $config): string
     {
-        return $payload?->get('_invoke_partnerid') ?? ($config->getMchId());
+        return $payload?->get('_invoke_partnerid') ?? $config->getMchId();
     }
 }

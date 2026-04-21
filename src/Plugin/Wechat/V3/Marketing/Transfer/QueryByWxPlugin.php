@@ -11,7 +11,6 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -36,7 +35,7 @@ class QueryByWxPlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $transferBillNo = $payload?->get('transfer_bill_no') ?? null;
 
-        if (Pay::MODE_SERVICE === ($config->getMode())) {
+        if (Pay::MODE_SERVICE === $config->getMode()) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 通过微信单号查询转账单，只支持普通商户模式，当前配置为服务商模式');
         }
 

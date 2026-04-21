@@ -42,7 +42,7 @@ class PayPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Native 下单，参数为空');
         }
 
-        if (Pay::MODE_SERVICE === ($config->getMode())) {
+        if (Pay::MODE_SERVICE === $config->getMode()) {
             $data = $this->service($payload, $params, $config);
         }
 
@@ -76,7 +76,9 @@ class PayPlugin implements PluginInterface
         $configKey = self::getWechatTypeKey($params);
 
         return [
-            'sp_appid' => match ($configKey) { 'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '', },
+            'sp_appid' => match ($configKey) {
+                'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '',
+            },
             'sp_mchid' => $config->getMchId(),
             'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
         ];

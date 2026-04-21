@@ -33,6 +33,7 @@ class ResponsePlugin implements PluginInterface
         Logger::debug('[Wechat][Extend][Complaints][ResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $config = self::getProviderConfig('wechat', $rocket->getParams());
+
         /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
         $complaintId = $payload?->get('complaint_id') ?? null;

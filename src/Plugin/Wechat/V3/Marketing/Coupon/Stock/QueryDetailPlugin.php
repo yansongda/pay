@@ -11,7 +11,6 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
@@ -36,7 +35,7 @@ class QueryDetailPlugin implements PluginInterface
         $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
         $stockId = $payload?->get('stock_id') ?? null;
-        $mchId = $payload?->get('stock_creator_mchid') ?? ($config->getMchId());
+        $mchId = $payload?->get('stock_creator_mchid') ?? $config->getMchId();
 
         if (empty($stockId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询代金券批次详情，参数缺少 `stock_id`');

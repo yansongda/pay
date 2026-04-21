@@ -34,6 +34,7 @@ class ApplyPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+
         /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
 
@@ -45,7 +46,7 @@ class ApplyPlugin implements PluginInterface
                 'mch_id' => $config->getMchId(),
                 'nonce_str' => Str::random(32),
                 'sign_type' => 'MD5',
-                'notify_url' => $payload?->get('notify_url') ?? ($config->getNotifyUrl()),
+                'notify_url' => $payload?->get('notify_url') ?? $config->getNotifyUrl(),
             ]);
 
         Logger::info('[Wechat][V2][Papay][Direct][ApplyPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -34,6 +34,7 @@ class QueryRefundPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+
         /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
         $outRefundNo = $payload?->get('out_refund_no') ?? null;

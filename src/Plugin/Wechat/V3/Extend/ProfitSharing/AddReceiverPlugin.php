@@ -46,7 +46,7 @@ class AddReceiverPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少添加分账接收方参数');
         }
 
-        if (Pay::MODE_SERVICE === ($config->getMode())) {
+        if (Pay::MODE_SERVICE === $config->getMode()) {
             $data = $this->service($payload, $params, $config);
         }
 
@@ -105,7 +105,9 @@ class AddReceiverPlugin implements PluginInterface
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = match ($wechatTypeKey) { 'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '', };
+            $data['sub_appid'] = match ($wechatTypeKey) {
+                'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '',
+            };
         }
 
         if (!$payload->has('name')) {

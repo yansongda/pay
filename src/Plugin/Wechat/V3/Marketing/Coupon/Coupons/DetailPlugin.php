@@ -34,6 +34,7 @@ class DetailPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+
         /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
         $openId = $payload?->get('openid') ?? null;

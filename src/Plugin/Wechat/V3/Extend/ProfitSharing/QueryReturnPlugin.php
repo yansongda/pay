@@ -33,6 +33,7 @@ class QueryReturnPlugin implements PluginInterface
         Logger::debug('[Wechat][Extend][ProfitSharing][QueryReturnPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $config = self::getProviderConfig('wechat', $rocket->getParams());
+
         /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
         $outOrderNo = $payload?->get('out_order_no') ?? null;

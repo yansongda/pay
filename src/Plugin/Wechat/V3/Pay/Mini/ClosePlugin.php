@@ -44,7 +44,7 @@ class ClosePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Mini 关闭订单，参数缺少 `out_trade_no`');
         }
 
-        if (Pay::MODE_SERVICE === ($config->getMode())) {
+        if (Pay::MODE_SERVICE === $config->getMode()) {
             $data = $this->service($payload, $config);
         }
 

@@ -31,6 +31,7 @@ class MiniOnlyContractPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+
         /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
 
@@ -38,7 +39,7 @@ class MiniOnlyContractPlugin implements PluginInterface
             ->mergePayload([
                 'appid' => $config->getMpAppId() ?? '',
                 'mch_id' => $config->getMchId(),
-                'notify_url' => $payload?->get('notify_url') ?? ($config->getNotifyUrl()),
+                'notify_url' => $payload?->get('notify_url') ?? $config->getNotifyUrl(),
                 'timestamp' => time(),
             ]);
 

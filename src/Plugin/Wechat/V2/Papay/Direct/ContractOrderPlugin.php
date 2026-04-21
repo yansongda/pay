@@ -34,6 +34,7 @@ class ContractOrderPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+
         /** @var WechatConfig $config */
         $payload = $rocket->getPayload();
 
@@ -47,8 +48,8 @@ class ContractOrderPlugin implements PluginInterface
                 'contract_mchid' => $config->getMchId(),
                 'nonce_str' => Str::random(32),
                 'sign_type' => 'MD5',
-                'notify_url' => $payload?->get('notify_url') ?? ($config->getNotifyUrl()),
-                'contract_notify_url' => $payload?->get('contract_notify_url') ?? ($config->getNotifyUrl()),
+                'notify_url' => $payload?->get('notify_url') ?? $config->getNotifyUrl(),
+                'contract_notify_url' => $payload?->get('contract_notify_url') ?? $config->getNotifyUrl(),
             ]);
 
         Logger::info('[Wechat][V2][Papay][Direct][ContractOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);

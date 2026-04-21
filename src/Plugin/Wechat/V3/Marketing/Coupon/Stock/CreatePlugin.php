@@ -31,8 +31,9 @@ class CreatePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
+
         /** @var WechatConfig $config */
-        $belongMerchant = $rocket->getPayload()?->get('belong_merchant') ?? ($config->getMchId());
+        $belongMerchant = $rocket->getPayload()?->get('belong_merchant') ?? $config->getMchId();
 
         $rocket->mergePayload([
             '_method' => 'POST',

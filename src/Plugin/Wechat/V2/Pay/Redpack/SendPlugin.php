@@ -36,9 +36,9 @@ class SendPlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
         $config = self::getProviderConfig('wechat', $params);
-        /** @var WechatConfig $config */
 
-        if (Pay::MODE_SERVICE === ($config->getMode())) {
+        /** @var WechatConfig $config */
+        if (Pay::MODE_SERVICE === $config->getMode()) {
             $data = $this->service($payload, $config, $params);
         }
 
@@ -92,6 +92,8 @@ class SendPlugin implements PluginInterface
 
     protected function getSubAppId(WechatConfig $config, string $wechatTypeKey): string
     {
-        return match ($wechatTypeKey) { 'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '', };
+        return match ($wechatTypeKey) {
+            'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '',
+        };
     }
 }
