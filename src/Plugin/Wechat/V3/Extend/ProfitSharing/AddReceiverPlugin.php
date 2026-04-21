@@ -74,7 +74,7 @@ class AddReceiverPlugin implements PluginInterface
     protected function normal(Collection $payload, array $params, WechatConfig $config): array
     {
         $data = [
-            'appid' => self::getWechatAppIdByType($config, self::getWechatTypeKey($params)) ?? '',
+            'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
         ];
 
         if (!$payload->has('name')) {

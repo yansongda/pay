@@ -36,6 +36,7 @@ class PayPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
+
         /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 
@@ -67,7 +68,7 @@ class PayPlugin implements PluginInterface
     protected function normal(array $params, WechatConfig $config): array
     {
         return [
-            'appid' => self::getWechatAppIdByType($config, self::getWechatTypeKey($params)) ?? '',
+            'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
             'mchid' => $config->getMchId(),
         ];
     }

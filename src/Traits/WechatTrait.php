@@ -82,19 +82,6 @@ trait WechatTrait
     }
 
     /**
-     * 根据微信类型动态获取对应的 AppId.
-     */
-    public static function getWechatAppIdByType(WechatConfig $config, string $typeKey): ?string
-    {
-        return match ($typeKey) {
-            'mp_app_id' => $config->getMpAppId(),
-            'mini_app_id' => $config->getMiniAppId(),
-            'app_id' => $config->getAppId(),
-            default => $config->getMpAppId(),
-        };
-    }
-
-    /**
      * @throws InvalidConfigException
      */
     public static function getWechatSign(WechatConfig $config, string $contents): string

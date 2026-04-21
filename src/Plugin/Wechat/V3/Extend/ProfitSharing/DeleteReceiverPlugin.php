@@ -63,7 +63,7 @@ class DeleteReceiverPlugin implements PluginInterface
     protected function normal(array $params, WechatConfig $config): array
     {
         return [
-            'appid' => self::getWechatAppIdByType($config, self::getWechatTypeKey($params)) ?? '',
+            'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
         ];
     }
 

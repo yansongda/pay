@@ -60,7 +60,7 @@ class QueryUserPlugin implements PluginInterface
         $appId = $payload->get('appid');
 
         if (is_null($appId)) {
-            $payload->set('appid', self::getWechatAppIdByType($config, self::getWechatTypeKey($params)) ?? '');
+            $payload->set('appid', $config->getAppIdByType($params['_type'] ?? 'mp') ?? '');
         }
 
         return filter_params($payload)->except('openid')->query();

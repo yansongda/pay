@@ -30,13 +30,14 @@ class MiniOnlyContractPlugin implements PluginInterface
         Logger::debug('[Wechat][V2][Papay][Direct][OnlyContractPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
         /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->mergePayload([
-                'appid' => self::getWechatAppIdByType($config, self::getWechatTypeKey($params)) ?? '',
+                'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
                 'mch_id' => $config->getMchId(),
                 'notify_url' => $payload?->get('notify_url') ?? $config->getNotifyUrl(),
                 'timestamp' => time(),

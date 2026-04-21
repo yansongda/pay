@@ -33,6 +33,7 @@ class QueryPlugin implements PluginInterface
         Logger::debug('[Wechat][V2][Pay][Pos][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
         /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 

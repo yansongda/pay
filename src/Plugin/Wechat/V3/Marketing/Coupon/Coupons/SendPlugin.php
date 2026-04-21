@@ -59,7 +59,7 @@ class SendPlugin implements PluginInterface
     protected function normal(Collection $payload, array $params, WechatConfig $config): array
     {
         if (empty($payload->get('appid'))) {
-            $payload->set('appid', self::getWechatAppIdByType($config, self::getWechatTypeKey($params)) ?? '');
+            $payload->set('appid', $config->getAppIdByType($params['_type'] ?? 'mp') ?? '');
         }
 
         if (empty($payload->get('stock_creator_mchid'))) {

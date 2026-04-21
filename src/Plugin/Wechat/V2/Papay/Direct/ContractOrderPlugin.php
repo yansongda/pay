@@ -33,6 +33,7 @@ class ContractOrderPlugin implements PluginInterface
         Logger::debug('[Wechat][V2][Papay][Direct][ContractOrderPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
         /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
@@ -41,9 +42,9 @@ class ContractOrderPlugin implements PluginInterface
             ->mergePayload([
                 '_url' => 'pay/contractorder',
                 '_content_type' => 'application/xml',
-                'appid' => self::getWechatAppIdByType($config, self::getWechatTypeKey($params)) ?? '',
+                'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
                 'mch_id' => $config->getMchId(),
-                'contract_appid' => self::getWechatAppIdByType($config, self::getWechatTypeKey($params)) ?? '',
+                'contract_appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
                 'contract_mchid' => $config->getMchId(),
                 'nonce_str' => Str::random(32),
                 'sign_type' => 'MD5',

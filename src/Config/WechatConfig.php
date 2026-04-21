@@ -193,6 +193,20 @@ class WechatConfig extends AbstractConfig
     }
 
     /**
+     * 根据微信支付类型获取对应的 AppId.
+     *
+     * @param string $type 支付类型: 'mp'(公众号), 'mini'(小程序), 'app'(APP)
+     */
+    public function getAppIdByType(string $type = 'mp'): ?string
+    {
+        return match ($type) {
+            'mini' => $this->miniAppId,
+            'app' => $this->appId,
+            default => $this->mpAppId,
+        };
+    }
+
+    /**
      * 优先从 CertManager 获取，fallback 到配置文件.
      */
     public function getPublicKeyBySerial(string $serialNo): ?string
