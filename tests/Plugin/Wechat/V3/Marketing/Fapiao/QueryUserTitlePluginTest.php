@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\QueryUserTitlePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryUserTitlePluginTest extends TestCase
 {
     protected QueryUserTitlePlugin $plugin;

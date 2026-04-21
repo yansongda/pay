@@ -9,11 +9,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Callback\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryPluginTest extends TestCase
 {
     protected QueryPlugin $plugin;

@@ -10,11 +10,6 @@ use Yansongda\Pay\Plugin\Unipay\Qra\Pos\QueryOpenIdPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryOpenIdPluginTest extends TestCase
 {
     protected QueryOpenIdPlugin $plugin;

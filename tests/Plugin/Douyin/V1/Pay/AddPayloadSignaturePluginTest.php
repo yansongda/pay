@@ -10,11 +10,6 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class AddPayloadSignaturePluginTest extends TestCase
 {
     protected AddPayloadSignaturePlugin $plugin;

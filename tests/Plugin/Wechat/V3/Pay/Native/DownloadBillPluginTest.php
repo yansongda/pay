@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\DownloadBillPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class DownloadBillPluginTest extends TestCase
 {
     protected DownloadBillPlugin $plugin;

@@ -8,11 +8,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Jsb\Pay\Scan\RefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class RefundPluginTest extends TestCase
 {
     protected RefundPlugin $plugin;

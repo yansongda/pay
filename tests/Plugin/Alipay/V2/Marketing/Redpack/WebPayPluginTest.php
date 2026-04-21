@@ -9,11 +9,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Marketing\Redpack\WebPayPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class WebPayPluginTest extends TestCase
 {
     protected WebPayPlugin $plugin;

@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Stripe\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class RefundShortcutTest extends TestCase
 {
     protected RefundShortcut $shortcut;

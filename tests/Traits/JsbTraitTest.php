@@ -18,11 +18,6 @@ class JsbTraitStub
     use JsbTrait;
 }
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class JsbTraitTest extends TestCase
 {
     public function testGetJsbUrl(): void

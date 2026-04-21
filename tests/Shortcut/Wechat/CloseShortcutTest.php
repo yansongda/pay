@@ -18,11 +18,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\CloseShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CloseShortcutTest extends TestCase
 {
     protected CloseShortcut $plugin;

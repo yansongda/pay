@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Unipay\Open\ResponseHtmlPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ResponseHtmlPluginTest extends TestCase
 {
     protected ResponseHtmlPlugin $plugin;

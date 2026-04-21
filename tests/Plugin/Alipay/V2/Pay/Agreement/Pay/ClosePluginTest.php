@@ -9,11 +9,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\ClosePlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ClosePluginTest extends TestCase
 {
     protected ClosePlugin $plugin;

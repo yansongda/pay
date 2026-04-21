@@ -9,11 +9,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\PosPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class PosPluginTest extends TestCase
 {
     protected PosPlugin $plugin;

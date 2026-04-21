@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Paypal\V2\Pay\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryPluginTest extends TestCase
 {
     protected QueryPlugin $plugin;

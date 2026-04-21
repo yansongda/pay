@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Coupons\DetailPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class DetailPluginTest extends TestCase
 {
     protected DetailPlugin $plugin;

@@ -14,11 +14,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Shortcut\Alipay\WebShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class WebShortcutTest extends TestCase
 {
     protected WebShortcut $shortcut;

@@ -9,11 +9,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\CreatePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CreatePluginTest extends TestCase
 {
     protected CreatePlugin $plugin;

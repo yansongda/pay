@@ -9,11 +9,6 @@ use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class AlipayConfigTest extends TestCase
 {
     private array $validConfig;

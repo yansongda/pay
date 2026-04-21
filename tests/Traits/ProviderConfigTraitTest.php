@@ -19,11 +19,6 @@ class ProviderConfigTraitStub
     use ProviderConfigTrait;
 }
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ProviderConfigTraitTest extends TestCase
 {
     public function testGetTenantDefault(): void

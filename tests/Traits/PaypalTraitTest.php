@@ -25,11 +25,6 @@ class PaypalTraitStub
     use PaypalTrait;
 }
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class PaypalTraitTest extends TestCase
 {
     public function testGetPaypalUrl(): void

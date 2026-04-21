@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\QueryMerchantsPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryMerchantsPluginTest extends TestCase
 {
     protected QueryMerchantsPlugin $plugin;

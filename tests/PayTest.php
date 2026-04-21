@@ -15,11 +15,6 @@ use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class PayTest extends TestCase
 {
     protected function setUp(): void

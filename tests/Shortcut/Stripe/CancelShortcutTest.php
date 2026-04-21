@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Stripe\CancelShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CancelShortcutTest extends TestCase
 {
     protected CancelShortcut $shortcut;

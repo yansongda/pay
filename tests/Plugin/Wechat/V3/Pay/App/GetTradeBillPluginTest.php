@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\GetTradeBillPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class GetTradeBillPluginTest extends TestCase
 {
     protected GetTradeBillPlugin $plugin;

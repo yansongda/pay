@@ -9,11 +9,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Scan\CreatePlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CreatePluginTest extends TestCase
 {
     protected CreatePlugin $plugin;

@@ -22,11 +22,6 @@ use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class UnipayTest extends TestCase
 {
     public function testShortcutNotFound()

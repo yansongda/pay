@@ -10,11 +10,6 @@ use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class VerifySignaturePluginTest extends TestCase
 {
     protected VerifySignaturePlugin $plugin;

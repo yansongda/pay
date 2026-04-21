@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryRefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryRefundPluginTest extends TestCase
 {
     protected QueryRefundPlugin $plugin;

@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Stripe\IntentShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class IntentShortcutTest extends TestCase
 {
     protected IntentShortcut $shortcut;

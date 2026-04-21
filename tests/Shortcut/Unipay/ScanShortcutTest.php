@@ -19,11 +19,6 @@ use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\ScanShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ScanShortcutTest extends TestCase
 {
     protected ScanShortcut $plugin;

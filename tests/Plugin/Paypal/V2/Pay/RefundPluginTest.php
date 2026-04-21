@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Paypal\V2\Pay\RefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class RefundPluginTest extends TestCase
 {
     protected RefundPlugin $plugin;

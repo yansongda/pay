@@ -11,11 +11,6 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CallbackPluginTest extends TestCase
 {
     protected CallbackPlugin $plugin;

@@ -10,11 +10,6 @@ use Yansongda\Pay\Plugin\Unipay\Qra\Scan\ClosePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ClosePluginTest extends TestCase
 {
     protected ClosePlugin $plugin;

@@ -9,11 +9,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class FormatPayloadBizContentPluginTest extends TestCase
 {
     protected FormatPayloadBizContentPlugin $plugin;

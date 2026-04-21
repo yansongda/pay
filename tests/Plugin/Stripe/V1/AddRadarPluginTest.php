@@ -9,11 +9,6 @@ use Yansongda\Pay\Plugin\Stripe\V1\AddRadarPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class AddRadarPluginTest extends TestCase
 {
     protected AddRadarPlugin $plugin;

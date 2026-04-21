@@ -22,11 +22,6 @@ use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignatureP
 use Yansongda\Pay\Shortcut\Unipay\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryShortcutTest extends TestCase
 {
     protected QueryShortcut $plugin;

@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryPluginTest extends TestCase
 {
     protected QueryPlugin $plugin;

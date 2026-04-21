@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Pos\CancelPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CancelPluginTest extends TestCase
 {
     protected CancelPlugin $plugin;

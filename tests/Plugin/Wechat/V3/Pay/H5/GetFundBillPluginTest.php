@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\H5\GetFundBillPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class GetFundBillPluginTest extends TestCase
 {
     protected GetFundBillPlugin $plugin;

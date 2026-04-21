@@ -10,7 +10,6 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use Yansongda\Pay\Pay;
 
 /**
- * @internal
  */
 #[CoversNothing]
 class TestCase extends \PHPUnit\Framework\TestCase

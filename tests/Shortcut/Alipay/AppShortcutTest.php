@@ -13,11 +13,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Shortcut\Alipay\AppShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class AppShortcutTest extends TestCase
 {
     protected AppShortcut $shortcut;

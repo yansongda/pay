@@ -8,11 +8,6 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Service\AbstractServiceProvider;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class AbstractServiceProviderTest extends TestCase
 {
     public function testRegister(): void

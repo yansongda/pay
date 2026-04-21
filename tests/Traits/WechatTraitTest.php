@@ -26,11 +26,6 @@ class WechatTraitStub
     use WechatTrait;
 }
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class WechatTraitTest extends TestCase
 {
     public function testGetWechatUrl(): void

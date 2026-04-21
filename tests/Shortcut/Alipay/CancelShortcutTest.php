@@ -21,11 +21,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\CancelShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CancelShortcutTest extends TestCase
 {
     protected CancelShortcut $shortcut;

@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\QueryAmountsPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryAmountsPluginTest extends TestCase
 {
     protected QueryAmountsPlugin $plugin;

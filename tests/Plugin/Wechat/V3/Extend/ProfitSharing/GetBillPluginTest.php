@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\GetBillPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class GetBillPluginTest extends TestCase
 {
     protected GetBillPlugin $plugin;

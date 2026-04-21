@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\QueryReturnAdvanceP
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryReturnAdvancePluginTest extends TestCase
 {
     protected QueryReturnAdvancePlugin $plugin;

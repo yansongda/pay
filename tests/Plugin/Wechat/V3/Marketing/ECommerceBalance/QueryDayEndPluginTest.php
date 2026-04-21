@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceBalance\QueryDayEndPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryDayEndPluginTest extends TestCase
 {
     protected QueryDayEndPlugin $plugin;

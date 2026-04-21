@@ -10,11 +10,6 @@ use Yansongda\Pay\Plugin\Wechat\V2\Pay\Pos\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryPluginTest extends TestCase
 {
     protected QueryPlugin $plugin;

@@ -16,11 +16,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\AddReceiverPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class AddReceiverPluginTest extends TestCase
 {
     protected AddReceiverPlugin $plugin;

@@ -13,11 +13,6 @@ use Yansongda\Pay\Plugin\Jsb\AddPayloadSignPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class AddPayloadSignPluginTest extends TestCase
 {
     protected AddPayloadSignPlugin $plugin;

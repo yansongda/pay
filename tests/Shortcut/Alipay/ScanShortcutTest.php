@@ -15,11 +15,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\ScanShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ScanShortcutTest extends TestCase
 {
     protected ScanShortcut $shortcut;

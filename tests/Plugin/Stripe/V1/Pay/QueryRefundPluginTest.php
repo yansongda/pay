@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Stripe\V1\Pay\QueryRefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryRefundPluginTest extends TestCase
 {
     protected QueryRefundPlugin $plugin;

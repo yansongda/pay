@@ -8,11 +8,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryCallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryCallbackPluginTest extends TestCase
 {
     protected QueryCallbackPlugin $plugin;

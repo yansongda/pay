@@ -9,11 +9,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\SetCallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class SetCallbackPluginTest extends TestCase
 {
     protected SetCallbackPlugin $plugin;

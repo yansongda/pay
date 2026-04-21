@@ -10,11 +10,6 @@ use Yansongda\Pay\Plugin\Unipay\Qra\Scan\PayPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class PayPluginTest extends TestCase
 {
     protected PayPlugin $plugin;

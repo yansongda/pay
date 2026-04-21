@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\RefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class RefundPluginTest extends TestCase
 {
     protected RefundPlugin $plugin;

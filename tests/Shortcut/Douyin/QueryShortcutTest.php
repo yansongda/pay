@@ -17,11 +17,6 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Douyin\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryShortcutTest extends TestCase
 {
     protected QueryShortcut $plugin;

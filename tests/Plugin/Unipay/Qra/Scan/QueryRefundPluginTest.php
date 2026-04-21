@@ -10,11 +10,6 @@ use Yansongda\Pay\Plugin\Unipay\Qra\Scan\QueryRefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryRefundPluginTest extends TestCase
 {
     protected QueryRefundPlugin $plugin;

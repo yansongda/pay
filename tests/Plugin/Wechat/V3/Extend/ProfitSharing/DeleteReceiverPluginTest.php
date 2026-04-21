@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\DeleteReceiverPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class DeleteReceiverPluginTest extends TestCase
 {
     protected DeleteReceiverPlugin $plugin;

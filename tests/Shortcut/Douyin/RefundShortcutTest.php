@@ -16,11 +16,6 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Douyin\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class RefundShortcutTest extends TestCase
 {
     protected RefundShortcut $plugin;

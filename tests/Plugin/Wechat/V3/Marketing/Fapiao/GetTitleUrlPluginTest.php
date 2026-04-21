@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\GetTitleUrlPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class GetTitleUrlPluginTest extends TestCase
 {
     protected GetTitleUrlPlugin $plugin;

@@ -10,11 +10,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class VerifySignaturePluginTest extends TestCase
 {
     protected VerifySignaturePlugin $plugin;

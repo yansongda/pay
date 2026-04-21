@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\PayPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class PayPluginTest extends TestCase
 {
     protected PayPlugin $plugin;

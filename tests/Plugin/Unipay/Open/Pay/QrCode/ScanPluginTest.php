@@ -9,11 +9,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\ScanPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ScanPluginTest extends TestCase
 {
     protected ScanPlugin $plugin;

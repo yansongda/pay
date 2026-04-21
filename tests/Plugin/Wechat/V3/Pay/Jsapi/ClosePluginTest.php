@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\ClosePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ClosePluginTest extends TestCase
 {
     protected ClosePlugin $plugin;

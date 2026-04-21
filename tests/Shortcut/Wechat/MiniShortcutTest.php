@@ -16,11 +16,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\MiniShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class MiniShortcutTest extends TestCase
 {
     protected MiniShortcut $plugin;

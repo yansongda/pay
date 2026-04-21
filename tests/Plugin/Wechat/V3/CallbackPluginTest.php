@@ -10,11 +10,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CallbackPluginTest extends TestCase
 {
     protected CallbackPlugin $plugin;

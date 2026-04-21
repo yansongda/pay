@@ -10,11 +10,6 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\Stubs\Traits\SupportServiceProviderPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class SupportServiceProviderTraitTest extends TestCase
 {
     public function testNormal()

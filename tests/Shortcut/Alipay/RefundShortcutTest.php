@@ -25,11 +25,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class RefundShortcutTest extends TestCase
 {
     protected RefundShortcut $shortcut;

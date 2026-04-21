@@ -10,11 +10,6 @@ use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\MiniOnlyContractPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class MiniOnlyContractPluginTest extends TestCase
 {
     protected MiniOnlyContractPlugin $plugin;

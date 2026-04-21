@@ -16,11 +16,6 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CallbackPluginTest extends TestCase
 {
     protected CallbackPlugin $plugin;

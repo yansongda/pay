@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class VerifySignaturePluginTest extends TestCase
 {
     protected VerifySignaturePlugin $plugin;

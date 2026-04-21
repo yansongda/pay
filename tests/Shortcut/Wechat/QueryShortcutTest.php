@@ -25,11 +25,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryShortcutTest extends TestCase
 {
     protected QueryShortcut $plugin;

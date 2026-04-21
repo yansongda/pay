@@ -8,11 +8,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Paypal\V2\ObtainAccessTokenPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ObtainAccessTokenPluginTest extends TestCase
 {
     protected ObtainAccessTokenPlugin $plugin;

@@ -8,11 +8,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Paypal\V2\VerifyWebhookSignPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class VerifyWebhookSignPluginTest extends TestCase
 {
     protected VerifyWebhookSignPlugin $plugin;

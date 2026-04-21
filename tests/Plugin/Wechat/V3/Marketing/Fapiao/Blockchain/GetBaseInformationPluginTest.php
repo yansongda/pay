@@ -9,11 +9,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetBaseInformatio
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class GetBaseInformationPluginTest extends TestCase
 {
     protected GetBaseInformationPlugin $plugin;

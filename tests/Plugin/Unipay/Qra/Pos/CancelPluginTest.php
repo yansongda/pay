@@ -10,11 +10,6 @@ use Yansongda\Pay\Plugin\Unipay\Qra\Pos\CancelPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CancelPluginTest extends TestCase
 {
     protected CancelPlugin $plugin;

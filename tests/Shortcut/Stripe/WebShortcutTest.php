@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Stripe\WebShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class WebShortcutTest extends TestCase
 {
     protected WebShortcut $shortcut;

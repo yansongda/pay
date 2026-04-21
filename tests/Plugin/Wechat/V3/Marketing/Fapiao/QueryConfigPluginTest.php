@@ -9,11 +9,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\QueryConfigPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryConfigPluginTest extends TestCase
 {
     protected QueryConfigPlugin $plugin;

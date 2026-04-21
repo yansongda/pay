@@ -10,11 +10,6 @@ use Yansongda\Pay\Plugin\Wechat\V2\Pay\Redpack\SendPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class SendPluginTest extends TestCase
 {
     protected SendPlugin $plugin;

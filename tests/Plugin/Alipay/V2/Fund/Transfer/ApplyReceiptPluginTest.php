@@ -9,11 +9,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\ApplyReceiptPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ApplyReceiptPluginTest extends TestCase
 {
     protected ApplyReceiptPlugin $plugin;

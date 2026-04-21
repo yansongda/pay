@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetDownloadInfoPl
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class GetDownloadInfoPluginTest extends TestCase
 {
     protected GetDownloadInfoPlugin $plugin;

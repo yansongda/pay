@@ -11,11 +11,6 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CallbackPluginTest extends TestCase
 {
     private CallbackPlugin $plugin;

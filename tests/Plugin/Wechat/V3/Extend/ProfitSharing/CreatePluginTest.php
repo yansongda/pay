@@ -16,11 +16,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\CreatePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CreatePluginTest extends TestCase
 {
     protected CreatePlugin $plugin;

@@ -13,11 +13,6 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Jsb\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class VerifySignaturePluginTest extends TestCase
 {
     protected VerifySignaturePlugin $plugin;

@@ -9,11 +9,6 @@ use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class DouyinConfigTest extends TestCase
 {
     private array $validConfig;

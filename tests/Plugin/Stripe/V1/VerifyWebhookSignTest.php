@@ -16,11 +16,6 @@ class StripeTraitStub
     use StripeTrait;
 }
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class VerifyWebhookSignTest extends TestCase
 {
     public function testLocalhostNoLongerSkipsVerification()

@@ -11,11 +11,6 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class StartPluginTest extends TestCase
 {
     protected StartPlugin $plugin;

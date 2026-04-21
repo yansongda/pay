@@ -14,11 +14,6 @@ use Yansongda\Pay\Plugin\Jsb\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Jsb\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class RefundShortcutTest extends TestCase
 {
     protected RefundShortcut $plugin;

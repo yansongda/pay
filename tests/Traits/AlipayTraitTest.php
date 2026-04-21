@@ -19,11 +19,6 @@ class AlipayTraitStub
     use AlipayTrait;
 }
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class AlipayTraitTest extends TestCase
 {
     public function testVerifyAlipaySignSuccess(): void

@@ -16,11 +16,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Refund\RefundAbnormalPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class RefundAbnormalPluginTest extends TestCase
 {
     protected RefundAbnormalPlugin $plugin;

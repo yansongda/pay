@@ -21,11 +21,6 @@ use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\PapayShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class PapayShortcutTest extends TestCase
 {
     protected PapayShortcut $plugin;

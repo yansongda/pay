@@ -8,11 +8,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class WechatPublicCertsPluginTest extends TestCase
 {
     protected WechatPublicCertsPlugin $plugin;

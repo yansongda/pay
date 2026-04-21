@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ResponsePluginTest extends TestCase
 {
     protected ResponsePlugin $plugin;

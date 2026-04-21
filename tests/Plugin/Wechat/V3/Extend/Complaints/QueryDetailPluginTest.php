@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryDetailPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryDetailPluginTest extends TestCase
 {
     protected QueryDetailPlugin $plugin;

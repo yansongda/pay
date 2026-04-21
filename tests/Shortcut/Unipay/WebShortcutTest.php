@@ -14,11 +14,6 @@ use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Shortcut\Unipay\WebShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class WebShortcutTest extends TestCase
 {
     protected WebShortcut $plugin;

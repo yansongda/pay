@@ -8,11 +8,6 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponseInvokeStringPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ResponseInvokeStringPluginTest extends TestCase
 {
     private ResponseInvokeStringPlugin $plugin;

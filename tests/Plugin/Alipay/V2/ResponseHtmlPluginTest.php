@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ResponseHtmlPluginTest extends TestCase
 {
     private ResponseHtmlPlugin $plugin;

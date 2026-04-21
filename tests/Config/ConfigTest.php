@@ -10,11 +10,6 @@ use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ConfigTest extends TestCase
 {
     public function testConstructWithArray(): void

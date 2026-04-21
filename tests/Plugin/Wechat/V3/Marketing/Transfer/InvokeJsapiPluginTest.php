@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\InvokeJsapiPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class InvokeJsapiPluginTest extends TestCase
 {
     protected InvokeJsapiPlugin $plugin;

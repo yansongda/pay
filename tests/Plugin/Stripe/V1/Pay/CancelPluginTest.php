@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Stripe\V1\Pay\CancelPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CancelPluginTest extends TestCase
 {
     protected CancelPlugin $plugin;

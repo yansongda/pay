@@ -21,11 +21,6 @@ class UnipayTraitStub
     use UnipayTrait;
 }
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class UnipayTraitTest extends TestCase
 {
     public function testVerifyUnipaySign(): void

@@ -15,11 +15,6 @@ use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\RedpackShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class RedpackShortcutTest extends TestCase
 {
     protected RedpackShortcut $plugin;

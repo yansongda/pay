@@ -23,11 +23,6 @@ use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class DouyinTest extends TestCase
 {
     public function testShortcutNotFound()

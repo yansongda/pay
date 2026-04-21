@@ -9,11 +9,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\UpdateConfigPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class UpdateConfigPluginTest extends TestCase
 {
     protected UpdateConfigPlugin $plugin;

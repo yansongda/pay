@@ -15,11 +15,6 @@ use Yansongda\Pay\Plugin\Jsb\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class CallbackPluginTest extends TestCase
 {
     protected CallbackPlugin $plugin;

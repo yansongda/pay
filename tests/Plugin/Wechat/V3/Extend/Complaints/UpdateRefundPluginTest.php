@@ -11,11 +11,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\UpdateRefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class UpdateRefundPluginTest extends TestCase
 {
     protected UpdateRefundPlugin $plugin;

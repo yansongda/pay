@@ -19,11 +19,6 @@ class StripeTraitStub
     use StripeTrait;
 }
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class StripeTraitTest extends TestCase
 {
     public function testGetStripeUrl(): void

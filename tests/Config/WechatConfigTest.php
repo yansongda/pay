@@ -9,11 +9,6 @@ use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class WechatConfigTest extends TestCase
 {
     private array $validConfig;

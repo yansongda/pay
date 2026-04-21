@@ -12,11 +12,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\InvokeAndroidPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class InvokeAndroidPluginTest extends TestCase
 {
     protected InvokeAndroidPlugin $plugin;

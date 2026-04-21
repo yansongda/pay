@@ -9,11 +9,6 @@ use Yansongda\Pay\Plugin\Wechat\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class AddPayloadSignaturePluginTest extends TestCase
 {
     protected AddPayloadSignaturePlugin $plugin;

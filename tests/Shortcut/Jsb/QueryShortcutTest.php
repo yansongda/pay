@@ -14,11 +14,6 @@ use Yansongda\Pay\Plugin\Jsb\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Jsb\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class QueryShortcutTest extends TestCase
 {
     protected QueryShortcut $plugin;
