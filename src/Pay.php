@@ -13,7 +13,6 @@ use Yansongda\Artful\Event\ArtfulStart;
 use Yansongda\Artful\Event\HttpEnd;
 use Yansongda\Artful\Event\HttpStart;
 use Yansongda\Artful\Exception\ContainerException;
-use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
@@ -101,24 +100,28 @@ class Pay
                 if (Artful::has(ConfigInterface::class)) {
                     return false;
                 }
-            } catch (ContainerException|ServiceNotFoundException) {
-                // Container not found or ConfigInterface not bound, proceed with config
+            } catch (ContainerException) {
+                // Container not found, proceed with config
             }
         }
 
         $configObject = is_array($config) ? new Config($config) : $config;
         $runtimeConfig = $configObject->all();
+        $force = is_array($config) ? (bool) ($config['_force'] ?? false) : (bool) ($runtimeConfig['_force'] ?? false);
 
         // For Config instance input, check force from runtime config
-        if (!is_array($config) && !($runtimeConfig['_force'] ?? false)) {
+        if (!is_array($config) && !$force) {
             try {
                 if (Artful::has(ConfigInterface::class)) {
                     return false;
                 }
-            } catch (ContainerException|ServiceNotFoundException) {
-                // Container not found or ConfigInterface not bound, proceed with config
+            } catch (ContainerException) {
+                // Container not found, proceed with config
             }
         }
+
+        // Force Artful::config() to execute by setting _force in runtime config
+        $runtimeConfig['_force'] = true;
 
         $result = Artful::config($runtimeConfig, $container);
 

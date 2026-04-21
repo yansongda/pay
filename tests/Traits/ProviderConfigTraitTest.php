@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Contract\ConfigInterface;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Config\ProviderConfigInterface;
+use Yansongda\Pay\Config\UnipayConfig;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Pay as PayFacade;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\ProviderConfigTrait;
@@ -31,14 +34,15 @@ class ProviderConfigTraitTest extends TestCase
     public function testGetProviderConfigDefault(): void
     {
         self::assertSame(
-            PayFacade::get(ConfigInterface::class)->get('alipay', [])[ProviderConfigTraitStub::getTenant()] ?? [],
+            PayFacade::get(ConfigInterface::class)->get('alipay.'.ProviderConfigTraitStub::getTenant()),
             ProviderConfigTraitStub::getProviderConfig('alipay')
         );
     }
 
     public function testGetProviderConfigAlipay(): void
     {
-        self::assertArrayHasKey('app_id', ProviderConfigTraitStub::getProviderConfig('alipay'));
+        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('alipay');
+        self::assertInstanceOf(AlipayConfig::class, $defaultConfig);
 
         PayFacade::clear();
 
@@ -61,14 +65,25 @@ class ProviderConfigTraitTest extends TestCase
             ],
         ];
         PayFacade::config($config2);
-        self::assertSame('yansongda', ProviderConfigTraitStub::getProviderConfig('alipay')['app_id']);
+        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('alipay');
+        if (!$defaultConfig instanceof AlipayConfig) {
+            self::fail('Expected alipay config to be '.AlipayConfig::class);
+        }
 
-        self::assertSame('yansongda-c1', ProviderConfigTraitStub::getProviderConfig('alipay', ['_config' => 'c1'])['app_id']);
+        self::assertSame('yansongda', $defaultConfig->getAppId());
+
+        $customConfig = ProviderConfigTraitStub::getProviderConfig('alipay', ['_config' => 'c1']);
+        if (!$customConfig instanceof AlipayConfig) {
+            self::fail('Expected alipay tenant config to be '.AlipayConfig::class);
+        }
+
+        self::assertSame('yansongda-c1', $customConfig->getAppId());
     }
 
     public function testGetProviderConfigWechat(): void
     {
-        self::assertArrayHasKey('mp_app_id', ProviderConfigTraitStub::getProviderConfig('wechat', []));
+        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('wechat', []);
+        self::assertInstanceOf(WechatConfig::class, $defaultConfig);
 
         $config2 = [
             'wechat' => [
@@ -91,14 +106,25 @@ class ProviderConfigTraitTest extends TestCase
             ],
         ];
         PayFacade::config(array_merge($config2, ['_force' => true]));
-        self::assertSame('wx-default', ProviderConfigTraitStub::getProviderConfig('wechat', [])['mp_app_id']);
+        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('wechat', []);
+        if (!$defaultConfig instanceof WechatConfig) {
+            self::fail('Expected wechat config to be '.WechatConfig::class);
+        }
 
-        self::assertSame('wx-c1', ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'c1'])['mp_app_id']);
+        self::assertSame('wx-default', $defaultConfig->getMpAppId());
+
+        $customConfig = ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'c1']);
+        if (!$customConfig instanceof WechatConfig) {
+            self::fail('Expected wechat tenant config to be '.WechatConfig::class);
+        }
+
+        self::assertSame('wx-c1', $customConfig->getMpAppId());
     }
 
     public function testGetProviderConfigUnipay(): void
     {
-        self::assertArrayHasKey('mch_id', ProviderConfigTraitStub::getProviderConfig('unipay'));
+        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('unipay');
+        self::assertInstanceOf(UnipayConfig::class, $defaultConfig);
 
         PayFacade::clear();
 
@@ -117,20 +143,30 @@ class ProviderConfigTraitTest extends TestCase
             ],
         ];
         PayFacade::config($config2);
-        self::assertSame('yansongda', ProviderConfigTraitStub::getProviderConfig('unipay')['mch_id']);
+        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('unipay');
+        if (!$defaultConfig instanceof UnipayConfig) {
+            self::fail('Expected unipay config to be '.UnipayConfig::class);
+        }
 
-        self::assertSame('yansongda-c1', ProviderConfigTraitStub::getProviderConfig('unipay', ['_config' => 'c1'])['mch_id']);
+        self::assertSame('yansongda', $defaultConfig->getMchId());
+
+        $customConfig = ProviderConfigTraitStub::getProviderConfig('unipay', ['_config' => 'c1']);
+        if (!$customConfig instanceof UnipayConfig) {
+            self::fail('Expected unipay tenant config to be '.UnipayConfig::class);
+        }
+
+        self::assertSame('yansongda-c1', $customConfig->getMchId());
     }
 
     public function testGetProviderConfigCustomTenant(): void
     {
         self::assertSame(
-            PayFacade::get(ConfigInterface::class)->get('wechat', [])['service_provider'] ?? [],
+            PayFacade::get(ConfigInterface::class)->get('wechat.service_provider'),
             ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'service_provider'])
         );
     }
 
-    public function testGetProviderConfigUsesExplicitArrayExportContract(): void
+    public function testGetProviderConfigReturnsProviderConfigObject(): void
     {
         $config = new class implements ProviderConfigInterface {
             public function getTenant(): string
@@ -141,6 +177,11 @@ class ProviderConfigTraitTest extends TestCase
             public function getMode(): int
             {
                 return PayFacade::MODE_NORMAL;
+            }
+
+            public function get(?string $key = null, mixed $default = null): mixed
+            {
+                return $default;
             }
 
             public function toArray(): array
@@ -156,7 +197,7 @@ class ProviderConfigTraitTest extends TestCase
             ],
         ]);
 
-        self::assertSame(['foo' => 'bar'], ProviderConfigTraitStub::getProviderConfig('custom'));
+        self::assertSame($config, ProviderConfigTraitStub::getProviderConfig('custom'));
     }
 
     public function testGetRadarUrlNull(): void

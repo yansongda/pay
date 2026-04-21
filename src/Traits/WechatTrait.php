@@ -6,7 +6,6 @@ namespace Yansongda\Pay\Traits;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -223,10 +222,7 @@ trait WechatTrait
             $certs[$item['serial_no']] = self::decryptWechatResource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
         }
 
-        Pay::get(ConfigInterface::class)->set(
-            'wechat.'.self::getTenant($params).'.wechat_public_cert_path',
-            ((array) ($wechatConfig['wechat_public_cert_path'] ?? [])) + ($certs ?? []),
-        );
+        $wechatConfig->set('wechat_public_cert_path', $wechatConfig->getWechatPublicCertPath() + ($certs ?? []));
 
         if (!is_null($serialNo) && empty($certs[$serialNo])) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 获取微信 wechat_public_cert_path 配置失败');

@@ -12,6 +12,7 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Pay\Config\PaypalConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -39,8 +40,9 @@ class PaypalTraitTest extends TestCase
 
     public function testGetPaypalAccessTokenCached(): void
     {
-        Pay::get(ConfigInterface::class)->set('paypal.default._access_token', 'cached_token_123');
-        Pay::get(ConfigInterface::class)->set('paypal.default._access_token_expiry', time() + 3600);
+        $paypalConfig = PaypalTraitStub::getProviderConfig('paypal', []);
+        $paypalConfig->set('access_token', 'cached_token_123');
+        $paypalConfig->set('access_token_expiry', time() + 3600);
 
         $token = PaypalTraitStub::getPaypalAccessToken([]);
 
@@ -75,13 +77,17 @@ class PaypalTraitTest extends TestCase
         $token = PaypalTraitStub::getPaypalAccessToken([]);
 
         self::assertEquals('new_paypal_token_456', $token);
-        self::assertEquals('new_paypal_token_456', Pay::get(ConfigInterface::class)->get('paypal.default._access_token'));
-        self::assertNotEmpty(Pay::get(ConfigInterface::class)->get('paypal.default._access_token_expiry'));
+
+        $paypalConfig = Pay::get(ConfigInterface::class)->get('paypal.default');
+
+        self::assertInstanceOf(PaypalConfig::class, $paypalConfig);
+        self::assertEquals('new_paypal_token_456', $paypalConfig['access_token']);
+        self::assertNotEmpty($paypalConfig['access_token_expiry']);
     }
 
     public function testVerifyPaypalWebhookSignMissingWebhookId(): void
     {
-        Pay::get(ConfigInterface::class)->set('paypal.default.webhook_id', '');
+        PaypalTraitStub::getProviderConfig('paypal', [])->set('webhook_id', '');
 
         $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
             'PAYPAL-TRANSMISSION-ID' => 'test-id',

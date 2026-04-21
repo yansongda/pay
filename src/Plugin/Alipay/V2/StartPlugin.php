@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Alipay\V2;
 
 use Closure;
-use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
@@ -13,8 +12,8 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AlipayTrait;
 
 class StartPlugin implements PluginInterface
@@ -44,11 +43,11 @@ class StartPlugin implements PluginInterface
      */
     protected function getPayload(array $params): array
     {
-        $tenant = self::getTenant($params);
+        /** @var AlipayConfig $config */
         $config = self::getProviderConfig('alipay', $params);
 
         return [
-            'app_id' => $config['app_id'] ?? '',
+            'app_id' => $config->getAppId(),
             'method' => '',
             'format' => 'JSON',
             'return_url' => $this->getReturnUrl($params, $config),
@@ -59,37 +58,37 @@ class StartPlugin implements PluginInterface
             'version' => '1.0',
             'notify_url' => $this->getNotifyUrl($params, $config),
             'app_auth_token' => $this->getAppAuthToken($params, $config),
-            'app_cert_sn' => $this->getAppCertSn($tenant, $config),
-            'alipay_root_cert_sn' => $this->getAlipayRootCertSn($tenant, $config),
+            'app_cert_sn' => $this->getAppCertSn($config),
+            'alipay_root_cert_sn' => $this->getAlipayRootCertSn($config),
             'biz_content' => [],
         ];
     }
 
-    protected function getReturnUrl(array $params, array $config): string
+    protected function getReturnUrl(array $params, AlipayConfig $config): string
     {
         if (!empty($params['_return_url'])) {
             return $params['_return_url'];
         }
 
-        return $config['return_url'] ?? '';
+        return $config->getReturnUrl() ?? '';
     }
 
-    protected function getNotifyUrl(array $params, array $config): string
+    protected function getNotifyUrl(array $params, AlipayConfig $config): string
     {
         if (!empty($params['_notify_url'])) {
             return $params['_notify_url'];
         }
 
-        return $config['notify_url'] ?? '';
+        return $config->getNotifyUrl() ?? '';
     }
 
-    protected function getAppAuthToken(array $params, array $config): string
+    protected function getAppAuthToken(array $params, AlipayConfig $config): string
     {
         if (!empty($params['_app_auth_token'])) {
             return $params['_app_auth_token'];
         }
 
-        return $config['app_auth_token'] ?? '';
+        return $config->getAppAuthToken() ?? '';
     }
 
     /**
@@ -97,15 +96,15 @@ class StartPlugin implements PluginInterface
      * @throws InvalidConfigException
      * @throws ServiceNotFoundException
      */
-    protected function getAppCertSn(string $tenant, array $config): string
+    protected function getAppCertSn(AlipayConfig $config): string
     {
-        if (!empty($config['app_public_cert_sn'])) {
-            return $config['app_public_cert_sn'];
+        if (!empty($config->get('_app_public_cert_sn'))) {
+            return $config->get('_app_public_cert_sn');
         }
 
-        $path = $config['app_public_cert_path'] ?? null;
+        $path = $config->getAppPublicCertPath();
 
-        if (is_null($path)) {
+        if (is_null($path) || empty($path)) {
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
         }
 
@@ -117,7 +116,7 @@ class StartPlugin implements PluginInterface
 
         $result = $this->getCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
 
-        Pay::get(ConfigInterface::class)->set('alipay.'.$tenant.'.app_public_cert_sn', $result);
+        $config->set('_app_public_cert_sn', $result);
 
         return $result;
     }
@@ -127,15 +126,15 @@ class StartPlugin implements PluginInterface
      * @throws InvalidConfigException
      * @throws ServiceNotFoundException
      */
-    protected function getAlipayRootCertSn(string $tenant, array $config): string
+    protected function getAlipayRootCertSn(AlipayConfig $config): string
     {
-        if (!empty($config['alipay_root_cert_sn'])) {
-            return $config['alipay_root_cert_sn'];
+        if (!empty($config->get('_alipay_root_cert_sn'))) {
+            return $config->get('_alipay_root_cert_sn');
         }
 
-        $path = $config['alipay_root_cert_path'] ?? null;
+        $path = $config->getAlipayRootCertPath();
 
-        if (is_null($path)) {
+        if (is_null($path) || empty($path)) {
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [alipay_root_cert_path]');
         }
 
@@ -162,7 +161,7 @@ class StartPlugin implements PluginInterface
 
         $result = substr($sn, 0, -1);
 
-        Pay::get(ConfigInterface::class)->set('alipay.'.$tenant.'.alipay_root_cert_sn', $result);
+        $config->set('_alipay_root_cert_sn', $result);
 
         return $result;
     }

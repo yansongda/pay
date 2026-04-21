@@ -12,6 +12,7 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
@@ -191,6 +192,8 @@ class WechatTraitTest extends TestCase
 
     public function testReloadWechatPublicCerts(): void
     {
+        $existingCert = WechatTraitStub::getProviderConfig('wechat', [])['wechat_public_cert_path']['yansongda'];
+
         $response = new Response(
             200,
             [],
@@ -219,8 +222,12 @@ class WechatTraitTest extends TestCase
         $result = WechatTraitStub::reloadWechatPublicCerts([], 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57');
 
         self::assertTrue(str_contains($result, '-----BEGIN CERTIFICATE-----'));
-        self::assertTrue(Artful::get(ConfigInterface::class)->has('wechat.default.wechat_public_cert_path.test-45F59D4DABF31918AFCEC556D5D2C6E376675D57'));
-        self::assertIsArray(Artful::get(ConfigInterface::class)->get('wechat.default'));
+
+        $wechatConfig = Artful::get(ConfigInterface::class)->get('wechat.default');
+
+        self::assertInstanceOf(WechatConfig::class, $wechatConfig);
+        self::assertSame($existingCert, $wechatConfig['wechat_public_cert_path']['yansongda']);
+        self::assertArrayHasKey('test-45F59D4DABF31918AFCEC556D5D2C6E376675D57', $wechatConfig['wechat_public_cert_path']);
     }
 
     public function testGetWechatPublicCerts(): void

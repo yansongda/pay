@@ -6,13 +6,13 @@ namespace Yansongda\Pay\Traits;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Artful\Artful;
-use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Config\PaypalConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -50,15 +50,16 @@ trait PaypalTrait
      */
     public static function getPaypalAccessToken(array $params): string
     {
+        /** @var PaypalConfig $config */
         $config = self::getProviderConfig('paypal', $params);
 
-        if (!empty($config['_access_token'])
-            && !empty($config['_access_token_expiry'])
-            && time() < (int) $config['_access_token_expiry']) {
-            return $config['_access_token'];
+        if (!empty($config->get('_access_token'))
+            && !empty($config->get('_access_token_expiry'))
+            && time() < (int) $config->get('_access_token_expiry')) {
+            return $config->get('_access_token');
         }
 
-        if (empty($config['client_id']) || empty($config['app_secret'])) {
+        if (empty($config->getClientId()) || empty($config->getAppSecret())) {
             throw new InvalidConfigException(Exception::CONFIG_PAYPAL_INVALID, '配置异常: 缺少 PayPal 配置 -- [client_id] or [app_secret]');
         }
 
@@ -73,14 +74,8 @@ trait PaypalTrait
         $token = $result->get('access_token', '');
         $expiresIn = $result->get('expires_in', 32400);
 
-        Pay::get(ConfigInterface::class)->set(
-            'paypal.'.self::getTenant($params).'._access_token',
-            $token
-        );
-        Pay::get(ConfigInterface::class)->set(
-            'paypal.'.self::getTenant($params).'._access_token_expiry',
-            time() + $expiresIn - 60
-        );
+        $config->set('_access_token', $token);
+        $config->set('_access_token_expiry', time() + $expiresIn - 60);
 
         return $token;
     }
