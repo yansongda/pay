@@ -17,6 +17,11 @@ use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Paypal\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class QueryShortcutTest extends TestCase
 {
     protected QueryShortcut $shortcut;

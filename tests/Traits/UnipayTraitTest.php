@@ -21,6 +21,11 @@ class UnipayTraitStub
     use UnipayTrait;
 }
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class UnipayTraitTest extends TestCase
 {
     public function testVerifyUnipaySign(): void
@@ -128,19 +133,19 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
     public function testVerifyUnipaySignQra(): void
     {
         $payload = [
-            "charset" => "UTF-8",
-            "code" => "9999999",
-            "err_code" => "NOAUTH",
-            "err_msg" => "此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。",
-            "mch_id" => "QRA29045311KKR1",
-            "need_query" => "N",
-            "nonce_str" => "UhxOr4kzerPGku9wCaVQyfd1zisoAnAm",
-            "result_code" => "1",
-            "sign" => "4B9B2AA73A05CBC32CFDCB4456E12EBA",
-            "sign_type" => "MD5",
-            "status" => "0",
-            "transaction_id" => "95516000379952690603566602920171",
-            "version" => "2.0",
+            'charset' => 'UTF-8',
+            'code' => '9999999',
+            'err_code' => 'NOAUTH',
+            'err_msg' => '此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。',
+            'mch_id' => 'QRA29045311KKR1',
+            'need_query' => 'N',
+            'nonce_str' => 'UhxOr4kzerPGku9wCaVQyfd1zisoAnAm',
+            'result_code' => '1',
+            'sign' => '4B9B2AA73A05CBC32CFDCB4456E12EBA',
+            'sign_type' => 'MD5',
+            'status' => '0',
+            'transaction_id' => '95516000379952690603566602920171',
+            'version' => '2.0',
         ];
 
         /** @var UnipayConfig $config */
@@ -157,19 +162,19 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
     public function testVerifyUnipaySignQraWrong(): void
     {
         $payload = [
-            "charset" => "UTF-8",
-            "code" => "9999999",
-            "err_code" => "NOAUTH",
-            "err_msg" => "此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。",
-            "mch_id" => "QRA29045311KKR1",
-            "need_query" => "N",
-            "nonce_str" => "UhxOr4kzerPGku9wCaVQyfd1zisoAnAm",
-            "result_code" => "1",
-            "sign" => "4B9B2AA73A05CBC32CFDCB4456E12EB1",
-            "sign_type" => "MD5",
-            "status" => "0",
-            "transaction_id" => "95516000379952690603566602920171",
-            "version" => "2.0",
+            'charset' => 'UTF-8',
+            'code' => '9999999',
+            'err_code' => 'NOAUTH',
+            'err_msg' => '此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。',
+            'mch_id' => 'QRA29045311KKR1',
+            'need_query' => 'N',
+            'nonce_str' => 'UhxOr4kzerPGku9wCaVQyfd1zisoAnAm',
+            'result_code' => '1',
+            'sign' => '4B9B2AA73A05CBC32CFDCB4456E12EB1',
+            'sign_type' => 'MD5',
+            'status' => '0',
+            'transaction_id' => '95516000379952690603566602920171',
+            'version' => '2.0',
         ];
 
         self::expectException(InvalidSignException::class);
@@ -184,18 +189,18 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
     public function testVerifyUnipaySignQraEmpty(): void
     {
         $payload = [
-            "charset" => "UTF-8",
-            "code" => "9999999",
-            "err_code" => "NOAUTH",
-            "err_msg" => "此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。",
-            "mch_id" => "QRA29045311KKR1",
-            "need_query" => "N",
-            "nonce_str" => "UhxOr4kzerPGku9wCaVQyfd1zisoAnAm",
-            "result_code" => "1",
-            "sign_type" => "MD5",
-            "status" => "0",
-            "transaction_id" => "95516000379952690603566602920171",
-            "version" => "2.0",
+            'charset' => 'UTF-8',
+            'code' => '9999999',
+            'err_code' => 'NOAUTH',
+            'err_msg' => '此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。',
+            'mch_id' => 'QRA29045311KKR1',
+            'need_query' => 'N',
+            'nonce_str' => 'UhxOr4kzerPGku9wCaVQyfd1zisoAnAm',
+            'result_code' => '1',
+            'sign_type' => 'MD5',
+            'status' => '0',
+            'transaction_id' => '95516000379952690603566602920171',
+            'version' => '2.0',
         ];
 
         self::expectException(InvalidSignException::class);

@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V2;
 
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
-use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class VerifySignaturePluginTest extends TestCase
 {
     protected VerifySignaturePlugin $plugin;

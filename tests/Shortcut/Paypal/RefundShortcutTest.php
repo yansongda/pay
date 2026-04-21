@@ -14,6 +14,11 @@ use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Paypal\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class RefundShortcutTest extends TestCase
 {
     protected RefundShortcut $shortcut;

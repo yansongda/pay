@@ -1,19 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Refund;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Yansongda\Artful\Contract\HttpClientInterface;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Refund\RefundAbnormalPlugin;
-use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class RefundAbnormalPluginTest extends TestCase
 {
     protected RefundAbnormalPlugin $plugin;
@@ -41,7 +48,7 @@ class RefundAbnormalPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
             'refund_id' => '111',
-            "name" => "yansongda",
+            'name' => 'yansongda',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -59,7 +66,7 @@ class RefundAbnormalPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
             'refund_id' => '111',
-            "name" => "yansongda",
+            'name' => 'yansongda',
             'bank_account' => '222',
             'real_name' => '333',
         ]));
@@ -82,7 +89,7 @@ class RefundAbnormalPluginTest extends TestCase
     public function testServiceParams()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
             'sub_mchid' => '111',
             'refund_id' => '222',
             'name' => 'yansongda',
@@ -102,7 +109,7 @@ class RefundAbnormalPluginTest extends TestCase
     public function testService()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
             'refund_id' => '222',
             'name' => 'yansongda',
         ]));
@@ -123,7 +130,7 @@ class RefundAbnormalPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
             'refund_id' => '111',
-            "name" => "yansongda",
+            'name' => 'yansongda',
             'bank_account' => '222',
             'real_name' => '333',
         ]));
@@ -149,7 +156,7 @@ class RefundAbnormalPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([
             'refund_id' => '111',
-            "name" => "yansongda",
+            'name' => 'yansongda',
             'bank_account' => '222',
             'real_name' => '333',
         ]));
@@ -169,8 +176,8 @@ class RefundAbnormalPluginTest extends TestCase
                         ],
                         'expire_time' => '2026-07-15T17:51:10+08:00',
                         'serial_no' => 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57',
-                    ]
-                ]
+                    ],
+                ],
             ])
         );
 

@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Open;
 
 use Yansongda\Artful\Contract\ConfigInterface;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
-use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class StartPluginTest extends TestCase
 {
     protected StartPlugin $plugin;
@@ -35,6 +42,7 @@ class StartPluginTest extends TestCase
         $rocket = (new Rocket())->setParams($params);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
         /** @var UnipayConfig $config */
         $config = Pay::get(ConfigInterface::class)->get('unipay.default');
 

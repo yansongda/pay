@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\ProfitSharing;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\QueryReturnPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\QueryReturnPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class QueryReturnPluginTest extends TestCase
 {
     protected QueryReturnPlugin $plugin;
@@ -34,8 +41,8 @@ class QueryReturnPluginTest extends TestCase
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "out_return_no" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'out_return_no' => 'yansongda',
             'out_order_no' => '111',
         ]));
 
@@ -51,8 +58,8 @@ class QueryReturnPluginTest extends TestCase
     public function testService()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
-            "out_return_no" => "yansongda",
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+            'out_return_no' => 'yansongda',
             'out_order_no' => '111',
         ]));
 
@@ -68,8 +75,8 @@ class QueryReturnPluginTest extends TestCase
     public function testServiceParams()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
-            "out_return_no" => "yansongda",
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+            'out_return_no' => 'yansongda',
             'out_order_no' => '111',
             'sub_mchid' => '222',
         ]));

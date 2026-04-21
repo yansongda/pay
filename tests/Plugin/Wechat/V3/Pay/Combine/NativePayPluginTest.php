@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Combine;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\NativePayPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\NativePayPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class NativePayPluginTest extends TestCase
 {
     protected NativePayPlugin $plugin;
@@ -34,7 +41,7 @@ class NativePayPluginTest extends TestCase
     public function testNormalParams()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
+        $rocket->setPayload(new Collection([
             'combine_mchid' => '333',
             'combine_appid' => 'yansongdaaa',
             'notify_url' => '444',
@@ -47,7 +54,7 @@ class NativePayPluginTest extends TestCase
             '_method' => 'POST',
             '_url' => 'v3/combine-transactions/native',
             '_service_url' => 'v3/combine-transactions/native',
-            "combine_appid" => "yansongdaaa",
+            'combine_appid' => 'yansongdaaa',
             'combine_mchid' => '333',
             'notify_url' => '444',
             'name' => 'yansongda',
@@ -57,7 +64,7 @@ class NativePayPluginTest extends TestCase
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
+        $rocket->setPayload(new Collection([
             'name' => 'yansongda',
         ]));
 
@@ -67,7 +74,7 @@ class NativePayPluginTest extends TestCase
             '_method' => 'POST',
             '_url' => 'v3/combine-transactions/native',
             '_service_url' => 'v3/combine-transactions/native',
-            "combine_appid" => "wx55955316af4ef13",
+            'combine_appid' => 'wx55955316af4ef13',
             'combine_mchid' => '1600314069',
             'notify_url' => 'https://pay.yansongda.cn',
             'name' => 'yansongda',

@@ -21,6 +21,11 @@ use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignatureP
 use Yansongda\Pay\Shortcut\Unipay\CancelShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CancelShortcutTest extends TestCase
 {
     protected CancelShortcut $plugin;

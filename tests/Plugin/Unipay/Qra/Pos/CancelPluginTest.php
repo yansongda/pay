@@ -1,13 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra\Pos;
 
 use Yansongda\Artful\Packer\XmlPacker;
-use Yansongda\Pay\Plugin\Unipay\Qra\Pos\CancelPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Unipay\Qra\Pos\CancelPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CancelPluginTest extends TestCase
 {
     protected CancelPlugin $plugin;

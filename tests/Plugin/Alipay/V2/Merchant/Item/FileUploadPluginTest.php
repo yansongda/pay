@@ -8,6 +8,11 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Merchant\Item\FileUploadPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class FileUploadPluginTest extends TestCase
 {
     protected FileUploadPlugin $plugin;

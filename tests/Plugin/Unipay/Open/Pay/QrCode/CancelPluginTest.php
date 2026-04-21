@@ -1,12 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Open\Pay\QrCode;
 
 use Yansongda\Artful\Packer\QueryPacker;
-use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\CancelPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\CancelPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CancelPluginTest extends TestCase
 {
     protected CancelPlugin $plugin;

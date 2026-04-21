@@ -18,7 +18,7 @@ trait JsbTrait
 
     public static function getJsbUrl(JsbConfig $config, ?Collection $payload): string
     {
-        $url = self::getRadarUrl($config->toArray(), $payload) ?? '';
+        $url = self::getRadarUrl($config, $payload) ?? '';
 
         if (str_starts_with($url, 'http')) {
             return $url;

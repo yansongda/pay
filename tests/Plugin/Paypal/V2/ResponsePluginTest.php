@@ -12,6 +12,11 @@ use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class ResponsePluginTest extends TestCase
 {
     protected ResponsePlugin $plugin;

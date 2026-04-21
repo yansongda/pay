@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Pos;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Pos\CancelPlugin;
-use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CancelPluginTest extends TestCase
 {
     protected CancelPlugin $plugin;
@@ -24,7 +31,7 @@ class CancelPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            'aaa' => 'aaa'
+            'aaa' => 'aaa',
         ]));
 
         self::expectException(InvalidParamsException::class);
@@ -38,8 +45,8 @@ class CancelPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            "out_trade_no" => "111",
-            'aaa' => 'aaa'
+            'out_trade_no' => '111',
+            'aaa' => 'aaa',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -55,8 +62,8 @@ class CancelPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            "out_trade_no" => "111",
-            'aaa' => 'aaa'
+            'out_trade_no' => '111',
+            'aaa' => 'aaa',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -74,8 +81,8 @@ class CancelPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
             'sub_mchid' => '1222',
-            "out_trade_no" => "111",
-            'aaa' => 'aaa'
+            'out_trade_no' => '111',
+            'aaa' => 'aaa',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

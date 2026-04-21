@@ -1,16 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
 
 use Yansongda\Artful\Contract\ConfigInterface;
+use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
-use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class StartPluginTest extends TestCase
 {
     protected StartPlugin $plugin;
@@ -116,6 +123,7 @@ class StartPluginTest extends TestCase
     public function testWrongAppPublicCertPath()
     {
         $rocket = new Rocket();
+
         /** @var AlipayConfig $alipayConfig */
         $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
         $alipayConfig->setAppPublicCertPath(__DIR__.'/../../Cert/foo');
@@ -130,6 +138,7 @@ class StartPluginTest extends TestCase
     public function testMissingAlipayRootPath()
     {
         $rocket = new Rocket();
+
         /** @var AlipayConfig $alipayConfig */
         $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
         $alipayConfig->setAlipayRootCertPath('');
@@ -144,6 +153,7 @@ class StartPluginTest extends TestCase
     public function testWrongAlipayRootPath()
     {
         $rocket = new Rocket();
+
         /** @var AlipayConfig $alipayConfig */
         $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
         $alipayConfig->setAlipayRootCertPath(__DIR__.'/../../../Cert/foo');
@@ -189,7 +199,7 @@ class StartPluginTest extends TestCase
         self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
     }
 
-public function testAlipayRootCertSnString()
+    public function testAlipayRootCertSnString()
     {
         /** @var AlipayConfig $alipayConfig */
         $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');

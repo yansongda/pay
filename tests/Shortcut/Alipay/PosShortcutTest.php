@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
+use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
@@ -9,10 +12,14 @@ use Yansongda\Pay\Plugin\Alipay\V2\Pay\Pos\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Shortcut\Alipay\PosShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PosShortcutTest extends TestCase
 {
     protected PosShortcut $shortcut;

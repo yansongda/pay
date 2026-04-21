@@ -1,13 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V2\Papay\Direct;
 
 use Yansongda\Artful\Packer\XmlPacker;
-use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\ContractOrderPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\ContractOrderPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class ContractOrderPluginTest extends TestCase
 {
     protected ContractOrderPlugin $plugin;
@@ -22,8 +29,8 @@ class ContractOrderPluginTest extends TestCase
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "out_trade_no" => "111",
+        $rocket->setPayload(new Collection([
+            'out_trade_no' => '111',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

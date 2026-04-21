@@ -1,17 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
+use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\H5\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Shortcut\Alipay\H5Shortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class H5ShortcutTest extends TestCase
 {
     protected H5Shortcut $shortcut;

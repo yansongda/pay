@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -13,6 +15,11 @@ use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\TransferShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class TransferShortcutTest extends TestCase
 {
     protected TransferShortcut $shortcut;

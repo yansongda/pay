@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\ECommerceRefund;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\ApplyPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\ApplyPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class ApplyPluginTest extends TestCase
 {
     protected ApplyPlugin $plugin;
@@ -46,8 +53,8 @@ class ApplyPluginTest extends TestCase
     public function testNormalParams()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
-            "test" => "yansongda",
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+            'test' => 'yansongda',
             'sub_mchid' => '1111',
             'sp_appid' => '2222',
             'notify_url' => '3333',
@@ -64,12 +71,12 @@ class ApplyPluginTest extends TestCase
             'test' => 'yansongda',
         ], $result->getPayload()->all());
     }
-    
+
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
-            "test" => "yansongda",
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+            'test' => 'yansongda',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -79,7 +86,7 @@ class ApplyPluginTest extends TestCase
             '_service_url' => 'v3/ecommerce/refunds/apply',
             'sub_mchid' => '1600314070',
             'sp_appid' => 'wx55955316af4ef13',
-            'notify_url' => null,
+            'notify_url' => 'https://pay.yansongda.cn',
             'test' => 'yansongda',
         ], $result->getPayload()->all());
     }

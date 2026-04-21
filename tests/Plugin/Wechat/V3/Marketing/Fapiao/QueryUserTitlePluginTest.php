@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Fapiao;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -9,6 +11,11 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\QueryUserTitlePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class QueryUserTitlePluginTest extends TestCase
 {
     protected QueryUserTitlePlugin $plugin;
@@ -34,8 +41,8 @@ class QueryUserTitlePluginTest extends TestCase
     public function testNormalParams()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "test" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'test' => 'yansongda',
             'appid' => '1111',
             '_t' => 'a',
         ]));
@@ -44,7 +51,7 @@ class QueryUserTitlePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/user-title?test=yansongda&appid=1111'
+            '_url' => 'v3/new-tax-control-fapiao/user-title?test=yansongda&appid=1111',
         ], $result->getPayload()->all());
     }
 }

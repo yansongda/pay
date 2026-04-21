@@ -9,6 +9,11 @@ use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class UnipayConfigTest extends TestCase
 {
     private array $validConfig;

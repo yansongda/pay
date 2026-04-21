@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon\Callback;
 
 use Yansongda\Artful\Rocket;
@@ -7,6 +9,11 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Callback\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class QueryPluginTest extends TestCase
 {
     protected QueryPlugin $plugin;
@@ -21,8 +28,8 @@ class QueryPluginTest extends TestCase
     public function testNormalParams()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "mchid" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'mchid' => 'yansongda',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -37,8 +44,7 @@ class QueryPluginTest extends TestCase
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-        ]));
+        $rocket->setPayload(new Collection([]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 

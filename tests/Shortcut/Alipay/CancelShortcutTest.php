@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -19,6 +21,11 @@ use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\CancelShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CancelShortcutTest extends TestCase
 {
     protected CancelShortcut $shortcut;
@@ -118,7 +125,7 @@ class CancelShortcutTest extends TestCase
         ], $result);
     }
 
-public function testScan()
+    public function testScan()
     {
         $result = $this->shortcut->getPlugins(['_action' => 'scan']);
 

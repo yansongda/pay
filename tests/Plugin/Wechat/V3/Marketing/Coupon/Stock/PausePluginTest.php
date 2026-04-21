@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon\Stock;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -9,6 +11,11 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\PausePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PausePluginTest extends TestCase
 {
     protected PausePlugin $plugin;
@@ -34,8 +41,8 @@ class PausePluginTest extends TestCase
     public function testNormalParams()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "stock_id" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'stock_id' => 'yansongda',
             'stock_creator_mchid' => '1111',
         ]));
 
@@ -52,8 +59,8 @@ class PausePluginTest extends TestCase
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "stock_id" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'stock_id' => 'yansongda',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

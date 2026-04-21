@@ -14,6 +14,11 @@ use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Shortcut\Unipay\H5Shortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class H5ShortcutTest extends TestCase
 {
     protected H5Shortcut $plugin;

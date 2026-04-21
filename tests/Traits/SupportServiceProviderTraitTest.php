@@ -1,13 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Contract\ConfigInterface;
-use Yansongda\Pay\Pay;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\Stubs\Traits\SupportServiceProviderPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class SupportServiceProviderTraitTest extends TestCase
 {
     public function testNormal()

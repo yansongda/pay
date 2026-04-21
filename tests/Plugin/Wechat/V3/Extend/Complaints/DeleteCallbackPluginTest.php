@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
 
-use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\DeleteCallbackPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\DeleteCallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class DeleteCallbackPluginTest extends TestCase
 {
     protected DeleteCallbackPlugin $plugin;

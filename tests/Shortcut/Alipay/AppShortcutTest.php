@@ -1,16 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Shortcut\Alipay;
 
+use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\App\PayPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponseInvokeStringPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Shortcut\Alipay\AppShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class AppShortcutTest extends TestCase
 {
     protected AppShortcut $shortcut;

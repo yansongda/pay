@@ -25,17 +25,13 @@ class PaypalTraitStub
     use PaypalTrait;
 }
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PaypalTraitTest extends TestCase
 {
-    private function getPaypalConfig(): PaypalConfig
-    {
-        $config = PaypalTraitStub::getProviderConfig('paypal', []);
-
-        self::assertInstanceOf(PaypalConfig::class, $config);
-
-        return $config;
-    }
-
     public function testGetPaypalUrl(): void
     {
         self::assertEquals('https://yansongda.cn', PaypalTraitStub::getPaypalUrl(new PaypalConfig([
@@ -195,5 +191,14 @@ class PaypalTraitTest extends TestCase
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
         PaypalTraitStub::verifyPaypalWebhookSign($request, []);
+    }
+
+    private function getPaypalConfig(): PaypalConfig
+    {
+        $config = PaypalTraitStub::getProviderConfig('paypal', []);
+
+        self::assertInstanceOf(PaypalConfig::class, $config);
+
+        return $config;
     }
 }

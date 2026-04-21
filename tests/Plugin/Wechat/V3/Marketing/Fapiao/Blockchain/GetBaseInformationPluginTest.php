@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain;
 
 use Yansongda\Artful\Rocket;
@@ -7,6 +9,11 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetBaseInformatio
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class GetBaseInformationPluginTest extends TestCase
 {
     protected GetBaseInformationPlugin $plugin;
@@ -21,8 +28,8 @@ class GetBaseInformationPluginTest extends TestCase
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "test" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'test' => 'yansongda',
             'appid' => '1111',
             '_t' => 'a',
         ]));

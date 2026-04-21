@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Douyin\V1\Pay;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
@@ -8,6 +10,11 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class AddPayloadSignaturePluginTest extends TestCase
 {
     protected AddPayloadSignaturePlugin $plugin;

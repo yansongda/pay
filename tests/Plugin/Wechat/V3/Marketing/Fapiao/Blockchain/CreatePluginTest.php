@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain;
 
 use GuzzleHttp\Client;
@@ -12,6 +14,11 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\CreatePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CreatePluginTest extends TestCase
 {
     protected CreatePlugin $plugin;
@@ -26,8 +33,8 @@ class CreatePluginTest extends TestCase
     public function testNormalWithoutName()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "test" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'test' => 'yansongda',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -42,12 +49,12 @@ class CreatePluginTest extends TestCase
     public function testNormalWithSensitiveData()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "test" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'test' => 'yansongda',
             'buyer_information' => [
                 'phone' => '123',
                 'email' => '456',
-            ]
+            ],
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -64,12 +71,12 @@ class CreatePluginTest extends TestCase
     public function testNormalWithSensitiveDataEmptyWechatCert()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection( [
-            "test" => "yansongda",
+        $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([
+            'test' => 'yansongda',
             'buyer_information' => [
                 'phone' => '123',
                 'email' => '456',
-            ]
+            ],
         ]));
 
         $response = new Response(
@@ -87,8 +94,8 @@ class CreatePluginTest extends TestCase
                         ],
                         'expire_time' => '2026-07-15T17:51:10+08:00',
                         'serial_no' => 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57',
-                    ]
-                ]
+                    ],
+                ],
             ])
         );
 

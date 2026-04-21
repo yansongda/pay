@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\ProfitSharing;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\UnfreezePlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\UnfreezePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class UnfreezePluginTest extends TestCase
 {
     protected UnfreezePlugin $plugin;
@@ -34,8 +41,8 @@ class UnfreezePluginTest extends TestCase
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "test" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'test' => 'yansongda',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -51,8 +58,8 @@ class UnfreezePluginTest extends TestCase
     public function testServiceParams()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
-            "test" => "yansongda",
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+            'test' => 'yansongda',
             'notify_url' => '1111',
             'sub_mchid' => '2222',
         ]));
@@ -72,8 +79,8 @@ class UnfreezePluginTest extends TestCase
     public function testService()
     {
         $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection( [
-            "test" => "yansongda",
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+            'test' => 'yansongda',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -83,7 +90,7 @@ class UnfreezePluginTest extends TestCase
             '_url' => 'v3/profitsharing/orders/unfreeze',
             '_service_url' => 'v3/profitsharing/orders/unfreeze',
             'test' => 'yansongda',
-            'notify_url' => null,
+            'notify_url' => 'https://pay.yansongda.cn',
             'sub_mchid' => '1600314070',
         ], $result->getPayload()->all());
     }

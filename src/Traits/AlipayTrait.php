@@ -36,7 +36,7 @@ trait AlipayTrait
 
     public static function getAlipayUrl(AlipayConfig $config, ?Collection $payload): string
     {
-        $url = self::getRadarUrl($config->toArray(), $payload);
+        $url = self::getRadarUrl($config, $payload);
 
         if (is_string($url) && str_starts_with($url, 'http')) {
             return $url;

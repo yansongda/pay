@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\ECommerceBalance;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceBalance\QueryDayEndPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceBalance\QueryDayEndPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class QueryDayEndPluginTest extends TestCase
 {
     protected QueryDayEndPlugin $plugin;
@@ -47,8 +54,8 @@ class QueryDayEndPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])
-            ->setPayload(new Collection( [
-                "account_type" => "111",
+            ->setPayload(new Collection([
+                'account_type' => '111',
                 'aaa' => '222',
                 '_t' => 'a',
             ]));
@@ -65,8 +72,8 @@ class QueryDayEndPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])
-            ->setPayload(new Collection( [
-                "account_type" => "111",
+            ->setPayload(new Collection([
+                'account_type' => '111',
                 '_t' => 'a',
             ]));
 

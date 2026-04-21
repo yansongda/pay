@@ -11,6 +11,11 @@ use Yansongda\Pay\Plugin\Paypal\V2\Pay\CapturePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CapturePluginTest extends TestCase
 {
     protected CapturePlugin $plugin;

@@ -7,6 +7,11 @@ namespace Yansongda\Pay\Tests;
 use PHPUnit\Framework\Assert;
 use Yansongda\Pay\CertManager;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CertManagerTest extends TestCase
 {
     protected function setUp(): void

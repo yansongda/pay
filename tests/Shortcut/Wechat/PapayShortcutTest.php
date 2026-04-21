@@ -21,6 +21,11 @@ use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\PapayShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PapayShortcutTest extends TestCase
 {
     protected PapayShortcut $plugin;
@@ -110,7 +115,7 @@ class PapayShortcutTest extends TestCase
         self::assertEquals([
             StartPlugin::class,
             MiniOnlyContractPlugin::class,
-            AddPayloadSignaturePlugin::class
+            AddPayloadSignaturePlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'contract', '_type' => 'mini']));
 
         self::expectException(InvalidParamsException::class);

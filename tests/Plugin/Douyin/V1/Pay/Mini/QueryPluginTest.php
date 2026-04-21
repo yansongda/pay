@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Douyin\V1\Pay\Mini;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -9,6 +11,11 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class QueryPluginTest extends TestCase
 {
     protected QueryPlugin $plugin;
@@ -34,14 +41,14 @@ class QueryPluginTest extends TestCase
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "out_order_no" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'out_order_no' => 'yansongda',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals([
-            "out_order_no" => "yansongda",
+            'out_order_no' => 'yansongda',
             '_method' => 'POST',
             '_url' => 'api/apps/ecpay/v1/query_order',
             'app_id' => 'tt226e54d3bd581bf801',
@@ -63,7 +70,7 @@ class QueryPluginTest extends TestCase
             '_method' => 'POST',
             '_url' => 'api/apps/ecpay/v1/query_order',
             'app_id' => 'tt226e54d3bd581bf801',
-            'thirdparty_id' => 'service_provider111'
+            'thirdparty_id' => 'service_provider111',
         ], $result->getPayload()->all());
     }
 
@@ -81,7 +88,7 @@ class QueryPluginTest extends TestCase
             '_method' => 'POST',
             '_url' => 'api/apps/ecpay/v1/query_order',
             'app_id' => 'tt226e54d3bd581bf801',
-            'thirdparty_id' => 'service_provider'
+            'thirdparty_id' => 'service_provider',
         ], $result->getPayload()->all());
     }
 }

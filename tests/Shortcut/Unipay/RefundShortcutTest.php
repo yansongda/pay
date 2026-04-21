@@ -21,6 +21,11 @@ use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignatureP
 use Yansongda\Pay\Shortcut\Unipay\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class RefundShortcutTest extends TestCase
 {
     protected RefundShortcut $plugin;

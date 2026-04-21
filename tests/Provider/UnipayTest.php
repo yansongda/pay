@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Provider;
 
 use GuzzleHttp\Client;
@@ -11,8 +13,8 @@ use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
-use Yansongda\Pay\Pay;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
@@ -20,6 +22,11 @@ use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class UnipayTest extends TestCase
 {
     public function testShortcutNotFound()
@@ -156,7 +163,7 @@ class UnipayTest extends TestCase
             'txnAmt' => 1,
             'orderId' => 'refundpay20240105165842',
             'origQryId' => '052401051658427862748',
-            '_return_rocket' => true
+            '_return_rocket' => true,
         ]);
 
         self::assertEquals('txnTime=20240105165842&txnAmt=1&orderId=refundpay20240105165842&origQryId=052401051658427862748&certId=69903319369&encoding=utf-8&signature=oeJQFbkSbXWNs1HfgNKqq4%2BPBA3xtKZDNT62VHAcn7F5OAjzkSHMC0bArsoY2jtw2wRVTg7drFIlYJwgN04OwikM2KRLcLdHzqTCZOIoSjo2CzfpSS6nAExHo5%2BPzKUIkO1KHbzV3xkID6F%2Bdt9CWzFbRy81gqtZZLK%2BRuYFmu%2FT9f5EcjNBbiMRS7WNXckrSZc2Ny%2FCRhI9qujqK%2B2ANKFkcQ%2BGrZ24PHE1J73eUt8dNTSTt0snkckh5sK3oBTH2oHO%2BhizzfLGHYjLcUVCisN4JwsAjD6%2BMyxImYK1QkYhhCTJ3Owop5HuwAg2zSeq7TAfkimhtVVCdfNA1GNHuA%3D%3D&bizType=000000&accessType=0&merId=777290058167151&channelType=07&signMethod=01&txnType=04&txnSubType=00&backUrl=https%3A%2F%2Fyansongda.cn%2Funipay%2Fnotify&version=5.1.0', (string) $result->getRadar()->getBody());
@@ -166,22 +173,22 @@ class UnipayTest extends TestCase
     public function testCallback()
     {
         $input = [
-            "accNo" => "ORRSXWY1kMr8UJNxGx9xKPuO0Uhm8JT8aQV3sWswJfIsj/grkjauH4soyAtiqB9XwQotZOwmUAs/pkMupUkfiX9npdFGGEUEc5gqq+lcEwyD7tLmd2WBzRvcEvvjAKMKwTCFDxmQbIrP48ocIVhPoZ87ZQtQM5MIyJYedrzPRlt6BzRddUPGU1gJwDA8APDx3iyNl8EAfenJw7DUDZimmhbE1VSRmQm/iqgJurI7juq/6ztDHZHv4ys1eN9JYkwhcKxCjsWpwXTSy0PGvDXhsAZsDuNXHsjI8JLhHXvTDaU2+gc289LZPiwpr4Ah/reIuPWrIHubchYm2XTqQlUAaw==",
-            "accessType" => "0",
-            "bizType" => "000201",
-            "currencyCode" => "156",
-            "encoding" => "utf-8",
-            "exchangeRate" => "0",
-            "merId" => "777290058167151",
-            "orderId" => "yansongda20220908132206",
-            "queryId" => "782209081322060674028",
-            "respCode" => "00",
-            "respMsg" => "success",
-            "settleAmt" => "1",
-            "settleCurrencyCode" => "156",
-            "settleDate" => "0908",
-            "signMethod" => "01",
-            "signPubKeyCert" => "-----BEGIN CERTIFICATE-----\r
+            'accNo' => 'ORRSXWY1kMr8UJNxGx9xKPuO0Uhm8JT8aQV3sWswJfIsj/grkjauH4soyAtiqB9XwQotZOwmUAs/pkMupUkfiX9npdFGGEUEc5gqq+lcEwyD7tLmd2WBzRvcEvvjAKMKwTCFDxmQbIrP48ocIVhPoZ87ZQtQM5MIyJYedrzPRlt6BzRddUPGU1gJwDA8APDx3iyNl8EAfenJw7DUDZimmhbE1VSRmQm/iqgJurI7juq/6ztDHZHv4ys1eN9JYkwhcKxCjsWpwXTSy0PGvDXhsAZsDuNXHsjI8JLhHXvTDaU2+gc289LZPiwpr4Ah/reIuPWrIHubchYm2XTqQlUAaw==',
+            'accessType' => '0',
+            'bizType' => '000201',
+            'currencyCode' => '156',
+            'encoding' => 'utf-8',
+            'exchangeRate' => '0',
+            'merId' => '777290058167151',
+            'orderId' => 'yansongda20220908132206',
+            'queryId' => '782209081322060674028',
+            'respCode' => '00',
+            'respMsg' => 'success',
+            'settleAmt' => '1',
+            'settleCurrencyCode' => '156',
+            'settleDate' => '0908',
+            'signMethod' => '01',
+            'signPubKeyCert' => "-----BEGIN CERTIFICATE-----\r
 MIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r
 Q04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r
 cml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMjAwNzMxMDExOTE2WhcN\r
@@ -207,14 +214,14 @@ vzOwPKd8R7iGFotuF4/8GGhBKR4k46EYnKCodyIhNpPdQfpaN5AKeS7xeLSbFvPJ\r
 HYrtBsI48jUK/WKtWBJWhFH+Gty+GWX0e5n2QHXHW6qH62M0lDo7OYeyBvG1mh9u\r
 Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 -----END CERTIFICATE-----",
-            "signature" => "JeA4S2+6TbGo9yjXDUvV5A2E3oJbunoCcZ66exN6xR3OH/5PNDK1VSV1Mq7XhVdxzkTeREUveiOYHalqoagRkh71nsHVvruwGbk6azygXSaawuO5tF67UIqNd4Mbufwh1KhbVpEkKbOETUvRhFcdon0fulE97I83eMSk52INHt8E1xk8NdbhyUadSlp+Uv30AKx70PpQbTGmVS3PJfd+Whj0b7LnvZKeC+BS1kUOtIKlcZO+gBoTigvCIJqj51kBrcBCs+x+VaeGm7EYBBhGSERpfQhQ4n+eJBwLdBeZ0/dNbo3iELjvVMx0n9KoW4klvUJhaH5LALA8pV02SbZv4Q==",
-            "traceNo" => "067402",
-            "traceTime" => "0908132206",
-            "txnAmt" => "1",
-            "txnSubType" => "01",
-            "txnTime" => "20220908132206",
-            "txnType" => "01",
-            "version" => "5.1.0",
+            'signature' => 'JeA4S2+6TbGo9yjXDUvV5A2E3oJbunoCcZ66exN6xR3OH/5PNDK1VSV1Mq7XhVdxzkTeREUveiOYHalqoagRkh71nsHVvruwGbk6azygXSaawuO5tF67UIqNd4Mbufwh1KhbVpEkKbOETUvRhFcdon0fulE97I83eMSk52INHt8E1xk8NdbhyUadSlp+Uv30AKx70PpQbTGmVS3PJfd+Whj0b7LnvZKeC+BS1kUOtIKlcZO+gBoTigvCIJqj51kBrcBCs+x+VaeGm7EYBBhGSERpfQhQ4n+eJBwLdBeZ0/dNbo3iELjvVMx0n9KoW4klvUJhaH5LALA8pV02SbZv4Q==',
+            'traceNo' => '067402',
+            'traceTime' => '0908132206',
+            'txnAmt' => '1',
+            'txnSubType' => '01',
+            'txnTime' => '20220908132206',
+            'txnType' => '01',
+            'version' => '5.1.0',
         ];
 
         $result = Pay::unipay()->callback($input);

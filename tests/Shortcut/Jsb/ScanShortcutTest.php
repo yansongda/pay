@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Shortcut\Jsb;
 
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -12,27 +14,32 @@ use Yansongda\Pay\Plugin\Jsb\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Jsb\ScanShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class ScanShortcutTest extends TestCase
 {
-	protected ScanShortcut $plugin;
+    protected ScanShortcut $plugin;
 
-	protected function setUp(): void
-	{
-		parent::setUp();
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-		$this->plugin = new ScanShortcut();
-	}
+        $this->plugin = new ScanShortcut();
+    }
 
-	public function testDefault()
-	{
-		self::assertEquals([
-			StartPlugin::class,
-			PayPlugin::class,
-			AddPayloadSignPlugin::class,
-			AddRadarPlugin::class,
-			VerifySignaturePlugin::class,
-			ResponsePlugin::class,
-			ParserPlugin::class,
-		], $this->plugin->getPlugins([]));
-	}
+    public function testDefault()
+    {
+        self::assertEquals([
+            StartPlugin::class,
+            PayPlugin::class,
+            AddPayloadSignPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins([]));
+    }
 }

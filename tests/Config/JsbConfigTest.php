@@ -9,6 +9,11 @@ use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class JsbConfigTest extends TestCase
 {
     private array $validConfig;

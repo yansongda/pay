@@ -17,6 +17,11 @@ class DouyinTraitStub
     use DouyinTrait;
 }
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class DouyinTraitTest extends TestCase
 {
     public function testGetDouyinUrl(): void

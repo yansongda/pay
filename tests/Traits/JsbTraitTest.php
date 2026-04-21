@@ -18,17 +18,13 @@ class JsbTraitStub
     use JsbTrait;
 }
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class JsbTraitTest extends TestCase
 {
-    private function getJsbConfig(): JsbConfig
-    {
-        $config = JsbTraitStub::getProviderConfig('jsb', []);
-
-        self::assertInstanceOf(JsbConfig::class, $config);
-
-        return $config;
-    }
-
     public function testGetJsbUrl(): void
     {
         self::assertEquals('https://yansongda.cn', JsbTraitStub::getJsbUrl(new JsbConfig([
@@ -73,5 +69,14 @@ class JsbTraitTest extends TestCase
         self::expectExceptionCode(Exception::CONFIG_JSB_INVALID);
 
         JsbTraitStub::verifyJsbSign($config, 'content', 'sign');
+    }
+
+    private function getJsbConfig(): JsbConfig
+    {
+        $config = JsbTraitStub::getProviderConfig('jsb', []);
+
+        self::assertInstanceOf(JsbConfig::class, $config);
+
+        return $config;
     }
 }

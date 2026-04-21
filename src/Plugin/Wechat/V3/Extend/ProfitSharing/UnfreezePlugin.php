@@ -65,11 +65,11 @@ class UnfreezePlugin implements PluginInterface
         return [];
     }
 
-    protected function service(Collection $payload, array|WechatConfig $config): array
+    protected function service(Collection $payload, WechatConfig $config): array
     {
         return [
-            'sub_mchid' => $payload->get('sub_mchid', $config instanceof WechatConfig ? $config->getSubMchId() ?? '' : ($config['sub_mch_id'] ?? '')),
-            'notify_url' => $payload->get('notify_url'),
+            'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
+            'notify_url' => $payload->get('notify_url') ?? $config->getNotifyUrl(),
         ];
     }
 }

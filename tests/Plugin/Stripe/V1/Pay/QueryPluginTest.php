@@ -11,6 +11,11 @@ use Yansongda\Pay\Plugin\Stripe\V1\Pay\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class QueryPluginTest extends TestCase
 {
     protected QueryPlugin $plugin;

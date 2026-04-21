@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
 
 use GuzzleHttp\Psr7\ServerRequest;
-use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CallbackPluginTest extends TestCase
 {
     private CallbackPlugin $plugin;
@@ -30,7 +35,7 @@ class CallbackPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams($request->getQueryParams());
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         self::assertNotEmpty($result->getPayload()->all());
     }
@@ -45,7 +50,7 @@ class CallbackPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams($request->getQueryParams());
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         self::assertNotEmpty($result->getPayload()->all());
     }
@@ -53,35 +58,35 @@ class CallbackPluginTest extends TestCase
     public function testNotifyCallbackIncludePlus()
     {
         $post = [
-            "gmt_create" => "2023-12-21 16:26:32",
-            "charset" => "utf-8",
-            "gmt_payment" => "2023-12-21 16:26:43",
-            "notify_time" => "2023-12-21 16:26:45",
-            "subject" => "yansongda+测试 - 1",
-            "sign" => "Rs7SszD15WqbdJsGZPN+HpCBcQzBCkJx0ccNeg1rpUxyTVA1ps2vJ4sLhaa7O+lliTj6N1MSGqc8cK6JSs7nPg731RAOfneirtrqrlW2u0m15kWAKrVjgPGLUMtK/eT15e/6NcxsWra/bsZaan+nFDzO8xceOwy96W+qVUtTPfBRBp9Zjryi5oIONOifGMALD284YbNC3qq2eyqVysF+zgk+/MtuHk2Eh/fL7UbClHQXQ2hD686Dt8bR949TNMbkWCYXstmjVBO55qF8xhaoF/b5zAe5/O/13g/QlwDXBcF3XwJpbFWrBehoFFCnJhR/xXZ0E+D2Vsw1oAQ3l+R2dQ==",
-            "buyer_id" => "2088722003899169",
-            "invoice_amount" => "0.01",
-            "version" => "1.0",
-            "notify_id" => "2023122101222162644199160501632046",
-            "fund_bill_list" => "[{\"amount\":\"0.01\",\"fundChannel\":\"ALIPAYACCOUNT\"}]",
-            "notify_type" => "trade_status_sync",
-            "out_trade_no" => "1703147160",
-            "total_amount" => "0.01",
-            "trade_status" => "TRADE_SUCCESS",
-            "trade_no" => "2023122122001499160501589436",
-            "auth_app_id" => "9021000122682882",
-            "receipt_amount" => "0.01",
-            "point_amount" => "0.00",
-            "app_id" => "9021000122682882",
-            "buyer_pay_amount" => "0.01",
-            "sign_type" => "RSA2",
-            "seller_id" => "2088721003899159",
+            'gmt_create' => '2023-12-21 16:26:32',
+            'charset' => 'utf-8',
+            'gmt_payment' => '2023-12-21 16:26:43',
+            'notify_time' => '2023-12-21 16:26:45',
+            'subject' => 'yansongda+测试 - 1',
+            'sign' => 'Rs7SszD15WqbdJsGZPN+HpCBcQzBCkJx0ccNeg1rpUxyTVA1ps2vJ4sLhaa7O+lliTj6N1MSGqc8cK6JSs7nPg731RAOfneirtrqrlW2u0m15kWAKrVjgPGLUMtK/eT15e/6NcxsWra/bsZaan+nFDzO8xceOwy96W+qVUtTPfBRBp9Zjryi5oIONOifGMALD284YbNC3qq2eyqVysF+zgk+/MtuHk2Eh/fL7UbClHQXQ2hD686Dt8bR949TNMbkWCYXstmjVBO55qF8xhaoF/b5zAe5/O/13g/QlwDXBcF3XwJpbFWrBehoFFCnJhR/xXZ0E+D2Vsw1oAQ3l+R2dQ==',
+            'buyer_id' => '2088722003899169',
+            'invoice_amount' => '0.01',
+            'version' => '1.0',
+            'notify_id' => '2023122101222162644199160501632046',
+            'fund_bill_list' => '[{"amount":"0.01","fundChannel":"ALIPAYACCOUNT"}]',
+            'notify_type' => 'trade_status_sync',
+            'out_trade_no' => '1703147160',
+            'total_amount' => '0.01',
+            'trade_status' => 'TRADE_SUCCESS',
+            'trade_no' => '2023122122001499160501589436',
+            'auth_app_id' => '9021000122682882',
+            'receipt_amount' => '0.01',
+            'point_amount' => '0.00',
+            'app_id' => '9021000122682882',
+            'buyer_pay_amount' => '0.01',
+            'sign_type' => 'RSA2',
+            'seller_id' => '2088721003899159',
         ];
 
         $rocket = new Rocket();
         $rocket->setParams($post);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         self::assertNotEmpty($result->getPayload()->all());
     }

@@ -41,9 +41,9 @@ trait WechatTrait
     /**
      * @throws InvalidParamsException
      */
-    public static function getWechatUrl(array|WechatConfig $config, ?Collection $payload): string
+    public static function getWechatUrl(WechatConfig $config, ?Collection $payload): string
     {
-        $url = self::getRadarUrl($config instanceof WechatConfig ? $config->toArray() : $config, $payload);
+        $url = self::getRadarUrl($config, $payload);
 
         if (empty($url)) {
             throw new InvalidParamsException(Exception::PARAMS_WECHAT_URL_MISSING, '参数异常: 微信 `_url` 或 `_service_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
@@ -53,7 +53,7 @@ trait WechatTrait
             return $url;
         }
 
-        return Wechat::URL[$config instanceof WechatConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL)].$url;
+        return Wechat::URL[$config->getMode()].$url;
     }
 
     /**
@@ -84,9 +84,9 @@ trait WechatTrait
     /**
      * @throws InvalidConfigException
      */
-    public static function getWechatSign(array|WechatConfig $config, string $contents): string
+    public static function getWechatSign(WechatConfig $config, string $contents): string
     {
-        $privateKey = $config instanceof WechatConfig ? $config->getMchSecretCert() : ($config['mch_secret_cert'] ?? null);
+        $privateKey = $config->getMchSecretCert();
 
         if (empty($privateKey)) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_cert]');
@@ -102,9 +102,9 @@ trait WechatTrait
     /**
      * @throws InvalidConfigException
      */
-    public static function getWechatSignV2(array|WechatConfig $config, array $payload, bool $upper = true): string
+    public static function getWechatSignV2(WechatConfig $config, array $payload, bool $upper = true): string
     {
-        $key = $config instanceof WechatConfig ? $config->getMchSecretKeyV2() : ($config['mch_secret_key_v2'] ?? null);
+        $key = $config->getMchSecretKeyV2();
 
         if (empty($key)) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key_v2]');
@@ -171,7 +171,7 @@ trait WechatTrait
      * @throws InvalidConfigException
      * @throws InvalidSignException
      */
-    public static function verifyWechatSignV2(array|WechatConfig $config, array $destination): void
+    public static function verifyWechatSignV2(WechatConfig $config, array $destination): void
     {
         $sign = $destination['sign'] ?? null;
 
@@ -179,7 +179,7 @@ trait WechatTrait
             throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 微信签名为空', $destination);
         }
 
-        $key = $config instanceof WechatConfig ? $config->getMchSecretKeyV2() : ($config['mch_secret_key_v2'] ?? null);
+        $key = $config->getMchSecretKeyV2();
 
         if (empty($key)) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key_v2]');
@@ -199,9 +199,9 @@ trait WechatTrait
         return null;
     }
 
-    public static function decryptWechatContents(string $encrypted, array|WechatConfig $config): ?string
+    public static function decryptWechatContents(string $encrypted, WechatConfig $config): ?string
     {
-        $privateKey = $config instanceof WechatConfig ? $config->getMchSecretCert() : ($config['mch_secret_cert'] ?? '');
+        $privateKey = $config->getMchSecretCert() ?? '';
 
         if (openssl_private_decrypt(base64_decode($encrypted), $decrypted, CertManager::getPrivateCert($privateKey), OPENSSL_PKCS1_OAEP_PADDING)) {
             return $decrypted;
@@ -275,16 +275,16 @@ trait WechatTrait
      * @throws InvalidConfigException
      * @throws DecryptException
      */
-    public static function decryptWechatResource(array $resource, array|WechatConfig $config): array
+    public static function decryptWechatResource(array $resource, WechatConfig $config): array
     {
         $ciphertext = base64_decode($resource['ciphertext'] ?? '');
-        $secret = $config instanceof WechatConfig ? $config->getMchSecretKey() : ($config['mch_secret_key'] ?? null);
+        $secret = $config->getMchSecretKey();
 
         if (strlen($ciphertext) <= Wechat::AUTH_TAG_LENGTH_BYTE) {
             throw new DecryptException(Exception::DECRYPT_WECHAT_CIPHERTEXT_PARAMS_INVALID, '加解密异常: ciphertext 位数过短');
         }
 
-        if (is_null($secret) || Wechat::MCH_SECRET_KEY_LENGTH_BYTE != strlen($secret)) {
+        if (empty($secret) || Wechat::MCH_SECRET_KEY_LENGTH_BYTE != strlen($secret)) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_secret_key]');
         }
 
@@ -366,11 +366,9 @@ trait WechatTrait
     /**
      * @throws InvalidParamsException
      */
-    public static function getWechatPublicKey(array|WechatConfig $config, string $serialNo): string
+    public static function getWechatPublicKey(WechatConfig $config, string $serialNo): string
     {
-        $publicKey = $config instanceof WechatConfig
-            ? $config->getPublicKeyBySerial($serialNo)
-            : ($config['wechat_public_cert_path'][$serialNo] ?? null);
+        $publicKey = $config->getPublicKeyBySerial($serialNo);
 
         if (empty($publicKey)) {
             throw new InvalidParamsException(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND, '参数异常: 微信公钥序列号未找到 - '.$serialNo);
@@ -382,9 +380,9 @@ trait WechatTrait
     /**
      * @throws InvalidConfigException
      */
-    public static function getWechatMiniprogramPaySign(array|WechatConfig $config, string $url, string $payload): string
+    public static function getWechatMiniprogramPaySign(WechatConfig $config, string $url, string $payload): string
     {
-        $miniAppKeyVirtualPay = $config instanceof WechatConfig ? $config->getMiniAppKeyVirtualPay() : ($config['mini_app_key_virtual_pay'] ?? null);
+        $miniAppKeyVirtualPay = $config->getMiniAppKeyVirtualPay();
 
         if (empty($miniAppKeyVirtualPay)) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mini_app_key_virtual_pay]');

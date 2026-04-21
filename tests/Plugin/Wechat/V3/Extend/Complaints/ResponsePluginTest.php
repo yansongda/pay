@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\ResponsePlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\ResponsePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class ResponsePluginTest extends TestCase
 {
     protected ResponsePlugin $plugin;
@@ -34,7 +41,7 @@ class ResponsePluginTest extends TestCase
     public function testPayloadMchIdEmpty()
     {
         $payload = [
-            "complaint_id" => "yansongda",
+            'complaint_id' => 'yansongda',
         ];
 
         $rocket = new Rocket();
@@ -53,7 +60,7 @@ class ResponsePluginTest extends TestCase
     public function testPayloadMchIdNotEmpty()
     {
         $payload = [
-            "complaint_id" => "yansongda",
+            'complaint_id' => 'yansongda',
             'complainted_mchid' => '123',
         ];
 
@@ -73,7 +80,7 @@ class ResponsePluginTest extends TestCase
     public function testPayloadOthers()
     {
         $payload = [
-            "complaint_id" => "yansongda",
+            'complaint_id' => 'yansongda',
             'complainted_mchid' => '123',
             'name' => 'yansongda',
             'test' => 'abc',

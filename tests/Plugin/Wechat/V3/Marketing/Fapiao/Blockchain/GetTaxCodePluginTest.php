@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -9,6 +11,11 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetTaxCodePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class GetTaxCodePluginTest extends TestCase
 {
     protected GetTaxCodePlugin $plugin;
@@ -34,8 +41,8 @@ class GetTaxCodePluginTest extends TestCase
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "offset" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'offset' => 'yansongda',
             'limit' => '111',
             '_t' => 'a',
         ]));

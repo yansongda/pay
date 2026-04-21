@@ -26,19 +26,45 @@ class WechatTraitStub
     use WechatTrait;
 }
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class WechatTraitTest extends TestCase
 {
     public function testGetWechatUrl(): void
     {
-        self::assertEquals('https://yansongda.cn', WechatTraitStub::getWechatUrl([], new Collection(['_url' => 'https://yansongda.cn'])));
-        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', WechatTraitStub::getWechatUrl([], new Collection(['_url' => 'api/v1/yansongda'])));
-        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', WechatTraitStub::getWechatUrl(['mode' => Pay::MODE_SERVICE], new Collection(['_service_url' => 'api/v1/service/yansongda'])));
-        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', WechatTraitStub::getWechatUrl(['mode' => Pay::MODE_SERVICE], new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
+        $config = WechatTraitStub::getProviderConfig('wechat');
+        self::assertInstanceOf(WechatConfig::class, $config);
+
+        $serviceConfig = new WechatConfig([
+            'app_id' => 'yansongda',
+            'mp_app_id' => 'wx55955316af4ef13',
+            'mch_id' => '1600314069',
+            'mini_app_id' => 'wx55955316af4ef14',
+            'mch_secret_key_v2' => 'yansongda',
+            'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
+            'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
+            'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+            'notify_url' => 'https://pay.yansongda.cn',
+            'wechat_public_cert_path' => [
+                '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+                'yansongda' => __DIR__.'/../Cert/wechatPublicKey.crt',
+            ],
+            'sub_mch_id' => '1600314070',
+            'mode' => Pay::MODE_SERVICE,
+        ]);
+
+        self::assertEquals('https://yansongda.cn', WechatTraitStub::getWechatUrl($config, new Collection(['_url' => 'https://yansongda.cn'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', WechatTraitStub::getWechatUrl($config, new Collection(['_url' => 'api/v1/yansongda'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', WechatTraitStub::getWechatUrl($serviceConfig, new Collection(['_service_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', WechatTraitStub::getWechatUrl($serviceConfig, new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
         self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', WechatTraitStub::getWechatUrl(WechatTraitStub::getProviderConfig('wechat'), new Collection(['_url' => 'api/v1/yansongda'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_URL_MISSING);
-        WechatTraitStub::getWechatUrl([], new Collection([]));
+        WechatTraitStub::getWechatUrl($config, new Collection([]));
     }
 
     public function testGetWechatMethod(): void
@@ -69,7 +95,7 @@ class WechatTraitTest extends TestCase
 
     public function testGetWechatSign(): void
     {
-        $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\/\/127.0.0.1:8000\/wechat\/notify\"}\n";
+        $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\\/\\/127.0.0.1:8000\\/wechat\\/notify\"}\n";
 
         self::assertEquals(
             'KzIgMgiop3nQJNdBVR2Xah/JUwVBLDFFajyXPiSN8b8YAYEA4FuWfaCgFJ52+WFed+PhOYWx/ZPih4RaEuuSdYB8eZwYUx7RZGMQZk0bKCctAjjPuf4pJN+f/WsXKjPIy3diqF5x7gyxwSCaKWP4/KjsHNqgQpiC8q1uC5xmElzuhzSwj88LIoLtkAuSmtUVvdAt0Nz41ECHZgHWSGR32TfBo902r8afdaVKkFde8IoqcEJJcp6sMxdDO5l9R5KEWxrJ1SjsXVrb0IPH8Nj7e6hfhq7pucxojPpzsC+ZWAYvufZkAQx3kTiFmY87T+QhkP9FesOfWvkIRL4E6MP6ug==',
@@ -80,9 +106,9 @@ class WechatTraitTest extends TestCase
         $config1 = [
             'wechat' => [
                 'default' => [
-                    'mch_secret_cert' => ''
+                    'mch_secret_cert' => '',
                 ],
-            ]
+            ],
         ];
 
         self::expectException(InvalidConfigException::class);
@@ -171,10 +197,14 @@ class WechatTraitTest extends TestCase
     {
         $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => 'aaa'];
 
+        $config = WechatTraitStub::getProviderConfig('wechat');
+        self::assertInstanceOf(WechatConfig::class, $config);
+        $config->setMchSecretKeyV2('');
+
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
 
-        WechatTraitStub::verifyWechatSignV2([], $destination);
+        WechatTraitStub::verifyWechatSignV2($config, $destination);
     }
 
     public function testVerifyWechatSignV2Wrong(): void
@@ -230,8 +260,8 @@ class WechatTraitTest extends TestCase
                         ],
                         'expire_time' => '2026-07-15T17:51:10+08:00',
                         'serial_no' => 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57',
-                    ]
-                ]
+                    ],
+                ],
             ])
         );
 
@@ -268,8 +298,8 @@ class WechatTraitTest extends TestCase
                         ],
                         'expire_time' => '2026-07-15T17:51:10+08:00',
                         'serial_no' => 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57',
-                    ]
-                ]
+                    ],
+                ],
             ])
         );
 
@@ -282,7 +312,7 @@ class WechatTraitTest extends TestCase
 
         WechatTraitStub::getWechatPublicCerts([], $path);
 
-        $crtPathName = $path . '/test-45F59D4DABF31918AFCEC556D5D2C6E376675D57.crt';
+        $crtPathName = $path.'/test-45F59D4DABF31918AFCEC556D5D2C6E376675D57.crt';
 
         self::assertFileExists($crtPathName);
         self::assertTrue(str_contains(file_get_contents($crtPathName), '-----BEGIN CERTIFICATE-----'));
@@ -344,7 +374,7 @@ class WechatTraitTest extends TestCase
         self::assertTrue(in_array($result, ['45F59D4DABF31918AFCEC556D5D2C6E376675D57', 'yansongda']));
 
         // 传证书
-        $params = ['_serial_no' => 'yansongda',];
+        $params = ['_serial_no' => 'yansongda'];
         $result = WechatTraitStub::getWechatSerialNo($params);
         self::assertEquals('yansongda', $result);
     }
@@ -366,8 +396,8 @@ class WechatTraitTest extends TestCase
                         ],
                         'expire_time' => '2026-07-15T17:51:10+08:00',
                         'serial_no' => 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57',
-                    ]
-                ]
+                    ],
+                ],
             ])
         );
 
@@ -397,9 +427,13 @@ class WechatTraitTest extends TestCase
     {
         self::assertEquals('6bb3e49bb4744fc6817331333ffa435e0d1409c3c900a87637c98265445cbe96', WechatTraitStub::getWechatMiniprogramPaySign(WechatTraitStub::getProviderConfig('wechat'), 'yansongda.cn', '{"name":"yansongda"}'));
 
+        $config = WechatTraitStub::getProviderConfig('wechat');
+        self::assertInstanceOf(WechatConfig::class, $config);
+        $config->setMiniAppKeyVirtualPay(null);
+
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        WechatTraitStub::getWechatMiniprogramPaySign([], 'yansongda.cn', '{"name":"yansongda"}');
+        WechatTraitStub::getWechatMiniprogramPaySign($config, 'yansongda.cn', '{"name":"yansongda"}');
     }
 
     public function testGetWechatMiniprogramUserSign(): void

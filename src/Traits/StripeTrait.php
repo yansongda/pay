@@ -24,7 +24,7 @@ trait StripeTrait
      */
     public static function getStripeUrl(StripeConfig $config, ?Collection $payload): string
     {
-        $url = self::getRadarUrl($config->toArray(), $payload);
+        $url = self::getRadarUrl($config, $payload);
 
         if (empty($url)) {
             throw new InvalidParamsException(Exception::PARAMS_STRIPE_URL_MISSING, '参数异常: Stripe `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');

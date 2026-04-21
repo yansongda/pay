@@ -1,15 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Pos;
 
 use Yansongda\Artful\Contract\PackerInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Pos\PayPlugin;
-use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PayPluginTest extends TestCase
 {
     protected PayPlugin $plugin;
@@ -37,15 +44,15 @@ class PayPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
             'description' => 'test',
-            "out_trade_no" => "111",
+            'out_trade_no' => '111',
             'payer' => [
-                'auth_code' => '1234'
+                'auth_code' => '1234',
             ],
             'amount' => [
                 'total' => 1,
             ],
             'scene_info' => [
-                'id' => '5678'
+                'id' => '5678',
             ],
         ]));
 
@@ -69,15 +76,15 @@ class PayPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
             'description' => 'test',
-            "out_trade_no" => "111",
+            'out_trade_no' => '111',
             'payer' => [
-                'auth_code' => '1234'
+                'auth_code' => '1234',
             ],
             'amount' => [
                 'total' => 1,
             ],
             'scene_info' => [
-                'id' => '5678'
+                'id' => '5678',
             ],
         ]));
 
@@ -103,15 +110,15 @@ class PayPluginTest extends TestCase
         $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
             'sub_mchid' => 'aaaa',
             'description' => 'test',
-            "out_trade_no" => "111",
+            'out_trade_no' => '111',
             'payer' => [
-                'auth_code' => '1234'
+                'auth_code' => '1234',
             ],
             'amount' => [
                 'total' => 1,
             ],
             'scene_info' => [
-                'id' => '5678'
+                'id' => '5678',
             ],
         ]));
 

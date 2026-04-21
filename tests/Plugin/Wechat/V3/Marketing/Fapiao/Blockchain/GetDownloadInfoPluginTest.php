@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -9,6 +11,11 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetDownloadInfoPl
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class GetDownloadInfoPluginTest extends TestCase
 {
     protected GetDownloadInfoPlugin $plugin;
@@ -34,8 +41,8 @@ class GetDownloadInfoPluginTest extends TestCase
     public function testNormalParams()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
-            "fapiao_id" => "yansongda",
+        $rocket->setPayload(new Collection([
+            'fapiao_id' => 'yansongda',
             'fapiao_apply_id' => '111',
             '_t' => 'a',
         ]));
@@ -51,7 +58,7 @@ class GetDownloadInfoPluginTest extends TestCase
     public function testNormal()
     {
         $rocket = new Rocket();
-        $rocket->setPayload(new Collection( [
+        $rocket->setPayload(new Collection([
             'fapiao_apply_id' => '111',
             '_t' => 'a',
         ]));

@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\ECommerceRefund;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\ReturnAdvancePlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\ReturnAdvancePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class ReturnAdvancePluginTest extends TestCase
 {
     protected ReturnAdvancePlugin $plugin;
@@ -47,8 +54,8 @@ class ReturnAdvancePluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])
-            ->setPayload(new Collection( [
-                "refund_id" => "111",
+            ->setPayload(new Collection([
+                'refund_id' => '111',
                 'sub_mchid' => '222',
             ]));
 
@@ -65,8 +72,8 @@ class ReturnAdvancePluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'service_provider'])
-            ->setPayload(new Collection( [
-                "refund_id" => "111",
+            ->setPayload(new Collection([
+                'refund_id' => '111',
             ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

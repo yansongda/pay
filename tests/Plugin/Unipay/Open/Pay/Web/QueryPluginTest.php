@@ -1,12 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Open\Pay\Web;
 
 use Yansongda\Artful\Packer\QueryPacker;
-use Yansongda\Pay\Plugin\Unipay\Open\Pay\Web\QueryPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Unipay\Open\Pay\Web\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class QueryPluginTest extends TestCase
 {
     protected QueryPlugin $plugin;

@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
 
-use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryCallbackPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryCallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class QueryCallbackPluginTest extends TestCase
 {
     protected QueryCallbackPlugin $plugin;

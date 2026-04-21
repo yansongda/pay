@@ -15,7 +15,6 @@ use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Config\PaypalConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\GetAccessTokenPlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
@@ -27,9 +26,9 @@ trait PaypalTrait
 {
     use ProviderConfigTrait;
 
-    public static function getPaypalUrl(array|PaypalConfig $config, ?Collection $payload): string
+    public static function getPaypalUrl(PaypalConfig $config, ?Collection $payload): string
     {
-        $url = self::getRadarUrl($config instanceof PaypalConfig ? $config->toArray() : $config, $payload);
+        $url = self::getRadarUrl($config, $payload);
 
         if (empty($url)) {
             throw new InvalidParamsException(Exception::PARAMS_PAYPAL_URL_MISSING, '参数异常: PayPal `_url` 参数缺失：你可能用错插件顺序，应该先使用 `业务插件`');
@@ -39,7 +38,7 @@ trait PaypalTrait
             return $url;
         }
 
-        return Paypal::URL[$config instanceof PaypalConfig ? $config->getMode() : ($config['mode'] ?? Pay::MODE_NORMAL)].$url;
+        return Paypal::URL[$config->getMode()].$url;
     }
 
     /**

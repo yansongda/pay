@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests;
 
 use Hyperf\Pimple\ContainerFactory;
@@ -13,6 +15,11 @@ use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PayTest extends TestCase
 {
     protected function setUp(): void

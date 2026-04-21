@@ -1,15 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Open;
 
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
-use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class AddPayloadSignaturePluginTest extends TestCase
 {
     protected AddPayloadSignaturePlugin $plugin;
@@ -25,7 +32,7 @@ class AddPayloadSignaturePluginTest extends TestCase
     {
         // 要注入 certs
         (new StartPlugin())->assembly(new Rocket(), function ($rocket) { return $rocket; });
-        
+
         $params = [
             'txnTime' => '20220903065448',
             'txnAmt' => 1,

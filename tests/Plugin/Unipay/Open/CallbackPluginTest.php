@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Open;
 
-use Yansongda\Pay\Plugin\Unipay\Open\CallbackPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Unipay\Open\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CallbackPluginTest extends TestCase
 {
     protected CallbackPlugin $plugin;
@@ -22,22 +27,22 @@ class CallbackPluginTest extends TestCase
     public function testReturnCallback()
     {
         $input = [
-            "accNo" => "ORRSXWY1kMr8UJNxGx9xKPuO0Uhm8JT8aQV3sWswJfIsj/grkjauH4soyAtiqB9XwQotZOwmUAs/pkMupUkfiX9npdFGGEUEc5gqq+lcEwyD7tLmd2WBzRvcEvvjAKMKwTCFDxmQbIrP48ocIVhPoZ87ZQtQM5MIyJYedrzPRlt6BzRddUPGU1gJwDA8APDx3iyNl8EAfenJw7DUDZimmhbE1VSRmQm/iqgJurI7juq/6ztDHZHv4ys1eN9JYkwhcKxCjsWpwXTSy0PGvDXhsAZsDuNXHsjI8JLhHXvTDaU2+gc289LZPiwpr4Ah/reIuPWrIHubchYm2XTqQlUAaw==",
-            "accessType" => "0",
-            "bizType" => "000201",
-            "currencyCode" => "156",
-            "encoding" => "utf-8",
-            "exchangeRate" => "0",
-            "merId" => "777290058167151",
-            "orderId" => "yansongda20220908132206",
-            "queryId" => "782209081322060674028",
-            "respCode" => "00",
-            "respMsg" => "success",
-            "settleAmt" => "1",
-            "settleCurrencyCode" => "156",
-            "settleDate" => "0908",
-            "signMethod" => "01",
-            "signPubKeyCert" => "-----BEGIN CERTIFICATE-----\r
+            'accNo' => 'ORRSXWY1kMr8UJNxGx9xKPuO0Uhm8JT8aQV3sWswJfIsj/grkjauH4soyAtiqB9XwQotZOwmUAs/pkMupUkfiX9npdFGGEUEc5gqq+lcEwyD7tLmd2WBzRvcEvvjAKMKwTCFDxmQbIrP48ocIVhPoZ87ZQtQM5MIyJYedrzPRlt6BzRddUPGU1gJwDA8APDx3iyNl8EAfenJw7DUDZimmhbE1VSRmQm/iqgJurI7juq/6ztDHZHv4ys1eN9JYkwhcKxCjsWpwXTSy0PGvDXhsAZsDuNXHsjI8JLhHXvTDaU2+gc289LZPiwpr4Ah/reIuPWrIHubchYm2XTqQlUAaw==',
+            'accessType' => '0',
+            'bizType' => '000201',
+            'currencyCode' => '156',
+            'encoding' => 'utf-8',
+            'exchangeRate' => '0',
+            'merId' => '777290058167151',
+            'orderId' => 'yansongda20220908132206',
+            'queryId' => '782209081322060674028',
+            'respCode' => '00',
+            'respMsg' => 'success',
+            'settleAmt' => '1',
+            'settleCurrencyCode' => '156',
+            'settleDate' => '0908',
+            'signMethod' => '01',
+            'signPubKeyCert' => "-----BEGIN CERTIFICATE-----\r
 MIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r
 Q04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r
 cml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMjAwNzMxMDExOTE2WhcN\r
@@ -63,20 +68,20 @@ vzOwPKd8R7iGFotuF4/8GGhBKR4k46EYnKCodyIhNpPdQfpaN5AKeS7xeLSbFvPJ\r
 HYrtBsI48jUK/WKtWBJWhFH+Gty+GWX0e5n2QHXHW6qH62M0lDo7OYeyBvG1mh9u\r
 Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 -----END CERTIFICATE-----",
-            "signature" => "JeA4S2+6TbGo9yjXDUvV5A2E3oJbunoCcZ66exN6xR3OH/5PNDK1VSV1Mq7XhVdxzkTeREUveiOYHalqoagRkh71nsHVvruwGbk6azygXSaawuO5tF67UIqNd4Mbufwh1KhbVpEkKbOETUvRhFcdon0fulE97I83eMSk52INHt8E1xk8NdbhyUadSlp+Uv30AKx70PpQbTGmVS3PJfd+Whj0b7LnvZKeC+BS1kUOtIKlcZO+gBoTigvCIJqj51kBrcBCs+x+VaeGm7EYBBhGSERpfQhQ4n+eJBwLdBeZ0/dNbo3iELjvVMx0n9KoW4klvUJhaH5LALA8pV02SbZv4Q==",
-            "traceNo" => "067402",
-            "traceTime" => "0908132206",
-            "txnAmt" => "1",
-            "txnSubType" => "01",
-            "txnTime" => "20220908132206",
-            "txnType" => "01",
-            "version" => "5.1.0",
+            'signature' => 'JeA4S2+6TbGo9yjXDUvV5A2E3oJbunoCcZ66exN6xR3OH/5PNDK1VSV1Mq7XhVdxzkTeREUveiOYHalqoagRkh71nsHVvruwGbk6azygXSaawuO5tF67UIqNd4Mbufwh1KhbVpEkKbOETUvRhFcdon0fulE97I83eMSk52INHt8E1xk8NdbhyUadSlp+Uv30AKx70PpQbTGmVS3PJfd+Whj0b7LnvZKeC+BS1kUOtIKlcZO+gBoTigvCIJqj51kBrcBCs+x+VaeGm7EYBBhGSERpfQhQ4n+eJBwLdBeZ0/dNbo3iELjvVMx0n9KoW4klvUJhaH5LALA8pV02SbZv4Q==',
+            'traceNo' => '067402',
+            'traceTime' => '0908132206',
+            'txnAmt' => '1',
+            'txnSubType' => '01',
+            'txnTime' => '20220908132206',
+            'txnType' => '01',
+            'version' => '5.1.0',
         ];
 
         $rocket = new Rocket();
         $rocket->setParams($input);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         self::assertNotEmpty($result->getPayload()->all());
     }
@@ -84,22 +89,22 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
     public function testReturnCallbackMultiConfig()
     {
         $input = [
-            "accNo" => "ORRSXWY1kMr8UJNxGx9xKPuO0Uhm8JT8aQV3sWswJfIsj/grkjauH4soyAtiqB9XwQotZOwmUAs/pkMupUkfiX9npdFGGEUEc5gqq+lcEwyD7tLmd2WBzRvcEvvjAKMKwTCFDxmQbIrP48ocIVhPoZ87ZQtQM5MIyJYedrzPRlt6BzRddUPGU1gJwDA8APDx3iyNl8EAfenJw7DUDZimmhbE1VSRmQm/iqgJurI7juq/6ztDHZHv4ys1eN9JYkwhcKxCjsWpwXTSy0PGvDXhsAZsDuNXHsjI8JLhHXvTDaU2+gc289LZPiwpr4Ah/reIuPWrIHubchYm2XTqQlUAaw==",
-            "accessType" => "0",
-            "bizType" => "000201",
-            "currencyCode" => "156",
-            "encoding" => "utf-8",
-            "exchangeRate" => "0",
-            "merId" => "777290058167151",
-            "orderId" => "yansongda20220908132206",
-            "queryId" => "782209081322060674028",
-            "respCode" => "00",
-            "respMsg" => "success",
-            "settleAmt" => "1",
-            "settleCurrencyCode" => "156",
-            "settleDate" => "0908",
-            "signMethod" => "01",
-            "signPubKeyCert" => "-----BEGIN CERTIFICATE-----\r
+            'accNo' => 'ORRSXWY1kMr8UJNxGx9xKPuO0Uhm8JT8aQV3sWswJfIsj/grkjauH4soyAtiqB9XwQotZOwmUAs/pkMupUkfiX9npdFGGEUEc5gqq+lcEwyD7tLmd2WBzRvcEvvjAKMKwTCFDxmQbIrP48ocIVhPoZ87ZQtQM5MIyJYedrzPRlt6BzRddUPGU1gJwDA8APDx3iyNl8EAfenJw7DUDZimmhbE1VSRmQm/iqgJurI7juq/6ztDHZHv4ys1eN9JYkwhcKxCjsWpwXTSy0PGvDXhsAZsDuNXHsjI8JLhHXvTDaU2+gc289LZPiwpr4Ah/reIuPWrIHubchYm2XTqQlUAaw==',
+            'accessType' => '0',
+            'bizType' => '000201',
+            'currencyCode' => '156',
+            'encoding' => 'utf-8',
+            'exchangeRate' => '0',
+            'merId' => '777290058167151',
+            'orderId' => 'yansongda20220908132206',
+            'queryId' => '782209081322060674028',
+            'respCode' => '00',
+            'respMsg' => 'success',
+            'settleAmt' => '1',
+            'settleCurrencyCode' => '156',
+            'settleDate' => '0908',
+            'signMethod' => '01',
+            'signPubKeyCert' => "-----BEGIN CERTIFICATE-----\r
 MIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r
 Q04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r
 cml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMjAwNzMxMDExOTE2WhcN\r
@@ -125,21 +130,21 @@ vzOwPKd8R7iGFotuF4/8GGhBKR4k46EYnKCodyIhNpPdQfpaN5AKeS7xeLSbFvPJ\r
 HYrtBsI48jUK/WKtWBJWhFH+Gty+GWX0e5n2QHXHW6qH62M0lDo7OYeyBvG1mh9u\r
 Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 -----END CERTIFICATE-----",
-            "signature" => "JeA4S2+6TbGo9yjXDUvV5A2E3oJbunoCcZ66exN6xR3OH/5PNDK1VSV1Mq7XhVdxzkTeREUveiOYHalqoagRkh71nsHVvruwGbk6azygXSaawuO5tF67UIqNd4Mbufwh1KhbVpEkKbOETUvRhFcdon0fulE97I83eMSk52INHt8E1xk8NdbhyUadSlp+Uv30AKx70PpQbTGmVS3PJfd+Whj0b7LnvZKeC+BS1kUOtIKlcZO+gBoTigvCIJqj51kBrcBCs+x+VaeGm7EYBBhGSERpfQhQ4n+eJBwLdBeZ0/dNbo3iELjvVMx0n9KoW4klvUJhaH5LALA8pV02SbZv4Q==",
-            "traceNo" => "067402",
-            "traceTime" => "0908132206",
-            "txnAmt" => "1",
-            "txnSubType" => "01",
-            "txnTime" => "20220908132206",
-            "txnType" => "01",
-            "version" => "5.1.0",
+            'signature' => 'JeA4S2+6TbGo9yjXDUvV5A2E3oJbunoCcZ66exN6xR3OH/5PNDK1VSV1Mq7XhVdxzkTeREUveiOYHalqoagRkh71nsHVvruwGbk6azygXSaawuO5tF67UIqNd4Mbufwh1KhbVpEkKbOETUvRhFcdon0fulE97I83eMSk52INHt8E1xk8NdbhyUadSlp+Uv30AKx70PpQbTGmVS3PJfd+Whj0b7LnvZKeC+BS1kUOtIKlcZO+gBoTigvCIJqj51kBrcBCs+x+VaeGm7EYBBhGSERpfQhQ4n+eJBwLdBeZ0/dNbo3iELjvVMx0n9KoW4klvUJhaH5LALA8pV02SbZv4Q==',
+            'traceNo' => '067402',
+            'traceTime' => '0908132206',
+            'txnAmt' => '1',
+            'txnSubType' => '01',
+            'txnTime' => '20220908132206',
+            'txnType' => '01',
+            'version' => '5.1.0',
             '_config' => 'default',
         ];
 
         $rocket = new Rocket();
         $rocket->setParams($input);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket;});
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         self::assertNotEmpty($result->getPayload()->all());
     }

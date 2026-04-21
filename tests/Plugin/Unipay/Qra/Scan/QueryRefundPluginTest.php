@@ -1,13 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra\Scan;
 
 use Yansongda\Artful\Packer\XmlPacker;
-use Yansongda\Pay\Plugin\Unipay\Qra\Scan\QueryRefundPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Unipay\Qra\Scan\QueryRefundPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class QueryRefundPluginTest extends TestCase
 {
     protected QueryRefundPlugin $plugin;

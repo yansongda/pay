@@ -9,6 +9,11 @@ use Yansongda\Pay\Plugin\Stripe\V1\Pay\WebPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class WebPluginTest extends TestCase
 {
     protected WebPlugin $plugin;

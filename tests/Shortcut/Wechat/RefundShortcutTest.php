@@ -22,6 +22,11 @@ use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class RefundShortcutTest extends TestCase
 {
     protected RefundShortcut $plugin;
@@ -130,7 +135,6 @@ class RefundShortcutTest extends TestCase
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'native']));
     }
-
 
     public function testFoo()
     {

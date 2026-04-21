@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra;
 
-use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class StartPluginTest extends TestCase
 {
     protected StartPlugin $plugin;

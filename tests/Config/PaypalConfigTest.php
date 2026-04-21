@@ -9,6 +9,11 @@ use Yansongda\Pay\Config\PaypalConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PaypalConfigTest extends TestCase
 {
     private array $validConfig;

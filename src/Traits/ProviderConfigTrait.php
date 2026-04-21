@@ -30,13 +30,13 @@ trait ProviderConfigTrait
         return $config->get($provider.'.'.static::getTenant($params));
     }
 
-    public static function getRadarUrl(array $config, ?Collection $payload): ?string
+    public static function getRadarUrl(ProviderConfigInterface $config, ?Collection $payload): ?string
     {
         if (null === $payload) {
             return null;
         }
 
-        return match ($config['mode'] ?? Pay::MODE_NORMAL) {
+        return match ($config->getMode()) {
             Pay::MODE_SERVICE => $payload->get('_service_url', $payload->get('_url')),
             Pay::MODE_SANDBOX => $payload->get('_sandbox_url', $payload->get('_url')),
             default => $payload->get('_url'),

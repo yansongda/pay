@@ -9,6 +9,11 @@ use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class StripeConfigTest extends TestCase
 {
     private array $validConfig;
