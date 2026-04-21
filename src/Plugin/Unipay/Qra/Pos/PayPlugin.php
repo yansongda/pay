@@ -9,6 +9,7 @@ use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Supports\Str;
 
@@ -24,6 +25,8 @@ class PayPlugin implements PluginInterface
         Logger::debug('[Unipay][Qra][Pos][PayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var UnipayConfig $config */
         $config = self::getProviderConfig('unipay', $params);
 
         $rocket->setPacker(XmlPacker::class)
@@ -32,7 +35,7 @@ class PayPlugin implements PluginInterface
                 'service' => 'unified.trade.micropay',
                 'charset' => 'UTF-8',
                 'sign_type' => 'MD5',
-                'mch_id' => $config['mch_id'] ?? '',
+                'mch_id' => $config->getMchId() ?? '',
                 'nonce_str' => Str::random(32),
             ]);
 

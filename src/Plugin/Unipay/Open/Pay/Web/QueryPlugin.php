@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Traits\UnipayTrait;
 
 /**
@@ -29,6 +30,8 @@ class QueryPlugin implements PluginInterface
         Logger::debug('[Unipay][Pay][Web][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var UnipayConfig $config */
         $config = self::getProviderConfig('unipay', $params);
         $payload = $rocket->getPayload();
 
@@ -39,7 +42,7 @@ class QueryPlugin implements PluginInterface
                 'signature' => '',
                 'bizType' => $payload?->get('bizType') ?? '000000',
                 'accessType' => $payload?->get('accessType') ?? '0',
-                'merId' => $config['mch_id'] ?? '',
+                'merId' => $config->getMchId() ?? '',
                 'signMethod' => '01',
                 'txnType' => $payload?->get('txnType') ?? '00',
                 'txnSubType' => $payload?->get('txnSubType') ?? '00',

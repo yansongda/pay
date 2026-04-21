@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\UnipayTrait;
 
@@ -32,6 +33,8 @@ class AddPayloadSignaturePlugin implements PluginInterface
         Logger::debug('[Unipay][Qra][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var UnipayConfig $config */
         $config = self::getProviderConfig('unipay', $params);
         $payload = $rocket->getPayload();
 

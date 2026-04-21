@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Traits;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Response;
-use Mockery;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\ConfigInterface;
-use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\UnipayConfig;

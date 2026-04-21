@@ -3,16 +3,14 @@
 namespace Yansongda\Pay\Tests\Plugin\Unipay\Open;
 
 use Yansongda\Artful\Contract\ConfigInterface;
+use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Tests\TestCase;
-use Yansongda\Pay\Traits\ProviderConfigTrait;
 
 class StartPluginTest extends TestCase
 {
-    use ProviderConfigTrait;
-
     protected StartPlugin $plugin;
 
     protected function setUp(): void
@@ -37,14 +35,13 @@ class StartPluginTest extends TestCase
         $rocket = (new Rocket())->setParams($params);
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $config = self::getProviderConfig('unipay');
+        /** @var UnipayConfig $config */
+        $config = Pay::get(ConfigInterface::class)->get('unipay.default');
 
         self::assertEquals($payload, $result->getPayload()->all());
-        self::assertArrayHasKey('cert', $config['certs']);
-        self::assertArrayHasKey('pkey', $config['certs']);
-        self::assertEquals('69903319369', $config['certs']['cert_id']);
-
-        Pay::get(ConfigInterface::class)->set('unipay.default.mch_cert_path', null);
+        self::assertArrayHasKey('cert', $config->getCerts());
+        self::assertArrayHasKey('pkey', $config->getCerts());
+        self::assertEquals('69903319369', $config->getCerts()['cert_id']);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
@@ -53,13 +50,14 @@ class StartPluginTest extends TestCase
 
     public function testCertsCached()
     {
-        $config = Pay::get(ConfigInterface::class);
-        $config->set('unipay.default.certs', null);
+        /** @var UnipayConfig $config */
+        $config = Pay::get(ConfigInterface::class)->get('unipay.default');
+        $config->setCerts([]);
 
         $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
 
         self::assertEquals('69903319369', $payload->get('certId'));
-        self::assertEquals('69903319369', $config->get('unipay.default.certs.cert_id'));
+        self::assertEquals('69903319369', $config->getCerts()['cert_id']);
     }
 }

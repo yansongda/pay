@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Traits\UnipayTrait;
 
 /**
@@ -29,6 +30,8 @@ class ScanPreAuthPlugin implements PluginInterface
         Logger::debug('[Unipay][Pay][QrCode][ScanPreAuthPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var UnipayConfig $config */
         $config = self::getProviderConfig('unipay', $params);
         $payload = $rocket->getPayload();
 
@@ -39,13 +42,13 @@ class ScanPreAuthPlugin implements PluginInterface
                 'signature' => '',
                 'bizType' => $payload?->get('bizType') ?? '000000',
                 'accessType' => $payload?->get('accessType') ?? '0',
-                'merId' => $config['mch_id'] ?? '',
+                'merId' => $config->getMchId() ?? '',
                 'currencyCode' => '156',
                 'channelType' => $payload?->get('channelType') ?? '08',
                 'signMethod' => '01',
                 'txnType' => $payload?->get('txnType') ?? '02',
                 'txnSubType' => $payload?->get('txnSubType') ?? '05',
-                'backUrl' => $payload?->get('backUrl') ?? $config['notify_url'] ?? '',
+                'backUrl' => $payload?->get('backUrl') ?? $config->getNotifyUrl() ?? '',
                 'version' => '5.1.0',
             ]);
 

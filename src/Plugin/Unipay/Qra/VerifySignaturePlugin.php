@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Traits\UnipayTrait;
 
@@ -33,6 +34,7 @@ class VerifySignaturePlugin implements PluginInterface
 
         Logger::debug('[Unipay][Qra][VerifySignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        /** @var UnipayConfig $config */
         $config = self::getProviderConfig('unipay', $rocket->getParams());
 
         if (!should_do_http_request($rocket->getDirection())) {

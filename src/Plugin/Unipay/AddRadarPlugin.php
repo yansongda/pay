@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Traits\UnipayTrait;
 
 use function Yansongda\Artful\get_radar_method;
@@ -30,6 +31,8 @@ class AddRadarPlugin implements PluginInterface
         Logger::debug('[Unipay][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var UnipayConfig $config */
         $config = self::getProviderConfig('unipay', $params);
         $payload = $rocket->getPayload();
 
