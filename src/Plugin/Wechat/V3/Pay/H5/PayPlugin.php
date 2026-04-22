@@ -53,9 +53,7 @@ class PayPlugin implements PluginInterface
                 '_method' => 'POST',
                 '_url' => 'v3/pay/transactions/h5',
                 '_service_url' => 'v3/pay/partner/transactions/h5',
-                'notify_url' => $payload->has('notify_url')
-                    ? $payload->get('notify_url')
-                    : ((Pay::MODE_SERVICE === $config->getMode()) ? '' : ($config->getNotifyUrl())),
+                'notify_url' => $payload->get('notify_url', $config->getNotifyUrl()),
             ],
             $data ?? $this->normal($params, $config)
         ));
