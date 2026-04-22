@@ -36,6 +36,7 @@ class QueryByWxPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var WechatConfig $config */
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
         $refundId = $payload?->get('refund_id') ?? null;
 

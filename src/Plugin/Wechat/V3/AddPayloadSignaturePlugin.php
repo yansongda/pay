@@ -35,6 +35,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     {
         Logger::debug('[Wechat][V3][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $rocket->getParams());
         $payload = $rocket->getPayload();
 

@@ -78,16 +78,6 @@ class WechatTraitTest extends TestCase
         WechatTraitStub::getWechatBody(new Collection([]));
     }
 
-    public function testGetWechatTypeKey(): void
-    {
-        // default
-        self::assertEquals('mp_app_id', WechatTraitStub::getWechatTypeKey([]));
-        // app
-        self::assertEquals('app_id', WechatTraitStub::getWechatTypeKey(['_type' => 'app']));
-        // mini
-        self::assertEquals('mini_app_id', WechatTraitStub::getWechatTypeKey(['_type' => 'mini']));
-    }
-
     public function testGetWechatSign(): void
     {
         $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\/\/127.0.0.1:8000\/wechat\/notify\"}\n";
@@ -416,23 +406,5 @@ class WechatTraitTest extends TestCase
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND);
         WechatTraitStub::getWechatPublicKey(WechatTraitStub::getProviderConfig('wechat'), $serialNo);
-    }
-
-    public function testGetWechatMiniprogramPaySign(): void
-    {
-        self::assertEquals('6bb3e49bb4744fc6817331333ffa435e0d1409c3c900a87637c98265445cbe96', WechatTraitStub::getWechatMiniprogramPaySign(WechatTraitStub::getProviderConfig('wechat'), 'yansongda.cn', '{"name":"yansongda"}'));
-
-        $config = WechatTraitStub::getProviderConfig('wechat');
-        self::assertInstanceOf(WechatConfig::class, $config);
-        $config->setMiniAppKeyVirtualPay(null);
-
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        WechatTraitStub::getWechatMiniprogramPaySign($config, 'yansongda.cn', '{"name":"yansongda"}');
-    }
-
-    public function testGetWechatMiniprogramUserSign(): void
-    {
-        self::assertEquals('e2bfc507bfee7e1f7029cf204e4a1a848a1d4c64eec279ec2d5be56c675a1bbe', WechatTraitStub::getWechatMiniprogramUserSign('yansongda', '{"name":"yansongda"}'));
     }
 }

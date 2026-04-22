@@ -34,6 +34,7 @@ class QueryByWxPlugin implements PluginInterface
         Logger::debug('[Wechat][Pay][Mini][QueryByWxPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
         $transactionId = $payload?->get('transaction_id') ?? null;

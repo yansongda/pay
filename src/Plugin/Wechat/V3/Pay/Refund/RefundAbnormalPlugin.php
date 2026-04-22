@@ -40,6 +40,7 @@ class RefundAbnormalPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
         $refundId = $payload?->get('refund_id') ?? null;
 
@@ -105,6 +106,7 @@ class RefundAbnormalPlugin implements PluginInterface
         if ($payload->has('bank_account') && $payload->has('real_name')) {
             $data['_serial_no'] = self::getWechatSerialNo($params);
 
+            /** @var WechatConfig $config */
             $config = self::getProviderConfig('wechat', $params);
             $publicKey = self::getWechatPublicKey($config, $data['_serial_no']);
 

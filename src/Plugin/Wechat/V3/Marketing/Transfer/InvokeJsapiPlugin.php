@@ -39,6 +39,7 @@ class InvokeJsapiPlugin implements PluginInterface
 
         Logger::debug('[Wechat][V3][Marketing][Transfer][InvokeJsapiPlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $rocket->getParams());
         $destination = $rocket->getDestination();
         $packageInfo = $destination?->get('package_info');
@@ -54,6 +55,7 @@ class InvokeJsapiPlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 

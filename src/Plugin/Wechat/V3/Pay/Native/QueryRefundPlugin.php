@@ -32,6 +32,7 @@ class QueryRefundPlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Pay][Native][QueryRefundPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
         $outRefundNo = $payload?->get('out_refund_no') ?? null;

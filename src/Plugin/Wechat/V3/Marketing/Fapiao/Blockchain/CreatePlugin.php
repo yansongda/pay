@@ -37,6 +37,7 @@ class CreatePlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 
         $rocket->mergePayload(array_merge([

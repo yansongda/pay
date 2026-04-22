@@ -32,6 +32,7 @@ class PausePlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Marketing][Coupon][Stock][PausePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
         $stockId = $payload?->get('stock_id') ?? null;

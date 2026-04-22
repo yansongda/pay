@@ -70,17 +70,6 @@ trait WechatTrait
         return $body;
     }
 
-    public static function getWechatTypeKey(array $params): string
-    {
-        $key = ($params['_type'] ?? 'mp').'_app_id';
-
-        if ('app_app_id' === $key) {
-            $key = 'app_id';
-        }
-
-        return $key;
-    }
-
     /**
      * @throws InvalidConfigException
      */
@@ -138,6 +127,7 @@ trait WechatTrait
         $random = $message->getHeaderLine('Wechatpay-Nonce');
         $sign = $message->getHeaderLine('Wechatpay-Signature');
         $body = (string) $message->getBody();
+        /** @var WechatConfig $wechatConfig */
         $wechatConfig = self::getProviderConfig('wechat', $params);
 
         $content = $timestamp."\n".$random."\n".$body."\n";
@@ -220,6 +210,7 @@ trait WechatTrait
             $params
         )->get('data', []);
 
+        /** @var WechatConfig $wechatConfig */
         $wechatConfig = self::getProviderConfig('wechat', $params);
 
         foreach ($data as $item) {
@@ -246,6 +237,7 @@ trait WechatTrait
     {
         self::reloadWechatPublicCerts($params);
 
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 
         if (empty($path)) {
@@ -327,6 +319,7 @@ trait WechatTrait
             return $params['_serial_no'];
         }
 
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 
         $certs = $config->getWechatPublicCertPath();
@@ -334,6 +327,7 @@ trait WechatTrait
         if (empty($certs)) {
             self::reloadWechatPublicCerts($params);
 
+            /** @var WechatConfig $config */
             $config = self::getProviderConfig('wechat', $params);
 
             $certs = $config->getWechatPublicCertPath();
@@ -356,24 +350,5 @@ trait WechatTrait
         }
 
         return $publicKey;
-    }
-
-    /**
-     * @throws InvalidConfigException
-     */
-    public static function getWechatMiniprogramPaySign(WechatConfig $config, string $url, string $payload): string
-    {
-        $miniAppKeyVirtualPay = $config->getMiniAppKeyVirtualPay();
-
-        if (empty($miniAppKeyVirtualPay)) {
-            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mini_app_key_virtual_pay]');
-        }
-
-        return hash_hmac('sha256', $url.'&'.$payload, $miniAppKeyVirtualPay);
-    }
-
-    public static function getWechatMiniprogramUserSign(string $sessionKey, string $payload): string
-    {
-        return hash_hmac('sha256', $payload, $sessionKey);
     }
 }

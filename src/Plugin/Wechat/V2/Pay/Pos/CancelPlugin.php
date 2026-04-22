@@ -35,6 +35,7 @@ class CancelPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var WechatConfig $config */
+        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 
         $rocket->setPacker(XmlPacker::class)
