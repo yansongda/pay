@@ -67,7 +67,7 @@ class DeleteReceiverPlugin implements PluginInterface
         ];
     }
 
-protected function service(Collection $payload, array $params, WechatConfig $config): array
+    protected function service(Collection $payload, array $params, WechatConfig $config): array
     {
         $data = [
             'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
