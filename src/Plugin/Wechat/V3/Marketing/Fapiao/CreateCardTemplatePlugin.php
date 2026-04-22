@@ -37,7 +37,7 @@ class CreateCardTemplatePlugin implements PluginInterface
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => 'v3/new-tax-control-fapiao/card-template',
-            'card_appid' => $payload?->get('card_appid') ?? ($config->getMpAppId() ?? ''),
+            'card_appid' => $payload?->get('card_appid') ?? ($config->getAppIdByType($params['_type'] ?? 'mp') ?? ''),
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Fapiao][CreateCardTemplatePlugin] 插件装载完毕', ['rocket' => $rocket]);

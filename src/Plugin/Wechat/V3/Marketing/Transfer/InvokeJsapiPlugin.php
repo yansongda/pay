@@ -67,7 +67,7 @@ class InvokeJsapiPlugin implements PluginInterface
     protected function getInvokeConfig(?Collection $payload, array $params, WechatConfig $config, string $packageInfo): Config
     {
         return new Config([
-            'appId' => $payload?->get('_invoke_appId') ?? ($config->getMpAppId() ?? ''),
+            'appId' => $payload?->get('_invoke_appId') ?? ($config->getAppIdByType($params['_type'] ?? 'mp') ?? ''),
             'mchId' => $payload?->get('_invoke_mchId') ?? $config->getMchId(),
             'package' => $packageInfo,
         ]);

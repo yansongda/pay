@@ -69,7 +69,7 @@ class InvokeIosPlugin implements PluginInterface
         return new Config([
             'businessType' => 'requestMerchantTransfer',
             'query' => http_build_query([
-                'appId' => $payload?->get('_invoke_appId') ?? ($config->getMpAppId() ?? ''),
+                'appId' => $payload?->get('_invoke_appId') ?? ($config->getAppIdByType($params['_type'] ?? 'mp') ?? ''),
                 'mchId' => $payload?->get('_invoke_mchId') ?? $config->getMchId(),
                 'package' => $packageInfo,
             ]),

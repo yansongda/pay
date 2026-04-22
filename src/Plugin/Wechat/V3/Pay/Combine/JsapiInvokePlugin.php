@@ -98,9 +98,9 @@ class JsapiInvokePlugin implements PluginInterface
     protected function getAppId(?Collection $payload, WechatConfig $config, array $params): string
     {
         if (Pay::MODE_SERVICE === $config->getMode()) {
-            return $payload?->get('_invoke_appid') ?? ($config->getSubMpAppId() ?? '');
+            return $payload?->get('_invoke_appid') ?? ($config->getSubAppIdByType($params['_type'] ?? 'mp') ?? '');
         }
 
-        return $payload?->get('_invoke_appid') ?? ($config->getMpAppId() ?? '');
+        return $payload?->get('_invoke_appid') ?? ($config->getAppIdByType($params['_type'] ?? 'mp') ?? '');
     }
 }

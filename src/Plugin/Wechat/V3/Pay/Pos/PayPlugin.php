@@ -64,7 +64,7 @@ class PayPlugin implements PluginInterface
     protected function normal(array $params, WechatConfig $config): array
     {
         return [
-            'appid' => $config->getMpAppId() ?? '',
+            'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
             'mchid' => $config->getMchId(),
         ];
     }
