@@ -6,3 +6,4 @@ composer.lock
 .phpunit.result.cache
 .sisyphus/
 .worktrees
+docs/

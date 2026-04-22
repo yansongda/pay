@@ -6,6 +6,7 @@ PHP 支付 SDK，支持支付宝、微信、银联、抖音、江苏银行、Pay
 ## STRUCTURE
 ```text
 src/
+├── Config/               # Typed Config 系统
 ├── Contract/
 ├── Event/
 ├── Exception/
@@ -14,6 +15,8 @@ src/
 ├── Service/
 ├── Shortcut/{Provider}/
 ├── Traits/
+├── CertManager.php       # 证书管理
+├── Config.php            # 主配置类
 └── Pay.php
 ```
 
@@ -23,6 +26,7 @@ src/
 | 新增 Provider | `src/Plugin/{Provider}/`, `src/Provider/`, `src/Shortcut/{Provider}/` | 10 步流程起点 |
 | 支付逻辑 | `src/Plugin/{Provider}/V{n}/Pay/` | 按服务商版本组织 |
 | 回调验证 | `src/Plugin/{Provider}/V{n}/CallbackPlugin.php` | 签名验证逻辑 |
+| Provider 配置 | `src/Config/{Provider}Config.php` | 类型化配置类 |
 | 测试配置 | `tests/TestCase.php` | 所有 Provider 配置 |
 | 文档 | `web/docs/v3/{provider}/` | VitePress 文档 |
 
@@ -37,6 +41,11 @@ src/
 | `Pay::paypal()` | Method | `src/Pay.php:37` | 高 | PayPal 入口 |
 | `Pay::stripe()` | Method | `src/Pay.php:38` | 高 | Stripe 入口 |
 | `ProviderInterface` | Interface | `src/Contract/ProviderInterface.php` | 高 | 核心接口 |
+| `Config` | Class | `src/Config.php` | 高 | 主配置类 |
+| `CertManager` | Class | `src/CertManager.php` | 高 | 证书管理 |
+| `AbstractServiceProvider` | Class | `src/Service/AbstractServiceProvider.php` | 中 | ServiceProvider 基类 |
+| `WechatConfig` | Class | `src/Config/WechatConfig.php` | 中 | 微信配置类 |
+| `AlipayConfig` | Class | `src/Config/AlipayConfig.php` | 中 | 支付宝配置类 |
 
 ## 核心原则
 - **安全第一**：与支付和金钱相关，所有回调/Webhook 必须验证签名，禁止直接信任传入数据。
@@ -91,6 +100,9 @@ cd web && pnpm web:build
 | 签名验证 | `AlipayTrait::verifyAlipaySign()`、`WechatTrait::verifyWechatSign()`、`StripeTrait::verifyStripeWebhookSign()` |
 | 证书处理 | `CertManager::getPublicCert()`、`CertManager::getPrivateCert()` |
 | 微信专用 | `WechatTrait::decryptWechatResource()`、`WechatTrait::reloadWechatPublicCerts()` |
+| PayPal 专用 | `PaypalTrait::getPaypalAccessToken()`、`PaypalTrait::verifyPaypalWebhookSign()` |
+
+**注意**：Trait 方法使用类型化配置对象（如 `WechatConfig`、`AlipayConfig`）作为参数。
 
 ### 测试模式
 ```php
@@ -128,16 +140,18 @@ $httpClient->shouldReceive('sendRequest')->andReturn(new Response(200, [], '{"co
 由 `CallbackPlugin` 负责签名验证。
 
 ## 新增 Provider 步骤
-1. 在 `src/Plugin/{Provider}/V{n}/` 下创建插件
-2. 在 `src/Provider/{Provider}.php` 下创建服务商类，实现 `ProviderInterface`
-3. 在 `src/Service/{Provider}ServiceProvider.php` 下创建服务提供者
-4. 在 `src/Shortcut/{Provider}/` 下创建快捷方式
-5. 在 `src/Traits/{Provider}Trait.php` 中添加 Trait 方法（`get{Provider}Url`、`verify{Provider}WebhookSign` 等）
-6. 在 `src/Pay.php` 中注册服务商
-7. 在 `src/Exception/Exception.php` 中添加异常常量
-8. 在 `tests/` 下添加与源码结构对应的测试
-9. 在 `web/docs/v3/{provider}/` 下添加文档
-10. 更新侧边栏、初始化配置和变更日志
+1. 在 `src/Config/{Provider}Config.php` 下创建类型化配置类
+2. 在 `src/Plugin/{Provider}/V{n}/` 下创建插件
+3. 在 `src/Provider/{Provider}.php` 下创建服务商类，实现 `ProviderInterface`
+4. 在 `src/Service/{Provider}ServiceProvider.php` 下创建服务提供者（继承 `AbstractServiceProvider`）
+5. 在 `src/Shortcut/{Provider}/` 下创建快捷方式
+6. 在 `src/Traits/{Provider}Trait.php` 中添加 Trait 方法（`get{Provider}Url`、`verify{Provider}WebhookSign` 等）
+7. 在 `src/Pay.php` 中注册服务商
+8. 在 `src/Config.php` 中添加 Provider 配置映射
+9. 在 `src/Exception/Exception.php` 中添加异常常量
+10. 在 `tests/` 下添加与源码结构对应的测试
+11. 在 `web/docs/v3/{provider}/` 下添加文档
+12. 更新侧边栏、初始化配置和变更日志
 
 ## 常见错误
 - 忘记 `declare(strict_types=1);`
