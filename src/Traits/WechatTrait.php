@@ -127,6 +127,7 @@ trait WechatTrait
         $random = $message->getHeaderLine('Wechatpay-Nonce');
         $sign = $message->getHeaderLine('Wechatpay-Signature');
         $body = (string) $message->getBody();
+
         /** @var WechatConfig $wechatConfig */
         $wechatConfig = self::getProviderConfig('wechat', $params);
 

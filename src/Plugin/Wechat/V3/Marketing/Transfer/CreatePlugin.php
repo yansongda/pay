@@ -41,7 +41,6 @@ class CreatePlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var WechatConfig $config */
-        /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 
         if (Pay::MODE_SERVICE === $config->getMode()) {
