@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Config;
 
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Config\WechatConfig;
@@ -75,7 +76,8 @@ class ConfigTest extends TestCase
     {
         $config = new Config([]);
 
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
         $this->expectExceptionMessage('Unknown provider: unknown');
 
         $config->getProviderConfig('unknown');
@@ -95,7 +97,8 @@ class ConfigTest extends TestCase
             ],
         ]);
 
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
         $this->expectExceptionMessage('Config for alipay.missing_tenant not found');
 
         $config->getProviderConfig('alipay', 'missing_tenant');

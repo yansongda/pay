@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Config\JsbConfig;
@@ -49,18 +50,18 @@ class Config extends BaseConfig
     /**
      * 获取指定 Provider 的配置对象.
      *
-     * @throws Exception 当 Provider 或租户配置不存在时
+     * @throws InvalidConfigException 当 Provider 或租户配置不存在时
      */
     public function getProviderConfig(string $provider, ?string $tenant = null): ProviderConfigInterface
     {
         if (!isset(self::PROVIDER_CONFIG_MAP[$provider])) {
-            throw new Exception("Unknown provider: {$provider}");
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, "Unknown provider: {$provider}");
         }
 
         $tenant = $tenant ?? 'default';
 
         if (!isset($this->items[$provider][$tenant])) {
-            throw new Exception("Config for {$provider}.{$tenant} not found");
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, "Config for {$provider}.{$tenant} not found");
         }
 
         return $this->items[$provider][$tenant];

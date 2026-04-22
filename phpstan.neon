@@ -2,15 +2,10 @@ parameters:
     reportUnmatchedIgnoredErrors: false
     excludePaths:
     ignoreErrors:
+        # Framework container compatibility - these are dynamically resolved at runtime
         - '#.* Illuminate\\Container\\Container.*#'
         - '#.* Hyperf\\Utils\\ApplicationContext.*#'
         - '#.* think\\Container.*#'
-        # v3.8 refactoring: Traits unused until subsequent PRs merge
-        - '#Trait Yansongda\\Pay\\Traits\\DouyinTrait is used zero times#'
-        - '#Trait Yansongda\\Pay\\Traits\\JsbTrait is used zero times#'
-        - '#Trait Yansongda\\Pay\\Traits\\PaypalTrait is used zero times#'
-        - '#Trait Yansongda\\Pay\\Traits\\UnipayTrait is used zero times#'
-        - '#Trait Yansongda\\Pay\\Traits\\WechatTrait is used zero times#'
         # Config class refactoring: ProviderConfigInterface returns concrete Config classes at runtime
         - '#Parameter .* expects .*Config, .*ProviderConfigInterface given#'
         - '#Call to an undefined method .*ProviderConfigInterface::#'
