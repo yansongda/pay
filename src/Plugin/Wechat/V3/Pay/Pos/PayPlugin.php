@@ -71,12 +71,8 @@ class PayPlugin implements PluginInterface
 
     protected function service(Collection $payload, array $params, WechatConfig $config): array
     {
-        $configKey = self::getWechatTypeKey($params);
-
         return [
-            'sp_appid' => match ($configKey) {
-                'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '',
-            },
+            'sp_appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
             'sp_mchid' => $config->getMchId(),
             'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
         ];

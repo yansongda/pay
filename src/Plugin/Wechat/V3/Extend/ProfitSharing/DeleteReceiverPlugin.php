@@ -67,22 +67,19 @@ class DeleteReceiverPlugin implements PluginInterface
         ];
     }
 
-    protected function service(Collection $payload, array $params, WechatConfig $config): array
+protected function service(Collection $payload, array $params, WechatConfig $config): array
     {
-        $wechatTypeKEY = self::getWechatTypeKey($params);
-
         $data = [
             'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
-            'appid' => match ($wechatTypeKEY) {
-                'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '',
-            },
+            'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = match ($wechatTypeKEY) {
-                'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '',
-            };
+            $data['sub_appid'] = $config->getSubAppIdByType($params['_type'] ?? 'mp') ?? '';
         }
+
+        return $data;
+    }
 
         return $data;
     }

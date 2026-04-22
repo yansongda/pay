@@ -66,41 +66,23 @@ class PayPlugin implements PluginInterface
     protected function normal(WechatConfig $config, array $params): array
     {
         return [
-            'appid' => $this->getAppId($config, self::getWechatTypeKey($params)),
+            'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
             'mchid' => $config->getMchId(),
         ];
     }
 
     protected function service(Collection $payload, WechatConfig $config, array $params): array
     {
-        $wechatTypeKey = self::getWechatTypeKey($params);
-
         $data = [
-            'sp_appid' => $this->getAppId($config, $wechatTypeKey),
+            'sp_appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
             'sp_mchid' => $config->getMchId(),
             'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
         ];
 
         if ($payload->has('payer.sub_openid')) {
-            $data['sub_appid'] = $this->getSubAppId($config, $wechatTypeKey);
+            $data['sub_appid'] = $config->getSubAppIdByType($params['_type'] ?? 'mp') ?? '';
         }
 
         return $data;
-    }
-
-    protected function getAppId(WechatConfig $config, string $wechatTypeKey): string
-    {
-        return match ($wechatTypeKey) {
-            'mini_app_id' => $config->getMiniAppId() ?? '',
-            'app_id' => $config->getAppId() ?? '',
-            default => $config->getMpAppId() ?? '',
-        };
-    }
-
-    protected function getSubAppId(WechatConfig $config, string $wechatTypeKey): string
-    {
-        return match ($wechatTypeKey) {
-            'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '',
-        };
     }
 }

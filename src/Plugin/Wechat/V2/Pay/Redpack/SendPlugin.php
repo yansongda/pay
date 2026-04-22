@@ -65,36 +65,18 @@ class SendPlugin implements PluginInterface
     protected function normal(WechatConfig $config, array $params): array
     {
         return [
-            'wxappid' => $this->getAppId($config, self::getWechatTypeKey($params)),
+            'wxappid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
             'mch_id' => $config->getMchId(),
         ];
     }
 
     protected function service(Collection $payload, WechatConfig $config, array $params): array
     {
-        $wechatTypeKey = self::getWechatTypeKey($params);
-
         return [
-            'wxappid' => $this->getAppId($config, $wechatTypeKey),
+            'wxappid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
             'mch_id' => $config->getMchId(),
             'sub_mch_id' => $payload->get('sub_mch_id', $config->getSubMchId() ?? ''),
-            'msgappid' => $this->getSubAppId($config, $wechatTypeKey),
+            'msgappid' => $config->getSubAppIdByType($params['_type'] ?? 'mp') ?? '',
         ];
-    }
-
-    protected function getAppId(WechatConfig $config, string $wechatTypeKey): string
-    {
-        return match ($wechatTypeKey) {
-            'mini_app_id' => $config->getMiniAppId() ?? '',
-            'app_id' => $config->getAppId() ?? '',
-            default => $config->getMpAppId() ?? '',
-        };
-    }
-
-    protected function getSubAppId(WechatConfig $config, string $wechatTypeKey): string
-    {
-        return match ($wechatTypeKey) {
-            'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '',
-        };
     }
 }

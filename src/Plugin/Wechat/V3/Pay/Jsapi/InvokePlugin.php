@@ -98,23 +98,9 @@ class InvokePlugin implements PluginInterface
     protected function getAppId(?Collection $payload, WechatConfig $config, array $params): string
     {
         if (Pay::MODE_SERVICE === $config->getMode()) {
-            return $payload?->get('_invoke_appid') ?? $this->getSubAppId($config, self::getWechatTypeKey($params));
+            return $payload?->get('_invoke_appid') ?? $config->getSubAppIdByType($params['_type'] ?? 'mp') ?? '';
         }
 
-        return $payload?->get('_invoke_appid') ?? $this->getAppIdByType($config, self::getWechatTypeKey($params));
-    }
-
-    protected function getAppIdByType(WechatConfig $config, string $wechatTypeKey): string
-    {
-        return match ($wechatTypeKey) {
-            'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '',
-        };
-    }
-
-    protected function getSubAppId(WechatConfig $config, string $wechatTypeKey): string
-    {
-        return match ($wechatTypeKey) {
-            'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '',
-        };
+        return $payload?->get('_invoke_appid') ?? $config->getAppIdByType($params['_type'] ?? 'mp') ?? '';
     }
 }

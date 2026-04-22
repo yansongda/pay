@@ -93,21 +93,13 @@ class AddReceiverPlugin implements PluginInterface
      */
     protected function service(Collection $payload, array $params, WechatConfig $config): array
     {
-        $wechatTypeKey = self::getWechatTypeKey($params);
-
         $data = [
             'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
-            'appid' => match ($wechatTypeKey) {
-                'mini_app_id' => $config->getMiniAppId() ?? '',
-                'app_id' => $config->getAppId() ?? '',
-                default => $config->getMpAppId() ?? '',
-            },
+            'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
         ];
 
         if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = match ($wechatTypeKey) {
-                'mini_app_id' => $config->getSubMiniAppId() ?? '', 'app_id' => $config->getSubAppId() ?? '', default => $config->getSubMpAppId() ?? '',
-            };
+            $data['sub_appid'] = $config->getSubAppIdByType($params['_type'] ?? 'mp') ?? '';
         }
 
         if (!$payload->has('name')) {

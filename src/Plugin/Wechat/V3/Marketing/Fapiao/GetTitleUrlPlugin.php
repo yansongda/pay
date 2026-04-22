@@ -61,9 +61,7 @@ class GetTitleUrlPlugin implements PluginInterface
         $config = self::getProviderConfig('wechat', $params);
 
         return filter_params($payload)->merge([
-            'appid' => $payload->get('appid', match (self::getWechatTypeKey($params)) {
-                'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '',
-            }),
+            'appid' => $payload->get('appid', $config->getAppIdByType($params['_type'] ?? 'mp') ?? ''),
         ]);
     }
 }

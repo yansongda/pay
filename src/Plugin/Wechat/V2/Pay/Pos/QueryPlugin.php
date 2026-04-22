@@ -41,9 +41,7 @@ class QueryPlugin implements PluginInterface
             ->mergePayload([
                 '_url' => 'pay/orderquery',
                 '_content_type' => 'application/xml',
-                'appid' => match (self::getWechatTypeKey($params)) {
-                    'mini_app_id' => $config->getMiniAppId() ?? '', 'app_id' => $config->getAppId() ?? '', default => $config->getMpAppId() ?? '',
-                },
+                'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
                 'mch_id' => $config->getMchId(),
                 'nonce_str' => Str::random(32),
                 'sign_type' => 'MD5',
