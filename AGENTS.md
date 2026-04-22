@@ -43,33 +43,21 @@ cd web && pnpm web:build # 文档构建
 
 ## 本地开发环境缺失处理
 
-当本地没有 PHP/composer 环境时，使用 Docker 作为备选方案：
-
-**镜像**: `registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine`
+无 PHP/composer 时用 Docker：
 
 ```bash
-# 运行测试
+# 模板：替换 COMMAND 为 test/analyse/cs-fix 等
 docker run --rm -v "$(pwd)":/app -w /app \
   registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
-  sh -c "COMPOSER_ALLOW_SUPERUSER=1 composer test"
+  sh -c "COMPOSER_ALLOW_SUPERUSER=1 composer COMMAND"
 
-# PHPStan 分析
-docker run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
-  sh -c "COMPOSER_ALLOW_SUPERUSER=1 composer analyse"
-
-# 代码风格检查
-docker run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
-  sh -c "COMPOSER_ALLOW_SUPERUSER=1 composer cs-fix"
-
-# 代码风格修复
+# 代码风格修复（非 dry-run）
 docker run --rm -v "$(pwd)":/app -w /app \
   registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
   sh -c "COMPOSER_ALLOW_SUPERUSER=1 vendor/bin/php-cs-fixer fix ./src"
 ```
 
-> 详细说明见 `.agents/skills/container-dev/SKILL.md`
+> Apple Container 及 DNS 问题处理见 `.agents/skills/container-dev/SKILL.md`
 
 ## 架构要点
 - **插件管道**：`StartPlugin → [前置] → 业务插件 → [后置] → ParserPlugin`
