@@ -6,8 +6,12 @@ checks:
     php: true
 
 build:
+    image: default-bionic
     nodes:
         analysis:
+            environment:
+                php:
+                    version: 8.2.15
             tests:
                 override:
                     - php-scrutinizer-run
