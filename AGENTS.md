@@ -33,17 +33,15 @@ src/
 
 ## COMMANDS
 ```
-composer test       # PHPUnit 11.x + Mockery 1.6
+composer test       # PHPUnit 11.x + Mockery 1.6 测试前需安装 `hyperf/pimple`
 composer cs-fix     # 代码格式化检查（dry-run）
 composer analyse    # PHPStan
 
 cd web && pnpm web:dev   # 文档开发
 cd web && pnpm web:build # 文档构建
 ```
-
-## 本地开发环境缺失处理
-
-无 PHP/composer 时用 Docker 容器运行命令，详见 `.agents/skills/container-dev/SKILL.md`。
+- **本地开发环境**：优先本地 PHP 环境；若无 PHP，使用 Container 作为备选，详见 `.agents/skills/container-dev/SKILL.md`
+- **CI 矩阵**：PHP 8.2-8.5 + Laravel/Hyperf/Default
 
 ## 架构要点
 - **插件管道**：`StartPlugin → [前置] → 业务插件 → [后置] → ParserPlugin`
