@@ -34,12 +34,42 @@ src/
 ## COMMANDS
 ```
 composer test       # PHPUnit 11.x + Mockery 1.6
-composer cs-fix     # 代码格式化
+composer cs-fix     # 代码格式化检查（dry-run）
 composer analyse    # PHPStan
 
 cd web && pnpm web:dev   # 文档开发
 cd web && pnpm web:build # 文档构建
 ```
+
+## 本地开发环境缺失处理
+
+当本地没有 PHP/composer 环境时，使用 Docker 作为备选方案：
+
+**镜像**: `registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine`
+
+```bash
+# 运行测试
+docker run --rm -v "$(pwd)":/app -w /app \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  sh -c "COMPOSER_ALLOW_SUPERUSER=1 composer test"
+
+# PHPStan 分析
+docker run --rm -v "$(pwd)":/app -w /app \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  sh -c "COMPOSER_ALLOW_SUPERUSER=1 composer analyse"
+
+# 代码风格检查
+docker run --rm -v "$(pwd)":/app -w /app \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  sh -c "COMPOSER_ALLOW_SUPERUSER=1 composer cs-fix"
+
+# 代码风格修复
+docker run --rm -v "$(pwd)":/app -w /app \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  sh -c "COMPOSER_ALLOW_SUPERUSER=1 vendor/bin/php-cs-fixer fix ./src"
+```
+
+> 详细说明见 `.agents/skills/container-dev/SKILL.md`
 
 ## 架构要点
 - **插件管道**：`StartPlugin → [前置] → 业务插件 → [后置] → ParserPlugin`
