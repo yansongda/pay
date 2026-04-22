@@ -80,7 +80,4 @@ protected function service(Collection $payload, array $params, WechatConfig $con
 
         return $data;
     }
-
-        return $data;
-    }
 }
