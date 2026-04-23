@@ -55,9 +55,6 @@ class InvokeJsapiPlugin implements PluginInterface
         }
 
         $params = $rocket->getParams();
-
-        /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
         $payload = $rocket->getPayload();
 
         $rocket->setDestination($this->getInvokeConfig($payload, $params, $config, $packageInfo));
