@@ -77,8 +77,8 @@ class ConfigTest extends TestCase
         $config = new Config([]);
 
         $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        $this->expectExceptionMessage('Unknown provider: unknown');
+        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+        $this->expectExceptionMessage('配置异常: 未知的 Provider - unknown');
 
         $config->getProviderConfig('unknown');
     }
@@ -98,8 +98,8 @@ class ConfigTest extends TestCase
         ]);
 
         $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        $this->expectExceptionMessage('Config for alipay.missing_tenant not found');
+        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+        $this->expectExceptionMessage('配置异常: alipay.missing_tenant 配置不存在');
 
         $config->getProviderConfig('alipay', 'missing_tenant');
     }

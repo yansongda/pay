@@ -55,13 +55,13 @@ class Config extends BaseConfig
     public function getProviderConfig(string $provider, ?string $tenant = null): ProviderConfigInterface
     {
         if (!isset(self::PROVIDER_CONFIG_MAP[$provider])) {
-            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, "Unknown provider: {$provider}");
+            throw new InvalidConfigException(Exception::CONFIG_PROVIDER_INVALID, "配置异常: 未知的 Provider - {$provider}");
         }
 
         $tenant = $tenant ?? 'default';
 
         if (!isset($this->items[$provider][$tenant])) {
-            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, "Config for {$provider}.{$tenant} not found");
+            throw new InvalidConfigException(Exception::CONFIG_PROVIDER_INVALID, "配置异常: {$provider}.{$tenant} 配置不存在");
         }
 
         return $this->items[$provider][$tenant];

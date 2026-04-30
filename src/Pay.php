@@ -94,32 +94,14 @@ class Pay
      */
     public static function config(array|Config $config = [], Closure|ContainerInterface|null $container = null): bool
     {
-        // Early return check for array input (avoid validation for partial configs)
-        // Only return false if already configured (ConfigInterface bound) and not forced
-        if (is_array($config) && !($config['_force'] ?? false)) {
-            try {
-                if (Artful::has(ConfigInterface::class)) {
-                    return false;
-                }
-            } catch (ContainerException) {
-                // Container not found, proceed with config
-            }
+        $force = is_array($config) && ($config['_force'] ?? false);
+
+        if (!$force && self::isAlreadyConfigured()) {
+            return false;
         }
 
         $configObject = is_array($config) ? new Config($config) : $config;
         $runtimeConfig = $configObject->all();
-        $force = is_array($config) ? (bool) ($config['_force'] ?? false) : (bool) ($runtimeConfig['_force'] ?? false);
-
-        // For Config instance input, check force from runtime config
-        if (!is_array($config) && !$force) {
-            try {
-                if (Artful::has(ConfigInterface::class)) {
-                    return false;
-                }
-            } catch (ContainerException) {
-                // Container not found, proceed with config
-            }
-        }
 
         // Force Artful::config() to execute by setting _force in runtime config
         $runtimeConfig['_force'] = true;
@@ -138,6 +120,20 @@ class Pay
         }
 
         return $result;
+    }
+
+    /**
+     * 检查是否已经配置过.
+     *
+     * @throws ContainerException
+     */
+    private static function isAlreadyConfigured(): bool
+    {
+        try {
+            return Artful::has(ConfigInterface::class);
+        } catch (ContainerException) {
+            return false;
+        }
     }
 
     /**

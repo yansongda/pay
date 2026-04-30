@@ -71,7 +71,9 @@ class Exception extends \Exception
 
     public const CONFIG_STRIPE_INVALID = 9407;
 
-    public const CONFIG_CERT_PARSE_FAILED = 9408;
+    public const CONFIG_PROVIDER_INVALID = 9408;
+
+    public const CONFIG_CERT_PARSE_FAILED = 9409;
 
     /**
      * 关于签名.
