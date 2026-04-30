@@ -123,20 +123,6 @@ class Pay
     }
 
     /**
-     * 检查是否已经配置过.
-     *
-     * @throws ContainerException
-     */
-    private static function isAlreadyConfigured(): bool
-    {
-        try {
-            return Artful::has(ConfigInterface::class);
-        } catch (ContainerException) {
-            return false;
-        }
-    }
-
-    /**
      * @throws ContainerException
      */
     public static function set(string $name, mixed $value): void
@@ -161,5 +147,14 @@ class Pay
     public static function clear(): void
     {
         Artful::clear();
+    }
+
+    private static function isAlreadyConfigured(): bool
+    {
+        try {
+            return Artful::has(ConfigInterface::class);
+        } catch (ContainerException) {
+            return false;
+        }
     }
 }
