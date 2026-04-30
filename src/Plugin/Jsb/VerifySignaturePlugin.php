@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Arr;
@@ -38,6 +39,8 @@ class VerifySignaturePlugin implements PluginInterface
 
         if (should_do_http_request($rocket->getDirection())) {
             $params = $rocket->getParams();
+
+            /** @var JsbConfig $config */
             $config = self::getProviderConfig('jsb', $params);
 
             $body = (string) $rocket->getDestinationOrigin()->getBody();

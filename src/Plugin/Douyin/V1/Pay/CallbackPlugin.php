@@ -34,6 +34,8 @@ class CallbackPlugin implements PluginInterface
         Logger::debug('[Douyin][V1][Pay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var DouyinConfig $config */
         $config = self::getProviderConfig('douyin', $params);
 
         $value = filter_params($params, fn ($k, $v) => '' !== $v && 'msg_signature' != $k && 'type' != $k);

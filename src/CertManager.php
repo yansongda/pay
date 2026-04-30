@@ -10,8 +10,23 @@ use Yansongda\Supports\Str;
 
 class CertManager
 {
+    /**
+     * 文件内容/证书解析结果缓存.
+     *
+     * 键格式: {type}_{sha1($key)}，如 "public_info_a1b2c3..."
+     * 用于缓存: 证书文件内容、解析后的证书信息、支付宝 SN、银联证书 ID 等
+     * 避免重复读取文件和重复解析证书.
+     */
     private static array $cache = [];
-    private static array $certs = [];
+
+    /**
+     * 微信平台证书缓存.
+     *
+     * 结构: [$tenant][$serialNo] = $certContent
+     * 用于: 微信回调验签时，根据证书序列号快速查找对应公钥证书
+     * 支持多租户隔离，每个租户的证书缓存独立.
+     */
+    private static array $wechatCerts = [];
 
     public static function getPublicCert(string $key): string
     {
@@ -41,6 +56,8 @@ class CertManager
 
     /**
      * 获取并缓存公钥证书解析结果。
+     *
+     * @throws InvalidConfigException 证书解析失败
      */
     public static function getPublicCertInfo(string $key): array
     {
@@ -48,23 +65,33 @@ class CertManager
             $info = openssl_x509_parse(self::getPublicCert($k));
 
             if (false === $info) {
-                throw new InvalidConfigException(Exception::UNKNOWN_ERROR, '配置异常: 解析证书失败');
+                throw new InvalidConfigException(Exception::CONFIG_CERT_PARSE_FAILED, '配置异常: 解析证书失败');
             }
 
             return $info;
         });
     }
 
-    public static function getAlipayAppCertSn(string $key): string
+    /**
+     * 获取支付宝应用公钥证书序列号.
+     *
+     * @throws InvalidConfigException 证书解析失败
+     */
+    public static function alipayGetAppCertSn(string $key): string
     {
         return self::getCachedContent('alipay_app_cert_sn', $key, function (string $k): string {
             $ssl = self::getPublicCertInfo($k);
 
-            return self::getAlipayCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
+            return self::alipayGetCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
         });
     }
 
-    public static function getAlipayRootCertSn(string $key): string
+    /**
+     * 获取支付宝根证书序列号.
+     *
+     * @throws InvalidConfigException 证书解析失败
+     */
+    public static function alipayGetRootCertSn(string $key): string
     {
         return self::getCachedContent('alipay_root_cert_sn', $key, function (string $k): string {
             $sn = '';
@@ -81,10 +108,10 @@ class CertManager
                     throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 解析 `alipay_root_cert` 失败');
                 }
 
-                $detail = self::formatAlipayCert($ssl);
+                $detail = self::alipayFormatCert($ssl);
 
                 if ('sha1WithRSAEncryption' == $detail['signatureTypeLN'] || 'sha256WithRSAEncryption' == $detail['signatureTypeLN']) {
-                    $sn .= self::getAlipayCertSn($detail['issuer'], $detail['serialNumber']).'_';
+                    $sn .= self::alipayGetCertSn($detail['issuer'], $detail['serialNumber']).'_';
                 }
             }
 
@@ -92,9 +119,14 @@ class CertManager
         });
     }
 
-    public static function getPkcs12Certs(string $path, string $password): array
+    /**
+     * 获取银联 PKCS12 证书内容.
+     *
+     * @throws InvalidConfigException 证书读取失败
+     */
+    public static function unipayGetPkcs12Certs(string $path, string $password): array
     {
-        return self::getCachedContent('pkcs12', $path.$password, function (string $k) use ($path, $password): array {
+        return self::getCachedContent('unipay_pkcs12', $path.$password, function () use ($path, $password): array {
             $content = is_file($path) ? file_get_contents($path) : $path;
             $certs = [];
 
@@ -106,10 +138,15 @@ class CertManager
         });
     }
 
-    public static function getUnipayCertId(string $key, string $password): string
+    /**
+     * 获取银联证书序列号.
+     *
+     * @throws InvalidConfigException 证书解析失败
+     */
+    public static function unipayGetCertId(string $key, string $password): string
     {
-        return self::getCachedContent('unipay_cert_id', $key.$password, function (string $k) use ($key, $password): string {
-            $certs = self::getPkcs12Certs($key, $password);
+        return self::getCachedContent('unipay_cert_id', $key.$password, function () use ($key, $password): string {
+            $certs = self::unipayGetPkcs12Certs($key, $password);
             $ssl = openssl_x509_parse($certs['cert'] ?? '');
 
             if (false === $ssl) {
@@ -123,47 +160,36 @@ class CertManager
     public static function clearCache(): void
     {
         self::$cache = [];
-        self::$certs = [];
+        self::$wechatCerts = [];
     }
 
-    public static function setBySerial(string $provider, string $tenant, string $serialNo, string $cert): void
+    /**
+     * 设置微信平台证书缓存.
+     */
+    public static function wechatSetCertBySerial(string $tenant, string $serialNo, string $cert): void
     {
-        self::$certs[$provider][$tenant][$serialNo] = $cert;
+        self::$wechatCerts[$tenant][$serialNo] = $cert;
     }
 
-    public static function setAllBySerial(string $provider, string $tenant, array $certs): void
+    /**
+     * 获取微信平台证书缓存.
+     */
+    public static function wechatGetCertBySerial(string $tenant, string $serialNo): ?string
     {
-        self::$certs[$provider][$tenant] = $certs;
+        return self::$wechatCerts[$tenant][$serialNo] ?? null;
     }
 
-    public static function getBySerial(string $provider, string $tenant, string $serialNo): ?string
+    /**
+     * 获取所有微信平台证书缓存.
+     */
+    public static function wechatGetAllCertsBySerial(string $tenant): array
     {
-        return self::$certs[$provider][$tenant][$serialNo] ?? null;
-    }
-
-    public static function getAllBySerial(string $provider, string $tenant): array
-    {
-        return self::$certs[$provider][$tenant] ?? [];
-    }
-
-    public static function hasBySerial(string $provider, string $tenant, string $serialNo): bool
-    {
-        return isset(self::$certs[$provider][$tenant][$serialNo]);
-    }
-
-    public static function clearBySerial(string $provider, string $tenant): void
-    {
-        unset(self::$certs[$provider][$tenant]);
-    }
-
-    public static function clearAllBySerial(): void
-    {
-        self::$certs = [];
+        return self::$wechatCerts[$tenant] ?? [];
     }
 
     private static function getCachedContent(string $type, string $key, callable $loader): mixed
     {
-        $cacheKey = self::buildCacheKey($type, $key);
+        $cacheKey = $type.'_'.sha1($key);
 
         if (isset(self::$cache[$cacheKey])) {
             return self::$cache[$cacheKey];
@@ -174,17 +200,12 @@ class CertManager
         return self::$cache[$cacheKey];
     }
 
-    private static function buildCacheKey(string $type, string $key): string
+    private static function alipayGetCertSn(array $issuer, string $serialNumber): string
     {
-        return $type.'_'.sha1($key);
+        return md5(self::alipayArrayToString(array_reverse($issuer)).$serialNumber);
     }
 
-    private static function getAlipayCertSn(array $issuer, string $serialNumber): string
-    {
-        return md5(self::alipayArray2String(array_reverse($issuer)).$serialNumber);
-    }
-
-    private static function alipayArray2String(array $array): string
+    private static function alipayArrayToString(array $array): string
     {
         $string = [];
 
@@ -195,16 +216,16 @@ class CertManager
         return implode(',', $string);
     }
 
-    private static function formatAlipayCert(array $ssl): array
+    private static function alipayFormatCert(array $ssl): array
     {
         if (str_starts_with($ssl['serialNumber'] ?? '', '0x')) {
-            $ssl['serialNumber'] = self::alipayHex2Dec($ssl['serialNumberHex'] ?? '');
+            $ssl['serialNumber'] = self::alipayHexToDec($ssl['serialNumberHex'] ?? '');
         }
 
         return $ssl;
     }
 
-    private static function alipayHex2Dec(string $hex): string
+    private static function alipayHexToDec(string $hex): string
     {
         $dec = '0';
         $len = strlen($hex);

@@ -108,7 +108,7 @@ class StartPluginTest extends TestCase
         $alipayConfig->setAppPublicCertPath('/nonexistent/path/cert.crt');
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::UNKNOWN_ERROR);
+        self::expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
         self::expectExceptionMessage('配置异常: 解析证书失败');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -123,7 +123,7 @@ class StartPluginTest extends TestCase
         $alipayConfig->setAppPublicCertPath(__DIR__.'/../../Cert/foo');
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::UNKNOWN_ERROR);
+        self::expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
         self::expectExceptionMessage('配置异常: 解析证书失败');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });

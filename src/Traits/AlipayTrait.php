@@ -20,6 +20,10 @@ trait AlipayTrait
 {
     use ProviderConfigTrait;
 
+    /**
+     * @throws InvalidConfigException 缺少支付宝公钥证书配置
+     * @throws InvalidSignException   签名为空或验签失败
+     */
     public static function verifyAlipaySign(AlipayConfig $config, string $contents, string $sign): void
     {
         if ('' === $sign) {
@@ -50,12 +54,28 @@ trait AlipayTrait
     }
 
     /**
+     * @throws InvalidConfigException 缺少商户私钥配置
+     */
+    public static function getAlipayPrivateKey(AlipayConfig $config): string
+    {
+        $privateKey = $config->getAppSecretCert();
+
+        if (empty($privateKey)) {
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_secret_cert]');
+        }
+
+        return CertManager::getPrivateCert($privateKey);
+    }
+
+    /**
      * @throws ContainerException
      * @throws ServiceNotFoundException
      */
     protected function loadAlipayServiceProvider(Rocket $rocket): void
     {
         $params = $rocket->getParams();
+
+        /** @var AlipayConfig $config */
         $config = self::getProviderConfig('alipay', $params);
         $serviceProviderId = $config->getServiceProviderId();
 

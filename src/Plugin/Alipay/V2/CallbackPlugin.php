@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Traits\AlipayTrait;
 
@@ -32,6 +33,8 @@ class CallbackPlugin implements PluginInterface
         Logger::debug('[Alipay][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var AlipayConfig $config */
         $config = self::getProviderConfig('alipay', $params);
 
         $value = filter_params($params, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k);

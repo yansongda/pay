@@ -43,7 +43,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
         }
 
         $rocket->mergePayload([
-            'signature' => $this->getSignature(CertManager::getPkcs12Certs($config->getMchCertPath(), $config->getMchCertPassword())['pkey'] ?? '', filter_params($payload)->except('signature')),
+            'signature' => $this->getSignature(CertManager::unipayGetPkcs12Certs($config->getMchCertPath(), $config->getMchCertPassword())['pkey'] ?? '', filter_params($payload)->except('signature')),
         ]);
 
         Logger::info('[Unipay][AddPayloadSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);

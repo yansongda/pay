@@ -125,14 +125,14 @@ class CertManagerTest extends TestCase
     {
         $path = __DIR__.'/Cert/alipayAppPublicCert.crt';
 
-        Assert::assertSame('e90dd23a37c5c7b616e003970817ff82', CertManager::getAlipayAppCertSn($path));
+        Assert::assertSame('e90dd23a37c5c7b616e003970817ff82', CertManager::alipayGetAppCertSn($path));
     }
 
     public function testGetAlipayAppCertSnFromString(): void
     {
         $content = file_get_contents(__DIR__.'/Cert/alipayAppPublicCert.crt');
 
-        Assert::assertSame('e90dd23a37c5c7b616e003970817ff82', CertManager::getAlipayAppCertSn($content));
+        Assert::assertSame('e90dd23a37c5c7b616e003970817ff82', CertManager::alipayGetAppCertSn($content));
     }
 
     public function testGetAlipayAppCertSnCacheHit(): void
@@ -143,10 +143,10 @@ class CertManagerTest extends TestCase
         copy($source, $path);
 
         try {
-            $first = CertManager::getAlipayAppCertSn($path);
+            $first = CertManager::alipayGetAppCertSn($path);
             file_put_contents($path, 'changed-cert-content');
 
-            Assert::assertSame($first, CertManager::getAlipayAppCertSn($path));
+            Assert::assertSame($first, CertManager::alipayGetAppCertSn($path));
         } finally {
             if (is_file($path)) {
                 unlink($path);
@@ -159,26 +159,26 @@ class CertManagerTest extends TestCase
         $path1 = __DIR__.'/Cert/alipayAppPublicCert.crt';
         $path2 = __DIR__.'/Cert/alipayPublicCert.crt';
 
-        $sn1 = CertManager::getAlipayAppCertSn($path1);
-        $sn2 = CertManager::getAlipayAppCertSn($path2);
+        $sn1 = CertManager::alipayGetAppCertSn($path1);
+        $sn2 = CertManager::alipayGetAppCertSn($path2);
 
         Assert::assertNotSame($sn1, $sn2);
-        Assert::assertSame($sn1, CertManager::getAlipayAppCertSn($path1));
-        Assert::assertSame($sn2, CertManager::getAlipayAppCertSn($path2));
+        Assert::assertSame($sn1, CertManager::alipayGetAppCertSn($path1));
+        Assert::assertSame($sn2, CertManager::alipayGetAppCertSn($path2));
     }
 
     public function testGetAlipayRootCertSnFromFile(): void
     {
         $path = __DIR__.'/Cert/alipayRootCert.crt';
 
-        Assert::assertSame('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', CertManager::getAlipayRootCertSn($path));
+        Assert::assertSame('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', CertManager::alipayGetRootCertSn($path));
     }
 
     public function testGetAlipayRootCertSnFromString(): void
     {
         $content = file_get_contents(__DIR__.'/Cert/alipayRootCert.crt');
 
-        Assert::assertSame('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', CertManager::getAlipayRootCertSn($content));
+        Assert::assertSame('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', CertManager::alipayGetRootCertSn($content));
     }
 
     public function testGetAlipayRootCertSnCacheHit(): void
@@ -189,10 +189,10 @@ class CertManagerTest extends TestCase
         copy($source, $path);
 
         try {
-            $first = CertManager::getAlipayRootCertSn($path);
+            $first = CertManager::alipayGetRootCertSn($path);
             file_put_contents($path, 'changed-cert-content');
 
-            Assert::assertSame($first, CertManager::getAlipayRootCertSn($path));
+            Assert::assertSame($first, CertManager::alipayGetRootCertSn($path));
         } finally {
             if (is_file($path)) {
                 unlink($path);
@@ -241,22 +241,21 @@ class CertManagerTest extends TestCase
         }
     }
 
-    public function testClearCacheClearsSerialCache(): void
+    public function testClearCacheClearsWechatCerts(): void
     {
-        CertManager::setBySerial('wechat', 'default', 'serial-1', 'cert-content');
+        CertManager::wechatSetCertBySerial('default', 'serial-1', 'cert-content');
 
-        Assert::assertTrue(CertManager::hasBySerial('wechat', 'default', 'serial-1'));
+        Assert::assertNotNull(CertManager::wechatGetCertBySerial('default', 'serial-1'));
 
         CertManager::clearCache();
 
-        Assert::assertFalse(CertManager::hasBySerial('wechat', 'default', 'serial-1'));
-        Assert::assertNull(CertManager::getBySerial('wechat', 'default', 'serial-1'));
+        Assert::assertNull(CertManager::wechatGetCertBySerial('default', 'serial-1'));
     }
 
     public function testGetPkcs12CertsFromFile(): void
     {
         $path = __DIR__.'/Cert/unipayAppCert.pfx';
-        $certs = CertManager::getPkcs12Certs($path, '000000');
+        $certs = CertManager::unipayGetPkcs12Certs($path, '000000');
 
         Assert::assertArrayHasKey('cert', $certs);
         Assert::assertArrayHasKey('pkey', $certs);
@@ -266,8 +265,8 @@ class CertManagerTest extends TestCase
     {
         $path = __DIR__.'/Cert/unipayAppCert.pfx';
 
-        $first = CertManager::getPkcs12Certs($path, '000000');
-        $second = CertManager::getPkcs12Certs($path, '000000');
+        $first = CertManager::unipayGetPkcs12Certs($path, '000000');
+        $second = CertManager::unipayGetPkcs12Certs($path, '000000');
 
         Assert::assertSame($first, $second);
     }
@@ -276,16 +275,16 @@ class CertManagerTest extends TestCase
     {
         $path = __DIR__.'/Cert/alipayAppPublicCert.crt';
 
-        $sn1 = CertManager::getAlipayAppCertSn($path);
+        $sn1 = CertManager::alipayGetAppCertSn($path);
         CertManager::clearCache();
-        $sn2 = CertManager::getAlipayAppCertSn($path);
+        $sn2 = CertManager::alipayGetAppCertSn($path);
 
         Assert::assertSame($sn1, $sn2);
 
         $rootPath = __DIR__.'/Cert/alipayRootCert.crt';
-        $rootSn1 = CertManager::getAlipayRootCertSn($rootPath);
+        $rootSn1 = CertManager::alipayGetRootCertSn($rootPath);
         CertManager::clearCache();
-        $rootSn2 = CertManager::getAlipayRootCertSn($rootPath);
+        $rootSn2 = CertManager::alipayGetRootCertSn($rootPath);
 
         Assert::assertSame($rootSn1, $rootSn2);
 
@@ -293,13 +292,13 @@ class CertManagerTest extends TestCase
         $password = '000000';
 
         if (is_file($pfxPath)) {
-            $certs1 = CertManager::getPkcs12Certs($pfxPath, $password);
-            $certId1 = CertManager::getUnipayCertId($pfxPath, $password);
+            $certs1 = CertManager::unipayGetPkcs12Certs($pfxPath, $password);
+            $certId1 = CertManager::unipayGetCertId($pfxPath, $password);
 
             CertManager::clearCache();
 
-            $certs2 = CertManager::getPkcs12Certs($pfxPath, $password);
-            $certId2 = CertManager::getUnipayCertId($pfxPath, $password);
+            $certs2 = CertManager::unipayGetPkcs12Certs($pfxPath, $password);
+            $certId2 = CertManager::unipayGetCertId($pfxPath, $password);
 
             Assert::assertSame($certs1, $certs2);
             Assert::assertSame($certId1, $certId2);
@@ -311,22 +310,22 @@ class CertManagerTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 读取证书失败，确认参数是否正确');
 
-        CertManager::getPkcs12Certs(__DIR__.'/Cert/unipayAppCert.pfx', 'wrong_password');
+        CertManager::unipayGetPkcs12Certs(__DIR__.'/Cert/unipayAppCert.pfx', 'wrong_password');
     }
 
     public function testGetUnipayCertIdFromFile(): void
     {
         $path = __DIR__.'/Cert/unipayAppCert.pfx';
 
-        Assert::assertSame('69903319369', CertManager::getUnipayCertId($path, '000000'));
+        Assert::assertSame('69903319369', CertManager::unipayGetCertId($path, '000000'));
     }
 
     public function testGetUnipayCertIdCacheHit(): void
     {
         $path = __DIR__.'/Cert/unipayAppCert.pfx';
 
-        $first = CertManager::getUnipayCertId($path, '000000');
-        $second = CertManager::getUnipayCertId($path, '000000');
+        $first = CertManager::unipayGetCertId($path, '000000');
+        $second = CertManager::unipayGetCertId($path, '000000');
 
         Assert::assertSame($first, $second);
     }
@@ -336,6 +335,6 @@ class CertManagerTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 读取证书失败，确认参数是否正确');
 
-        CertManager::getUnipayCertId('not-a-real-pkcs12-content', '000000');
+        CertManager::unipayGetCertId('not-a-real-pkcs12-content', '000000');
     }
 }

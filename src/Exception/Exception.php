@@ -71,6 +71,8 @@ class Exception extends \Exception
 
     public const CONFIG_STRIPE_INVALID = 9407;
 
+    public const CONFIG_CERT_PARSE_FAILED = 9408;
+
     /**
      * 关于签名.
      */
@@ -99,10 +101,6 @@ class Exception extends \Exception
     public const NETWORK_TIMEOUT = 9701;
 
     public const NETWORK_CONNECTION_FAILED = 9702;
-
-    public const NETWORK_DNS_FAILED = 9703;
-
-    public const NETWORK_SSL_ERROR = 9704;
 
     public mixed $extra;
 

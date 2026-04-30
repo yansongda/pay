@@ -33,6 +33,8 @@ class AddRadarPlugin implements PluginInterface
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
+
+        /** @var PaypalConfig $config */
         $config = self::getProviderConfig('paypal', $params);
 
         $rocket->setRadar(new Request(

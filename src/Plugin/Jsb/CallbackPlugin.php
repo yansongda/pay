@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Traits\JsbTrait;
@@ -36,6 +37,8 @@ class CallbackPlugin implements PluginInterface
         $this->formatRequestAndParams($rocket);
 
         $params = $rocket->getParams();
+
+        /** @var JsbConfig $config */
         $config = self::getProviderConfig('jsb', $params);
 
         $payload = $rocket->getPayload();

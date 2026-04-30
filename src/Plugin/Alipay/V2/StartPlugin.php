@@ -91,6 +91,9 @@ class StartPlugin implements PluginInterface
         return $config->getAppAuthToken() ?? '';
     }
 
+    /**
+     * @throws InvalidConfigException 缺少证书配置或证书解析失败
+     */
     protected function getAppCertSn(AlipayConfig $config): string
     {
         $path = $config->getAppPublicCertPath();
@@ -99,9 +102,12 @@ class StartPlugin implements PluginInterface
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
         }
 
-        return CertManager::getAlipayAppCertSn($path);
+        return CertManager::alipayGetAppCertSn($path);
     }
 
+    /**
+     * @throws InvalidConfigException 缺少证书配置或证书解析失败
+     */
     protected function getAlipayRootCertSn(AlipayConfig $config): string
     {
         $path = $config->getAlipayRootCertPath();
@@ -110,6 +116,6 @@ class StartPlugin implements PluginInterface
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [alipay_root_cert_path]');
         }
 
-        return CertManager::getAlipayRootCertSn($path);
+        return CertManager::alipayGetRootCertSn($path);
     }
 }

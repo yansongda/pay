@@ -121,6 +121,9 @@ class PaypalConfig extends AbstractConfig
         return $this->_accessTokenExpiry;
     }
 
+    /**
+     * @throws InvalidConfigException 缺少必要配置参数
+     */
     protected function validateRequired(): void
     {
         $required = ['clientId' => 'client_id', 'appSecret' => 'app_secret'];

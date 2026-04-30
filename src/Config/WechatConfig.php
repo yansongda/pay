@@ -225,7 +225,7 @@ class WechatConfig extends AbstractConfig
      */
     public function getPublicKeyBySerial(string $serialNo): ?string
     {
-        $cert = CertManager::getBySerial('wechat', $this->tenant, $serialNo);
+        $cert = CertManager::wechatGetCertBySerial($this->tenant, $serialNo);
 
         if (null !== $cert) {
             return $cert;
@@ -241,7 +241,7 @@ class WechatConfig extends AbstractConfig
      */
     public function getAllPublicCerts(): array
     {
-        $fromCertManager = CertManager::getAllBySerial('wechat', $this->tenant);
+        $fromCertManager = CertManager::wechatGetAllCertsBySerial($this->tenant);
 
         return array_merge($this->wechatPublicCertPath, $fromCertManager);
     }
@@ -251,7 +251,7 @@ class WechatConfig extends AbstractConfig
      */
     public function setPublicCertBySerial(string $serialNo, string $cert): void
     {
-        CertManager::setBySerial('wechat', $this->tenant, $serialNo, $cert);
+        CertManager::wechatSetCertBySerial($this->tenant, $serialNo, $cert);
     }
 
     /**
@@ -299,6 +299,9 @@ class WechatConfig extends AbstractConfig
         }
     }
 
+    /**
+     * @throws InvalidConfigException 缺少必要配置参数
+     */
     protected function validateRequired(): void
     {
         $required = [

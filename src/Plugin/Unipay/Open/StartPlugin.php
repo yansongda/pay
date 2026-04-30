@@ -58,6 +58,6 @@ class StartPlugin implements PluginInterface
             throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 缺少银联配置 -- [mch_cert_path] or [mch_cert_password]');
         }
 
-        return CertManager::getUnipayCertId($path, $password);
+        return CertManager::unipayGetCertId($path, $password);
     }
 }

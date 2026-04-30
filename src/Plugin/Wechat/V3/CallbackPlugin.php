@@ -14,6 +14,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
@@ -47,7 +48,9 @@ class CallbackPlugin implements PluginInterface
 
         $rocket->setDirection(NoHttpRequestDirection::class)->setPayload(new Collection($body));
 
-        $body['resource'] = self::decryptWechatResource($body['resource'] ?? [], self::getProviderConfig('wechat', $params));
+        /** @var WechatConfig $config */
+        $config = self::getProviderConfig('wechat', $params);
+        $body['resource'] = self::decryptWechatResource($body['resource'] ?? [], $config);
 
         $rocket->setDestination(new Collection($body));
 

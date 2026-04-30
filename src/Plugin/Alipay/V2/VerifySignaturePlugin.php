@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Traits\AlipayTrait;
 use Yansongda\Supports\Collection;
@@ -47,6 +48,7 @@ class VerifySignaturePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::RESPONSE_EMPTY, '参数异常: 支付宝验证签名时待验签参数不正确', $destination);
         }
 
+        /** @var AlipayConfig $config */
         $config = self::getProviderConfig('alipay', $rocket->getParams());
 
         self::verifyAlipaySign($config, json_encode($result, JSON_UNESCAPED_UNICODE), $destination->get('_sign', ''));

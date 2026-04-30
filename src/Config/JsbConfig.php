@@ -99,6 +99,9 @@ class JsbConfig extends AbstractConfig
         return $this->mode;
     }
 
+    /**
+     * @throws InvalidConfigException 缺少必要配置参数
+     */
     protected function validateRequired(): void
     {
         $required = [

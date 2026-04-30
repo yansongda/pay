@@ -31,6 +31,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     {
         Logger::debug('[Douyin][V1][Pay][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
+        /** @var DouyinConfig $config */
         $config = self::getProviderConfig('douyin', $rocket->getParams());
         $payload = $rocket->getPayload();
 

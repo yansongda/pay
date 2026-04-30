@@ -26,6 +26,9 @@ trait PaypalTrait
 {
     use ProviderConfigTrait;
 
+    /**
+     * @throws InvalidParamsException
+     */
     public static function getPaypalUrl(PaypalConfig $config, ?Collection $payload): string
     {
         $url = self::getRadarUrl($config, $payload);

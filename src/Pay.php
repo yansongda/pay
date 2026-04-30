@@ -13,6 +13,7 @@ use Yansongda\Artful\Event\ArtfulStart;
 use Yansongda\Artful\Event\HttpEnd;
 use Yansongda\Artful\Event\HttpStart;
 use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
@@ -75,6 +76,10 @@ class Pay
         StripeServiceProvider::class,
     ];
 
+    /**
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     */
     public static function __callStatic(string $service, array $config = [])
     {
         if (!empty($config)) {
@@ -143,6 +148,10 @@ class Pay
         Artful::set($name, $value);
     }
 
+    /**
+     * @throws ContainerException
+     * @throws ServiceNotFoundException
+     */
     public static function get(string $service): mixed
     {
         return Artful::get($service);

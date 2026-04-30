@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Collection;
 
@@ -27,6 +28,8 @@ class AddRadarPlugin implements PluginInterface
         Logger::info('[Jsb][AddRadarPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
+
+        /** @var JsbConfig $config */
         $config = self::getProviderConfig('jsb', $params);
         $payload = $rocket->getPayload();
 

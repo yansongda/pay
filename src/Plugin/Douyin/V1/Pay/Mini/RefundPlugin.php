@@ -35,6 +35,8 @@ class RefundPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
+
+        /** @var DouyinConfig $config */
         $config = self::getProviderConfig('douyin', $params);
 
         if (is_null($payload)) {
