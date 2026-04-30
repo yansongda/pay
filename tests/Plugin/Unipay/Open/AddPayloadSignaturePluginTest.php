@@ -90,10 +90,9 @@ class AddPayloadSignaturePluginTest extends TestCase
 
         $rocket = (new Rocket())->setPayload(new Collection($params));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 银联支付配置文件中未找到 `certs.pkey` 配置项。可能插件用错顺序，应该先使用 `StartPlugin`');
+        // After refactoring, CertManager reads pkey directly, so it works without StartPlugin
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        self::assertNotEmpty($result->getPayload()->get('signature'));
     }
 }

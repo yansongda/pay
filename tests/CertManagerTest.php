@@ -239,4 +239,56 @@ class CertManagerTest extends TestCase
         Assert::assertFalse(CertManager::hasBySerial('wechat', 'default', 'serial-1'));
         Assert::assertNull(CertManager::getBySerial('wechat', 'default', 'serial-1'));
     }
+
+    public function testGetPkcs12CertsFromFile(): void
+    {
+        $path = __DIR__.'/Cert/unipayAppCert.pfx';
+        $certs = CertManager::getPkcs12Certs($path, '000000');
+
+        Assert::assertArrayHasKey('cert', $certs);
+        Assert::assertArrayHasKey('pkey', $certs);
+    }
+
+    public function testGetPkcs12CertsCacheHit(): void
+    {
+        $path = __DIR__.'/Cert/unipayAppCert.pfx';
+
+        $first = CertManager::getPkcs12Certs($path, '000000');
+        $second = CertManager::getPkcs12Certs($path, '000000');
+
+        Assert::assertSame($first, $second);
+    }
+
+    public function testGetPkcs12CertsWrongPasswordThrowsException(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('配置异常: 读取证书失败，确认参数是否正确');
+
+        CertManager::getPkcs12Certs(__DIR__.'/Cert/unipayAppCert.pfx', 'wrong_password');
+    }
+
+    public function testGetUnipayCertIdFromFile(): void
+    {
+        $path = __DIR__.'/Cert/unipayAppCert.pfx';
+
+        Assert::assertSame('69903319369', CertManager::getUnipayCertId($path, '000000'));
+    }
+
+    public function testGetUnipayCertIdCacheHit(): void
+    {
+        $path = __DIR__.'/Cert/unipayAppCert.pfx';
+
+        $first = CertManager::getUnipayCertId($path, '000000');
+        $second = CertManager::getUnipayCertId($path, '000000');
+
+        Assert::assertSame($first, $second);
+    }
+
+    public function testGetUnipayCertIdInvalidCertThrowsException(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('配置异常: 读取证书失败，确认参数是否正确');
+
+        CertManager::getUnipayCertId('not-a-real-pkcs12-content', '000000');
+    }
 }

@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\UnipayTrait;
@@ -42,7 +43,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
         }
 
         $rocket->mergePayload([
-            'signature' => $this->getSignature($config->getCerts()['pkey'] ?? '', filter_params($payload)->except('signature')),
+            'signature' => $this->getSignature(CertManager::getPkcs12Certs($config->getMchCertPath(), $config->getMchCertPassword())['pkey'] ?? '', filter_params($payload)->except('signature')),
         ]);
 
         Logger::info('[Unipay][AddPayloadSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);

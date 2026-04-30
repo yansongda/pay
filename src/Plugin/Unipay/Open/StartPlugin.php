@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\UnipayTrait;
@@ -50,33 +51,6 @@ class StartPlugin implements PluginInterface
      */
     public function getCertId(UnipayConfig $config): string
     {
-        $certs = $config->getCerts();
-
-        if (!empty($certs['cert_id'])) {
-            return $certs['cert_id'];
-        }
-
-        $certs = $this->getCerts($config);
-        $ssl = openssl_x509_parse($certs['cert'] ?? '');
-
-        if (false === $ssl) {
-            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 解析银联 `mch_cert_path` 失败，请检查参数是否正确');
-        }
-
-        $certs['cert_id'] = $ssl['serialNumber'] ?? '';
-
-        $config->setCerts($certs);
-
-        return $certs['cert_id'];
-    }
-
-    /**
-     * @return array ['cert' => 公钥, 'pkey' => 私钥, 'extracerts' => array]
-     *
-     * @throws InvalidConfigException
-     */
-    protected function getCerts(UnipayConfig $config): array
-    {
         $path = $config->getMchCertPath();
         $password = $config->getMchCertPassword();
 
@@ -84,10 +58,6 @@ class StartPlugin implements PluginInterface
             throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 缺少银联配置 -- [mch_cert_path] or [mch_cert_password]');
         }
 
-        if (false === openssl_pkcs12_read(file_get_contents($path), $certs, $password)) {
-            throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 读取银联 `mch_cert_path` 失败，确认参数是否正确');
-        }
-
-        return $certs;
+        return CertManager::getUnipayCertId($path, $password);
     }
 }

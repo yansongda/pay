@@ -92,6 +92,34 @@ class CertManager
         });
     }
 
+    public static function getPkcs12Certs(string $path, string $password): array
+    {
+        return self::getCachedContent('pkcs12', $path.$password, function (string $k) use ($path, $password): array {
+            $content = is_file($path) ? file_get_contents($path) : $path;
+            $certs = [];
+
+            if (false === openssl_pkcs12_read($content, $certs, $password)) {
+                throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 读取证书失败，确认参数是否正确');
+            }
+
+            return $certs;
+        });
+    }
+
+    public static function getUnipayCertId(string $key, string $password): string
+    {
+        return self::getCachedContent('unipay_cert_id', $key.$password, function (string $k) use ($key, $password): string {
+            $certs = self::getPkcs12Certs($key, $password);
+            $ssl = openssl_x509_parse($certs['cert'] ?? '');
+
+            if (false === $ssl) {
+                throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 解析证书失败，请检查参数是否正确');
+            }
+
+            return $ssl['serialNumber'] ?? '';
+        });
+    }
+
     public static function clearCache(): void
     {
         self::$cache = [];
