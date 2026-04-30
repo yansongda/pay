@@ -93,15 +93,6 @@ class Exception extends \Exception
 
     public const DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID = 9604;
 
-    /**
-     * 关于网络.
-     */
-    public const NETWORK_ERROR = 9700;
-
-    public const NETWORK_TIMEOUT = 9701;
-
-    public const NETWORK_CONNECTION_FAILED = 9702;
-
     public mixed $extra;
 
     public function __construct(string $message = '未知异常', int $code = self::UNKNOWN_ERROR, mixed $extra = null, ?Throwable $previous = null)
