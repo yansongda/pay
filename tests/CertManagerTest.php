@@ -154,6 +154,19 @@ class CertManagerTest extends TestCase
         }
     }
 
+    public function testMultiTenantAlipayCertSnIsolation(): void
+    {
+        $path1 = __DIR__.'/Cert/alipayAppPublicCert.crt';
+        $path2 = __DIR__.'/Cert/alipayPublicCert.crt';
+
+        $sn1 = CertManager::getAlipayAppCertSn($path1);
+        $sn2 = CertManager::getAlipayAppCertSn($path2);
+
+        Assert::assertNotSame($sn1, $sn2);
+        Assert::assertSame($sn1, CertManager::getAlipayAppCertSn($path1));
+        Assert::assertSame($sn2, CertManager::getAlipayAppCertSn($path2));
+    }
+
     public function testGetAlipayRootCertSnFromFile(): void
     {
         $path = __DIR__.'/Cert/alipayRootCert.crt';
@@ -257,6 +270,40 @@ class CertManagerTest extends TestCase
         $second = CertManager::getPkcs12Certs($path, '000000');
 
         Assert::assertSame($first, $second);
+    }
+
+    public function testClearCacheInvalidatesAlipayAndUnipayCaches(): void
+    {
+        $path = __DIR__.'/Cert/alipayAppPublicCert.crt';
+
+        $sn1 = CertManager::getAlipayAppCertSn($path);
+        CertManager::clearCache();
+        $sn2 = CertManager::getAlipayAppCertSn($path);
+
+        Assert::assertSame($sn1, $sn2);
+
+        $rootPath = __DIR__.'/Cert/alipayRootCert.crt';
+        $rootSn1 = CertManager::getAlipayRootCertSn($rootPath);
+        CertManager::clearCache();
+        $rootSn2 = CertManager::getAlipayRootCertSn($rootPath);
+
+        Assert::assertSame($rootSn1, $rootSn2);
+
+        $pfxPath = __DIR__.'/Cert/unipayAppCert.pfx';
+        $password = '000000';
+
+        if (is_file($pfxPath)) {
+            $certs1 = CertManager::getPkcs12Certs($pfxPath, $password);
+            $certId1 = CertManager::getUnipayCertId($pfxPath, $password);
+
+            CertManager::clearCache();
+
+            $certs2 = CertManager::getPkcs12Certs($pfxPath, $password);
+            $certId2 = CertManager::getUnipayCertId($pfxPath, $password);
+
+            Assert::assertSame($certs1, $certs2);
+            Assert::assertSame($certId1, $certId2);
+        }
     }
 
     public function testGetPkcs12CertsWrongPasswordThrowsException(): void
