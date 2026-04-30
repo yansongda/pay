@@ -78,7 +78,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信配置 -- [mch_public_cert_path]');
         }
 
-        $ssl = openssl_x509_parse(CertManager::getPublicCert($mchPublicCertPath));
+        $ssl = CertManager::getPublicCertInfo($mchPublicCertPath);
 
         if (empty($ssl['serialNumberHex'])) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 解析微信配置 [mch_public_cert_path] 出错');

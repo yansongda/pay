@@ -140,8 +140,7 @@ class AddPayloadSignaturePluginTest extends TestCase
         $config->setMchPublicCertPath(__DIR__.'/../../Cert/foo');
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        self::expectExceptionMessage('配置异常: 解析微信配置 [mch_public_cert_path] 出错');
+        self::expectExceptionMessage('配置异常: 解析证书失败');
 
         $class = new ReflectionClass($this->plugin);
         $method = $class->getMethod('getSignature');
