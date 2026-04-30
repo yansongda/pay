@@ -56,7 +56,6 @@ class UnipayConfigTest extends TestCase
             'notify_url' => 'https://notify.com',
             'return_url' => 'https://return.com',
             'unipay_public_cert_path' => '/path/to/cert',
-            'certs' => ['cert1' => 'value1'],
         ]));
 
         self::assertSame('test_mch_id', $config->getMchId());
@@ -64,7 +63,6 @@ class UnipayConfigTest extends TestCase
         self::assertSame('https://notify.com', $config->getNotifyUrl());
         self::assertSame('https://return.com', $config->getReturnUrl());
         self::assertSame('/path/to/cert', $config->getUnipayPublicCertPath());
-        self::assertSame(['cert1' => 'value1'], $config->getCerts());
     }
 
     public function testOptionalGettersNull(): void
@@ -76,7 +74,6 @@ class UnipayConfigTest extends TestCase
         self::assertNull($config->getNotifyUrl());
         self::assertNull($config->getReturnUrl());
         self::assertNull($config->getUnipayPublicCertPath());
-        self::assertSame([], $config->getCerts());
     }
 
     public function testModeSandbox(): void
