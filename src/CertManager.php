@@ -55,6 +55,43 @@ class CertManager
         });
     }
 
+    public static function getAlipayAppCertSn(string $key): string
+    {
+        return self::getCachedContent('alipay_app_cert_sn', $key, function (string $k): string {
+            $ssl = self::getPublicCertInfo($k);
+
+            return self::getAlipayCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
+        });
+    }
+
+    public static function getAlipayRootCertSn(string $key): string
+    {
+        return self::getCachedContent('alipay_root_cert_sn', $key, function (string $k): string {
+            $sn = '';
+            $exploded = explode('-----END CERTIFICATE-----', self::getPublicCert($k));
+
+            foreach ($exploded as $cert) {
+                if (empty(trim($cert))) {
+                    continue;
+                }
+
+                $ssl = openssl_x509_parse($cert.'-----END CERTIFICATE-----');
+
+                if (false === $ssl) {
+                    throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 解析 `alipay_root_cert` 失败');
+                }
+
+                $detail = self::formatAlipayCert($ssl);
+
+                if ('sha1WithRSAEncryption' == $detail['signatureTypeLN'] || 'sha256WithRSAEncryption' == $detail['signatureTypeLN']) {
+                    $sn .= self::getAlipayCertSn($detail['issuer'], $detail['serialNumber']).'_';
+                }
+            }
+
+            return substr($sn, 0, -1);
+        });
+    }
+
     public static function clearCache(): void
     {
         self::$cache = [];
@@ -112,5 +149,46 @@ class CertManager
     private static function buildCacheKey(string $type, string $key): string
     {
         return $type.'_'.sha1($key);
+    }
+
+    private static function getAlipayCertSn(array $issuer, string $serialNumber): string
+    {
+        return md5(self::alipayArray2String(array_reverse($issuer)).$serialNumber);
+    }
+
+    private static function alipayArray2String(array $array): string
+    {
+        $string = [];
+
+        foreach ($array as $key => $value) {
+            $string[] = $key.'='.$value;
+        }
+
+        return implode(',', $string);
+    }
+
+    private static function formatAlipayCert(array $ssl): array
+    {
+        if (str_starts_with($ssl['serialNumber'] ?? '', '0x')) {
+            $ssl['serialNumber'] = self::alipayHex2Dec($ssl['serialNumberHex'] ?? '');
+        }
+
+        return $ssl;
+    }
+
+    private static function alipayHex2Dec(string $hex): string
+    {
+        $dec = '0';
+        $len = strlen($hex);
+
+        for ($i = 1; $i <= $len; ++$i) {
+            $dec = bcadd(
+                $dec,
+                bcmul(strval(hexdec($hex[$i - 1])), bcpow('16', strval($len - $i), 0), 0),
+                0
+            );
+        }
+
+        return $dec;
     }
 }
