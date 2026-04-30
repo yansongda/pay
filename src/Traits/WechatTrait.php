@@ -71,9 +71,6 @@ trait WechatTrait
     }
 
     /**
-     * @throws InvalidConfigException
-     */
-    /**
      * @throws InvalidConfigException 缺少商户私钥配置
      */
     public static function getWechatSign(WechatConfig $config, string $contents): string
@@ -132,7 +129,6 @@ trait WechatTrait
         $body = (string) $message->getBody();
 
         /** @var WechatConfig $wechatConfig */
-        /** @var WechatConfig $wechatConfig */
         $wechatConfig = self::getProviderConfig('wechat', $params);
 
         $content = $timestamp."\n".$random."\n".$body."\n";
@@ -158,10 +154,6 @@ trait WechatTrait
         }
     }
 
-    /**
-     * @throws InvalidConfigException
-     * @throws InvalidSignException
-     */
     /**
      * @throws InvalidConfigException 缺少商户密钥配置
      * @throws InvalidSignException   签名为空或验签失败
@@ -219,7 +211,6 @@ trait WechatTrait
             $params
         )->get('data', []);
 
-        /** @var WechatConfig $wechatConfig */
         /** @var WechatConfig $wechatConfig */
         $wechatConfig = self::getProviderConfig('wechat', $params);
 

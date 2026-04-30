@@ -105,7 +105,7 @@ class CertManager
                 $ssl = openssl_x509_parse($cert.'-----END CERTIFICATE-----');
 
                 if (false === $ssl) {
-                    throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 解析 `alipay_root_cert` 失败');
+                    throw new InvalidConfigException(Exception::CONFIG_CERT_PARSE_FAILED, '配置异常: 解析 `alipay_root_cert` 失败');
                 }
 
                 $detail = self::alipayFormatCert($ssl);
@@ -131,7 +131,7 @@ class CertManager
             $certs = [];
 
             if (false === openssl_pkcs12_read($content, $certs, $password)) {
-                throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 读取证书失败，确认参数是否正确');
+                throw new InvalidConfigException(Exception::CONFIG_CERT_PARSE_FAILED, '配置异常: 读取证书失败，确认参数是否正确');
             }
 
             return $certs;
@@ -150,7 +150,7 @@ class CertManager
             $ssl = openssl_x509_parse($certs['cert'] ?? '');
 
             if (false === $ssl) {
-                throw new InvalidConfigException(Exception::CONFIG_UNIPAY_INVALID, '配置异常: 解析证书失败，请检查参数是否正确');
+                throw new InvalidConfigException(Exception::CONFIG_CERT_PARSE_FAILED, '配置异常: 解析证书失败，请检查参数是否正确');
             }
 
             return $ssl['serialNumber'] ?? '';

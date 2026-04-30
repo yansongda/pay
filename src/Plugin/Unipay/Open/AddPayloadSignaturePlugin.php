@@ -57,7 +57,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     protected function getSignature(string $pkey, Collection $payload): string
     {
         if (empty($pkey)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 银联支付配置文件中未找到 `certs.pkey` 配置项。可能插件用错顺序，应该先使用 `StartPlugin`');
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 银联支付配置文件中 `mch_cert_path` 或 `mch_cert_password` 配置项无效，无法解析私钥');
         }
 
         $content = $payload->sortKeys()->toString();
