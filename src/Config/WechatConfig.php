@@ -97,6 +97,10 @@ class WechatConfig extends AbstractConfig
     public function setWechatPublicCertPath(array $value): void
     {
         $this->wechatPublicCertPath = $value;
+
+        foreach ($value as $serialNo => $cert) {
+            CertManager::wechatSetCertBySerial($this->tenant, $serialNo, $cert);
+        }
     }
 
     public function setMiniAppKeyVirtualPay(?string $value): void

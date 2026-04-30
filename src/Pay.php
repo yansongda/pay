@@ -14,6 +14,7 @@ use Yansongda\Artful\Event\HttpEnd;
 use Yansongda\Artful\Event\HttpStart;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
@@ -147,6 +148,7 @@ class Pay
     public static function clear(): void
     {
         Artful::clear();
+        CertManager::clearCache();
     }
 
     private static function isAlreadyConfigured(): bool

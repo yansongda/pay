@@ -8,6 +8,7 @@ use Hyperf\Pimple\ContainerFactory;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
@@ -187,5 +188,15 @@ class PayTest extends TestCase
         self::assertIsArray($httpConfig);
         self::assertSame('./logs/wechat.log', $loggerConfig['file']);
         self::assertSame(5.0, $httpConfig['timeout']);
+    }
+
+    public function testClearCleansCertManagerCache(): void
+    {
+        CertManager::wechatSetCertBySerial('test', 'serial123', 'cert-content');
+        self::assertNotNull(CertManager::wechatGetCertBySerial('test', 'serial123'));
+
+        Pay::clear();
+
+        self::assertNull(CertManager::wechatGetCertBySerial('test', 'serial123'));
     }
 }
