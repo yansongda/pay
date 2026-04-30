@@ -25,7 +25,6 @@ class WechatConfig extends AbstractConfig
     private ?string $subMpAppId = null;
     private ?string $subMiniAppId = null;
     private ?string $subAppId = null;
-    private array $wechatPublicCertPath = [];
     private ?string $miniAppKeyVirtualPay = null;
     private int $mode = Pay::MODE_NORMAL;
 
@@ -96,8 +95,6 @@ class WechatConfig extends AbstractConfig
 
     public function setWechatPublicCertPath(array $value): void
     {
-        $this->wechatPublicCertPath = $value;
-
         foreach ($value as $serialNo => $cert) {
             CertManager::wechatSetCertBySerial($this->tenant, $serialNo, $cert);
         }
@@ -183,14 +180,6 @@ class WechatConfig extends AbstractConfig
         return $this->miniAppKeyVirtualPay;
     }
 
-    /**
-     * @return array<string, string>
-     */
-    public function getWechatPublicCertPath(): array
-    {
-        return $this->wechatPublicCertPath;
-    }
-
     public function getMode(): int
     {
         return $this->mode;
@@ -222,40 +211,6 @@ class WechatConfig extends AbstractConfig
             'app' => $this->subAppId,
             default => $this->subMpAppId,
         };
-    }
-
-    /**
-     * 优先从 CertManager 获取，fallback 到配置文件.
-     */
-    public function getPublicKeyBySerial(string $serialNo): ?string
-    {
-        $cert = CertManager::wechatGetCertBySerial($this->tenant, $serialNo);
-
-        if (null !== $cert) {
-            return $cert;
-        }
-
-        return $this->wechatPublicCertPath[$serialNo] ?? null;
-    }
-
-    /**
-     * 合合配置文件 wechat_public_cert_path 和 CertManager 缓存.
-     *
-     * @return array<string, string>
-     */
-    public function getAllPublicCerts(): array
-    {
-        $fromCertManager = CertManager::wechatGetAllCertsBySerial($this->tenant);
-
-        return array_merge($this->wechatPublicCertPath, $fromCertManager);
-    }
-
-    /**
-     * 调用 CertManager 保存证书.
-     */
-    public function setPublicCertBySerial(string $serialNo, string $cert): void
-    {
-        CertManager::wechatSetCertBySerial($this->tenant, $serialNo, $cert);
     }
 
     /**

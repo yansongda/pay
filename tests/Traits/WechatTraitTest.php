@@ -210,7 +210,7 @@ class WechatTraitTest extends TestCase
         $config = WechatTraitStub::getProviderConfig('wechat');
 
         self::assertInstanceOf(WechatConfig::class, $config);
-        $result = WechatTraitStub::encryptWechatContents($contents, $config->getPublicKeyBySerial($serialNo) ?? '');
+        $result = WechatTraitStub::encryptWechatContents($contents, CertManager::wechatGetCertBySerial($config->getTenant(), $serialNo) ?? '');
         self::assertIsString($result);
     }
 
@@ -229,7 +229,7 @@ class WechatTraitTest extends TestCase
         $config = WechatTraitStub::getProviderConfig('wechat', []);
 
         self::assertInstanceOf(WechatConfig::class, $config);
-        $existingCert = $config->getPublicKeyBySerial('yansongda');
+        $existingCert = CertManager::wechatGetCertBySerial($config->getTenant(), 'yansongda');
 
         $response = new Response(
             200,
@@ -263,7 +263,7 @@ class WechatTraitTest extends TestCase
         $wechatConfig = Artful::get(ConfigInterface::class)->get('wechat.default');
 
         self::assertInstanceOf(WechatConfig::class, $wechatConfig);
-        self::assertSame($existingCert, $wechatConfig->getPublicKeyBySerial('yansongda'));
+        self::assertSame($existingCert, CertManager::wechatGetCertBySerial($wechatConfig->getTenant(), 'yansongda'));
         self::assertNotNull(CertManager::wechatGetCertBySerial('default', 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57'));
     }
 
@@ -327,7 +327,7 @@ class WechatTraitTest extends TestCase
 
         self::assertInstanceOf(WechatConfig::class, $config);
 
-        self::assertEquals(realpath(__DIR__.'/../Cert/wechatAppPublicKey.pem'), realpath($config->getPublicKeyBySerial('45F59D4DABF31918AFCEC556D5D2C6E376675D57') ?? ''));
+        self::assertEquals(realpath(__DIR__.'/../Cert/wechatAppPublicKey.pem'), realpath(CertManager::wechatGetCertBySerial($config->getTenant(), '45F59D4DABF31918AFCEC556D5D2C6E376675D57') ?? ''));
     }
 
     public function testDecryptWechatResourceAes256Gcm(): void

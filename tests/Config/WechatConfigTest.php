@@ -216,31 +216,6 @@ class WechatConfigTest extends TestCase
         $config->validateForMini();
     }
 
-    public function testPublicKeyBySerial(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'wechat_public_cert_path' => [
-                'ABC123' => '/path/to/cert.pem',
-            ],
-        ]));
-
-        self::assertSame('/path/to/cert.pem', $config->getPublicKeyBySerial('ABC123'));
-        self::assertNull($config->getPublicKeyBySerial('UNKNOWN'));
-    }
-
-    public function testAllPublicCerts(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'wechat_public_cert_path' => [
-                'ABC123' => '/path/to/cert.pem',
-            ],
-        ]));
-
-        $certs = $config->getAllPublicCerts();
-        self::assertArrayHasKey('ABC123', $certs);
-        self::assertSame('/path/to/cert.pem', $certs['ABC123']);
-    }
-
     public function testWechatConfigInitImportsToCertManager(): void
     {
         CertManager::clearCache();
