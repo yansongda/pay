@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests;
 
 use PHPUnit\Framework\Assert;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\CertManager;
 
 class CertManagerTest extends TestCase
@@ -47,6 +48,77 @@ class CertManagerTest extends TestCase
                 unlink($path);
             }
         }
+    }
+
+    public function testGetPublicCertInfoFromFile(): void
+    {
+        $path = __DIR__.'/Cert/alipayAppPublicCert.crt';
+        $expected = openssl_x509_parse(file_get_contents($path));
+
+        Assert::assertIsArray($expected);
+        Assert::assertSame($expected, CertManager::getPublicCertInfo($path));
+    }
+
+    public function testGetPublicCertInfoFromString(): void
+    {
+        $content = file_get_contents(__DIR__.'/Cert/alipayAppPublicCert.crt');
+        $expected = openssl_x509_parse($content);
+
+        Assert::assertIsArray($expected);
+        Assert::assertSame($expected, CertManager::getPublicCertInfo($content));
+    }
+
+    public function testGetPublicCertInfoCacheHit(): void
+    {
+        $source = __DIR__.'/Cert/alipayAppPublicCert.crt';
+        $changed = file_get_contents(__DIR__.'/Cert/wechatPublicKey.crt');
+        $path = sys_get_temp_dir().'/'.uniqid('cert-manager-public-info-', true).'.crt';
+
+        copy($source, $path);
+
+        try {
+            $first = CertManager::getPublicCertInfo($path);
+            file_put_contents($path, $changed);
+
+            Assert::assertSame($first, CertManager::getPublicCertInfo($path));
+        } finally {
+            if (is_file($path)) {
+                unlink($path);
+            }
+        }
+    }
+
+    public function testGetPublicCertInfoAfterClearCache(): void
+    {
+        $source = __DIR__.'/Cert/alipayAppPublicCert.crt';
+        $changed = file_get_contents(__DIR__.'/Cert/wechatPublicKey.crt');
+        $path = sys_get_temp_dir().'/'.uniqid('cert-manager-public-info-clear-', true).'.crt';
+
+        copy($source, $path);
+
+        try {
+            $first = CertManager::getPublicCertInfo($path);
+            file_put_contents($path, $changed);
+
+            CertManager::clearCache();
+
+            $second = CertManager::getPublicCertInfo($path);
+
+            Assert::assertNotSame($first, $second);
+            Assert::assertSame(openssl_x509_parse($changed), $second);
+        } finally {
+            if (is_file($path)) {
+                unlink($path);
+            }
+        }
+    }
+
+    public function testGetPublicCertInfoThrowsExceptionWhenCertInvalid(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('配置异常: 解析证书失败');
+
+        CertManager::getPublicCertInfo('invalid-cert-content');
     }
 
     public function testGetPrivateCertFromFile(): void

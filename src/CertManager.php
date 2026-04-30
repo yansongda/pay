@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay;
 
+use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Str;
 
 class CertManager
@@ -34,6 +36,22 @@ class CertManager
             return "-----BEGIN RSA PRIVATE KEY-----\n"
                 .wordwrap($k, 64, "\n", true)
                 ."\n-----END RSA PRIVATE KEY-----";
+        });
+    }
+
+    /**
+     * 获取并缓存公钥证书解析结果。
+     */
+    public static function getPublicCertInfo(string $key): array
+    {
+        return self::getCachedContent('public_info', $key, function (string $k): array {
+            $info = openssl_x509_parse(self::getPublicCert($k));
+
+            if (false === $info) {
+                throw new InvalidConfigException(Exception::UNKNOWN_ERROR, '配置异常: 解析证书失败');
+            }
+
+            return $info;
         });
     }
 
@@ -78,7 +96,7 @@ class CertManager
         self::$certs = [];
     }
 
-    private static function getCachedContent(string $type, string $key, callable $loader): string
+    private static function getCachedContent(string $type, string $key, callable $loader): mixed
     {
         $cacheKey = self::buildCacheKey($type, $key);
 
