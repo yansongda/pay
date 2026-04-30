@@ -102,15 +102,14 @@ class StartPluginTest extends TestCase
     {
         $rocket = new Rocket();
 
-        // typed config 在构造时验证必填字段，所以无法创建缺少必填字段的配置
-        // 这个测试改为验证证书路径不存在时的异常
+        // 证书路径不存在时，CertManager 解析失败抛出异常
         /** @var AlipayConfig $alipayConfig */
         $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
         $alipayConfig->setAppPublicCertPath('/nonexistent/path/cert.crt');
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        self::expectExceptionMessage('配置异常: 解析 `app_public_cert_path` 失败');
+        self::expectExceptionCode(Exception::UNKNOWN_ERROR);
+        self::expectExceptionMessage('配置异常: 解析证书失败');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -124,8 +123,8 @@ class StartPluginTest extends TestCase
         $alipayConfig->setAppPublicCertPath(__DIR__.'/../../Cert/foo');
 
         self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        self::expectExceptionMessage('配置异常: 解析 `app_public_cert_path` 失败');
+        self::expectExceptionCode(Exception::UNKNOWN_ERROR);
+        self::expectExceptionMessage('配置异常: 解析证书失败');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -167,10 +166,7 @@ class StartPluginTest extends TestCase
 
         self::assertEquals('e90dd23a37c5c7b616e003970817ff82', $payload->get('app_cert_sn'));
 
-        /** @var AlipayConfig $alipayConfig */
-        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
-        $alipayConfig->setAppPublicCertPath('');
-
+        // CertManager 内部按路径缓存，相同路径再次调用返回相同 SN
         $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
 
@@ -184,10 +180,7 @@ class StartPluginTest extends TestCase
 
         self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
 
-        /** @var AlipayConfig $alipayConfig */
-        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
-        $alipayConfig->setAlipayRootCertPath('');
-
+        // CertManager 内部按路径缓存，相同路径再次调用返回相同 SN
         $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
         $payload = $result->getPayload();
 

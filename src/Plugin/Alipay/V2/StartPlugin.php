@@ -91,119 +91,25 @@ class StartPlugin implements PluginInterface
         return $config->getAppAuthToken() ?? '';
     }
 
-    /**
-     * @throws ContainerException
-     * @throws InvalidConfigException
-     * @throws ServiceNotFoundException
-     */
     protected function getAppCertSn(AlipayConfig $config): string
     {
-        if (!empty($config->getAppPublicCertSn())) {
-            return $config->getAppPublicCertSn();
-        }
-
         $path = $config->getAppPublicCertPath();
 
         if (empty($path)) {
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
         }
 
-        $ssl = openssl_x509_parse(CertManager::getPublicCert($path));
-
-        if (false === $ssl) {
-            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 解析 `app_public_cert_path` 失败');
-        }
-
-        $result = $this->getCertSn($ssl['issuer'] ?? [], $ssl['serialNumber'] ?? '');
-
-        $config->setAppPublicCertSn($result);
-
-        return $result;
+        return CertManager::getAlipayAppCertSn($path);
     }
 
-    /**
-     * @throws ContainerException
-     * @throws InvalidConfigException
-     * @throws ServiceNotFoundException
-     */
     protected function getAlipayRootCertSn(AlipayConfig $config): string
     {
-        if (!empty($config->getAlipayRootCertSn())) {
-            return $config->getAlipayRootCertSn();
-        }
-
         $path = $config->getAlipayRootCertPath();
 
         if (empty($path)) {
             throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [alipay_root_cert_path]');
         }
 
-        $sn = '';
-        $exploded = explode('-----END CERTIFICATE-----', CertManager::getPublicCert($path));
-
-        foreach ($exploded as $cert) {
-            if (empty(trim($cert))) {
-                continue;
-            }
-
-            $ssl = openssl_x509_parse($cert.'-----END CERTIFICATE-----');
-
-            if (false === $ssl) {
-                throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 解析 `alipay_root_cert` 失败');
-            }
-
-            $detail = $this->formatCert($ssl);
-
-            if ('sha1WithRSAEncryption' == $detail['signatureTypeLN'] || 'sha256WithRSAEncryption' == $detail['signatureTypeLN']) {
-                $sn .= $this->getCertSn($detail['issuer'], $detail['serialNumber']).'_';
-            }
-        }
-
-        $result = substr($sn, 0, -1);
-
-        $config->setAlipayRootCertSn($result);
-
-        return $result;
-    }
-
-    protected function getCertSn(array $issuer, string $serialNumber): string
-    {
-        return md5($this->array2string(array_reverse($issuer)).$serialNumber);
-    }
-
-    protected function array2string(array $array): string
-    {
-        $string = [];
-
-        foreach ($array as $key => $value) {
-            $string[] = $key.'='.$value;
-        }
-
-        return implode(',', $string);
-    }
-
-    protected function formatCert(array $ssl): array
-    {
-        if (str_starts_with($ssl['serialNumber'] ?? '', '0x')) {
-            $ssl['serialNumber'] = $this->hex2dec($ssl['serialNumberHex'] ?? '');
-        }
-
-        return $ssl;
-    }
-
-    protected function hex2dec(string $hex): string
-    {
-        $dec = '0';
-        $len = strlen($hex);
-
-        for ($i = 1; $i <= $len; ++$i) {
-            $dec = bcadd(
-                $dec,
-                bcmul(strval(hexdec($hex[$i - 1])), bcpow('16', strval($len - $i), 0), 0),
-                0
-            );
-        }
-
-        return $dec;
+        return CertManager::getAlipayRootCertSn($path);
     }
 }
