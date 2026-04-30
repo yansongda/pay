@@ -142,11 +142,6 @@ class ConfigTest extends TestCase
 
         /** @var AlipayConfig $alipayConfig */
         $alipayConfig = $config->getProviderConfig('alipay');
-        $alipayConfig->setAppPublicCertSn('serial_123');
-        $alipayConfig->setAlipayRootCertSn('root_serial_456');
-
-        self::assertSame('serial_123', $alipayConfig->toArray()['_app_public_cert_sn'] ?? null);
-        self::assertSame('root_serial_456', $alipayConfig->toArray()['_alipay_root_cert_sn'] ?? null);
         self::assertArrayNotHasKey('appPublicCertSn', $alipayConfig->toArray());
         self::assertArrayNotHasKey('alipayRootCertSn', $alipayConfig->toArray());
     }

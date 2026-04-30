@@ -18,8 +18,6 @@ class AlipayConfig extends AbstractConfig
     private ?string $notifyUrl = null;
     private ?string $returnUrl = null;
     private ?string $appAuthToken = null;
-    private ?string $_appPublicCertSn = null;
-    private ?string $_alipayRootCertSn = null;
     private ?string $serviceProviderId = null;
     private int $mode = Pay::MODE_NORMAL;
 
@@ -61,16 +59,6 @@ class AlipayConfig extends AbstractConfig
     public function setAppAuthToken(?string $value): void
     {
         $this->appAuthToken = $value;
-    }
-
-    public function setAppPublicCertSn(?string $value): void
-    {
-        $this->_appPublicCertSn = $value;
-    }
-
-    public function setAlipayRootCertSn(?string $value): void
-    {
-        $this->_alipayRootCertSn = $value;
     }
 
     public function setServiceProviderId(?string $value): void
@@ -124,22 +112,6 @@ class AlipayConfig extends AbstractConfig
     public function getAppAuthToken(): ?string
     {
         return $this->appAuthToken;
-    }
-
-    /**
-     * 应用公钥证书序列号（缓存值）.
-     */
-    public function getAppPublicCertSn(): ?string
-    {
-        return $this->_appPublicCertSn;
-    }
-
-    /**
-     * 支付宝根证书序列号（缓存值）.
-     */
-    public function getAlipayRootCertSn(): ?string
-    {
-        return $this->_alipayRootCertSn;
     }
 
     /**
