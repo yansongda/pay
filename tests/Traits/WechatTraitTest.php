@@ -12,6 +12,7 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
@@ -263,7 +264,7 @@ class WechatTraitTest extends TestCase
 
         self::assertInstanceOf(WechatConfig::class, $wechatConfig);
         self::assertSame($existingCert, $wechatConfig->getPublicKeyBySerial('yansongda'));
-        self::assertArrayHasKey('test-45F59D4DABF31918AFCEC556D5D2C6E376675D57', $wechatConfig->getWechatPublicCertPath());
+        self::assertNotNull(CertManager::wechatGetCertBySerial('default', 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57'));
     }
 
     public function testGetWechatPublicCerts(): void

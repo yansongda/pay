@@ -132,7 +132,7 @@ trait WechatTrait
         $wechatConfig = self::getProviderConfig('wechat', $params);
 
         $content = $timestamp."\n".$random."\n".$body."\n";
-        $public = $wechatConfig->getPublicKeyBySerial($wechatSerial);
+        $public = CertManager::wechatGetCertBySerial($wechatConfig->getTenant(), $wechatSerial);
 
         if (empty($sign)) {
             throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: 微信签名为空', ['headers' => $message->getHeaders(), 'body' => $body]);
@@ -218,7 +218,9 @@ trait WechatTrait
             $certs[$item['serial_no']] = self::decryptWechatResource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
         }
 
-        $wechatConfig->setWechatPublicCertPath($wechatConfig->getWechatPublicCertPath() + ($certs ?? []));
+        foreach ($certs ?? [] as $serialNo => $cert) {
+            CertManager::wechatSetCertBySerial($wechatConfig->getTenant(), $serialNo, $cert);
+        }
 
         if (!is_null($serialNo) && empty($certs[$serialNo])) {
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 获取微信 wechat_public_cert_path 配置失败');
@@ -241,13 +243,15 @@ trait WechatTrait
         /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 
+        $certs = CertManager::wechatGetAllCertsBySerial($config->getTenant());
+
         if (empty($path)) {
-            var_dump($config->getWechatPublicCertPath());
+            var_dump($certs);
 
             return;
         }
 
-        foreach ($config->getWechatPublicCertPath() as $serialNo => $cert) {
+        foreach ($certs as $serialNo => $cert) {
             file_put_contents($path.'/'.$serialNo.'.crt', $cert);
         }
     }
@@ -323,7 +327,7 @@ trait WechatTrait
         /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 
-        $certs = $config->getWechatPublicCertPath();
+        $certs = CertManager::wechatGetAllCertsBySerial($config->getTenant());
 
         if (empty($certs)) {
             self::reloadWechatPublicCerts($params);
@@ -331,7 +335,7 @@ trait WechatTrait
             /** @var WechatConfig $config */
             $config = self::getProviderConfig('wechat', $params);
 
-            $certs = $config->getWechatPublicCertPath();
+            $certs = CertManager::wechatGetAllCertsBySerial($config->getTenant());
         }
 
         mt_srand();
@@ -344,7 +348,7 @@ trait WechatTrait
      */
     public static function getWechatPublicKey(WechatConfig $config, string $serialNo): string
     {
-        $publicKey = $config->getPublicKeyBySerial($serialNo);
+        $publicKey = CertManager::wechatGetCertBySerial($config->getTenant(), $serialNo);
 
         if (empty($publicKey)) {
             throw new InvalidParamsException(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND, '参数异常: 微信公钥序列号未找到 - '.$serialNo);
