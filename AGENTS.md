@@ -31,17 +31,8 @@ src/
 - **安全第一**：回调/Webhook 必须验签，禁止直接信任传入数据
 - **代码一致性**：新增 Provider 遵循现有结构
 
-## COMMANDS
-```
-composer test       # PHPUnit 11.x + Mockery 1.6 测试前需安装 `hyperf/pimple`
-composer cs-fix     # 代码格式化检查（dry-run）
-composer analyse    # PHPStan
-
-cd web && pnpm web:dev   # 文档开发
-cd web && pnpm web:build # 文档构建
-```
-- **本地开发环境**：优先本地 PHP 环境；若无 PHP，使用 Container 作为备选，详见 `.agents/skills/container-dev/SKILL.md`
-- **CI 矩阵**：PHP 8.2-8.5 + Laravel/Hyperf/Default
+## COMMANDS & 开发规范
+详见 `.agents/skills/dev-guide/SKILL.md`，使用时加载。
 
 ## 架构要点
 - **插件管道**：`StartPlugin → [前置] → 业务插件 → [后置] → ParserPlugin`
@@ -75,22 +66,3 @@ cd web && pnpm web:build # 文档构建
 
 > 完整方法列表见 `src/Traits/{Provider}Trait.php`
 
-## 新增 Provider（6 阶段）
-1. **配置**：`src/Config/{Provider}Config.php`
-2. **核心类**：`src/Provider/{Provider}.php` + `src/Service/{Provider}ServiceProvider.php`（继承 AbstractServiceProvider）
-3. **插件**：`src/Plugin/{Provider}/V{n}/`（含 CallbackPlugin）
-4. **快捷方式**：`src/Shortcut/{Provider}/{Action}Shortcut.php`
-5. **Trait**：`src/Traits/{Provider}Trait.php`（`get{Provider}Url`、`verify{Provider}Sign`）
-6. **注册**：`Pay.php` + `Config.php` 映射 + `Exception.php` 常量 + 测试 + 文档
-
-## 代码规范
-- `declare(strict_types=1);` 必须
-- `use` 导入，禁止 `\Yansongda\Pay\...`
-- 日志/异常消息用中文
-- 命名：`{Action}Plugin.php`、`{Action}Shortcut.php`、`{Provider}Trait.php`
-
-## 常见错误
-- 忽略 `declare(strict_types=1);`
-- 直接写完整命名空间
-- 回调未验签
-- 测试未 Mock HTTP 客户端
