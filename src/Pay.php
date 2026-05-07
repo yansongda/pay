@@ -14,6 +14,7 @@ use Yansongda\Artful\Event\HttpEnd;
 use Yansongda\Artful\Event\HttpStart;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Provider\Airwallex;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
@@ -21,6 +22,7 @@ use Yansongda\Pay\Provider\Paypal;
 use Yansongda\Pay\Provider\Stripe;
 use Yansongda\Pay\Provider\Unipay;
 use Yansongda\Pay\Provider\Wechat;
+use Yansongda\Pay\Service\AirwallexServiceProvider;
 use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\DouyinServiceProvider;
 use Yansongda\Pay\Service\JsbServiceProvider;
@@ -30,13 +32,14 @@ use Yansongda\Pay\Service\UnipayServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
 
 /**
- * @method static Alipay alipay(array $config = [], $container = null)
- * @method static Wechat wechat(array $config = [], $container = null)
- * @method static Unipay unipay(array $config = [], $container = null)
- * @method static Jsb    jsb(array $config = [], $container = null)
- * @method static Douyin douyin(array $config = [], $container = null)
- * @method static Paypal paypal(array $config = [], $container = null)
- * @method static Stripe stripe(array $config = [], $container = null)
+ * @method static Alipay    alipay(array $config = [], $container = null)
+ * @method static Airwallex airwallex(array $config = [], $container = null)
+ * @method static Wechat    wechat(array $config = [], $container = null)
+ * @method static Unipay    unipay(array $config = [], $container = null)
+ * @method static Jsb       jsb(array $config = [], $container = null)
+ * @method static Douyin    douyin(array $config = [], $container = null)
+ * @method static Paypal    paypal(array $config = [], $container = null)
+ * @method static Stripe    stripe(array $config = [], $container = null)
  */
 class Pay
 {
@@ -45,6 +48,7 @@ class Pay
      */
     public const PROVIDER_WECHAT = 'wechat';
     public const PROVIDER_ALIPAY = 'alipay';
+    public const PROVIDER_AIRWALLEX = 'airwallex';
     public const PROVIDER_UNIPAY = 'unipay';
     public const PROVIDER_JSB = 'jsb';
     public const PROVIDER_DOUYIN = 'douyin';
@@ -68,6 +72,7 @@ class Pay
 
     protected static array $providers = [
         AlipayServiceProvider::class,
+        AirwallexServiceProvider::class,
         WechatServiceProvider::class,
         UnipayServiceProvider::class,
         JsbServiceProvider::class,

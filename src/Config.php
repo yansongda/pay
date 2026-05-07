@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Pay\Config\AirwallexConfig;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Config\JsbConfig;
@@ -24,6 +25,7 @@ class Config extends BaseConfig
     private const PROVIDER_CONFIG_MAP = [
         Pay::PROVIDER_WECHAT => WechatConfig::class,
         Pay::PROVIDER_ALIPAY => AlipayConfig::class,
+        Pay::PROVIDER_AIRWALLEX => AirwallexConfig::class,
         Pay::PROVIDER_UNIPAY => UnipayConfig::class,
         Pay::PROVIDER_JSB => JsbConfig::class,
         Pay::PROVIDER_DOUYIN => DouyinConfig::class,

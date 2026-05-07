@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Provider\Airwallex;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Jsb;
 use Yansongda\Pay\Provider\Unipay;
@@ -124,6 +125,9 @@ class PayTest extends TestCase
         Pay::config();
         $pay = Pay::alipay();
         self::assertInstanceOf(Alipay::class, $pay);
+
+        $airwallex = Pay::airwallex([['airwallex' => ['default' => ['client_id' => 'foo', 'api_key' => 'bar']]]]);
+        self::assertInstanceOf(Airwallex::class, $airwallex);
 
         if (class_exists(ContainerFactory::class)) {
             Pay::clear();
