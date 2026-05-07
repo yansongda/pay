@@ -158,7 +158,8 @@ export default [
     text: '升级指南',
     collapsed: true,
     items: [
-      { text: 'v3.7 升级指南', link: '/docs/v3/upgrade/v3.7' },
+      { text: 'v3.8 升级指南', link: '/docs/v3/upgrade/v3.8' },
+     { text: 'v3.7 升级指南', link: '/docs/v3/upgrade/v3.7' },
       { text: 'v3.6 升级指南', link: '/docs/v3/upgrade/v3.6' },
       { text: 'v3.5 升级指南', link: '/docs/v3/upgrade/v3.5' },
       { text: 'v3.4 升级指南', link: '/docs/v3/upgrade/v3.4' },
