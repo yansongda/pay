@@ -7,6 +7,35 @@ description: "Use when reviewing PRs that add or modify a payment Provider in ya
 
 yansongda/pay 新增/修改 Provider 时的 Code Review 专用检查清单。基于 Airwallex PR #1140 review 经验沉淀。
 
+## Review 规范（强制）
+
+### 1. 提交评论前必须征求用户许可
+
+**绝对禁止**：未经用户明确允许，不得使用 `gh pr comment` 或其他方式向 PR 提交任何评论。
+
+**正确流程**：
+1. 完成 review 分析
+2. 向用户展示 review 报告内容
+3. 询问用户："是否需要我将此报告提交为 PR 评论？"
+4. 仅在用户明确确认后才执行提交
+
+### 2. 报告末尾必须注明使用的模型及审核状态
+
+在 review 报告的结论部分之后，必须添加以下信息：
+
+```markdown
+---
+*Review by {模型名称} | {YYYY-MM-DD} | 经人工审核确认*
+```
+
+示例：
+```markdown
+---
+*Review by deepseek-v4-pro | 2026-05-07 | 经人工审核确认*
+```
+
+---
+
 ## Review 流程
 
 按以下阶段顺序审查，确保覆盖完整：
@@ -411,4 +440,7 @@ PHP 8.0 的 null-safe 实现了 **full short-circuiting**：当 `$payload` 为 `
 ## 九、结论
 
 {总体评价：代码质量、架构一致性、安全性等。明确给出 Approve / Request Changes 建议及原因。}
+
+---
+*Review by {模型名称} | {YYYY-MM-DD} | 经人工审核确认*
 ````
