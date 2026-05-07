@@ -19,19 +19,19 @@ yansongda/pay 新增/修改 Provider 时的 Code Review 专用检查清单。基
 3. 询问用户："是否需要我将此报告提交为 PR 评论？"
 4. 仅在用户明确确认后才执行提交
 
-### 2. 报告末尾必须注明使用的模型
+### 2. 报告末尾必须注明使用的模型及审核状态
 
 在 review 报告的结论部分之后，必须添加以下信息：
 
 ```markdown
 ---
-*Review by {模型名称} | {YYYY-MM-DD}*
+*Review by {模型名称} | {YYYY-MM-DD} | 经过人工审核*
 ```
 
 示例：
 ```markdown
 ---
-*Review by deepseek-v4-pro | 2026-05-07*
+*Review by deepseek-v4-pro | 2026-05-07 | 经过人工审核*
 ```
 
 ---
@@ -442,5 +442,5 @@ PHP 8.0 的 null-safe 实现了 **full short-circuiting**：当 `$payload` 为 `
 {总体评价：代码质量、架构一致性、安全性等。明确给出 Approve / Request Changes 建议及原因。}
 
 ---
-*Review by {模型名称} | {YYYY-MM-DD}*
+*Review by {模型名称} | {YYYY-MM-DD} | 经过人工审核*
 ````
