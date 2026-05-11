@@ -17,7 +17,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/partner/apis/ecommerce-balance/accounts/query-balance.html
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012476700
  */
 class QueryPlugin implements PluginInterface
 {

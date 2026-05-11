@@ -12,7 +12,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/fapiao/fapiao-merchant/list-merchant-tax-codes.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012538236
  */
 class GetTaxCodePlugin implements PluginInterface
 {

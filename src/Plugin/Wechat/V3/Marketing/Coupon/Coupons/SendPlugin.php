@@ -17,8 +17,8 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/coupon/send-coupon.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/coupon/send-coupon.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012463767
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012463807
  */
 class SendPlugin implements PluginInterface
 {

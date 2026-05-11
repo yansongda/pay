@@ -20,7 +20,7 @@ use Yansongda\Supports\Collection;
 use function Yansongda\Artful\filter_params;
 
 /**
- * @see https://pay.weixin.qq.com/docs/partner/apis/ecommerce-balance/accounts/query-day-end-balance.html
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012476702
  */
 class QueryDayEndPlugin implements PluginInterface
 {

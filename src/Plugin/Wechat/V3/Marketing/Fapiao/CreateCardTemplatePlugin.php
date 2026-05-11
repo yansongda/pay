@@ -14,7 +14,7 @@ use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/products/fapiao/apilist.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012529382
  */
 class CreateCardTemplatePlugin implements PluginInterface
 {

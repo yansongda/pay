@@ -18,8 +18,8 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/mini-prepay.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-mini-program-payment/partner-mini-prepay.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012791897
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012759974
  */
 class PayPlugin implements PluginInterface
 {

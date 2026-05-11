@@ -14,8 +14,8 @@ use Yansongda\Pay\Exception\Exception;
 use function Yansongda\Artful\filter_params;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/bill-download/get-fund-bill.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/bill-download/get-fund-bill.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012556748
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012760229
  */
 class GetFundBillPlugin implements PluginInterface
 {

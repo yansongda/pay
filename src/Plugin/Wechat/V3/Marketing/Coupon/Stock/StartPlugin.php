@@ -16,8 +16,8 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/stock/start-stock.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/stock/start-stock.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012460137
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012460237
  */
 class StartPlugin implements PluginInterface
 {

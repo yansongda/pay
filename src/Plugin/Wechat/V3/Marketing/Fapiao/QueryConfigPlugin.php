@@ -10,7 +10,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/fapiao/fapiao-merchant/query-development-config.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012529526
  */
 class QueryConfigPlugin implements PluginInterface
 {

@@ -18,8 +18,8 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/orders/unfreeze-order.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/profit-sharing/orders/unfreeze-order.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012526374
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012466860
  */
 class UnfreezePlugin implements PluginInterface
 {

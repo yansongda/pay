@@ -12,8 +12,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/stock/use-flow.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/stock/use-flow.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012463585
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012463698
  */
 class QueryUseFlowPlugin implements PluginInterface
 {

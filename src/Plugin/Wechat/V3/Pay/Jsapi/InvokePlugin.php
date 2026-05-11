@@ -22,8 +22,8 @@ use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/jsapi-payment/jsapi-transfer-payment.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-jsapi-payment/jsapi-transfer-payment.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012791857
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012069855
  */
 class InvokePlugin implements PluginInterface
 {

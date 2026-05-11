@@ -14,8 +14,8 @@ use Yansongda\Pay\Exception\Exception;
 use function Yansongda\Artful\filter_params;
 
 /**
- * @see https://pay.weixin.qq.com/docs/partner/apis/profit-sharing/bill-shipment/split-bill.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/profit-sharing/bill-shipment/split-bill.html
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012761140
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012761140
  */
 class GetBillPlugin implements PluginInterface
 {

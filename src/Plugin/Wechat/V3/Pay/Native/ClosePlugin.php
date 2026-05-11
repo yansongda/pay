@@ -19,8 +19,8 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/native-payment/close-order.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-native-payment/close-order.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012791881
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012759725
  */
 class ClosePlugin implements PluginInterface
 {

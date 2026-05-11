@@ -14,8 +14,8 @@ use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/call-back-url/query-callback.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/call-back-url/query-callback.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012464070
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012464155
  */
 class QueryPlugin implements PluginInterface
 {

@@ -20,8 +20,8 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/receivers/add-receiver.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/profit-sharing/receivers/add-receiver.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012528995
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012690944
  */
 class AddReceiverPlugin implements PluginInterface
 {

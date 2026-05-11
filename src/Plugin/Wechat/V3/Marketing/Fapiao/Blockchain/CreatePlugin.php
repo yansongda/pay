@@ -18,7 +18,7 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/fapiao/fapiao-applications/issue-fapiao-applications.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012538301
  */
 class CreatePlugin implements PluginInterface
 {

@@ -17,7 +17,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/partner/apis/ecommerce-refund/refunds/query-refund.html
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012476908
  */
 class QueryByWxPlugin implements PluginInterface
 {

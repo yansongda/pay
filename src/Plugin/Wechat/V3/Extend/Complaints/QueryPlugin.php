@@ -14,8 +14,8 @@ use Yansongda\Pay\Exception\Exception;
 use function Yansongda\Artful\filter_params;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaints/list-complaints-v2.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/consumer-complaint/complaints/list-complaints-v2.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012533431
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012691285
  */
 class QueryPlugin implements PluginInterface
 {

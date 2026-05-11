@@ -16,8 +16,8 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaints/response-complaint-v2.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/consumer-complaint/complaints/response-complaint-v2.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012467254
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012467213
  */
 class ResponsePlugin implements PluginInterface
 {

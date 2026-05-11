@@ -16,8 +16,8 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/h5-prepay.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/orders/h5-prepay.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012556961
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012758208
  */
 class H5PayPlugin implements PluginInterface
 {

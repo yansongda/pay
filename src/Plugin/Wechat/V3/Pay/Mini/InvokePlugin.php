@@ -22,8 +22,8 @@ use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/mini-transfer-payment.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-mini-program-payment/mini-transfer-payment.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012791898
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012085827
  */
 class InvokePlugin implements PluginInterface
 {

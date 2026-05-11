@@ -10,7 +10,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/fapiao/fapiao-merchant/get-merchant-info.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012538180
  */
 class GetBaseInformationPlugin implements PluginInterface
 {

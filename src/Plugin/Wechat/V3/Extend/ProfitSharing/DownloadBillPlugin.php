@@ -13,8 +13,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/download-bill.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/profit-sharing/download-bill.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012289690
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012075366
  */
 class DownloadBillPlugin implements PluginInterface
 {

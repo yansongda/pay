@@ -17,7 +17,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/partner/apis/profit-sharing/merchants/query-merchant-ratio.html
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012466864
  */
 class QueryMerchantConfigsPlugin implements PluginInterface
 {
