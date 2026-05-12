@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## v3.8.0-beta.1 - 2026-05-12
+
+### Fixed
+
+- 微信回调增加时间戳验证防止重放攻击 (#1168)
+
+### Changed
+
+- 更新微信 V3 插件 @see 文档链接地址 (#1167)
+
+
 ## v3.8.0-beta.0 - 2026-05-08
 
 ### Added
