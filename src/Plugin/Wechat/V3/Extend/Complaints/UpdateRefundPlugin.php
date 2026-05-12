@@ -12,8 +12,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaints/update-refund-progress.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/consumer-complaint/complaints/update-refund-progress.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012467256
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012467218
  */
 class UpdateRefundPlugin implements PluginInterface
 {

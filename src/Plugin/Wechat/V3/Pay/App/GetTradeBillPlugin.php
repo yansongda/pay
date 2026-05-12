@@ -14,8 +14,8 @@ use Yansongda\Pay\Exception\Exception;
 use function Yansongda\Artful\filter_params;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/in-app-payment/get-trade-bill.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-in-app-payment/get-trade-bill.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4013070395
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4013080242
  */
 class GetTradeBillPlugin implements PluginInterface
 {

@@ -17,8 +17,8 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/native-payment/query-by-out-trade-no.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-native-payment/query-by-out-trade-no.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012791880
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012759714
  */
 class QueryPlugin implements PluginInterface
 {

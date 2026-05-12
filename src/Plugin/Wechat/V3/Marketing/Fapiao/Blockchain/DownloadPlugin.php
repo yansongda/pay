@@ -15,7 +15,7 @@ use Yansongda\Pay\Exception\Exception;
 use function Yansongda\Artful\filter_params;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/fapiao/fapiao-applications/download-invoice-file.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012286040
  */
 class DownloadPlugin implements PluginInterface
 {

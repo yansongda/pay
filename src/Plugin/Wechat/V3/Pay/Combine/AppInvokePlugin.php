@@ -22,8 +22,8 @@ use Yansongda\Supports\Config;
 use Yansongda\Supports\Str;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/app-transfer-payment.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/orders/app-transfer-payment.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012266043
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012166845
  */
 class AppInvokePlugin implements PluginInterface
 {

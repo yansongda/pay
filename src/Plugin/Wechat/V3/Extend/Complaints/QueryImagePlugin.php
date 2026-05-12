@@ -12,8 +12,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/images/query-images.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/consumer-complaint/images/query-images.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012467251
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012467223
  */
 class QueryImagePlugin implements PluginInterface
 {

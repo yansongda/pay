@@ -16,8 +16,8 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaints/complete-complaint-v2.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/consumer-complaint/complaints/complete-complaint-v2.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012467255
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012467217
  */
 class CompletePlugin implements PluginInterface
 {

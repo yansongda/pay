@@ -16,8 +16,8 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/orders/query-order.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/profit-sharing/orders/query-order.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012525210
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012466850
  */
 class QueryPlugin implements PluginInterface
 {

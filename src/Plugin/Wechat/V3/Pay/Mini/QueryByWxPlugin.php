@@ -17,8 +17,8 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/mini-program-payment/query-by-wx-trade-no.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-mini-program-payment/query-by-wx-trade-no.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012791899
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012738973
  */
 class QueryByWxPlugin implements PluginInterface
 {

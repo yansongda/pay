@@ -16,8 +16,8 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/in-app-payment/query-by-out-refund-no.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/partner-in-app-payment/query-by-out-refund-no.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4013070374
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4013080239
  */
 class QueryRefundPlugin implements PluginInterface
 {

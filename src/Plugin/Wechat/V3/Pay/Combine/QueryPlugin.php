@@ -12,8 +12,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/query-order.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/orders/query-order.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012557006
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012761057
  */
 class QueryPlugin implements PluginInterface
 {

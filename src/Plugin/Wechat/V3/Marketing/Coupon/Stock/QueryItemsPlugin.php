@@ -19,8 +19,8 @@ use Yansongda\Supports\Collection;
 use function Yansongda\Artful\filter_params;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/cash-coupons/stock/list-available-singleitems.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/cash-coupons/stock/list-available-singleitems.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012463442
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012463475
  */
 class QueryItemsPlugin implements PluginInterface
 {

@@ -10,8 +10,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/consumer-complaint/complaint-notifications/query-complaint-notifications.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/consumer-complaint/complaint-notifications/query-complaint-notifications.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012459014
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012459065
  */
 class QueryCallbackPlugin implements PluginInterface
 {

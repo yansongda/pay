@@ -16,8 +16,8 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/app-prepay.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/orders/app-prepay.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012556944
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012758021
  */
 class AppPayPlugin implements PluginInterface
 {

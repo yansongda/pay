@@ -19,7 +19,7 @@ use Yansongda\Supports\Collection;
 use function Yansongda\Artful\filter_params;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/fapiao/user-title/acquire-fapiao-title-url.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012538106
  */
 class GetTitleUrlPlugin implements PluginInterface
 {

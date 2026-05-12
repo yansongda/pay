@@ -16,8 +16,8 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/orders/jsapi-prepay.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/orders/jsapi-prepay.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012556926
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012757938
  */
 class JsapiPayPlugin implements PluginInterface
 {

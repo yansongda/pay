@@ -12,8 +12,8 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/profit-sharing/transactions/query-order-amount.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/profit-sharing/transactions/query-order-amount.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012457939
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012457927
  */
 class QueryAmountsPlugin implements PluginInterface
 {

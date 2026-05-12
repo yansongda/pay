@@ -18,8 +18,8 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://pay.weixin.qq.com/docs/merchant/apis/combine-payment/refunds/create.html
- * @see https://pay.weixin.qq.com/docs/partner/apis/combine-payment/refunds/create.html
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012556524
+ * @see https://pay.weixin.qq.com/doc/v3/partner/4012760207
  */
 class RefundPlugin implements PluginInterface
 {
