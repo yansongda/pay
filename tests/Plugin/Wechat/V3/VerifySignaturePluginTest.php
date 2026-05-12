@@ -8,6 +8,7 @@ use GuzzleHttp\Psr7\Response;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
+use Yansongda\Pay\Tests\Stubs\Plugin\VerifySignaturePluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
 class VerifySignaturePluginTest extends TestCase
@@ -18,7 +19,7 @@ class VerifySignaturePluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new VerifySignaturePlugin();
+        $this->plugin = new VerifySignaturePluginStub();
     }
 
     public function testShouldNotDoRequest()

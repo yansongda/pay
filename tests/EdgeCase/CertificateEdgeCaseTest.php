@@ -11,6 +11,8 @@ use Mockery;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
+use Yansongda\Pay\Tests\Stubs\Plugin\CallbackPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
 class CertificateEdgeCaseTest extends TestCase
@@ -51,6 +53,8 @@ class CertificateEdgeCaseTest extends TestCase
         );
 
         self::expectException(InvalidSignException::class);
+
+        Pay::set(CallbackPlugin::class, new CallbackPluginStub());
 
         Pay::wechat()->callback($request);
     }

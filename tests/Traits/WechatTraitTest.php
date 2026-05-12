@@ -25,6 +25,10 @@ use Yansongda\Supports\Collection;
 class WechatTraitStub
 {
     use WechatTrait;
+
+    protected static function verifyWechatTimestamp(int $timestamp): void
+    {
+    }
 }
 
 class WechatTraitTest extends TestCase

@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Tests\Plugin\Wechat\V3;
 use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
+use Yansongda\Pay\Tests\Stubs\Plugin\CallbackPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
@@ -18,7 +19,7 @@ class CallbackPluginTest extends TestCase
     {
         parent::setUp();
 
-        $this->plugin = new CallbackPlugin();
+        $this->plugin = new CallbackPluginStub();
     }
 
     public function testNormal()
