@@ -9,6 +9,7 @@ use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\TestCase;
+use Yansongda\Pay\Tests\Stubs\Traits\WechatTraitStub;
 
 class VerifySignaturePluginTest extends TestCase
 {
@@ -47,10 +48,7 @@ class VerifySignaturePluginTest extends TestCase
             json_encode(['h5_url' => 'https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx16220223998099f898c5b24eed5c320000&package=4049184564'], JSON_UNESCAPED_SLASHES),
         );
 
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin($response);
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        WechatTraitStub::verifyWechatSign($response, []);
 
         self::assertTrue(true);
     }
