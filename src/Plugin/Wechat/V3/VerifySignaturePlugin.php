@@ -18,6 +18,9 @@ use Yansongda\Pay\Traits\WechatTrait;
 
 use function Yansongda\Artful\should_do_http_request;
 
+/**
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4013053420
+ */
 class VerifySignaturePlugin implements PluginInterface
 {
     use WechatTrait;
