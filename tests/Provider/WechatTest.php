@@ -20,8 +20,11 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
+use Yansongda\Pay\Tests\Stubs\Plugin\CallbackPluginStub;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
+use Yansongda\Pay\Tests\Stubs\Plugin\VerifySignaturePluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
 class WechatTest extends TestCase
@@ -70,6 +73,7 @@ class WechatTest extends TestCase
         $http = Mockery::mock(Client::class);
         $http->shouldReceive('sendRequest')->andReturn($response);
         Pay::set(HttpClientInterface::class, $http);
+        Pay::set(VerifySignaturePlugin::class, new VerifySignaturePluginStub());
 
         Pay::wechat()->cancel(['out_bill_no' => '123']);
 
@@ -110,6 +114,7 @@ class WechatTest extends TestCase
         $http = Mockery::mock(Client::class);
         $http->shouldReceive('sendRequest')->andReturn($response);
         Pay::set(HttpClientInterface::class, $http);
+        Pay::set(VerifySignaturePlugin::class, new VerifySignaturePluginStub());
 
         Pay::wechat()->close(['out_trade_no' => '123']);
 
@@ -154,6 +159,8 @@ class WechatTest extends TestCase
                 ],
             ]),
         );
+
+        Pay::set(CallbackPlugin::class, new CallbackPluginStub());
 
         $result = Pay::wechat()->callback($request);
 

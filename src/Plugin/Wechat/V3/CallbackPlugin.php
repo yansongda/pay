@@ -21,6 +21,10 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
+/**
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012791861.md
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012071382.md
+ */
 class CallbackPlugin implements PluginInterface
 {
     use WechatTrait;

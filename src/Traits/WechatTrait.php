@@ -113,6 +113,8 @@ trait WechatTrait
     }
 
     /**
+     * @see https://pay.weixin.qq.com/doc/v3/merchant/4013053420
+     *
      * @throws ContainerException
      * @throws DecryptException
      * @throws InvalidConfigException
@@ -127,6 +129,8 @@ trait WechatTrait
         $random = $message->getHeaderLine('Wechatpay-Nonce');
         $sign = $message->getHeaderLine('Wechatpay-Signature');
         $body = (string) $message->getBody();
+
+        static::verifyWechatTimestamp((int) $timestamp);
 
         /** @var WechatConfig $wechatConfig */
         $wechatConfig = self::getProviderConfig('wechat', $params);
@@ -355,5 +359,19 @@ trait WechatTrait
         }
 
         return $publicKey;
+    }
+
+    /**
+     * 验证微信回调时间戳是否在有效期内（5分钟）.
+     *
+     * @see https://pay.weixin.qq.com/doc/v3/merchant/4013053420
+     *
+     * @throws InvalidSignException 时间戳已过期
+     */
+    protected static function verifyWechatTimestamp(int $timestamp): void
+    {
+        if (abs(time() - $timestamp) > 300) {
+            throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 微信回调时间戳已过期', ['timestamp' => $timestamp, 'current_time' => time()]);
+        }
     }
 }

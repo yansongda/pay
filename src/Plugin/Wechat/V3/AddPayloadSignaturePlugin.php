@@ -20,6 +20,12 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
+/**
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012365334
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012365335
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012365336
+ * @see https://pay.weixin.qq.com/doc/v3/merchant/4012365337
+ */
 class AddPayloadSignaturePlugin implements PluginInterface
 {
     use WechatTrait;
