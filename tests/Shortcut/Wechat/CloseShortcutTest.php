@@ -82,6 +82,14 @@ class CloseShortcutTest extends TestCase
         ], $this->plugin->getPlugins(['sub_orders' => '123abc']));
     }
 
+    public function testVirtual()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+
+        $this->plugin->getPlugins(['_action' => 'virtual']);
+    }
+
     public function testFoo()
     {
         self::expectException(InvalidParamsException::class);

@@ -27,6 +27,13 @@ class WechatConfig extends AbstractConfig
     private ?string $subAppId = null;
     private ?string $miniAppKeyVirtualPay = null;
     private int $mode = Pay::MODE_NORMAL;
+    private WechatConfigVirtualPay $virtualPay;
+
+    public function __construct(array $values, string $tenant = 'default')
+    {
+        $this->virtualPay = new WechatConfigVirtualPay();
+        parent::__construct($values, $tenant);
+    }
 
     public function setMchId(string $value): void
     {
@@ -183,6 +190,30 @@ class WechatConfig extends AbstractConfig
     public function getMode(): int
     {
         return $this->mode;
+    }
+
+    /**
+     * @param array<string, mixed>|WechatConfigVirtualPay $value
+     */
+    public function setVirtualPay(array|WechatConfigVirtualPay $value): void
+    {
+        if (is_array($value)) {
+            $vp = new WechatConfigVirtualPay();
+            foreach ($value as $key => $item) {
+                $method = 'set'.str_replace('_', '', ucwords((string) $key, '_'));
+                if (method_exists($vp, $method)) {
+                    $vp->{$method}($item);
+                }
+            }
+            $this->virtualPay = $vp;
+        } else {
+            $this->virtualPay = $value;
+        }
+    }
+
+    public function getVirtualPay(): WechatConfigVirtualPay
+    {
+        return $this->virtualPay;
     }
 
     /**

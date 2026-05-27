@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Shortcut\Wechat;
 
 use Yansongda\Artful\Contract\ShortcutInterface;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -28,6 +29,8 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\QueryRefundPlugin as MiniQueryRefund
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryPlugin as NativeQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryRefundPlugin as NativeQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin as VirtualAddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\Order\QueryOrderPlugin;
 use Yansongda\Supports\Str;
 
 class QueryShortcut implements ShortcutInterface
@@ -135,6 +138,18 @@ class QueryShortcut implements ShortcutInterface
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    protected function virtualPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            QueryOrderPlugin::class,
+            AddPayloadBodyPlugin::class,
+            VirtualAddPayloadSignaturePlugin::class,
+            NoHttpRequestDirection::class,
             ParserPlugin::class,
         ];
     }

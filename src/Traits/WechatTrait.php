@@ -362,6 +362,25 @@ trait WechatTrait
     }
 
     /**
+     * @throws InvalidConfigException
+     */
+    public static function getWechatVirtualPaySignature(WechatConfig $config, string $uri, string $body, int $env = 0): string
+    {
+        $appKey = $config->getVirtualPay()->getAppKey($env);
+
+        if (empty($appKey)) {
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信虚拟支付配置 -- [mini_app_key_virtual_pay.app_key]');
+        }
+
+        return hash_hmac('sha256', $uri.'&'.$body, $appKey);
+    }
+
+    public static function getWechatVirtualSessionSignature(string $sessionKey, string $body): string
+    {
+        return hash_hmac('sha256', $body, $sessionKey);
+    }
+
+    /**
      * 验证微信回调时间戳是否在有效期内（5分钟）.
      *
      * @see https://pay.weixin.qq.com/doc/v3/merchant/4013053420

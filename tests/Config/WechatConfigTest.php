@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Tests\Config;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Config\WechatConfigVirtualPay;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -234,5 +235,90 @@ class WechatConfigTest extends TestCase
 
         self::assertEquals('cert-content-1', CertManager::wechatGetCertBySerial($tenant, 'SERIAL1'));
         self::assertEquals('cert-content-2', CertManager::wechatGetCertBySerial($tenant, 'SERIAL2'));
+    }
+
+    /** @group VirtualPay */
+    public function testVirtualPayDefaultIsEmptyObject(): void
+    {
+        $config = new WechatConfig($this->validConfig);
+
+        $vp = $config->getVirtualPay();
+        self::assertInstanceOf(WechatConfigVirtualPay::class, $vp);
+        self::assertNull($vp->getAppKey());
+        self::assertNull($vp->getSandboxAppKey());
+        self::assertNull($vp->getOfferId());
+    }
+
+    /** @group VirtualPay */
+    public function testVirtualPayFromArrayConfig(): void
+    {
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'virtual_pay' => [
+                'app_key' => 'vp-app-key',
+                'sandbox_app_key' => 'vp-sandbox-key',
+                'offer_id' => 'vp-offer-123',
+            ],
+        ]));
+
+        $vp = $config->getVirtualPay();
+        self::assertSame('vp-app-key', $vp->getAppKey());
+        self::assertSame('vp-sandbox-key', $vp->getSandboxAppKey());
+        self::assertSame('vp-offer-123', $vp->getOfferId());
+    }
+
+    /** @group VirtualPay */
+    public function testVirtualPaySandboxFallback(): void
+    {
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'virtual_pay' => [
+                'app_key' => 'vp-app-key',
+                'sandbox_app_key' => 'vp-sandbox-key',
+            ],
+        ]));
+
+        $vp = $config->getVirtualPay();
+        self::assertSame('vp-sandbox-key', $vp->getAppKey(1));
+    }
+
+    /** @group VirtualPay */
+    public function testVirtualPaySetViaSetter(): void
+    {
+        $config = new WechatConfig($this->validConfig);
+
+        $vp = new WechatConfigVirtualPay();
+        $vp->setAppKey('direct-key');
+        $vp->setOfferId('direct-offer');
+
+        $config->setVirtualPay($vp);
+
+        $result = $config->getVirtualPay();
+        self::assertSame('direct-key', $result->getAppKey());
+        self::assertSame('direct-offer', $result->getOfferId());
+    }
+
+    /** @group VirtualPay */
+    public function testVirtualPaySetViaArraySetter(): void
+    {
+        $config = new WechatConfig($this->validConfig);
+
+        $config->setVirtualPay([
+            'app_key' => 'array-key',
+            'offer_id' => 'array-offer',
+        ]);
+
+        $vp = $config->getVirtualPay();
+        self::assertSame('array-key', $vp->getAppKey());
+        self::assertSame('array-offer', $vp->getOfferId());
+    }
+
+    /** @group VirtualPay */
+    public function testMiniAppKeyVirtualPayNotUsedAsVirtualPaySource(): void
+    {
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'mini_app_key_virtual_pay' => 'legacy-key',
+        ]));
+
+        $vp = $config->getVirtualPay();
+        self::assertNull($vp->getAppKey());
     }
 }

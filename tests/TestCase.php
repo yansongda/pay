@@ -72,6 +72,13 @@ class TestCase extends \PHPUnit\Framework\TestCase
                         'yansongda' => __DIR__.'/Cert/wechatPublicKey.crt',
                     ],
                     'mode' => Pay::MODE_NORMAL,
+                    'virtual_pay' => [
+                        'app_key' => 'yansongda_virtual_pay',
+                        'sandbox_app_key' => 'yansongda_virtual_pay_sandbox',
+                        'offer_id' => '1234567890',
+                        'encoding_aes_key' => 'MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY',
+                        'callback_token' => 'test_callback_token',
+                    ],
                 ],
                 'service_provider' => [
                     'app_id' => 'yansongdaa',

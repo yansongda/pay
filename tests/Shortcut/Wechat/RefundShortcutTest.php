@@ -19,7 +19,10 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\RefundPlugin as JsapiRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\RefundPlugin as NativeRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin as VirtualAddPayloadSignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\Order\RefundOrderPlugin;
 use Yansongda\Pay\Shortcut\Wechat\RefundShortcut;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Tests\TestCase;
 
 class RefundShortcutTest extends TestCase
@@ -129,6 +132,18 @@ class RefundShortcutTest extends TestCase
             ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'native']));
+    }
+
+    public function testVirtual()
+    {
+        self::assertEquals([
+            StartPlugin::class,
+            RefundOrderPlugin::class,
+            AddPayloadBodyPlugin::class,
+            VirtualAddPayloadSignaturePlugin::class,
+            NoHttpRequestDirection::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'virtual']));
     }
 
     public function testFoo()

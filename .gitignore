@@ -4,7 +4,9 @@ composer.lock
 .idea/
 .phpunit.cache/
 .phpunit.result.cache
+.sisyphus/
 .omo/
+.worktree
 .worktrees
 docs/
 .playwright-mcp/
