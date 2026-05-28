@@ -96,7 +96,7 @@ class AddPayloadSignaturePluginTest extends TestCase
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        self::expectExceptionMessage('配置异常: 缺少微信虚拟支付配置 -- [mini_app_key_virtual_pay.app_key]');
+        self::expectExceptionMessage('配置异常: 缺少微信虚拟支付配置 -- [virtual_pay.app_key]');
 
         $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
     }

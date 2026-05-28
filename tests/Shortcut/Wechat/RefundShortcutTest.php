@@ -21,8 +21,8 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\RefundPlugin as NativeRefundPlugin
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin as VirtualAddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\RefundOrderPlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin as VirtualVerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\RefundShortcut;
-use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Tests\TestCase;
 
 class RefundShortcutTest extends TestCase
@@ -141,7 +141,9 @@ class RefundShortcutTest extends TestCase
             RefundOrderPlugin::class,
             AddPayloadBodyPlugin::class,
             VirtualAddPayloadSignaturePlugin::class,
-            NoHttpRequestDirection::class,
+            AddRadarPlugin::class,
+            VirtualVerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'virtual']));
     }

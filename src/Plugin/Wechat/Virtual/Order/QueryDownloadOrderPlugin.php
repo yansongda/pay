@@ -38,16 +38,13 @@ class QueryDownloadOrderPlugin implements PluginInterface
 
         $env = (int) $payload->get('env', 0);
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => '/xpay/query_download_order',
-                '_env' => $env,
-                'env' => $env,
-                'download_task_id' => $payload->get('download_task_id'),
-            ],
-            self::getWechatVirtualAccessToken($payload),
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => '/xpay/query_download_order',
+            '_env' => $env,
+            'env' => $env,
+            'download_task_id' => $payload->get('download_task_id'),
+        ]);
 
         Logger::info('[Wechat][Virtual][Order][QueryDownloadOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

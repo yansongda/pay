@@ -50,23 +50,20 @@ class PayPlugin implements PluginInterface
 
         $env = (int) $payload->get('env', 0);
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                // 客户端签名场景使用 requestVirtualPayment，服务端 API 场景使用具体路径
-                '_url' => $payload->get('_url', 'requestVirtualPayment'),
-                '_env' => $env,
-                'offerId' => $config->getVirtualPay()->getOfferId() ?? '',
-                'buyQuantity' => $payload->get('buyQuantity'),
-                'env' => $env,
-                'currencyType' => $payload->get('currencyType', 'CNY'),
-                'productId' => $payload->get('productId', ''),
-                'goodsPrice' => $payload->get('goodsPrice'),
-                'outTradeNo' => $payload->get('outTradeNo', ''),
-                'attach' => $payload->get('attach', ''),
-            ],
-            self::getWechatVirtualAccessToken($payload),
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            // 客户端签名场景使用 requestVirtualPayment，服务端 API 场景使用具体路径
+            '_url' => $payload->get('_url', 'requestVirtualPayment'),
+            '_env' => $env,
+            'offerId' => $config->getVirtualPay()->getOfferId() ?? '',
+            'buyQuantity' => $payload->get('buyQuantity'),
+            'env' => $env,
+            'currencyType' => $payload->get('currencyType', 'CNY'),
+            'productId' => $payload->get('productId', ''),
+            'goodsPrice' => $payload->get('goodsPrice'),
+            'outTradeNo' => $payload->get('outTradeNo', ''),
+            'attach' => $payload->get('attach', ''),
+        ]);
 
         Logger::info('[Wechat][Virtual][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

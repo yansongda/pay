@@ -38,16 +38,13 @@ class QueryPublishGoodsPlugin implements PluginInterface
 
         $env = (int) $payload->get('env', 0);
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => '/xpay/query_publish_goods',
-                '_env' => $env,
-                'publish_task_id' => $payload->get('publish_task_id'),
-                'env' => $env,
-            ],
-            self::getWechatVirtualAccessToken($payload),
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => '/xpay/query_publish_goods',
+            '_env' => $env,
+            'publish_task_id' => $payload->get('publish_task_id'),
+            'env' => $env,
+        ]);
 
         Logger::info('[Wechat][Virtual][Goods][QueryPublishGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

@@ -24,8 +24,8 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryPlugin as NativeQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin as VirtualAddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\QueryOrderPlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin as VirtualVerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\QueryShortcut;
-use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Pay\Tests\TestCase;
 
 class QueryShortcutTest extends TestCase
@@ -197,7 +197,9 @@ class QueryShortcutTest extends TestCase
             QueryOrderPlugin::class,
             AddPayloadBodyPlugin::class,
             VirtualAddPayloadSignaturePlugin::class,
-            NoHttpRequestDirection::class,
+            AddRadarPlugin::class,
+            VirtualVerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'virtual']));
     }

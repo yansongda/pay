@@ -129,7 +129,7 @@ class CallbackPlugin implements PluginInterface
         $arr = [$token, $timestamp, $nonce, $encrypt];
         sort($arr, SORT_STRING);
 
-        if (sha1(implode('', $arr)) !== $signature) {
+        if (!hash_equals($signature, sha1(implode('', $arr)))) {
             throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 验证微信虚拟支付回调签名失败');
         }
     }

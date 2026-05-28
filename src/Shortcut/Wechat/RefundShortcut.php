@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Shortcut\Wechat;
 
 use Yansongda\Artful\Contract\ShortcutInterface;
-use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -23,6 +22,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\RefundPlugin as NativeRefundPlugin
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin as VirtualAddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\RefundOrderPlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin as VirtualVerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
 class RefundShortcut implements ShortcutInterface
@@ -137,7 +137,9 @@ class RefundShortcut implements ShortcutInterface
             RefundOrderPlugin::class,
             AddPayloadBodyPlugin::class,
             VirtualAddPayloadSignaturePlugin::class,
-            NoHttpRequestDirection::class,
+            AddRadarPlugin::class,
+            VirtualVerifySignaturePlugin::class,
+            ResponsePlugin::class,
             ParserPlugin::class,
         ];
     }

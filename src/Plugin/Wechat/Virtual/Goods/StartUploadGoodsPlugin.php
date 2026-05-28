@@ -38,17 +38,14 @@ class StartUploadGoodsPlugin implements PluginInterface
 
         $env = (int) $payload->get('env', 0);
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => '/xpay/start_upload_goods',
-                '_env' => $env,
-                'group_id' => $payload->get('group_id'),
-                'goods_list' => $payload->get('goods_list'),
-                'env' => $env,
-            ],
-            self::getWechatVirtualAccessToken($payload),
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => '/xpay/start_upload_goods',
+            '_env' => $env,
+            'group_id' => $payload->get('group_id'),
+            'goods_list' => $payload->get('goods_list'),
+            'env' => $env,
+        ]);
 
         Logger::info('[Wechat][Virtual][Goods][StartUploadGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

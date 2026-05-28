@@ -38,18 +38,15 @@ class NotifyProvideGoodsPlugin implements PluginInterface
 
         $env = (int) $payload->get('env', 0);
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => '/xpay/notify_provide_goods',
-                '_env' => $env,
-                'openid' => $payload->get('openid'),
-                'env' => $env,
-                'order_id' => $payload->get('order_id'),
-                'out_trade_no' => $payload->get('out_trade_no'),
-            ],
-            self::getWechatVirtualAccessToken($payload),
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => '/xpay/notify_provide_goods',
+            '_env' => $env,
+            'openid' => $payload->get('openid'),
+            'env' => $env,
+            'order_id' => $payload->get('order_id'),
+            'out_trade_no' => $payload->get('out_trade_no'),
+        ]);
 
         Logger::info('[Wechat][Virtual][Order][NotifyProvideGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

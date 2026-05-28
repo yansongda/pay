@@ -38,17 +38,14 @@ class StartPublishGoodsPlugin implements PluginInterface
 
         $env = (int) $payload->get('env', 0);
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => '/xpay/start_publish_goods',
-                '_env' => $env,
-                'group_id' => $payload->get('group_id'),
-                'upload_task_id' => $payload->get('upload_task_id'),
-                'env' => $env,
-            ],
-            self::getWechatVirtualAccessToken($payload),
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => '/xpay/start_publish_goods',
+            '_env' => $env,
+            'group_id' => $payload->get('group_id'),
+            'upload_task_id' => $payload->get('upload_task_id'),
+            'env' => $env,
+        ]);
 
         Logger::info('[Wechat][Virtual][Goods][StartPublishGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

@@ -379,7 +379,7 @@ trait WechatTrait
         $appKey = $config->getVirtualPay()->getAppKey($env);
 
         if (empty($appKey)) {
-            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信虚拟支付配置 -- [mini_app_key_virtual_pay.app_key]');
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信虚拟支付配置 -- [virtual_pay.app_key]');
         }
 
         return hash_hmac('sha256', $uri.'&'.$body, $appKey);
@@ -388,20 +388,6 @@ trait WechatTrait
     public static function getWechatVirtualSessionSignature(string $sessionKey, string $body): string
     {
         return hash_hmac('sha256', $body, $sessionKey);
-    }
-
-    /**
-     * 获取虚拟支付 access_token 参数.
-     */
-    public static function getWechatVirtualAccessToken(?Collection $payload): array
-    {
-        $token = $payload?->get('_access_token', '');
-
-        if (!empty($token)) {
-            return ['_access_token' => $token];
-        }
-
-        return [];
     }
 
     /**

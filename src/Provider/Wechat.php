@@ -128,7 +128,7 @@ class Wechat implements ProviderInterface
 
         Event::dispatch(new CallbackReceived('wechat', clone $request, $params, null));
 
-        $plugin = ($params['_action'] ?? null) === 'virtual'
+        $plugin = (($params ?? [])['_action'] ?? null) === 'virtual'
             ? VirtualCallbackPlugin::class
             : CallbackPlugin::class;
 

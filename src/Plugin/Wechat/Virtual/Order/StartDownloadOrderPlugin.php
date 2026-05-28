@@ -38,17 +38,14 @@ class StartDownloadOrderPlugin implements PluginInterface
 
         $env = (int) $payload->get('env', 0);
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => '/xpay/start_download_order',
-                '_env' => $env,
-                'env' => $env,
-                'start_date' => $payload->get('start_date'),
-                'end_date' => $payload->get('end_date'),
-            ],
-            self::getWechatVirtualAccessToken($payload),
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => '/xpay/start_download_order',
+            '_env' => $env,
+            'env' => $env,
+            'start_date' => $payload->get('start_date'),
+            'end_date' => $payload->get('end_date'),
+        ]);
 
         Logger::info('[Wechat][Virtual][Order][StartDownloadOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

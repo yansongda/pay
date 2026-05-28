@@ -48,19 +48,16 @@ class RefundOrderPlugin implements PluginInterface
 
         $env = (int) $env;
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => '/xpay/refund_order',
-                '_env' => $env,
-                'openid' => $openid,
-                'env' => $env,
-                'order_id' => $orderId,
-                'out_trade_no' => $outTradeNo,
-                'refund_amount' => $refundAmount,
-            ],
-            self::getWechatVirtualAccessToken($payload),
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => '/xpay/refund_order',
+            '_env' => $env,
+            'openid' => $openid,
+            'env' => $env,
+            'order_id' => $orderId,
+            'out_trade_no' => $outTradeNo,
+            'refund_amount' => $refundAmount,
+        ]);
 
         Logger::info('[Wechat][Virtual][Order][RefundOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

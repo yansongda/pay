@@ -38,17 +38,14 @@ class DownloadBillPlugin implements PluginInterface
 
         $env = (int) $payload->get('env', 0);
 
-        $rocket->mergePayload(array_merge(
-            [
-                '_method' => 'POST',
-                '_url' => '/xpay/download_bill',
-                '_env' => $env,
-                'env' => $env,
-                'bill_date' => $payload->get('bill_date'),
-                'bill_type' => $payload->get('bill_type'),
-            ],
-            self::getWechatVirtualAccessToken($payload),
-        ));
+        $rocket->mergePayload([
+            '_method' => 'POST',
+            '_url' => '/xpay/download_bill',
+            '_env' => $env,
+            'env' => $env,
+            'bill_date' => $payload->get('bill_date'),
+            'bill_type' => $payload->get('bill_type'),
+        ]);
 
         Logger::info('[Wechat][Virtual][Order][DownloadBillPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
