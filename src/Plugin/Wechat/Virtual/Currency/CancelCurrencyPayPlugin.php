@@ -36,14 +36,11 @@ class CancelCurrencyPayPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付代币退款，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/cancel_currency_pay',
-            '_env' => $env,
             'openid' => $payload->get('openid', ''),
-            'env' => $env,
             'order_id' => $payload->get('order_id', ''),
             'refund_reason' => $payload->get('refund_reason', ''),
         ]);

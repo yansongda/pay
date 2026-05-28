@@ -35,7 +35,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
 
         $uri = $payload->get('_url', '');
         $body = self::getWechatBody($payload);
-        $env = (int) $payload->get('_env', 0);
+        $env = (int) $payload->get('env', 0);
 
         $paySig = self::getWechatVirtualPaySignature($config, $uri, $body, $env);
 

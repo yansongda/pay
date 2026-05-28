@@ -36,14 +36,11 @@ class QuerySubscribeContractPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付查询签约关系，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/query_subscribe_contract',
-            '_env' => $env,
             'openid' => $payload->get('openid'),
-            'env' => $env,
         ]);
 
         Logger::info('[Wechat][Virtual][Subscribe][QuerySubscribeContractPlugin] 插件装载完毕', ['rocket' => $rocket]);

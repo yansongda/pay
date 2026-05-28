@@ -48,7 +48,6 @@ class CancelCurrencyPayPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('/xpay/cancel_currency_pay', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('_env'));
         self::assertEquals('test_openid', $payload->get('openid'));
         self::assertEquals(0, $payload->get('env'));
         self::assertEquals('ORDER_001', $payload->get('order_id'));
@@ -69,7 +68,6 @@ class CancelCurrencyPayPluginTest extends TestCase
 
         $payload = $result->getPayload();
 
-        self::assertEquals(1, $payload->get('_env'));
         self::assertEquals(1, $payload->get('env'));
     }
 

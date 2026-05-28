@@ -36,17 +36,27 @@ class NotifyProvideGoodsPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付通知发货，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
+        $orderId = $payload->get('order_id');
+        $wxOrderId = $payload->get('wx_order_id');
 
-        $rocket->mergePayload([
+        if (empty($orderId) && empty($wxOrderId)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付通知发货，需要 order_id 或 wx_order_id');
+        }
+
+        $data = [
             '_method' => 'POST',
             '_url' => '/xpay/notify_provide_goods',
-            '_env' => $env,
-            'openid' => $payload->get('openid'),
-            'env' => $env,
-            'order_id' => $payload->get('order_id'),
-            'out_trade_no' => $payload->get('out_trade_no'),
-        ]);
+        ];
+
+        if (!empty($orderId)) {
+            $data['order_id'] = $orderId;
+        }
+
+        if (!empty($wxOrderId)) {
+            $data['wx_order_id'] = $wxOrderId;
+        }
+
+        $rocket->mergePayload($data);
 
         Logger::info('[Wechat][Virtual][Order][NotifyProvideGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

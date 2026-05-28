@@ -33,30 +33,16 @@ class CreateWithdrawOrderPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testMissingAmount()
+    public function testMissingWithdrawNo()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            'out_trade_no' => 'test_trade_no',
+            'withdraw_amount' => '0.01',
         ]));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付创建提现单，参数缺少必要参数');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-
-    public function testMissingOutTradeNo()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'amount' => 100,
-        ]));
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付创建提现单，参数缺少必要参数');
+        self::expectExceptionMessage('参数异常: 微信虚拟支付创建提现单，缺少 withdraw_no');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
@@ -65,10 +51,9 @@ class CreateWithdrawOrderPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            'amount' => 100,
-            'out_trade_no' => 'test_trade_no',
+            'withdraw_no' => 'WITHDRAW_001',
+            'withdraw_amount' => '0.01',
             'env' => 0,
-            'remark' => 'test_remark',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -77,34 +62,31 @@ class CreateWithdrawOrderPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('/xpay/create_withdraw_order', $payload->get('_url'));
-        self::assertEquals(100, $payload->get('amount'));
-        self::assertEquals('test_trade_no', $payload->get('out_trade_no'));
-        self::assertEquals(0, $payload->get('env'));
-        self::assertEquals('test_remark', $payload->get('remark'));
+        self::assertEquals('WITHDRAW_001', $payload->get('withdraw_no'));
+        self::assertEquals('0.01', $payload->get('withdraw_amount'));
     }
 
-    public function testDefaultValues()
+    public function testWithoutWithdrawAmount()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            'amount' => 100,
-            'out_trade_no' => 'test_trade_no',
+            'withdraw_no' => 'WITHDRAW_001',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
-        self::assertEquals(0, $payload->get('env'));
-        self::assertEquals('', $payload->get('remark'));
+        self::assertEquals('WITHDRAW_001', $payload->get('withdraw_no'));
+        self::assertNull($payload->get('withdraw_amount'));
     }
 
     public function testSandboxEnv()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            'amount' => 100,
-            'out_trade_no' => 'test_trade_no',
+            'withdraw_no' => 'WITHDRAW_001',
+            'withdraw_amount' => '0.01',
             'env' => 1,
         ]));
 
@@ -112,6 +94,6 @@ class CreateWithdrawOrderPluginTest extends TestCase
 
         $payload = $result->getPayload();
 
-        self::assertEquals(1, $payload->get('env'));
+        self::assertEquals('WITHDRAW_001', $payload->get('withdraw_no'));
     }
 }

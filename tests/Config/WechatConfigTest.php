@@ -310,15 +310,4 @@ class WechatConfigTest extends TestCase
         self::assertSame('array-key', $vp->getAppKey());
         self::assertSame('array-offer', $vp->getOfferId());
     }
-
-    /** @group VirtualPay */
-    public function testMiniAppKeyVirtualPayNotUsedAsVirtualPaySource(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'mini_app_key_virtual_pay' => 'legacy-key',
-        ]));
-
-        $vp = $config->getVirtualPay();
-        self::assertNull($vp->getAppKey());
-    }
 }

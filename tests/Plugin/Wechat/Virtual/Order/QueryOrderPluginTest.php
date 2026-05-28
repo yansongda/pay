@@ -33,30 +33,43 @@ class QueryOrderPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testMissingRequiredParams()
+    public function testMissingOpenid()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'env' => 0,
+            'order_id' => '123456',
+        ]));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        self::expectExceptionMessage('参数异常: 微信虚拟支付查询订单，缺少 openid 或 env');
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testMissingOrderIds()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
             'openid' => 'test_openid',
             'env' => 0,
-            // missing order_id and out_trade_no
         ]));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付查询订单，参数缺少必要参数');
+        self::expectExceptionMessage('参数异常: 微信虚拟支付查询订单，需要 order_id 或 wx_order_id');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testNormal()
+    public function testWithOrderId()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
             'openid' => 'test_openid',
             'env' => 0,
             'order_id' => '123456',
-            'out_trade_no' => '商户订单号',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -64,9 +77,42 @@ class QueryOrderPluginTest extends TestCase
         self::assertEquals('POST', $result->getPayload()->get('_method'));
         self::assertEquals('/xpay/query_order', $result->getPayload()->get('_url'));
         self::assertEquals('test_openid', $result->getPayload()->get('openid'));
-        self::assertEquals(0, $result->getPayload()->get('env'));
         self::assertEquals('123456', $result->getPayload()->get('order_id'));
-        self::assertEquals('商户订单号', $result->getPayload()->get('out_trade_no'));
+        self::assertNull($result->getPayload()->get('wx_order_id'));
+    }
+
+    public function testWithWxOrderId()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'openid' => 'test_openid',
+            'env' => 0,
+            'wx_order_id' => 'wx_123456',
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertEquals('POST', $result->getPayload()->get('_method'));
+        self::assertEquals('/xpay/query_order', $result->getPayload()->get('_url'));
+        self::assertEquals('test_openid', $result->getPayload()->get('openid'));
+        self::assertNull($result->getPayload()->get('order_id'));
+        self::assertEquals('wx_123456', $result->getPayload()->get('wx_order_id'));
+    }
+
+    public function testWithBothOrderIds()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'openid' => 'test_openid',
+            'env' => 0,
+            'order_id' => '123456',
+            'wx_order_id' => 'wx_123456',
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertEquals('123456', $result->getPayload()->get('order_id'));
+        self::assertEquals('wx_123456', $result->getPayload()->get('wx_order_id'));
     }
 
     public function testEnvAsString()
@@ -76,12 +122,11 @@ class QueryOrderPluginTest extends TestCase
             'openid' => 'test_openid',
             'env' => '0',
             'order_id' => '123456',
-            'out_trade_no' => '商户订单号',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals(0, $result->getPayload()->get('env'));
+        self::assertEquals('123456', $result->getPayload()->get('order_id'));
     }
 
     public function testWithAccessToken()
@@ -91,7 +136,6 @@ class QueryOrderPluginTest extends TestCase
             'openid' => 'test_openid',
             'env' => 0,
             'order_id' => '123456',
-            'out_trade_no' => '商户订单号',
             '_access_token' => 'test_token',
         ]));
 

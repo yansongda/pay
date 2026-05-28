@@ -39,23 +39,31 @@ class QueryOrderPlugin implements PluginInterface
         $openid = $payload->get('openid');
         $env = $payload->get('env');
         $orderId = $payload->get('order_id');
-        $outTradeNo = $payload->get('out_trade_no');
+        $wxOrderId = $payload->get('wx_order_id');
 
-        if (empty($openid) || !isset($env) || empty($orderId) || empty($outTradeNo)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付查询订单，参数缺少必要参数');
+        if (empty($openid) || !isset($env)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付查询订单，缺少 openid 或 env');
         }
 
-        $env = (int) $env;
+        if (empty($orderId) && empty($wxOrderId)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付查询订单，需要 order_id 或 wx_order_id');
+        }
 
-        $rocket->mergePayload([
+        $data = [
             '_method' => 'POST',
             '_url' => '/xpay/query_order',
-            '_env' => $env,
             'openid' => $openid,
-            'env' => $env,
-            'order_id' => $orderId,
-            'out_trade_no' => $outTradeNo,
-        ]);
+        ];
+
+        if (!empty($orderId)) {
+            $data['order_id'] = $orderId;
+        }
+
+        if (!empty($wxOrderId)) {
+            $data['wx_order_id'] = $wxOrderId;
+        }
+
+        $rocket->mergePayload($data);
 
         Logger::info('[Wechat][Virtual][Order][QueryOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

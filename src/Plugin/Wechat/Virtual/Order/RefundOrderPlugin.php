@@ -37,27 +37,44 @@ class RefundOrderPlugin implements PluginInterface
         }
 
         $openid = $payload->get('openid');
-        $env = $payload->get('env');
         $orderId = $payload->get('order_id');
-        $outTradeNo = $payload->get('out_trade_no');
-        $refundAmount = $payload->get('refund_amount');
+        $wxOrderId = $payload->get('wx_order_id');
+        $refundOrderId = $payload->get('refund_order_id');
+        $leftFee = $payload->get('left_fee');
+        $refundFee = $payload->get('refund_fee');
+        $bizMeta = $payload->get('biz_meta', '');
+        $refundReason = $payload->get('refund_reason');
+        $reqFrom = $payload->get('req_from');
 
-        if (empty($openid) || !isset($env) || empty($orderId) || empty($outTradeNo) || !isset($refundAmount)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付退款，参数缺少必要参数');
+        if (empty($openid) || empty($refundOrderId) || !isset($leftFee) || !isset($refundFee) || !isset($refundReason) || !isset($reqFrom)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付退款，缺少必要参数');
         }
 
-        $env = (int) $env;
+        if (empty($orderId) && empty($wxOrderId)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付退款，需要 order_id 或 wx_order_id');
+        }
 
-        $rocket->mergePayload([
+        $data = [
             '_method' => 'POST',
             '_url' => '/xpay/refund_order',
-            '_env' => $env,
             'openid' => $openid,
-            'env' => $env,
-            'order_id' => $orderId,
-            'out_trade_no' => $outTradeNo,
-            'refund_amount' => $refundAmount,
-        ]);
+            'refund_order_id' => $refundOrderId,
+            'left_fee' => $leftFee,
+            'refund_fee' => $refundFee,
+            'biz_meta' => $bizMeta,
+            'refund_reason' => $refundReason,
+            'req_from' => $reqFrom,
+        ];
+
+        if (!empty($orderId)) {
+            $data['order_id'] = $orderId;
+        }
+
+        if (!empty($wxOrderId)) {
+            $data['wx_order_id'] = $wxOrderId;
+        }
+
+        $rocket->mergePayload($data);
 
         Logger::info('[Wechat][Virtual][Order][RefundOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

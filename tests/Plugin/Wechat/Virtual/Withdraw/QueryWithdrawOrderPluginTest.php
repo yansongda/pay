@@ -33,7 +33,7 @@ class QueryWithdrawOrderPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testMissingRequiredParams()
+    public function testMissingWithdrawNo()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
@@ -42,16 +42,16 @@ class QueryWithdrawOrderPluginTest extends TestCase
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付查询提现单，参数缺少必要参数');
+        self::expectExceptionMessage('参数异常: 微信虚拟支付查询提现单，缺少 withdraw_no');
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testNormalWithWithdrawOrderId()
+    public function testNormal()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            'withdraw_order_id' => 'test_withdraw_order_id',
+            'withdraw_no' => 'WITHDRAW_001',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -60,40 +60,21 @@ class QueryWithdrawOrderPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('/xpay/query_withdraw_order', $payload->get('_url'));
-        self::assertEquals('test_withdraw_order_id', $payload->get('withdraw_order_id'));
+        self::assertEquals('WITHDRAW_001', $payload->get('withdraw_no'));
     }
 
-    public function testNormalWithOutTradeNo()
+    public function testWithAccessToken()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            'out_trade_no' => 'test_trade_no',
+            'withdraw_no' => 'WITHDRAW_001',
+            '_access_token' => 'test_token',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/query_withdraw_order', $payload->get('_url'));
-        self::assertEquals('test_trade_no', $payload->get('out_trade_no'));
-    }
-
-    public function testNormalWithBothParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'withdraw_order_id' => 'test_withdraw_order_id',
-            'out_trade_no' => 'test_trade_no',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/query_withdraw_order', $payload->get('_url'));
-        self::assertEquals('test_withdraw_order_id', $payload->get('withdraw_order_id'));
-        self::assertEquals('test_trade_no', $payload->get('out_trade_no'));
+        self::assertEquals('test_token', $payload->get('_access_token'));
     }
 }

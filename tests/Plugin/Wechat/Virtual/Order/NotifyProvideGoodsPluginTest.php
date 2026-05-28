@@ -33,13 +33,25 @@ class NotifyProvideGoodsPluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
-    public function testNormal()
+    public function testMissingOrderIds()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
             'openid' => 'oUpF8uEz1xxxxxxxxxx',
+        ]));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        self::expectExceptionMessage('参数异常: 微信虚拟支付通知发货，需要 order_id 或 wx_order_id');
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testWithOrderId()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
             'order_id' => '1234567890',
-            'out_trade_no' => '20240101000000',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -48,38 +60,46 @@ class NotifyProvideGoodsPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('/xpay/notify_provide_goods', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('_env'));
-        self::assertEquals('oUpF8uEz1xxxxxxxxxx', $payload->get('openid'));
-        self::assertEquals(0, $payload->get('env'));
         self::assertEquals('1234567890', $payload->get('order_id'));
-        self::assertEquals('20240101000000', $payload->get('out_trade_no'));
+        self::assertNull($payload->get('wx_order_id'));
     }
 
-    public function testSandboxEnv()
+    public function testWithWxOrderId()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            'openid' => 'oUpF8uEz1xxxxxxxxxx',
-            'env' => 1,
-            'order_id' => '1234567890',
-            'out_trade_no' => '20240101000000',
+            'wx_order_id' => 'wx_123456',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
-        self::assertEquals(1, $payload->get('env'));
-        self::assertEquals(1, $payload->get('_env'));
+        self::assertNull($payload->get('order_id'));
+        self::assertEquals('wx_123456', $payload->get('wx_order_id'));
+    }
+
+    public function testWithBothOrderIds()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'order_id' => '1234567890',
+            'wx_order_id' => 'wx_123456',
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $payload = $result->getPayload();
+
+        self::assertEquals('1234567890', $payload->get('order_id'));
+        self::assertEquals('wx_123456', $payload->get('wx_order_id'));
     }
 
     public function testWithAccessToken()
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            'openid' => 'oUpF8uEz1xxxxxxxxxx',
             'order_id' => '1234567890',
-            'out_trade_no' => '20240101000000',
             '_access_token' => 'test_access_token',
         ]));
 

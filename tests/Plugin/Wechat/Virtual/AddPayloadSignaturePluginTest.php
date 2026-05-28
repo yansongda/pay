@@ -109,7 +109,7 @@ class AddPayloadSignaturePluginTest extends TestCase
             '_url' => '/xpay/query_user_balance',
             '_body' => $body,
             '_access_token' => 'test_access_token',
-            '_env' => 1,
+            "env" => 1,
         ]);
         $rocket = (new Rocket())->setPayload($payload);
 

@@ -36,24 +36,17 @@ class QueryWithdrawOrderPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付查询提现单，参数为空');
         }
 
-        if (!$payload->has('withdraw_order_id') && !$payload->has('out_trade_no')) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付查询提现单，参数缺少必要参数');
+        $withdrawNo = $payload->get('withdraw_no');
+
+        if (empty($withdrawNo)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付查询提现单，缺少 withdraw_no');
         }
 
-        $data = [
+        $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/query_withdraw_order',
-        ];
-
-        if ($payload->has('withdraw_order_id')) {
-            $data['withdraw_order_id'] = $payload->get('withdraw_order_id');
-        }
-
-        if ($payload->has('out_trade_no')) {
-            $data['out_trade_no'] = $payload->get('out_trade_no');
-        }
-
-        $rocket->mergePayload($data);
+            'withdraw_no' => $withdrawNo,
+        ]);
 
         Logger::info('[Wechat][Virtual][Withdraw][QueryWithdrawOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

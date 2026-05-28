@@ -36,14 +36,11 @@ class SendSubscribePrePaymentPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付预通知扣款，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/send_subscribe_pre_payment',
-            '_env' => $env,
             'openid' => $payload->get('openid'),
-            'env' => $env,
             'contract_id' => $payload->get('contract_id'),
             'pre_payment_amount' => $payload->get('pre_payment_amount'),
         ]);

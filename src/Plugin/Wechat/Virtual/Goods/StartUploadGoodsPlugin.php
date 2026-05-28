@@ -36,15 +36,12 @@ class StartUploadGoodsPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付批量上传道具，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/start_upload_goods',
-            '_env' => $env,
             'group_id' => $payload->get('group_id'),
             'goods_list' => $payload->get('goods_list'),
-            'env' => $env,
         ]);
 
         Logger::info('[Wechat][Virtual][Goods][StartUploadGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);

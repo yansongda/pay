@@ -36,13 +36,10 @@ class QueryDownloadOrderPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付查询下载任务，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/query_download_order',
-            '_env' => $env,
-            'env' => $env,
             'download_task_id' => $payload->get('download_task_id'),
         ]);
 

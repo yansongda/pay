@@ -36,14 +36,11 @@ class PresentCurrencyPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付代币赠送，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/present_currency',
-            '_env' => $env,
             'openid' => $payload->get('openid', ''),
-            'env' => $env,
             'present_amount' => $payload->get('present_amount'),
             'order_id' => $payload->get('order_id', ''),
         ]);

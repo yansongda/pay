@@ -47,7 +47,6 @@ class QueryBalancePluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('/xpay/query_user_balance', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('_env'));
         self::assertEquals('test_openid', $payload->get('openid'));
         self::assertEquals('127.0.0.1', $payload->get('user_ip'));
         self::assertEquals(0, $payload->get('env'));
@@ -66,7 +65,6 @@ class QueryBalancePluginTest extends TestCase
 
         $payload = $result->getPayload();
 
-        self::assertEquals(1, $payload->get('_env'));
         self::assertEquals(1, $payload->get('env'));
     }
 
@@ -82,7 +80,6 @@ class QueryBalancePluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(0, $payload->get('env'));
-        self::assertEquals(0, $payload->get('_env'));
         self::assertEquals('', $payload->get('user_ip'));
     }
 }

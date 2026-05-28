@@ -36,14 +36,11 @@ class CancelSubscribeContractPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付商家解约，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/cancel_subscribe_contract',
-            '_env' => $env,
             'openid' => $payload->get('openid'),
-            'env' => $env,
             'contract_id' => $payload->get('contract_id'),
         ]);
 

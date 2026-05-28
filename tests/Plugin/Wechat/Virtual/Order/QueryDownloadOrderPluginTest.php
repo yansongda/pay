@@ -46,7 +46,6 @@ class QueryDownloadOrderPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('/xpay/query_download_order', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('_env'));
         self::assertEquals(0, $payload->get('env'));
         self::assertEquals('1234567890', $payload->get('download_task_id'));
     }
@@ -64,7 +63,6 @@ class QueryDownloadOrderPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(1, $payload->get('env'));
-        self::assertEquals(1, $payload->get('_env'));
     }
 
     public function testWithAccessToken()

@@ -36,13 +36,10 @@ class DownloadBillPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付下载小程序账单，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/download_bill',
-            '_env' => $env,
-            'env' => $env,
             'bill_date' => $payload->get('bill_date'),
             'bill_type' => $payload->get('bill_type'),
         ]);

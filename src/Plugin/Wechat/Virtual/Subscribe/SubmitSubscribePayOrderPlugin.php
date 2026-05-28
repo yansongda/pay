@@ -36,14 +36,11 @@ class SubmitSubscribePayOrderPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付发起订阅扣款，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/submit_subscribe_pay_order',
-            '_env' => $env,
             'openid' => $payload->get('openid'),
-            'env' => $env,
             'contract_id' => $payload->get('contract_id'),
             'amount' => $payload->get('amount'),
             'order_id' => $payload->get('order_id'),

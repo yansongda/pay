@@ -47,7 +47,6 @@ class StartDownloadOrderPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('/xpay/start_download_order', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('_env'));
         self::assertEquals(0, $payload->get('env'));
         self::assertEquals('2024-01-01 00:00:00', $payload->get('start_date'));
         self::assertEquals('2024-01-01 23:59:59', $payload->get('end_date'));
@@ -67,7 +66,6 @@ class StartDownloadOrderPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(1, $payload->get('env'));
-        self::assertEquals(1, $payload->get('_env'));
     }
 
     public function testWithAccessToken()

@@ -36,15 +36,12 @@ class StartPublishGoodsPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付启动发布道具，参数为空');
         }
 
-        $env = (int) $payload->get('env', 0);
 
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/start_publish_goods',
-            '_env' => $env,
             'group_id' => $payload->get('group_id'),
             'upload_task_id' => $payload->get('upload_task_id'),
-            'env' => $env,
         ]);
 
         Logger::info('[Wechat][Virtual][Goods][StartPublishGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);
