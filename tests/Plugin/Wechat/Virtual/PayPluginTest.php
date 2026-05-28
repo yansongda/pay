@@ -49,7 +49,7 @@ class PayPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/query_user_balance', $payload->get('_url'));
+        self::assertEquals('requestVirtualPayment', $payload->get('_url'));
         self::assertEquals('1234567890', $payload->get('offerId'));
         self::assertEquals(1, $payload->get('buyQuantity'));
         self::assertEquals(0, $payload->get('env'));
@@ -75,7 +75,7 @@ class PayPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(1, $payload->get('env'));
-        self::assertEquals('/xpay/query_user_balance', $payload->get('_url'));
+        self::assertEquals('requestVirtualPayment', $payload->get('_url'));
     }
 
     public function testCustomUrlOverridesDefault()

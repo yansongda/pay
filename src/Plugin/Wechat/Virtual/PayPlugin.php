@@ -46,7 +46,7 @@ class PayPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => $payload->get('_url', '/xpay/query_user_balance'),
+                '_url' => $payload->get('_url', 'requestVirtualPayment'),
                 '_env' => $env,
                 'offerId' => $config->getVirtualPay()->getOfferId() ?? '',
                 'buyQuantity' => $payload->get('buyQuantity'),
