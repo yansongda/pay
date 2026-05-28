@@ -23,6 +23,7 @@ use Yansongda\Supports\Collection;
 
 /**
  * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html#_2-4-%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81
+ * @see https://developers.weixin.qq.com/doc/service/guide/dev/push/encryption.html
  */
 class CallbackPlugin implements PluginInterface
 {
@@ -157,8 +158,13 @@ class CallbackPlugin implements PluginInterface
             throw new DecryptException(Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID, '加解密异常: 解密微信虚拟支付回调数据失败');
         }
 
-        // Remove PKCS7 padding (32-byte block size)
+        // Remove PKCS7 padding (K=32, per WeChat's variant PKCS7 spec)
         $pad = ord($decrypted[strlen($decrypted) - 1]);
+
+        if ($pad < 1 || $pad > 32) {
+            throw new DecryptException(Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID, '加解密异常: PKCS7 padding 值无效');
+        }
+
         $decrypted = substr($decrypted, 0, -$pad);
 
         // Extract: 16 random bytes + 4 bytes msg length (big-endian) + msg + appId
