@@ -51,22 +51,11 @@ class QueryDownloadOrderPlugin implements PluginInterface
                 'env' => $env,
                 'download_task_id' => $payload->get('download_task_id'),
             ],
-            $this->getAccessToken($payload),
+            self::getWechatVirtualAccessToken($payload),
         ));
 
         Logger::info('[Wechat][Virtual][Order][QueryDownloadOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function getAccessToken($payload): array
-    {
-        $token = $payload->get('_access_token', '');
-
-        if (!empty($token)) {
-            return ['_access_token' => $token];
-        }
-
-        return [];
     }
 }

@@ -53,22 +53,11 @@ class NotifyProvideGoodsPlugin implements PluginInterface
                 'order_id' => $payload->get('order_id'),
                 'out_trade_no' => $payload->get('out_trade_no'),
             ],
-            $this->getAccessToken($payload),
+            self::getWechatVirtualAccessToken($payload),
         ));
 
         Logger::info('[Wechat][Virtual][Order][NotifyProvideGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function getAccessToken($payload): array
-    {
-        $token = $payload->get('_access_token', '');
-
-        if (!empty($token)) {
-            return ['_access_token' => $token];
-        }
-
-        return [];
     }
 }

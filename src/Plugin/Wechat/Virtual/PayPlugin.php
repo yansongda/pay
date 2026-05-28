@@ -57,22 +57,11 @@ class PayPlugin implements PluginInterface
                 'outTradeNo' => $payload->get('outTradeNo', ''),
                 'attach' => $payload->get('attach', ''),
             ],
-            $this->getAccessToken($payload),
+            self::getWechatVirtualAccessToken($payload),
         ));
 
         Logger::info('[Wechat][Virtual][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function getAccessToken($payload): array
-    {
-        $token = $payload->get('_access_token', '');
-
-        if (!empty($token)) {
-            return ['_access_token' => $token];
-        }
-
-        return [];
     }
 }

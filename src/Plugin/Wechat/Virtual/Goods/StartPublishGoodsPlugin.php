@@ -47,22 +47,11 @@ class StartPublishGoodsPlugin implements PluginInterface
                 'upload_task_id' => $payload->get('upload_task_id'),
                 'env' => $env,
             ],
-            $this->getAccessToken($payload),
+            self::getWechatVirtualAccessToken($payload),
         ));
 
         Logger::info('[Wechat][Virtual][Goods][StartPublishGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function getAccessToken($payload): array
-    {
-        $token = $payload->get('_access_token', '');
-
-        if (!empty($token)) {
-            return ['_access_token' => $token];
-        }
-
-        return [];
     }
 }

@@ -52,22 +52,11 @@ class StartDownloadOrderPlugin implements PluginInterface
                 'start_date' => $payload->get('start_date'),
                 'end_date' => $payload->get('end_date'),
             ],
-            $this->getAccessToken($payload),
+            self::getWechatVirtualAccessToken($payload),
         ));
 
         Logger::info('[Wechat][Virtual][Order][StartDownloadOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function getAccessToken($payload): array
-    {
-        $token = $payload->get('_access_token', '');
-
-        if (!empty($token)) {
-            return ['_access_token' => $token];
-        }
-
-        return [];
     }
 }

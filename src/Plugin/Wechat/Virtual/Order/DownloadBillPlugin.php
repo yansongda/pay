@@ -52,22 +52,11 @@ class DownloadBillPlugin implements PluginInterface
                 'bill_date' => $payload->get('bill_date'),
                 'bill_type' => $payload->get('bill_type'),
             ],
-            $this->getAccessToken($payload),
+            self::getWechatVirtualAccessToken($payload),
         ));
 
         Logger::info('[Wechat][Virtual][Order][DownloadBillPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    protected function getAccessToken($payload): array
-    {
-        $token = $payload->get('_access_token', '');
-
-        if (!empty($token)) {
-            return ['_access_token' => $token];
-        }
-
-        return [];
     }
 }

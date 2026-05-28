@@ -386,6 +386,20 @@ trait WechatTrait
     }
 
     /**
+     * 获取虚拟支付 access_token 参数.
+     */
+    public static function getWechatVirtualAccessToken(?Collection $payload): array
+    {
+        $token = $payload?->get('_access_token', '');
+
+        if (!empty($token)) {
+            return ['_access_token' => $token];
+        }
+
+        return [];
+    }
+
+    /**
      * 验证微信回调时间戳是否在有效期内（5分钟）.
      *
      * @see https://pay.weixin.qq.com/doc/v3/merchant/4013053420
