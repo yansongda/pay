@@ -16,7 +16,7 @@ use Yansongda\Pay\Exception\Exception;
 use function Yansongda\Artful\should_do_http_request;
 
 /**
- * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html
+ * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html#_2-5-%E7%AD%BE%E5%90%8D%E8%AF%A6%E8%A7%A3
  */
 class VerifySignaturePlugin implements PluginInterface
 {
