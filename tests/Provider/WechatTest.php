@@ -413,8 +413,12 @@ class WechatTest extends TestCase
                 'openid' => 'test-openid',
                 'env' => 0,
                 'order_id' => 'test-order-id',
-                'out_trade_no' => 'test-out-trade-no',
-                'refund_amount' => 50,
+                'refund_order_id' => 'test-refund-order-id',
+                'left_fee' => 100,
+                'refund_fee' => 50,
+                'biz_meta' => 'test-meta',
+                'refund_reason' => '1',
+                'req_from' => '2',
             ],
         );
 
