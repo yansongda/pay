@@ -22,7 +22,7 @@ use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/virtual-payment.html#_6-3-%E4%BA%8B%E4%BB%B6%E6%8E%A8%E9%80%81
+ * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html#_2-4-%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81
  */
 class CallbackPlugin implements PluginInterface
 {

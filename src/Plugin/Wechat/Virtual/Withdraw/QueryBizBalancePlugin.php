@@ -15,7 +15,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
- * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/industry/virtual-payment.html
+ * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html
  */
 class QueryBizBalancePlugin implements PluginInterface
 {
