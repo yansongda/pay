@@ -18,10 +18,12 @@ use Yansongda\Pay\Traits\WechatTrait;
 /**
  * 虚拟支付代币充值插件.
  *
- * 注意：此插件主要用于客户端签名场景（通过 virtual() 方法调用）。
- * 代币充值由客户端 wx.requestVirtualPayment 发起，服务端只准备签名数据。
+ * 此插件用于准备签名数据，支持两种场景：
+ * 1. 客户端签名（通过 virtual() 方法调用）：uri 固定为 requestVirtualPayment
+ * 2. 服务端 API（通过 pay() 方法调用）：uri 为具体 API 路径如 /xpay/query_user_balance
  *
  * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html#_2-2-%E5%AE%A2%E6%88%B7%E7%AB%AF-API
+ * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html#_2-5-%E7%AD%BE%E5%90%8D%E8%AF%A6%E8%A7%A3
  */
 class PayPlugin implements PluginInterface
 {
@@ -48,14 +50,11 @@ class PayPlugin implements PluginInterface
 
         $env = (int) $payload->get('env', 0);
 
-        // 对于客户端签名场景，uri 固定为 requestVirtualPayment
-        // 对于服务端 API 场景，uri 应为具体 API 路径如 /xpay/query_user_balance
-        $url = $payload->get('_url', 'requestVirtualPayment');
-
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => $url,
+                // 客户端签名场景使用 requestVirtualPayment，服务端 API 场景使用具体路径
+                '_url' => $payload->get('_url', 'requestVirtualPayment'),
                 '_env' => $env,
                 'offerId' => $config->getVirtualPay()->getOfferId() ?? '',
                 'buyQuantity' => $payload->get('buyQuantity'),
