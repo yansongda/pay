@@ -36,7 +36,6 @@ class CurrencyPayPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付代币扣减，参数为空');
         }
 
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/currency_pay',

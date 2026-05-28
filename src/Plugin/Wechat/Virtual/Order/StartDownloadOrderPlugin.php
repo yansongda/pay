@@ -36,7 +36,6 @@ class StartDownloadOrderPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付下载支付订单，参数为空');
         }
 
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/start_download_order',

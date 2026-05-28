@@ -48,7 +48,6 @@ class PayPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付代币充值，参数为空');
         }
 
-
         $rocket->mergePayload([
             '_method' => 'POST',
             // 客户端签名场景使用 requestVirtualPayment，服务端 API 场景使用具体路径
