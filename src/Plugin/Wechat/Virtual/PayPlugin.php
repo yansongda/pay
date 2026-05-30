@@ -55,10 +55,10 @@ class PayPlugin implements PluginInterface
             'offerId' => $config->getVirtualPay()->getOfferId() ?? '',
             'buyQuantity' => $payload->get('buyQuantity'),
             'currencyType' => $payload->get('currencyType', 'CNY'),
-            'productId' => $payload->get('productId', ''),
+            'productId' => $payload->get('productId'),
             'goodsPrice' => $payload->get('goodsPrice'),
-            'outTradeNo' => $payload->get('outTradeNo', ''),
-            'attach' => $payload->get('attach', ''),
+            'outTradeNo' => $payload->get('outTradeNo'),
+            'attach' => $payload->get('attach'),
         ]);
 
         Logger::info('[Wechat][Virtual][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);

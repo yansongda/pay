@@ -127,11 +127,11 @@ class RefundOrderPluginTest extends TestCase
             'refund_fee' => 50,
             'refund_reason' => '1',
             'req_from' => '2',
-            '_access_token' => 'test_token',
+            'access_token' => 'test_token',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('test_token', $result->getPayload()->get('_access_token'));
+        self::assertEquals('test_token', $result->getPayload()->get('access_token'));
     }
 }

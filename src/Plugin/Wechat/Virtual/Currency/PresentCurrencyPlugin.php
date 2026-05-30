@@ -39,9 +39,9 @@ class PresentCurrencyPlugin implements PluginInterface
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/present_currency',
-            'openid' => $payload->get('openid', ''),
+            'openid' => $payload->get('openid'),
             'present_amount' => $payload->get('present_amount'),
-            'order_id' => $payload->get('order_id', ''),
+            'order_id' => $payload->get('order_id'),
         ]);
 
         Logger::info('[Wechat][Virtual][Currency][PresentCurrencyPlugin] 插件装载完毕', ['rocket' => $rocket]);

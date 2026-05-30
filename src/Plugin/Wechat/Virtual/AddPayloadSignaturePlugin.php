@@ -8,10 +8,12 @@ use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 class AddPayloadSignaturePlugin implements PluginInterface
@@ -37,10 +39,16 @@ class AddPayloadSignaturePlugin implements PluginInterface
         $body = self::getWechatBody($payload);
         $env = (int) $payload->get('env', 0);
 
+        $accessToken = $payload->get('access_token');
+
+        if (empty($accessToken)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付缺少 access_token');
+        }
+
         $paySig = self::getWechatVirtualPaySignature($config, $uri, $body, $env);
 
         $queryParams = [
-            'access_token' => $payload->get('_access_token', ''),
+            'access_token' => $accessToken,
             'pay_sig' => $paySig,
         ];
 

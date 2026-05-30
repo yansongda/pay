@@ -34,7 +34,7 @@ class AddPayloadSignaturePluginTest extends TestCase
             '_method' => 'POST',
             '_url' => '/xpay/query_user_balance',
             '_body' => $body,
-            '_access_token' => 'test_access_token',
+            'access_token' => 'test_access_token',
         ]);
         $rocket = (new Rocket())->setPayload($payload);
 
@@ -61,7 +61,7 @@ class AddPayloadSignaturePluginTest extends TestCase
             '_method' => 'POST',
             '_url' => '/xpay/query_user_balance',
             '_body' => $body,
-            '_access_token' => 'test_access_token',
+            'access_token' => 'test_access_token',
             '_session_key' => $sessionKey,
         ]);
         $rocket = (new Rocket())->setPayload($payload);
@@ -86,7 +86,7 @@ class AddPayloadSignaturePluginTest extends TestCase
             '_method' => 'POST',
             '_url' => '/xpay/query_user_balance',
             '_body' => '{"openid":"oUpF8muMJAaName"}',
-            '_access_token' => 'test_access_token',
+            'access_token' => 'test_access_token',
         ]);
 
         $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
@@ -108,7 +108,7 @@ class AddPayloadSignaturePluginTest extends TestCase
             '_method' => 'POST',
             '_url' => '/xpay/query_user_balance',
             '_body' => $body,
-            '_access_token' => 'test_access_token',
+            'access_token' => 'test_access_token',
             "env" => 1,
         ]);
         $rocket = (new Rocket())->setPayload($payload);
@@ -131,7 +131,7 @@ class AddPayloadSignaturePluginTest extends TestCase
             '_method' => 'POST',
             '_url' => '/xpay/query_user_balance?existing_param=value',
             '_body' => $body,
-            '_access_token' => 'test_access_token',
+            'access_token' => 'test_access_token',
         ]);
         $rocket = (new Rocket())->setPayload($payload);
 

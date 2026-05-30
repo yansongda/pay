@@ -83,13 +83,13 @@ class StartUploadGoodsPluginTest extends TestCase
             'goods_list' => [
                 ['goods_id' => 'g001', 'goods_name' => '测试道具'],
             ],
-            '_access_token' => 'test_token',
+            'access_token' => 'test_token',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
-        self::assertEquals('test_token', $payload->get('_access_token'));
+        self::assertEquals('test_token', $payload->get('access_token'));
     }
 }

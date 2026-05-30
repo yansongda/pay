@@ -136,11 +136,11 @@ class QueryOrderPluginTest extends TestCase
             'openid' => 'test_openid',
             'env' => 0,
             'order_id' => '123456',
-            '_access_token' => 'test_token',
+            'access_token' => 'test_token',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('test_token', $result->getPayload()->get('_access_token'));
+        self::assertEquals('test_token', $result->getPayload()->get('access_token'));
     }
 }

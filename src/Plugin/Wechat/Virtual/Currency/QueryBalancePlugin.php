@@ -39,8 +39,8 @@ class QueryBalancePlugin implements PluginInterface
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/query_user_balance',
-            'openid' => $payload->get('openid', ''),
-            'user_ip' => $payload->get('user_ip', ''),
+            'openid' => $payload->get('openid'),
+            'user_ip' => $payload->get('user_ip'),
         ]);
 
         Logger::info('[Wechat][Virtual][Currency][QueryBalancePlugin] 插件装载完毕', ['rocket' => $rocket]);

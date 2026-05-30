@@ -100,13 +100,13 @@ class NotifyProvideGoodsPluginTest extends TestCase
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
             'order_id' => '1234567890',
-            '_access_token' => 'test_access_token',
+            'access_token' => 'test_access_token',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
-        self::assertEquals('test_access_token', $payload->get('_access_token'));
+        self::assertEquals('test_access_token', $payload->get('access_token'));
     }
 }

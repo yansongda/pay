@@ -74,13 +74,13 @@ class StartDownloadOrderPluginTest extends TestCase
         $rocket->setPayload(new Collection([
             'start_date' => '2024-01-01 00:00:00',
             'end_date' => '2024-01-01 23:59:59',
-            '_access_token' => 'test_access_token',
+            'access_token' => 'test_access_token',
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         $payload = $result->getPayload();
 
-        self::assertEquals('test_access_token', $payload->get('_access_token'));
+        self::assertEquals('test_access_token', $payload->get('access_token'));
     }
 }

@@ -42,7 +42,7 @@ class RefundOrderPlugin implements PluginInterface
         $refundOrderId = $payload->get('refund_order_id');
         $leftFee = $payload->get('left_fee');
         $refundFee = $payload->get('refund_fee');
-        $bizMeta = $payload->get('biz_meta', '');
+        $bizMeta = $payload->get('biz_meta');
         $refundReason = $payload->get('refund_reason');
         $reqFrom = $payload->get('req_from');
 
