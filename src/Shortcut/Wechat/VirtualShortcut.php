@@ -171,7 +171,7 @@ class VirtualShortcut implements ShortcutInterface
     }
 
     /**
-     * @param  class-string  $businessPlugin
+     * @param class-string  $businessPlugin
      */
     protected function serverSidePlugins(string $businessPlugin): array
     {
