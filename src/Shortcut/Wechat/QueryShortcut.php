@@ -28,9 +28,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\QueryRefundPlugin as MiniQueryRefund
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryPlugin as NativeQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryRefundPlugin as NativeQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin as VirtualAddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\Order\QueryOrderPlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin as VirtualVerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
 class QueryShortcut implements ShortcutInterface
@@ -137,20 +134,6 @@ class QueryShortcut implements ShortcutInterface
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
             VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ];
-    }
-
-    protected function virtualPlugins(): array
-    {
-        return [
-            StartPlugin::class,
-            QueryOrderPlugin::class,
-            AddPayloadBodyPlugin::class,
-            VirtualAddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VirtualVerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];

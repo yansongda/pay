@@ -20,9 +20,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\RefundPlugin as JsapiRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\RefundPlugin as NativeRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin as VirtualAddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\Order\RefundOrderPlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin as VirtualVerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
 class RefundShortcut implements ShortcutInterface
@@ -130,17 +127,4 @@ class RefundShortcut implements ShortcutInterface
         ];
     }
 
-    protected function virtualPlugins(): array
-    {
-        return [
-            StartPlugin::class,
-            RefundOrderPlugin::class,
-            AddPayloadBodyPlugin::class,
-            VirtualAddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VirtualVerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ];
-    }
 }

@@ -22,9 +22,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\QueryRefundPlugin as JsapiQueryRefu
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\QueryPlugin as MiniQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryPlugin as NativeQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin as VirtualAddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\Order\QueryOrderPlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin as VirtualVerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -188,20 +185,6 @@ class QueryShortcutTest extends TestCase
             ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'transfer', 'transfer_bill_no' => '123']));
-    }
-
-    public function testVirtual()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            QueryOrderPlugin::class,
-            AddPayloadBodyPlugin::class,
-            VirtualAddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VirtualVerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'virtual']));
     }
 
     public function testFoo()
