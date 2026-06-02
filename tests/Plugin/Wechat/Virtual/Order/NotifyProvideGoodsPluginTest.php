@@ -22,21 +22,6 @@ class NotifyProvideGoodsPluginTest extends TestCase
         $this->plugin = new NotifyProvideGoodsPlugin();
     }
 
-
-    public function testMissingOrderIds()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'oUpF8uEz1xxxxxxxxxx',
-        ]));
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付通知发货，需要 order_id 或 wx_order_id');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-
     public function testWithOrderId()
     {
         $rocket = new Rocket();

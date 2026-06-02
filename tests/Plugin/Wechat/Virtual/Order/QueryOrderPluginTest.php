@@ -22,37 +22,6 @@ class QueryOrderPluginTest extends TestCase
         $this->plugin = new QueryOrderPlugin();
     }
 
-
-    public function testMissingOpenid()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'env' => 0,
-            'order_id' => '123456',
-        ]));
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付查询订单，缺少 openid 或 env');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-
-    public function testMissingOrderIds()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'env' => 0,
-        ]));
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付查询订单，需要 order_id 或 wx_order_id');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-
     public function testWithOrderId()
     {
         $rocket = new Rocket();

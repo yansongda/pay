@@ -22,21 +22,6 @@ class CreateWithdrawOrderPluginTest extends TestCase
         $this->plugin = new CreateWithdrawOrderPlugin();
     }
 
-
-    public function testMissingWithdrawNo()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'withdraw_amount' => '0.01',
-        ]));
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付创建提现单，缺少 withdraw_no');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-
     public function testNormal()
     {
         $rocket = new Rocket();

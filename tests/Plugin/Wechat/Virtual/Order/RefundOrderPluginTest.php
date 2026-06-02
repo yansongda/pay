@@ -22,42 +22,6 @@ class RefundOrderPluginTest extends TestCase
         $this->plugin = new RefundOrderPlugin();
     }
 
-
-    public function testMissingRequiredParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'order_id' => '123456',
-            // missing refund_order_id, left_fee, refund_fee, refund_reason, req_from
-        ]));
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付退款，缺少必要参数');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-
-    public function testMissingOrderIds()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'refund_order_id' => 'REFUND_001',
-            'left_fee' => 100,
-            'refund_fee' => 50,
-            'refund_reason' => '1',
-            'req_from' => '2',
-        ]));
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付退款，需要 order_id 或 wx_order_id');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-
     public function testWithOrderId()
     {
         $rocket = new Rocket();

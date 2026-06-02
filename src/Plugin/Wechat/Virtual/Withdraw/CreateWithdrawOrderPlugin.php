@@ -6,12 +6,8 @@ namespace Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
-use Yansongda\Artful\Exception\ContainerException;
-use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
@@ -29,12 +25,6 @@ class CreateWithdrawOrderPlugin implements PluginInterface
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
         Logger::debug('[Wechat][Virtual][Withdraw][CreateWithdrawOrderPlugin] 插件开始装载', ['rocket' => $rocket]);
-
-        $payload = $rocket->getPayload();
-
-        if (empty($payload->get('withdraw_no'))) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付创建提现单，缺少 withdraw_no');
-        }
 
         $rocket->mergePayload([
             '_method' => 'POST',

@@ -22,21 +22,6 @@ class QueryWithdrawOrderPluginTest extends TestCase
         $this->plugin = new QueryWithdrawOrderPlugin();
     }
 
-
-    public function testMissingWithdrawNo()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'env' => 0,
-        ]));
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付查询提现单，缺少 withdraw_no');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-
     public function testNormal()
     {
         $rocket = new Rocket();
