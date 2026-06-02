@@ -13,21 +13,14 @@ use Yansongda\Artful\Artful;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
-use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AppCallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -144,15 +137,6 @@ class Alipay implements ProviderInterface
     public function success(): ResponseInterface
     {
         return new Response(200, [], 'success');
-    }
-
-    public function mergeCommonPlugins(array $plugins): array
-    {
-        return array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        );
     }
 
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection

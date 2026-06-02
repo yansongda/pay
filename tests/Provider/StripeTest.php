@@ -27,18 +27,6 @@ class StripeTest extends TestCase
         Pay::stripe()->foo();
     }
 
-    public function testMergeCommonPlugins()
-    {
-        Pay::config([]);
-        $plugins = [FooPluginStub::class];
-
-        self::assertEquals(array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        ), Pay::stripe()->mergeCommonPlugins($plugins));
-    }
-
     public function testClose()
     {
         self::expectException(InvalidParamsException::class);

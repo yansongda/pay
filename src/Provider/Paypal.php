@@ -13,9 +13,6 @@ use Yansongda\Artful\Artful;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event;
@@ -23,10 +20,7 @@ use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Paypal\V2\ObtainAccessTokenPlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\CallbackPlugin;
-use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -121,15 +115,6 @@ class Paypal implements ProviderInterface
     public function success(): ResponseInterface
     {
         return new Response(200, ['Content-Type' => 'application/json'], json_encode(['result' => 'success']));
-    }
-
-    public function mergeCommonPlugins(array $plugins): array
-    {
-        return array_merge(
-            [StartPlugin::class, ObtainAccessTokenPlugin::class],
-            $plugins,
-            [AddPayloadBodyPlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        );
     }
 
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface

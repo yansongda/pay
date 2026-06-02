@@ -424,18 +424,6 @@ class AlipayTest extends TestCase
         Pay::alipay()->appCallback([]);
     }
 
-    public function testMergeCommonPlugins()
-    {
-        Pay::config();
-        $plugins = [FooPluginStub::class];
-
-        self::assertEquals(array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        ), Pay::alipay()->mergeCommonPlugins($plugins));
-    }
-
     public function testSuccess()
     {
         $result = Pay::alipay()->success();

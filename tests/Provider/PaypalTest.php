@@ -41,18 +41,6 @@ class PaypalTest extends TestCase
         Pay::paypal()->foo();
     }
 
-    public function testMergeCommonPlugins()
-    {
-        Pay::config([]);
-        $plugins = [FooPluginStub::class];
-
-        self::assertEquals(array_merge(
-            [StartPlugin::class, ObtainAccessTokenPlugin::class],
-            $plugins,
-            [AddPayloadBodyPlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        ), Pay::paypal()->mergeCommonPlugins($plugins));
-    }
-
     public function testCancel()
     {
         self::expectException(InvalidParamsException::class);

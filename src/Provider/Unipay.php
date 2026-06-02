@@ -13,8 +13,6 @@ use Yansongda\Artful\Artful;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event;
@@ -22,11 +20,7 @@ use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\CallbackPlugin;
-use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
-use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -128,15 +122,6 @@ class Unipay implements ProviderInterface
     public function success(): ResponseInterface
     {
         return new Response(200, [], 'success');
-    }
-
-    public function mergeCommonPlugins(array $plugins): array
-    {
-        return array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [AddPayloadSignaturePlugin::class, AddPayloadBodyPlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ParserPlugin::class],
-        );
     }
 
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
