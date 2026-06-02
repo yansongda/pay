@@ -60,7 +60,7 @@ trait WechatTrait
 
         // 虚拟支付服务端 API 使用 api.weixin.qq.com，非 api.mch.weixin.qq.com
         if (str_starts_with($url, 'xpay/')) {
-            return Wechat::URL_VIRTUAL.'/'.$url;
+            return Wechat::URL_VIRTUAL.$url;
         }
 
         return Wechat::URL[$config->getMode()].$url;

@@ -45,7 +45,7 @@ class Wechat implements ProviderInterface
         Pay::MODE_SERVICE => 'https://api.mch.weixin.qq.com/',
     ];
 
-    public const URL_VIRTUAL = 'https://api.weixin.qq.com';
+    public const URL_VIRTUAL = 'https://api.weixin.qq.com/';
 
     /**
      * @throws ContainerException
