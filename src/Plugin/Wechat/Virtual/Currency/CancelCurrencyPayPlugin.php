@@ -11,15 +11,12 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://developers.weixin.qq.com/miniprogram/dev/server/API/VirtualPayment/api_cancel_currency_pay
  */
 class CancelCurrencyPayPlugin implements PluginInterface
 {
-    use WechatTrait;
-
     /**
      * @throws ContainerException
      * @throws InvalidParamsException

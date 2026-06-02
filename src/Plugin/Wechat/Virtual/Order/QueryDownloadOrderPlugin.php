@@ -11,15 +11,12 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://developers.weixin.qq.com/miniprogram/dev/server/API/VirtualPayment/api_query_download_order
  */
 class QueryDownloadOrderPlugin implements PluginInterface
 {
-    use WechatTrait;
-
     /**
      * @throws ContainerException
      * @throws InvalidParamsException

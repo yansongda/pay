@@ -11,15 +11,12 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Traits\WechatTrait;
 
 /**
  * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/vip.html
  */
 class SendSubscribePrePaymentPlugin implements PluginInterface
 {
-    use WechatTrait;
-
     /**
      * @throws ContainerException
      * @throws InvalidParamsException
