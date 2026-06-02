@@ -18,7 +18,7 @@ Pay 内部已经集成了很多通用插件，如 加密，签名，调用支付
 只需要简单的使用以下代码即可获取通用插件
 
 ```php
-$allPlugins = Pay::alipay()->mergeCommonPlugins([QueryPlugin::class]);
+$allPlugins = [StartPlugin::class, QueryPlugin::class, FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class];
 ```
 
 ### 最终调用

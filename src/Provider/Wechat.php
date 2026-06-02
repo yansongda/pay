@@ -139,23 +139,6 @@ class Wechat implements ProviderInterface
         );
     }
 
-    public function virtualSuccess(?string $format = null): ResponseInterface
-    {
-        if ('json' === $format) {
-            return new Response(
-                200,
-                ['Content-Type' => 'application/json'],
-                json_encode(['ErrCode' => 0, 'ErrMsg' => 'success']),
-            );
-        }
-
-        return new Response(
-            200,
-            ['Content-Type' => 'application/xml'],
-            '<xml><ErrCode>0</ErrCode><ErrMsg>success</ErrMsg></xml>',
-        );
-    }
-
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
     {
         if (is_array($contents) && isset($contents['body'], $contents['headers'])) {

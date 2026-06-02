@@ -3,9 +3,6 @@
 得益于 yansongda/pay 的基础架构和良好的插件机制，
 您可以自由的使用任何内置插件和自定义插件调用微信的任何 API。
 
-诸如签名、API调用、解密、验签、解包等基础插件已经内置在 Pay 中，
-您可以使用 `Pay::douyin()->mergeCommonPlugins(array $plugins)` 来获取调用 API 所必须的常用插件
-
 首先，查找你想使用的插件，然后
 
 ```php
@@ -15,7 +12,7 @@ $params = [
     'out_trade_no' => '202408040747147327',
 ];
 
-$allPlugins = Pay::douyin()->mergeCommonPlugins([QueryPlugin::class]);
+$allPlugins = [StartPlugin::class, QueryPlugin::class, AddPayloadSignaturePlugin::class, AddPayloadBodyPlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class];
 
 $result = Pay::douyin()->pay($allPlugins, $params);
 ```

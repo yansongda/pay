@@ -12,9 +12,7 @@
 如果你需要自行拼装调用链，可以使用：
 
 ```php
-$allPlugins = Pay::airwallex()->mergeCommonPlugins([
-    \Yansongda\Pay\Plugin\Airwallex\V1\Pay\QueryPlugin::class,
-]);
+$allPlugins = [StartPlugin::class, ObtainAccessTokenPlugin::class, \Yansongda\Pay\Plugin\Airwallex\V1\Pay\QueryPlugin::class, AddPayloadBodyPlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class];
 
 $result = Pay::airwallex()->pay($allPlugins, [
     'payment_intent_id' => 'int_xxx',
