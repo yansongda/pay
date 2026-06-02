@@ -432,7 +432,7 @@ $result->RefundId;     // 退款单号（退款通知）
 
 |    方法名     | 参数  |   返回值    |
 |:----------:|:---:|:--------:|
-| virtualSuccess |  无  | Response |
+| success |  array  | Response |
 
 ### 例子
 
@@ -443,7 +443,7 @@ $result = Pay::wechat()->callback(null, ['_action' => 'virtual']);
 
 // 处理业务逻辑...
 
-return Pay::wechat()->virtualSuccess();
+return Pay::wechat()->success(['_action' => 'virtual']);
 ```
 
 ### 响应格式
@@ -460,7 +460,7 @@ return Pay::wechat()->virtualSuccess();
 如果需要返回 JSON 格式：
 
 ```php
-return Pay::wechat()->virtualSuccess('json');
+return Pay::wechat()->success(['_action' => 'virtual', '_format' => 'json']);
 // {"ErrCode":0,"ErrMsg":"success"}
 ```
 

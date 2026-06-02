@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - 新增业务插件：Currency（代币）、Goods（商品）、Order（订单）、Subscribe（订阅）、Withdraw（提现）
   - 新增 `VirtualShortcut` 用于客户端签名场景
   - 新增 `WechatTrait::getWechatVirtualPaySignature()` 和 `getWechatVirtualSessionSignature()` 方法
-  - 新增 `Wechat::virtualSuccess()` 方法用于返回虚拟支付成功响应
+  - `Wechat::success()` 支持 `['_action' => 'virtual']` 参数返回虚拟支付成功响应
   - 新增 `Wechat::URL_VIRTUAL` 常量（https://api.weixin.qq.com）
 
 ### Changed

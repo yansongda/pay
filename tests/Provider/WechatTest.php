@@ -254,7 +254,7 @@ class WechatTest extends TestCase
 
     public function testVirtualSuccess()
     {
-        $result = Pay::wechat()->virtualSuccess();
+        $result = Pay::wechat()->success(['_action' => 'virtual']);
 
         self::assertInstanceOf(ResponseInterface::class, $result);
         self::assertEquals(200, $result->getStatusCode());
@@ -267,7 +267,7 @@ class WechatTest extends TestCase
 
     public function testVirtualSuccessJson()
     {
-        $result = Pay::wechat()->virtualSuccess('json');
+        $result = Pay::wechat()->success(['_action' => 'virtual', '_format' => 'json']);
 
         self::assertInstanceOf(ResponseInterface::class, $result);
         self::assertEquals(200, $result->getStatusCode());

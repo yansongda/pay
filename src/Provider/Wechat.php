@@ -138,30 +138,17 @@ class Wechat implements ProviderInterface
         );
     }
 
-    public function success(): ResponseInterface
+    public function success(array $params = []): ResponseInterface
     {
-        return new Response(
-            200,
-            ['Content-Type' => 'application/json'],
-            json_encode(['code' => 'SUCCESS', 'message' => '成功']),
-        );
-    }
+        [$contentType, $body] = match ($params['_action'] ?? null) {
+            'virtual' => match ($params['_format'] ?? null) {
+                'json' => ['application/json', json_encode(['ErrCode' => 0, 'ErrMsg' => 'success'])],
+                default => ['application/xml', '<xml><ErrCode>0</ErrCode><ErrMsg>success</ErrMsg></xml>'],
+            },
+            default => ['application/json', json_encode(['code' => 'SUCCESS', 'message' => '成功'])],
+        };
 
-    public function virtualSuccess(?string $format = null): ResponseInterface
-    {
-        if ('json' === $format) {
-            return new Response(
-                200,
-                ['Content-Type' => 'application/json'],
-                json_encode(['ErrCode' => 0, 'ErrMsg' => 'success']),
-            );
-        }
-
-        return new Response(
-            200,
-            ['Content-Type' => 'application/xml'],
-            '<xml><ErrCode>0</ErrCode><ErrMsg>success</ErrMsg></xml>',
-        );
+        return new Response(200, ['Content-Type' => $contentType], $body);
     }
 
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
