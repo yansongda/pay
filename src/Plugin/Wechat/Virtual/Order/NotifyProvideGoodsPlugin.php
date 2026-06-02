@@ -11,7 +11,6 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
@@ -31,7 +30,6 @@ class NotifyProvideGoodsPlugin implements PluginInterface
         Logger::debug('[Wechat][Virtual][Order][NotifyProvideGoodsPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
-
 
         $orderId = $payload->get('order_id');
         $wxOrderId = $payload->get('wx_order_id');
