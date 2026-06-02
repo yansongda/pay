@@ -126,5 +126,4 @@ class RefundShortcut implements ShortcutInterface
             ParserPlugin::class,
         ];
     }
-
 }
