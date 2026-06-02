@@ -18,9 +18,6 @@ class CreateWithdrawOrderPlugin implements PluginInterface
     use WechatTrait;
 
     /**
-     * @throws ContainerException
-     * @throws InvalidParamsException
-     * @throws ServiceNotFoundException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
