@@ -1,43 +1,13 @@
 # 微信小程序虚拟支付
 
+> 虚拟支付配置请参考 [初始化 - 微信配置](/docs/v3/quick-start/init.md) 中的 `virtual_pay` 部分
+
 微信小程序虚拟支付支持小程序内虚拟商品（如游戏代币、会员订阅等）的支付能力。
 
 :::tip 官方文档
 - [虚拟支付概述](https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html)
 - [服务端 API](https://developers.weixin.qq.com/miniprogram/dev/server/API/VirtualPayment/overview.html)
 :::
-
-## 配置
-
-在微信配置中增加 `virtual_pay` 参数：
-
-```php
-$config = [
-    'wechat' => [
-        'default' => [
-            'mch_id' => '',
-            'mch_secret_key' => '',
-            'mch_secret_cert' => '',
-            'mch_public_cert_path' => '',
-            'mini_app_id' => 'wx***', // 必填，虚拟支付必须使用小程序 app_id
-            'virtual_pay' => [
-                // 必填 - 商户号（offer_id）
-                'offer_id' => '1234567890',
-                // 必填 - 签名密钥（客户端签名、服务端 API 签名）
-                'app_key' => 'your_app_key',
-                // 选填 - 沙箱环境签名密钥
-                'sandbox_app_key' => 'your_sandbox_app_key',
-                // 必填 - 回调验签 Token
-                'callback_token' => 'your_callback_token',
-                // 必填 - 回调解密密钥（43 字符）
-                'encoding_aes_key' => 'your_encoding_aes_key',
-            ],
-        ],
-    ],
-];
-
-Pay::config($config);
-```
 
 :::warning
 虚拟支付必须配置 `mini_app_id`，因为虚拟支付仅支持小程序场景。
