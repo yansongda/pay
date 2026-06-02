@@ -4,6 +4,11 @@
 
 微信小程序虚拟支付支持小程序内虚拟商品（如游戏代币、会员订阅等）的支付能力。
 
+|   方法名   |      参数      |    返回值     |
+|:--------:|:------------:|:----------:|
+|  virtual | array $order | Collection |
+|  success | array $params | Response |
+
 :::tip 官方文档
 - [虚拟支付概述](https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html)
 - [服务端 API](https://developers.weixin.qq.com/miniprogram/dev/server/API/VirtualPayment/overview.html)
@@ -16,10 +21,6 @@
 ## 客户端签名（代币充值）
 
 客户端签名用于小程序端调起虚拟支付，SDK 会生成签名数据供前端使用，**不会发送 HTTP 请求**。
-
-|   方法名   |      参数      |    返回值     |
-|:--------:|:------------:|:----------:|
-|  virtual | array $order | Collection |
 
 ### 例子
 
