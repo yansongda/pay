@@ -28,7 +28,7 @@ class QueryPublishGoodsPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/query_publish_goods',
+            '_url' => 'xpay/query_publish_goods',
         ]);
 
         Logger::info('[Wechat][Virtual][Goods][QueryPublishGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);

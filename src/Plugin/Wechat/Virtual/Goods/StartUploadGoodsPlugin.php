@@ -28,7 +28,7 @@ class StartUploadGoodsPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/start_upload_goods',
+            '_url' => 'xpay/start_upload_goods',
         ]);
 
         Logger::info('[Wechat][Virtual][Goods][StartUploadGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);

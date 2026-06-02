@@ -28,7 +28,7 @@ class CurrencyPayPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/currency_pay',
+            '_url' => 'xpay/currency_pay',
         ]);
 
         Logger::info('[Wechat][Virtual][Currency][CurrencyPayPlugin] 插件装载完毕', ['rocket' => $rocket]);

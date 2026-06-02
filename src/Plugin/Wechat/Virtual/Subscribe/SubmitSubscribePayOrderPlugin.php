@@ -28,7 +28,7 @@ class SubmitSubscribePayOrderPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/submit_subscribe_pay_order',
+            '_url' => 'xpay/submit_subscribe_pay_order',
         ]);
 
         Logger::info('[Wechat][Virtual][Subscribe][SubmitSubscribePayOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);

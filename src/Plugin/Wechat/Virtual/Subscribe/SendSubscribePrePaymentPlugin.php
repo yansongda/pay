@@ -28,7 +28,7 @@ class SendSubscribePrePaymentPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/send_subscribe_pre_payment',
+            '_url' => 'xpay/send_subscribe_pre_payment',
         ]);
 
         Logger::info('[Wechat][Virtual][Subscribe][SendSubscribePrePaymentPlugin] 插件装载完毕', ['rocket' => $rocket]);

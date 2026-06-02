@@ -20,7 +20,7 @@ class RefundOrderPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/refund_order',
+            '_url' => 'xpay/refund_order',
         ]);
 
         Logger::info('[Wechat][Virtual][Order][RefundOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);

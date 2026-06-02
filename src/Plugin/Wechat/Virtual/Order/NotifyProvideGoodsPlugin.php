@@ -20,7 +20,7 @@ class NotifyProvideGoodsPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/notify_provide_goods',
+            '_url' => 'xpay/notify_provide_goods',
         ]);
 
         Logger::info('[Wechat][Virtual][Order][NotifyProvideGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);

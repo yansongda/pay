@@ -20,7 +20,7 @@ class QueryOrderPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/query_order',
+            '_url' => 'xpay/query_order',
         ]);
 
         Logger::info('[Wechat][Virtual][Order][QueryOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);

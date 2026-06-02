@@ -28,7 +28,7 @@ class StartDownloadOrderPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/start_download_order',
+            '_url' => 'xpay/start_download_order',
         ]);
 
         Logger::info('[Wechat][Virtual][Order][StartDownloadOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);

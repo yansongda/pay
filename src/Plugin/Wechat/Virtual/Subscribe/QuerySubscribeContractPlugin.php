@@ -28,7 +28,7 @@ class QuerySubscribeContractPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/query_subscribe_contract',
+            '_url' => 'xpay/query_subscribe_contract',
         ]);
 
         Logger::info('[Wechat][Virtual][Subscribe][QuerySubscribeContractPlugin] 插件装载完毕', ['rocket' => $rocket]);

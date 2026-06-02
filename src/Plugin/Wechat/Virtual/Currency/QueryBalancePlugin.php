@@ -28,7 +28,7 @@ class QueryBalancePlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
+            '_url' => 'xpay/query_user_balance',
         ]);
 
         Logger::info('[Wechat][Virtual][Currency][QueryBalancePlugin] 插件装载完毕', ['rocket' => $rocket]);

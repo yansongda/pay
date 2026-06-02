@@ -28,7 +28,7 @@ class CancelSubscribeContractPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/cancel_subscribe_contract',
+            '_url' => 'xpay/cancel_subscribe_contract',
         ]);
 
         Logger::info('[Wechat][Virtual][Subscribe][CancelSubscribeContractPlugin] 插件装载完毕', ['rocket' => $rocket]);

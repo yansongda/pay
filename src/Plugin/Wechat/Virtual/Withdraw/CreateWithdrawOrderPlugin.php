@@ -20,7 +20,7 @@ class CreateWithdrawOrderPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => '/xpay/create_withdraw_order',
+            '_url' => 'xpay/create_withdraw_order',
         ]);
 
         Logger::info('[Wechat][Virtual][Withdraw][CreateWithdrawOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
