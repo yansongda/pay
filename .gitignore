@@ -7,6 +7,6 @@ composer.lock
 .sisyphus/
 .omo/
 .worktree
-.worktrees
-docs/
+.worktrees/
+/docs/
 .playwright-mcp/
