@@ -9,6 +9,7 @@ use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Config\WechatConfigVirtualPay;
 use Yansongda\Pay\Pay;
+use PHPUnit\Framework\Attributes\Group;
 use Yansongda\Pay\Tests\TestCase;
 
 class WechatConfigTest extends TestCase
@@ -237,7 +238,7 @@ class WechatConfigTest extends TestCase
         self::assertEquals('cert-content-2', CertManager::wechatGetCertBySerial($tenant, 'SERIAL2'));
     }
 
-    /** @group VirtualPay */
+    #[Group('VirtualPay')]
     public function testVirtualPayDefaultIsEmptyObject(): void
     {
         $config = new WechatConfig($this->validConfig);
@@ -249,7 +250,7 @@ class WechatConfigTest extends TestCase
         self::assertNull($vp->getOfferId());
     }
 
-    /** @group VirtualPay */
+    #[Group('VirtualPay')]
     public function testVirtualPayFromArrayConfig(): void
     {
         $config = new WechatConfig(array_merge($this->validConfig, [
@@ -266,7 +267,7 @@ class WechatConfigTest extends TestCase
         self::assertSame('vp-offer-123', $vp->getOfferId());
     }
 
-    /** @group VirtualPay */
+    #[Group('VirtualPay')]
     public function testVirtualPaySandboxFallback(): void
     {
         $config = new WechatConfig(array_merge($this->validConfig, [
@@ -280,7 +281,7 @@ class WechatConfigTest extends TestCase
         self::assertSame('vp-sandbox-key', $vp->getAppKey(1));
     }
 
-    /** @group VirtualPay */
+    #[Group('VirtualPay')]
     public function testVirtualPaySetViaSetter(): void
     {
         $config = new WechatConfig($this->validConfig);
@@ -296,7 +297,7 @@ class WechatConfigTest extends TestCase
         self::assertSame('direct-offer', $result->getOfferId());
     }
 
-    /** @group VirtualPay */
+    #[Group('VirtualPay')]
     public function testVirtualPaySetViaArraySetter(): void
     {
         $config = new WechatConfig($this->validConfig);

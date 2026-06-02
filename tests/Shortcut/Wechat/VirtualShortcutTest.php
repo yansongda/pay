@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Shortcut\Wechat;
 
-use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
@@ -31,7 +30,6 @@ class VirtualShortcutTest extends TestCase
             PayPlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
-            NoHttpRequestDirection::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins([]));
     }

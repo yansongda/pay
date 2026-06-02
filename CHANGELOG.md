@@ -7,9 +7,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## Unreleased
 
+### Added
+
+- 新增微信小程序虚拟支付支持 (#1172)
+  - 新增 `WechatConfigVirtualPay` 配置类（appKey、sandboxAppKey、offerId、encodingAesKey、callbackToken）
+  - 新增虚拟支付插件：PayPlugin、CallbackPlugin、AddPayloadSignaturePlugin、VerifySignaturePlugin
+  - 新增业务插件：Currency（代币）、Goods（商品）、Order（订单）、Subscribe（订阅）、Withdraw（提现）
+  - 新增 `VirtualShortcut` 用于客户端签名场景
+  - 新增 `WechatTrait::getWechatVirtualPaySignature()` 和 `getWechatVirtualSessionSignature()` 方法
+  - 新增 `Wechat::virtualSuccess()` 方法用于返回虚拟支付成功响应
+  - 新增 `Wechat::URL_VIRTUAL` 常量（https://api.weixin.qq.com）
+
 ### Changed
 
 - 移除所有 Provider 中未使用的 `mergeCommonPlugins` 方法 (#1173)
+
+### Fixed
+
+- 修复 `VirtualShortcut` 插件数组包含非 `PluginInterface` 实现的问题
+- 修复虚拟支付测试用例缺少 `access_token` 参数的问题
+- 移除测试文件中不必要的 `@internal` 和 `@coversNothing` 注解
 
 
 ## v3.8.0-beta.1 - 2026-05-12

@@ -306,6 +306,7 @@ class WechatTest extends TestCase
                 'openid' => 'test-openid',
                 'user_ip' => '127.0.0.1',
                 'env' => 0,
+                'access_token' => 'test-access-token',
             ],
         );
 
@@ -340,6 +341,7 @@ class WechatTest extends TestCase
                 'openid' => 'test-openid',
                 'user_ip' => '127.0.0.1',
                 'env' => 0,
+                'access_token' => 'test-access-token',
                 'amount' => 100,
                 'order_id' => 'test-order-id',
                 'payitem' => 'test-payitem',
@@ -377,6 +379,7 @@ class WechatTest extends TestCase
             [
                 'openid' => 'test-openid',
                 'env' => 0,
+                'access_token' => 'test-access-token',
                 'order_id' => 'test-order-id',
                 'out_trade_no' => 'test-out-trade-no',
             ],
@@ -412,6 +415,7 @@ class WechatTest extends TestCase
             [
                 'openid' => 'test-openid',
                 'env' => 0,
+                'access_token' => 'test-access-token',
                 'order_id' => 'test-order-id',
                 'refund_order_id' => 'test-refund-order-id',
                 'left_fee' => 100,

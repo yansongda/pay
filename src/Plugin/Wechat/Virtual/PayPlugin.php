@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Plugin\Wechat\Virtual;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
@@ -60,6 +61,9 @@ class PayPlugin implements PluginInterface
             'outTradeNo' => $payload->get('outTradeNo'),
             'attach' => $payload->get('attach'),
         ]);
+
+        // 客户端签名场景：不发送 HTTP 请求，返回签名数据给前端
+        $rocket->setDirection(NoHttpRequestDirection::class);
 
         Logger::info('[Wechat][Virtual][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

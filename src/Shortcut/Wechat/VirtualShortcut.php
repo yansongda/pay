@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Shortcut\Wechat;
 
 use Yansongda\Artful\Contract\ShortcutInterface;
-use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
@@ -21,7 +20,6 @@ class VirtualShortcut implements ShortcutInterface
             PayPlugin::class,
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
-            NoHttpRequestDirection::class,
             ParserPlugin::class,
         ];
     }
