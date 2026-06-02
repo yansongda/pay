@@ -186,18 +186,9 @@ class WechatConfig extends AbstractConfig
      */
     public function setVirtualPay(array|WechatConfigVirtualPay $value): void
     {
-        if (is_array($value)) {
-            $vp = new WechatConfigVirtualPay();
-            foreach ($value as $key => $item) {
-                $method = 'set'.str_replace('_', '', ucwords((string) $key, '_'));
-                if (method_exists($vp, $method)) {
-                    $vp->{$method}($item);
-                }
-            }
-            $this->virtualPay = $vp;
-        } else {
-            $this->virtualPay = $value;
-        }
+        $this->virtualPay = is_array($value)
+            ? (new WechatConfigVirtualPay())->unserializeArray($value)
+            : $value;
     }
 
     public function getVirtualPay(): WechatConfigVirtualPay

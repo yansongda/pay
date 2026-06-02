@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Config;
 
+use Yansongda\Supports\Traits\Accessable;
+use Yansongda\Supports\Traits\Serializable;
+
 class WechatConfigVirtualPay
 {
+    use Accessable;
+    use Serializable;
+
     private ?string $appKey = null;
 
     private ?string $sandboxAppKey = null;
