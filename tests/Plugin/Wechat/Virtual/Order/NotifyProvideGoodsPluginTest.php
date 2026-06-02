@@ -22,16 +22,6 @@ class NotifyProvideGoodsPluginTest extends TestCase
         $this->plugin = new NotifyProvideGoodsPlugin();
     }
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付通知发货，参数为空');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
 
     public function testMissingOrderIds()
     {

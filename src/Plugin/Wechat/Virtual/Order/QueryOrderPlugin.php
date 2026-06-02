@@ -32,9 +32,6 @@ class QueryOrderPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
 
-        if (is_null($payload)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付查询订单，参数为空');
-        }
 
         $openid = $payload->get('openid');
         $env = $payload->get('env');

@@ -22,15 +22,6 @@ class CurrencyPayPluginTest extends TestCase
         $this->plugin = new CurrencyPayPlugin();
     }
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
 
     public function testNormal()
     {

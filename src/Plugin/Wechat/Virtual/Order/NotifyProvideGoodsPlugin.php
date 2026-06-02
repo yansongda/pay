@@ -32,9 +32,6 @@ class NotifyProvideGoodsPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
 
-        if (is_null($payload)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付通知发货，参数为空');
-        }
 
         $orderId = $payload->get('order_id');
         $wxOrderId = $payload->get('wx_order_id');

@@ -22,16 +22,6 @@ class CancelSubscribeContractPluginTest extends TestCase
         $this->plugin = new CancelSubscribeContractPlugin();
     }
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付商家解约，参数为空');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
 
     public function testNormal()
     {

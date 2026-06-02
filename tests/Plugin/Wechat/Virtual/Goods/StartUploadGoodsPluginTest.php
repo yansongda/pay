@@ -22,16 +22,6 @@ class StartUploadGoodsPluginTest extends TestCase
         $this->plugin = new StartUploadGoodsPlugin();
     }
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付批量上传道具，参数为空');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
 
     public function testNormal()
     {

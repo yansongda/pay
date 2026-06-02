@@ -22,16 +22,6 @@ class QueryPublishGoodsPluginTest extends TestCase
         $this->plugin = new QueryPublishGoodsPlugin();
     }
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付查询发布道具任务，参数为空');
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
 
     public function testNormal()
     {

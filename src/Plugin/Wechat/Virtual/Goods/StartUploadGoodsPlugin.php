@@ -32,9 +32,6 @@ class StartUploadGoodsPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
 
-        if (is_null($payload)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付批量上传道具，参数为空');
-        }
 
         $rocket->mergePayload([
             '_method' => 'POST',

@@ -32,9 +32,6 @@ class CreateWithdrawOrderPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
 
-        if (is_null($payload)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付创建提现单，参数为空');
-        }
 
         $withdrawNo = $payload->get('withdraw_no');
 
