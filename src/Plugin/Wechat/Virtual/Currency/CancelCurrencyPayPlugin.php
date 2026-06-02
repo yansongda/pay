@@ -30,15 +30,9 @@ class CancelCurrencyPayPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Virtual][Currency][CancelCurrencyPayPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/cancel_currency_pay',
-            'openid' => $payload->get('openid'),
-            'order_id' => $payload->get('order_id'),
-            'refund_reason' => $payload->get('refund_reason'),
         ]);
 
         Logger::info('[Wechat][Virtual][Currency][CancelCurrencyPayPlugin] 插件装载完毕', ['rocket' => $rocket]);

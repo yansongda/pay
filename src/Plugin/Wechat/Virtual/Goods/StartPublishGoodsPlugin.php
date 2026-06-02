@@ -30,14 +30,9 @@ class StartPublishGoodsPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Virtual][Goods][StartPublishGoodsPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/start_publish_goods',
-            'group_id' => $payload->get('group_id'),
-            'upload_task_id' => $payload->get('upload_task_id'),
         ]);
 
         Logger::info('[Wechat][Virtual][Goods][StartPublishGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);

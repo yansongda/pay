@@ -30,9 +30,6 @@ class QueryBizBalancePlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Virtual][Withdraw][QueryBizBalancePlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/query_biz_balance',

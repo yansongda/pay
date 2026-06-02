@@ -30,13 +30,9 @@ class QuerySubscribeContractPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Virtual][Subscribe][QuerySubscribeContractPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/query_subscribe_contract',
-            'openid' => $payload->get('openid'),
         ]);
 
         Logger::info('[Wechat][Virtual][Subscribe][QuerySubscribeContractPlugin] 插件装载完毕', ['rocket' => $rocket]);

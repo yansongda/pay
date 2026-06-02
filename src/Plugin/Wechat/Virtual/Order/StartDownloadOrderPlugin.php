@@ -30,14 +30,9 @@ class StartDownloadOrderPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Virtual][Order][StartDownloadOrderPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/start_download_order',
-            'start_date' => $payload->get('start_date'),
-            'end_date' => $payload->get('end_date'),
         ]);
 
         Logger::info('[Wechat][Virtual][Order][StartDownloadOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);

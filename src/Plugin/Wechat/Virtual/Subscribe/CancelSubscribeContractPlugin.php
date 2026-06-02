@@ -30,14 +30,9 @@ class CancelSubscribeContractPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Virtual][Subscribe][CancelSubscribeContractPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/cancel_subscribe_contract',
-            'openid' => $payload->get('openid'),
-            'contract_id' => $payload->get('contract_id'),
         ]);
 
         Logger::info('[Wechat][Virtual][Subscribe][CancelSubscribeContractPlugin] 插件装载完毕', ['rocket' => $rocket]);

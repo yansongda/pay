@@ -32,25 +32,14 @@ class CreateWithdrawOrderPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
 
-
-        $withdrawNo = $payload->get('withdraw_no');
-
-        if (empty($withdrawNo)) {
+        if (empty($payload->get('withdraw_no'))) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付创建提现单，缺少 withdraw_no');
         }
 
-        $data = [
+        $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/create_withdraw_order',
-            'withdraw_no' => $withdrawNo,
-        ];
-
-        $withdrawAmount = $payload->get('withdraw_amount');
-        if (isset($withdrawAmount)) {
-            $data['withdraw_amount'] = $withdrawAmount;
-        }
-
-        $rocket->mergePayload($data);
+        ]);
 
         Logger::info('[Wechat][Virtual][Withdraw][CreateWithdrawOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

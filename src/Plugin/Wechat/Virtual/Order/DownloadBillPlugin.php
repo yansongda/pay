@@ -30,14 +30,9 @@ class DownloadBillPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Virtual][Order][DownloadBillPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/download_bill',
-            'bill_date' => $payload->get('bill_date'),
-            'bill_type' => $payload->get('bill_type'),
         ]);
 
         Logger::info('[Wechat][Virtual][Order][DownloadBillPlugin] 插件装载完毕', ['rocket' => $rocket]);

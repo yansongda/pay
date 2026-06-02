@@ -30,16 +30,9 @@ class SubmitSubscribePayOrderPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Virtual][Subscribe][SubmitSubscribePayOrderPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/submit_subscribe_pay_order',
-            'openid' => $payload->get('openid'),
-            'contract_id' => $payload->get('contract_id'),
-            'amount' => $payload->get('amount'),
-            'order_id' => $payload->get('order_id'),
         ]);
 
         Logger::info('[Wechat][Virtual][Subscribe][SubmitSubscribePayOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);

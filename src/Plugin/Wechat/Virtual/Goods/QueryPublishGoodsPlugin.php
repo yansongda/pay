@@ -30,13 +30,9 @@ class QueryPublishGoodsPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Virtual][Goods][QueryPublishGoodsPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/query_publish_goods',
-            'publish_task_id' => $payload->get('publish_task_id'),
         ]);
 
         Logger::info('[Wechat][Virtual][Goods][QueryPublishGoodsPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -30,13 +30,9 @@ class QueryDownloadOrderPlugin implements PluginInterface
     {
         Logger::debug('[Wechat][Virtual][Order][QueryDownloadOrderPlugin] 插件开始装载', ['rocket' => $rocket]);
 
-        $payload = $rocket->getPayload();
-
-
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/xpay/query_download_order',
-            'download_task_id' => $payload->get('download_task_id'),
         ]);
 
         Logger::info('[Wechat][Virtual][Order][QueryDownloadOrderPlugin] 插件装载完毕', ['rocket' => $rocket]);
