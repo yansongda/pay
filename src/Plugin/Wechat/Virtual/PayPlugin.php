@@ -49,12 +49,7 @@ class PayPlugin implements PluginInterface
             // 客户端签名场景使用 requestVirtualPayment，服务端 API 场景使用具体路径
             '_url' => $payload->get('_url', 'requestVirtualPayment'),
             'offerId' => $config->getVirtualPay()->getOfferId() ?? '',
-            'buyQuantity' => $payload->get('buyQuantity'),
             'currencyType' => $payload->get('currencyType', 'CNY'),
-            'productId' => $payload->get('productId'),
-            'goodsPrice' => $payload->get('goodsPrice'),
-            'outTradeNo' => $payload->get('outTradeNo'),
-            'attach' => $payload->get('attach'),
         ]);
 
         // 客户端签名场景：不发送 HTTP 请求，返回签名数据给前端
