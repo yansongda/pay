@@ -136,10 +136,10 @@ $order = [
     'env' => 0, // 0=正式，1=沙箱
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Currency\QueryBalancePlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'currency_query_balance',
+    ...$order,
+]);
 ```
 
 ### 代币扣减
@@ -154,10 +154,10 @@ $order = [
     'remark' => '备注',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Currency\CurrencyPayPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'currency_pay',
+    ...$order,
+]);
 ```
 
 ### 赠送代币
@@ -170,10 +170,10 @@ $order = [
     'remark' => '备注',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Currency\PresentCurrencyPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'currency_present',
+    ...$order,
+]);
 ```
 
 ### 撤销代币扣减
@@ -184,10 +184,10 @@ $order = [
     'order_id' => '订单号',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Currency\CancelCurrencyPayPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'currency_cancel',
+    ...$order,
+]);
 ```
 
 ### 查询订单
@@ -200,8 +200,8 @@ $order = [
     // 'wx_order_id' => '微信订单号',
 ];
 
-$result = Pay::wechat()->query([
-    '_action' => 'virtual',
+$result = Pay::wechat()->virtual([
+    '_action' => 'order_query',
     ...$order,
 ]);
 ```
@@ -219,8 +219,8 @@ $order = [
     'req_from' => '退款来源',
 ];
 
-$result = Pay::wechat()->refund([
-    '_action' => 'virtual',
+$result = Pay::wechat()->virtual([
+    '_action' => 'order_refund',
     ...$order,
 ]);
 ```
@@ -232,10 +232,10 @@ $order = [
     'order_id' => '商户订单号', // 与 wx_order_id 二选一
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Order\NotifyProvideGoodsPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'order_notify_provide_goods',
+    ...$order,
+]);
 ```
 
 ### 批量上传道具
@@ -248,10 +248,10 @@ $order = [
     ],
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Goods\StartUploadGoodsPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'goods_start_upload',
+    ...$order,
+]);
 ```
 
 ### 查询上传道具结果
@@ -261,10 +261,10 @@ $order = [
     'group_id' => '分组 ID',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Goods\QueryUploadGoodsPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'goods_query_upload',
+    ...$order,
+]);
 ```
 
 ### 批量发布道具
@@ -274,10 +274,10 @@ $order = [
     'group_id' => '分组 ID',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Goods\StartPublishGoodsPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'goods_start_publish',
+    ...$order,
+]);
 ```
 
 ### 查询发布道具结果
@@ -287,10 +287,10 @@ $order = [
     'group_id' => '分组 ID',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Goods\QueryPublishGoodsPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'goods_query_publish',
+    ...$order,
+]);
 ```
 
 ### 预通知扣款（订阅）
@@ -302,10 +302,10 @@ $order = [
     'pre_payment_amount' => 100,
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\SendSubscribePrePaymentPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'subscribe_send_pre_payment',
+    ...$order,
+]);
 ```
 
 ### 确认扣款（订阅）
@@ -318,10 +318,10 @@ $order = [
     'pre_payment_amount' => 100,
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\SubmitSubscribePayOrderPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'subscribe_submit_pay_order',
+    ...$order,
+]);
 ```
 
 ### 查询订阅合约
@@ -332,10 +332,10 @@ $order = [
     'contract_id' => '合约 ID',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\QuerySubscribeContractPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'subscribe_query_contract',
+    ...$order,
+]);
 ```
 
 ### 取消订阅合约
@@ -346,10 +346,10 @@ $order = [
     'contract_id' => '合约 ID',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\CancelSubscribeContractPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'subscribe_cancel_contract',
+    ...$order,
+]);
 ```
 
 ### 创建提现单
@@ -360,10 +360,10 @@ $order = [
     'withdraw_amount' => 100, // 选填
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\CreateWithdrawOrderPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'withdraw_create',
+    ...$order,
+]);
 ```
 
 ### 查询提现单
@@ -373,19 +373,18 @@ $order = [
     'withdraw_no' => '提现单号',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryWithdrawOrderPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'withdraw_query',
+    ...$order,
+]);
 ```
 
 ### 查询商户余额
 
 ```php
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryBizBalancePlugin::class],
-    []
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'withdraw_query_balance',
+]);
 ```
 
 ### 下载账单
@@ -396,10 +395,10 @@ $order = [
     'bill_type' => 'ALL',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Order\DownloadBillPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'order_download_bill',
+    ...$order,
+]);
 ```
 
 ### 查询下载结果
@@ -409,10 +408,10 @@ $order = [
     'download_bill_id' => '下载单号',
 ];
 
-$result = Pay::wechat()->pay(
-    [\Yansongda\Pay\Plugin\Wechat\Virtual\Order\QueryDownloadOrderPlugin::class],
-    $order
-);
+$result = Pay::wechat()->virtual([
+    '_action' => 'order_query_download',
+    ...$order,
+]);
 ```
 
 ## 接收回调
