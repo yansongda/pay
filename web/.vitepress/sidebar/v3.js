@@ -47,6 +47,7 @@ export default [
     collapsed: false,
     items: [
       { text: '支付', link: '/docs/v3/wechat/pay' },
+      { text: '虚拟支付', link: '/docs/v3/wechat/virtual' },
       { text: '查询', link: '/docs/v3/wechat/query' },
       { text: '退款', link: '/docs/v3/wechat/refund' },
       { text: '关闭', link: '/docs/v3/wechat/close' },
