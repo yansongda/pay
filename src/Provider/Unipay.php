@@ -130,15 +130,6 @@ class Unipay implements ProviderInterface
         return new Response(200, [], 'success');
     }
 
-    public function mergeCommonPlugins(array $plugins): array
-    {
-        return array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [AddPayloadSignaturePlugin::class, AddPayloadBodyPlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ParserPlugin::class],
-        );
-    }
-
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
     {
         if (is_array($contents)) {

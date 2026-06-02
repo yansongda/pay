@@ -124,15 +124,6 @@ class Douyin implements ProviderInterface
         );
     }
 
-    public function mergeCommonPlugins(array $plugins): array
-    {
-        return array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [AddPayloadSignaturePlugin::class, AddPayloadBodyPlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        );
-    }
-
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
     {
         if (is_array($contents)) {

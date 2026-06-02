@@ -61,15 +61,6 @@ class Jsb implements ProviderInterface
         return Artful::artful($plugins, $params);
     }
 
-    public function mergeCommonPlugins(array $plugins): array
-    {
-        return array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [AddPayloadSignPlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        );
-    }
-
     /**
      * @throws InvalidParamsException
      */

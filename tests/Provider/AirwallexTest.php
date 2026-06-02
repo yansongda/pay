@@ -34,17 +34,6 @@ class AirwallexTest extends TestCase
         Pay::airwallex()->foo();
     }
 
-    public function testMergeCommonPlugins()
-    {
-        $plugins = [FooPluginStub::class];
-
-        self::assertEquals(array_merge(
-            [StartPlugin::class, ObtainAccessTokenPlugin::class],
-            $plugins,
-            [AddPayloadBodyPlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        ), Pay::airwallex()->mergeCommonPlugins($plugins));
-    }
-
     public function testClose()
     {
         self::expectException(InvalidParamsException::class);

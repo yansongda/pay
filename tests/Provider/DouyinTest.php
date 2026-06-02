@@ -41,18 +41,6 @@ class DouyinTest extends TestCase
         Pay::douyin()->foo();
     }
 
-    public function testMergeCommonPlugins()
-    {
-        Pay::config([]);
-        $plugins = [FooPluginStub::class];
-
-        self::assertEquals(array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [AddPayloadSignaturePlugin::class, AddPayloadBodyPlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        ), Pay::douyin()->mergeCommonPlugins($plugins));
-    }
-
     public function testCallMini()
     {
         $response = new Response(

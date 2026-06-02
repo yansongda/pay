@@ -123,15 +123,6 @@ class Paypal implements ProviderInterface
         return new Response(200, ['Content-Type' => 'application/json'], json_encode(['result' => 'success']));
     }
 
-    public function mergeCommonPlugins(array $plugins): array
-    {
-        return array_merge(
-            [StartPlugin::class, ObtainAccessTokenPlugin::class],
-            $plugins,
-            [AddPayloadBodyPlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        );
-    }
-
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
     {
         if (is_array($contents) && isset($contents['body'], $contents['headers'])) {

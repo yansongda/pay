@@ -146,12 +146,20 @@ class Wechat implements ProviderInterface
         );
     }
 
-    public function mergeCommonPlugins(array $plugins): array
+    public function virtualSuccess(?string $format = null): ResponseInterface
     {
-        return array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
+        if ('json' === $format) {
+            return new Response(
+                200,
+                ['Content-Type' => 'application/json'],
+                json_encode(['ErrCode' => 0, 'ErrMsg' => 'success']),
+            );
+        }
+
+        return new Response(
+            200,
+            ['Content-Type' => 'application/xml'],
+            '<xml><ErrCode>0</ErrCode><ErrMsg>success</ErrMsg></xml>',
         );
     }
 

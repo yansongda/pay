@@ -146,15 +146,6 @@ class Alipay implements ProviderInterface
         return new Response(200, [], 'success');
     }
 
-    public function mergeCommonPlugins(array $plugins): array
-    {
-        return array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [FormatPayloadBizContentPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        );
-    }
-
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
     {
         if (is_array($contents)) {

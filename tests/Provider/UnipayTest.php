@@ -40,18 +40,6 @@ class UnipayTest extends TestCase
         Pay::unipay()->foo();
     }
 
-    public function testMergeCommonPlugins()
-    {
-        Pay::config();
-        $plugins = [FooPluginStub::class];
-
-        self::assertEquals(array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [AddPayloadSignaturePlugin::class, AddPayloadBodyPlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ParserPlugin::class],
-        ), Pay::unipay()->mergeCommonPlugins($plugins));
-    }
-
     public function testWebPay()
     {
         $response = Pay::unipay()->web([

@@ -45,18 +45,6 @@ class WechatTest extends TestCase
         Pay::wechat()->foo();
     }
 
-    public function testMergeCommonPlugins()
-    {
-        Pay::config([]);
-        $plugins = [FooPluginStub::class];
-
-        self::assertEquals(array_merge(
-            [StartPlugin::class],
-            $plugins,
-            [AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class],
-        ), Pay::wechat()->mergeCommonPlugins($plugins));
-    }
-
     public function testCancel()
     {
         $response = new Response(
