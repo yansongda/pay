@@ -40,7 +40,7 @@ class SubmitSubscribePayOrderPluginTest extends TestCase
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('xpay/submit_subscribe_pay_order', $payload->get('_url'));
         self::assertEquals('test_openid', $payload->get('openid'));
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('test_contract_id', $payload->get('contract_id'));
         self::assertEquals(100, $payload->get('amount'));
         self::assertEquals('test_order_id', $payload->get('order_id'));
@@ -78,7 +78,7 @@ class SubmitSubscribePayOrderPluginTest extends TestCase
 
         $payload = $result->getPayload();
 
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('xpay/submit_subscribe_pay_order', $payload->get('_url'));
     }
 }

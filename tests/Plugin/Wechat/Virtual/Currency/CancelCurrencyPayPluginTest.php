@@ -74,7 +74,7 @@ class CancelCurrencyPayPluginTest extends TestCase
 
         $payload = $result->getPayload();
 
-        self::assertEquals(0, $payload->get('env'));
-        self::assertEquals('', $payload->get('refund_reason'));
+        self::assertNull($payload->get('env'));
+        self::assertNull($payload->get('refund_reason'));
     }
 }

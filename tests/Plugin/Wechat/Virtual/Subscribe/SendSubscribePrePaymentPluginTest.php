@@ -39,7 +39,7 @@ class SendSubscribePrePaymentPluginTest extends TestCase
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('xpay/send_subscribe_pre_payment', $payload->get('_url'));
         self::assertEquals('test_openid', $payload->get('openid'));
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('test_contract_id', $payload->get('contract_id'));
         self::assertEquals(100, $payload->get('pre_payment_amount'));
     }
@@ -74,7 +74,7 @@ class SendSubscribePrePaymentPluginTest extends TestCase
 
         $payload = $result->getPayload();
 
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('xpay/send_subscribe_pre_payment', $payload->get('_url'));
     }
 }

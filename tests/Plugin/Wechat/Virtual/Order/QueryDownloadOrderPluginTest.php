@@ -36,7 +36,7 @@ class QueryDownloadOrderPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('xpay/query_download_order', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('1234567890', $payload->get('download_task_id'));
     }
 

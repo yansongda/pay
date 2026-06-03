@@ -44,7 +44,7 @@ class PayPluginTest extends TestCase
         self::assertEquals('requestVirtualPayment', $payload->get('_url'));
         self::assertEquals('1234567890', $payload->get('offerId'));
         self::assertEquals(1, $payload->get('buyQuantity'));
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('CNY', $payload->get('currencyType'));
         self::assertEquals('test_product', $payload->get('productId'));
         self::assertEquals(10, $payload->get('goodsPrice'));
@@ -101,7 +101,7 @@ class PayPluginTest extends TestCase
 
         $payload = $result->getPayload();
 
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('CNY', $payload->get('currencyType'));
         self::assertEmpty($payload->get('outTradeNo'));
         self::assertEmpty($payload->get('attach'));

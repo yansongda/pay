@@ -37,7 +37,7 @@ class StartDownloadOrderPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('xpay/start_download_order', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('2024-01-01 00:00:00', $payload->get('start_date'));
         self::assertEquals('2024-01-01 23:59:59', $payload->get('end_date'));
     }

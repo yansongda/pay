@@ -70,7 +70,7 @@ class QueryBalancePluginTest extends TestCase
 
         $payload = $result->getPayload();
 
-        self::assertEquals(0, $payload->get('env'));
-        self::assertEquals('', $payload->get('user_ip'));
+        self::assertNull($payload->get('env'));
+        self::assertNull($payload->get('user_ip'));
     }
 }
