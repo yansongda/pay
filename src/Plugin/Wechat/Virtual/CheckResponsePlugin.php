@@ -43,12 +43,16 @@ class CheckResponsePlugin implements PluginInterface
 
         $destination = $rocket->getDestination();
 
-        if (!is_null($destination) && 0 !== $destination->get('errcode')) {
-            throw new InvalidResponseException(
-                Exception::RESPONSE_BUSINESS_CODE_WRONG,
-                '微信虚拟支付返回业务异常: '.$destination->get('errmsg'),
-                $destination,
-            );
+        if (!is_null($destination)) {
+            $errcode = $destination->get('errcode');
+
+            if (null !== $errcode && 0 !== $errcode) {
+                throw new InvalidResponseException(
+                    Exception::RESPONSE_BUSINESS_CODE_WRONG,
+                    '微信虚拟支付返回业务异常: '.$destination->get('errmsg'),
+                    $destination,
+                );
+            }
         }
 
         Logger::info('[Wechat][Virtual][CheckResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
