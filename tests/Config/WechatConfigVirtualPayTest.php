@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Config;
 
-use PHPUnit\Framework\Attributes\CoversNothing;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\WechatConfigVirtualPay;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Tests\TestCase;
 
-#[CoversNothing]
 class WechatConfigVirtualPayTest extends TestCase
 {
     public function testDefaultValues(): void
