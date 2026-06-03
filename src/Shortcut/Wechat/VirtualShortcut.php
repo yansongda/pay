@@ -32,7 +32,7 @@ use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\CancelSubscribeContractPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\QuerySubscribeContractPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\SendSubscribePrePaymentPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\SubmitSubscribePayOrderPlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\CheckResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\CreateWithdrawOrderPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryBizBalancePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryWithdrawOrderPlugin;
@@ -181,7 +181,7 @@ class VirtualShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
+            CheckResponsePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];

@@ -6,9 +6,9 @@ namespace Yansongda\Pay\Tests\Stubs\Plugin;
 
 use Closure;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\CheckResponsePlugin;
 
-class VirtualVerifySignaturePluginStub extends VerifySignaturePlugin
+class VirtualCheckResponsePluginStub extends CheckResponsePlugin
 {
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {

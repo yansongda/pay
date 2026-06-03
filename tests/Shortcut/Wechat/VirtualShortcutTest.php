@@ -31,7 +31,7 @@ use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\CancelSubscribeContractPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\QuerySubscribeContractPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\SendSubscribePrePaymentPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\SubmitSubscribePayOrderPlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\CheckResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\CreateWithdrawOrderPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryBizBalancePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryWithdrawOrderPlugin;
@@ -68,7 +68,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -81,7 +81,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(RefundOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -94,7 +94,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(StartDownloadOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -107,7 +107,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryDownloadOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -120,7 +120,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(DownloadBillPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -133,7 +133,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(NotifyProvideGoodsPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -146,7 +146,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(CurrencyPayPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -159,7 +159,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(CancelCurrencyPayPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -172,7 +172,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryBalancePlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -185,7 +185,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(PresentCurrencyPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -198,7 +198,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(StartUploadGoodsPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -211,7 +211,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryUploadGoodsPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -224,7 +224,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(StartPublishGoodsPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -237,7 +237,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryPublishGoodsPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -250,7 +250,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(CreateWithdrawOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -263,7 +263,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryWithdrawOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -276,7 +276,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryBizBalancePlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -289,7 +289,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(SendSubscribePrePaymentPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -302,7 +302,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(SubmitSubscribePayOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -315,7 +315,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QuerySubscribeContractPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }
@@ -328,7 +328,7 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(CancelSubscribeContractPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(VerifySignaturePlugin::class, $plugins[5]);
+        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
         self::assertSame(ResponsePlugin::class, $plugins[6]);
         self::assertSame(ParserPlugin::class, $plugins[7]);
     }

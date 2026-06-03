@@ -16,9 +16,14 @@ use Yansongda\Pay\Exception\Exception;
 use function Yansongda\Artful\should_do_http_request;
 
 /**
+ * 校验微信虚拟支付响应的业务错误码.
+ *
+ * 注意：微信虚拟支付服务端 API 的响应不在 HTTP Header 中携带签名，
+ * 因此此插件仅校验 errcode 而非签名。
+ *
  * @see https://developers.weixin.qq.com/miniprogram/dev/platform-capabilities/business-capabilities/virtual-payment.html#_2-5-%E7%AD%BE%E5%90%8D%E8%AF%A6%E8%A7%A3
  */
-class VerifySignaturePlugin implements PluginInterface
+class CheckResponsePlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
@@ -30,7 +35,7 @@ class VerifySignaturePlugin implements PluginInterface
         /* @var Rocket $rocket */
         $rocket = $next($rocket);
 
-        Logger::debug('[Wechat][Virtual][VerifySignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Wechat][Virtual][CheckResponsePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         if (!should_do_http_request($rocket->getDirection()) || is_null($rocket->getDestinationOrigin())) {
             return $rocket;
@@ -46,7 +51,7 @@ class VerifySignaturePlugin implements PluginInterface
             );
         }
 
-        Logger::info('[Wechat][Virtual][VerifySignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Wechat][Virtual][CheckResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $rocket;
     }
