@@ -50,6 +50,9 @@ class PayPluginTest extends TestCase
         self::assertEquals(10, $payload->get('goodsPrice'));
         self::assertEquals('20240101000000', $payload->get('outTradeNo'));
         self::assertEquals('custom_attach', $payload->get('attach'));
+
+        // destination 应为 payload（NoHttpRequestDirection 场景）
+        self::assertSame($payload, $result->getDestination());
     }
 
     public function testSandboxEnv()

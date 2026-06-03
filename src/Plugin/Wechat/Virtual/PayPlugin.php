@@ -66,6 +66,10 @@ class PayPlugin implements PluginInterface
 
         Logger::info('[Wechat][Virtual][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
-        return $next($rocket);
+        /** @var Rocket $rocket */
+        $rocket = $next($rocket);
+        $rocket->setDestination($rocket->getPayload());
+
+        return $rocket;
     }
 }

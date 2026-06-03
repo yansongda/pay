@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin;
@@ -46,6 +47,10 @@ class AddPayloadSignaturePluginTest extends TestCase
         $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
         $expectedPaySig = hash_hmac('sha256', 'xpay/query_user_balance&'.$body, $config->getVirtualPay()->getAppKey());
         self::assertStringContainsString('pay_sig='.$expectedPaySig, $url);
+
+        // paySig 可作为 payload 独立字段访问
+        self::assertEquals($expectedPaySig, $resultPayload->get('paySig'));
+        self::assertNull($resultPayload->get('signature'));
     }
 
     public function testAssemblyWithSessionKey()
@@ -73,6 +78,10 @@ class AddPayloadSignaturePluginTest extends TestCase
         // verify signature value
         $expectedSignature = hash_hmac('sha256', $body, $sessionKey);
         self::assertStringContainsString('signature='.$expectedSignature, $url);
+
+        // paySig 和 signature 可作为 payload 独立字段访问
+        self::assertNotNull($resultPayload->get('paySig'));
+        self::assertEquals($expectedSignature, $resultPayload->get('signature'));
     }
 
     public function testAssemblyMissingAppKey()
@@ -138,5 +147,45 @@ class AddPayloadSignaturePluginTest extends TestCase
         self::assertStringContainsString('existing_param=value', $url);
         self::assertStringContainsString('access_token=test_access_token', $url);
         self::assertStringContainsString('pay_sig=', $url);
+    }
+
+    public function testAssemblyClientSigningWithoutAccessToken()
+    {
+        $body = '{"buyQuantity":1,"productId":"test_product","goodsPrice":10,"offerId":"1234567890","currencyType":"CNY"}';
+        $payload = new Collection([
+            '_method' => 'POST',
+            '_url' => 'requestVirtualPayment',
+            '_body' => $body,
+        ]);
+        $rocket = (new Rocket())->setPayload($payload);
+
+        // 客户端签名场景不传 access_token 不应抛异常
+        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+
+        $resultPayload = $result->getPayload();
+        $url = $resultPayload->get('_url');
+
+        self::assertStringContainsString('pay_sig=', $url);
+        self::assertStringNotContainsString('access_token=', $url);
+
+        // paySig 可作为 payload 独立字段访问
+        self::assertNotNull($resultPayload->get('paySig'));
+    }
+
+    public function testAssemblyServerSideMissingAccessToken()
+    {
+        $payload = new Collection([
+            '_method' => 'POST',
+            '_url' => 'xpay/query_user_balance',
+            '_body' => '{"openid":"oUpF8muMJAaName"}',
+        ]);
+        $rocket = (new Rocket())->setPayload($payload);
+
+        // 服务端 API 场景缺少 access_token 应抛异常
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        self::expectExceptionMessage('参数异常: 微信虚拟支付缺少 access_token');
+
+        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
     }
 }

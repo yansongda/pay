@@ -40,27 +40,40 @@ class AddPayloadSignaturePlugin implements PluginInterface
         $env = (int) $payload->get('env', 0);
 
         $accessToken = $payload->get('access_token');
+        $isClientSigning = 'requestVirtualPayment' === $uri;
 
-        if (empty($accessToken)) {
+        if (!$isClientSigning && empty($accessToken)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付缺少 access_token');
         }
 
         $paySig = self::getWechatVirtualPaySignature($config, $uri, $body, $env);
 
         $queryParams = [
-            'access_token' => $accessToken,
             'pay_sig' => $paySig,
         ];
 
-        $sessionKey = $params['_session_key'] ?? $payload->get('_session_key');
-
-        if (!empty($sessionKey)) {
-            $queryParams['signature'] = self::getWechatVirtualSessionSignature($sessionKey, $body);
+        if (!empty($accessToken)) {
+            $queryParams['access_token'] = $accessToken;
         }
 
-        $rocket->mergePayload([
+        $sessionKey = $params['_session_key'] ?? $payload->get('_session_key');
+        $signature = null;
+
+        if (!empty($sessionKey)) {
+            $signature = self::getWechatVirtualSessionSignature($sessionKey, $body);
+            $queryParams['signature'] = $signature;
+        }
+
+        $mergeData = [
             '_url' => $this->appendQueryParams($uri, $queryParams),
-        ]);
+            'paySig' => $paySig,
+        ];
+
+        if (null !== $signature) {
+            $mergeData['signature'] = $signature;
+        }
+
+        $rocket->mergePayload($mergeData);
 
         Logger::info('[Wechat][Virtual][AddPayloadSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
