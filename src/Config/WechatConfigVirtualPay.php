@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Config;
 
+use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Traits\Accessable;
 use Yansongda\Supports\Traits\Serializable;
 
@@ -29,7 +31,11 @@ class WechatConfigVirtualPay
 
     public function getAppKey(int $env = 0): ?string
     {
-        if (1 === $env && null !== $this->sandboxAppKey) {
+        if (1 === $env) {
+            if (null === $this->sandboxAppKey) {
+                throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 沙箱环境下缺少微信虚拟支付配置 -- [virtual_pay.sandbox_app_key]');
+            }
+
             return $this->sandboxAppKey;
         }
 

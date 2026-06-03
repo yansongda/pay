@@ -165,6 +165,13 @@ class CallbackPlugin implements PluginInterface
             throw new DecryptException(Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID, '加解密异常: PKCS7 padding 值无效');
         }
 
+        // Verify all padding bytes are consistent
+        for ($i = 0; $i < $pad; ++$i) {
+            if (ord($decrypted[strlen($decrypted) - 1 - $i]) !== $pad) {
+                throw new DecryptException(Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID, '加解密异常: PKCS7 padding 验证失败');
+            }
+        }
+
         $decrypted = substr($decrypted, 0, -$pad);
 
         // Extract: 16 random bytes + 4 bytes msg length (big-endian) + msg + appId

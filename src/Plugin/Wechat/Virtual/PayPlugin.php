@@ -8,11 +8,13 @@ use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
@@ -31,6 +33,7 @@ class PayPlugin implements PluginInterface
 
     /**
      * @throws ContainerException
+     * @throws InvalidConfigException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
@@ -44,11 +47,17 @@ class PayPlugin implements PluginInterface
         /** @var WechatConfig $config */
         $config = self::getProviderConfig('wechat', $params);
 
+        $offerId = $config->getVirtualPay()->getOfferId();
+
+        if (empty($offerId)) {
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信虚拟支付配置 -- [virtual_pay.offer_id]');
+        }
+
         $rocket->mergePayload([
             '_method' => 'POST',
             // 客户端签名场景使用 requestVirtualPayment，服务端 API 场景使用具体路径
             '_url' => $payload->get('_url', 'requestVirtualPayment'),
-            'offerId' => $config->getVirtualPay()->getOfferId() ?? '',
+            'offerId' => $offerId,
             'currencyType' => $payload->get('currencyType', 'CNY'),
         ]);
 

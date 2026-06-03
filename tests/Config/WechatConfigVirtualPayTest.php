@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Config;
 
 use PHPUnit\Framework\Attributes\CoversNothing;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\WechatConfigVirtualPay;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Tests\TestCase;
 
 #[CoversNothing]
@@ -61,18 +63,24 @@ class WechatConfigVirtualPayTest extends TestCase
         self::assertSame('sandbox-key', $vp->getAppKey(1));
     }
 
-    public function testGetAppKeyWithEnvOneFallsBackToAppKeyWhenNoSandbox(): void
+    public function testGetAppKeyWithEnvOneThrowsWhenNoSandboxKey(): void
     {
         $vp = new WechatConfigVirtualPay();
         $vp->setAppKey('prod-key');
 
-        self::assertSame('prod-key', $vp->getAppKey(1));
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
+
+        $vp->getAppKey(1);
     }
 
-    public function testGetAppKeyWithEnvOneReturnsNullWhenNeitherConfigured(): void
+    public function testGetAppKeyWithEnvOneThrowsWhenNeitherConfigured(): void
     {
         $vp = new WechatConfigVirtualPay();
 
-        self::assertNull($vp->getAppKey(1));
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
+
+        $vp->getAppKey(1);
     }
 }
