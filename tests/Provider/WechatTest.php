@@ -26,13 +26,13 @@ use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\CurrencyPayPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\QueryBalancePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\QueryOrderPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\RefundOrderPlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin as VirtualVerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\CheckResponsePlugin as VirtualCheckResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\CallbackPluginStub;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\Stubs\Plugin\VirtualCallbackPluginStub;
-use Yansongda\Pay\Tests\Stubs\Plugin\VirtualVerifySignaturePluginStub;
+use Yansongda\Pay\Tests\Stubs\Plugin\VirtualCheckResponsePluginStub;
 use Yansongda\Pay\Tests\Stubs\Plugin\VerifySignaturePluginStub;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -289,7 +289,7 @@ class WechatTest extends TestCase
         $http = Mockery::mock(Client::class);
         $http->shouldReceive('sendRequest')->andReturn($response);
         Pay::set(HttpClientInterface::class, $http);
-        Pay::set(VirtualVerifySignaturePlugin::class, new VirtualVerifySignaturePluginStub());
+        Pay::set(VirtualCheckResponsePlugin::class, new VirtualCheckResponsePluginStub());
 
         $result = Pay::wechat()->pay(
             [
@@ -298,7 +298,7 @@ class WechatTest extends TestCase
                 AddPayloadBodyPlugin::class,
                 VirtualAddPayloadSignaturePlugin::class,
                 AddRadarPlugin::class,
-                VirtualVerifySignaturePlugin::class,
+                VirtualCheckResponsePlugin::class,
                 ResponsePlugin::class,
                 ParserPlugin::class,
             ],
@@ -324,7 +324,7 @@ class WechatTest extends TestCase
         $http = Mockery::mock(Client::class);
         $http->shouldReceive('sendRequest')->andReturn($response);
         Pay::set(HttpClientInterface::class, $http);
-        Pay::set(VirtualVerifySignaturePlugin::class, new VirtualVerifySignaturePluginStub());
+        Pay::set(VirtualCheckResponsePlugin::class, new VirtualCheckResponsePluginStub());
 
         $result = Pay::wechat()->pay(
             [
@@ -333,7 +333,7 @@ class WechatTest extends TestCase
                 AddPayloadBodyPlugin::class,
                 VirtualAddPayloadSignaturePlugin::class,
                 AddRadarPlugin::class,
-                VirtualVerifySignaturePlugin::class,
+                VirtualCheckResponsePlugin::class,
                 ResponsePlugin::class,
                 ParserPlugin::class,
             ],
@@ -363,7 +363,7 @@ class WechatTest extends TestCase
         $http = Mockery::mock(Client::class);
         $http->shouldReceive('sendRequest')->andReturn($response);
         Pay::set(HttpClientInterface::class, $http);
-        Pay::set(VirtualVerifySignaturePlugin::class, new VirtualVerifySignaturePluginStub());
+        Pay::set(VirtualCheckResponsePlugin::class, new VirtualCheckResponsePluginStub());
 
         $result = Pay::wechat()->pay(
             [
@@ -372,7 +372,7 @@ class WechatTest extends TestCase
                 AddPayloadBodyPlugin::class,
                 VirtualAddPayloadSignaturePlugin::class,
                 AddRadarPlugin::class,
-                VirtualVerifySignaturePlugin::class,
+                VirtualCheckResponsePlugin::class,
                 ResponsePlugin::class,
                 ParserPlugin::class,
             ],
@@ -399,7 +399,7 @@ class WechatTest extends TestCase
         $http = Mockery::mock(Client::class);
         $http->shouldReceive('sendRequest')->andReturn($response);
         Pay::set(HttpClientInterface::class, $http);
-        Pay::set(VirtualVerifySignaturePlugin::class, new VirtualVerifySignaturePluginStub());
+        Pay::set(VirtualCheckResponsePlugin::class, new VirtualCheckResponsePluginStub());
 
         $result = Pay::wechat()->pay(
             [
@@ -408,7 +408,7 @@ class WechatTest extends TestCase
                 AddPayloadBodyPlugin::class,
                 VirtualAddPayloadSignaturePlugin::class,
                 AddRadarPlugin::class,
-                VirtualVerifySignaturePlugin::class,
+                VirtualCheckResponsePlugin::class,
                 ResponsePlugin::class,
                 ParserPlugin::class,
             ],

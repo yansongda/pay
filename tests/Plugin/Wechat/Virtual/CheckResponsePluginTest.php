@@ -9,19 +9,19 @@ use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Wechat\Virtual\VerifySignaturePlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\CheckResponsePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class VerifySignaturePluginTest extends TestCase
+class CheckResponsePluginTest extends TestCase
 {
-    protected VerifySignaturePlugin $plugin;
+    protected CheckResponsePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new VerifySignaturePlugin();
+        $this->plugin = new CheckResponsePlugin();
     }
 
     public function testShouldNotDoRequest()
