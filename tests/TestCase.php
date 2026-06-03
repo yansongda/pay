@@ -58,7 +58,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mp_app_id' => 'wx55955316af4ef13',
                     'mch_id' => '1600314069',
                     'mini_app_id' => 'wx55955316af4ef14',
-                    'mini_app_key_virtual_pay' => 'yansongda',
                     'mch_secret_key_v2' => 'yansongda',
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
                     'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
@@ -72,6 +71,13 @@ class TestCase extends \PHPUnit\Framework\TestCase
                         'yansongda' => __DIR__.'/Cert/wechatPublicKey.crt',
                     ],
                     'mode' => Pay::MODE_NORMAL,
+                    'virtual_pay' => [
+                        'app_key' => 'yansongda_virtual_pay',
+                        'sandbox_app_key' => 'yansongda_virtual_pay_sandbox',
+                        'offer_id' => '1234567890',
+                        'encoding_aes_key' => 'MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY',
+                        'callback_token' => 'test_callback_token',
+                    ],
                 ],
                 'service_provider' => [
                     'app_id' => 'yansongdaa',

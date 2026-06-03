@@ -120,7 +120,6 @@ class WechatTraitTest extends TestCase
                     'mp_app_id' => 'wx55955316af4ef13',
                     'mch_id' => '1600314069',
                     'mini_app_id' => 'wx55955316af4ef14',
-                    'mini_app_key_virtual_pay' => 'yansongda',
                     'mch_secret_key_v2' => 'yansongda',
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
                     'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
@@ -399,6 +398,47 @@ class WechatTraitTest extends TestCase
         $params = ['_config' => 'empty_wechat_public_cert'];
         $result = WechatTraitStub::getWechatSerialNo($params);
         self::assertEquals('test-45F59D4DABF31918AFCEC556D5D2C6E376675D57', $result);
+    }
+
+    public function testGetWechatVirtualPaySignature(): void
+    {
+        $config = new WechatConfig([
+            'app_id' => 'yansongda',
+            'mp_app_id' => 'wx55955316af4ef13',
+            'mch_id' => '1600314069',
+            'mini_app_id' => 'wx55955316af4ef14',
+            'virtual_pay' => [
+                'app_key' => '12345',
+            ],
+            'mch_secret_key_v2' => 'yansongda',
+            'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
+            'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
+            'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+            'notify_url' => 'https://pay.yansongda.cn',
+            'wechat_public_cert_path' => [
+                '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+            ],
+            'mode' => Pay::MODE_NORMAL,
+        ]);
+
+        $uri = '/xpay/query_user_balance';
+        $body = '{"openid": "xxx", "user_ip": "127.0.0.1", "env": 0}';
+
+        self::assertEquals(
+            'c37809f27c6d7fd1837ad2500a04512b66b34fd793a39a385fade56dca89a4b5',
+            WechatTraitStub::getWechatVirtualPaySignature($config, $uri, $body)
+        );
+    }
+
+    public function testGetWechatVirtualSessionSignature(): void
+    {
+        $body = '{"openid": "xxx", "user_ip": "127.0.0.1", "env": 0}';
+        $sessionKey = '9hAb/NEYUlkaMBEsmFgzig==';
+
+        self::assertEquals(
+            '089d9e8dc5d308977360c4b79ec600a93d736802802a807d634192328032f6c7',
+            WechatTraitStub::getWechatVirtualSessionSignature($sessionKey, $body)
+        );
     }
 
     public function testGetWechatPublicKey(): void

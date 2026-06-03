@@ -11,11 +11,6 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Airwallex\V1\ObtainAccessTokenPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-/**
- * @internal
- *
- * @coversNothing
- */
 class ObtainAccessTokenPluginTest extends TestCase
 {
     public function testNormal()

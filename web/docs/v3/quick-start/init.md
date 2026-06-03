@@ -69,6 +69,19 @@ $config = [
             'sub_mini_app_id' => '',
             // 「选填」服务商模式下，子商户id
             'sub_mch_id' => '',
+            // 「选填」虚拟支付配置（小程序虚拟支付时必填）
+            'virtual_pay' => [
+                // 「必填」商户号（offer_id）
+                'offer_id' => '1234567890',
+                // 「必填」签名密钥（客户端签名、服务端 API 签名）
+                'app_key' => 'your_app_key',
+                // 「选填」沙箱环境签名密钥
+                'sandbox_app_key' => 'your_sandbox_app_key',
+                // 「必填」回调验签 Token
+                'callback_token' => 'your_callback_token',
+                // 「必填」回调解密密钥（43 字符）
+                'encoding_aes_key' => 'your_encoding_aes_key',
+            ],
             // 「选填」（适用于 2024-11 及之前开通微信支付的老商户）微信支付平台证书序列号及证书路径，强烈建议 php-fpm 模式下配置此参数
             // 「必填」微信支付公钥ID及证书路径，key 填写形如 PUB_KEY_ID_0000000000000024101100397200000006 的公钥id，见 https://pay.weixin.qq.com/doc/v3/merchant/4013053249
             'wechat_public_cert_path' => [

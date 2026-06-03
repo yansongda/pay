@@ -20,6 +20,7 @@ use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\CallbackPlugin as VirtualCallbackPlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -30,6 +31,7 @@ use Yansongda\Supports\Str;
  * @method Collection|Rocket scan(array $order)     扫码支付（摄像头，主动扫）
  * @method Collection|Rocket h5(array $order)       H5 支付
  * @method Collection|Rocket transfer(array $order) 帐户转账
+ * @method Collection|Rocket virtual(array $order)  虚拟支付
  */
 class Wechat implements ProviderInterface
 {
@@ -42,6 +44,8 @@ class Wechat implements ProviderInterface
         Pay::MODE_SANDBOX => 'https://api.mch.weixin.qq.com/sandboxnew/',
         Pay::MODE_SERVICE => 'https://api.mch.weixin.qq.com/',
     ];
+
+    public const URL_VIRTUAL = 'https://api.weixin.qq.com/';
 
     /**
      * @throws ContainerException
@@ -124,19 +128,27 @@ class Wechat implements ProviderInterface
 
         Event::dispatch(new CallbackReceived('wechat', clone $request, $params, null));
 
+        $plugin = (($params ?? [])['_action'] ?? null) === 'virtual'
+            ? VirtualCallbackPlugin::class
+            : CallbackPlugin::class;
+
         return $this->pay(
-            [CallbackPlugin::class],
+            [$plugin],
             ['_request' => $request, '_params' => $params]
         );
     }
 
-    public function success(): ResponseInterface
+    public function success(array $params = []): ResponseInterface
     {
-        return new Response(
-            200,
-            ['Content-Type' => 'application/json'],
-            json_encode(['code' => 'SUCCESS', 'message' => '成功']),
-        );
+        [$contentType, $body] = match ($params['_action'] ?? null) {
+            'virtual' => match ($params['_format'] ?? null) {
+                'json' => ['application/json', json_encode(['ErrCode' => 0, 'ErrMsg' => 'success'])],
+                default => ['application/xml', '<xml><ErrCode>0</ErrCode><ErrMsg>success</ErrMsg></xml>'],
+            },
+            default => ['application/json', json_encode(['code' => 'SUCCESS', 'message' => '成功'])],
+        };
+
+        return new Response(200, ['Content-Type' => $contentType], $body);
     }
 
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface

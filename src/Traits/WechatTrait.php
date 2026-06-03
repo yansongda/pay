@@ -53,6 +53,16 @@ trait WechatTrait
             return $url;
         }
 
+        // 客户端签名场景：uri 固定为 requestVirtualPayment，不拼接基地址
+        if ('requestVirtualPayment' === $url) {
+            return $url;
+        }
+
+        // 虚拟支付服务端 API 使用 api.weixin.qq.com，非 api.mch.weixin.qq.com
+        if (str_starts_with($url, 'xpay/')) {
+            return Wechat::URL_VIRTUAL.$url;
+        }
+
         return Wechat::URL[$config->getMode()].$url;
     }
 
@@ -359,6 +369,25 @@ trait WechatTrait
         }
 
         return $publicKey;
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public static function getWechatVirtualPaySignature(WechatConfig $config, string $uri, string $body, int $env = 0): string
+    {
+        $appKey = $config->getVirtualPay()->getAppKey($env);
+
+        if (empty($appKey)) {
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信虚拟支付配置 -- [virtual_pay.app_key]');
+        }
+
+        return hash_hmac('sha256', $uri.'&'.$body, $appKey);
+    }
+
+    public static function getWechatVirtualSessionSignature(string $sessionKey, string $body): string
+    {
+        return hash_hmac('sha256', $body, $sessionKey);
     }
 
     /**
