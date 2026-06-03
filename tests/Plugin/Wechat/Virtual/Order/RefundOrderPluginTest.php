@@ -39,7 +39,7 @@ class RefundOrderPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('/xpay/refund_order', $result->getPayload()->get('_url'));
+        self::assertEquals('xpay/refund_order', $result->getPayload()->get('_url'));
         self::assertEquals('test_openid', $result->getPayload()->get('openid'));
         self::assertEquals('123456', $result->getPayload()->get('order_id'));
         self::assertNull($result->getPayload()->get('wx_order_id'));

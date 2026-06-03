@@ -38,7 +38,7 @@ class StartUploadGoodsPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/start_upload_goods', $payload->get('_url'));
+        self::assertEquals('xpay/start_upload_goods', $payload->get('_url'));
         self::assertEquals(0, $payload->get('env'));
         self::assertEquals('test_group_001', $payload->get('group_id'));
         self::assertEquals([
@@ -62,7 +62,7 @@ class StartUploadGoodsPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(1, $payload->get('env'));
-        self::assertEquals('/xpay/start_upload_goods', $payload->get('_url'));
+        self::assertEquals('xpay/start_upload_goods', $payload->get('_url'));
     }
 
     public function testAccessTokenPassedThrough()

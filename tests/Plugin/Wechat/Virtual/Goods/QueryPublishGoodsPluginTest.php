@@ -35,7 +35,7 @@ class QueryPublishGoodsPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/query_publish_goods', $payload->get('_url'));
+        self::assertEquals('xpay/query_publish_goods', $payload->get('_url'));
         self::assertEquals(0, $payload->get('env'));
         self::assertEquals('pub_task_789', $payload->get('publish_task_id'));
     }
@@ -53,6 +53,6 @@ class QueryPublishGoodsPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(1, $payload->get('env'));
-        self::assertEquals('/xpay/query_publish_goods', $payload->get('_url'));
+        self::assertEquals('xpay/query_publish_goods', $payload->get('_url'));
     }
 }

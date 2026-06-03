@@ -34,7 +34,7 @@ class NotifyProvideGoodsPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/notify_provide_goods', $payload->get('_url'));
+        self::assertEquals('xpay/notify_provide_goods', $payload->get('_url'));
         self::assertEquals('1234567890', $payload->get('order_id'));
         self::assertNull($payload->get('wx_order_id'));
     }

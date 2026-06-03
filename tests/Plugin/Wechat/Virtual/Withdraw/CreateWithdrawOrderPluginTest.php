@@ -36,7 +36,7 @@ class CreateWithdrawOrderPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/create_withdraw_order', $payload->get('_url'));
+        self::assertEquals('xpay/create_withdraw_order', $payload->get('_url'));
         self::assertEquals('WITHDRAW_001', $payload->get('withdraw_no'));
         self::assertEquals('0.01', $payload->get('withdraw_amount'));
     }

@@ -27,7 +27,7 @@ class AddPayloadSignaturePluginTest extends TestCase
         $body = '{"openid":"oUpF8muMJAaName"}';
         $payload = new Collection([
             '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
+            '_url' => 'xpay/query_user_balance',
             '_body' => $body,
             'access_token' => 'test_access_token',
         ]);
@@ -44,7 +44,7 @@ class AddPayloadSignaturePluginTest extends TestCase
 
         // verify pay_sig value
         $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
-        $expectedPaySig = hash_hmac('sha256', '/xpay/query_user_balance&'.$body, $config->getVirtualPay()->getAppKey());
+        $expectedPaySig = hash_hmac('sha256', 'xpay/query_user_balance&'.$body, $config->getVirtualPay()->getAppKey());
         self::assertStringContainsString('pay_sig='.$expectedPaySig, $url);
     }
 
@@ -54,7 +54,7 @@ class AddPayloadSignaturePluginTest extends TestCase
         $sessionKey = 'test_session_key_value';
         $payload = new Collection([
             '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
+            '_url' => 'xpay/query_user_balance',
             '_body' => $body,
             'access_token' => 'test_access_token',
             '_session_key' => $sessionKey,
@@ -79,7 +79,7 @@ class AddPayloadSignaturePluginTest extends TestCase
     {
         $payload = new Collection([
             '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
+            '_url' => 'xpay/query_user_balance',
             '_body' => '{"openid":"oUpF8muMJAaName"}',
             'access_token' => 'test_access_token',
         ]);
@@ -101,7 +101,7 @@ class AddPayloadSignaturePluginTest extends TestCase
         $body = '{"openid":"oUpF8muMJAaName"}';
         $payload = new Collection([
             '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
+            '_url' => 'xpay/query_user_balance',
             '_body' => $body,
             'access_token' => 'test_access_token',
             "env" => 1,
@@ -115,7 +115,7 @@ class AddPayloadSignaturePluginTest extends TestCase
 
         $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
         $sandboxAppKey = $config->getVirtualPay()->getAppKey(1);
-        $expectedPaySig = hash_hmac('sha256', '/xpay/query_user_balance&'.$body, $sandboxAppKey);
+        $expectedPaySig = hash_hmac('sha256', 'xpay/query_user_balance&'.$body, $sandboxAppKey);
         self::assertStringContainsString('pay_sig='.$expectedPaySig, $url);
     }
 
@@ -124,7 +124,7 @@ class AddPayloadSignaturePluginTest extends TestCase
         $body = '{"openid":"oUpF8muMJAaName"}';
         $payload = new Collection([
             '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance?existing_param=value',
+            '_url' => 'xpay/query_user_balance?existing_param=value',
             '_body' => $body,
             'access_token' => 'test_access_token',
         ]);

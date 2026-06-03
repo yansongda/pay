@@ -38,7 +38,7 @@ class PresentCurrencyPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/present_currency', $payload->get('_url'));
+        self::assertEquals('xpay/present_currency', $payload->get('_url'));
         self::assertEquals('test_openid', $payload->get('openid'));
         self::assertEquals(0, $payload->get('env'));
         self::assertEquals(50, $payload->get('present_amount'));

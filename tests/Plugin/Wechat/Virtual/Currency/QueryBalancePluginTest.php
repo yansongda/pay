@@ -37,7 +37,7 @@ class QueryBalancePluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/query_user_balance', $payload->get('_url'));
+        self::assertEquals('xpay/query_user_balance', $payload->get('_url'));
         self::assertEquals('test_openid', $payload->get('openid'));
         self::assertEquals('127.0.0.1', $payload->get('user_ip'));
         self::assertEquals(0, $payload->get('env'));

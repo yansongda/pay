@@ -35,7 +35,7 @@ class QueryBizBalancePluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/query_biz_balance', $payload->get('_url'));
+        self::assertEquals('xpay/query_biz_balance', $payload->get('_url'));
         self::assertEquals(0, $payload->get('env'));
     }
 

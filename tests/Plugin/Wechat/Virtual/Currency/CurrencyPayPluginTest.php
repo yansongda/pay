@@ -41,7 +41,7 @@ class CurrencyPayPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/currency_pay', $payload->get('_url'));
+        self::assertEquals('xpay/currency_pay', $payload->get('_url'));
         self::assertEquals('test_openid', $payload->get('openid'));
         self::assertEquals(0, $payload->get('env'));
         self::assertEquals('127.0.0.1', $payload->get('user_ip'));

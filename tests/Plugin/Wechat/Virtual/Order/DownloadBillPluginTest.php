@@ -36,7 +36,7 @@ class DownloadBillPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/download_bill', $payload->get('_url'));
+        self::assertEquals('xpay/download_bill', $payload->get('_url'));
         self::assertEquals(0, $payload->get('env'));
         self::assertEquals('2024-01-01', $payload->get('bill_date'));
         self::assertEquals('ALL', $payload->get('bill_type'));
