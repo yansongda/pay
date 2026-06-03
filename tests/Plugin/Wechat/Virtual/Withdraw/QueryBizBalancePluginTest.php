@@ -48,7 +48,7 @@ class QueryBizBalancePluginTest extends TestCase
 
         $payload = $result->getPayload();
 
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
     }
 
     public function testSandboxEnv()

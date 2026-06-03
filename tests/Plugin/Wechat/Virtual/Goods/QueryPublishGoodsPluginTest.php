@@ -36,7 +36,7 @@ class QueryPublishGoodsPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('xpay/query_publish_goods', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('pub_task_789', $payload->get('publish_task_id'));
     }
 

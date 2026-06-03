@@ -39,7 +39,7 @@ class StartUploadGoodsPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('xpay/start_upload_goods', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('test_group_001', $payload->get('group_id'));
         self::assertEquals([
             ['goods_id' => 'g001', 'goods_name' => '测试道具'],

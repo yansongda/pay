@@ -36,7 +36,7 @@ class QueryUploadGoodsPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('xpay/query_upload_goods', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('task_123456', $payload->get('upload_task_id'));
     }
 

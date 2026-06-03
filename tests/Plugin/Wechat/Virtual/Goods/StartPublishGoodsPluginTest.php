@@ -37,7 +37,7 @@ class StartPublishGoodsPluginTest extends TestCase
 
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('xpay/start_publish_goods', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('env'));
+        self::assertNull($payload->get('env'));
         self::assertEquals('test_group_001', $payload->get('group_id'));
         self::assertEquals('task_123456', $payload->get('upload_task_id'));
     }
