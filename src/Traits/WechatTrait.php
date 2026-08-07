@@ -382,6 +382,13 @@ trait WechatTrait
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信虚拟支付配置 -- [virtual_pay.app_key]');
         }
 
+        /**
+         * 服务端请求路径补充 "/" 前缀，不然微信会验签失败
+         */
+        if (str_starts_with($uri, 'xpay/')) {
+            $uri = '/' . $uri;
+        }
+
         return hash_hmac('sha256', $uri.'&'.$body, $appKey);
     }
 
