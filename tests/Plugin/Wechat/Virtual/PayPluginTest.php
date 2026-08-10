@@ -77,7 +77,7 @@ class PayPluginTest extends TestCase
     {
         $rocket = new Rocket();
         $rocket->setPayload(new Collection([
-            '_url' => 'xpay/pay_deposit',
+            '_url' => '/xpay/pay_deposit',
             'buyQuantity' => 1,
             'productId' => 'test_product',
             'goodsPrice' => 10,
@@ -85,7 +85,7 @@ class PayPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('xpay/pay_deposit', $result->getPayload()->get('_url'));
+        self::assertEquals('/xpay/pay_deposit', $result->getPayload()->get('_url'));
     }
 
     public function testDefaultValues()

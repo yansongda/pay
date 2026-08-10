@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## Unreleased
 
+### Fixed
+
+- 修复微信虚拟支付服务端 API 签名 uri 缺少前导 `/` 导致微信验签失败的问题（#1182）
+
 
 ## v3.8.0-beta.2 - 2026-07-01
 
