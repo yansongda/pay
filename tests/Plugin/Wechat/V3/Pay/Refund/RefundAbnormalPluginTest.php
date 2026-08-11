@@ -50,8 +50,8 @@ class RefundAbnormalPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/refund/domestic/refunds/111/apply-abnormal-refund',
-            '_service_url' => 'v3/refund/domestic/refunds/111/apply-abnormal-refund',
+            '_url' => '/v3/refund/domestic/refunds/111/apply-abnormal-refund',
+            '_service_url' => '/v3/refund/domestic/refunds/111/apply-abnormal-refund',
             'name' => 'yansongda',
         ], $result->getPayload()->all());
     }
@@ -71,8 +71,8 @@ class RefundAbnormalPluginTest extends TestCase
         $payload = $result->getPayload()->all();
 
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_url']);
-        self::assertEquals('v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_service_url']);
+        self::assertEquals('/v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_url']);
+        self::assertEquals('/v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_service_url']);
         self::assertEquals('yansongda', $payload['name']);
         self::assertArrayHasKey('bank_account', $payload);
         self::assertNotEquals('222', $payload['bank_account']);
@@ -94,8 +94,8 @@ class RefundAbnormalPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/refund/domestic/refunds/222/apply-abnormal-refund',
-            '_service_url' => 'v3/refund/domestic/refunds/222/apply-abnormal-refund',
+            '_url' => '/v3/refund/domestic/refunds/222/apply-abnormal-refund',
+            '_service_url' => '/v3/refund/domestic/refunds/222/apply-abnormal-refund',
             'sub_mchid' => '111',
             'name' => 'yansongda',
         ], $result->getPayload()->all());
@@ -113,8 +113,8 @@ class RefundAbnormalPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/refund/domestic/refunds/222/apply-abnormal-refund',
-            '_service_url' => 'v3/refund/domestic/refunds/222/apply-abnormal-refund',
+            '_url' => '/v3/refund/domestic/refunds/222/apply-abnormal-refund',
+            '_service_url' => '/v3/refund/domestic/refunds/222/apply-abnormal-refund',
             'sub_mchid' => '1600314070',
             'name' => 'yansongda',
         ], $result->getPayload()->all());
@@ -135,8 +135,8 @@ class RefundAbnormalPluginTest extends TestCase
         $payload = $result->getPayload()->all();
 
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_url']);
-        self::assertEquals('v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_service_url']);
+        self::assertEquals('/v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_url']);
+        self::assertEquals('/v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_service_url']);
         self::assertEquals('1600314070', $payload['sub_mchid']);
         self::assertEquals('yansongda', $payload['name']);
         self::assertArrayHasKey('bank_account', $payload);
@@ -186,8 +186,8 @@ class RefundAbnormalPluginTest extends TestCase
         $payload = $result->getPayload()->all();
 
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_url']);
-        self::assertEquals('v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_service_url']);
+        self::assertEquals('/v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_url']);
+        self::assertEquals('/v3/refund/domestic/refunds/111/apply-abnormal-refund', $payload['_service_url']);
         self::assertEquals('yansongda', $payload['name']);
         self::assertArrayHasKey('bank_account', $payload);
         self::assertNotEquals('222', $payload['bank_account']);

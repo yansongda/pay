@@ -32,7 +32,7 @@ class CapturePlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v2/checkout/orders/'.$orderId.'/capture',
+            '_url' => '/v2/checkout/orders/'.$orderId.'/capture',
         ]);
 
         Logger::info('[Paypal][V2][Pay][CapturePlugin] 插件装载完毕', ['rocket' => $rocket]);

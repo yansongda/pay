@@ -45,7 +45,7 @@ class QueryRefundPluginTest extends TestCase
         self::assertEquals([
             'out_order_no' => 'yansongda',
             '_method' => 'POST',
-            '_url' => 'api/apps/ecpay/v1/query_refund',
+            '_url' => '/api/apps/ecpay/v1/query_refund',
             'app_id' => 'tt226e54d3bd581bf801',
         ], $result->getPayload()->all());
     }
@@ -63,7 +63,7 @@ class QueryRefundPluginTest extends TestCase
         self::assertEquals([
             'out_order_no' => 'yansongda',
             '_method' => 'POST',
-            '_url' => 'api/apps/ecpay/v1/query_refund',
+            '_url' => '/api/apps/ecpay/v1/query_refund',
             'app_id' => 'tt226e54d3bd581bf801',
             'thirdparty_id' => 'service_provider111',
         ], $result->getPayload()->all());
@@ -81,7 +81,7 @@ class QueryRefundPluginTest extends TestCase
         self::assertEquals([
             'out_order_no' => 'yansongda',
             '_method' => 'POST',
-            '_url' => 'api/apps/ecpay/v1/query_refund',
+            '_url' => '/api/apps/ecpay/v1/query_refund',
             'app_id' => 'tt226e54d3bd581bf801',
             'thirdparty_id' => 'service_provider',
         ], $result->getPayload()->all());

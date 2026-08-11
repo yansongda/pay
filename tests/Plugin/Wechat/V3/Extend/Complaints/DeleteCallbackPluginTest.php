@@ -27,8 +27,8 @@ class DeleteCallbackPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'DELETE',
-            '_url' => 'v3/merchant-service/complaint-notifications',
-            '_service_url' => 'v3/merchant-service/complaint-notifications',
+            '_url' => '/v3/merchant-service/complaint-notifications',
+            '_service_url' => '/v3/merchant-service/complaint-notifications',
         ], $result->getPayload()->all());
     }
 }

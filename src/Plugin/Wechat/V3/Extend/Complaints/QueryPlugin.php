@@ -36,8 +36,8 @@ class QueryPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/complaints-v2?'.$query,
-            '_service_url' => 'v3/merchant-service/complaints-v2?'.$query,
+            '_url' => '/v3/merchant-service/complaints-v2?'.$query,
+            '_service_url' => '/v3/merchant-service/complaints-v2?'.$query,
         ]);
 
         Logger::info('[Wechat][Extend][Complaints][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

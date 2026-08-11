@@ -44,8 +44,8 @@ class MiniPayPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v3/combine-transactions/jsapi',
-            '_service_url' => 'v3/combine-transactions/jsapi',
+            '_url' => '/v3/combine-transactions/jsapi',
+            '_service_url' => '/v3/combine-transactions/jsapi',
             'notify_url' => $payload->get('notify_url', $config->getNotifyUrl()),
             'combine_appid' => $payload->get('combine_appid', $config->getMiniAppId() ?? ''),
             'combine_mchid' => $payload->get('combine_mchid', $config->getMchId()),

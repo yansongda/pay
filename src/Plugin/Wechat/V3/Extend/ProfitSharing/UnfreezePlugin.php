@@ -51,8 +51,8 @@ class UnfreezePlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/profitsharing/orders/unfreeze',
-                '_service_url' => 'v3/profitsharing/orders/unfreeze',
+                '_url' => '/v3/profitsharing/orders/unfreeze',
+                '_service_url' => '/v3/profitsharing/orders/unfreeze',
             ],
             $data ?? $this->normal(),
         ));

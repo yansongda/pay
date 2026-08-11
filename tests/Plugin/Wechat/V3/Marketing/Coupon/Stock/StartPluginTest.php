@@ -45,8 +45,8 @@ class StartPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/111/start',
-            '_service_url' => 'v3/marketing/favor/stocks/111/start',
+            '_url' => '/v3/marketing/favor/stocks/111/start',
+            '_service_url' => '/v3/marketing/favor/stocks/111/start',
             'stock_creator_mchid' => '222',
         ], $result->getPayload()->all());
     }
@@ -62,8 +62,8 @@ class StartPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/111/start',
-            '_service_url' => 'v3/marketing/favor/stocks/111/start',
+            '_url' => '/v3/marketing/favor/stocks/111/start',
+            '_service_url' => '/v3/marketing/favor/stocks/111/start',
             'stock_creator_mchid' => '1600314069',
         ], $result->getPayload()->all());
     }

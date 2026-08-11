@@ -55,8 +55,8 @@ class CreatePlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/profitsharing/orders',
-                '_service_url' => 'v3/profitsharing/orders',
+                '_url' => '/v3/profitsharing/orders',
+                '_service_url' => '/v3/profitsharing/orders',
             ],
             $data ?? $this->normal($payload, $params, $config),
         ));

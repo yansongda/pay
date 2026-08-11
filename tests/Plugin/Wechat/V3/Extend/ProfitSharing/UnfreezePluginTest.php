@@ -44,8 +44,8 @@ class UnfreezePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/orders/unfreeze',
-            '_service_url' => 'v3/profitsharing/orders/unfreeze',
+            '_url' => '/v3/profitsharing/orders/unfreeze',
+            '_service_url' => '/v3/profitsharing/orders/unfreeze',
             'test' => 'yansongda',
         ], $result->getPayload()->all());
     }
@@ -63,8 +63,8 @@ class UnfreezePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/orders/unfreeze',
-            '_service_url' => 'v3/profitsharing/orders/unfreeze',
+            '_url' => '/v3/profitsharing/orders/unfreeze',
+            '_service_url' => '/v3/profitsharing/orders/unfreeze',
             'test' => 'yansongda',
             'notify_url' => '1111',
             'sub_mchid' => '2222',
@@ -82,8 +82,8 @@ class UnfreezePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/orders/unfreeze',
-            '_service_url' => 'v3/profitsharing/orders/unfreeze',
+            '_url' => '/v3/profitsharing/orders/unfreeze',
+            '_service_url' => '/v3/profitsharing/orders/unfreeze',
             'test' => 'yansongda',
             'notify_url' => 'https://pay.yansongda.cn',
             'sub_mchid' => '1600314070',

@@ -124,7 +124,7 @@ trait PaypalTrait
         ];
 
         $token = self::getPaypalAccessToken($params);
-        $url = Paypal::URL[$config->getMode()].'v1/notifications/verify-webhook-signature';
+        $url = Paypal::URL[$config->getMode()].'/v1/notifications/verify-webhook-signature';
 
         $result = Artful::artful([
             StartPlugin::class,

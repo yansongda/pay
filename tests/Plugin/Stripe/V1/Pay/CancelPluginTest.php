@@ -42,7 +42,7 @@ class CancelPluginTest extends TestCase
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('v1/payment_intents/pi_abc/cancel', $result->getPayload()->get('_url'));
+        self::assertEquals('/v1/payment_intents/pi_abc/cancel', $result->getPayload()->get('_url'));
     }
 
     public function testMissingPaymentIntentId()

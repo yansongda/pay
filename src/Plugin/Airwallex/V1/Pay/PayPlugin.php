@@ -36,7 +36,7 @@ class PayPlugin implements PluginInterface
 
         $rocket->mergePayload(array_filter([
             '_method' => 'POST',
-            '_url' => 'api/v1/pa/payment_intents/create',
+            '_url' => '/api/v1/pa/payment_intents/create',
             'request_id' => $payload->get('request_id', self::getAirwallexRequestId()),
             'amount' => $payload->get('amount'),
             'currency' => $payload->get('currency'),

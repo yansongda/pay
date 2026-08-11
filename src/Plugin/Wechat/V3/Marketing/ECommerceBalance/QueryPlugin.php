@@ -46,7 +46,7 @@ class QueryPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_service_url' => 'v3/merchant/fund/balance/'.$accountType,
+            '_service_url' => '/v3/merchant/fund/balance/'.$accountType,
         ]);
 
         Logger::info('[Wechat][Marketing][ECommerceBalance][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

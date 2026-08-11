@@ -40,7 +40,7 @@ class ApplyPlugin implements PluginInterface
 
         $rocket->setPacker(XmlPacker::class)
             ->mergePayload([
-                '_url' => 'pay/pappayapply',
+                '_url' => '/pay/pappayapply',
                 '_content_type' => 'application/xml',
                 'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
                 'mch_id' => $config->getMchId(),

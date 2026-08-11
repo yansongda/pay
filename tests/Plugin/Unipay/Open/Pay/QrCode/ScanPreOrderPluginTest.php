@@ -37,7 +37,7 @@ class ScanPreOrderPluginTest extends TestCase
 
         self::assertEquals(QueryPacker::class, $result->getPacker());
         self::assertEquals([
-            '_url' => 'gateway/api/order.do',
+            '_url' => '/gateway/api/order.do',
             'encoding' => 'utf-8',
             'signature' => '',
             'bizType' => '2',
@@ -65,7 +65,7 @@ class ScanPreOrderPluginTest extends TestCase
 
         self::assertEquals(QueryPacker::class, $result->getPacker());
         self::assertEquals([
-            '_url' => 'gateway/api/order.do',
+            '_url' => '/gateway/api/order.do',
             'encoding' => 'utf-8',
             'signature' => '',
             'bizType' => '000000',

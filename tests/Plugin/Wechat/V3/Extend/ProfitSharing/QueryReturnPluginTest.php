@@ -45,8 +45,8 @@ class QueryReturnPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/profitsharing/return-orders/yansongda?out_order_no=111',
-            '_service_url' => 'v3/profitsharing/return-orders/yansongda?sub_mchid=null&out_order_no=111',
+            '_url' => '/v3/profitsharing/return-orders/yansongda?out_order_no=111',
+            '_service_url' => '/v3/profitsharing/return-orders/yansongda?sub_mchid=null&out_order_no=111',
         ], $result->getPayload()->all());
     }
 
@@ -62,8 +62,8 @@ class QueryReturnPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/profitsharing/return-orders/yansongda?out_order_no=111',
-            '_service_url' => 'v3/profitsharing/return-orders/yansongda?sub_mchid=1600314070&out_order_no=111',
+            '_url' => '/v3/profitsharing/return-orders/yansongda?out_order_no=111',
+            '_service_url' => '/v3/profitsharing/return-orders/yansongda?sub_mchid=1600314070&out_order_no=111',
         ], $result->getPayload()->all());
     }
 
@@ -80,8 +80,8 @@ class QueryReturnPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/profitsharing/return-orders/yansongda?out_order_no=111',
-            '_service_url' => 'v3/profitsharing/return-orders/yansongda?sub_mchid=222&out_order_no=111',
+            '_url' => '/v3/profitsharing/return-orders/yansongda?out_order_no=111',
+            '_service_url' => '/v3/profitsharing/return-orders/yansongda?sub_mchid=222&out_order_no=111',
         ], $result->getPayload()->all());
     }
 }

@@ -25,7 +25,7 @@ class AddRadarPluginTest extends TestCase
         $params = [];
         $payload = new Collection([
             '_method' => 'POST',
-            '_url' => 'api/apps/ecpay/v1/create_order',
+            '_url' => '/api/apps/ecpay/v1/create_order',
             '_body' => '123',
         ]);
 

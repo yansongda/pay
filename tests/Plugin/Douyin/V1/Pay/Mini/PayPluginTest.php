@@ -45,7 +45,7 @@ class PayPluginTest extends TestCase
         self::assertEquals([
             'name' => 'yansongda',
             '_method' => 'POST',
-            '_url' => 'api/apps/ecpay/v1/create_order',
+            '_url' => '/api/apps/ecpay/v1/create_order',
             'app_id' => 'tt226e54d3bd581bf801',
             'notify_url' => 'https://yansongda.cn/douyin/notify',
         ], $result->getPayload()->all());
@@ -64,7 +64,7 @@ class PayPluginTest extends TestCase
         self::assertEquals([
             'name' => 'yansongda',
             '_method' => 'POST',
-            '_url' => 'api/apps/ecpay/v1/create_order',
+            '_url' => '/api/apps/ecpay/v1/create_order',
             'app_id' => 'tt226e54d3bd581bf801',
             'notify_url' => 'https://yansongda.cn/douyin/notify',
             'thirdparty_id' => 'service_provider111',
@@ -83,7 +83,7 @@ class PayPluginTest extends TestCase
         self::assertEquals([
             'name' => 'yansongda',
             '_method' => 'POST',
-            '_url' => 'api/apps/ecpay/v1/create_order',
+            '_url' => '/api/apps/ecpay/v1/create_order',
             'app_id' => 'tt226e54d3bd581bf801',
             'notify_url' => 'https://yansongda.cn/douyin/notify',
             'thirdparty_id' => 'service_provider',

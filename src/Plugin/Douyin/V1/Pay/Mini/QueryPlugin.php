@@ -50,7 +50,7 @@ class QueryPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'api/apps/ecpay/v1/query_order',
+                '_url' => '/api/apps/ecpay/v1/query_order',
                 'app_id' => $config->getMiniAppId(),
             ],
             $data ?? [],

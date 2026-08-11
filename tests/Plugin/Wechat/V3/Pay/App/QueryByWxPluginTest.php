@@ -43,7 +43,7 @@ class QueryByWxPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('v3/pay/transactions/id/111?mchid=1600314069', $result->getPayload()->get('_url'));
+        self::assertEquals('/v3/pay/transactions/id/111?mchid=1600314069', $result->getPayload()->get('_url'));
     }
 
     public function testServiceParams()
@@ -57,7 +57,7 @@ class QueryByWxPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('v3/pay/partner/transactions/id/111?sp_mchid=1600314069&sub_mchid=333', $result->getPayload()->get('_service_url'));
+        self::assertEquals('/v3/pay/partner/transactions/id/111?sp_mchid=1600314069&sub_mchid=333', $result->getPayload()->get('_service_url'));
     }
 
     public function testService()
@@ -70,6 +70,6 @@ class QueryByWxPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('v3/pay/partner/transactions/id/111?sp_mchid=1600314069&sub_mchid=1600314070', $result->getPayload()->get('_service_url'));
+        self::assertEquals('/v3/pay/partner/transactions/id/111?sp_mchid=1600314069&sub_mchid=1600314070', $result->getPayload()->get('_service_url'));
     }
 }

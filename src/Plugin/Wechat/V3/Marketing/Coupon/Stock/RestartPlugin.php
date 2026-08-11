@@ -46,8 +46,8 @@ class RestartPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/restart',
-            '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/restart',
+            '_url' => '/v3/marketing/favor/stocks/'.$stockId.'/restart',
+            '_service_url' => '/v3/marketing/favor/stocks/'.$stockId.'/restart',
             'stock_creator_mchid' => $stockCreatorMchId,
         ]);
 

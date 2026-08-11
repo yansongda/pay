@@ -46,8 +46,8 @@ class QueryByWxPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/pay/transactions/id/'.$transactionId.'?'.$this->normal($config),
-            '_service_url' => 'v3/pay/partner/transactions/id/'.$transactionId.'?'.$this->service($payload, $config),
+            '_url' => '/v3/pay/transactions/id/'.$transactionId.'?'.$this->normal($config),
+            '_service_url' => '/v3/pay/partner/transactions/id/'.$transactionId.'?'.$this->service($payload, $config),
         ]);
 
         Logger::info('[Wechat][V3][Pay][App][QueryByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);

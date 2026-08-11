@@ -20,7 +20,7 @@ class GetBaseInformationPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/merchant/base-information',
+            '_url' => '/v3/new-tax-control-fapiao/merchant/base-information',
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Fapiao][Blockchain][GetBaseInformationPlugin] 插件装载完毕', ['rocket' => $rocket]);

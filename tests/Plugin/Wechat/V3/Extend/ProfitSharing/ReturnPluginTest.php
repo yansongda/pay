@@ -45,8 +45,8 @@ class ReturnPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/return-orders',
-            '_service_url' => 'v3/profitsharing/return-orders',
+            '_url' => '/v3/profitsharing/return-orders',
+            '_service_url' => '/v3/profitsharing/return-orders',
             'test' => 'yansongda',
             'return_mchid' => '1111',
         ], $result->getPayload()->all());
@@ -63,8 +63,8 @@ class ReturnPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/return-orders',
-            '_service_url' => 'v3/profitsharing/return-orders',
+            '_url' => '/v3/profitsharing/return-orders',
+            '_service_url' => '/v3/profitsharing/return-orders',
             'test' => 'yansongda',
             'return_mchid' => '1600314069',
         ], $result->getPayload()->all());
@@ -83,8 +83,8 @@ class ReturnPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/return-orders',
-            '_service_url' => 'v3/profitsharing/return-orders',
+            '_url' => '/v3/profitsharing/return-orders',
+            '_service_url' => '/v3/profitsharing/return-orders',
             'test' => 'yansongda',
             'return_mchid' => '1111',
             'sub_mchid' => '2222',
@@ -102,8 +102,8 @@ class ReturnPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/return-orders',
-            '_service_url' => 'v3/profitsharing/return-orders',
+            '_url' => '/v3/profitsharing/return-orders',
+            '_service_url' => '/v3/profitsharing/return-orders',
             'test' => 'yansongda',
             'return_mchid' => '1600314069',
             'sub_mchid' => '1600314070',

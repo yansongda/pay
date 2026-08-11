@@ -49,8 +49,8 @@ class AddReceiverPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/receivers/add',
-            '_service_url' => 'v3/profitsharing/receivers/add',
+            '_url' => '/v3/profitsharing/receivers/add',
+            '_service_url' => '/v3/profitsharing/receivers/add',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
         ], $result->getPayload()->all());
@@ -69,8 +69,8 @@ class AddReceiverPluginTest extends TestCase
 
         $payload = $result->getPayload()->all();
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/profitsharing/receivers/add', $payload['_url']);
-        self::assertEquals('v3/profitsharing/receivers/add', $payload['_service_url']);
+        self::assertEquals('/v3/profitsharing/receivers/add', $payload['_url']);
+        self::assertEquals('/v3/profitsharing/receivers/add', $payload['_service_url']);
         self::assertEquals('wx55955316af4ef13', $payload['appid']);
         self::assertArrayHasKey('_serial_no', $payload);
         self::assertArrayHasKey('name', $payload);
@@ -89,8 +89,8 @@ class AddReceiverPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/receivers/add',
-            '_service_url' => 'v3/profitsharing/receivers/add',
+            '_url' => '/v3/profitsharing/receivers/add',
+            '_service_url' => '/v3/profitsharing/receivers/add',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
             'sub_mchid' => '2222',
@@ -108,8 +108,8 @@ class AddReceiverPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/receivers/add',
-            '_service_url' => 'v3/profitsharing/receivers/add',
+            '_url' => '/v3/profitsharing/receivers/add',
+            '_service_url' => '/v3/profitsharing/receivers/add',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
             'sub_mchid' => '1600314070',
@@ -129,8 +129,8 @@ class AddReceiverPluginTest extends TestCase
 
         $payload = $result->getPayload()->all();
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/profitsharing/receivers/add', $payload['_url']);
-        self::assertEquals('v3/profitsharing/receivers/add', $payload['_service_url']);
+        self::assertEquals('/v3/profitsharing/receivers/add', $payload['_url']);
+        self::assertEquals('/v3/profitsharing/receivers/add', $payload['_service_url']);
         self::assertEquals('wx55955316af4ef13', $payload['appid']);
         self::assertArrayHasKey('_serial_no', $payload);
         self::assertArrayHasKey('name', $payload);
@@ -149,8 +149,8 @@ class AddReceiverPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/receivers/add',
-            '_service_url' => 'v3/profitsharing/receivers/add',
+            '_url' => '/v3/profitsharing/receivers/add',
+            '_service_url' => '/v3/profitsharing/receivers/add',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
             'sub_mchid' => '1600314070',
@@ -197,8 +197,8 @@ class AddReceiverPluginTest extends TestCase
 
         $payload = $result->getPayload()->all();
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/profitsharing/receivers/add', $payload['_url']);
-        self::assertEquals('v3/profitsharing/receivers/add', $payload['_service_url']);
+        self::assertEquals('/v3/profitsharing/receivers/add', $payload['_url']);
+        self::assertEquals('/v3/profitsharing/receivers/add', $payload['_service_url']);
         self::assertEquals('wx55955316af4ef13', $payload['appid']);
         self::assertArrayHasKey('_serial_no', $payload);
         self::assertArrayHasKey('name', $payload);

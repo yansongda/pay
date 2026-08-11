@@ -31,9 +31,9 @@ use Yansongda\Supports\Str;
 class Stripe implements ProviderInterface
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://api.stripe.com/',
-        Pay::MODE_SANDBOX => 'https://api.stripe.com/',
-        Pay::MODE_SERVICE => 'https://api.stripe.com/',
+        Pay::MODE_NORMAL => 'https://api.stripe.com',
+        Pay::MODE_SANDBOX => 'https://api.stripe.com',
+        Pay::MODE_SERVICE => 'https://api.stripe.com',
     ];
 
     /**

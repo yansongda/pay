@@ -48,8 +48,8 @@ class QueryItemsPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/items?'.$this->normal($payload, $config),
-            '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/items?'.$this->normal($payload, $config),
+            '_url' => '/v3/marketing/favor/stocks/'.$stockId.'/items?'.$this->normal($payload, $config),
+            '_service_url' => '/v3/marketing/favor/stocks/'.$stockId.'/items?'.$this->normal($payload, $config),
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Coupon][Stock][QueryItemsPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -47,8 +47,8 @@ class SendPlugin implements PluginInterface
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/marketing/favor/users/'.$openId.'/coupons',
-                '_service_url' => 'v3/marketing/favor/users/'.$openId.'/coupons',
+                '_url' => '/v3/marketing/favor/users/'.$openId.'/coupons',
+                '_service_url' => '/v3/marketing/favor/users/'.$openId.'/coupons',
             ],
             $this->normal($payload, $params, $config),
         ));

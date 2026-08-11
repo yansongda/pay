@@ -32,7 +32,7 @@ class UpdateConfigPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'PATCH',
-            '_url' => 'v3/new-tax-control-fapiao/merchant/development-config',
+            '_url' => '/v3/new-tax-control-fapiao/merchant/development-config',
             'test' => 'yansongda',
             'card_appid' => '1111',
         ], $result->getPayload()->all());

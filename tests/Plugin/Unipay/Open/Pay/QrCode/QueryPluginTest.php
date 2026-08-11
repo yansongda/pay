@@ -37,7 +37,7 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals(QueryPacker::class, $result->getPacker());
         self::assertEquals([
-            '_url' => 'gateway/api/backTransReq.do',
+            '_url' => '/gateway/api/backTransReq.do',
             '_sandbox_url' => 'https://101.231.204.80:5000/gateway/api/backTransReq.do',
             'encoding' => 'utf-8',
             'signature' => '',
@@ -63,7 +63,7 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals(QueryPacker::class, $result->getPacker());
         self::assertEquals([
-            '_url' => 'gateway/api/backTransReq.do',
+            '_url' => '/gateway/api/backTransReq.do',
             '_sandbox_url' => 'https://101.231.204.80:5000/gateway/api/backTransReq.do',
             'encoding' => 'utf-8',
             'signature' => '',

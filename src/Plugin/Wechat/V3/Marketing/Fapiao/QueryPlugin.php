@@ -33,7 +33,7 @@ class QueryPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/fapiao-applications/'.$applyId.(empty($fapiaoId) ? '' : '?fapiao_id='.$fapiaoId),
+            '_url' => '/v3/new-tax-control-fapiao/fapiao-applications/'.$applyId.(empty($fapiaoId) ? '' : '?fapiao_id='.$fapiaoId),
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Fapiao][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

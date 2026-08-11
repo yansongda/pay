@@ -32,7 +32,7 @@ class RefundPluginTest extends TestCase
         );
 
         self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('api/v1/pa/refunds/create', $result->getPayload()->get('_url'));
+        self::assertEquals('/api/v1/pa/refunds/create', $result->getPayload()->get('_url'));
         self::assertEquals('int_test123', $result->getPayload()->get('payment_intent_id'));
     }
 

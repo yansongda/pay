@@ -37,7 +37,7 @@ class QueryPlugin implements PluginInterface
 
         $rocket->setPacker(QueryPacker::class)
             ->mergePayload([
-                '_url' => 'gateway/api/queryTrans.do',
+                '_url' => '/gateway/api/queryTrans.do',
                 'encoding' => 'utf-8',
                 'signature' => '',
                 'bizType' => $payload?->get('bizType') ?? '000000',

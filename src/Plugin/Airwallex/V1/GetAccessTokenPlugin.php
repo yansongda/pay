@@ -20,7 +20,7 @@ class GetAccessTokenPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'api/v1/authentication/login',
+            '_url' => '/api/v1/authentication/login',
             '_auth_type' => 'client',
         ]);
 

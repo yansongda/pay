@@ -32,8 +32,8 @@ class QueryImagePlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/images/'.$mediaId,
-            '_service_url' => 'v3/merchant-service/images/'.$mediaId,
+            '_url' => '/v3/merchant-service/images/'.$mediaId,
+            '_service_url' => '/v3/merchant-service/images/'.$mediaId,
         ]);
 
         Logger::info('[Wechat][Extend][Complaints][QueryImagePlugin] 插件装载完毕', ['rocket' => $rocket]);

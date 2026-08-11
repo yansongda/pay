@@ -20,7 +20,7 @@ class QueryConfigPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/merchant/development-config',
+            '_url' => '/v3/new-tax-control-fapiao/merchant/development-config',
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Fapiao][QueryConfigPlugin] 插件装载完毕', ['rocket' => $rocket]);

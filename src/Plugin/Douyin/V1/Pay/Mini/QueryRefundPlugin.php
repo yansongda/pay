@@ -50,7 +50,7 @@ class QueryRefundPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'api/apps/ecpay/v1/query_refund',
+                '_url' => '/api/apps/ecpay/v1/query_refund',
                 'app_id' => $config->getMiniAppId(),
             ],
             $data ?? [],

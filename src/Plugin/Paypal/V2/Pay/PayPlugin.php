@@ -38,7 +38,7 @@ class PayPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v2/checkout/orders',
+            '_url' => '/v2/checkout/orders',
             'intent' => $payload->get('intent', 'CAPTURE'),
             'purchase_units' => $payload->get('purchase_units', []),
             'application_context' => array_filter([

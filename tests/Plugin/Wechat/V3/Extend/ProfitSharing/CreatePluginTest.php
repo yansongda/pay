@@ -57,8 +57,8 @@ class CreatePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/orders',
-            '_service_url' => 'v3/profitsharing/orders',
+            '_url' => '/v3/profitsharing/orders',
+            '_service_url' => '/v3/profitsharing/orders',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
             'receivers' => [
@@ -93,8 +93,8 @@ class CreatePluginTest extends TestCase
 
         $payload = $result->getPayload()->all();
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/profitsharing/orders', $payload['_url']);
-        self::assertEquals('v3/profitsharing/orders', $payload['_service_url']);
+        self::assertEquals('/v3/profitsharing/orders', $payload['_url']);
+        self::assertEquals('/v3/profitsharing/orders', $payload['_service_url']);
         self::assertEquals('wx55955316af4ef13', $payload['appid']);
         self::assertEquals('PERSONAL_OPENID', $payload['receivers'][0]['type']);
         self::assertEquals(100, $payload['receivers'][0]['amount']);
@@ -117,8 +117,8 @@ class CreatePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/orders',
-            '_service_url' => 'v3/profitsharing/orders',
+            '_url' => '/v3/profitsharing/orders',
+            '_service_url' => '/v3/profitsharing/orders',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
             'sub_mchid' => '2222',
@@ -136,8 +136,8 @@ class CreatePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/orders',
-            '_service_url' => 'v3/profitsharing/orders',
+            '_url' => '/v3/profitsharing/orders',
+            '_service_url' => '/v3/profitsharing/orders',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
             'sub_mchid' => '1600314070',
@@ -165,8 +165,8 @@ class CreatePluginTest extends TestCase
 
         $payload = $result->getPayload()->all();
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/profitsharing/orders', $payload['_url']);
-        self::assertEquals('v3/profitsharing/orders', $payload['_service_url']);
+        self::assertEquals('/v3/profitsharing/orders', $payload['_url']);
+        self::assertEquals('/v3/profitsharing/orders', $payload['_service_url']);
         self::assertEquals('wx55955316af4ef13', $payload['appid']);
         self::assertEquals('PERSONAL_OPENID', $payload['receivers'][0]['type']);
         self::assertEquals(100, $payload['receivers'][0]['amount']);
@@ -193,8 +193,8 @@ class CreatePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/orders',
-            '_service_url' => 'v3/profitsharing/orders',
+            '_url' => '/v3/profitsharing/orders',
+            '_service_url' => '/v3/profitsharing/orders',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
             'sub_mchid' => '1600314070',
@@ -249,8 +249,8 @@ class CreatePluginTest extends TestCase
 
         $payload = $result->getPayload()->all();
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/profitsharing/orders', $payload['_url']);
-        self::assertEquals('v3/profitsharing/orders', $payload['_service_url']);
+        self::assertEquals('/v3/profitsharing/orders', $payload['_url']);
+        self::assertEquals('/v3/profitsharing/orders', $payload['_service_url']);
         self::assertEquals('wx55955316af4ef13', $payload['appid']);
         self::assertArrayHasKey('_serial_no', $payload);
         self::assertArrayHasKey('name', $payload['receivers'][0]);

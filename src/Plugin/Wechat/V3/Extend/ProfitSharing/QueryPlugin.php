@@ -45,8 +45,8 @@ class QueryPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/profitsharing/orders/'.$outOrderNo.'?transaction_id='.$transactionId,
-            '_service_url' => 'v3/profitsharing/orders/'.$outOrderNo.'?sub_mchid='.$subMchId.'&transaction_id='.$transactionId,
+            '_url' => '/v3/profitsharing/orders/'.$outOrderNo.'?transaction_id='.$transactionId,
+            '_service_url' => '/v3/profitsharing/orders/'.$outOrderNo.'?sub_mchid='.$subMchId.'&transaction_id='.$transactionId,
         ]);
 
         Logger::info('[Wechat][Extend][ProfitSharing][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

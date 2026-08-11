@@ -46,8 +46,8 @@ class QueryMerchantsPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/stocks/111/merchants?stock_creator_mchid=222',
-            '_service_url' => 'v3/marketing/favor/stocks/111/merchants?stock_creator_mchid=222',
+            '_url' => '/v3/marketing/favor/stocks/111/merchants?stock_creator_mchid=222',
+            '_service_url' => '/v3/marketing/favor/stocks/111/merchants?stock_creator_mchid=222',
         ], $result->getPayload()->all());
     }
 
@@ -63,8 +63,8 @@ class QueryMerchantsPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/stocks/111/merchants?stock_creator_mchid=1600314069',
-            '_service_url' => 'v3/marketing/favor/stocks/111/merchants?stock_creator_mchid=1600314069',
+            '_url' => '/v3/marketing/favor/stocks/111/merchants?stock_creator_mchid=1600314069',
+            '_service_url' => '/v3/marketing/favor/stocks/111/merchants?stock_creator_mchid=1600314069',
         ], $result->getPayload()->all());
     }
 }

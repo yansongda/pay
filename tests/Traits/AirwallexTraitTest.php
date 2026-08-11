@@ -44,8 +44,8 @@ class AirwallexTraitTest extends TestCase
         ]);
 
         self::assertSame('https://yansongda.cn', AirwallexTraitStub::getAirwallexUrl($config, new Collection(['_url' => 'https://yansongda.cn'])));
-        self::assertSame('https://api.airwallex.com/api/v1/authentication/login', AirwallexTraitStub::getAirwallexUrl($config, new Collection(['_url' => 'api/v1/authentication/login'])));
-        self::assertSame('https://api-demo.airwallex.com/api/v1/authentication/login', AirwallexTraitStub::getAirwallexUrl($sandboxConfig, new Collection(['_url' => 'api/v1/authentication/login'])));
+        self::assertSame('https://api.airwallex.com/api/v1/authentication/login', AirwallexTraitStub::getAirwallexUrl($config, new Collection(['_url' => '/api/v1/authentication/login'])));
+        self::assertSame('https://api-demo.airwallex.com/api/v1/authentication/login', AirwallexTraitStub::getAirwallexUrl($sandboxConfig, new Collection(['_url' => '/api/v1/authentication/login'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_AIRWALLEX_URL_MISSING);

@@ -46,7 +46,7 @@ class SendPlugin implements PluginInterface
         $rocket->setPacker(XmlPacker::class)
             ->mergePayload(array_merge(
                 [
-                    '_url' => 'mmpaymkttransfers/sendredpack',
+                    '_url' => '/mmpaymkttransfers/sendredpack',
                     '_content_type' => 'application/xml',
                     'nonce_str' => Str::random(32),
                     '_http' => [

@@ -45,8 +45,8 @@ class QueryReturnPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/profitsharing/return-orders/'.$outReturnNo.'?out_order_no='.$outOrderNo,
-            '_service_url' => 'v3/profitsharing/return-orders/'.$outReturnNo.'?sub_mchid='.$subMchId.'&out_order_no='.$outOrderNo,
+            '_url' => '/v3/profitsharing/return-orders/'.$outReturnNo.'?out_order_no='.$outOrderNo,
+            '_service_url' => '/v3/profitsharing/return-orders/'.$outReturnNo.'?sub_mchid='.$subMchId.'&out_order_no='.$outOrderNo,
         ]);
 
         Logger::info('[Wechat][Extend][ProfitSharing][QueryReturnPlugin] 插件装载完毕', ['rocket' => $rocket]);

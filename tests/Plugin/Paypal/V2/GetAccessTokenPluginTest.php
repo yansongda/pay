@@ -28,7 +28,7 @@ class GetAccessTokenPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('v1/oauth2/token', $payload->get('_url'));
+        self::assertEquals('/v1/oauth2/token', $payload->get('_url'));
         self::assertEquals('basic', $payload->get('_auth_type'));
     }
 }

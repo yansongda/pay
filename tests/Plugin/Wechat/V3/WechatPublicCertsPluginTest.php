@@ -28,7 +28,7 @@ class WechatPublicCertsPluginTest extends TestCase
         $payload = $result->getPayload()->all();
 
         self::assertEquals('GET', $payload['_method']);
-        self::assertEquals('v3/certificates', $payload['_url']);
+        self::assertEquals('/v3/certificates', $payload['_url']);
         self::assertArrayNotHasKey('aaa', $payload);
         self::assertArrayNotHasKey('name', $payload);
     }

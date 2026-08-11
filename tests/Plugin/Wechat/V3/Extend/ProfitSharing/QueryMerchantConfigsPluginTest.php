@@ -42,7 +42,7 @@ class QueryMerchantConfigsPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_service_url' => 'v3/profitsharing/merchant-configs/1600314070',
+            '_service_url' => '/v3/profitsharing/merchant-configs/1600314070',
         ], $result->getPayload()->all());
     }
 
@@ -58,7 +58,7 @@ class QueryMerchantConfigsPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_service_url' => 'v3/profitsharing/merchant-configs/yansongda',
+            '_service_url' => '/v3/profitsharing/merchant-configs/yansongda',
         ], $result->getPayload()->all());
     }
 }

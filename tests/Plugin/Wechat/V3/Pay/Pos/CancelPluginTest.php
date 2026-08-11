@@ -48,7 +48,7 @@ class CancelPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('v3/pay/transactions/out-trade-no/111/reverse', $payload->get('_url'));
+        self::assertEquals('/v3/pay/transactions/out-trade-no/111/reverse', $payload->get('_url'));
         self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
         self::assertEquals('1600314069', $payload->get('mchid'));
     }
@@ -65,7 +65,7 @@ class CancelPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('v3/pay/partner/transactions/out-trade-no/111/reverse', $payload->get('_service_url'));
+        self::assertEquals('/v3/pay/partner/transactions/out-trade-no/111/reverse', $payload->get('_service_url'));
         self::assertEquals('wx55955316af4ef13', $payload->get('sp_appid'));
         self::assertEquals('1600314069', $payload->get('sp_mchid'));
         self::assertEquals('1600314070', $payload->get('sub_mchid'));
@@ -84,7 +84,7 @@ class CancelPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('v3/pay/partner/transactions/out-trade-no/111/reverse', $payload->get('_service_url'));
+        self::assertEquals('/v3/pay/partner/transactions/out-trade-no/111/reverse', $payload->get('_service_url'));
         self::assertEquals('wx55955316af4ef13', $payload->get('sp_appid'));
         self::assertEquals('1600314069', $payload->get('sp_mchid'));
         self::assertEquals('1222', $payload->get('sub_mchid'));

@@ -32,7 +32,7 @@ class QueryPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'GET',
-            '_url' => 'v2/checkout/orders/'.$orderId,
+            '_url' => '/v2/checkout/orders/'.$orderId,
         ]);
 
         Logger::info('[Paypal][V2][Pay][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

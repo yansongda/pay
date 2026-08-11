@@ -46,7 +46,7 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/fapiao-applications/111?fapiao_id=yansongda',
+            '_url' => '/v3/new-tax-control-fapiao/fapiao-applications/111?fapiao_id=yansongda',
         ], $result->getPayload()->all());
     }
 
@@ -62,7 +62,7 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/fapiao-applications/111',
+            '_url' => '/v3/new-tax-control-fapiao/fapiao-applications/111',
         ], $result->getPayload()->all());
     }
 }

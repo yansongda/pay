@@ -45,8 +45,8 @@ class PausePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/yansongda/pause',
-            '_service_url' => 'v3/marketing/favor/stocks/yansongda/pause',
+            '_url' => '/v3/marketing/favor/stocks/yansongda/pause',
+            '_service_url' => '/v3/marketing/favor/stocks/yansongda/pause',
             'stock_creator_mchid' => '1111',
         ], $result->getPayload()->all());
     }
@@ -62,8 +62,8 @@ class PausePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/yansongda/pause',
-            '_service_url' => 'v3/marketing/favor/stocks/yansongda/pause',
+            '_url' => '/v3/marketing/favor/stocks/yansongda/pause',
+            '_service_url' => '/v3/marketing/favor/stocks/yansongda/pause',
             'stock_creator_mchid' => '1600314069',
         ], $result->getPayload()->all());
     }

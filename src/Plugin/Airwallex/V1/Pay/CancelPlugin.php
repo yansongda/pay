@@ -35,7 +35,7 @@ class CancelPlugin implements PluginInterface
 
         $rocket->mergePayload(array_filter([
             '_method' => 'POST',
-            '_url' => 'api/v1/pa/payment_intents/'.$id.'/cancel',
+            '_url' => '/api/v1/pa/payment_intents/'.$id.'/cancel',
             'request_id' => $payload->get('request_id', self::getAirwallexRequestId()),
             'cancellation_reason' => $payload->get('cancellation_reason'),
         ], static fn ($value) => !is_null($value)));

@@ -46,8 +46,8 @@ class ResponsePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/merchant-service/complaints-v2/yansongda/response',
-            '_service_url' => 'v3/merchant-service/complaints-v2/yansongda/response',
+            '_url' => '/v3/merchant-service/complaints-v2/yansongda/response',
+            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/response',
             'complainted_mchid' => '1600314069',
         ], $result->getPayload()->all());
     }
@@ -66,8 +66,8 @@ class ResponsePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/merchant-service/complaints-v2/yansongda/response',
-            '_service_url' => 'v3/merchant-service/complaints-v2/yansongda/response',
+            '_url' => '/v3/merchant-service/complaints-v2/yansongda/response',
+            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/response',
             'complainted_mchid' => '123',
         ], $result->getPayload()->all());
     }
@@ -88,8 +88,8 @@ class ResponsePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/merchant-service/complaints-v2/yansongda/response',
-            '_service_url' => 'v3/merchant-service/complaints-v2/yansongda/response',
+            '_url' => '/v3/merchant-service/complaints-v2/yansongda/response',
+            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/response',
             'complainted_mchid' => '123',
             'name' => 'yansongda',
             'test' => 'abc',

@@ -46,8 +46,8 @@ class PausePlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/pause',
-            '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/pause',
+            '_url' => '/v3/marketing/favor/stocks/'.$stockId.'/pause',
+            '_service_url' => '/v3/marketing/favor/stocks/'.$stockId.'/pause',
             'stock_creator_mchid' => $stockCreatorMchId,
         ]);
 

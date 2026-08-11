@@ -40,12 +40,12 @@ class Wechat implements ProviderInterface
     public const MCH_SECRET_KEY_LENGTH_BYTE = 32;
 
     public const URL = [
-        Pay::MODE_NORMAL => 'https://api.mch.weixin.qq.com/',
-        Pay::MODE_SANDBOX => 'https://api.mch.weixin.qq.com/sandboxnew/',
-        Pay::MODE_SERVICE => 'https://api.mch.weixin.qq.com/',
+        Pay::MODE_NORMAL => 'https://api.mch.weixin.qq.com',
+        Pay::MODE_SANDBOX => 'https://api.mch.weixin.qq.com/sandboxnew',
+        Pay::MODE_SERVICE => 'https://api.mch.weixin.qq.com',
     ];
 
-    public const URL_VIRTUAL = 'https://api.weixin.qq.com/';
+    public const URL_VIRTUAL = 'https://api.weixin.qq.com';
 
     /**
      * @throws ContainerException

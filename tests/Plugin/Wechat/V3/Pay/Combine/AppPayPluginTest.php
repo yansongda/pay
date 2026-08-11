@@ -47,8 +47,8 @@ class AppPayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/combine-transactions/app',
-            '_service_url' => 'v3/combine-transactions/app',
+            '_url' => '/v3/combine-transactions/app',
+            '_service_url' => '/v3/combine-transactions/app',
             'combine_appid' => 'yansongdaaa',
             'combine_mchid' => '333',
             'notify_url' => '444',
@@ -67,8 +67,8 @@ class AppPayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/combine-transactions/app',
-            '_service_url' => 'v3/combine-transactions/app',
+            '_url' => '/v3/combine-transactions/app',
+            '_service_url' => '/v3/combine-transactions/app',
             'combine_appid' => 'yansongda',
             'combine_mchid' => '1600314069',
             'notify_url' => 'https://pay.yansongda.cn',

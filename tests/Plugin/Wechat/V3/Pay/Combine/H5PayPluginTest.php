@@ -47,8 +47,8 @@ class H5PayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/combine-transactions/h5',
-            '_service_url' => 'v3/combine-transactions/h5',
+            '_url' => '/v3/combine-transactions/h5',
+            '_service_url' => '/v3/combine-transactions/h5',
             'combine_appid' => 'yansongdaaa',
             'combine_mchid' => '333',
             'notify_url' => '444',
@@ -67,8 +67,8 @@ class H5PayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/combine-transactions/h5',
-            '_service_url' => 'v3/combine-transactions/h5',
+            '_url' => '/v3/combine-transactions/h5',
+            '_service_url' => '/v3/combine-transactions/h5',
             'combine_appid' => 'wx55955316af4ef13',
             'combine_mchid' => '1600314069',
             'notify_url' => 'https://pay.yansongda.cn',

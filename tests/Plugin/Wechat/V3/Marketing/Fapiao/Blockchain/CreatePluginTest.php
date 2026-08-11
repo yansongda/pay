@@ -36,7 +36,7 @@ class CreatePluginTest extends TestCase
         $payload = $result->getPayload()->all();
 
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/new-tax-control-fapiao/fapiao-applications', $payload['_url']);
+        self::assertEquals('/v3/new-tax-control-fapiao/fapiao-applications', $payload['_url']);
         self::assertEquals('yansongda', $payload['test']);
         self::assertArrayHasKey('_serial_no', $payload);
     }
@@ -56,7 +56,7 @@ class CreatePluginTest extends TestCase
         $payload = $result->getPayload()->all();
 
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/new-tax-control-fapiao/fapiao-applications', $payload['_url']);
+        self::assertEquals('/v3/new-tax-control-fapiao/fapiao-applications', $payload['_url']);
         self::assertEquals('yansongda', $payload['test']);
         self::assertArrayHasKey('_serial_no', $payload);
         self::assertNotEquals('123', $payload['buyer_information']['phone']);
@@ -103,7 +103,7 @@ class CreatePluginTest extends TestCase
         $payload = $result->getPayload()->all();
 
         self::assertEquals('POST', $payload['_method']);
-        self::assertEquals('v3/new-tax-control-fapiao/fapiao-applications', $payload['_url']);
+        self::assertEquals('/v3/new-tax-control-fapiao/fapiao-applications', $payload['_url']);
         self::assertEquals('yansongda', $payload['test']);
         self::assertArrayHasKey('_serial_no', $payload);
         self::assertNotEquals('123', $payload['buyer_information']['phone']);

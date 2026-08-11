@@ -30,9 +30,9 @@ use Yansongda\Supports\Str;
 class Airwallex implements ProviderInterface
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://api.airwallex.com/',
-        Pay::MODE_SANDBOX => 'https://api-demo.airwallex.com/',
-        Pay::MODE_SERVICE => 'https://api.airwallex.com/',
+        Pay::MODE_NORMAL => 'https://api.airwallex.com',
+        Pay::MODE_SANDBOX => 'https://api-demo.airwallex.com',
+        Pay::MODE_SERVICE => 'https://api.airwallex.com',
     ];
 
     /**

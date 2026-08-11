@@ -36,8 +36,8 @@ class GetBillPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/profitsharing/bills?'.$query,
-            '_service_url' => 'v3/profitsharing/bills?'.$query,
+            '_url' => '/v3/profitsharing/bills?'.$query,
+            '_service_url' => '/v3/profitsharing/bills?'.$query,
         ]);
 
         Logger::info('[Wechat][V3][Extend][ProfitSharing][GetBillPlugin] 插件装载完毕', ['rocket' => $rocket]);

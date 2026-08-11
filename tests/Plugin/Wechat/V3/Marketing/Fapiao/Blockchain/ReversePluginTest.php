@@ -46,7 +46,7 @@ class ReversePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/new-tax-control-fapiao/fapiao-applications/111/reverse',
+            '_url' => '/v3/new-tax-control-fapiao/fapiao-applications/111/reverse',
             'reason' => '222',
         ], $result->getPayload()->all());
     }

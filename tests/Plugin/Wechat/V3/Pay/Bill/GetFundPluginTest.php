@@ -45,8 +45,8 @@ class GetFundPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/bill/fundflowbill?download_url=111',
-            '_service_url' => 'v3/bill/fundflowbill?download_url=111',
+            '_url' => '/v3/bill/fundflowbill?download_url=111',
+            '_service_url' => '/v3/bill/fundflowbill?download_url=111',
         ], $result->getPayload()->all());
     }
 }

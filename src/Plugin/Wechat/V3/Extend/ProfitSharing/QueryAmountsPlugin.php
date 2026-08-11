@@ -32,8 +32,8 @@ class QueryAmountsPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/profitsharing/transactions/'.$transactionId.'/amounts',
-            '_service_url' => 'v3/profitsharing/transactions/'.$transactionId.'/amounts',
+            '_url' => '/v3/profitsharing/transactions/'.$transactionId.'/amounts',
+            '_service_url' => '/v3/profitsharing/transactions/'.$transactionId.'/amounts',
         ]);
 
         Logger::info('[Wechat][Extend][ProfitSharing][QueryAmountsPlugin] 插件装载完毕', ['rocket' => $rocket]);

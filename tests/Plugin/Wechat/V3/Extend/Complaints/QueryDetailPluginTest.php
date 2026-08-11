@@ -47,8 +47,8 @@ class QueryDetailPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/complaints-v2/yansongda',
-            '_service_url' => 'v3/merchant-service/complaints-v2/yansongda',
+            '_url' => '/v3/merchant-service/complaints-v2/yansongda',
+            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda',
         ], $result->getPayload()->all());
     }
 
@@ -71,8 +71,8 @@ class QueryDetailPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/complaints-v2/yansongda',
-            '_service_url' => 'v3/merchant-service/complaints-v2/yansongda',
+            '_url' => '/v3/merchant-service/complaints-v2/yansongda',
+            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda',
         ], $result->getPayload()->all());
         self::assertEquals('yansongda', $result->getDestination()->all()['payer_phone']);
     }

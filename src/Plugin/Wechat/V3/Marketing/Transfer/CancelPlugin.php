@@ -47,7 +47,7 @@ class CancelPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'POST',
-            '_url' => 'v3/fund-app/mch-transfer/transfer-bills/out-bill-no/'.$outBillNo.'/cancel',
+            '_url' => '/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/'.$outBillNo.'/cancel',
         ]);
 
         Logger::info('[Wechat][Marketing][Transfer][CancelPlugin] 插件装载完毕', ['rocket' => $rocket]);

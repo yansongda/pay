@@ -22,7 +22,7 @@ class PayPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v1/payment_intents',
+            '_url' => '/v1/payment_intents',
             'amount' => $payload->get('amount'),
             'currency' => $payload->get('currency'),
         ]);

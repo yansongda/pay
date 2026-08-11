@@ -33,8 +33,8 @@ class UpdateCallbackPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'PUT',
-            '_url' => 'v3/merchant-service/complaint-notifications',
-            '_service_url' => 'v3/merchant-service/complaint-notifications',
+            '_url' => '/v3/merchant-service/complaint-notifications',
+            '_service_url' => '/v3/merchant-service/complaint-notifications',
             'url' => 'yansongda',
         ], $result->getPayload()->all());
     }

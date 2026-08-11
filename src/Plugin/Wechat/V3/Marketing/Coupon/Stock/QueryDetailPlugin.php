@@ -46,8 +46,8 @@ class QueryDetailPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/stocks/'.$stockId.'?stock_creator_mchid='.$mchId,
-            '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'?stock_creator_mchid='.$mchId,
+            '_url' => '/v3/marketing/favor/stocks/'.$stockId.'?stock_creator_mchid='.$mchId,
+            '_service_url' => '/v3/marketing/favor/stocks/'.$stockId.'?stock_creator_mchid='.$mchId,
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Coupon][Stock][QueryDetailPlugin] 插件装载完毕', ['rocket' => $rocket]);

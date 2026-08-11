@@ -49,7 +49,7 @@ class ReturnAdvancePlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'POST',
-            '_service_url' => 'v3/ecommerce/refunds/'.$refundId.'/return-advance',
+            '_service_url' => '/v3/ecommerce/refunds/'.$refundId.'/return-advance',
             'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
         ]);
 

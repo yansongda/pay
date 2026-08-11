@@ -31,7 +31,7 @@ class PayPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('v2/checkout/orders', $payload->get('_url'));
+        self::assertEquals('/v2/checkout/orders', $payload->get('_url'));
         self::assertEquals('CAPTURE', $payload->get('intent'));
     }
 

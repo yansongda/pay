@@ -36,8 +36,8 @@ class GetTradeBillPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/bill/tradebill?'.$query,
-            '_service_url' => 'v3/bill/tradebill?'.$query,
+            '_url' => '/v3/bill/tradebill?'.$query,
+            '_service_url' => '/v3/bill/tradebill?'.$query,
         ]);
 
         Logger::info('[Wechat][Pay][Combine][GetTradeBillPlugin] 插件装载完毕', ['rocket' => $rocket]);

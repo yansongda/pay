@@ -51,8 +51,8 @@ class RefundPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/refund/domestic/refunds',
-                '_service_url' => 'v3/refund/domestic/refunds',
+                '_url' => '/v3/refund/domestic/refunds',
+                '_service_url' => '/v3/refund/domestic/refunds',
                 'notify_url' => $payload->get('notify_url', $config->getNotifyUrl()),
             ],
             $data ?? $this->normal()

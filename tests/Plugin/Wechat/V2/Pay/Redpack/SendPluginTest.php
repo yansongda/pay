@@ -32,7 +32,7 @@ class SendPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(XmlPacker::class, $result->getPacker());
-        self::assertEquals('mmpaymkttransfers/sendredpack', $payload->get('_url'));
+        self::assertEquals('/mmpaymkttransfers/sendredpack', $payload->get('_url'));
         self::assertEquals('application/xml', $payload->get('_content_type'));
         self::assertEquals('111', $payload->get('mch_billno'));
         self::assertEquals('wx55955316af4ef13', $payload->get('wxappid'));

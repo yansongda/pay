@@ -33,9 +33,9 @@ use Yansongda\Supports\Str;
 class Unipay implements ProviderInterface
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://gateway.95516.com/',
-        Pay::MODE_SANDBOX => 'https://gateway.test.95516.com/',
-        Pay::MODE_SERVICE => 'https://gateway.95516.com/',
+        Pay::MODE_NORMAL => 'https://gateway.95516.com',
+        Pay::MODE_SANDBOX => 'https://gateway.test.95516.com',
+        Pay::MODE_SERVICE => 'https://gateway.95516.com',
     ];
 
     /**

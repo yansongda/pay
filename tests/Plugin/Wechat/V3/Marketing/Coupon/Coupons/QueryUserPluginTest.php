@@ -46,8 +46,8 @@ class QueryUserPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/users/111/coupons?appid=222',
-            '_service_url' => 'v3/marketing/favor/users/111/coupons?appid=222',
+            '_url' => '/v3/marketing/favor/users/111/coupons?appid=222',
+            '_service_url' => '/v3/marketing/favor/users/111/coupons?appid=222',
         ], $result->getPayload()->all());
     }
 
@@ -63,8 +63,8 @@ class QueryUserPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/users/111/coupons?appid=wx55955316af4ef13',
-            '_service_url' => 'v3/marketing/favor/users/111/coupons?appid=wx55955316af4ef13',
+            '_url' => '/v3/marketing/favor/users/111/coupons?appid=wx55955316af4ef13',
+            '_service_url' => '/v3/marketing/favor/users/111/coupons?appid=wx55955316af4ef13',
         ], $result->getPayload()->all());
     }
 }

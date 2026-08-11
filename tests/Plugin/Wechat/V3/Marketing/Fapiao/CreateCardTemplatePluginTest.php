@@ -32,7 +32,7 @@ class CreateCardTemplatePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/new-tax-control-fapiao/card-template',
+            '_url' => '/v3/new-tax-control-fapiao/card-template',
             'test' => 'yansongda',
             'card_appid' => '1111',
         ], $result->getPayload()->all());
@@ -49,7 +49,7 @@ class CreateCardTemplatePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/new-tax-control-fapiao/card-template',
+            '_url' => '/v3/new-tax-control-fapiao/card-template',
             'test' => 'yansongda',
             'card_appid' => 'wx55955316af4ef13',
         ], $result->getPayload()->all());

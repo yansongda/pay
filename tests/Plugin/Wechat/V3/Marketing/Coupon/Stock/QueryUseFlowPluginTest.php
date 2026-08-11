@@ -44,8 +44,8 @@ class QueryUseFlowPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/stocks/111/use-flow',
-            '_service_url' => 'v3/marketing/favor/stocks/111/use-flow',
+            '_url' => '/v3/marketing/favor/stocks/111/use-flow',
+            '_service_url' => '/v3/marketing/favor/stocks/111/use-flow',
         ], $result->getPayload()->all());
     }
 }

@@ -44,8 +44,8 @@ class DeleteReceiverPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/receivers/delete',
-            '_service_url' => 'v3/profitsharing/receivers/delete',
+            '_url' => '/v3/profitsharing/receivers/delete',
+            '_service_url' => '/v3/profitsharing/receivers/delete',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
         ], $result->getPayload()->all());
@@ -63,8 +63,8 @@ class DeleteReceiverPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/receivers/delete',
-            '_service_url' => 'v3/profitsharing/receivers/delete',
+            '_url' => '/v3/profitsharing/receivers/delete',
+            '_service_url' => '/v3/profitsharing/receivers/delete',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
             'sub_mchid' => '2222',
@@ -82,8 +82,8 @@ class DeleteReceiverPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/profitsharing/receivers/delete',
-            '_service_url' => 'v3/profitsharing/receivers/delete',
+            '_url' => '/v3/profitsharing/receivers/delete',
+            '_service_url' => '/v3/profitsharing/receivers/delete',
             'test' => 'yansongda',
             'appid' => 'wx55955316af4ef13',
             'sub_mchid' => '1600314070',

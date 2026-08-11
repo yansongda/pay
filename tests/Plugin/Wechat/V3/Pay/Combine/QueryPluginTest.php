@@ -43,7 +43,7 @@ class QueryPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('v3/combine-transactions/out-trade-no/111', $result->getPayload()->get('_url'));
-        self::assertEquals('v3/combine-transactions/out-trade-no/111', $result->getPayload()->get('_service_url'));
+        self::assertEquals('/v3/combine-transactions/out-trade-no/111', $result->getPayload()->get('_url'));
+        self::assertEquals('/v3/combine-transactions/out-trade-no/111', $result->getPayload()->get('_service_url'));
     }
 }

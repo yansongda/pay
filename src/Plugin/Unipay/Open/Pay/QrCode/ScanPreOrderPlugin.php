@@ -37,7 +37,7 @@ class ScanPreOrderPlugin implements PluginInterface
 
         $rocket->setPacker(QueryPacker::class)
             ->mergePayload([
-                '_url' => 'gateway/api/order.do',
+                '_url' => '/gateway/api/order.do',
                 'encoding' => 'utf-8',
                 'signature' => '',
                 'bizType' => $payload?->get('bizType') ?? '000000',

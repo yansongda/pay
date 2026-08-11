@@ -33,7 +33,7 @@ class GetBaseInformationPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/merchant/base-information',
+            '_url' => '/v3/new-tax-control-fapiao/merchant/base-information',
         ], $result->getPayload()->all());
     }
 }

@@ -56,8 +56,8 @@ class RefundAbnormalPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/refund/domestic/refunds/'.$refundId.'/apply-abnormal-refund',
-                '_service_url' => 'v3/refund/domestic/refunds/'.$refundId.'/apply-abnormal-refund',
+                '_url' => '/v3/refund/domestic/refunds/'.$refundId.'/apply-abnormal-refund',
+                '_service_url' => '/v3/refund/domestic/refunds/'.$refundId.'/apply-abnormal-refund',
             ],
             $data ?? $this->normal($params, $config, $payload)
         ))->exceptPayload('refund_id');

@@ -23,7 +23,7 @@ class PayPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('api/v1/pa/payment_intents/create', $payload->get('_url'));
+        self::assertEquals('/api/v1/pa/payment_intents/create', $payload->get('_url'));
         self::assertEquals('https://pay.yansongda.cn/airwallex/return', $payload->get('return_url'));
         self::assertNotEmpty($payload->get('request_id'));
     }

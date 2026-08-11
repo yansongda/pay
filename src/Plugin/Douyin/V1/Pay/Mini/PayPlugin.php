@@ -50,7 +50,7 @@ class PayPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'api/apps/ecpay/v1/create_order',
+                '_url' => '/api/apps/ecpay/v1/create_order',
                 'app_id' => $config->getMiniAppId(),
                 'notify_url' => $payload->get('notify_url') ?? $this->getNotifyUrl($config),
             ],

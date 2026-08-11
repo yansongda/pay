@@ -32,8 +32,8 @@ class QueryRefundFlowPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/refund-flow',
-            '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/refund-flow',
+            '_url' => '/v3/marketing/favor/stocks/'.$stockId.'/refund-flow',
+            '_service_url' => '/v3/marketing/favor/stocks/'.$stockId.'/refund-flow',
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Coupon][Stock][QueryRefundFlowPlugin] 插件装载完毕', ['rocket' => $rocket]);

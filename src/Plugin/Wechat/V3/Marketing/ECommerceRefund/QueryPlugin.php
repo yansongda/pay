@@ -49,7 +49,7 @@ class QueryPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_service_url' => 'v3/ecommerce/refunds/out-refund-no/'.$outRefundNo.'?sub_mchid='.$payload->get('sub_mchid', $config->getSubMchId() ?? 'null'),
+            '_service_url' => '/v3/ecommerce/refunds/out-refund-no/'.$outRefundNo.'?sub_mchid='.$payload->get('sub_mchid', $config->getSubMchId() ?? 'null'),
         ]);
 
         Logger::info('[Wechat][V3][Marketing][ECommerceRefund][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

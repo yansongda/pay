@@ -24,7 +24,7 @@ class AddRadarPluginTest extends TestCase
     {
         $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
             '_method' => 'POST',
-            '_url' => 'api/v1/authentication/login',
+            '_url' => '/api/v1/authentication/login',
             '_auth_type' => 'client',
         ]));
 
@@ -40,7 +40,7 @@ class AddRadarPluginTest extends TestCase
     {
         $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
             '_method' => 'GET',
-            '_url' => 'api/v1/pa/payment_intents/int_test123',
+            '_url' => '/api/v1/pa/payment_intents/int_test123',
             '_access_token' => 'airwallex_access_token',
         ]));
 
@@ -55,7 +55,7 @@ class AddRadarPluginTest extends TestCase
     {
         $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
             '_method' => 'POST',
-            '_url' => 'api/v1/pa/payment_intents/create',
+            '_url' => '/api/v1/pa/payment_intents/create',
             '_access_token' => 'airwallex_access_token',
             '_on_behalf_of' => 'acct_123',
             '_body' => '{"amount":100}',

@@ -50,8 +50,8 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/complaints-v2?limit=2&offset=3&begin_date=2021-06-06&end_date=2021-06-07',
-            '_service_url' => 'v3/merchant-service/complaints-v2?limit=2&offset=3&begin_date=2021-06-06&end_date=2021-06-07',
+            '_url' => '/v3/merchant-service/complaints-v2?limit=2&offset=3&begin_date=2021-06-06&end_date=2021-06-07',
+            '_service_url' => '/v3/merchant-service/complaints-v2?limit=2&offset=3&begin_date=2021-06-06&end_date=2021-06-07',
         ], $result->getPayload()->all());
     }
 }

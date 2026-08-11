@@ -77,9 +77,9 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
         $config = new UnipayConfig(['mch_secret_key' => 'foo']);
 
         self::assertEquals('https://yansongda.cn', UnipayTraitStub::getUnipayUrl($config, new Collection(['_url' => 'https://yansongda.cn'])));
-        self::assertEquals('https://gateway.95516.com/api/v1/yansongda', UnipayTraitStub::getUnipayUrl($config, new Collection(['_url' => 'api/v1/yansongda'])));
-        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => Pay::MODE_SERVICE]), new Collection(['_service_url' => 'api/v1/service/yansongda'])));
-        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => Pay::MODE_SERVICE]), new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/yansongda', UnipayTraitStub::getUnipayUrl($config, new Collection(['_url' => '/api/v1/yansongda'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => Pay::MODE_SERVICE]), new Collection(['_service_url' => '/api/v1/service/yansongda'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => Pay::MODE_SERVICE]), new Collection(['_url' => '/foo', '_service_url' => '/api/v1/service/yansongda'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_UNIPAY_URL_MISSING);

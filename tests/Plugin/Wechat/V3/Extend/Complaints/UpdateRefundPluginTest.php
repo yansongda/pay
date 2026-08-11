@@ -48,8 +48,8 @@ class UpdateRefundPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/merchant-service/complaints-v2/yansongda/update-refund-progress',
-            '_service_url' => 'v3/merchant-service/complaints-v2/yansongda/update-refund-progress',
+            '_url' => '/v3/merchant-service/complaints-v2/yansongda/update-refund-progress',
+            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/update-refund-progress',
             'action' => 'APPROVE',
             'name' => 'yansongda',
         ], $result->getPayload()->all());

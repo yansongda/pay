@@ -47,8 +47,8 @@ class DetailPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/users/'.$openId.'/coupons/'.$couponId.'?appid='.$appId,
-            '_service_url' => 'v3/marketing/favor/users/'.$openId.'/coupons/'.$couponId.'?appid='.$appId,
+            '_url' => '/v3/marketing/favor/users/'.$openId.'/coupons/'.$couponId.'?appid='.$appId,
+            '_service_url' => '/v3/marketing/favor/users/'.$openId.'/coupons/'.$couponId.'?appid='.$appId,
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Coupon][Coupons][DetailPlugin] 插件装载完毕', ['rocket' => $rocket]);

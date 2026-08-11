@@ -21,8 +21,8 @@ class DeleteCallbackPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'DELETE',
-            '_url' => 'v3/merchant-service/complaint-notifications',
-            '_service_url' => 'v3/merchant-service/complaint-notifications',
+            '_url' => '/v3/merchant-service/complaint-notifications',
+            '_service_url' => '/v3/merchant-service/complaint-notifications',
         ]);
 
         Logger::info('[Wechat][Extend][Complaints][DeleteCallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
