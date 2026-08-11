@@ -34,7 +34,7 @@ class RefundPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v1/refunds',
+            '_url' => '/v1/refunds',
         ]);
 
         Logger::info('[Stripe][V1][Pay][RefundPlugin] 插件装载完毕', ['rocket' => $rocket]);

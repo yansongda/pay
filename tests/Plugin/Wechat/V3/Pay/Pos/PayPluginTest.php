@@ -55,7 +55,7 @@ class PayPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(PackerInterface::class, $result->getPacker());
-        self::assertEquals('v3/pay/transactions/codepay', $payload->get('_url'));
+        self::assertEquals('/v3/pay/transactions/codepay', $payload->get('_url'));
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
         self::assertEquals('1600314069', $payload->get('mchid'));
@@ -87,7 +87,7 @@ class PayPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(PackerInterface::class, $result->getPacker());
-        self::assertEquals('v3/pay/partner/transactions/codepay', $payload->get('_service_url'));
+        self::assertEquals('/v3/pay/partner/transactions/codepay', $payload->get('_service_url'));
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('wx55955316af4ef13', $payload->get('sp_appid'));
         self::assertEquals('1600314069', $payload->get('sp_mchid'));
@@ -121,7 +121,7 @@ class PayPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals(PackerInterface::class, $result->getPacker());
-        self::assertEquals('v3/pay/partner/transactions/codepay', $payload->get('_service_url'));
+        self::assertEquals('/v3/pay/partner/transactions/codepay', $payload->get('_service_url'));
         self::assertEquals('POST', $payload->get('_method'));
         self::assertEquals('wx55955316af4ef13', $payload->get('sp_appid'));
         self::assertEquals('1600314069', $payload->get('sp_mchid'));

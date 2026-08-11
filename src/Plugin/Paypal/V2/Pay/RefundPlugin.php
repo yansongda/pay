@@ -32,7 +32,7 @@ class RefundPlugin implements PluginInterface
         }
 
         $rocket->mergePayload(array_merge(
-            ['_method' => 'POST', '_url' => 'v2/payments/captures/'.$captureId.'/refund'],
+            ['_method' => 'POST', '_url' => '/v2/payments/captures/'.$captureId.'/refund'],
             array_filter([
                 'amount' => $payload->get('amount') ?? null,
                 'note_to_payer' => $payload->get('note_to_payer') ?? null,

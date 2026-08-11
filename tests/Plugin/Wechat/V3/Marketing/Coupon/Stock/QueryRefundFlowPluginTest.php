@@ -44,8 +44,8 @@ class QueryRefundFlowPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/stocks/yansongda/refund-flow',
-            '_service_url' => 'v3/marketing/favor/stocks/yansongda/refund-flow',
+            '_url' => '/v3/marketing/favor/stocks/yansongda/refund-flow',
+            '_service_url' => '/v3/marketing/favor/stocks/yansongda/refund-flow',
         ], $result->getPayload()->all());
     }
 }

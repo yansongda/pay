@@ -45,8 +45,8 @@ class RestartPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/111/restart',
-            '_service_url' => 'v3/marketing/favor/stocks/111/restart',
+            '_url' => '/v3/marketing/favor/stocks/111/restart',
+            '_service_url' => '/v3/marketing/favor/stocks/111/restart',
             'stock_creator_mchid' => '222',
         ], $result->getPayload()->all());
     }
@@ -62,8 +62,8 @@ class RestartPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/111/restart',
-            '_service_url' => 'v3/marketing/favor/stocks/111/restart',
+            '_url' => '/v3/marketing/favor/stocks/111/restart',
+            '_service_url' => '/v3/marketing/favor/stocks/111/restart',
             'stock_creator_mchid' => '1600314069',
         ], $result->getPayload()->all());
     }

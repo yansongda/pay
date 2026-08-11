@@ -37,7 +37,7 @@ class ScanFeePlugin implements PluginInterface
 
         $rocket->setPacker(QueryPacker::class)
             ->mergePayload([
-                '_url' => 'gateway/api/backTransReq.do',
+                '_url' => '/gateway/api/backTransReq.do',
                 'signature' => '',
                 'bizType' => $payload?->get('bizType') ?? '000601',
                 'encoding' => 'utf-8',

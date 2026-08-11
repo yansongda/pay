@@ -37,7 +37,7 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals(QueryPacker::class, $result->getPacker());
         self::assertEquals([
-            '_url' => 'gateway/api/queryTrans.do',
+            '_url' => '/gateway/api/queryTrans.do',
             'encoding' => 'utf-8',
             'signature' => '',
             'bizType' => '2',
@@ -62,7 +62,7 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals(QueryPacker::class, $result->getPacker());
         self::assertEquals([
-            '_url' => 'gateway/api/queryTrans.do',
+            '_url' => '/gateway/api/queryTrans.do',
             'encoding' => 'utf-8',
             'signature' => '',
             'bizType' => '000000',

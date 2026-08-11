@@ -33,7 +33,7 @@ class QueryConfigPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/merchant/development-config',
+            '_url' => '/v3/new-tax-control-fapiao/merchant/development-config',
         ], $result->getPayload()->all());
     }
 }

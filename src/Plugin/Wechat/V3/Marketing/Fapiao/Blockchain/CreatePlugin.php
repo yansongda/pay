@@ -43,7 +43,7 @@ class CreatePlugin implements PluginInterface
 
         $rocket->mergePayload(array_merge([
             '_method' => 'POST',
-            '_url' => 'v3/new-tax-control-fapiao/fapiao-applications',
+            '_url' => '/v3/new-tax-control-fapiao/fapiao-applications',
         ], $this->encryptSensitiveData($payload, $params, $config)));
 
         Logger::info('[Wechat][V3][Marketing][Fapiao][Blockchain][CreatePlugin] 插件装载完毕', ['rocket' => $rocket]);

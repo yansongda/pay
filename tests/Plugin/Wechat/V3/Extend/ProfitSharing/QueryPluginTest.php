@@ -45,8 +45,8 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/profitsharing/orders/111?transaction_id=yansongda',
-            '_service_url' => 'v3/profitsharing/orders/111?sub_mchid=null&transaction_id=yansongda',
+            '_url' => '/v3/profitsharing/orders/111?transaction_id=yansongda',
+            '_service_url' => '/v3/profitsharing/orders/111?sub_mchid=null&transaction_id=yansongda',
         ], $result->getPayload()->all());
     }
 
@@ -62,8 +62,8 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/profitsharing/orders/111?transaction_id=yansongda',
-            '_service_url' => 'v3/profitsharing/orders/111?sub_mchid=1600314070&transaction_id=yansongda',
+            '_url' => '/v3/profitsharing/orders/111?transaction_id=yansongda',
+            '_service_url' => '/v3/profitsharing/orders/111?sub_mchid=1600314070&transaction_id=yansongda',
         ], $result->getPayload()->all());
     }
 
@@ -80,8 +80,8 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/profitsharing/orders/111?transaction_id=yansongda',
-            '_service_url' => 'v3/profitsharing/orders/111?sub_mchid=222&transaction_id=yansongda',
+            '_url' => '/v3/profitsharing/orders/111?transaction_id=yansongda',
+            '_service_url' => '/v3/profitsharing/orders/111?sub_mchid=222&transaction_id=yansongda',
         ], $result->getPayload()->all());
     }
 }

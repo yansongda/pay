@@ -50,7 +50,7 @@ class ApplyPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_service_url' => 'v3/ecommerce/refunds/apply',
+            '_service_url' => '/v3/ecommerce/refunds/apply',
             'sub_mchid' => $subMchId,
             'sp_appid' => $spAppId,
             'notify_url' => $payload->get('notify_url') ?? $config->getNotifyUrl(),

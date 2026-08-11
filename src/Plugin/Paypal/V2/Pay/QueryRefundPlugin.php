@@ -32,7 +32,7 @@ class QueryRefundPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'GET',
-            '_url' => 'v2/payments/refunds/'.$refundId,
+            '_url' => '/v2/payments/refunds/'.$refundId,
         ]);
 
         Logger::info('[Paypal][V2][Pay][QueryRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);

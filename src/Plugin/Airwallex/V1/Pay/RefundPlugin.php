@@ -35,7 +35,7 @@ class RefundPlugin implements PluginInterface
 
         $rocket->mergePayload(array_filter([
             '_method' => 'POST',
-            '_url' => 'api/v1/pa/refunds/create',
+            '_url' => '/api/v1/pa/refunds/create',
             'request_id' => $payload->get('request_id', self::getAirwallexRequestId()),
             'payment_intent_id' => $paymentIntentId,
             'amount' => $payload->get('amount'),

@@ -38,7 +38,7 @@ class WebPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v1/checkout/sessions',
+            '_url' => '/v1/checkout/sessions',
             'mode' => $payload->get('mode', 'payment'),
             'success_url' => $payload->get('success_url') ?? $config->getSuccessUrl(),
             'cancel_url' => $payload->get('cancel_url') ?? $config->getCancelUrl(),

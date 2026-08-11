@@ -51,8 +51,8 @@ class ReturnPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/profitsharing/return-orders',
-                '_service_url' => 'v3/profitsharing/return-orders',
+                '_url' => '/v3/profitsharing/return-orders',
+                '_service_url' => '/v3/profitsharing/return-orders',
             ],
             $data ?? $this->normal($payload, $config),
         ));

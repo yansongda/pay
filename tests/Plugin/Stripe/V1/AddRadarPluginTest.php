@@ -24,7 +24,7 @@ class AddRadarPluginTest extends TestCase
     {
         $payload = new Collection([
             '_method' => 'POST',
-            '_url' => 'v1/payment_intents',
+            '_url' => '/v1/payment_intents',
             'amount' => 1000,
             'currency' => 'usd',
         ]);
@@ -45,7 +45,7 @@ class AddRadarPluginTest extends TestCase
     {
         $payload = new Collection([
             '_method' => 'GET',
-            '_url' => 'v1/payment_intents/pi_test123',
+            '_url' => '/v1/payment_intents/pi_test123',
         ]);
 
         $rocket = (new Rocket())->setParams([])->setPayload($payload);
@@ -63,7 +63,7 @@ class AddRadarPluginTest extends TestCase
     {
         $payload = new Collection([
             '_method' => 'GET',
-            '_url' => 'v1/payment_intents/pi_test123',
+            '_url' => '/v1/payment_intents/pi_test123',
             'expand' => ['charges'],
         ]);
 
@@ -80,7 +80,7 @@ class AddRadarPluginTest extends TestCase
     {
         $payload = new Collection([
             '_method' => 'POST',
-            '_url' => 'v1/refunds',
+            '_url' => '/v1/refunds',
             'payment_intent' => 'pi_test123',
         ]);
 

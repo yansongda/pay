@@ -43,7 +43,7 @@ class GetTitleUrlPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/user-title/title-url?'.$this->getQuery($payload, $params)->query(),
+            '_url' => '/v3/new-tax-control-fapiao/user-title/title-url?'.$this->getQuery($payload, $params)->query(),
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Fapiao][GetTitleUrlPlugin] 插件装载完毕', ['rocket' => $rocket]);

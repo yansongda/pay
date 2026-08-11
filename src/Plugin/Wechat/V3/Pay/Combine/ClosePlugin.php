@@ -47,8 +47,8 @@ class ClosePlugin implements PluginInterface
         $rocket->setDirection(OriginResponseDirection::class)
             ->mergePayload([
                 '_method' => 'POST',
-                '_url' => 'v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
-                '_service_url' => 'v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
+                '_url' => '/v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
+                '_service_url' => '/v3/combine-transactions/out-trade-no/'.$combineOutTradeNo.'/close',
                 'combine_appid' => $payload->get('combine_appid', $config->getMpAppId() ?? ''),
             ])
             ->exceptPayload('combine_out_trade_no');

@@ -32,7 +32,7 @@ class PayPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('v1/payment_intents', $payload->get('_url'));
+        self::assertEquals('/v1/payment_intents', $payload->get('_url'));
         self::assertEquals(1000, $payload->get('amount'));
         self::assertEquals('usd', $payload->get('currency'));
     }
@@ -45,6 +45,6 @@ class PayPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('v1/payment_intents', $result->getPayload()->get('_url'));
+        self::assertEquals('/v1/payment_intents', $result->getPayload()->get('_url'));
     }
 }

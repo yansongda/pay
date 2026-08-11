@@ -23,8 +23,8 @@ class UpdateCallbackPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'PUT',
-            '_url' => 'v3/merchant-service/complaint-notifications',
-            '_service_url' => 'v3/merchant-service/complaint-notifications',
+            '_url' => '/v3/merchant-service/complaint-notifications',
+            '_service_url' => '/v3/merchant-service/complaint-notifications',
             'url' => $payload?->get('url', '') ?? '',
         ]);
 

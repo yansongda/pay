@@ -32,7 +32,7 @@ class CancelPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v1/payment_intents/'.$paymentIntentId.'/cancel',
+            '_url' => '/v1/payment_intents/'.$paymentIntentId.'/cancel',
         ]);
 
         Logger::info('[Stripe][V1][Pay][CancelPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -36,7 +36,7 @@ class CreateCardTemplatePlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v3/new-tax-control-fapiao/card-template',
+            '_url' => '/v3/new-tax-control-fapiao/card-template',
             'card_appid' => $payload?->get('card_appid') ?? ($config->getAppIdByType($params['_type'] ?? 'mp') ?? ''),
         ]);
 

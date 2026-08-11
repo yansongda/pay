@@ -37,7 +37,7 @@ class PayPluginTest extends TestCase
 
         self::assertEquals(ResponseDirection::class, $result->getDirection());
         self::assertEquals([
-            '_url' => 'gateway/api/frontTransReq.do',
+            '_url' => '/gateway/api/frontTransReq.do',
             'encoding' => 'utf-8',
             'signature' => '',
             'bizType' => '2',
@@ -65,7 +65,7 @@ class PayPluginTest extends TestCase
 
         self::assertEquals(ResponseDirection::class, $result->getDirection());
         self::assertEquals([
-            '_url' => 'gateway/api/frontTransReq.do',
+            '_url' => '/gateway/api/frontTransReq.do',
             'encoding' => 'utf-8',
             'signature' => '',
             'bizType' => '000201',

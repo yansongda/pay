@@ -56,7 +56,7 @@ class QueryByWxPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/fund-app/mch-transfer/transfer-bills/transfer-bill-no/111',
+            '_url' => '/v3/fund-app/mch-transfer/transfer-bills/transfer-bill-no/111',
         ], $result->getPayload()->all());
     }
 }

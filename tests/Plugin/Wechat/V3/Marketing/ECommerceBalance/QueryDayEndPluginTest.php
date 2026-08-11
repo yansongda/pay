@@ -59,7 +59,7 @@ class QueryDayEndPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_service_url' => 'v3/merchant/fund/dayendbalance/111?aaa=222',
+            '_service_url' => '/v3/merchant/fund/dayendbalance/111?aaa=222',
         ], $result->getPayload()->all());
     }
 
@@ -76,7 +76,7 @@ class QueryDayEndPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_service_url' => 'v3/merchant/fund/dayendbalance/111',
+            '_service_url' => '/v3/merchant/fund/dayendbalance/111',
         ], $result->getPayload()->all());
     }
 }

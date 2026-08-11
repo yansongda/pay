@@ -37,7 +37,7 @@ class ScanPreAuthPlugin implements PluginInterface
 
         $rocket->setPacker(QueryPacker::class)
             ->mergePayload([
-                '_url' => 'gateway/api/backTransReq.do',
+                '_url' => '/gateway/api/backTransReq.do',
                 'encoding' => 'utf-8',
                 'signature' => '',
                 'bizType' => $payload?->get('bizType') ?? '000000',

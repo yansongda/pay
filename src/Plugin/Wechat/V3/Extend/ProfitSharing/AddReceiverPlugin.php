@@ -55,8 +55,8 @@ class AddReceiverPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/profitsharing/receivers/add',
-                '_service_url' => 'v3/profitsharing/receivers/add',
+                '_url' => '/v3/profitsharing/receivers/add',
+                '_service_url' => '/v3/profitsharing/receivers/add',
             ],
             $data ?? $this->normal($payload, $params, $config),
         ));

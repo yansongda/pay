@@ -32,7 +32,7 @@ class ConfirmPluginTest extends TestCase
         );
 
         self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('api/v1/pa/payment_intents/int_test123/confirm', $result->getPayload()->get('_url'));
+        self::assertEquals('/api/v1/pa/payment_intents/int_test123/confirm', $result->getPayload()->get('_url'));
         self::assertNotEmpty($result->getPayload()->get('request_id'));
     }
 }

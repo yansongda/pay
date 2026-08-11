@@ -47,8 +47,8 @@ class QueryPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/refund/domestic/refunds/'.$outRefundNo,
-            '_service_url' => 'v3/refund/domestic/refunds/'.$outRefundNo.'?sub_mchid='.$subMchId,
+            '_url' => '/v3/refund/domestic/refunds/'.$outRefundNo,
+            '_service_url' => '/v3/refund/domestic/refunds/'.$outRefundNo.'?sub_mchid='.$subMchId,
         ]);
 
         Logger::info('[Wechat][V3][Pay][Refund][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

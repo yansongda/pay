@@ -44,7 +44,7 @@ class QueryMerchantConfigsPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_service_url' => 'v3/profitsharing/merchant-configs/'.$subMchId,
+            '_service_url' => '/v3/profitsharing/merchant-configs/'.$subMchId,
         ]);
 
         Logger::info('[Wechat][Extend][ProfitSharing][QueryMerchantConfigsPlugin] 插件装载完毕', ['rocket' => $rocket]);

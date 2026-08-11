@@ -47,7 +47,7 @@ class QueryPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/fund-app/mch-transfer/transfer-bills/out-bill-no/'.$outBillNo,
+            '_url' => '/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/'.$outBillNo,
         ]);
 
         Logger::info('[Wechat][Marketing][Transfer][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

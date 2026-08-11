@@ -43,7 +43,7 @@ class QueryRefundPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('v3/refund/domestic/refunds/111', $result->getPayload()->get('_url'));
+        self::assertEquals('/v3/refund/domestic/refunds/111', $result->getPayload()->get('_url'));
     }
 
     public function testServiceParams()
@@ -57,7 +57,7 @@ class QueryRefundPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('v3/refund/domestic/refunds/111?sub_mchid=333', $result->getPayload()->get('_service_url'));
+        self::assertEquals('/v3/refund/domestic/refunds/111?sub_mchid=333', $result->getPayload()->get('_service_url'));
     }
 
     public function testService()
@@ -70,6 +70,6 @@ class QueryRefundPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('v3/refund/domestic/refunds/111?sub_mchid=1600314070', $result->getPayload()->get('_service_url'));
+        self::assertEquals('/v3/refund/domestic/refunds/111?sub_mchid=1600314070', $result->getPayload()->get('_service_url'));
     }
 }

@@ -43,8 +43,8 @@ class ResponsePlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/response',
-            '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/response',
+            '_url' => '/v3/merchant-service/complaints-v2/'.$complaintId.'/response',
+            '_service_url' => '/v3/merchant-service/complaints-v2/'.$complaintId.'/response',
             'complainted_mchid' => $payload->get('complainted_mchid', $config->getMchId()),
         ])->exceptPayload('complaint_id');
 

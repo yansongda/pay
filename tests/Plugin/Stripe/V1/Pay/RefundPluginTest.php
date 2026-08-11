@@ -31,7 +31,7 @@ class RefundPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('v1/refunds', $payload->get('_url'));
+        self::assertEquals('/v1/refunds', $payload->get('_url'));
     }
 
     public function testNormalWithCharge()
@@ -43,7 +43,7 @@ class RefundPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('v1/refunds', $payload->get('_url'));
+        self::assertEquals('/v1/refunds', $payload->get('_url'));
     }
 
     public function testNormalWithPaymentIntentInPayload()
@@ -55,7 +55,7 @@ class RefundPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('v1/refunds', $payload->get('_url'));
+        self::assertEquals('/v1/refunds', $payload->get('_url'));
     }
 
     public function testMissingPaymentIntentAndCharge()

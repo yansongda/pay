@@ -47,8 +47,8 @@ class SendPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/users/111/coupons',
-            '_service_url' => 'v3/marketing/favor/users/111/coupons',
+            '_url' => '/v3/marketing/favor/users/111/coupons',
+            '_service_url' => '/v3/marketing/favor/users/111/coupons',
             'appid' => '222',
             'stock_creator_mchid' => '333',
             'test' => 'yansongda',
@@ -67,8 +67,8 @@ class SendPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/users/111/coupons',
-            '_service_url' => 'v3/marketing/favor/users/111/coupons',
+            '_url' => '/v3/marketing/favor/users/111/coupons',
+            '_service_url' => '/v3/marketing/favor/users/111/coupons',
             'appid' => 'wx55955316af4ef13',
             'stock_creator_mchid' => '1600314069',
             'test' => 'yansongda',

@@ -51,8 +51,8 @@ class DeleteReceiverPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/profitsharing/receivers/delete',
-                '_service_url' => 'v3/profitsharing/receivers/delete',
+                '_url' => '/v3/profitsharing/receivers/delete',
+                '_service_url' => '/v3/profitsharing/receivers/delete',
             ],
             $data ?? $this->normal($params, $config),
         ));

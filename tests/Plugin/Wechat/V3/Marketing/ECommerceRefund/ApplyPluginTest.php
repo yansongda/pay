@@ -59,7 +59,7 @@ class ApplyPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_service_url' => 'v3/ecommerce/refunds/apply',
+            '_service_url' => '/v3/ecommerce/refunds/apply',
             'sub_mchid' => '1111',
             'sp_appid' => '2222',
             'notify_url' => '3333',
@@ -78,7 +78,7 @@ class ApplyPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_service_url' => 'v3/ecommerce/refunds/apply',
+            '_service_url' => '/v3/ecommerce/refunds/apply',
             'sub_mchid' => '1600314070',
             'sp_appid' => 'wx55955316af4ef13',
             'notify_url' => 'https://pay.yansongda.cn',

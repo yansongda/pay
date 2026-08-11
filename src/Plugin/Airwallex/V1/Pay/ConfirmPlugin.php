@@ -35,7 +35,7 @@ class ConfirmPlugin implements PluginInterface
 
         $rocket->mergePayload(array_filter([
             '_method' => 'POST',
-            '_url' => 'api/v1/pa/payment_intents/'.$paymentIntentId.'/confirm',
+            '_url' => '/api/v1/pa/payment_intents/'.$paymentIntentId.'/confirm',
             'request_id' => $payload->get('request_id', self::getAirwallexRequestId()),
             'payment_method' => $payload->get('payment_method'),
             'payment_method_options' => $payload->get('payment_method_options'),

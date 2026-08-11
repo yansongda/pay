@@ -54,8 +54,8 @@ class CancelPlugin implements PluginInterface
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/reverse',
-                '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/reverse',
+                '_url' => '/v3/pay/transactions/out-trade-no/'.$outTradeNo.'/reverse',
+                '_service_url' => '/v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/reverse',
             ],
             $data ?? $this->normal($params, $config)
         ));

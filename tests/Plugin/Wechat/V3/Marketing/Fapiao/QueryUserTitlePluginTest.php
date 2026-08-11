@@ -46,7 +46,7 @@ class QueryUserTitlePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/user-title?test=yansongda&appid=1111',
+            '_url' => '/v3/new-tax-control-fapiao/user-title?test=yansongda&appid=1111',
         ], $result->getPayload()->all());
     }
 }

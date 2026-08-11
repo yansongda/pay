@@ -32,7 +32,7 @@ class QueryRefundPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'GET',
-            '_url' => 'api/v1/pa/refunds/'.$id,
+            '_url' => '/api/v1/pa/refunds/'.$id,
         ]);
 
         Logger::info('[Airwallex][V1][Pay][QueryRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);

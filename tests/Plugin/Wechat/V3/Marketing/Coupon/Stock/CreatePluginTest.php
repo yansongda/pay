@@ -32,8 +32,8 @@ class CreatePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/coupon-stocks',
-            '_service_url' => 'v3/marketing/favor/coupon-stocks',
+            '_url' => '/v3/marketing/favor/coupon-stocks',
+            '_service_url' => '/v3/marketing/favor/coupon-stocks',
             'test' => 'yansongda',
             'belong_merchant' => '1111',
         ], $result->getPayload()->all());
@@ -50,8 +50,8 @@ class CreatePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/coupon-stocks',
-            '_service_url' => 'v3/marketing/favor/coupon-stocks',
+            '_url' => '/v3/marketing/favor/coupon-stocks',
+            '_service_url' => '/v3/marketing/favor/coupon-stocks',
             'test' => 'yansongda',
             'belong_merchant' => '1600314069',
         ], $result->getPayload()->all());

@@ -39,7 +39,7 @@ class CancelPlugin implements PluginInterface
 
         $rocket->setPacker(XmlPacker::class)
             ->mergePayload([
-                '_url' => 'secapi/pay/reverse',
+                '_url' => '/secapi/pay/reverse',
                 '_content_type' => 'application/xml',
                 'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
                 'mch_id' => $config->getMchId(),

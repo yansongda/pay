@@ -32,7 +32,7 @@ class QueryRefundPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'GET',
-            '_url' => 'v1/refunds/'.$refundId,
+            '_url' => '/v1/refunds/'.$refundId,
         ]);
 
         Logger::info('[Stripe][V1][Pay][QueryRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -56,7 +56,7 @@ class CancelPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/fund-app/mch-transfer/transfer-bills/out-bill-no/111/cancel',
+            '_url' => '/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/111/cancel',
         ], $result->getPayload()->all());
     }
 }

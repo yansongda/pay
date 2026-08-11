@@ -44,8 +44,8 @@ class PayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/h5',
-            '_service_url' => 'v3/pay/partner/transactions/h5',
+            '_url' => '/v3/pay/transactions/h5',
+            '_service_url' => '/v3/pay/partner/transactions/h5',
             'appid' => 'wx55955316af4ef13',
             'mchid' => '1600314069',
             'notify_url' => 'https://pay.yansongda.cn',
@@ -66,8 +66,8 @@ class PayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/h5',
-            '_service_url' => 'v3/pay/partner/transactions/h5',
+            '_url' => '/v3/pay/transactions/h5',
+            '_service_url' => '/v3/pay/partner/transactions/h5',
             'sp_appid' => 'wx55955316af4ef13',
             'sp_mchid' => '1600314069',
             'sub_mchid' => '333',
@@ -87,8 +87,8 @@ class PayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/h5',
-            '_service_url' => 'v3/pay/partner/transactions/h5',
+            '_url' => '/v3/pay/transactions/h5',
+            '_service_url' => '/v3/pay/partner/transactions/h5',
             'sp_appid' => 'wx55955316af4ef13',
             'sp_mchid' => '1600314069',
             'sub_mchid' => '1600314070',

@@ -53,8 +53,8 @@ class ClosePlugin implements PluginInterface
         $rocket->setDirection(OriginResponseDirection::class)
             ->setPayload(array_merge(
                 [
-                    '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/close',
-                    '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/close',
+                    '_url' => '/v3/pay/transactions/out-trade-no/'.$outTradeNo.'/close',
+                    '_service_url' => '/v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/close',
                     '_method' => 'POST',
                 ],
                 $data ?? $this->normal($config)

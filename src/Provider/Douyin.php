@@ -30,9 +30,9 @@ use Yansongda\Supports\Str;
 class Douyin implements ProviderInterface
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://developer.toutiao.com/',
-        Pay::MODE_SANDBOX => 'https://open-sandbox.douyin.com/',
-        Pay::MODE_SERVICE => 'https://developer.toutiao.com/',
+        Pay::MODE_NORMAL => 'https://developer.toutiao.com',
+        Pay::MODE_SANDBOX => 'https://open-sandbox.douyin.com',
+        Pay::MODE_SERVICE => 'https://developer.toutiao.com',
     ];
 
     /**

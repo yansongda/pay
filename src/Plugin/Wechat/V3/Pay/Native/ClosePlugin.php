@@ -54,8 +54,8 @@ class ClosePlugin implements PluginInterface
             ->setPayload(array_merge(
                 [
                     '_method' => 'POST',
-                    '_url' => 'v3/pay/transactions/out-trade-no/'.$outTradeNo.'/close',
-                    '_service_url' => 'v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/close',
+                    '_url' => '/v3/pay/transactions/out-trade-no/'.$outTradeNo.'/close',
+                    '_service_url' => '/v3/pay/partner/transactions/out-trade-no/'.$outTradeNo.'/close',
                 ],
                 $data ?? $this->normal($config)
             ));

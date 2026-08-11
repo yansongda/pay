@@ -50,7 +50,7 @@ class RefundPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'api/apps/ecpay/v1/create_refund',
+                '_url' => '/api/apps/ecpay/v1/create_refund',
                 'app_id' => $config->getMiniAppId(),
                 'notify_url' => $payload->get('notify_url') ?? $this->getNotifyUrl($config),
             ],

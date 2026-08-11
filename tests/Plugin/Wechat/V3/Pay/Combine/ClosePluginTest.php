@@ -47,8 +47,8 @@ class ClosePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/combine-transactions/out-trade-no/111/close',
-            '_service_url' => 'v3/combine-transactions/out-trade-no/111/close',
+            '_url' => '/v3/combine-transactions/out-trade-no/111/close',
+            '_service_url' => '/v3/combine-transactions/out-trade-no/111/close',
             'combine_appid' => '333',
             'name' => 'yansongda',
         ], $result->getPayload()->all());
@@ -66,8 +66,8 @@ class ClosePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/combine-transactions/out-trade-no/111/close',
-            '_service_url' => 'v3/combine-transactions/out-trade-no/111/close',
+            '_url' => '/v3/combine-transactions/out-trade-no/111/close',
+            '_service_url' => '/v3/combine-transactions/out-trade-no/111/close',
             'combine_appid' => 'wx55955316af4ef13',
         ], $result->getPayload()->all());
         self::assertEquals(OriginResponseDirection::class, $result->getDirection());

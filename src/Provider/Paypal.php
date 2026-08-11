@@ -30,9 +30,9 @@ use Yansongda\Supports\Str;
 class Paypal implements ProviderInterface
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://api-m.paypal.com/',
-        Pay::MODE_SANDBOX => 'https://api-m.sandbox.paypal.com/',
-        Pay::MODE_SERVICE => 'https://api-m.paypal.com/',
+        Pay::MODE_NORMAL => 'https://api-m.paypal.com',
+        Pay::MODE_SANDBOX => 'https://api-m.sandbox.paypal.com',
+        Pay::MODE_SERVICE => 'https://api-m.paypal.com',
     ];
 
     /**

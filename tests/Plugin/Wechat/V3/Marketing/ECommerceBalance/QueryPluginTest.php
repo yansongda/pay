@@ -58,7 +58,7 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_service_url' => 'v3/merchant/fund/balance/111',
+            '_service_url' => '/v3/merchant/fund/balance/111',
         ], $result->getPayload()->all());
     }
 
@@ -74,7 +74,7 @@ class QueryPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_service_url' => 'v3/merchant/fund/balance/111',
+            '_service_url' => '/v3/merchant/fund/balance/111',
         ], $result->getPayload()->all());
     }
 }

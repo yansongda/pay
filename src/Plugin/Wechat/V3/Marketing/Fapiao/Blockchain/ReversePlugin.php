@@ -35,7 +35,7 @@ class ReversePlugin implements PluginInterface
         $rocket->setPayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/new-tax-control-fapiao/fapiao-applications/'.$applyId.'/reverse',
+                '_url' => '/v3/new-tax-control-fapiao/fapiao-applications/'.$applyId.'/reverse',
             ],
             filter_params($payload)->except('fapiao_apply_id')->all(),
         ));

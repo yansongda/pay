@@ -37,7 +37,7 @@ class PosPreAuthPluginTest extends TestCase
 
         self::assertEquals(QueryPacker::class, $result->getPacker());
         self::assertEquals([
-            '_url' => 'gateway/api/backTransReq.do',
+            '_url' => '/gateway/api/backTransReq.do',
             'encoding' => 'utf-8',
             'signature' => '',
             'bizType' => '2',
@@ -64,7 +64,7 @@ class PosPreAuthPluginTest extends TestCase
 
         self::assertEquals(QueryPacker::class, $result->getPacker());
         self::assertEquals([
-            '_url' => 'gateway/api/backTransReq.do',
+            '_url' => '/gateway/api/backTransReq.do',
             'encoding' => 'utf-8',
             'signature' => '',
             'bizType' => '000201',

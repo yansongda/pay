@@ -49,7 +49,7 @@ class QueryReturnAdvancePlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_service_url' => 'v3/ecommerce/refunds/'.$refundId.'/return-advance?sub_mchid='.$payload->get('sub_mchid', $config->getSubMchId() ?? ''),
+            '_service_url' => '/v3/ecommerce/refunds/'.$refundId.'/return-advance?sub_mchid='.$payload->get('sub_mchid', $config->getSubMchId() ?? ''),
         ]);
 
         Logger::info('[Wechat][V3][Marketing][ECommerceRefund][QueryReturnAdvancePlugin] 插件装载完毕', ['rocket' => $rocket]);

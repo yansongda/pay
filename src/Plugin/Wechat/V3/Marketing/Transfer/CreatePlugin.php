@@ -54,7 +54,7 @@ class CreatePlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/fund-app/mch-transfer/transfer-bills',
+                '_url' => '/v3/fund-app/mch-transfer/transfer-bills',
                 'appid' => $payload->get('appid', $config->getAppIdByType($params['_type'] ?? 'mp') ?? ''),
                 'notify_url' => $payload->get('notify_url', $config->getNotifyUrl()),
             ],

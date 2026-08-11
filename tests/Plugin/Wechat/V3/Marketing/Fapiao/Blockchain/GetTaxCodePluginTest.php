@@ -46,7 +46,7 @@ class GetTaxCodePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/merchant/tax-codes?offset=yansongda&limit=111',
+            '_url' => '/v3/new-tax-control-fapiao/merchant/tax-codes?offset=yansongda&limit=111',
         ], $result->getPayload()->all());
     }
 }

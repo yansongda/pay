@@ -32,7 +32,7 @@ class QueryPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'GET',
-            '_url' => 'v1/payment_intents/'.$paymentIntentId,
+            '_url' => '/v1/payment_intents/'.$paymentIntentId,
         ]);
 
         Logger::info('[Stripe][V1][Pay][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -36,8 +36,8 @@ class GetFundBillPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/bill/fundflowbill?'.$query,
-            '_service_url' => 'v3/bill/fundflowbill?'.$query,
+            '_url' => '/v3/bill/fundflowbill?'.$query,
+            '_service_url' => '/v3/bill/fundflowbill?'.$query,
         ]);
 
         Logger::info('[Wechat][Pay][Mini][GetFundBillPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -24,7 +24,7 @@ class AddRadarPluginTest extends TestCase
     {
         $payload = new Collection([
             '_method' => 'POST',
-            '_url' => 'v2/checkout/orders',
+            '_url' => '/v2/checkout/orders',
             '_body' => '{"intent":"CAPTURE"}',
             '_access_token' => 'test_token_abc',
         ]);
@@ -46,7 +46,7 @@ class AddRadarPluginTest extends TestCase
     {
         $payload = new Collection([
             '_method' => 'POST',
-            '_url' => 'v1/oauth2/token',
+            '_url' => '/v1/oauth2/token',
             '_auth_type' => 'basic',
         ]);
 

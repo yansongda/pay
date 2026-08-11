@@ -32,8 +32,8 @@ class UpdateRefundPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/update-refund-progress',
-            '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/update-refund-progress',
+            '_url' => '/v3/merchant-service/complaints-v2/'.$complaintId.'/update-refund-progress',
+            '_service_url' => '/v3/merchant-service/complaints-v2/'.$complaintId.'/update-refund-progress',
         ])->exceptPayload('complaint_id');
 
         Logger::info('[Wechat][Extend][Complaints][UpdateRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);

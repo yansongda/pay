@@ -15,7 +15,7 @@ class GetAccessTokenPluginTest extends TestCase
         $result = (new GetAccessTokenPlugin())->assembly(new Rocket(), fn ($rocket) => $rocket);
 
         self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('api/v1/authentication/login', $result->getPayload()->get('_url'));
+        self::assertEquals('/api/v1/authentication/login', $result->getPayload()->get('_url'));
         self::assertEquals('client', $result->getPayload()->get('_auth_type'));
     }
 }

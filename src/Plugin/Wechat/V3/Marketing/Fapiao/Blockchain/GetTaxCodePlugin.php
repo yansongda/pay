@@ -33,7 +33,7 @@ class GetTaxCodePlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/merchant/tax-codes?offset='.$offset.'&limit='.$limit,
+            '_url' => '/v3/new-tax-control-fapiao/merchant/tax-codes?offset='.$offset.'&limit='.$limit,
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Fapiao][Blockchain][GetTaxCodePlugin] 插件装载完毕', ['rocket' => $rocket]);

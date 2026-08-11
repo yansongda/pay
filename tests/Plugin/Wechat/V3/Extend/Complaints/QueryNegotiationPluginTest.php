@@ -47,8 +47,8 @@ class QueryNegotiationPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/complaints-v2/yansongda/negotiation-historys',
-            '_service_url' => 'v3/merchant-service/complaints-v2/yansongda/negotiation-historys',
+            '_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys',
+            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys',
         ], $result->getPayload()->all());
     }
 
@@ -68,8 +68,8 @@ class QueryNegotiationPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/complaints-v2/yansongda/negotiation-historys?limit=2&offset=3',
-            '_service_url' => 'v3/merchant-service/complaints-v2/yansongda/negotiation-historys?limit=2&offset=3',
+            '_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys?limit=2&offset=3',
+            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys?limit=2&offset=3',
         ], $result->getPayload()->all());
     }
 }

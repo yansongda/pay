@@ -58,7 +58,7 @@ class ReturnAdvancePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_service_url' => 'v3/ecommerce/refunds/111/return-advance',
+            '_service_url' => '/v3/ecommerce/refunds/111/return-advance',
             'sub_mchid' => '222',
         ], $result->getPayload()->all());
     }
@@ -75,7 +75,7 @@ class ReturnAdvancePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_service_url' => 'v3/ecommerce/refunds/111/return-advance',
+            '_service_url' => '/v3/ecommerce/refunds/111/return-advance',
             'sub_mchid' => '1600314070',
         ], $result->getPayload()->all());
     }

@@ -48,8 +48,8 @@ class QueryUserPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
-            '_service_url' => 'v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
+            '_url' => '/v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
+            '_service_url' => '/v3/marketing/favor/users/'.$openId.'/coupons?'.$this->normal($payload, $params, $config),
         ]);
 
         Logger::info('[Wechat][V3][Marketing][Coupon][Coupons][QueryUserPlugin] 插件装载完毕', ['rocket' => $rocket]);

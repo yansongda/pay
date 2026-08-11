@@ -50,7 +50,7 @@ class QueryDayEndPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_service_url' => 'v3/merchant/fund/dayendbalance/'.$accountType.$this->service($payload),
+            '_service_url' => '/v3/merchant/fund/dayendbalance/'.$accountType.$this->service($payload),
         ]);
 
         Logger::info('[Wechat][Marketing][ECommerceBalance][QueryDayEndPlugin] 插件装载完毕', ['rocket' => $rocket]);

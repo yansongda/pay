@@ -17,7 +17,7 @@ class WechatPublicCertsPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/certificates',
+            '_url' => '/v3/certificates',
         ]);
 
         Logger::info('[Wechat][V3][WechatPublicCertsPlugin] 插件装载完毕', ['rocket' => $rocket]);

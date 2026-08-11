@@ -51,8 +51,8 @@ class PayPlugin implements PluginInterface
         $rocket->mergePayload(array_merge(
             [
                 '_method' => 'POST',
-                '_url' => 'v3/pay/transactions/app',
-                '_service_url' => 'v3/pay/partner/transactions/app',
+                '_url' => '/v3/pay/transactions/app',
+                '_service_url' => '/v3/pay/partner/transactions/app',
                 'notify_url' => $payload->get('notify_url', $config->getNotifyUrl()),
             ],
             $data ?? $this->normal($config)

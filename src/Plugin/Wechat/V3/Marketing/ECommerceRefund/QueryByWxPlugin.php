@@ -49,7 +49,7 @@ class QueryByWxPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_service_url' => 'v3/ecommerce/refunds/id/'.$refundId.'?sub_mchid='.$payload->get('sub_mchid', $config->getSubMchId() ?? 'null'),
+            '_service_url' => '/v3/ecommerce/refunds/id/'.$refundId.'?sub_mchid='.$payload->get('sub_mchid', $config->getSubMchId() ?? 'null'),
         ]);
 
         Logger::info('[Wechat][Marketing][ECommerceRefund][QueryBatchByWxPlugin] 插件装载完毕', ['rocket' => $rocket]);

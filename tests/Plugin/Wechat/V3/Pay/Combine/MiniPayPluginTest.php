@@ -47,8 +47,8 @@ class MiniPayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/combine-transactions/jsapi',
-            '_service_url' => 'v3/combine-transactions/jsapi',
+            '_url' => '/v3/combine-transactions/jsapi',
+            '_service_url' => '/v3/combine-transactions/jsapi',
             'combine_appid' => 'yansongdaaa',
             'combine_mchid' => '333',
             'notify_url' => '444',
@@ -67,8 +67,8 @@ class MiniPayPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/combine-transactions/jsapi',
-            '_service_url' => 'v3/combine-transactions/jsapi',
+            '_url' => '/v3/combine-transactions/jsapi',
+            '_service_url' => '/v3/combine-transactions/jsapi',
             'combine_appid' => 'wx55955316af4ef14',
             'combine_mchid' => '1600314069',
             'notify_url' => 'https://pay.yansongda.cn',

@@ -45,8 +45,8 @@ class StartPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/stocks/'.$stockId.'/start',
-            '_service_url' => 'v3/marketing/favor/stocks/'.$stockId.'/start',
+            '_url' => '/v3/marketing/favor/stocks/'.$stockId.'/start',
+            '_service_url' => '/v3/marketing/favor/stocks/'.$stockId.'/start',
             'stock_creator_mchid' => $payload->get('stock_creator_mchid') ?? $config->getMchId(),
         ]);
 

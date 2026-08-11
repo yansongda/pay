@@ -32,7 +32,7 @@ class QueryPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'GET',
-            '_url' => 'api/v1/pa/payment_intents/'.$id,
+            '_url' => '/api/v1/pa/payment_intents/'.$id,
         ]);
 
         Logger::info('[Airwallex][V1][Pay][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -46,7 +46,7 @@ class GetTitleUrlPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/user-title/title-url?test=yansongda&appid=1111',
+            '_url' => '/v3/new-tax-control-fapiao/user-title/title-url?test=yansongda&appid=1111',
         ], $result->getPayload()->all());
     }
 
@@ -61,7 +61,7 @@ class GetTitleUrlPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/new-tax-control-fapiao/user-title/title-url?test=yansongda&appid=wx55955316af4ef13',
+            '_url' => '/v3/new-tax-control-fapiao/user-title/title-url?test=yansongda&appid=wx55955316af4ef13',
         ], $result->getPayload()->all());
     }
 }

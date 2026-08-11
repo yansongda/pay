@@ -43,8 +43,8 @@ class QueryDetailPlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId,
-            '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId,
+            '_url' => '/v3/merchant-service/complaints-v2/'.$complaintId,
+            '_service_url' => '/v3/merchant-service/complaints-v2/'.$complaintId,
         ]);
 
         Logger::info('[Wechat][Extend][Complaints][QueryDetailPlugin] 插件装载完毕', ['rocket' => $rocket]);

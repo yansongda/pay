@@ -46,8 +46,8 @@ class QueryImagePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'GET',
-            '_url' => 'v3/merchant-service/images/yansongda',
-            '_service_url' => 'v3/merchant-service/images/yansongda',
+            '_url' => '/v3/merchant-service/images/yansongda',
+            '_service_url' => '/v3/merchant-service/images/yansongda',
         ], $result->getPayload()->all());
     }
 }

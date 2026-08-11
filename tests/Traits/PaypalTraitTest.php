@@ -36,12 +36,12 @@ class PaypalTraitTest extends TestCase
         self::assertEquals('https://api-m.paypal.com/v2/checkout/orders', PaypalTraitStub::getPaypalUrl(new PaypalConfig([
             'client_id' => 'paypal_client_id',
             'app_secret' => 'paypal_app_secret',
-        ]), new Collection(['_url' => 'v2/checkout/orders'])));
+        ]), new Collection(['_url' => '/v2/checkout/orders'])));
         self::assertEquals('https://api-m.sandbox.paypal.com/v2/checkout/orders', PaypalTraitStub::getPaypalUrl(new PaypalConfig([
             'client_id' => 'paypal_client_id',
             'app_secret' => 'paypal_app_secret',
             'mode' => Pay::MODE_SANDBOX,
-        ]), new Collection(['_url' => 'v2/checkout/orders'])));
+        ]), new Collection(['_url' => '/v2/checkout/orders'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_PAYPAL_URL_MISSING);

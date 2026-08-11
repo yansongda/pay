@@ -29,6 +29,6 @@ class QueryPluginTest extends TestCase
         );
 
         self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('api/v1/pa/payment_intents/int_test123', $result->getPayload()->get('_url'));
+        self::assertEquals('/api/v1/pa/payment_intents/int_test123', $result->getPayload()->get('_url'));
     }
 }

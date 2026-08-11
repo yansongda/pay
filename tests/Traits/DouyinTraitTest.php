@@ -36,9 +36,9 @@ class DouyinTraitTest extends TestCase
         ]);
 
         self::assertEquals('https://yansongda.cn', DouyinTraitStub::getDouyinUrl($normalConfig, new Collection(['_url' => 'https://yansongda.cn'])));
-        self::assertEquals('https://developer.toutiao.com/api/v1/yansongda', DouyinTraitStub::getDouyinUrl($normalConfig, new Collection(['_url' => 'api/v1/yansongda'])));
-        self::assertEquals('https://developer.toutiao.com/api/v1/service/yansongda', DouyinTraitStub::getDouyinUrl($serviceConfig, new Collection(['_service_url' => 'api/v1/service/yansongda'])));
-        self::assertEquals('https://developer.toutiao.com/api/v1/service/yansongda', DouyinTraitStub::getDouyinUrl($serviceConfig, new Collection(['_url' => 'foo', '_service_url' => 'api/v1/service/yansongda'])));
+        self::assertEquals('https://developer.toutiao.com/api/v1/yansongda', DouyinTraitStub::getDouyinUrl($normalConfig, new Collection(['_url' => '/api/v1/yansongda'])));
+        self::assertEquals('https://developer.toutiao.com/api/v1/service/yansongda', DouyinTraitStub::getDouyinUrl($serviceConfig, new Collection(['_service_url' => '/api/v1/service/yansongda'])));
+        self::assertEquals('https://developer.toutiao.com/api/v1/service/yansongda', DouyinTraitStub::getDouyinUrl($serviceConfig, new Collection(['_url' => '/foo', '_service_url' => '/api/v1/service/yansongda'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_DOUYIN_URL_MISSING);

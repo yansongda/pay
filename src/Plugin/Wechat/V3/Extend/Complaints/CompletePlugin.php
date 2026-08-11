@@ -43,8 +43,8 @@ class CompletePlugin implements PluginInterface
 
         $rocket->setPayload([
             '_method' => 'POST',
-            '_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/complete',
-            '_service_url' => 'v3/merchant-service/complaints-v2/'.$complaintId.'/complete',
+            '_url' => '/v3/merchant-service/complaints-v2/'.$complaintId.'/complete',
+            '_service_url' => '/v3/merchant-service/complaints-v2/'.$complaintId.'/complete',
             'complainted_mchid' => $payload->get('complainted_mchid') ?? $config->getMchId(),
         ]);
 

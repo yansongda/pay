@@ -29,7 +29,7 @@ class WebPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('v1/checkout/sessions', $payload->get('_url'));
+        self::assertEquals('/v1/checkout/sessions', $payload->get('_url'));
         self::assertEquals('payment', $payload->get('mode'));
     }
 

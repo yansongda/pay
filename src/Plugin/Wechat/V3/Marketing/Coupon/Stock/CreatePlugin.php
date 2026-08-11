@@ -37,8 +37,8 @@ class CreatePlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_method' => 'POST',
-            '_url' => 'v3/marketing/favor/coupon-stocks',
-            '_service_url' => 'v3/marketing/favor/coupon-stocks',
+            '_url' => '/v3/marketing/favor/coupon-stocks',
+            '_service_url' => '/v3/marketing/favor/coupon-stocks',
             'belong_merchant' => $belongMerchant,
         ]);
 

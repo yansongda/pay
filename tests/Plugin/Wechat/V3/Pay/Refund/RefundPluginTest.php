@@ -45,8 +45,8 @@ class RefundPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/refund/domestic/refunds',
-            '_service_url' => 'v3/refund/domestic/refunds',
+            '_url' => '/v3/refund/domestic/refunds',
+            '_service_url' => '/v3/refund/domestic/refunds',
             'notify_url' => '111',
             'name' => '222',
         ], $result->getPayload()->all());
@@ -63,8 +63,8 @@ class RefundPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/refund/domestic/refunds',
-            '_service_url' => 'v3/refund/domestic/refunds',
+            '_url' => '/v3/refund/domestic/refunds',
+            '_service_url' => '/v3/refund/domestic/refunds',
             'notify_url' => 'https://pay.yansongda.cn',
             'out_trade_no' => '111',
         ], $result->getPayload()->all());
@@ -83,8 +83,8 @@ class RefundPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/refund/domestic/refunds',
-            '_service_url' => 'v3/refund/domestic/refunds',
+            '_url' => '/v3/refund/domestic/refunds',
+            '_service_url' => '/v3/refund/domestic/refunds',
             'notify_url' => '111',
             'sub_mchid' => '222',
             'name' => 'yansongda',
@@ -102,8 +102,8 @@ class RefundPluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/refund/domestic/refunds',
-            '_service_url' => 'v3/refund/domestic/refunds',
+            '_url' => '/v3/refund/domestic/refunds',
+            '_service_url' => '/v3/refund/domestic/refunds',
             'name' => 'yansongda',
             'notify_url' => 'https://pay.yansongda.cn',
             'sub_mchid' => '1600314070',

@@ -40,7 +40,7 @@ class ContractOrderPlugin implements PluginInterface
 
         $rocket->setPacker(XmlPacker::class)
             ->mergePayload([
-                '_url' => 'pay/contractorder',
+                '_url' => '/pay/contractorder',
                 '_content_type' => 'application/xml',
                 'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
                 'mch_id' => $config->getMchId(),

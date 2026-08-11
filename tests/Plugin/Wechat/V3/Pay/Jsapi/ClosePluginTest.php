@@ -45,8 +45,8 @@ class ClosePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/out-trade-no/111/close',
-            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/111/close',
+            '_url' => '/v3/pay/transactions/out-trade-no/111/close',
+            '_service_url' => '/v3/pay/partner/transactions/out-trade-no/111/close',
             'mchid' => '1600314069',
         ], $result->getPayload()->all());
         self::assertEquals(OriginResponseDirection::class, $result->getDirection());
@@ -64,8 +64,8 @@ class ClosePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/out-trade-no/111/close',
-            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/111/close',
+            '_url' => '/v3/pay/transactions/out-trade-no/111/close',
+            '_service_url' => '/v3/pay/partner/transactions/out-trade-no/111/close',
             'sp_mchid' => '1600314069',
             'sub_mchid' => '333',
         ], $result->getPayload()->all());
@@ -83,8 +83,8 @@ class ClosePluginTest extends TestCase
 
         self::assertEquals([
             '_method' => 'POST',
-            '_url' => 'v3/pay/transactions/out-trade-no/111/close',
-            '_service_url' => 'v3/pay/partner/transactions/out-trade-no/111/close',
+            '_url' => '/v3/pay/transactions/out-trade-no/111/close',
+            '_service_url' => '/v3/pay/partner/transactions/out-trade-no/111/close',
             'sp_mchid' => '1600314069',
             'sub_mchid' => '1600314070',
         ], $result->getPayload()->all());
