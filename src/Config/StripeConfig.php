@@ -82,11 +82,10 @@ class StripeConfig extends AbstractConfig
      */
     protected function validateRequired(): void
     {
-        if (empty($this->secretKey)) {
-            throw new InvalidConfigException(
-                Exception::CONFIG_STRIPE_INVALID,
-                '配置异常: 缺少 Stripe 配置 -- [secret_key]'
-            );
-        }
+        $this->validateNotEmpty(
+            ['secretKey'],
+            Exception::CONFIG_STRIPE_INVALID,
+            '配置异常: 缺少 Stripe 配置'
+        );
     }
 }

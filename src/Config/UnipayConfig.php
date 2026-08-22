@@ -108,15 +108,10 @@ class UnipayConfig extends AbstractConfig
             return;
         }
 
-        $required = ['mchCertPath' => 'mch_cert_path', 'mchCertPassword' => 'mch_cert_password'];
-
-        foreach ($required as $prop => $key) {
-            if (empty($this->{$prop})) {
-                throw new InvalidConfigException(
-                    Exception::CONFIG_UNIPAY_INVALID,
-                    "配置异常: 缺少银联配置 -- [{$key}]"
-                );
-            }
-        }
+        $this->validateNotEmpty(
+            ['mchCertPath', 'mchCertPassword'],
+            Exception::CONFIG_UNIPAY_INVALID,
+            '配置异常: 缺少银联配置'
+        );
     }
 }

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## Unreleased
+
+### Changed
+
+- 重构各 Provider Config 的必填参数校验：提取 `AbstractConfig::validateNotEmpty()` 公共方法，必填项仅需声明属性名列表（snake_case 键名由 `Str::snake()` 推导），除 Airwallex 外所有异常消息保持不变
+- 统一 Airwallex 必填配置缺失时的异常消息格式，与其他 Provider 对齐：`配置错误: Airwallex 配置缺少 [client_id]` -> `配置异常: 缺少 Airwallex 配置 -- [client_id]`
+
+### Removed
+
+- 移除 `WechatConfig::validateForV2()/validateForMp()/validateForMini()` 方法（仅存在于 v3.8.0-beta 版本，SDK 内部无调用）
+
+
 ## [v3.8.0-beta.3] - 2026-08-11
 
 ### Changed
