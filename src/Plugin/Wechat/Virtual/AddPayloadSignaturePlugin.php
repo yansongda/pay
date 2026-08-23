@@ -24,6 +24,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
      * @throws ContainerException
      * @throws InvalidConfigException
      * @throws ServiceNotFoundException
+     * @throws InvalidParamsException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
