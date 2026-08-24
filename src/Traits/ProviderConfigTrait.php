@@ -13,12 +13,17 @@ use Yansongda\Supports\Collection;
 
 trait ProviderConfigTrait
 {
+    /**
+     * @param array<string, mixed> $params
+     */
     public static function getTenant(array $params = []): string
     {
         return (string) ($params['_config'] ?? 'default');
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws ContainerException
      * @throws ServiceNotFoundException
      */

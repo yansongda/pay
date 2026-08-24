@@ -12,10 +12,20 @@ class CallbackReceived extends Event
 {
     public string $provider;
 
+    /**
+     * @var null|array<string, mixed>
+     */
     public ?array $params = null;
 
+    /**
+     * @var null|array<string, mixed>|ServerRequestInterface
+     */
     public array|ServerRequestInterface|null $contents;
 
+    /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     * @param null|array<string, mixed>                        $params
+     */
     public function __construct(string $provider, array|ServerRequestInterface|null $contents, ?array $params = null, ?Rocket $rocket = null)
     {
         $this->provider = $provider;

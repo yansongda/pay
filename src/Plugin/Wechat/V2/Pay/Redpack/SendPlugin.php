@@ -62,6 +62,11 @@ class SendPlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
     protected function normal(WechatConfig $config, array $params): array
     {
         return [
@@ -70,6 +75,11 @@ class SendPlugin implements PluginInterface
         ];
     }
 
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
     protected function service(Collection $payload, WechatConfig $config, array $params): array
     {
         return [

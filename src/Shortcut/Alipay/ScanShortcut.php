@@ -16,6 +16,11 @@ use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 
 class ScanShortcut implements ShortcutInterface
 {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     */
     public function getPlugins(array $params): array
     {
         return [

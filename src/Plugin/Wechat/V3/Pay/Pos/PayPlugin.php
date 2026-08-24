@@ -63,6 +63,11 @@ class PayPlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
     protected function normal(array $params, WechatConfig $config): array
     {
         return [
@@ -71,6 +76,11 @@ class PayPlugin implements PluginInterface
         ];
     }
 
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
     protected function service(Collection $payload, array $params, WechatConfig $config): array
     {
         return [

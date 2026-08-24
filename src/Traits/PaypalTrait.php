@@ -45,6 +45,8 @@ trait PaypalTrait
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidConfigException
      * @throws InvalidParamsException
@@ -83,6 +85,8 @@ trait PaypalTrait
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidConfigException
      * @throws InvalidParamsException

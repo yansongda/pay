@@ -50,6 +50,9 @@ class AddRadarPlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function getHeaders(StripeConfig $config, ?Collection $payload): array
     {
         $secretKey = $config->getSecretKey();

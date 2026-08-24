@@ -37,6 +37,10 @@ class StartPlugin implements PluginInterface
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     *
      * @throws ContainerException
      * @throws ServiceNotFoundException
      * @throws InvalidConfigException
@@ -64,6 +68,9 @@ class StartPlugin implements PluginInterface
         ];
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function getReturnUrl(array $params, AlipayConfig $config): string
     {
         if (!empty($params['_return_url'])) {
@@ -73,6 +80,9 @@ class StartPlugin implements PluginInterface
         return $config->getReturnUrl() ?? '';
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function getNotifyUrl(array $params, AlipayConfig $config): string
     {
         if (!empty($params['_notify_url'])) {
@@ -82,6 +92,9 @@ class StartPlugin implements PluginInterface
         return $config->getNotifyUrl() ?? '';
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function getAppAuthToken(array $params, AlipayConfig $config): string
     {
         if (!empty($params['_app_auth_token'])) {

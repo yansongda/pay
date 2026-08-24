@@ -28,6 +28,10 @@ use Yansongda\Supports\Str;
 class RefundShortcut implements ShortcutInterface
 {
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     *
      * @throws InvalidParamsException
      */
     public function getPlugins(array $params): array
@@ -41,11 +45,17 @@ class RefundShortcut implements ShortcutInterface
         throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function defaultPlugins(): array
     {
         return $this->webPlugins();
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function agreementPlugins(): array
     {
         return [
@@ -60,6 +70,9 @@ class RefundShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function appPlugins(): array
     {
         return [
@@ -74,6 +87,9 @@ class RefundShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function authorizationPlugins(): array
     {
         return [
@@ -88,6 +104,9 @@ class RefundShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function miniPlugins(): array
     {
         return [
@@ -102,6 +121,9 @@ class RefundShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function posPlugins(): array
     {
         return [
@@ -116,6 +138,9 @@ class RefundShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function scanPlugins(): array
     {
         return [
@@ -130,6 +155,9 @@ class RefundShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function h5Plugins(): array
     {
         return [
@@ -144,6 +172,9 @@ class RefundShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function webPlugins(): array
     {
         return [
@@ -158,6 +189,9 @@ class RefundShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function transferPlugins(): array
     {
         return [

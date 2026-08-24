@@ -15,6 +15,11 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
 
 class MiniShortcut implements ShortcutInterface
 {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     */
     public function getPlugins(array $params): array
     {
         return [

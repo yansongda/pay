@@ -25,13 +25,13 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method ResponseInterface|Rocket app(array $order)      APP 支付
- * @method Collection|Rocket        pos(array $order)      刷卡支付（付款码，被扫码）
- * @method Collection|Rocket        scan(array $order)     扫码支付（摄像头，主动扫）
- * @method Collection|Rocket        transfer(array $order) 帐户转账
- * @method ResponseInterface|Rocket h5(array $order)       手机网站支付
- * @method ResponseInterface|Rocket web(array $order)      电脑支付
- * @method Collection|Rocket        mini(array $order)     小程序支付
+ * @method ResponseInterface|Rocket app(array<string, mixed> $order)      APP 支付
+ * @method Collection|Rocket        pos(array<string, mixed> $order)      刷卡支付（付款码，被扫码）
+ * @method Collection|Rocket        scan(array<string, mixed> $order)     扫码支付（摄像头，主动扫）
+ * @method Collection|Rocket        transfer(array<string, mixed> $order) 帐户转账
+ * @method ResponseInterface|Rocket h5(array<string, mixed> $order)       手机网站支付
+ * @method ResponseInterface|Rocket web(array<string, mixed> $order)      电脑支付
+ * @method Collection|Rocket        mini(array<string, mixed> $order)     小程序支付
  */
 class Alipay implements ProviderInterface
 {
@@ -42,6 +42,8 @@ class Alipay implements ProviderInterface
     ];
 
     /**
+     * @param array<int, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
@@ -124,6 +126,9 @@ class Alipay implements ProviderInterface
     }
 
     /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     * @param null|array<string, mixed>                        $params
+     *
      * @throws ContainerException
      * @throws InvalidParamsException
      */
@@ -139,6 +144,9 @@ class Alipay implements ProviderInterface
         return new Response(200, [], 'success');
     }
 
+    /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     */
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
     {
         if (is_array($contents)) {

@@ -15,8 +15,15 @@ class PayStart extends Event
      */
     public array $plugins;
 
+    /**
+     * @var array<string, mixed>
+     */
     public array $params;
 
+    /**
+     * @param PluginInterface[]    $plugins
+     * @param array<string, mixed> $params
+     */
     public function __construct(array $plugins, array $params, ?Rocket $rocket = null)
     {
         $this->plugins = $plugins;

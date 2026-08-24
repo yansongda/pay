@@ -25,7 +25,7 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket intent(array $order) Payment Intent 支付
+ * @method Collection|Rocket intent(array<string, mixed> $order) Payment Intent 支付
  */
 class Airwallex implements ProviderInterface
 {
@@ -36,6 +36,8 @@ class Airwallex implements ProviderInterface
     ];
 
     /**
+     * @param array<int, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
@@ -121,6 +123,9 @@ class Airwallex implements ProviderInterface
         return new Response(200, ['Content-Type' => 'application/json'], json_encode(['success' => true]));
     }
 
+    /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     */
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
     {
         if (is_array($contents) && isset($contents['body'], $contents['headers'])) {

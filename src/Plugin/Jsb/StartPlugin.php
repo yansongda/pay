@@ -38,10 +38,10 @@ class StartPlugin implements PluginInterface
                 'createTime' => date('His'),
                 'bizDate' => date('Ymd'),
                 'msgId' => Str::uuidV4(),
-                'svrCode' => $config->getSvrCode() ?? '',
-                'partnerId' => $config->getPartnerId() ?? '',
+                'svrCode' => $config->getSvrCode(),
+                'partnerId' => $config->getPartnerId(),
                 'channelNo' => 'm',
-                'publicKeyCode' => $config->getPublicKeyCode() ?? '',
+                'publicKeyCode' => $config->getPublicKeyCode(),
                 'version' => 'v1.0.0',
                 'charset' => 'utf-8',
             ]));

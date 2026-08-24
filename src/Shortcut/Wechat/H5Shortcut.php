@@ -16,6 +16,11 @@ use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 
 class H5Shortcut implements ShortcutInterface
 {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     */
     public function getPlugins(array $params): array
     {
         return [

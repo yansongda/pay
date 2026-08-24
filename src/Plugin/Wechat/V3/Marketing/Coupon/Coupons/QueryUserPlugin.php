@@ -57,6 +57,9 @@ class QueryUserPlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function normal(Collection $payload, array $params, WechatConfig $config): string
     {
         $appId = $payload->get('appid');

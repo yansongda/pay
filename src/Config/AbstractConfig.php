@@ -18,6 +18,9 @@ abstract class AbstractConfig implements ProviderConfigInterface
 
     protected string $tenant;
 
+    /**
+     * @param array<string, mixed> $values
+     */
     public function __construct(array $values, string $tenant = 'default')
     {
         $this->tenant = $tenant;
@@ -35,6 +38,8 @@ abstract class AbstractConfig implements ProviderConfigInterface
     abstract protected function validateRequired(): void;
 
     /**
+     * @param array<int, string> $props
+     *
      * @throws InvalidConfigException 缺少必要配置参数
      */
     protected function validateNotEmpty(array $props, int $exceptionCode, string $messagePrefix): void

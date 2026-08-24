@@ -20,6 +20,10 @@ use Yansongda\Supports\Str;
 class CancelShortcut implements ShortcutInterface
 {
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     *
      * @throws InvalidParamsException
      */
     public function getPlugins(array $params): array
@@ -33,11 +37,17 @@ class CancelShortcut implements ShortcutInterface
         throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function defaultPlugins(): array
     {
         return $this->transferPlugins();
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function transferPlugins(): array
     {
         return [

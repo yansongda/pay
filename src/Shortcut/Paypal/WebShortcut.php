@@ -19,6 +19,10 @@ use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 class WebShortcut implements ShortcutInterface
 {
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     *
      * @throws InvalidParamsException
      */
     public function getPlugins(array $params): array
@@ -32,6 +36,9 @@ class WebShortcut implements ShortcutInterface
         };
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function payPlugins(): array
     {
         return [
@@ -45,6 +52,9 @@ class WebShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function capturePlugins(): array
     {
         return [

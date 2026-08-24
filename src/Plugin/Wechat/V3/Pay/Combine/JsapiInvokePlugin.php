@@ -66,6 +66,8 @@ class JsapiInvokePlugin implements PluginInterface
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws InvalidConfigException
      * @throws Throwable              生成随机串失败
      */
@@ -97,6 +99,9 @@ class JsapiInvokePlugin implements PluginInterface
         return self::getWechatSign($config, $contents);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function getAppId(?Collection $payload, WechatConfig $config, array $params): string
     {
         if (Pay::MODE_SERVICE === $config->getMode()) {

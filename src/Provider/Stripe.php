@@ -25,8 +25,8 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket intent(array $order) PaymentIntent 支付
- * @method Collection|Rocket web(array $order)    Checkout Session 支付
+ * @method Collection|Rocket intent(array<string, mixed> $order) PaymentIntent 支付
+ * @method Collection|Rocket web(array<string, mixed> $order)    Checkout Session 支付
  */
 class Stripe implements ProviderInterface
 {
@@ -37,6 +37,8 @@ class Stripe implements ProviderInterface
     ];
 
     /**
+     * @param array<int, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
@@ -122,6 +124,9 @@ class Stripe implements ProviderInterface
         return new Response(200, ['Content-Type' => 'application/json'], json_encode(['result' => 'success']));
     }
 
+    /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     */
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
     {
         if (is_array($contents) && isset($contents['body'], $contents['headers'])) {

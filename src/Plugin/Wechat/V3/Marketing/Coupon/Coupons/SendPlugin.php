@@ -58,6 +58,11 @@ class SendPlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
     protected function normal(Collection $payload, array $params, WechatConfig $config): array
     {
         if (empty($payload->get('appid'))) {

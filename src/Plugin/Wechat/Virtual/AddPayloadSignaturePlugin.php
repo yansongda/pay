@@ -81,6 +81,9 @@ class AddPayloadSignaturePlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function appendQueryParams(string $uri, array $params): string
     {
         $separator = str_contains($uri, '?') ? '&' : '?';

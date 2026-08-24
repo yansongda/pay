@@ -25,7 +25,7 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket scan(array $order) 扫码支付[微信支付宝都可扫描]
+ * @method Collection|Rocket scan(array<string, mixed> $order) 扫码支付[微信支付宝都可扫描]
  */
 class Jsb implements ProviderInterface
 {
@@ -35,6 +35,8 @@ class Jsb implements ProviderInterface
     ];
 
     /**
+     * @param array<int, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
@@ -120,7 +122,10 @@ class Jsb implements ProviderInterface
         return $this->__call('query', [$order]);
     }
 
-    protected function getCallbackParams($contents = null): Collection
+    /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     */
+    protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
     {
         if (is_array($contents)) {
             return Collection::wrap($contents);

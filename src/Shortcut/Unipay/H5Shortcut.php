@@ -15,6 +15,11 @@ use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 
 class H5Shortcut implements ShortcutInterface
 {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     */
     public function getPlugins(array $params): array
     {
         return [

@@ -99,6 +99,8 @@ trait WechatTrait
     }
 
     /**
+     * @param array<string, mixed> $payload
+     *
      * @throws InvalidConfigException
      */
     public static function getWechatSignV2(WechatConfig $config, array $payload, bool $upper = true): string
@@ -123,6 +125,8 @@ trait WechatTrait
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @see https://pay.weixin.qq.com/doc/v3/merchant/4013053420
      *
      * @throws ContainerException
@@ -169,6 +173,8 @@ trait WechatTrait
     }
 
     /**
+     * @param array<string, mixed> $destination
+     *
      * @throws InvalidConfigException 缺少商户密钥配置
      * @throws InvalidSignException   签名为空或验签失败
      */
@@ -202,7 +208,7 @@ trait WechatTrait
 
     public static function decryptWechatContents(string $encrypted, WechatConfig $config): ?string
     {
-        $privateKey = $config->getMchSecretCert() ?? '';
+        $privateKey = $config->getMchSecretCert();
 
         if (openssl_private_decrypt(base64_decode($encrypted), $decrypted, CertManager::getPrivateCert($privateKey), OPENSSL_PKCS1_OAEP_PADDING)) {
             return $decrypted;
@@ -212,6 +218,8 @@ trait WechatTrait
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws ContainerException
      * @throws DecryptException
      * @throws InvalidConfigException
@@ -244,6 +252,8 @@ trait WechatTrait
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws ContainerException
      * @throws DecryptException
      * @throws InvalidConfigException
@@ -271,6 +281,10 @@ trait WechatTrait
     }
 
     /**
+     * @param array<string, mixed> $resource
+     *
+     * @return array<string, mixed>
+     *
      * @throws InvalidConfigException
      * @throws DecryptException
      */
@@ -296,6 +310,8 @@ trait WechatTrait
     }
 
     /**
+     * @return array<string, mixed>
+     *
      * @throws DecryptException
      */
     public static function decryptWechatResourceAes256Gcm(string $ciphertext, string $secret, string $nonce, string $associatedData): array|string
@@ -326,6 +342,8 @@ trait WechatTrait
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws ContainerException
      * @throws DecryptException
      * @throws InvalidConfigException

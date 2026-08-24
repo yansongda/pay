@@ -28,6 +28,9 @@ class WechatConfig extends AbstractConfig
     private int $mode = Pay::MODE_NORMAL;
     private WechatConfigVirtualPay $virtualPay;
 
+    /**
+     * @param array<string, mixed> $values
+     */
     public function __construct(array $values, string $tenant = 'default')
     {
         $this->virtualPay = new WechatConfigVirtualPay();
@@ -99,6 +102,9 @@ class WechatConfig extends AbstractConfig
         $this->subAppId = $value;
     }
 
+    /**
+     * @param array<string, string> $value
+     */
     public function setWechatPublicCertPath(array $value): void
     {
         foreach ($value as $serialNo => $cert) {

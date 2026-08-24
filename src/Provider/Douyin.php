@@ -25,7 +25,7 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket mini(array $order) 小程序支付
+ * @method Collection|Rocket mini(array<string, mixed> $order) 小程序支付
  */
 class Douyin implements ProviderInterface
 {
@@ -36,6 +36,8 @@ class Douyin implements ProviderInterface
     ];
 
     /**
+     * @param array<int, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
@@ -118,6 +120,9 @@ class Douyin implements ProviderInterface
         );
     }
 
+    /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     */
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
     {
         if (is_array($contents)) {
