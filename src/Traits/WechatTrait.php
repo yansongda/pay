@@ -313,7 +313,7 @@ trait WechatTrait
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, mixed>|string
      *
      * @throws DecryptException
      */
