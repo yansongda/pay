@@ -61,13 +61,8 @@ trait WechatTrait
             return $url;
         }
 
-        // 虚拟支付服务端 API 使用 api.weixin.qq.com，非 api.mch.weixin.qq.com
-        if (str_starts_with($url, '/xpay/')) {
-            return Wechat::URL_VIRTUAL.$url;
-        }
-
-        // 虚拟支付 access_token 接口使用 api.weixin.qq.com
-        if (str_starts_with($url, '/cgi-bin/')) {
+        // 虚拟支付（服务端 API /xpay/* 与 access_token 接口 /cgi-bin/*）使用 api.weixin.qq.com，非 api.mch.weixin.qq.com
+        if (str_starts_with($url, '/xpay/') || str_starts_with($url, '/cgi-bin/')) {
             return Wechat::URL_VIRTUAL.$url;
         }
 
@@ -248,8 +243,8 @@ trait WechatTrait
             $certs[$item['serial_no']] = self::decryptWechatResource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
         }
 
-        foreach ($certs ?? [] as $serialNo => $cert) {
-            CertManager::wechatSetCertBySerial($wechatConfig->getTenant(), $serialNo, $cert);
+        foreach ($certs ?? [] as $certSerialNo => $cert) {
+            CertManager::wechatSetCertBySerial($wechatConfig->getTenant(), $certSerialNo, $cert);
         }
 
         if (!is_null($serialNo) && empty($certs[$serialNo])) {
