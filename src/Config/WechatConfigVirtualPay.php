@@ -24,6 +24,12 @@ class WechatConfigVirtualPay
 
     private ?string $callbackToken = null;
 
+    private ?string $appSecret = null;
+
+    private ?string $_accessToken = null;
+
+    private ?int $_accessTokenExpiry = null;
+
     public function setAppKey(?string $value): void
     {
         $this->appKey = $value;
@@ -83,5 +89,35 @@ class WechatConfigVirtualPay
     public function getCallbackToken(): ?string
     {
         return $this->callbackToken;
+    }
+
+    public function setAppSecret(?string $value): void
+    {
+        $this->appSecret = $value;
+    }
+
+    public function getAppSecret(): ?string
+    {
+        return $this->appSecret;
+    }
+
+    public function setAccessToken(?string $value): void
+    {
+        $this->_accessToken = $value;
+    }
+
+    public function getAccessToken(): ?string
+    {
+        return $this->_accessToken;
+    }
+
+    public function setAccessTokenExpiry(?int $value): void
+    {
+        $this->_accessTokenExpiry = $value;
+    }
+
+    public function getAccessTokenExpiry(): ?int
+    {
+        return $this->_accessTokenExpiry;
     }
 }

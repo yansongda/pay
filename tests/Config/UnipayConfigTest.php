@@ -42,10 +42,11 @@ class UnipayConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少银联配置 -- [mch_cert_path]');
 
-        new UnipayConfig([
+        $config = new UnipayConfig([
             // missing mch_cert_path
             'mch_cert_password' => 'test_password',
         ]);
+        $config->validate();
     }
 
     public function testOptionalGetters(): void

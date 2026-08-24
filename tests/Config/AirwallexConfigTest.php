@@ -45,7 +45,8 @@ class AirwallexConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少 Airwallex 配置 -- [client_id]');
 
-        new AirwallexConfig(['api_key' => 'airwallex_api_key']);
+        $config = new AirwallexConfig(['api_key' => 'airwallex_api_key']);
+        $config->validate();
     }
 
     public function testConstructMissingApiKey(): void
@@ -53,7 +54,8 @@ class AirwallexConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少 Airwallex 配置 -- [api_key]');
 
-        new AirwallexConfig(['client_id' => 'airwallex_client_id']);
+        $config = new AirwallexConfig(['client_id' => 'airwallex_client_id']);
+        $config->validate();
     }
 
     public function testOptionalGetters(): void

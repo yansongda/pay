@@ -47,13 +47,14 @@ class AlipayConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_id]');
 
-        new AlipayConfig([
+        $config = new AlipayConfig([
             // missing app_id
             'app_secret_cert' => 'test_secret',
             'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
             'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
             'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
         ]);
+        $config->validate();
     }
 
     public function testOptionalGetters(): void

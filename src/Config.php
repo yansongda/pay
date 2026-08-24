@@ -69,6 +69,9 @@ class Config extends BaseConfig
             throw new InvalidConfigException(Exception::CONFIG_PROVIDER_INVALID, "配置异常: {$provider}.{$tenant} 配置不存在");
         }
 
-        return $this->items[$provider][$tenant];
+        $config = $this->items[$provider][$tenant];
+        $config->validate();
+
+        return $config;
     }
 }

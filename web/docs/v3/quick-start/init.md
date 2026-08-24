@@ -77,6 +77,9 @@ $config = [
                 'app_key' => 'your_app_key',
                 // 「选填」沙箱环境签名密钥
                 'sandbox_app_key' => 'your_sandbox_app_key',
+                // 「选填」服务端 API 自动获取 access_token 用
+                // 配置后启用自动获取（stable_token 接口）；仅用客户端签名可不配置
+                'app_secret' => 'your_app_secret',
                 // 「必填」回调验签 Token
                 'callback_token' => 'your_callback_token',
                 // 「必填」回调解密密钥（43 字符）

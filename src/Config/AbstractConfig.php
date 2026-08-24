@@ -25,12 +25,19 @@ abstract class AbstractConfig implements ProviderConfigInterface
     {
         $this->tenant = $tenant;
         $this->unserializeArray($values);
-        $this->validateRequired();
     }
 
     public function getTenant(): string
     {
         return $this->tenant;
+    }
+
+    /**
+     * @throws InvalidConfigException 缺少必要配置参数
+     */
+    public function validate(): void
+    {
+        $this->validateRequired();
     }
 
     abstract public function getMode(): int;

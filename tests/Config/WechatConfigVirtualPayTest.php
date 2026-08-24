@@ -28,6 +28,31 @@ class WechatConfigVirtualPayTest extends TestCase
         self::assertSame('prod-key', $vp->getAppKey());
     }
 
+    public function testSetAndGetAppSecret(): void
+    {
+        $vp = new WechatConfigVirtualPay();
+
+        self::assertNull($vp->getAppSecret());
+
+        $vp->setAppSecret('secret');
+
+        self::assertSame('secret', $vp->getAppSecret());
+    }
+
+    public function testAccessTokenCacheFields(): void
+    {
+        $vp = new WechatConfigVirtualPay();
+
+        self::assertNull($vp->getAccessToken());
+        self::assertNull($vp->getAccessTokenExpiry());
+
+        $vp->setAccessToken('token');
+        $vp->setAccessTokenExpiry(123);
+
+        self::assertSame('token', $vp->getAccessToken());
+        self::assertSame(123, $vp->getAccessTokenExpiry());
+    }
+
     public function testSetAndGetSandboxAppKey(): void
     {
         $vp = new WechatConfigVirtualPay();

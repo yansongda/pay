@@ -44,10 +44,11 @@ class PaypalConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少 PayPal 配置 -- [client_id]');
 
-        new PaypalConfig([
+        $config = new PaypalConfig([
             // missing client_id
             'app_secret' => 'test_app_secret',
         ]);
+        $config->validate();
     }
 
     public function testOptionalGetters(): void

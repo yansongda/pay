@@ -5,3 +5,6 @@ composer.lock
 .phpunit.cache/
 .phpunit.result.cache
 .worktrees/
+docs/implementation/
+docs/evidence/
+docs/learning/

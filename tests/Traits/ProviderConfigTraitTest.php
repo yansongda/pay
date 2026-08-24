@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Contract\ConfigInterface;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Config\ProviderConfigInterface;
 use Yansongda\Pay\Config\UnipayConfig;
@@ -184,6 +185,10 @@ class ProviderConfigTraitTest extends TestCase
                 return $default;
             }
 
+            public function validate(): void
+            {
+            }
+
             public function toArray(): array
             {
                 return ['foo' => 'bar'];
@@ -242,5 +247,22 @@ class ProviderConfigTraitTest extends TestCase
                 new Collection(['_url' => 'https://yansongda.cn', '_service_url' => 'https://yansongda.cnaaa'])
             )
         );
+    }
+
+    public function testGetProviderConfigValidatesOnAccess(): void
+    {
+        PayFacade::config([
+            'alipay' => [
+                'default' => [
+                    'app_id' => 'x',
+                ],
+            ],
+            '_force' => true,
+        ]);
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_secret_cert]');
+
+        ProviderConfigTraitStub::getProviderConfig('alipay', []);
     }
 }

@@ -65,13 +65,14 @@ class WechatConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
 
-        new WechatConfig([
+        $config = new WechatConfig([
             // missing mch_id
             'mch_secret_key' => '12345678901234567890123456789012',
             'mch_secret_cert' => 'test_cert',
             'mch_public_cert_path' => 'test_path',
             'notify_url' => 'https://test.com',
         ]);
+        $config->validate();
     }
 
     public function testConstructInvalidSecretKeyLength(): void
@@ -79,13 +80,14 @@ class WechatConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: mch_secret_key 长度应为 32 字节');
 
-        new WechatConfig([
+        $config = new WechatConfig([
             'mch_id' => 'test_mch_id',
             'mch_secret_key' => 'short_key', // 9 bytes, not 32
             'mch_secret_cert' => 'test_cert',
             'mch_public_cert_path' => 'test_path',
             'notify_url' => 'https://test.com',
         ]);
+        $config->validate();
     }
 
     public function testConstructServiceModeMissingSubMchId(): void
@@ -93,7 +95,7 @@ class WechatConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 服务商模式下缺少 [sub_mch_id]');
 
-        new WechatConfig([
+        $config = new WechatConfig([
             'mch_id' => 'test_mch_id',
             'mch_secret_key' => '12345678901234567890123456789012',
             'mch_secret_cert' => 'test_cert',
@@ -102,6 +104,7 @@ class WechatConfigTest extends TestCase
             'mode' => Pay::MODE_SERVICE,
             // missing sub_mch_id
         ]);
+        $config->validate();
     }
 
     public function testConstructServiceModeWithSubMchId(): void

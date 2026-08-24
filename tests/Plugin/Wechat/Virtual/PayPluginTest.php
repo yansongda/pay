@@ -149,4 +149,65 @@ class PayPluginTest extends TestCase
 
         $plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
+
+    public function testClientSigningPayloadSortedByKey()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'outTradeNo' => '20240101000000',
+            'buyQuantity' => 1,
+            'goodsPrice' => 10,
+            'productId' => 'test_product',
+            'attach' => 'custom_attach',
+            'env' => 0,
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $payload = $result->getPayload();
+        $items = $payload->all();
+
+        // 过滤 _ 前缀的 meta 键，只取业务键
+        $businessKeys = [];
+        foreach ($items as $key => $value) {
+            if (!str_starts_with((string) $key, '_')) {
+                $businessKeys[] = $key;
+            }
+        }
+
+        // 断言业务键为字典序排列
+        $expected = ['attach', 'buyQuantity', 'currencyType', 'env', 'goodsPrice', 'offerId', 'outTradeNo', 'productId'];
+        self::assertSame($expected, $businessKeys);
+    }
+
+    public function testNestedArraySortedRecursively()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'buyQuantity' => 1,
+            'productId' => 'test_product',
+            'goodsPrice' => 10,
+            'ext' => [
+                'z_key' => 'z_value',
+                'a_key' => 'a_value',
+                'm_key' => [
+                    'b_sub' => 'b',
+                    'a_sub' => 'a',
+                ],
+            ],
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        $payload = $result->getPayload();
+        $ext = $payload->get('ext');
+
+        self::assertIsArray($ext);
+
+        // 外层键排序后应为 a_key, m_key, z_key
+        self::assertSame(['a_key', 'm_key', 'z_key'], array_keys($ext));
+
+        // 嵌套数组键也应排序
+        self::assertSame(['a_sub', 'b_sub'], array_keys($ext['m_key']));
+    }
 }
