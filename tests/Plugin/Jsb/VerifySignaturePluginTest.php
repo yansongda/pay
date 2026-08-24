@@ -80,7 +80,7 @@ class VerifySignaturePluginTest extends TestCase
         $config->setJsbPublicCertPath('');
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_JSB_INVALID);
-        self::expectExceptionMessage('配置异常: 缺少配置参数 -- [jsb_public_cert_path]');
+        self::expectExceptionMessage('配置异常: 缺少江苏银行配置 -- [jsb_public_cert_path]');
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         self::assertSame($rocket, $result);

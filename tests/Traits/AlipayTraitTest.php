@@ -52,10 +52,12 @@ class AlipayTraitTest extends TestCase
             ],
         ];
 
+        Pay::config(array_merge($config1, ['_force' => true]));
+
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
 
-        Pay::config(array_merge($config1, ['_force' => true]));
+        AlipayTraitStub::getProviderConfig('alipay');
     }
 
     public function testVerifyAlipaySignEmpty(): void

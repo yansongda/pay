@@ -42,7 +42,8 @@ class StripeConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少 Stripe 配置 -- [secret_key]');
 
-        new StripeConfig([]);
+        $config = new StripeConfig([]);
+        $config->validate();
     }
 
     public function testOptionalGetters(): void

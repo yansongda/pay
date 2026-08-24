@@ -145,4 +145,34 @@ class ConfigTest extends TestCase
         self::assertArrayNotHasKey('appPublicCertSn', $alipayConfig->toArray());
         self::assertArrayNotHasKey('alipayRootCertSn', $alipayConfig->toArray());
     }
+
+    public function testConstructWithIncompleteUnusedProviderConfig(): void
+    {
+        // issue #1186: 构造时不应校验未使用的 provider 配置
+        $config = new Config([
+            'wechat' => [
+                'default' => [
+                    'app_id' => 'wx123',
+                    'mch_id' => 'test_mch_id',
+                    'mch_secret_key' => '12345678901234567890123456789012',
+                    'mch_secret_cert' => 'test_cert',
+                    'mch_public_cert_path' => 'test_path',
+                    'notify_url' => 'https://test.com',
+                ],
+            ],
+            'alipay' => [
+                'default' => [],
+            ],
+        ]);
+
+        // 构造不抛异常，且微信配置正常可用
+        $wechatConfig = $config->get('wechat.default');
+        self::assertInstanceOf(WechatConfig::class, $wechatConfig);
+
+        // 访问不完整的支付宝配置时才抛异常
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_id]');
+
+        $config->getProviderConfig('alipay');
+    }
 }

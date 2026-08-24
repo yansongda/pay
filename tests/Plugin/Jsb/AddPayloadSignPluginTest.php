@@ -59,7 +59,7 @@ class AddPayloadSignPluginTest extends TestCase
         $config->setMchSecretCertPath('');
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_JSB_INVALID);
-        self::expectExceptionMessage('配置异常: 缺少配置参数 --  [mch_secret_cert_path]');
+        self::expectExceptionMessage('配置异常: 缺少江苏银行配置 -- [mch_secret_cert_path]');
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
         self::assertSame($sign, $result->getPayload()->get('sign'));
     }

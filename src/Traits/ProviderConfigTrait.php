@@ -6,8 +6,10 @@ namespace Yansongda\Pay\Traits;
 
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Config\ProviderConfigInterface;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
@@ -25,6 +27,7 @@ trait ProviderConfigTrait
      * @param array<string, mixed> $params
      *
      * @throws ContainerException
+     * @throws InvalidConfigException
      * @throws ServiceNotFoundException
      */
     public static function getProviderConfig(string $provider, array $params = []): ProviderConfigInterface
@@ -32,7 +35,19 @@ trait ProviderConfigTrait
         /** @var ConfigInterface $config */
         $config = Pay::get(ConfigInterface::class);
 
-        return $config->get($provider.'.'.static::getTenant($params));
+        $tenant = static::getTenant($params);
+        $result = $config->get($provider.'.'.$tenant);
+
+        if (null === $result) {
+            throw new InvalidConfigException(
+                Exception::CONFIG_PROVIDER_INVALID,
+                "配置异常: {$provider}.{$tenant} 配置不存在"
+            );
+        }
+
+        $result->validate();
+
+        return $result;
     }
 
     public static function getRadarUrl(ProviderConfigInterface $config, ?Collection $payload): ?string

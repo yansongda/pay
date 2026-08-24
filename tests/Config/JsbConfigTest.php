@@ -48,12 +48,13 @@ class JsbConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少江苏银行配置 -- [partner_id]');
 
-        new JsbConfig([
+        $config = new JsbConfig([
             // missing partner_id
             'public_key_code' => '00',
             'mch_secret_cert_path' => '/path/to/secret.pem',
             'jsb_public_cert_path' => '/path/to/jsb.pem',
         ]);
+        $config->validate();
     }
 
     public function testOptionalGetters(): void

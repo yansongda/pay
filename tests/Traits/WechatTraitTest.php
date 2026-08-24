@@ -102,10 +102,12 @@ class WechatTraitTest extends TestCase
             ],
         ];
 
+        Pay::config(array_merge($config1, ['_force' => true]));
+
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
 
-        Pay::config(array_merge($config1, ['_force' => true]));
+        WechatTraitStub::getProviderConfig('wechat');
     }
 
     public function testGetWechatSignV2(): void

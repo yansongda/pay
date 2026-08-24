@@ -46,11 +46,12 @@ class DouyinConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [mini_app_id]');
 
-        new DouyinConfig([
+        $config = new DouyinConfig([
             // missing mini_app_id
             'mch_secret_token' => 'token_abc',
             'mch_secret_salt' => 'salt_xyz',
         ]);
+        $config->validate();
     }
 
     public function testOptionalGetters(): void
