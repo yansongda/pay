@@ -6,9 +6,11 @@ namespace Yansongda\Pay\Traits;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Yansongda\Artful\Artful;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -23,6 +25,7 @@ use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
+use Yansongda\Pay\Plugin\Wechat\Virtual\GetAccessTokenPlugin;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
 
@@ -60,6 +63,11 @@ trait WechatTrait
 
         // 虚拟支付服务端 API 使用 api.weixin.qq.com，非 api.mch.weixin.qq.com
         if (str_starts_with($url, '/xpay/')) {
+            return Wechat::URL_VIRTUAL.$url;
+        }
+
+        // 虚拟支付 access_token 接口使用 api.weixin.qq.com
+        if (str_starts_with($url, '/cgi-bin/')) {
             return Wechat::URL_VIRTUAL.$url;
         }
 
@@ -406,6 +414,61 @@ trait WechatTrait
     public static function getWechatVirtualSessionSignature(string $sessionKey, string $body): string
     {
         return hash_hmac('sha256', $body, $sessionKey);
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws InvalidParamsException
+     * @throws InvalidResponseException
+     * @throws ServiceNotFoundException
+     */
+    public static function getWechatVirtualAccessToken(array $params): string
+    {
+        /** @var WechatConfig $config */
+        $config = self::getProviderConfig('wechat', $params);
+
+        if (!empty($config->getVirtualPay()->getAccessToken())
+            && !empty($config->getVirtualPay()->getAccessTokenExpiry())
+            && time() < $config->getVirtualPay()->getAccessTokenExpiry()) {
+            return $config->getVirtualPay()->getAccessToken();
+        }
+
+        if (empty($config->getVirtualPay()->getAppSecret()) || empty($config->getMiniAppId())) {
+            throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 缺少微信虚拟支付配置 -- [virtual_pay.app_secret] 或 [mini_app_id]');
+        }
+
+        $tokenParams = [
+            '_config' => $params['_config'] ?? 'default',
+            'grant_type' => 'client_credential',
+            'appid' => $config->getMiniAppId(),
+            'secret' => $config->getVirtualPay()->getAppSecret(),
+        ];
+
+        $result = Artful::artful([
+            StartPlugin::class,
+            GetAccessTokenPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $tokenParams);
+
+        $token = $result->get('access_token', '');
+
+        if (empty($token)) {
+            throw new InvalidResponseException(
+                Exception::RESPONSE_BUSINESS_CODE_WRONG,
+                '获取微信 access_token 失败: errcode='.$result->get('errcode', '').', errmsg='.$result->get('errmsg', '')
+            );
+        }
+
+        $config->getVirtualPay()->setAccessToken($token);
+        $config->getVirtualPay()->setAccessTokenExpiry(time() + $result->get('expires_in', 7200) - 300);
+
+        return $token;
     }
 
     /**

@@ -12,6 +12,7 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\DecryptException;
@@ -62,6 +63,7 @@ class WechatTraitTest extends TestCase
         self::assertEquals('https://api.mch.weixin.qq.com/api/v1/service/yansongda', WechatTraitStub::getWechatUrl($serviceConfig, new Collection(['_url' => '/foo', '_service_url' => '/api/v1/service/yansongda'])));
         self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', WechatTraitStub::getWechatUrl(WechatTraitStub::getProviderConfig('wechat'), new Collection(['_url' => '/api/v1/yansongda'])));
         self::assertEquals('https://api.weixin.qq.com/xpay/query_user_balance', WechatTraitStub::getWechatUrl($config, new Collection(['_url' => '/xpay/query_user_balance'])));
+        self::assertEquals('https://api.weixin.qq.com/cgi-bin/stable_token', WechatTraitStub::getWechatUrl($config, new Collection(['_url' => '/cgi-bin/stable_token'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_URL_MISSING);
@@ -454,5 +456,65 @@ class WechatTraitTest extends TestCase
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND);
         WechatTraitStub::getWechatPublicKey(WechatTraitStub::getProviderConfig('wechat'), $serialNo);
+    }
+
+    public function testGetWechatVirtualAccessTokenCached(): void
+    {
+        $config = WechatTraitStub::getProviderConfig('wechat');
+        self::assertInstanceOf(WechatConfig::class, $config);
+
+        $config->getVirtualPay()->setAccessToken('cached_token_123');
+        $config->getVirtualPay()->setAccessTokenExpiry(time() + 3600);
+
+        $token = WechatTraitStub::getWechatVirtualAccessToken([]);
+
+        self::assertEquals('cached_token_123', $token);
+    }
+
+    public function testGetWechatVirtualAccessTokenMissingConfig(): void
+    {
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
+
+        WechatTraitStub::getWechatVirtualAccessToken([]);
+    }
+
+    public function testGetWechatVirtualAccessTokenFresh(): void
+    {
+        $config = WechatTraitStub::getProviderConfig('wechat');
+        self::assertInstanceOf(WechatConfig::class, $config);
+
+        $config->getVirtualPay()->setAppSecret('test_app_secret');
+
+        Pay::config([
+            'wechat' => [
+                'default' => $config->toArray(),
+            ],
+            '_force' => true,
+        ]);
+
+        $response = new Response(
+            200,
+            [],
+            json_encode([
+                'access_token' => 'new_wechat_token_456',
+                'expires_in' => 7200,
+            ])
+        );
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($response);
+
+        Pay::set(HttpClientInterface::class, $http);
+
+        $token = WechatTraitStub::getWechatVirtualAccessToken([]);
+
+        self::assertEquals('new_wechat_token_456', $token);
+
+        $wechatConfig = Pay::get(ConfigInterface::class)->get('wechat.default');
+
+        self::assertInstanceOf(WechatConfig::class, $wechatConfig);
+        self::assertEquals('new_wechat_token_456', $wechatConfig->getVirtualPay()->getAccessToken());
+        self::assertNotEmpty($wechatConfig->getVirtualPay()->getAccessTokenExpiry());
     }
 }
