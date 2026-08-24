@@ -44,7 +44,13 @@ class AddPayloadSignaturePlugin implements PluginInterface
         $isClientSigning = 'requestVirtualPayment' === $uri;
 
         if (!$isClientSigning && empty($accessToken)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 微信虚拟支付缺少 access_token');
+            if (empty($config->getVirtualPay()->getAppSecret())) {
+                throw new InvalidParamsException(
+                    Exception::PARAMS_NECESSARY_PARAMS_MISSING,
+                    '参数异常: 微信虚拟支付缺少 access_token，请配置 [virtual_pay.app_secret] 以自动获取，或在参数中手动传入 access_token'
+                );
+            }
+            $accessToken = self::getWechatVirtualAccessToken($params);
         }
 
         $paySig = self::getWechatVirtualPaySignature($config, $uri, $body, $env);
