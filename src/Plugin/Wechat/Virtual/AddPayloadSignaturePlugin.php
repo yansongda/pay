@@ -80,6 +80,10 @@ class AddPayloadSignaturePlugin implements PluginInterface
             $mergeData['signature'] = $signature;
         }
 
+        if ($isClientSigning) {
+            $mergeData['signData'] = $body;
+        }
+
         $rocket->mergePayload($mergeData);
 
         Logger::info('[Wechat][Virtual][AddPayloadSignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);

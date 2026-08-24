@@ -16,6 +16,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\WechatTrait;
+use Yansongda\Supports\Collection;
 
 /**
  * 虚拟支付代币充值插件.
@@ -61,6 +62,27 @@ class PayPlugin implements PluginInterface
             'currencyType' => $payload->get('currencyType', 'CNY'),
         ]);
 
+        $uri = (string) $rocket->getPayload()->get('_url', '');
+
+        // 客户端签名场景：对业务字段做字典序排序，保证签名 body 与前端回传一致
+        if (!str_starts_with($uri, '/xpay/')) {
+            $items = $rocket->getPayload()->all();
+
+            $business = [];
+            $meta = [];
+            foreach ($items as $key => $value) {
+                if (str_starts_with((string) $key, '_')) {
+                    $meta[$key] = $value;
+                } else {
+                    $business[$key] = $value;
+                }
+            }
+
+            $this->recursiveKsort($business);
+
+            $rocket->setPayload(new Collection(array_merge($business, $meta)));
+        }
+
         // 客户端签名场景：不发送 HTTP 请求，返回签名数据给前端
         $rocket->setDirection(NoHttpRequestDirection::class);
 
@@ -71,5 +93,20 @@ class PayPlugin implements PluginInterface
         $rocket->setDestination($rocket->getPayload());
 
         return $rocket;
+    }
+
+    /**
+     * 递归字典序排序数组键名.
+     *
+     * @param array<string, mixed> $array
+     */
+    private function recursiveKsort(array &$array): void
+    {
+        ksort($array, SORT_STRING);
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $this->recursiveKsort($array[$key]);
+            }
+        }
     }
 }

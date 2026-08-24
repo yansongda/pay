@@ -226,4 +226,44 @@ class AddPayloadSignaturePluginTest extends TestCase
         // paySig 可作为 payload 独立字段访问
         self::assertNotNull($resultPayload->get('paySig'));
     }
+
+    public function testAssemblyClientSigningReturnsSignDataString(): void
+    {
+        $body = '{"buyQuantity":1,"productId":"test_product","goodsPrice":10,"offerId":"1234567890","currencyType":"CNY"}';
+        $payload = new Collection([
+            '_method' => 'POST',
+            '_url' => 'requestVirtualPayment',
+            '_body' => $body,
+        ]);
+        $rocket = (new Rocket())->setPayload($payload);
+
+        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+
+        $resultPayload = $result->getPayload();
+
+        // signData 应与参与签名计算的 body 逐字节一致
+        self::assertSame($body, $resultPayload->get('signData'));
+
+        // _body 不应被修改
+        self::assertSame($body, $resultPayload->get('_body'));
+    }
+
+    public function testAssemblyServerSideNoSignDataField(): void
+    {
+        $body = '{"openid":"oUpF8muMJAaName"}';
+        $payload = new Collection([
+            '_method' => 'POST',
+            '_url' => '/xpay/query_user_balance',
+            '_body' => $body,
+            'access_token' => 'test_access_token',
+        ]);
+        $rocket = (new Rocket())->setPayload($payload);
+
+        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+
+        $resultPayload = $result->getPayload();
+
+        // 服务端 API 场景不应有 signData 字段
+        self::assertNull($resultPayload->get('signData'));
+    }
 }
