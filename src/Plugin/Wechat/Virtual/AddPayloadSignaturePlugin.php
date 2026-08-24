@@ -24,6 +24,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
      * @throws ContainerException
      * @throws InvalidConfigException
      * @throws ServiceNotFoundException
+     * @throws InvalidParamsException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
@@ -80,6 +81,9 @@ class AddPayloadSignaturePlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function appendQueryParams(string $uri, array $params): string
     {
         $separator = str_contains($uri, '?') ? '&' : '?';

@@ -25,7 +25,7 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket web(array $order) Web 支付
+ * @method Collection|Rocket web(array<string, mixed> $order) Web 支付
  */
 class Paypal implements ProviderInterface
 {
@@ -36,6 +36,8 @@ class Paypal implements ProviderInterface
     ];
 
     /**
+     * @param array<int, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
@@ -117,6 +119,9 @@ class Paypal implements ProviderInterface
         return new Response(200, ['Content-Type' => 'application/json'], json_encode(['result' => 'success']));
     }
 
+    /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     */
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
     {
         if (is_array($contents) && isset($contents['body'], $contents['headers'])) {

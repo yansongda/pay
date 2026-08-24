@@ -25,6 +25,10 @@ use Yansongda\Supports\Str;
 class CloseShortcut implements ShortcutInterface
 {
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     *
      * @throws InvalidParamsException
      */
     public function getPlugins(array $params): array
@@ -42,11 +46,17 @@ class CloseShortcut implements ShortcutInterface
         throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function defaultPlugins(): array
     {
         return $this->jsapiPlugins();
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function appPlugins(): array
     {
         return [
@@ -61,6 +71,9 @@ class CloseShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function H5Plugins(): array
     {
         return [
@@ -75,6 +88,9 @@ class CloseShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function jsapiPlugins(): array
     {
         return [
@@ -89,6 +105,9 @@ class CloseShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function miniPlugins(): array
     {
         return [
@@ -103,6 +122,9 @@ class CloseShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function nativePlugins(): array
     {
         return [
@@ -117,6 +139,9 @@ class CloseShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function combinePlugins(): array
     {
         return [

@@ -25,10 +25,10 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method ResponseInterface|Rocket web(array $order)  电脑支付
- * @method ResponseInterface|Rocket h5(array $order)   H5支付
- * @method Collection|Rocket        pos(array $order)  刷卡支付（付款码，被扫码）
- * @method Collection|Rocket        scan(array $order) 扫码支付（摄像头，主动扫）
+ * @method ResponseInterface|Rocket web(array<string, mixed> $order)  电脑支付
+ * @method ResponseInterface|Rocket h5(array<string, mixed> $order)   H5支付
+ * @method Collection|Rocket        pos(array<string, mixed> $order)  刷卡支付（付款码，被扫码）
+ * @method Collection|Rocket        scan(array<string, mixed> $order) 扫码支付（摄像头，主动扫）
  */
 class Unipay implements ProviderInterface
 {
@@ -39,6 +39,8 @@ class Unipay implements ProviderInterface
     ];
 
     /**
+     * @param array<int, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
@@ -124,6 +126,9 @@ class Unipay implements ProviderInterface
         return new Response(200, [], 'success');
     }
 
+    /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     */
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
     {
         if (is_array($contents)) {

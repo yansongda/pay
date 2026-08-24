@@ -54,6 +54,9 @@ class VerifySignaturePlugin implements PluginInterface
         return $rocket;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getSignatureData(string $body): array
     {
         if (Str::contains($body, '&-&')) {

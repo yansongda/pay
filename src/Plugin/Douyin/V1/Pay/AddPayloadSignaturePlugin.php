@@ -76,6 +76,9 @@ class AddPayloadSignaturePlugin implements PluginInterface
         return md5(implode('&', $signData));
     }
 
+    /**
+     * @param array<int|string, mixed> $value
+     */
     protected function arrayToString(array $value): string
     {
         $isJsonArray = isset($value[0]);

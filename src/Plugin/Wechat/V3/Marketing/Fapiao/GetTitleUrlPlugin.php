@@ -52,6 +52,8 @@ class GetTitleUrlPlugin implements PluginInterface
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws ContainerException
      * @throws ServiceNotFoundException
      */

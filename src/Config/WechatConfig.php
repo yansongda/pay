@@ -28,6 +28,9 @@ class WechatConfig extends AbstractConfig
     private int $mode = Pay::MODE_NORMAL;
     private WechatConfigVirtualPay $virtualPay;
 
+    /**
+     * @param array<string, mixed> $values
+     */
     public function __construct(array $values, string $tenant = 'default')
     {
         $this->virtualPay = new WechatConfigVirtualPay();
@@ -99,6 +102,9 @@ class WechatConfig extends AbstractConfig
         $this->subAppId = $value;
     }
 
+    /**
+     * @param array<string, string> $value
+     */
     public function setWechatPublicCertPath(array $value): void
     {
         foreach ($value as $serialNo => $cert) {
@@ -225,70 +231,15 @@ class WechatConfig extends AbstractConfig
     }
 
     /**
-     * 校验 mch_secret_key_v2 是否存在.
-     *
-     * @throws InvalidConfigException
-     */
-    public function validateForV2(): void
-    {
-        if (empty($this->mchSecretKeyV2)) {
-            throw new InvalidConfigException(
-                Exception::CONFIG_WECHAT_INVALID,
-                '配置异常: 缺少微信配置 -- [mch_secret_key_v2]'
-            );
-        }
-    }
-
-    /**
-     * 校验 mp_app_id 是否存在.
-     *
-     * @throws InvalidConfigException
-     */
-    public function validateForMp(): void
-    {
-        if (empty($this->mpAppId)) {
-            throw new InvalidConfigException(
-                Exception::CONFIG_WECHAT_INVALID,
-                '配置异常: 缺少微信配置 -- [mp_app_id]'
-            );
-        }
-    }
-
-    /**
-     * 校验 mini_app_id 是否存在.
-     *
-     * @throws InvalidConfigException
-     */
-    public function validateForMini(): void
-    {
-        if (empty($this->miniAppId)) {
-            throw new InvalidConfigException(
-                Exception::CONFIG_WECHAT_INVALID,
-                '配置异常: 缺少微信配置 -- [mini_app_id]'
-            );
-        }
-    }
-
-    /**
      * @throws InvalidConfigException 缺少必要配置参数
      */
     protected function validateRequired(): void
     {
-        $required = [
-            'mchId' => 'mch_id',
-            'mchSecretKey' => 'mch_secret_key',
-            'mchSecretCert' => 'mch_secret_cert',
-            'mchPublicCertPath' => 'mch_public_cert_path',
-        ];
-
-        foreach ($required as $prop => $key) {
-            if (empty($this->{$prop})) {
-                throw new InvalidConfigException(
-                    Exception::CONFIG_WECHAT_INVALID,
-                    "配置异常: 缺少微信配置 -- [{$key}]"
-                );
-            }
-        }
+        $this->validateNotEmpty(
+            ['mchId', 'mchSecretKey', 'mchSecretCert', 'mchPublicCertPath'],
+            Exception::CONFIG_WECHAT_INVALID,
+            '配置异常: 缺少微信配置'
+        );
 
         if (Wechat::MCH_SECRET_KEY_LENGTH_BYTE !== strlen($this->mchSecretKey)) {
             throw new InvalidConfigException(

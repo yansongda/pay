@@ -32,14 +32,14 @@ use Yansongda\Pay\Service\UnipayServiceProvider;
 use Yansongda\Pay\Service\WechatServiceProvider;
 
 /**
- * @method static Alipay    alipay(array $config = [], $container = null)
- * @method static Airwallex airwallex(array $config = [], $container = null)
- * @method static Wechat    wechat(array $config = [], $container = null)
- * @method static Unipay    unipay(array $config = [], $container = null)
- * @method static Jsb       jsb(array $config = [], $container = null)
- * @method static Douyin    douyin(array $config = [], $container = null)
- * @method static Paypal    paypal(array $config = [], $container = null)
- * @method static Stripe    stripe(array $config = [], $container = null)
+ * @method static Alipay    alipay(array<string, mixed> $config = [], $container = null)
+ * @method static Airwallex airwallex(array<string, mixed> $config = [], $container = null)
+ * @method static Wechat    wechat(array<string, mixed> $config = [], $container = null)
+ * @method static Unipay    unipay(array<string, mixed> $config = [], $container = null)
+ * @method static Jsb       jsb(array<string, mixed> $config = [], $container = null)
+ * @method static Douyin    douyin(array<string, mixed> $config = [], $container = null)
+ * @method static Paypal    paypal(array<string, mixed> $config = [], $container = null)
+ * @method static Stripe    stripe(array<string, mixed> $config = [], $container = null)
  */
 class Pay
 {
@@ -70,6 +70,9 @@ class Pay
      */
     public const MODE_SERVICE = 2;
 
+    /**
+     * @var array<class-string>
+     */
     protected static array $providers = [
         AlipayServiceProvider::class,
         AirwallexServiceProvider::class,
@@ -82,6 +85,10 @@ class Pay
     ];
 
     /**
+     * @param array<string, mixed> $config
+     *
+     * @return mixed
+     *
      * @throws ContainerException
      * @throws ServiceNotFoundException
      */
@@ -95,6 +102,8 @@ class Pay
     }
 
     /**
+     * @param array<string, mixed>|Config $config
+     *
      * @throws ContainerException
      */
     public static function config(array|Config $config = [], Closure|ContainerInterface|null $container = null): bool

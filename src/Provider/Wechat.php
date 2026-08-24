@@ -25,13 +25,13 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket app(array $order)      APP 支付
- * @method Collection|Rocket mini(array $order)     小程序支付
- * @method Collection|Rocket mp(array $order)       公众号支付
- * @method Collection|Rocket scan(array $order)     扫码支付（摄像头，主动扫）
- * @method Collection|Rocket h5(array $order)       H5 支付
- * @method Collection|Rocket transfer(array $order) 帐户转账
- * @method Collection|Rocket virtual(array $order)  虚拟支付
+ * @method Collection|Rocket app(array<string, mixed> $order)      APP 支付
+ * @method Collection|Rocket mini(array<string, mixed> $order)     小程序支付
+ * @method Collection|Rocket mp(array<string, mixed> $order)       公众号支付
+ * @method Collection|Rocket scan(array<string, mixed> $order)     扫码支付（摄像头，主动扫）
+ * @method Collection|Rocket h5(array<string, mixed> $order)       H5 支付
+ * @method Collection|Rocket transfer(array<string, mixed> $order) 帐户转账
+ * @method Collection|Rocket virtual(array<string, mixed> $order)  虚拟支付
  */
 class Wechat implements ProviderInterface
 {
@@ -48,6 +48,8 @@ class Wechat implements ProviderInterface
     public const URL_VIRTUAL = 'https://api.weixin.qq.com';
 
     /**
+     * @param array<int, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
@@ -138,6 +140,9 @@ class Wechat implements ProviderInterface
         );
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function success(array $params = []): ResponseInterface
     {
         [$contentType, $body] = match ($params['_action'] ?? null) {
@@ -151,6 +156,9 @@ class Wechat implements ProviderInterface
         return new Response(200, ['Content-Type' => $contentType], $body);
     }
 
+    /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     */
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
     {
         if (is_array($contents) && isset($contents['body'], $contents['headers'])) {

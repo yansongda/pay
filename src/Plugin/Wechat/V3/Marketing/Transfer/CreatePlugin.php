@@ -67,6 +67,10 @@ class CreatePlugin implements PluginInterface
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     *
      * @throws ContainerException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
@@ -83,6 +87,10 @@ class CreatePlugin implements PluginInterface
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     *
      * @throws ContainerException
      * @throws DecryptException
      * @throws InvalidConfigException

@@ -51,6 +51,8 @@ trait AirwallexTrait
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidConfigException
      * @throws InvalidParamsException
@@ -89,6 +91,8 @@ trait AirwallexTrait
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws ContainerException
      * @throws InvalidConfigException
      * @throws InvalidSignException

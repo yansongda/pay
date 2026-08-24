@@ -78,6 +78,8 @@ trait UnipayTrait
     }
 
     /**
+     * @param array<string, mixed> $payload
+     *
      * @throws InvalidConfigException
      */
     public static function getUnipaySignQra(UnipayConfig $config, array $payload): string
@@ -100,6 +102,8 @@ trait UnipayTrait
     }
 
     /**
+     * @param array<string, mixed> $destination
+     *
      * @throws InvalidConfigException
      * @throws InvalidSignException
      */

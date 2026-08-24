@@ -17,6 +17,10 @@ use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 class QueryShortcut implements ShortcutInterface
 {
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     *
      * @throws InvalidParamsException
      */
     public function getPlugins(array $params): array
@@ -30,6 +34,9 @@ class QueryShortcut implements ShortcutInterface
         };
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function orderPlugins(): array
     {
         return [
@@ -41,6 +48,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function refundPlugins(): array
     {
         return [

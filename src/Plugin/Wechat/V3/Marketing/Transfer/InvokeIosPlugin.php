@@ -64,6 +64,9 @@ class InvokeIosPlugin implements PluginInterface
         return $rocket;
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function getInvokeConfig(?Collection $payload, array $params, WechatConfig $config, string $packageInfo): Config
     {
         return new Config([

@@ -93,11 +93,10 @@ class DouyinConfig extends AbstractConfig
      */
     protected function validateRequired(): void
     {
-        if (empty($this->miniAppId)) {
-            throw new InvalidConfigException(
-                Exception::CONFIG_DOUYIN_INVALID,
-                '配置异常: 缺少抖音配置 -- [mini_app_id]'
-            );
-        }
+        $this->validateNotEmpty(
+            ['miniAppId'],
+            Exception::CONFIG_DOUYIN_INVALID,
+            '配置异常: 缺少抖音配置'
+        );
     }
 }

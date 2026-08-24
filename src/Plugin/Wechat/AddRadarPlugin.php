@@ -47,6 +47,9 @@ class AddRadarPlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function getHeaders(?Collection $payload): array
     {
         $headers = [

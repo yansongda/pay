@@ -132,21 +132,10 @@ class AlipayConfig extends AbstractConfig
      */
     protected function validateRequired(): void
     {
-        $required = [
-            'appId' => 'app_id',
-            'appSecretCert' => 'app_secret_cert',
-            'appPublicCertPath' => 'app_public_cert_path',
-            'alipayPublicCertPath' => 'alipay_public_cert_path',
-            'alipayRootCertPath' => 'alipay_root_cert_path',
-        ];
-
-        foreach ($required as $prop => $key) {
-            if (empty($this->{$prop})) {
-                throw new InvalidConfigException(
-                    Exception::CONFIG_ALIPAY_INVALID,
-                    "配置异常: 缺少支付宝配置 -- [{$key}]"
-                );
-            }
-        }
+        $this->validateNotEmpty(
+            ['appId', 'appSecretCert', 'appPublicCertPath', 'alipayPublicCertPath', 'alipayRootCertPath'],
+            Exception::CONFIG_ALIPAY_INVALID,
+            '配置异常: 缺少支付宝配置'
+        );
     }
 }

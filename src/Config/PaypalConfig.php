@@ -126,15 +126,10 @@ class PaypalConfig extends AbstractConfig
      */
     protected function validateRequired(): void
     {
-        $required = ['clientId' => 'client_id', 'appSecret' => 'app_secret'];
-
-        foreach ($required as $prop => $key) {
-            if (empty($this->{$prop})) {
-                throw new InvalidConfigException(
-                    Exception::CONFIG_PAYPAL_INVALID,
-                    "配置异常: 缺少 PayPal 配置 -- [{$key}]"
-                );
-            }
-        }
+        $this->validateNotEmpty(
+            ['clientId', 'appSecret'],
+            Exception::CONFIG_PAYPAL_INVALID,
+            '配置异常: 缺少 PayPal 配置'
+        );
     }
 }

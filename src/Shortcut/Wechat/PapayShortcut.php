@@ -24,6 +24,10 @@ use Yansongda\Supports\Str;
 class PapayShortcut implements ShortcutInterface
 {
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     *
      * @throws InvalidParamsException
      */
     public function getPlugins(array $params): array
@@ -38,6 +42,10 @@ class PapayShortcut implements ShortcutInterface
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     *
      * @throws InvalidParamsException
      */
     protected function defaultPlugins(array $params): array
@@ -46,6 +54,10 @@ class PapayShortcut implements ShortcutInterface
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     *
      * @throws InvalidParamsException
      */
     protected function orderPlugins(array $params): array
@@ -64,6 +76,10 @@ class PapayShortcut implements ShortcutInterface
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     *
      * @throws InvalidParamsException
      */
     protected function contractPlugins(array $params): array
@@ -74,6 +90,9 @@ class PapayShortcut implements ShortcutInterface
         };
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function applyPlugins(): array
     {
         return [
@@ -89,6 +108,8 @@ class PapayShortcut implements ShortcutInterface
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws InvalidParamsException
      */
     protected function getInvoke(array $params): string

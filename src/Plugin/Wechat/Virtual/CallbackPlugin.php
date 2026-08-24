@@ -90,6 +90,9 @@ class CallbackPlugin implements PluginInterface
             ->setParams($params);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function parseBody(string $body): array
     {
         $json = json_decode($body, true);
@@ -136,6 +139,8 @@ class CallbackPlugin implements PluginInterface
     }
 
     /**
+     * @return array<string, mixed>
+     *
      * @throws DecryptException
      * @throws InvalidConfigException
      */

@@ -52,6 +52,8 @@ class CallbackPlugin implements PluginInterface
     }
 
     /**
+     * @param array<string, mixed> $contents
+     *
      * @throws InvalidConfigException
      * @throws InvalidSignException
      */

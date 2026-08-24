@@ -33,6 +33,9 @@ class Config extends BaseConfig
         Pay::PROVIDER_STRIPE => StripeConfig::class,
     ];
 
+    /**
+     * @param array<string, mixed> $items
+     */
     public function __construct(array $items = [])
     {
         parent::__construct($items);

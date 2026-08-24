@@ -104,20 +104,10 @@ class JsbConfig extends AbstractConfig
      */
     protected function validateRequired(): void
     {
-        $required = [
-            'partnerId' => 'partner_id',
-            'publicKeyCode' => 'public_key_code',
-            'mchSecretCertPath' => 'mch_secret_cert_path',
-            'jsbPublicCertPath' => 'jsb_public_cert_path',
-        ];
-
-        foreach ($required as $prop => $key) {
-            if (empty($this->{$prop})) {
-                throw new InvalidConfigException(
-                    Exception::CONFIG_JSB_INVALID,
-                    "配置异常: 缺少江苏银行配置 -- [{$key}]"
-                );
-            }
-        }
+        $this->validateNotEmpty(
+            ['partnerId', 'publicKeyCode', 'mchSecretCertPath', 'jsbPublicCertPath'],
+            Exception::CONFIG_JSB_INVALID,
+            '配置异常: 缺少江苏银行配置'
+        );
     }
 }

@@ -16,6 +16,8 @@ class CertManager
      * 键格式: {type}_{sha1($key)}，如 "public_info_a1b2c3..."
      * 用于缓存: 证书文件内容、解析后的证书信息、支付宝 SN、银联证书 ID 等
      * 避免重复读取文件和重复解析证书.
+     *
+     * @var array<string, mixed>
      */
     private static array $cache = [];
 
@@ -25,6 +27,8 @@ class CertManager
      * 结构: [$tenant][$serialNo] = $certContent
      * 用于: 微信回调验签时，根据证书序列号快速查找对应公钥证书
      * 支持多租户隔离，每个租户的证书缓存独立.
+     *
+     * @var array<string, array<string, string>>
      */
     private static array $wechatCerts = [];
 
@@ -56,6 +60,8 @@ class CertManager
 
     /**
      * 获取并缓存公钥证书解析结果。
+     *
+     * @return array<string, mixed>
      *
      * @throws InvalidConfigException 证书解析失败
      */
@@ -122,6 +128,8 @@ class CertManager
     /**
      * 获取银联 PKCS12 证书内容.
      *
+     * @return array<string, string>
+     *
      * @throws InvalidConfigException 证书读取失败
      */
     public static function unipayGetPkcs12Certs(string $path, string $password): array
@@ -181,6 +189,8 @@ class CertManager
 
     /**
      * 获取所有微信平台证书缓存.
+     *
+     * @return array<string, string>
      */
     public static function wechatGetAllCertsBySerial(string $tenant): array
     {
@@ -200,11 +210,17 @@ class CertManager
         return self::$cache[$cacheKey];
     }
 
+    /**
+     * @param array<string, mixed> $issuer
+     */
     private static function alipayGetCertSn(array $issuer, string $serialNumber): string
     {
         return md5(self::alipayArrayToString(array_reverse($issuer)).$serialNumber);
     }
 
+    /**
+     * @param array<string, mixed> $array
+     */
     private static function alipayArrayToString(array $array): string
     {
         $string = [];
@@ -216,6 +232,11 @@ class CertManager
         return implode(',', $string);
     }
 
+    /**
+     * @param array<string, mixed> $ssl
+     *
+     * @return array<string, mixed>
+     */
     private static function alipayFormatCert(array $ssl): array
     {
         if (str_starts_with($ssl['serialNumber'] ?? '', '0x')) {

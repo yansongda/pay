@@ -14,6 +14,11 @@ use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 
 class AppShortcut implements ShortcutInterface
 {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     */
     public function getPlugins(array $params): array
     {
         return [

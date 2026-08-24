@@ -115,18 +115,10 @@ class AirwallexConfig extends AbstractConfig
      */
     protected function validateRequired(): void
     {
-        $required = [
-            'clientId' => 'client_id',
-            'apiKey' => 'api_key',
-        ];
-
-        foreach ($required as $prop => $key) {
-            if (empty($this->{$prop})) {
-                throw new InvalidConfigException(
-                    Exception::CONFIG_AIRWALLEX_INVALID,
-                    "配置错误: Airwallex 配置缺少 [{$key}]"
-                );
-            }
-        }
+        $this->validateNotEmpty(
+            ['clientId', 'apiKey'],
+            Exception::CONFIG_AIRWALLEX_INVALID,
+            '配置异常: 缺少 Airwallex 配置'
+        );
     }
 }

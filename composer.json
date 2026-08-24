@@ -55,6 +55,6 @@
     "scripts": {
         "test": "./vendor/bin/phpunit -c phpunit.xml --colors=always",
         "cs-fix": "php-cs-fixer fix --dry-run --diff 1>&2",
-        "analyse": "phpstan analyse --memory-limit 300M -l 5 -c phpstan.neon ./src"
+        "analyse": "phpstan analyse --memory-limit 300M -l 6 ./src"
     }
 }

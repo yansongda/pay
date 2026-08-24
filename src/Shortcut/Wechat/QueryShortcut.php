@@ -33,6 +33,10 @@ use Yansongda\Supports\Str;
 class QueryShortcut implements ShortcutInterface
 {
     /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     *
      * @throws InvalidParamsException
      */
     public function getPlugins(array $params): array
@@ -50,11 +54,17 @@ class QueryShortcut implements ShortcutInterface
         throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function defaultPlugins(): array
     {
         return $this->jsapiPlugins();
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function appPlugins(): array
     {
         return [
@@ -69,6 +79,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function combinePlugins(): array
     {
         return [
@@ -83,6 +96,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function h5Plugins(): array
     {
         return [
@@ -97,6 +113,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function jsapiPlugins(): array
     {
         return [
@@ -111,6 +130,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function miniPlugins(): array
     {
         return [
@@ -125,6 +147,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function nativePlugins(): array
     {
         return [
@@ -139,6 +164,11 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     */
     protected function transferPlugins(array $params): array
     {
         $query = QueryPlugin::class;
@@ -159,11 +189,17 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function refundPlugins(): array
     {
         return $this->refundJsapiPlugins();
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function refundAppPlugins(): array
     {
         return [
@@ -178,6 +214,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function refundCombinePlugins(): array
     {
         return [
@@ -192,6 +231,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function refundH5Plugins(): array
     {
         return [
@@ -206,6 +248,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function refundJsapiPlugins(): array
     {
         return [
@@ -220,6 +265,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function refundMiniPlugins(): array
     {
         return [
@@ -234,6 +282,9 @@ class QueryShortcut implements ShortcutInterface
         ];
     }
 
+    /**
+     * @return array<class-string>
+     */
     protected function refundNativePlugins(): array
     {
         return [

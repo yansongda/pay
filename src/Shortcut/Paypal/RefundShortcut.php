@@ -15,6 +15,11 @@ use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 
 class RefundShortcut implements ShortcutInterface
 {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     */
     public function getPlugins(array $params): array
     {
         return [

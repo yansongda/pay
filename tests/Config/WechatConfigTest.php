@@ -155,69 +155,6 @@ class WechatConfigTest extends TestCase
         self::assertNull($config->getSubMchId());
     }
 
-    public function testValidateForV2(): void
-    {
-        $this->expectNotToPerformAssertions();
-
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'mch_secret_key_v2' => 'v2_key',
-        ]));
-
-        $config->validateForV2();
-    }
-
-    public function testValidateForV2Missing(): void
-    {
-        $config = new WechatConfig($this->validConfig);
-
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_secret_key_v2]');
-
-        $config->validateForV2();
-    }
-
-    public function testValidateForMp(): void
-    {
-        $this->expectNotToPerformAssertions();
-
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'mp_app_id' => 'mp_app_id',
-        ]));
-
-        $config->validateForMp();
-    }
-
-    public function testValidateForMpMissing(): void
-    {
-        $config = new WechatConfig($this->validConfig);
-
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mp_app_id]');
-
-        $config->validateForMp();
-    }
-
-    public function testValidateForMini(): void
-    {
-        $this->expectNotToPerformAssertions();
-
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'mini_app_id' => 'mini_app_id',
-        ]));
-
-        $config->validateForMini();
-    }
-
-    public function testValidateForMiniMissing(): void
-    {
-        $config = new WechatConfig($this->validConfig);
-
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mini_app_id]');
-
-        $config->validateForMini();
-    }
-
     public function testWechatConfigInitImportsToCertManager(): void
     {
         CertManager::clearCache();

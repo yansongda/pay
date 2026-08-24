@@ -16,6 +16,11 @@ use Yansongda\Pay\Plugin\Airwallex\V1\ResponsePlugin;
 
 class IntentShortcut implements ShortcutInterface
 {
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<class-string>
+     */
     public function getPlugins(array $params): array
     {
         return [

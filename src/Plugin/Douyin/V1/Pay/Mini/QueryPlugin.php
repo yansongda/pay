@@ -61,6 +61,9 @@ class QueryPlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function service(Collection $payload, DouyinConfig $config): array
     {
         return [

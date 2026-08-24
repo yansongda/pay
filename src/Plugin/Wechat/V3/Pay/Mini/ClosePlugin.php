@@ -65,6 +65,9 @@ class ClosePlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function normal(WechatConfig $config): array
     {
         return [
@@ -72,6 +75,9 @@ class ClosePlugin implements PluginInterface
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function service(Collection $payload, WechatConfig $config): array
     {
         return [

@@ -52,6 +52,11 @@ class AddRadarPlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, string>
+     */
     protected function getHeaders(array $params): array
     {
         if (!empty($params['_multipart'])) {
@@ -64,6 +69,9 @@ class AddRadarPlugin implements PluginInterface
         ];
     }
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function getBody(?Collection $payload, array $params): MultipartStream|string
     {
         if (!empty($params['_multipart'])) {

@@ -29,6 +29,9 @@ class WechatConfigVirtualPay
         $this->appKey = $value;
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function getAppKey(int $env = 0): ?string
     {
         if (1 === $env) {

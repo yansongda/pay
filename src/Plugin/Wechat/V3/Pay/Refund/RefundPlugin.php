@@ -63,11 +63,17 @@ class RefundPlugin implements PluginInterface
         return $next($rocket);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function normal(): array
     {
         return [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function service(Collection $payload, WechatConfig $config): array
     {
         return [
