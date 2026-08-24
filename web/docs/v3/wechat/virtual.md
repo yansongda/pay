@@ -45,6 +45,7 @@ $result = Pay::wechat()->virtual($order);
 // $result->goodsPrice    - 商品价格（分）
 // $result->outTradeNo    - 商户订单号
 // $result->paySig        - 签名
+// $result->signData      - 与签名逐字节一致的 JSON 字符串，请原样传递给 wx.requestVirtualPayment
 // $result->env           - 环境（0=正式，1=沙箱）
 ```
 
@@ -78,6 +79,15 @@ $order = [
 $result = Pay::wechat()->virtual($order);
 ```
 
+:::warning
+- paySig 计算公式：`HMAC-SHA256(uri + '&' + signData 的 JSON 字符串, app_key)`
+- 微信 Midas 验签服务端会按字典序（key 顺序）重组 signData，**对字段顺序敏感**
+- SDK 已自动将业务字段按字典序排序，并在返回结果中提供与签名计算所用 body **逐字节一致**的 `signData` JSON 字符串
+- **优先原样传递**：`wx.requestVirtualPayment({ signData: result.signData, ... })`，切勿自行 `JSON.parse` / `JSON.stringify` 重新序列化（会破坏字段顺序导致验签失败）
+- 如确需自行构造对象：字段名、值、顺序必须与 SDK 返回结果完全一致
+- `offerId` 必须为**字符串类型**（数字类型会导致验签失败）
+:::
+
 ### 传递 session_key
 
 如果需要验证用户身份，可以传递 `_session_key` 参数：
@@ -98,6 +108,14 @@ $result = Pay::wechat()->virtual($order);
 ## 服务端 API
 
 服务端 API 用于查询、退款等操作，SDK 会发送 HTTP 请求到微信服务器。
+
+:::tip access_token 自动获取
+- 配置 `virtual_pay.app_secret` 后，SDK 自动通过微信 stable_token 接口获取并缓存 access_token（进程内缓存，过期前 300 秒提前刷新；多进程部署时各进程独立获取）
+- 参数中手动传入的 `access_token` 优先于自动获取
+- 微信侧需配置 IP 白名单，否则报 40164 错误
+- 第三方平台代调（使用 authorizer_access_token）不支持自动获取，必须手动传入 `access_token`
+- **风险提示**：开启 Artful 日志（`logger.enable = true`）时，token 请求的 body 含 `app_secret`，会随日志落盘，生产环境注意日志安全
+:::
 
 ### 查询用户代币余额
 

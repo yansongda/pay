@@ -7,10 +7,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## Unreleased
 
+### Added
+
+- 微信虚拟支付服务端 API 支持自动获取 access_token（配置 `virtual_pay.app_secret` 启用，stable_token 接口）（#1186、#1179）
+- 微信虚拟支付客户端签名自动对 signData 做字典序排序，并在返回结果中提供与签名逐字节一致的 `signData` JSON 字符串（#1181）
+
 ### Changed
 
 - 重构各 Provider Config 的必填参数校验：提取 `AbstractConfig::validateNotEmpty()` 公共方法，必填项仅需声明属性名列表（snake_case 键名由 `Str::snake()` 推导），除 Airwallex 外所有异常消息保持不变
 - 统一 Airwallex 必填配置缺失时的异常消息格式，与其他 Provider 对齐：`配置错误: Airwallex 配置缺少 [client_id]` -> `配置异常: 缺少 Airwallex 配置 -- [client_id]`
+- 各 Provider 配置校验时机从 `Pay::config()` 推迟到实际使用该 Provider 时；客户端签名返回字段顺序变为字典序（已按返回字段顺序集成的前端零改动）
+
+### Fixed
+
+- 修复仅使用单一 Provider 时其余已传入 Provider 的不完整配置导致 `Pay::config()` 抛出配置异常的问题（#1186）
 
 ### Removed
 
