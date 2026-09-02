@@ -24,6 +24,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\AppCallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
+use Yansongda\Pay\Plugin\Alipay\V3\CallbackPlugin as V3CallbackPlugin;
 use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -145,10 +146,22 @@ class Alipay implements ProviderInterface
 
     /**
      * @throws ContainerException
+     * @throws InvalidConfigException
      * @throws InvalidParamsException
      */
     public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection
     {
+        /** @var AlipayConfig $config */
+        $config = self::getProviderConfig('alipay', $params ?? []);
+
+        if ('v3' === $config->getVersion()) {
+            $request = $this->getV3CallbackParams($contents);
+
+            Event::dispatch(new CallbackReceived('alipay', clone $request, $params, null));
+
+            return $this->pay([V3CallbackPlugin::class], ['_request' => $request, '_params' => $params]);
+        }
+
         $request = $this->getCallbackParams($contents);
 
         Event::dispatch(new CallbackReceived('alipay', $request->all(), $params, null));
@@ -203,5 +216,30 @@ class Alipay implements ProviderInterface
         return Collection::wrap(
             array_merge($request->getQueryParams(), $request->getParsedBody())
         );
+    }
+
+    /**
+     * @param null|array<string, mixed>|ServerRequestInterface $contents
+     */
+    protected function getV3CallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
+    {
+        if ($contents instanceof ServerRequestInterface) {
+            return $contents;
+        }
+
+        if (is_array($contents) && isset($contents['body'], $contents['headers'])) {
+            $request = new ServerRequest('POST', 'http://localhost', $contents['headers'], $contents['body']);
+
+            parse_str((string) $contents['body'], $parsedBody);
+
+            return $request->withParsedBody($parsedBody);
+        }
+
+        if (is_array($contents)) {
+            // 支付宝异步通知为 form 参数（非 JSON body）：普通数组构造为 parsedBody 的模拟回调请求
+            return (new ServerRequest('POST', 'http://localhost'))->withParsedBody($contents);
+        }
+
+        return ServerRequest::fromGlobals();
     }
 }

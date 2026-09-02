@@ -13,6 +13,7 @@ use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
@@ -22,6 +23,9 @@ use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
+use Yansongda\Supports\Collection;
+
+use function Yansongda\Artful\filter_params;
 
 class AlipayTest extends TestCase
 {
@@ -473,5 +477,76 @@ class AlipayTest extends TestCase
         self::expectExceptionMessage('参数异常: Alipay V3 暂不支持应用回调，请通过 _config 指向 V2 租户');
 
         Pay::alipay()->appCallback(['out_trade_no' => 'v3callback'.time()], ['_config' => 'alipay-v3']);
+    }
+
+    public function testV3CallbackWithServerRequest()
+    {
+        $form = $this->makeV3CallbackForm();
+
+        $request = (new ServerRequest('POST', 'https://pay.yansongda.cn/alipay/notify'))->withParsedBody($form);
+
+        $result = Pay::alipay()->callback($request, ['_config' => 'alipay-v3']);
+
+        self::assertInstanceOf(Collection::class, $result);
+        self::assertSame($form, $result->all());
+        self::assertSame('TRADE_SUCCESS', $result->get('trade_status'));
+    }
+
+    public function testV3CallbackWithPlainArray()
+    {
+        // 普通数组（通知 form 参数）构造为 parsedBody 的模拟回调请求
+        $form = $this->makeV3CallbackForm();
+
+        $result = Pay::alipay()->callback($form, ['_config' => 'alipay-v3']);
+
+        self::assertInstanceOf(Collection::class, $result);
+        self::assertSame($form, $result->all());
+        self::assertSame('TRADE_SUCCESS', $result->get('trade_status'));
+    }
+
+    public function testV3CallbackWithBodyAndHeaders()
+    {
+        $form = $this->makeV3CallbackForm();
+
+        $result = Pay::alipay()->callback(
+            ['body' => http_build_query($form), 'headers' => ['Content-Type' => 'application/x-www-form-urlencoded']],
+            ['_config' => 'alipay-v3']
+        );
+
+        self::assertInstanceOf(Collection::class, $result);
+        self::assertSame($form, $result->all());
+    }
+
+    public function testV3CallbackTamperedParams()
+    {
+        $form = $this->makeV3CallbackForm();
+        $form['total_amount'] = '999.00';
+
+        self::expectException(InvalidSignException::class);
+
+        Pay::alipay()->callback($form, ['_config' => 'alipay-v3']);
+    }
+
+    /**
+     * 生成模拟支付宝异步通知的 form 参数（用测试私钥按 V2 参数格式签名，密钥与 alipay-v3 测试租户支付宝公钥同属一对）.
+     */
+    private function makeV3CallbackForm(): array
+    {
+        $form = [
+            'app_id' => 'alipay_v3_test_app_id',
+            'trade_no' => '2023122122001499160501589436',
+            'out_trade_no' => 'v3callback'.time(),
+            'total_amount' => '0.01',
+            'trade_status' => 'TRADE_SUCCESS',
+            'sign_type' => 'RSA2',
+        ];
+
+        $value = filter_params($form, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k)->sortKeys()->toString();
+
+        openssl_sign($value, $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
+
+        $form['sign'] = base64_encode($sign);
+
+        return $form;
     }
 }
