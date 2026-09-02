@@ -431,4 +431,47 @@ class AlipayTest extends TestCase
         self::assertInstanceOf(ResponseInterface::class, $result);
         self::assertEquals('success', (string) $result->getBody());
     }
+
+    /**
+     * 占位用例：V3 ScanShortcut 尚未实现（Task 4 将替换为正向链路用例），
+     * 此时间接证明 V3 分流已拼出正确的 V3 shortcut 类名。
+     */
+    public function testV3ShortcutNotImplementedYet()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionMessage('Yansongda\Pay\Shortcut\Alipay\V3\ScanShortcut');
+
+        Pay::alipay()->scan([
+            '_config' => 'alipay-v3',
+            'out_trade_no' => 'v3scan'.time(),
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - V3',
+        ]);
+    }
+
+    public function testV3ShortcutCaseInsensitive()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionMessage('Yansongda\Pay\Shortcut\Alipay\V3\PosShortcut');
+
+        Pay::alipay()->Pos(['_config' => 'alipay-v3']);
+    }
+
+    public function testV3ShortcutNotSupported()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
+        self::expectExceptionMessage('参数异常: Alipay V3 暂不支持 web，请通过 _config 指向 V2 租户');
+
+        Pay::alipay()->web(['_config' => 'alipay-v3']);
+    }
+
+    public function testV3AppCallbackNotSupported()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
+        self::expectExceptionMessage('参数异常: Alipay V3 暂不支持应用回调，请通过 _config 指向 V2 租户');
+
+        Pay::alipay()->appCallback(['out_trade_no' => 'v3callback'.time()], ['_config' => 'alipay-v3']);
+    }
 }

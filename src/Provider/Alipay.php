@@ -11,16 +11,20 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\AppCallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
+use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -35,21 +39,48 @@ use Yansongda\Supports\Str;
  */
 class Alipay implements ProviderInterface
 {
+    use ProviderConfigTrait;
+
     public const URL = [
         Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
         Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com/gateway.do?charset=utf-8',
         Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
     ];
 
+    public const V3_URL = [
+        Pay::MODE_NORMAL => 'https://openapi.alipay.com',
+        Pay::MODE_SANDBOX => 'http://openapi.sandbox.dl.alipaydev.com',
+        Pay::MODE_SERVICE => 'https://openapi.alipay.com',
+    ];
+
+    /**
+     * Alipay V3 已支持的 shortcut（其余 shortcut 暂不支持，请通过 `_config` 指向 V2 租户）.
+     */
+    public const V3_SHORTCUTS = ['pos', 'scan', 'query', 'refund', 'cancel', 'close'];
+
     /**
      * @param array<int, mixed> $params
      *
      * @throws ContainerException
+     * @throws InvalidConfigException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
     public function __call(string $shortcut, array $params): Collection|MessageInterface|Rocket|null
     {
+        /** @var AlipayConfig $config */
+        $config = self::getProviderConfig('alipay', (array) ($params[0] ?? []));
+
+        if ('v3' === $config->getVersion()) {
+            $shortcut = strtolower($shortcut);
+
+            if (!in_array($shortcut, self::V3_SHORTCUTS, true)) {
+                throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: Alipay V3 暂不支持 '.$shortcut.'，请通过 _config 指向 V2 租户');
+            }
+
+            return Artful::shortcut('\Yansongda\Pay\Shortcut\Alipay\V3\\'.Str::studly($shortcut).'Shortcut', ...$params);
+        }
+
         $plugin = '\Yansongda\Pay\Shortcut\Alipay\\'.Str::studly($shortcut).'Shortcut';
 
         return Artful::shortcut($plugin, ...$params);
@@ -130,10 +161,19 @@ class Alipay implements ProviderInterface
      * @param null|array<string, mixed>                        $params
      *
      * @throws ContainerException
+     * @throws InvalidConfigException
      * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function appCallback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection
     {
+        /** @var AlipayConfig $config */
+        $config = self::getProviderConfig('alipay', $params ?? []);
+
+        if ('v3' === $config->getVersion()) {
+            throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: Alipay V3 暂不支持应用回调，请通过 _config 指向 V2 租户');
+        }
+
         $request = $this->getCallbackParams($contents);
 
         return $this->pay([AppCallbackPlugin::class], $request->merge($params)->all());

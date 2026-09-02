@@ -20,6 +20,8 @@ class AlipayConfig extends AbstractConfig
     private ?string $appAuthToken = null;
     private ?string $serviceProviderId = null;
     private int $mode = Pay::MODE_NORMAL;
+    private string $version = 'v2';
+    private ?string $alipayPublicKey = null;
 
     public function setAppId(string $value): void
     {
@@ -69,6 +71,16 @@ class AlipayConfig extends AbstractConfig
     public function setMode(int $value): void
     {
         $this->mode = $value;
+    }
+
+    public function setVersion(string $value): void
+    {
+        $this->version = $value;
+    }
+
+    public function setAlipayPublicKey(?string $value): void
+    {
+        $this->alipayPublicKey = $value;
     }
 
     public function getAppId(): string
@@ -128,14 +140,60 @@ class AlipayConfig extends AbstractConfig
     }
 
     /**
+     * 接口版本：v2（网关签名）/ v3（开放平台 V3 签名）.
+     */
+    public function getVersion(): string
+    {
+        return $this->version;
+    }
+
+    /**
+     * 支付宝公钥（V3 公钥模式下使用，不含 PEM 头尾的纯 base64 串）.
+     */
+    public function getAlipayPublicKey(): ?string
+    {
+        return $this->alipayPublicKey;
+    }
+
+    /**
      * @throws InvalidConfigException 缺少必要配置参数
      */
     protected function validateRequired(): void
     {
-        $this->validateNotEmpty(
-            ['appId', 'appSecretCert', 'appPublicCertPath', 'alipayPublicCertPath', 'alipayRootCertPath'],
-            Exception::CONFIG_ALIPAY_INVALID,
-            '配置异常: 缺少支付宝配置'
-        );
+        switch ($this->version) {
+            case 'v2':
+                $this->validateNotEmpty(
+                    ['appId', 'appSecretCert', 'appPublicCertPath', 'alipayPublicCertPath', 'alipayRootCertPath'],
+                    Exception::CONFIG_ALIPAY_INVALID,
+                    '配置异常: 缺少支付宝配置'
+                );
+
+                break;
+
+            case 'v3':
+                if (!empty($this->appPublicCertPath)) {
+                    // 证书模式
+                    $this->validateNotEmpty(
+                        ['appId', 'appSecretCert', 'appPublicCertPath', 'alipayPublicCertPath', 'alipayRootCertPath'],
+                        Exception::CONFIG_ALIPAY_INVALID,
+                        '配置异常: 缺少支付宝配置'
+                    );
+                } else {
+                    // 公钥模式
+                    $this->validateNotEmpty(
+                        ['appId', 'appSecretCert', 'alipayPublicKey'],
+                        Exception::CONFIG_ALIPAY_INVALID,
+                        '配置异常: 缺少支付宝配置'
+                    );
+                }
+
+                break;
+
+            default:
+                throw new InvalidConfigException(
+                    Exception::CONFIG_ALIPAY_INVALID,
+                    '配置异常: version 仅支持 v2 或 v3，当前为 ['.$this->version.']'
+                );
+        }
     }
 }
