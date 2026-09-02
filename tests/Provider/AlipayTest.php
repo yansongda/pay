@@ -437,28 +437,84 @@ class AlipayTest extends TestCase
     }
 
     /**
-     * 占位用例：V3 ScanShortcut 尚未实现（Task 4 将替换为正向链路用例），
-     * 此时间接证明 V3 分流已拼出正确的 V3 shortcut 类名。
+     * V3 scan 正向链路：mock HTTP 返回带 V3 header 签名的响应，全链路（预下单 → 验签 → 解析）断言。
      */
-    public function testV3ShortcutNotImplementedYet()
+    public function testV3Scan()
     {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionMessage('Yansongda\Pay\Shortcut\Alipay\V3\ScanShortcut');
+        $responseData = [
+            'out_trade_no' => 'v3scan1704093802',
+            'qr_code' => 'https://qr.alipay.com/bax07651xvtprxfkmxyf00a9',
+        ];
+        $body = json_encode($responseData);
+        $timestamp = (string) (int) (microtime(true) * 1000);
+        $nonce = 'yansongda-nonce';
 
-        Pay::alipay()->scan([
+        openssl_sign($timestamp."\n".$nonce."\n".$body."\n", $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [
+            'alipay-timestamp' => $timestamp,
+            'alipay-nonce' => $nonce,
+            'alipay-signature' => base64_encode($sign),
+        ], $body));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::alipay()->scan([
             '_config' => 'alipay-v3',
-            'out_trade_no' => 'v3scan'.time(),
+            'out_trade_no' => 'v3scan1704093802',
             'total_amount' => '0.01',
             'subject' => 'yansongda 测试 - V3',
+            '_return_rocket' => true,
         ]);
+
+        $radar = $result->getRadar();
+
+        self::assertEquals('POST', $radar->getMethod());
+        self::assertEquals('https://openapi.alipay.com/v3/alipay/trade/precreate', (string) $radar->getUri());
+
+        $requestBody = json_decode((string) $radar->getBody(), true);
+        self::assertSame('v3scan1704093802', $requestBody['out_trade_no']);
+        self::assertSame('0.01', $requestBody['total_amount']);
+        self::assertSame('yansongda 测试 - V3', $requestBody['subject']);
+
+        self::assertEqualsCanonicalizing($responseData, $result->getDestination()->all());
     }
 
+    /**
+     * 大小写归一化：`Pos()`（大写）同样命中 V3 `PosShortcut`（正向链路验证）。
+     */
     public function testV3ShortcutCaseInsensitive()
     {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionMessage('Yansongda\Pay\Shortcut\Alipay\V3\PosShortcut');
+        $responseData = [
+            'trade_no' => '2023122122001499160501589436',
+            'out_trade_no' => 'v3pos1704093802',
+        ];
+        $body = json_encode($responseData);
+        $timestamp = (string) (int) (microtime(true) * 1000);
+        $nonce = 'yansongda-nonce';
 
-        Pay::alipay()->Pos(['_config' => 'alipay-v3']);
+        openssl_sign($timestamp."\n".$nonce."\n".$body."\n", $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [
+            'alipay-timestamp' => $timestamp,
+            'alipay-nonce' => $nonce,
+            'alipay-signature' => base64_encode($sign),
+        ], $body));
+        Pay::set(HttpClientInterface::class, $http);
+
+        $result = Pay::alipay()->Pos([
+            '_config' => 'alipay-v3',
+            'out_trade_no' => 'v3pos1704093802',
+            'total_amount' => '0.01',
+            'subject' => 'yansongda 测试 - V3 Pos',
+            'scene' => 'bar_code',
+            'auth_code' => '286958267789018980',
+            '_return_rocket' => true,
+        ]);
+
+        self::assertEquals('https://openapi.alipay.com/v3/alipay/trade/pay', (string) $result->getRadar()->getUri());
+        self::assertEqualsCanonicalizing($responseData, $result->getDestination()->all());
     }
 
     public function testV3ShortcutNotSupported()
