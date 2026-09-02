@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [Unreleased]
+
+### Added
+
+- 支付宝 OpenAPI V3 支持：租户配置新增 `version`（默认 `v2`，未设置时行为完全不变）与 `alipay_public_key` 两个配置项，配置 `version: v3` 即可切换至 V3 管道（RESTful `/v3/` 路径、JSON 报文、HTTP 头签名）
+  - V3 支持公钥模式（`app_id` + `app_secret_cert` + `alipay_public_key`）与证书模式（复用现有证书五件套）两种配置
+  - V3 支持 `pos`/`scan`/`query`/`refund`/`cancel`/`close` 六个服务端接口，其余方法调用将抛出明确异常提示通过 `_config` 指向 V2 租户
+  - 新增 V3 插件：`AddPayloadSignaturePlugin`、`AddRadarPlugin`、`VerifySignaturePlugin`、`ResponsePlugin`、`CallbackPlugin` 及 `Pay/{Pos,Precreate,Query,Refund,Cancel,Close}Plugin`，新增 `AlipayTrait` 的 V3 签名/验签方法
+  - V3 异步通知仍为 form 参数格式，SDK 自动完成 RSA2 验签，应答为字面量 `success`；`CallbackReceived` 事件在 V3 分支携带 `ServerRequestInterface`
+  - `Provider\Alipay` 新增 `V3_URL`、`V3_SHORTCUTS` 常量；`AlipayTrait` 新增 `getAlipayV3Url`/`getAlipayV3Authorization`/`verifyAlipayV3Sign`/`verifyAlipayV3Timestamp` 方法
+
+
 ## [v3.8.0-beta.4] - 2026-08-25
 
 ### Added
