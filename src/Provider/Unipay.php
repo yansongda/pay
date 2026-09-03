@@ -68,7 +68,7 @@ class Unipay implements ProviderInterface
      */
     public function query(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('unipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_UNIPAY, __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }
@@ -80,7 +80,7 @@ class Unipay implements ProviderInterface
      */
     public function cancel(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('unipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_UNIPAY, __METHOD__, $order, null));
 
         return $this->__call('cancel', [$order]);
     }
@@ -100,7 +100,7 @@ class Unipay implements ProviderInterface
      */
     public function refund(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('unipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_UNIPAY, __METHOD__, $order, null));
 
         return $this->__call('refund', [$order]);
     }
@@ -113,7 +113,7 @@ class Unipay implements ProviderInterface
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new CallbackReceived('unipay', $request->all(), $params, null));
+        Event::dispatch(new CallbackReceived(Pay::PROVIDER_UNIPAY, $request->all(), $params, null));
 
         return $this->pay(
             [CallbackPlugin::class],

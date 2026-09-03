@@ -36,7 +36,7 @@ class QueryPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
         $outRefundNo = $payload?->get('out_refund_no') ?? null;
 
         if (Pay::MODE_NORMAL === $config->getMode()) {

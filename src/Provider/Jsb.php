@@ -80,7 +80,7 @@ class Jsb implements ProviderInterface
      */
     public function refund(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('jsb', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_JSB, __METHOD__, $order, null));
 
         return $this->__call('refund', [$order]);
     }
@@ -93,7 +93,7 @@ class Jsb implements ProviderInterface
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new CallbackReceived('jsb', $request->all(), $params, null));
+        Event::dispatch(new CallbackReceived(Pay::PROVIDER_JSB, $request->all(), $params, null));
 
         return $this->pay(
             [CallbackPlugin::class],
@@ -117,7 +117,7 @@ class Jsb implements ProviderInterface
      */
     public function query(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('jsb', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_JSB, __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }

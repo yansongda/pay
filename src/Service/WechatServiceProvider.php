@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 
 class WechatServiceProvider extends AbstractServiceProvider
@@ -15,6 +16,6 @@ class WechatServiceProvider extends AbstractServiceProvider
 
     protected function getProviderName(): string
     {
-        return 'wechat';
+        return Pay::PROVIDER_WECHAT;
     }
 }

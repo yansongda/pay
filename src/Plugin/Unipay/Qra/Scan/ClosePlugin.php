@@ -10,6 +10,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\UnipayConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Supports\Str;
 
@@ -27,7 +28,7 @@ class ClosePlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var UnipayConfig $config */
-        $config = self::getProviderConfig('unipay', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_UNIPAY, $params);
 
         $rocket->setPacker(XmlPacker::class)
             ->mergePayload([

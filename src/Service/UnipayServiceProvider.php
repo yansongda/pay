@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Unipay;
 
 class UnipayServiceProvider extends AbstractServiceProvider
@@ -15,6 +16,6 @@ class UnipayServiceProvider extends AbstractServiceProvider
 
     protected function getProviderName(): string
     {
-        return 'unipay';
+        return Pay::PROVIDER_UNIPAY;
     }
 }

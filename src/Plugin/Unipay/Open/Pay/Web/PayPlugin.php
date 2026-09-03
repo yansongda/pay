@@ -13,6 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\UnipayConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\UnipayTrait;
 
 /**
@@ -33,7 +34,7 @@ class PayPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var UnipayConfig $config */
-        $config = self::getProviderConfig('unipay', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_UNIPAY, $params);
         $payload = $rocket->getPayload();
 
         $rocket->setPacker(QueryPacker::class)

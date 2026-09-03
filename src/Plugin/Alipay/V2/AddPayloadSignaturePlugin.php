@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AlipayTrait;
 
 class AddPayloadSignaturePlugin implements PluginInterface
@@ -42,7 +43,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     protected function getSign(Rocket $rocket): string
     {
         /** @var AlipayConfig $config */
-        $config = self::getProviderConfig('alipay', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $rocket->getParams());
         $privateKey = self::getAlipayPrivateKey($config);
 
         $content = $rocket->getPayload()->sortKeys()->toString();

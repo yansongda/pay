@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Stripe;
 
 class StripeServiceProvider extends AbstractServiceProvider
@@ -15,6 +16,6 @@ class StripeServiceProvider extends AbstractServiceProvider
 
     protected function getProviderName(): string
     {
-        return 'stripe';
+        return Pay::PROVIDER_STRIPE;
     }
 }

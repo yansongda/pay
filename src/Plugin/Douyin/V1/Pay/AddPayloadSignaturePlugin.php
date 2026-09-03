@@ -13,6 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\DouyinTrait;
 use Yansongda\Supports\Collection;
 
@@ -32,7 +33,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
         Logger::debug('[Douyin][V1][Pay][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         /** @var DouyinConfig $config */
-        $config = self::getProviderConfig('douyin', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_DOUYIN, $rocket->getParams());
         $payload = $rocket->getPayload();
 
         $rocket->mergePayload(['sign' => $this->getSign($config, filter_params($payload))]);

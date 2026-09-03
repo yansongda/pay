@@ -76,7 +76,7 @@ trait AlipayTrait
         $params = $rocket->getParams();
 
         /** @var AlipayConfig $config */
-        $config = self::getProviderConfig('alipay', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $params);
         $serviceProviderId = $config->getServiceProviderId();
 
         if (Pay::MODE_SERVICE !== $config->getMode()

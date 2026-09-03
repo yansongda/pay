@@ -13,6 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\UnipayTrait;
 use Yansongda\Supports\Collection;
 
@@ -48,7 +49,7 @@ class VerifySignaturePlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var UnipayConfig $config */
-        $config = self::getProviderConfig('unipay', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_UNIPAY, $params);
 
         self::verifyUnipaySign(
             $config,

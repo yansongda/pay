@@ -37,7 +37,7 @@ class SendPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
         if (Pay::MODE_SERVICE === $config->getMode()) {
             $data = $this->service($payload, $config, $params);

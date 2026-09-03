@@ -37,7 +37,7 @@ class RefundPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var DouyinConfig $config */
-        $config = self::getProviderConfig('douyin', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_DOUYIN, $params);
 
         if (is_null($payload)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 抖音小程序退款订单，参数为空');

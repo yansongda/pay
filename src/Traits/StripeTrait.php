@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Stripe;
 use Yansongda\Supports\Collection;
 
@@ -48,7 +49,7 @@ trait StripeTrait
     public static function verifyStripeWebhookSign(ServerRequestInterface $request, array $params): void
     {
         /** @var StripeConfig $config */
-        $config = static::getProviderConfig('stripe', $params);
+        $config = static::getProviderConfig(Pay::PROVIDER_STRIPE, $params);
         $webhookSecret = $config->getWebhookSecret();
 
         if (empty($webhookSecret)) {

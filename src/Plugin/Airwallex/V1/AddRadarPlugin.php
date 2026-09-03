@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\AirwallexConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AirwallexTrait;
 use Yansongda\Supports\Collection;
 
@@ -38,7 +39,7 @@ class AddRadarPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var AirwallexConfig $config */
-        $config = self::getProviderConfig('airwallex', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_AIRWALLEX, $params);
 
         $rocket->setRadar(new Request(
             get_radar_method($payload),

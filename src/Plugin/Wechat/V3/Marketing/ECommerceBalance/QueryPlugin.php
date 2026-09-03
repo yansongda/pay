@@ -33,7 +33,7 @@ class QueryPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][ECommerceBalance][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $rocket->getParams());
         $accountType = $rocket->getPayload()?->get('account_type') ?? null;
 
         if (Pay::MODE_NORMAL === $config->getMode()) {

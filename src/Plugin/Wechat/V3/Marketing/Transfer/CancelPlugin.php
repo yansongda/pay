@@ -33,7 +33,7 @@ class CancelPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][Transfer][CancelPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $rocket->getParams());
         $payload = $rocket->getPayload();
         $outBillNo = $payload?->get('out_bill_no') ?? null;
 

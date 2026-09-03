@@ -15,6 +15,7 @@ use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Config\PaypalConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\GetAccessTokenPlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
@@ -55,7 +56,7 @@ trait PaypalTrait
     public static function getPaypalAccessToken(array $params): string
     {
         /** @var PaypalConfig $config */
-        $config = self::getProviderConfig('paypal', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_PAYPAL, $params);
 
         if (!empty($config->getAccessToken())
             && !empty($config->getAccessTokenExpiry())
@@ -96,7 +97,7 @@ trait PaypalTrait
     public static function verifyPaypalWebhookSign(ServerRequestInterface $request, array $params): void
     {
         /** @var PaypalConfig $config */
-        $config = self::getProviderConfig('paypal', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_PAYPAL, $params);
 
         $webhookId = $config->getWebhookId();
 

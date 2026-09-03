@@ -40,7 +40,7 @@ class InvokeAndroidPlugin implements PluginInterface
         Logger::debug('[Wechat][V3][Marketing][Transfer][InvokeAndroidPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $rocket->getParams());
         $destination = $rocket->getDestination();
         $packageInfo = $destination?->get('package_info');
 

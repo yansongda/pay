@@ -65,7 +65,7 @@ class Airwallex implements ProviderInterface
      */
     public function query(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('airwallex', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_AIRWALLEX, __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }
@@ -77,7 +77,7 @@ class Airwallex implements ProviderInterface
      */
     public function cancel(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('airwallex', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_AIRWALLEX, __METHOD__, $order, null));
 
         return $this->__call('cancel', [$order]);
     }
@@ -97,7 +97,7 @@ class Airwallex implements ProviderInterface
      */
     public function refund(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('airwallex', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_AIRWALLEX, __METHOD__, $order, null));
 
         return $this->__call('refund', [$order]);
     }
@@ -110,7 +110,7 @@ class Airwallex implements ProviderInterface
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new CallbackReceived('airwallex', clone $request, $params, null));
+        Event::dispatch(new CallbackReceived(Pay::PROVIDER_AIRWALLEX, clone $request, $params, null));
 
         return $this->pay(
             [CallbackPlugin::class],

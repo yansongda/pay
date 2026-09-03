@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\StripeConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\StripeTrait;
 use Yansongda\Supports\Collection;
 
@@ -36,7 +37,7 @@ class AddRadarPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var StripeConfig $config */
-        $config = self::getProviderConfig('stripe', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_STRIPE, $params);
 
         $rocket->setRadar(new Request(
             get_radar_method($payload),
