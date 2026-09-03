@@ -20,17 +20,17 @@ use Yansongda\Supports\Config as BaseConfig;
 class Config extends BaseConfig
 {
     /**
-     * Provider 配置类映射.
+     * Provider 名单.
      */
-    private const PROVIDER_CONFIG_MAP = [
-        Pay::PROVIDER_WECHAT => WechatConfig::class,
-        Pay::PROVIDER_ALIPAY => AlipayConfig::class,
-        Pay::PROVIDER_AIRWALLEX => AirwallexConfig::class,
-        Pay::PROVIDER_UNIPAY => UnipayConfig::class,
-        Pay::PROVIDER_JSB => JsbConfig::class,
-        Pay::PROVIDER_DOUYIN => DouyinConfig::class,
-        Pay::PROVIDER_PAYPAL => PaypalConfig::class,
-        Pay::PROVIDER_STRIPE => StripeConfig::class,
+    private const PROVIDERS = [
+        Pay::PROVIDER_WECHAT,
+        Pay::PROVIDER_ALIPAY,
+        Pay::PROVIDER_AIRWALLEX,
+        Pay::PROVIDER_UNIPAY,
+        Pay::PROVIDER_JSB,
+        Pay::PROVIDER_DOUYIN,
+        Pay::PROVIDER_PAYPAL,
+        Pay::PROVIDER_STRIPE,
     ];
 
     /**
@@ -41,11 +41,20 @@ class Config extends BaseConfig
         parent::__construct($items);
 
         // 转换 Provider 配置为对象
-        foreach (self::PROVIDER_CONFIG_MAP as $provider => $configClass) {
+        foreach (self::PROVIDERS as $provider) {
             if (isset($this->items[$provider])) {
                 foreach ($this->items[$provider] as $tenant => $config) {
                     if (is_array($config)) {
-                        $this->items[$provider][$tenant] = new $configClass($config, $tenant);
+                        $this->items[$provider][$tenant] = match ($provider) {
+                            Pay::PROVIDER_WECHAT => new WechatConfig($config, $tenant),
+                            Pay::PROVIDER_ALIPAY => new AlipayConfig($config, $tenant),
+                            Pay::PROVIDER_AIRWALLEX => new AirwallexConfig($config, $tenant),
+                            Pay::PROVIDER_UNIPAY => new UnipayConfig($config, $tenant),
+                            Pay::PROVIDER_JSB => new JsbConfig($config, $tenant),
+                            Pay::PROVIDER_DOUYIN => new DouyinConfig($config, $tenant),
+                            Pay::PROVIDER_PAYPAL => new PaypalConfig($config, $tenant),
+                            Pay::PROVIDER_STRIPE => new StripeConfig($config, $tenant),
+                        };
                     }
                 }
             }
@@ -59,7 +68,7 @@ class Config extends BaseConfig
      */
     public function getProviderConfig(string $provider, ?string $tenant = null): ProviderConfigInterface
     {
-        if (!isset(self::PROVIDER_CONFIG_MAP[$provider])) {
+        if (!in_array($provider, self::PROVIDERS, true)) {
             throw new InvalidConfigException(Exception::CONFIG_PROVIDER_INVALID, "配置异常: 未知的 Provider - {$provider}");
         }
 

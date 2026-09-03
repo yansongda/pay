@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
+use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Jsb;
 
 class JsbServiceProvider extends AbstractServiceProvider
 {
-    protected function getProviderClass(): string
+    protected function makeService(): ProviderInterface
     {
-        return Jsb::class;
+        return new Jsb();
     }
 
     protected function getProviderName(): string

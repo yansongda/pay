@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
+use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Airwallex;
 
 class AirwallexServiceProvider extends AbstractServiceProvider
 {
-    protected function getProviderClass(): string
+    protected function makeService(): ProviderInterface
     {
-        return Airwallex::class;
+        return new Airwallex();
     }
 
     protected function getProviderName(): string

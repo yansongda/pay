@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
+use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Unipay;
 
 class UnipayServiceProvider extends AbstractServiceProvider
 {
-    protected function getProviderClass(): string
+    protected function makeService(): ProviderInterface
     {
-        return Unipay::class;
+        return new Unipay();
     }
 
     protected function getProviderName(): string
