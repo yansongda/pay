@@ -41,7 +41,7 @@ class CreatePlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {
@@ -136,7 +136,7 @@ class CreatePlugin implements PluginInterface
         $data['_serial_no'] = self::getWechatSerialNo($params);
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
         $publicKey = self::getWechatPublicKey($config, $data['_serial_no']);
 
         foreach ($data['receivers'] as $key => $list) {

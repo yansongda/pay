@@ -15,6 +15,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Collection;
 
@@ -35,7 +36,7 @@ class AddPayloadSignPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var JsbConfig $config */
-        $config = self::getProviderConfig('jsb', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_JSB, $params);
         $payload = $rocket->getPayload();
 
         if (empty($payload) || $payload->isEmpty()) {

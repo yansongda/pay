@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 
 use function Yansongda\Artful\filter_params;
@@ -30,7 +31,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
         Logger::debug('[Wechat][V2][AddPayloadSignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $rocket->getParams());
 
         $rocket->mergePayload([
             'sign' => self::getWechatSignV2($config, filter_params($rocket->getPayload())->all()),

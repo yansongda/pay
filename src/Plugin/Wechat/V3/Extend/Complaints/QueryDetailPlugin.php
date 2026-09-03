@@ -14,6 +14,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
@@ -58,7 +59,7 @@ class QueryDetailPlugin implements PluginInterface
 
         if ($destination instanceof Collection && !empty($payerPhone = $destination->get('payer_phone'))) {
             /** @var WechatConfig $config */
-            $config = self::getProviderConfig('wechat', $rocket->getParams());
+            $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $rocket->getParams());
             $decryptPayerPhone = self::decryptWechatContents($payerPhone, $config);
 
             if (empty($decryptPayerPhone)) {

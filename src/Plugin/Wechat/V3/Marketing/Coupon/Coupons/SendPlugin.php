@@ -13,6 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
@@ -36,7 +37,7 @@ class SendPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
         $payload = $rocket->getPayload();
         $openId = $payload?->get('openid') ?? null;
 

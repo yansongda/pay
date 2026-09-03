@@ -12,6 +12,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\JsbConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Str;
 
@@ -30,7 +31,7 @@ class StartPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var JsbConfig $config */
-        $config = self::getProviderConfig('jsb', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_JSB, $params);
 
         $rocket->setPacker(QueryPacker::class)
             ->mergePayload(array_merge($params, [

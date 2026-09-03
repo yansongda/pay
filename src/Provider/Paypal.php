@@ -65,7 +65,7 @@ class Paypal implements ProviderInterface
      */
     public function query(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('paypal', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_PAYPAL, __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }
@@ -93,7 +93,7 @@ class Paypal implements ProviderInterface
      */
     public function refund(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('paypal', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_PAYPAL, __METHOD__, $order, null));
 
         return $this->__call('refund', [$order]);
     }
@@ -106,7 +106,7 @@ class Paypal implements ProviderInterface
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new CallbackReceived('paypal', clone $request, $params, null));
+        Event::dispatch(new CallbackReceived(Pay::PROVIDER_PAYPAL, clone $request, $params, null));
 
         return $this->pay(
             [CallbackPlugin::class],

@@ -38,7 +38,7 @@ class CancelPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
         $payload = $rocket->getPayload();
 
         $outTradeNo = $payload?->get('out_trade_no') ?? null;

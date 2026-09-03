@@ -18,7 +18,7 @@ description: "Use when local PHP environment is unavailable. Fallback container-
 ### 镜像
 
 ```
-registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine
+registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine
 ```
 
 ### 常用命令
@@ -42,7 +42,7 @@ registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine
 
 ```bash
 container run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   COMMAND
 ```
 
@@ -52,7 +52,7 @@ container run --rm -v "$(pwd)":/app -w /app \
 
 ```bash
 container run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && COMMAND"
 ```
 
@@ -61,27 +61,27 @@ container run --rm -v "$(pwd)":/app -w /app \
 ```bash
 # 测试（需 DNS fix + COMPOSER_ALLOW_SUPERUSER）
 container run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && COMPOSER_ALLOW_SUPERUSER=1 composer test"
 
 # PHPStan 分析
 container run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && COMPOSER_ALLOW_SUPERUSER=1 composer analyse"
 
 # 代码风格检查（仅查看差异）
 container run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && COMPOSER_ALLOW_SUPERUSER=1 composer cs-fix"
 
 # 代码风格修复
 container run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && COMPOSER_ALLOW_SUPERUSER=1 php-cs-fixer fix ./src"
 
 # Composer update
 container run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   sh -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && composer update --with-all-dependencies"
 ```
 
@@ -110,22 +110,22 @@ Docker 命令类似，通常不需要 DNS fix：
 ```bash
 # 测试
 docker run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   composer test
 
 # PHPStan 分析
 docker run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   composer analyse
 
 # 代码风格检查
 docker run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   composer cs-fix
 
 # 代码风格修复
 docker run --rm -v "$(pwd)":/app -w /app \
-  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.3-alpine \
+  registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine \
   php-cs-fixer fix ./src
 ```
 

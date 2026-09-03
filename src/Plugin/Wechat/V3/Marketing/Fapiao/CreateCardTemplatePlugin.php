@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
@@ -31,7 +32,7 @@ class CreateCardTemplatePlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
         $payload = $rocket->getPayload();
 
         $rocket->mergePayload([

@@ -41,7 +41,7 @@ class AddReceiverPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
         $payload = $rocket->getPayload();
 
         if (is_null($payload)) {

@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\PaypalConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\PaypalTrait;
 use Yansongda\Supports\Collection;
 
@@ -35,7 +36,7 @@ class AddRadarPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var PaypalConfig $config */
-        $config = self::getProviderConfig('paypal', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_PAYPAL, $params);
 
         $rocket->setRadar(new Request(
             get_radar_method($payload),

@@ -14,6 +14,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\DecryptException;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
@@ -39,7 +40,7 @@ class CreatePlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
         $rocket->mergePayload(array_merge([
             '_method' => 'POST',

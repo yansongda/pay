@@ -18,6 +18,7 @@ use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
 
@@ -52,7 +53,7 @@ class CallbackPlugin implements PluginInterface
         $rocket->setDirection(NoHttpRequestDirection::class)->setPayload(new Collection($body));
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
         $body['resource'] = self::decryptWechatResource($body['resource'] ?? [], $config);
 
         $rocket->setDestination(new Collection($body));

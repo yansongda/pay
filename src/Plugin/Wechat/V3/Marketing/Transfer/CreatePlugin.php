@@ -41,7 +41,7 @@ class CreatePlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
         if (Pay::MODE_SERVICE === $config->getMode()) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 发起商家转账，只支持普通商户模式，当前配置为服务商模式');
@@ -102,7 +102,7 @@ class CreatePlugin implements PluginInterface
         $data['_serial_no'] = self::getWechatSerialNo($params);
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
         $publicKey = self::getWechatPublicKey($config, $data['_serial_no']);
 
         $data['user_name'] = self::encryptWechatContents($payload->get('user_name'), $publicKey);

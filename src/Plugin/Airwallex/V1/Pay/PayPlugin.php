@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\AirwallexConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AirwallexTrait;
 
 /**
@@ -32,7 +33,7 @@ class PayPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var AirwallexConfig $config */
-        $config = self::getProviderConfig('airwallex', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_AIRWALLEX, $params);
 
         $rocket->mergePayload(array_filter([
             '_method' => 'POST',

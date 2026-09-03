@@ -13,6 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\JsbTrait;
 
 /**
@@ -34,7 +35,7 @@ class PayPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var JsbConfig $config */
-        $config = self::getProviderConfig('jsb', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_JSB, $params);
         $backUrl = $rocket->getPayload()['notify_url'] ?? $config->getNotifyUrl();
 
         if (!$backUrl) {

@@ -15,6 +15,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AlipayTrait;
 use Yansongda\Supports\Collection;
 
@@ -49,7 +50,7 @@ class VerifySignaturePlugin implements PluginInterface
         }
 
         /** @var AlipayConfig $config */
-        $config = self::getProviderConfig('alipay', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $rocket->getParams());
 
         self::verifyAlipaySign($config, json_encode($result, JSON_UNESCAPED_UNICODE), $destination->get('_sign', ''));
 

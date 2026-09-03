@@ -13,6 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 
 /**
@@ -33,7 +34,7 @@ class CompletePlugin implements PluginInterface
         Logger::debug('[Wechat][Extend][Complaints][CompletePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $rocket->getParams());
         $payload = $rocket->getPayload();
         $complaintId = $payload?->get('complaint_id') ?? null;
 

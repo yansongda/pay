@@ -14,6 +14,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\UnipayTrait;
 
 use function Yansongda\Artful\filter_params;
@@ -35,7 +36,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var UnipayConfig $config */
-        $config = self::getProviderConfig('unipay', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_UNIPAY, $params);
         $payload = $rocket->getPayload();
 
         if (empty($payload) || $payload->isEmpty()) {

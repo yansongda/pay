@@ -77,7 +77,7 @@ class Wechat implements ProviderInterface
      */
     public function query(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('wechat', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_WECHAT, __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }
@@ -89,7 +89,7 @@ class Wechat implements ProviderInterface
      */
     public function cancel(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('wechat', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_WECHAT, __METHOD__, $order, null));
 
         return $this->__call('cancel', [$order]);
     }
@@ -101,7 +101,7 @@ class Wechat implements ProviderInterface
      */
     public function close(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('wechat', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_WECHAT, __METHOD__, $order, null));
 
         $this->__call('close', [$order]);
 
@@ -115,7 +115,7 @@ class Wechat implements ProviderInterface
      */
     public function refund(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('wechat', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_WECHAT, __METHOD__, $order, null));
 
         return $this->__call('refund', [$order]);
     }
@@ -128,7 +128,7 @@ class Wechat implements ProviderInterface
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new CallbackReceived('wechat', clone $request, $params, null));
+        Event::dispatch(new CallbackReceived(Pay::PROVIDER_WECHAT, clone $request, $params, null));
 
         $plugin = (($params ?? [])['_action'] ?? null) === 'virtual'
             ? VirtualCallbackPlugin::class

@@ -35,7 +35,7 @@ class QueryMerchantConfigsPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $rocket->getParams());
         $subMchId = $payload?->get('sub_mch_id') ?? ($config->getSubMchId() ?? 'null');
 
         if (Pay::MODE_NORMAL === $config->getMode()) {

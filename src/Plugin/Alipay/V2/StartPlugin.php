@@ -14,6 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AlipayTrait;
 
 class StartPlugin implements PluginInterface
@@ -48,7 +49,7 @@ class StartPlugin implements PluginInterface
     protected function getPayload(array $params): array
     {
         /** @var AlipayConfig $config */
-        $config = self::getProviderConfig('alipay', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $params);
 
         return [
             'app_id' => $config->getAppId(),

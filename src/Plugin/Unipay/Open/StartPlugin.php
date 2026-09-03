@@ -14,6 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\UnipayTrait;
 
 class StartPlugin implements PluginInterface
@@ -32,7 +33,7 @@ class StartPlugin implements PluginInterface
         $params = $rocket->getParams();
 
         /** @var UnipayConfig $config */
-        $config = self::getProviderConfig('unipay', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_UNIPAY, $params);
 
         $rocket->mergePayload(array_merge($params, [
             '_unpack_raw' => true,

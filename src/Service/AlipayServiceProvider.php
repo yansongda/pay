@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Service;
 
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
 
 class AlipayServiceProvider extends AbstractServiceProvider
@@ -15,6 +16,6 @@ class AlipayServiceProvider extends AbstractServiceProvider
 
     protected function getProviderName(): string
     {
-        return 'alipay';
+        return Pay::PROVIDER_ALIPAY;
     }
 }

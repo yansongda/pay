@@ -150,7 +150,7 @@ trait WechatTrait
         static::verifyWechatTimestamp((int) $timestamp);
 
         /** @var WechatConfig $wechatConfig */
-        $wechatConfig = self::getProviderConfig('wechat', $params);
+        $wechatConfig = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
         $content = $timestamp."\n".$random."\n".$body."\n";
         $public = CertManager::wechatGetCertBySerial($wechatConfig->getTenant(), $wechatSerial);
@@ -237,7 +237,7 @@ trait WechatTrait
         )->get('data', []);
 
         /** @var WechatConfig $wechatConfig */
-        $wechatConfig = self::getProviderConfig('wechat', $params);
+        $wechatConfig = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
         foreach ($data as $item) {
             $certs[$item['serial_no']] = self::decryptWechatResource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
@@ -268,7 +268,7 @@ trait WechatTrait
         self::reloadWechatPublicCerts($params);
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
         $certs = CertManager::wechatGetAllCertsBySerial($config->getTenant());
 
@@ -360,7 +360,7 @@ trait WechatTrait
         }
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
         $certs = CertManager::wechatGetAllCertsBySerial($config->getTenant());
 
@@ -368,7 +368,7 @@ trait WechatTrait
             self::reloadWechatPublicCerts($params);
 
             /** @var WechatConfig $config */
-            $config = self::getProviderConfig('wechat', $params);
+            $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
             $certs = CertManager::wechatGetAllCertsBySerial($config->getTenant());
         }
@@ -423,7 +423,7 @@ trait WechatTrait
     public static function getWechatVirtualAccessToken(array $params): string
     {
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
         if (!empty($config->getVirtualPay()->getAccessToken())
             && !empty($config->getVirtualPay()->getAccessTokenExpiry())

@@ -36,7 +36,7 @@ class QueryDayEndPlugin implements PluginInterface
         Logger::debug('[Wechat][Marketing][ECommerceBalance][QueryDayEndPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         /** @var WechatConfig $config */
-        $config = self::getProviderConfig('wechat', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $rocket->getParams());
         $payload = $rocket->getPayload();
         $accountType = $payload?->get('account_type') ?? null;
 

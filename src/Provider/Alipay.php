@@ -71,7 +71,7 @@ class Alipay implements ProviderInterface
      */
     public function query(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('alipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_ALIPAY, __METHOD__, $order, null));
 
         return $this->__call('query', [$order]);
     }
@@ -83,7 +83,7 @@ class Alipay implements ProviderInterface
      */
     public function cancel(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('alipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_ALIPAY, __METHOD__, $order, null));
 
         return $this->__call('cancel', [$order]);
     }
@@ -95,7 +95,7 @@ class Alipay implements ProviderInterface
      */
     public function close(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('alipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_ALIPAY, __METHOD__, $order, null));
 
         return $this->__call('close', [$order]);
     }
@@ -107,7 +107,7 @@ class Alipay implements ProviderInterface
      */
     public function refund(array $order): Collection|Rocket
     {
-        Event::dispatch(new MethodCalled('alipay', __METHOD__, $order, null));
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_ALIPAY, __METHOD__, $order, null));
 
         return $this->__call('refund', [$order]);
     }
@@ -120,7 +120,7 @@ class Alipay implements ProviderInterface
     {
         $request = $this->getCallbackParams($contents);
 
-        Event::dispatch(new CallbackReceived('alipay', $request->all(), $params, null));
+        Event::dispatch(new CallbackReceived(Pay::PROVIDER_ALIPAY, $request->all(), $params, null));
 
         return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
     }

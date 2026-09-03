@@ -13,6 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Arr;
 use Yansongda\Supports\Collection;
@@ -41,7 +42,7 @@ class VerifySignaturePlugin implements PluginInterface
             $params = $rocket->getParams();
 
             /** @var JsbConfig $config */
-            $config = self::getProviderConfig('jsb', $params);
+            $config = self::getProviderConfig(Pay::PROVIDER_JSB, $params);
 
             $body = (string) $rocket->getDestinationOrigin()->getBody();
             $signatureData = $this->getSignatureData($body);

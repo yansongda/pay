@@ -13,6 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\UnipayTrait;
 
 use function Yansongda\Artful\should_do_http_request;
@@ -35,7 +36,7 @@ class VerifySignaturePlugin implements PluginInterface
         Logger::debug('[Unipay][Qra][VerifySignaturePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         /** @var UnipayConfig $config */
-        $config = self::getProviderConfig('unipay', $rocket->getParams());
+        $config = self::getProviderConfig(Pay::PROVIDER_UNIPAY, $rocket->getParams());
 
         if (!should_do_http_request($rocket->getDirection())) {
             return $rocket;

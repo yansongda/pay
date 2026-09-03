@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\DouyinConfig;
+use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\DouyinTrait;
 
 use function Yansongda\Artful\get_radar_body;
@@ -35,7 +36,7 @@ class AddRadarPlugin implements PluginInterface
         $payload = $rocket->getPayload();
 
         /** @var DouyinConfig $config */
-        $config = self::getProviderConfig('douyin', $params);
+        $config = self::getProviderConfig(Pay::PROVIDER_DOUYIN, $params);
 
         $rocket->setRadar(new Request(
             get_radar_method($payload),
