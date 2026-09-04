@@ -59,4 +59,30 @@ class AddRadarPluginTest extends TestCase
         self::assertEquals('application/x-www-form-urlencoded', $radar->getHeaderLine('Content-Type'));
         self::assertEquals('grant_type=client_credentials', (string) $radar->getBody());
     }
+
+    /**
+     * @dataProvider provideEmptyBodies
+     */
+    public function testEmptyBodyOmitted(string $body): void
+    {
+        $payload = new Collection([
+            '_method' => 'POST',
+            '_url' => '/v2/checkout/orders/ORDER_123/capture',
+            '_body' => $body,
+            '_access_token' => 'test_token_abc',
+        ]);
+
+        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertEquals('', $result->getRadar()->getBody()->getContents());
+    }
+
+    public static function provideEmptyBodies(): iterable
+    {
+        yield 'empty string' => [''];
+        yield 'empty json array' => ['[]'];
+        yield 'empty json object' => ['{}'];
+    }
 }

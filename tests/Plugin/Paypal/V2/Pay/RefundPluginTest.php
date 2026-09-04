@@ -33,6 +33,9 @@ class RefundPluginTest extends TestCase
         self::assertEquals('POST', $payload->get('_method'));
         self::assertStringContainsString('CAP_123', $payload->get('_url'));
         self::assertStringContainsString('refund', $payload->get('_url'));
+
+        // capture_id 不应残留在 payload 中，否则会被打进最终请求 body
+        self::assertNull($payload->get('capture_id'));
     }
 
     public function testWithAmount()
@@ -46,6 +49,13 @@ class RefundPluginTest extends TestCase
         $payload = $result->getPayload();
 
         self::assertEquals($amount, $payload->get('amount'));
+
+        // 仅保留白名单内的业务字段
+        self::assertEquals([
+            '_method' => 'POST',
+            '_url' => '/v2/payments/captures/CAP_456/refund',
+            'amount' => $amount,
+        ], $payload->all());
     }
 
     public function testMissingCaptureId()

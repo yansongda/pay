@@ -30,7 +30,7 @@ class QueryRefundPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: PayPal 查询退款，缺少 refund_id 参数');
         }
 
-        $rocket->mergePayload([
+        $rocket->setPayload([
             '_method' => 'GET',
             '_url' => '/v2/payments/refunds/'.$refundId,
         ]);

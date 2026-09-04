@@ -63,6 +63,44 @@ class PaypalTraitTest extends TestCase
         self::assertEquals('cached_token_123', $token);
     }
 
+    public function testGetPaypalAccessTokenCachedWithReturnRocketParam(): void
+    {
+        $paypalConfig = $this->getPaypalConfig();
+
+        $paypalConfig->setAccessToken('cached_token_123');
+        $paypalConfig->setAccessTokenExpiry(time() + 3600);
+
+        // `_return_rocket` 不应影响缓存命中
+        $token = PaypalTraitStub::getPaypalAccessToken(['_return_rocket' => true]);
+
+        self::assertEquals('cached_token_123', $token);
+    }
+
+    public function testGetPaypalAccessTokenRefreshedWithReturnRocketParam(): void
+    {
+        $tokenResponse = new Response(200, [], json_encode([
+            'access_token' => 'fresh_paypal_token_789',
+            'token_type' => 'Bearer',
+            'expires_in' => 32400,
+        ]));
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->once()->andReturn($tokenResponse);
+
+        Pay::set(HttpClientInterface::class, $http);
+
+        // `_return_rocket` 被内部剔除，仍能正确解析 token 并写入缓存
+        $token = PaypalTraitStub::getPaypalAccessToken(['_return_rocket' => true]);
+
+        self::assertEquals('fresh_paypal_token_789', $token);
+
+        $paypalConfig = Pay::get(ConfigInterface::class)->get('paypal.default');
+
+        self::assertInstanceOf(PaypalConfig::class, $paypalConfig);
+        self::assertEquals('fresh_paypal_token_789', $paypalConfig->getAccessToken());
+        self::assertNotEmpty($paypalConfig->getAccessTokenExpiry());
+    }
+
     public function testGetPaypalAccessTokenMissingConfig(): void
     {
         $paypalConfig = $this->getPaypalConfig();
@@ -123,6 +161,20 @@ class PaypalTraitTest extends TestCase
     public function testVerifyPaypalWebhookSignEmptySignature(): void
     {
         $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [], '{}');
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_EMPTY);
+
+        PaypalTraitStub::verifyPaypalWebhookSign($request, []);
+    }
+
+    public function testVerifyPaypalWebhookSignMissingHeaders(): void
+    {
+        // 仅保留部分请求头（缺少 PAYPAL-CERT-URL / PAYPAL-AUTH-ALGO），验签应前置拦截
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
+            'PAYPAL-TRANSMISSION-ID' => 'test-id',
+            'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
+        ], '{}');
 
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_EMPTY);

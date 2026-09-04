@@ -30,7 +30,7 @@ class QueryPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: PayPal 查询订单，缺少 order_id 参数');
         }
 
-        $rocket->mergePayload([
+        $rocket->setPayload([
             '_method' => 'GET',
             '_url' => '/v2/checkout/orders/'.$orderId,
         ]);

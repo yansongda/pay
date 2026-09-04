@@ -34,6 +34,20 @@ class QueryPluginTest extends TestCase
         self::assertStringContainsString('TEST_ORDER_456', $payload->get('_url'));
     }
 
+    public function testNormalWithoutResidualParams()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['order_id' => 'TEST_ORDER_456', 'extra' => 'should_not_stay'])->setPayload(new Collection([]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        // 业务参数不应残留在 payload 中，否则会被打进最终请求 body
+        self::assertEquals([
+            '_method' => 'GET',
+            '_url' => '/v2/checkout/orders/TEST_ORDER_456',
+        ], $result->getPayload()->all());
+    }
+
     public function testMissingOrderId()
     {
         self::expectException(InvalidParamsException::class);

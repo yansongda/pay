@@ -41,6 +41,10 @@ class CallbackPlugin implements PluginInterface
 
         $body = json_decode((string) $rocket->getDestination()->getBody(), true);
 
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new InvalidParamsException(Exception::PARAMS_PAYPAL_BODY_INVALID, '参数异常: PayPal 回调 body 不是合法 JSON');
+        }
+
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->setPayload(new Collection($body))
             ->setDestination(new Collection($body));

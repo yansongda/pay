@@ -58,4 +58,32 @@ class PayPluginTest extends TestCase
 
         self::assertEquals('AUTHORIZE', $result->getPayload()->get('intent'));
     }
+
+    public function testApplicationContextParamsNotResidual()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams([])->setPayload(new Collection([
+            'purchase_units' => [['amount' => ['currency_code' => 'USD', 'value' => '10.00']]],
+            'return_url' => 'https://example.com/return',
+            'cancel_url' => 'https://example.com/cancel',
+            'brand_name' => 'My Shop',
+            'landing_page' => 'billing',
+            'user_action' => 'PAY_NOW',
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $payload = $result->getPayload();
+
+        // 已重组进 application_context 的顶层参数应被剔除，避免残留在最终请求 body 中
+        self::assertNull($payload->get('return_url'));
+        self::assertNull($payload->get('cancel_url'));
+        self::assertNull($payload->get('brand_name'));
+        self::assertNull($payload->get('landing_page'));
+        self::assertNull($payload->get('user_action'));
+
+        $context = $payload->get('application_context');
+        self::assertEquals('https://example.com/return', $context['return_url']);
+        self::assertEquals('https://example.com/cancel', $context['cancel_url']);
+        self::assertEquals('My Shop', $context['brand_name']);
+    }
 }

@@ -49,6 +49,8 @@ class Exception extends \Exception
 
     public const PARAMS_AIRWALLEX_BODY_INVALID = 9227;
 
+    public const PARAMS_PAYPAL_BODY_INVALID = 9228;
+
     /**
      * 关于响应.
      */

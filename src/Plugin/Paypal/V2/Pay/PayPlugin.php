@@ -48,8 +48,11 @@ class PayPlugin implements PluginInterface
                 'brand_name' => $payload->get('brand_name') ?? $config->getBrandName(),
                 'landing_page' => $payload->get('landing_page') ?? null,
                 'user_action' => $payload->get('user_action', 'PAY_NOW'),
-            ]),
+            ], static fn ($value) => !is_null($value)),
         ]);
+
+        // 已重组进 `application_context` 的顶层参数需要剔除，避免残留在最终请求 body 中
+        $rocket->exceptPayload(['return_url', 'cancel_url', 'brand_name', 'landing_page', 'user_action']);
 
         Logger::info('[Paypal][V2][Pay][PayPlugin] 插件装载完毕', ['rocket' => $rocket]);
 

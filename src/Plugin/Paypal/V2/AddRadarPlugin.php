@@ -80,6 +80,13 @@ class AddRadarPlugin implements PluginInterface
             return 'grant_type=client_credentials';
         }
 
-        return $payload?->get('_body') ?? '';
+        $body = $payload?->get('_body') ?? '';
+
+        // 无有效业务字段的请求（如 capture、查询类请求）不携带请求体
+        if (in_array($body, ['', '[]', '{}'], true)) {
+            return '';
+        }
+
+        return $body;
     }
 }
