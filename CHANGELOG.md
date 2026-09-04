@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- 依赖要求变更为 `yansongda/artful ~1.2.0`、`yansongda/supports ~4.1.0`（#1192）
 - 所有 Provider 配置统一校验 `mode` 合法性（`AbstractConfig::validate()` 阶段拦截），非法值由原来的 `Undefined array key` warning / 静默回退改为抛出 `InvalidConfigException(CONFIG_PROVIDER_INVALID)`；江苏银行不支持服务商模式（`MODE_SERVICE`），传入将被拒绝
 - PayPal 回调验签前置校验扩展至全部 transmission/cert/algo 请求头，缺失时直接抛出异常，不再依赖 `verify-webhook-signature` API 返回失败才发现（#1196）
 - PayPal 回调 body 非法 JSON 时抛出 `PARAMS_PAYPAL_BODY_INVALID` 异常，不再以 TypeError 崩溃（#1196）
