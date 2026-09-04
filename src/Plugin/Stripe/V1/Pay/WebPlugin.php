@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\StripeConfig;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\StripeTrait;
 
@@ -37,11 +38,17 @@ class WebPlugin implements PluginInterface
         /** @var StripeConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_STRIPE, $params);
 
+        $successUrl = $payload->get('success_url') ?? $config->getSuccessUrl();
+
+        if (empty($successUrl)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Stripe 创建 Checkout Session，缺少 success_url 参数');
+        }
+
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/v1/checkout/sessions',
             'mode' => $payload->get('mode', 'payment'),
-            'success_url' => $payload->get('success_url') ?? $config->getSuccessUrl(),
+            'success_url' => $successUrl,
             'cancel_url' => $payload->get('cancel_url') ?? $config->getCancelUrl(),
         ]);
 

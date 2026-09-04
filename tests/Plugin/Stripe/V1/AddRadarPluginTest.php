@@ -92,4 +92,50 @@ class AddRadarPluginTest extends TestCase
         $body = (string) $radar->getBody();
         self::assertStringContainsString('payment_intent=pi_test123', $body);
     }
+
+    public function testCustomHeaders()
+    {
+        $payload = new Collection([
+            '_method' => 'POST',
+            '_url' => '/v1/payment_intents',
+            'amount' => 1000,
+            'currency' => 'usd',
+            '_headers' => [
+                'Idempotency-Key' => 'idempotency_key_test',
+                'Stripe-Version' => '2024-06-20',
+            ],
+        ]);
+
+        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $radar = $result->getRadar();
+
+        self::assertEquals('idempotency_key_test', $radar->getHeaderLine('Idempotency-Key'));
+        self::assertEquals('2024-06-20', $radar->getHeaderLine('Stripe-Version'));
+        // 默认头不被覆盖
+        self::assertEquals('Bearer sk_test_stripe_secret', $radar->getHeaderLine('Authorization'));
+        // `_headers` 属于内部参数，不能残留在请求 body/query 中
+        self::assertStringNotContainsString('_headers', (string) $radar->getBody());
+        self::assertStringNotContainsString('_headers', (string) $radar->getUri());
+    }
+
+    public function testCustomHeadersNotArrayIgnored()
+    {
+        $payload = new Collection([
+            '_method' => 'POST',
+            '_url' => '/v1/payment_intents',
+            'amount' => 1000,
+            'currency' => 'usd',
+            '_headers' => 'invalid',
+        ]);
+
+        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $radar = $result->getRadar();
+
+        self::assertEquals('Bearer sk_test_stripe_secret', $radar->getHeaderLine('Authorization'));
+        self::assertFalse($radar->hasHeader('Idempotency-Key'));
+    }
 }

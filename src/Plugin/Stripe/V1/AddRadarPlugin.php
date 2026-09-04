@@ -18,6 +18,7 @@ use Yansongda\Pay\Traits\StripeTrait;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
+use function Yansongda\Artful\get_radar_headers;
 use function Yansongda\Artful\get_radar_method;
 
 class AddRadarPlugin implements PluginInterface
@@ -68,6 +69,13 @@ class AddRadarPlugin implements PluginInterface
 
         if ('GET' !== $method) {
             $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        }
+
+        // 支持通过 `_headers` 注入自定义请求头（如 `Idempotency-Key`、`Stripe-Version`），可覆盖默认值
+        $customHeaders = get_radar_headers($payload);
+
+        if (is_array($customHeaders)) {
+            $headers = array_merge($headers, $customHeaders);
         }
 
         return $headers;
