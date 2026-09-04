@@ -8,6 +8,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Config\WechatConfigVirtualPay;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use PHPUnit\Framework\Attributes\Group;
 use Yansongda\Pay\Tests\TestCase;
@@ -250,5 +251,18 @@ class WechatConfigTest extends TestCase
         $vp = $config->getVirtualPay();
         self::assertSame('array-key', $vp->getAppKey());
         self::assertSame('array-offer', $vp->getOfferId());
+    }
+
+    public function testInvalidModeThrowsException(): void
+    {
+        // 未覆盖 supportedModes 的 Provider 默认支持三种 mode，其余取值应被校验拦截
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+        $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
+
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'mode' => 99999,
+        ]));
+        $config->validate();
     }
 }

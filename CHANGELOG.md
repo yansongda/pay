@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- 所有 Provider 配置统一校验 `mode` 合法性（`AbstractConfig::validate()` 阶段拦截），非法值由原来的 `Undefined array key` warning / 静默回退改为抛出 `InvalidConfigException(CONFIG_PROVIDER_INVALID)`；江苏银行不支持服务商模式（`MODE_SERVICE`），传入将被拒绝
 
 ## [v3.8.0-beta.4] - 2026-08-25
 

@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\PaypalConfig;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -104,7 +105,8 @@ class PaypalConfigTest extends TestCase
     public function testInvalidModeThrowsException(): void
     {
         $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: PayPal [mode] 配置不合法');
+        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+        $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
         $config = new PaypalConfig(array_merge($this->validConfig, [
             'mode' => 99999,
