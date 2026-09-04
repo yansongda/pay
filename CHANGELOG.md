@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## Unreleased
 
+### Added
+
+- Stripe 支持通过 `_headers` 参数注入自定义请求头（如 `Idempotency-Key`、`Stripe-Version`、`Stripe-Account`），可覆盖默认值
+
 ### Changed
 
 - 依赖要求变更为 `yansongda/artful ~1.2.0`、`yansongda/supports ~4.1.0`（#1192）
@@ -20,6 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - 修复 PayPal 请求 body 中残留业务参数的问题：查询/捕获/退款请求不再混入 `order_id`、`refund_id`、`capture_id` 等业务标识参数，GET 请求不再携带 body；web 支付顶层 `return_url`、`cancel_url`、`brand_name` 等参数不再与 `application_context` 内的值重复；全额退款时 body 为空，符合官方要求（#1196）
 - 修复传入 `_return_rocket` 参数导致 PayPal access_token 缓存失效、每次调用重复获取 token 的问题（#1196）
+- 修复 Stripe 查询/取消/退款查询请求残留内部参数的问题：`payment_intent_id`、`refund_id` 已拼入请求 URL，不再出现在 query string/body 中，避免被 Stripe 以 `parameter_unknown` 拒绝（此前查询、取消、退款查询接口实际不可用）
+- Stripe PaymentIntent 支付（`intent`）缺 `amount`/`currency`、Checkout Session 支付（`web`）缺 `success_url` 时，改为在 SDK 侧直接抛出 `PARAMS_NECESSARY_PARAMS_MISSING` 异常，不再等 Stripe 返回 400 后才发现
 
 ## [v3.8.0-beta.4] - 2026-08-25
 

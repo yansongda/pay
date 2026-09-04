@@ -289,6 +289,11 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'cancel_url' => 'https://pay.yansongda.cn/stripe/cancel',
                     'mode' => Pay::MODE_SANDBOX,
                 ],
+                'no_success_url' => [
+                    'secret_key' => 'sk_test_stripe_secret',
+                    'webhook_secret' => 'whsec_stripe_webhook_secret',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
             ],
         ];
 

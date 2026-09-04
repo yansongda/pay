@@ -35,6 +35,9 @@ class QueryPlugin implements PluginInterface
             '_url' => '/v1/payment_intents/'.$paymentIntentId,
         ]);
 
+        // PaymentIntent ID 已拼入 `_url`，需要从 payload 中剔除，避免残留在最终请求 query string 中被 Stripe 拒绝
+        $rocket->exceptPayload('payment_intent_id');
+
         Logger::info('[Stripe][V1][Pay][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);

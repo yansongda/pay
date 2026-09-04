@@ -35,6 +35,9 @@ class QueryRefundPlugin implements PluginInterface
             '_url' => '/v1/refunds/'.$refundId,
         ]);
 
+        // Refund ID 已拼入 `_url`，需要从 payload 中剔除，避免残留在最终请求 query string 中被 Stripe 拒绝
+        $rocket->exceptPayload('refund_id');
+
         Logger::info('[Stripe][V1][Pay][QueryRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);

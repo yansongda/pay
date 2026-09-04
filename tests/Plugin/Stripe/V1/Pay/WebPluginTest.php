@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Stripe\V1\Pay;
 
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\WebPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -68,5 +70,16 @@ class WebPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
         self::assertEquals('subscription', $result->getPayload()->get('mode'));
+    }
+
+    public function testMissingSuccessUrlThrowsException()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'no_success_url'])->setPayload(new Collection([]));
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 }

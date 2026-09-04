@@ -91,3 +91,19 @@ $result = Pay::stripe()->callback();
 
 return Pay::stripe()->success();
 ```
+
+## 自定义请求头
+
+所有 Stripe API 请求均可通过 `_headers` 参数注入自定义请求头（如 `Idempotency-Key`、`Stripe-Version`、`Stripe-Account`），传入的请求头可覆盖默认值：
+
+```php
+$order = [
+    'amount' => 1000,
+    'currency' => 'usd',
+    '_headers' => [
+        'Idempotency-Key' => 'your-idempotency-key',
+    ],
+];
+
+$result = Pay::stripe()->intent($order);
+```
