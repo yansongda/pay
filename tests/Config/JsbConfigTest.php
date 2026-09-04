@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\JsbConfig;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -86,5 +87,18 @@ class JsbConfigTest extends TestCase
         ]));
 
         self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+    }
+
+    public function testServiceModeThrowsException(): void
+    {
+        // 江苏银行无服务商模式，mode = SERVICE 应被校验拦截
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+        $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
+
+        $config = new JsbConfig(array_merge($this->validConfig, [
+            'mode' => Pay::MODE_SERVICE,
+        ]));
+        $config->validate();
     }
 }

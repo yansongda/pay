@@ -102,6 +102,12 @@ class JsbConfig extends AbstractConfig
     /**
      * @throws InvalidConfigException 缺少必要配置参数
      */
+    protected function supportedModes(): array
+    {
+        // 江苏银行无服务商模式
+        return [Pay::MODE_NORMAL, Pay::MODE_SANDBOX];
+    }
+
     protected function validateRequired(): void
     {
         $this->validateNotEmpty(

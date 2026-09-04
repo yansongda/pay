@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+
+- 依赖要求变更为 `yansongda/artful ~1.2.0`、`yansongda/supports ~4.1.0`（#1192）
+- 所有 Provider 配置统一校验 `mode` 合法性（`AbstractConfig::validate()` 阶段拦截），非法值由原来的 `Undefined array key` warning / 静默回退改为抛出 `InvalidConfigException(CONFIG_PROVIDER_INVALID)`；江苏银行不支持服务商模式（`MODE_SERVICE`），传入将被拒绝
+- PayPal 回调验签前置校验扩展至全部 transmission/cert/algo 请求头，缺失时直接抛出异常，不再依赖 `verify-webhook-signature` API 返回失败才发现（#1196）
+- PayPal 回调 body 非法 JSON 时抛出 `PARAMS_PAYPAL_BODY_INVALID` 异常，不再以 TypeError 崩溃（#1196）
+- change(internal): src 内 provider 名称 100% 常量化，统一引用 `Pay::PROVIDER_*` 常量（#1193）
+- change(internal): 消除 src 内剩余 2 处动态实例化 `new $var`，`Config` 的 Provider 配置类映射与 `AbstractServiceProvider` 改为静态实例化（#1194）
+- change(internal): `Config` 构造循环扁平化 + static-instantiation 设计文档入库（#1195）
+
+### Fixed
+
+- 修复 PayPal 请求 body 中残留业务参数的问题：查询/捕获/退款请求不再混入 `order_id`、`refund_id`、`capture_id` 等业务标识参数，GET 请求不再携带 body；web 支付顶层 `return_url`、`cancel_url`、`brand_name` 等参数不再与 `application_context` 内的值重复；全额退款时 body 为空，符合官方要求（#1196）
+- 修复传入 `_return_rocket` 参数导致 PayPal access_token 缓存失效、每次调用重复获取 token 的问题（#1196）
 
 ## [v3.8.0-beta.4] - 2026-08-25
 
