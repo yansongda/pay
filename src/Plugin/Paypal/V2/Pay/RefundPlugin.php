@@ -31,12 +31,12 @@ class RefundPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: PayPal 退款，缺少 capture_id 参数');
         }
 
-        $rocket->mergePayload(array_merge(
+        $rocket->setPayload(array_merge(
             ['_method' => 'POST', '_url' => '/v2/payments/captures/'.$captureId.'/refund'],
             array_filter([
-                'amount' => $payload->get('amount') ?? null,
-                'note_to_payer' => $payload->get('note_to_payer') ?? null,
-                'invoice_id' => $payload->get('invoice_id') ?? null,
+                'amount' => $payload?->get('amount'),
+                'note_to_payer' => $payload?->get('note_to_payer'),
+                'invoice_id' => $payload?->get('invoice_id'),
             ])
         ));
 

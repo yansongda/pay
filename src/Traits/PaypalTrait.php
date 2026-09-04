@@ -68,6 +68,9 @@ trait PaypalTrait
             throw new InvalidConfigException(Exception::CONFIG_PAYPAL_INVALID, '配置异常: 缺少 PayPal 配置 -- [client_id] or [app_secret]');
         }
 
+        // 内部子调用需剔除影响返回值形态的控制参数，否则会导致 token 解析与缓存失效
+        unset($params['_return_rocket']);
+
         $result = Artful::artful([
             StartPlugin::class,
             GetAccessTokenPlugin::class,
@@ -112,8 +115,12 @@ trait PaypalTrait
         $authAlgo = $request->getHeaderLine('PAYPAL-AUTH-ALGO');
         $body = (string) $request->getBody();
 
-        if (empty($transmissionId) || empty($transmissionSig)) {
-            throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: PayPal 回调签名为空', ['headers' => $request->getHeaders(), 'body' => $body]);
+        if (empty($transmissionId)
+            || empty($transmissionTime)
+            || empty($transmissionSig)
+            || empty($certUrl)
+            || empty($authAlgo)) {
+            throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: PayPal 回调验签所需的请求头缺失', ['headers' => $request->getHeaders(), 'body' => $body]);
         }
 
         $webhookEvent = json_decode($body, true);
@@ -130,6 +137,9 @@ trait PaypalTrait
 
         $token = self::getPaypalAccessToken($params);
         $url = Paypal::URL[$config->getMode()].'/v1/notifications/verify-webhook-signature';
+
+        // 内部子调用需剔除影响返回值形态的控制参数，否则会导致验证结果解析失败
+        unset($params['_return_rocket']);
 
         $result = Artful::artful([
             StartPlugin::class,

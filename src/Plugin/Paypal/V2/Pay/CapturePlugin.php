@@ -30,7 +30,7 @@ class CapturePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: PayPal 订单捕获，缺少 order_id 参数');
         }
 
-        $rocket->mergePayload([
+        $rocket->setPayload([
             '_method' => 'POST',
             '_url' => '/v2/checkout/orders/'.$orderId.'/capture',
         ]);

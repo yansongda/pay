@@ -35,6 +35,20 @@ class CapturePluginTest extends TestCase
         self::assertStringContainsString('capture', $payload->get('_url'));
     }
 
+    public function testNormalWithoutResidualParams()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['order_id' => 'TEST_ORDER_123', 'extra' => 'should_not_stay'])->setPayload(new Collection([]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        // 业务参数不应残留在 payload 中，否则会被打进最终请求 body
+        self::assertEquals([
+            '_method' => 'POST',
+            '_url' => '/v2/checkout/orders/TEST_ORDER_123/capture',
+        ], $result->getPayload()->all());
+    }
+
     public function testMissingOrderId()
     {
         self::expectException(InvalidParamsException::class);

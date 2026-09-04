@@ -34,6 +34,20 @@ class QueryRefundPluginTest extends TestCase
         self::assertStringContainsString('REF_789', $payload->get('_url'));
     }
 
+    public function testNormalWithoutResidualParams()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['refund_id' => 'REF_789', 'extra' => 'should_not_stay'])->setPayload(new Collection([]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        // 业务参数不应残留在 payload 中，否则会被打进最终请求 body
+        self::assertEquals([
+            '_method' => 'GET',
+            '_url' => '/v2/payments/refunds/REF_789',
+        ], $result->getPayload()->all());
+    }
+
     public function testMissingRefundId()
     {
         self::expectException(InvalidParamsException::class);

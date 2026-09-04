@@ -12,6 +12,8 @@ PayPal 的实现由 GitHub Copilot 生成
 PayPal 回调处理会自动通过 PayPal 的 `verify-webhook-signature` API 验证 Webhook 签名，以确保回调数据的真实性和完整性。
 
 请务必在配置中填写 `webhook_id`（在 PayPal 后台创建 Webhook 后获取）。
+
+此外，PayPal 的签名验证 API **不提供重放攻击防护**（历史 transmission 可重复验证通过），建议在业务侧基于 `PAYPAL-TRANSMISSION-ID` 做幂等去重，并校验 `PAYPAL-TRANSMISSION-TIME` 的新鲜度。
 :::
 
 ## 例子

@@ -131,5 +131,9 @@ class PaypalConfig extends AbstractConfig
             Exception::CONFIG_PAYPAL_INVALID,
             '配置异常: 缺少 PayPal 配置'
         );
+
+        if (!in_array($this->mode, [Pay::MODE_NORMAL, Pay::MODE_SANDBOX, Pay::MODE_SERVICE], true)) {
+            throw new InvalidConfigException(Exception::CONFIG_PAYPAL_INVALID, '配置异常: PayPal [mode] 配置不合法');
+        }
     }
 }

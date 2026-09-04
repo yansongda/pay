@@ -100,4 +100,15 @@ class PaypalConfigTest extends TestCase
 
         self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
     }
+
+    public function testInvalidModeThrowsException(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('配置异常: PayPal [mode] 配置不合法');
+
+        $config = new PaypalConfig(array_merge($this->validConfig, [
+            'mode' => 99999,
+        ]));
+        $config->validate();
+    }
 }
