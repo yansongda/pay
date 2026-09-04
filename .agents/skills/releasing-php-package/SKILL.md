@@ -9,6 +9,10 @@ description: Use when preparing to publish a new version of a PHP Composer packa
 
 用于发布 PHP Composer 包的结构化流程，避免 CHANGELOG 格式混乱、升级指南缺失、文档示例过期等常见问题，并强制要求在打 tag 前通过独立分支 + PR 完成文档改动。
 
+**硬性约束（违反即流程无效）：**
+- Agent 只负责创建 PR，**严禁自行合并 PR**（包括 `gh pr merge`、平台合并 API 等任何形式的自动合并）
+- PR 必须由人工审核后合并；在获得人工「PR 已合并」确认前，Agent 不得打 tag、不得创建 Release
+
 ## 使用场景
 
 - 准备发布新版本（patch/minor/major/beta/rc）
@@ -78,7 +82,8 @@ description: Use when preparing to publish a new version of a PHP Composer packa
 | 去除前缀 | 移除 `feat:`、`fix:`、`refactor:`、`chore:` | 仅当存在时才移除；已干净的中文描述保持原样 |
 | 升级指南 | `docs/v{major}/upgrade/v{version}.md` 或实际等价路径 | 先探测真实 docs 路径 |
 | 更新导航 | 侧边栏 / 菜单配置文件 | 若 `.gitignore` 忽略 docs 目录，使用 `git add -f` |
-| 创建 annotated tag | `git tag -a vX.Y.Z -m "release: vX.Y.Z"` | 必须在 PR 合并后执行 |
+| 合并 PR | 由人工在平台审核后执行 | Agent 严禁自动合并（`gh pr merge` 等一律禁止） |
+| 创建 annotated tag | `git tag -a vX.Y.Z -m "release: vX.Y.Z"` | 必须在 PR 由人工合并后执行 |
 | 创建 GitHub Release | `gh release create vX.Y.Z --notes-file release-notes.md --prerelease` | beta/rc/alpha 需标记为 pre-release |
 
 ## 执行步骤
@@ -204,9 +209,16 @@ git push -u origin docs/changelog-vX.Y.Z
 # 通过 GitHub / GitLab / Gitea 等平台创建 PR
 ```
 
-**PR 合并后（继续前必须确认 PR 已合并）：**
+**⛔ 流程暂停点：创建 PR 后必须停止，等待人工审核合并**
+
+- 告知用户 PR 链接，明确说明等待人工审核合并，然后结束当前步骤
+- **严禁**执行 `gh pr merge`（含 --squash/--merge/--rebase）、平台合并 API 等任何自动合并操作
+- 后续步骤（push tag、创建 Release）即使已获授权，也不包含 PR 合并权；合并永远由人工执行
+
+**人工合并后（继续前必须确认 PR 已由人工合并）：**
 ```bash
-# 确认 master 已包含合并提交
+# 核实 PR 状态（state 应为 MERGED，mergedBy 应为人工账号）
+gh pr view <PR编号> --json state,mergedAt,mergedBy
 git fetch origin
 git log --oneline origin/master | head -5
 
@@ -239,4 +251,4 @@ gh release create vX.Y.Z --title "vX.Y.Z" --notes-file release-notes.md --prerel
 | Release notes 与 CHANGELOG 不一致 | 单独编写 release notes | 从 CHANGELOG 提取或复制 |
 | 预发布版本未标记 pre-release | 忘记 beta/rc/alpha 后缀 | 按版本后缀在发布平台勾选 pre-release |
 | 写入「新增后又移除」的功能 | 仅依赖 commit 消息未验证代码 | 用 `git diff` 确认功能在 HEAD 中真实存在 |
-
+| Agent 自行合并 PR | 误将「发布流程授权」当作「合并授权」 | 如需撤销：`git revert <merge-commit>`；此后一律仅创建 PR 并等待人工合并 |
