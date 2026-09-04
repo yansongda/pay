@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- 修复 `WechatTrait::reloadWechatPublicCerts()` 在未指定 serial_no 时以 `null` 作数组偏移触发 PHP 8.5 deprecation 的问题
 - 修复 PayPal 请求 body 中残留业务参数的问题：查询/捕获/退款请求不再混入 `order_id`、`refund_id`、`capture_id` 等业务标识参数，GET 请求不再携带 body；web 支付顶层 `return_url`、`cancel_url`、`brand_name` 等参数不再与 `application_context` 内的值重复；全额退款时 body 为空，符合官方要求（#1196）
 - 修复传入 `_return_rocket` 参数导致 PayPal access_token 缓存失效、每次调用重复获取 token 的问题（#1196）
 

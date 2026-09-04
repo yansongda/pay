@@ -239,11 +239,13 @@ trait WechatTrait
         /** @var WechatConfig $wechatConfig */
         $wechatConfig = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
+        $certs = [];
+
         foreach ($data as $item) {
             $certs[$item['serial_no']] = self::decryptWechatResource($item['encrypt_certificate'], $wechatConfig)['ciphertext'] ?? '';
         }
 
-        foreach ($certs ?? [] as $certSerialNo => $cert) {
+        foreach ($certs as $certSerialNo => $cert) {
             CertManager::wechatSetCertBySerial($wechatConfig->getTenant(), $certSerialNo, $cert);
         }
 
@@ -251,7 +253,8 @@ trait WechatTrait
             throw new InvalidConfigException(Exception::CONFIG_WECHAT_INVALID, '配置异常: 获取微信 wechat_public_cert_path 配置失败');
         }
 
-        return $certs[$serialNo] ?? '';
+        // serialNo 为 null 时不能以 null 作数组偏移（PHP 8.5 deprecation），直接返回空字符串
+        return is_null($serialNo) ? '' : $certs[$serialNo];
     }
 
     /**

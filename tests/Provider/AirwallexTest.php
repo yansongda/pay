@@ -96,7 +96,6 @@ class AirwallexTest extends TestCase
     {
         $provider = Pay::airwallex();
         $method = new \ReflectionMethod($provider, 'getCallbackParams');
-        $method->setAccessible(true);
 
         $request = $method->invoke($provider, [
             'id' => 'evt_test789',
@@ -111,7 +110,6 @@ class AirwallexTest extends TestCase
     {
         $provider = Pay::airwallex();
         $method = new \ReflectionMethod($provider, 'getCallbackParams');
-        $method->setAccessible(true);
 
         $request = $method->invoke($provider);
 

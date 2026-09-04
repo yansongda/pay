@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Plugin\Paypal\V2;
 
 use Yansongda\Artful\Rocket;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
@@ -60,9 +61,7 @@ class AddRadarPluginTest extends TestCase
         self::assertEquals('grant_type=client_credentials', (string) $radar->getBody());
     }
 
-    /**
-     * @dataProvider provideEmptyBodies
-     */
+    #[DataProvider('provideEmptyBodies')]
     public function testEmptyBodyOmitted(string $body): void
     {
         $payload = new Collection([
