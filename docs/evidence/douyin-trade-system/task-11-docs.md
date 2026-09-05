@@ -67,3 +67,50 @@ $ sed -n '/^### 抖音$/,/^### /p' README.md | grep -c "mch_id\|mch_secret\|mini
 - diff 抽查：CHANGELOG v3.8.0-beta.6 段 Added（全量能力）/Removed BREAKING（删除类清单+字段清单+四条迁移要点+存量订单提示）完整；17 文件均在白名单内（douyin/ 8 文档 + quick-start + sidebar 1 行条目 + upgrade/v3.8.md + README + CHANGELOG + evidence）。
 - **范围外遗留（上抛用户）**：`web/docs/v3/quick-start/init.md` 117-134 行抖音配置块仍为老键（mch_id/mch_secret_token/mch_secret_salt/mini_app_id/thirdparty_id）——该文件不在 Task 11 白名单与 plan 验收范围，worker 遵守边界未动；属 plan 覆盖遗漏，待用户裁决是否补修。
 - 结论：Task 11 通过，勾选 [x]。全部 11 todo 完成，进入 Final verification wave。
+
+
+# 2026-09-05 13:48:15
+
+## 任务：init.md douyin 配置示例同步新交易系统
+
+改动：web/docs/v3/quick-start/init.md 第 117 行起 douyin 块由老担保支付键（mch_id/mch_secret_token/mch_secret_salt/mini_app_id/thirdparty_id）替换为新「通用交易系统」键：app_id（tt226e54d3bd581bf801）、app_secret、app_private_key（下单加签）、platform_public_key（回调验签）、refund_notify_url（选填）、notify_url（选填），注释风格与文件内其他 provider 一致（「必填」/「选填」+ 抖音开放平台来源路径）。
+
+## 验收 1：老键 grep（douyin 块行号范围内零命中）
+
+```
+$ grep -n "mch_id\|mch_secret_token\|mch_secret_salt\|mini_app_id\|thirdparty_id" web/docs/v3/quick-start/init.md
+40:            'mch_id' => '',
+61:            'mini_app_id' => '',
+69:            'sub_mini_app_id' => '',
+71:            'sub_mch_id' => '',
+101:            'mch_id' => '777290058167151',
+---douyin block:
+117:    'douyin' => [
+```
+
+剩余命中均在 wechat（40/61/69/71）与 unipay（101）块内，属合法键；douyin 块（117-131 行）零命中。
+
+## 验收 2：文档构建
+
+```
+$ cd web && npx pnpm web:build
+vitepress v1.6.3
+- building client + server bundles...
+✓ building client + server bundles...
+- rendering pages...
+✓ rendering pages...
+build complete in 11.21s.
+```
+
+## 验收 3/4：commit 与 push
+
+```
+$ git add web/docs/v3/quick-start/init.md && git commit -m "docs(douyin): quick-start 初始化示例同步新交易系统配置"
+[feature/douyin-trade-system 64e73d52] docs(douyin): quick-start 初始化示例同步新交易系统配置
+ 1 file changed, 14 insertions(+), 14 deletions(-)
+$ git push
+To github.com:yansongda/pay.git
+   cfaf0c35..64e73d52  feature/douyin-trade-system -> feature/douyin-trade-system
+```
+
+commit：64e73d52，已 push 至远端 feature/douyin-trade-system（PR #1203 自动带上）。仅逐文件 add init.md 与本 evidence 文件，未使用 git add -A，未动 master。
