@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\DouyinConfig;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -17,9 +18,10 @@ class DouyinConfigTest extends TestCase
     {
         parent::setUp();
         $this->validConfig = [
-            'mini_app_id' => 'tt123456',
-            'mch_secret_token' => 'token_abc',
-            'mch_secret_salt' => 'salt_xyz',
+            'app_id' => 'tt123456',
+            'app_secret' => 'test_app_secret',
+            'app_private_key' => 'test_app_private_key',
+            'platform_public_key' => 'test_platform_public_key',
         ];
     }
 
@@ -28,9 +30,10 @@ class DouyinConfigTest extends TestCase
         $config = new DouyinConfig($this->validConfig);
 
         self::assertSame('default', $config->getTenant());
-        self::assertSame('tt123456', $config->getMiniAppId());
-        self::assertSame('token_abc', $config->getMchSecretToken());
-        self::assertSame('salt_xyz', $config->getMchSecretSalt());
+        self::assertSame('tt123456', $config->getAppId());
+        self::assertSame('test_app_secret', $config->getAppSecret());
+        self::assertSame('test_app_private_key', $config->getAppPrivateKey());
+        self::assertSame('test_platform_public_key', $config->getPlatformPublicKey());
         self::assertSame(Pay::MODE_NORMAL, $config->getMode());
     }
 
@@ -41,15 +44,28 @@ class DouyinConfigTest extends TestCase
         self::assertSame('custom_tenant', $config->getTenant());
     }
 
-    public function testConstructMissingMiniAppId(): void
+    public function testConstructMissingAppId(): void
     {
         $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [mini_app_id]');
+        $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
+        $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [app_id]');
 
         $config = new DouyinConfig([
-            // missing mini_app_id
-            'mch_secret_token' => 'token_abc',
-            'mch_secret_salt' => 'salt_xyz',
+            // missing app_id
+            'app_secret' => 'test_app_secret',
+        ]);
+        $config->validate();
+    }
+
+    public function testConstructMissingAppSecret(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
+        $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [app_secret]');
+
+        $config = new DouyinConfig([
+            'app_id' => 'tt123456',
+            // missing app_secret
         ]);
         $config->validate();
     }
@@ -57,13 +73,11 @@ class DouyinConfigTest extends TestCase
     public function testOptionalGetters(): void
     {
         $config = new DouyinConfig(array_merge($this->validConfig, [
-            'mch_id' => 'mch_123',
-            'thirdparty_id' => 'tp_456',
+            'refund_notify_url' => 'https://refund-notify.com',
             'notify_url' => 'https://notify.com',
         ]));
 
-        self::assertSame('mch_123', $config->getMchId());
-        self::assertSame('tp_456', $config->getThirdpartyId());
+        self::assertSame('https://refund-notify.com', $config->getRefundNotifyUrl());
         self::assertSame('https://notify.com', $config->getNotifyUrl());
     }
 
@@ -71,8 +85,41 @@ class DouyinConfigTest extends TestCase
     {
         $config = new DouyinConfig($this->validConfig);
 
-        self::assertNull($config->getMchId());
-        self::assertNull($config->getThirdpartyId());
+        self::assertNull($config->getRefundNotifyUrl());
         self::assertNull($config->getNotifyUrl());
+        self::assertNull($config->getAccessToken());
+        self::assertNull($config->getAccessTokenExpiry());
+    }
+
+    public function testAccessToken(): void
+    {
+        $config = new DouyinConfig(array_merge($this->validConfig, [
+            '_access_token' => 'token_abc',
+            '_access_token_expiry' => 1234567890,
+        ]));
+
+        self::assertSame('token_abc', $config->getAccessToken());
+        self::assertSame(1234567890, $config->getAccessTokenExpiry());
+    }
+
+    public function testModeSandbox(): void
+    {
+        $config = new DouyinConfig(array_merge($this->validConfig, [
+            'mode' => Pay::MODE_SANDBOX,
+        ]));
+
+        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+    }
+
+    public function testInvalidModeThrowsException(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+        $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
+
+        $config = new DouyinConfig(array_merge($this->validConfig, [
+            'mode' => 99999,
+        ]));
+        $config->validate();
     }
 }

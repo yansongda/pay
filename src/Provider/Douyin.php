@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Provider;
 
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,23 +15,24 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event;
-use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\CallbackPlugin;
+use Yansongda\Pay\Traits\DouyinTrait;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket mini(array<string, mixed> $order) 小程序支付
+ * @method Collection|Rocket mini(array<string, mixed> $order) 小程序下单签名（新交易系统）
  */
 class Douyin implements ProviderInterface
 {
+    use DouyinTrait;
+
     public const URL = [
-        Pay::MODE_NORMAL => 'https://developer.toutiao.com',
+        Pay::MODE_NORMAL => 'https://open.douyin.com',
         Pay::MODE_SANDBOX => 'https://open-sandbox.douyin.com',
-        Pay::MODE_SERVICE => 'https://developer.toutiao.com',
+        Pay::MODE_SERVICE => 'https://open.douyin.com',
     ];
 
     /**
@@ -104,11 +104,7 @@ class Douyin implements ProviderInterface
      */
     public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection|Rocket
     {
-        $request = $this->getCallbackParams($contents);
-
-        Event::dispatch(new CallbackReceived(Pay::PROVIDER_DOUYIN, $request->all(), $params, null));
-
-        return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
+        throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: 抖音回调暂未迁移至新交易系统');
     }
 
     public function success(): ResponseInterface
@@ -118,27 +114,5 @@ class Douyin implements ProviderInterface
             ['Content-Type' => 'application/json'],
             json_encode(['err_no' => 0, 'err_tips' => 'success']),
         );
-    }
-
-    /**
-     * @param null|array<string, mixed>|ServerRequestInterface $contents
-     */
-    protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
-    {
-        if (is_array($contents)) {
-            return Collection::wrap($contents);
-        }
-
-        if (!$contents instanceof ServerRequestInterface) {
-            $contents = ServerRequest::fromGlobals();
-        }
-
-        $body = Collection::wrap($contents->getParsedBody());
-
-        if ($body->isNotEmpty()) {
-            return $body;
-        }
-
-        return Collection::wrapJson((string) $contents->getBody());
     }
 }

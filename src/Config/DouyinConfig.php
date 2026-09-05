@@ -10,37 +10,39 @@ use Yansongda\Pay\Pay;
 
 class DouyinConfig extends AbstractConfig
 {
-    private ?string $mchId = null;
-    private string $mchSecretToken = '';
-    private string $mchSecretSalt = '';
-    private string $miniAppId = '';
-    private ?string $thirdpartyId = null;
+    private string $appId = '';
+    private string $appSecret = '';
+    private string $appPrivateKey = '';
+    private string $platformPublicKey = '';
+    private ?string $refundNotifyUrl = null;
     private ?string $notifyUrl = null;
     private int $mode = Pay::MODE_NORMAL;
+    private ?string $_accessToken = null;
+    private ?int $_accessTokenExpiry = null;
 
-    public function setMchId(?string $value): void
+    public function setAppId(string $value): void
     {
-        $this->mchId = $value;
+        $this->appId = $value;
     }
 
-    public function setMchSecretToken(string $value): void
+    public function setAppSecret(string $value): void
     {
-        $this->mchSecretToken = $value;
+        $this->appSecret = $value;
     }
 
-    public function setMchSecretSalt(string $value): void
+    public function setAppPrivateKey(string $value): void
     {
-        $this->mchSecretSalt = $value;
+        $this->appPrivateKey = $value;
     }
 
-    public function setMiniAppId(string $value): void
+    public function setPlatformPublicKey(string $value): void
     {
-        $this->miniAppId = $value;
+        $this->platformPublicKey = $value;
     }
 
-    public function setThirdpartyId(?string $value): void
+    public function setRefundNotifyUrl(?string $value): void
     {
-        $this->thirdpartyId = $value;
+        $this->refundNotifyUrl = $value;
     }
 
     public function setNotifyUrl(?string $value): void
@@ -53,29 +55,39 @@ class DouyinConfig extends AbstractConfig
         $this->mode = $value;
     }
 
-    public function getMchId(): ?string
+    public function setAccessToken(?string $value): void
     {
-        return $this->mchId;
+        $this->_accessToken = $value;
     }
 
-    public function getMchSecretToken(): string
+    public function setAccessTokenExpiry(?int $value): void
     {
-        return $this->mchSecretToken;
+        $this->_accessTokenExpiry = $value;
     }
 
-    public function getMchSecretSalt(): string
+    public function getAppId(): string
     {
-        return $this->mchSecretSalt;
+        return $this->appId;
     }
 
-    public function getMiniAppId(): string
+    public function getAppSecret(): string
     {
-        return $this->miniAppId;
+        return $this->appSecret;
     }
 
-    public function getThirdpartyId(): ?string
+    public function getAppPrivateKey(): string
     {
-        return $this->thirdpartyId;
+        return $this->appPrivateKey;
+    }
+
+    public function getPlatformPublicKey(): string
+    {
+        return $this->platformPublicKey;
+    }
+
+    public function getRefundNotifyUrl(): ?string
+    {
+        return $this->refundNotifyUrl;
     }
 
     public function getNotifyUrl(): ?string
@@ -88,13 +100,23 @@ class DouyinConfig extends AbstractConfig
         return $this->mode;
     }
 
+    public function getAccessToken(): ?string
+    {
+        return $this->_accessToken;
+    }
+
+    public function getAccessTokenExpiry(): ?int
+    {
+        return $this->_accessTokenExpiry;
+    }
+
     /**
      * @throws InvalidConfigException 缺少必要配置参数
      */
     protected function validateRequired(): void
     {
         $this->validateNotEmpty(
-            ['miniAppId'],
+            ['appId', 'appSecret'],
             Exception::CONFIG_DOUYIN_INVALID,
             '配置异常: 缺少抖音配置'
         );

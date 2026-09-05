@@ -209,58 +209,21 @@ class TestCase extends \PHPUnit\Framework\TestCase
             ],
             'douyin' => [
                 'default' => [
-                    // 选填-商户号
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 产品管理 --> 商户号
-                    'mch_id' => '73744242495132490630',
-                    // 必填-支付 Token，用于支付回调签名
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
-                    'mch_secret_token' => 'douyin_mini_token',
-                    // 必填-支付 SALT，用于支付签名
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
-                    'mch_secret_salt' => 'oDxWDBr4U7FAAQ8hnGDm29i4A6pbTMDKme4WLLvA',
-                    // 必填-小程序 app_id
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 小程序appid
-                    'mini_app_id' => 'tt226e54d3bd581bf801',
-                    // 选填-抖音开放平台服务商id
-                    'thirdparty_id' => '',
-                    // 选填-抖音支付回调地址
+                    // 必填-app_id
+                    // 抖音开放平台 --> 应用详情 --> 开发配置 --> App ID
+                    'app_id' => 'tt226e54d3bd581bf801',
+                    // 必填-app_secret
+                    // 抖音开放平台 --> 应用详情 --> 开发配置 --> 客户端密钥
+                    'app_secret' => 'douyin_app_secret',
+                    // 必填-应用私钥（商户侧用于签名）
+                    'app_private_key' => file_get_contents(__DIR__.'/Cert/douyinAppPrivateKey.pem'),
+                    // 必填-平台公钥（用于验证抖音开放平台回调签名）
+                    'platform_public_key' => file_get_contents(__DIR__.'/Cert/douyinPlatformPublicKey.pem'),
+                    // 选填-退款回调地址
+                    'refund_notify_url' => 'https://yansongda.cn/douyin/notify',
+                    // 选填-支付回调地址
                     'notify_url' => 'https://yansongda.cn/douyin/notify',
-                    'mode' => Pay::MODE_SANDBOX,
-                ],
-                'service_provider' => [
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 产品管理 --> 商户号
-                    'mch_id' => '73744242495132490630',
-                    // 必填-支付 Token，用于支付回调签名
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
-                    'mch_secret_token' => 'douyin_mini_token',
-                    // 必填-支付 SALT，用于支付签名
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
-                    'mch_secret_salt' => 'oDxWDBr4U7FAAQ8hnGDm29i4A6pbTMDKme4WLLvA',
-                    // 必填-小程序 app_id
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 小程序appid
-                    'mini_app_id' => 'tt226e54d3bd581bf801',
-                    // 选填-抖音开放平台服务商id
-                    'thirdparty_id' => 'service_provider',
-                    // 选填-抖音支付回调地址
-                    'notify_url' => 'https://yansongda.cn/douyin/notify',
-                    'mode' => Pay::MODE_SERVICE,
-                ],
-                'empty_salt' => [
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 产品管理 --> 商户号
-                    'mch_id' => '73744242495132490630',
-                    // 必填-支付 Token，用于支付回调签名
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
-                    'mch_secret_token' => '',
-                    // 必填-支付 SALT，用于支付签名
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
-                    'mch_secret_salt' => '',
-                    // 必填-小程序 app_id
-                    // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 小程序appid
-                    'mini_app_id' => 'tt226e54d3bd581bf801',
-                    // 选填-抖音开放平台服务商id
-                    'thirdparty_id' => 'service_provider',
-                    // 选填-抖音支付回调地址
-                    'notify_url' => 'https://yansongda.cn/douyin/notify',
+                    // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:test环境,
                     'mode' => Pay::MODE_SANDBOX,
                 ],
             ],
