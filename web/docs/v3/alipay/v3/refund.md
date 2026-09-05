@@ -1,0 +1,31 @@
+# 支付宝 V3 交易退款
+
+|  method  |   说明   |      参数      |   返回值    |
+|:--------:|:------:|:------------:|:----------:|
+|  refund  | 交易退款 | array $order | Collection |
+
+## 例子
+
+```php
+Pay::config($this->config);
+
+$result = Pay::alipay()->refund([
+    'out_trade_no' => '1514027114',
+    // 'trade_no' => '2013112011001004330000121536', // 支付宝交易号，与 out_trade_no 二选一
+    'refund_amount' => '0.01',
+    // 同一笔交易多次退款时需保证 out_request_no 唯一
+    'out_request_no' => ''.time(),
+]);
+```
+
+## 订单配置参数
+
+所有订单配置参数和官方 V3 接口请求体无任何差别（snake_case 直传，无需 `method`/`biz_content` 等包装），例如 `out_trade_no`、`trade_no`、`refund_amount`、`out_request_no`、`refund_reason` 等，请参考官方 PHP SDK 的 [`AlipayTradeRefundModel`](https://github.com/alipay/alipay-sdk-php-all) 查看完整参数。
+
+:::tip
+`pos`/`scan`/`close` 接口支持订单参数与租户配置两级 `notify_url`；`query`/`refund`/`cancel` 的官方 V3 请求体不含 `notify_url` 字段，SDK 不做注入，通知地址以支付宝官方通知规则为准。
+:::
+
+## 返回值
+
+返回 `Collection`，字段与支付宝官方 V3 接口响应体一致（无包裹层），例如 `fund_change`、`refund_fee` 等。

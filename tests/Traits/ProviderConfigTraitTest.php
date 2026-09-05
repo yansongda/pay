@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Tests\Traits;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
-use Yansongda\Pay\Config\ProviderConfigInterface;
+use Yansongda\Pay\Contract\ProviderConfigInterface;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Pay as PayFacade;

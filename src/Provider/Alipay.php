@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
@@ -19,8 +20,8 @@ use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AppCallbackPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -35,24 +36,42 @@ use Yansongda\Supports\Str;
  */
 class Alipay implements ProviderInterface
 {
+    /**
+     * 支付宝网关域名（V2/V3 共用：V2 拼接时追加 `gateway.do`，V3 直接拼 `/v3/` 路径）.
+     */
     public const URL = [
-        Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
-        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com/gateway.do?charset=utf-8',
-        Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
+        Pay::MODE_NORMAL => 'https://openapi.alipay.com',
+        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com',
+        Pay::MODE_SERVICE => 'https://openapi.alipay.com',
     ];
+
+    /**
+     * 支付宝 V3 沙箱网关（官方 V3 SDK 沙箱 host，与 V2 沙箱域名不同）.
+     */
+    public const V3_SANDBOX_URL = 'http://openapi.sandbox.dl.alipaydev.com';
+
+    /**
+     * Alipay V3 已支持的 shortcut（接口级自动分流：命中则直接走 V3 最新版接口，其余走 V2）.
+     */
+    public const V3_SHORTCUTS = ['pos', 'scan', 'query', 'refund', 'cancel', 'close'];
 
     /**
      * @param array<int, mixed> $params
      *
      * @throws ContainerException
+     * @throws InvalidConfigException
      * @throws InvalidParamsException
      * @throws ServiceNotFoundException
      */
     public function __call(string $shortcut, array $params): Collection|MessageInterface|Rocket|null
     {
-        $plugin = '\Yansongda\Pay\Shortcut\Alipay\\'.Str::studly($shortcut).'Shortcut';
+        $shortcut = strtolower($shortcut);
 
-        return Artful::shortcut($plugin, ...$params);
+        if (in_array($shortcut, self::V3_SHORTCUTS, true)) {
+            return Artful::shortcut('\Yansongda\Pay\Shortcut\Alipay\V3\\'.Str::studly($shortcut).'Shortcut', ...$params);
+        }
+
+        return Artful::shortcut('\Yansongda\Pay\Shortcut\Alipay\\'.Str::studly($shortcut).'Shortcut', ...$params);
     }
 
     /**
@@ -114,6 +133,7 @@ class Alipay implements ProviderInterface
 
     /**
      * @throws ContainerException
+     * @throws InvalidConfigException
      * @throws InvalidParamsException
      */
     public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection
@@ -122,7 +142,7 @@ class Alipay implements ProviderInterface
 
         Event::dispatch(new CallbackReceived(Pay::PROVIDER_ALIPAY, $request->all(), $params, null));
 
-        return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
+        return $this->pay([CallbackPlugin::class], $request->merge($params ?? [])->all());
     }
 
     /**
@@ -130,13 +150,15 @@ class Alipay implements ProviderInterface
      * @param null|array<string, mixed>                        $params
      *
      * @throws ContainerException
+     * @throws InvalidConfigException
      * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
      */
     public function appCallback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection
     {
         $request = $this->getCallbackParams($contents);
 
-        return $this->pay([AppCallbackPlugin::class], $request->merge($params)->all());
+        return $this->pay([AppCallbackPlugin::class], $request->merge($params ?? [])->all());
     }
 
     public function success(): ResponseInterface
@@ -145,23 +167,32 @@ class Alipay implements ProviderInterface
     }
 
     /**
+     * 提取回调参数：数组直接使用；`body`/`headers` 形态（webhook 转发）解析 form 串；
+     * ServerRequest 按 GET/POST 取参数；空则从全局请求读取.
+     *
      * @param null|array<string, mixed>|ServerRequestInterface $contents
      */
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
     {
-        if (is_array($contents)) {
-            return Collection::wrap($contents);
-        }
-
         if ($contents instanceof ServerRequestInterface) {
             return Collection::wrap('GET' === $contents->getMethod() ? $contents->getQueryParams()
                 : $contents->getParsedBody());
         }
 
+        if (is_array($contents) && isset($contents['body'], $contents['headers'])) {
+            parse_str((string) $contents['body'], $parsedBody);
+
+            return Collection::wrap($parsedBody);
+        }
+
+        if (is_array($contents)) {
+            return Collection::wrap($contents);
+        }
+
         $request = ServerRequest::fromGlobals();
 
         return Collection::wrap(
-            array_merge($request->getQueryParams(), $request->getParsedBody())
+            array_merge($request->getQueryParams(), $request->getParsedBody() ?? [])
         );
     }
 }
