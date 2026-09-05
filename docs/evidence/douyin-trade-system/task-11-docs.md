@@ -59,3 +59,11 @@ $ sed -n '/^### 抖音$/,/^### /p' README.md | grep -c "mch_id\|mch_secret\|mini
 ## 验收结果
 
 4 条 Acceptance criteria 全部通过（构建成功未降级；CHANGELOG 命中 beta.6；douyin/ 与 quick-start/douyin.md 旧键零命中；README 标题计数 2、抖音段旧键计数 0）。
+
+# 2026-09-05 13:35:00 (main agent 亲自验证)
+
+- 验收复跑：A2 `grep -n "v3.8.0-beta.6" CHANGELOG.md` → 第 9 行命中 ✅；A3 douyin/ 与 quick-start/douyin.md 旧键 scoped grep 零命中 ✅；A4 README `^### 抖音$` 计数=2、抖音段旧键=0 ✅。
+- 文档构建复跑（宿主机 npx pnpm web:build）：`build complete in 10.14s` ✅。
+- diff 抽查：CHANGELOG v3.8.0-beta.6 段 Added（全量能力）/Removed BREAKING（删除类清单+字段清单+四条迁移要点+存量订单提示）完整；17 文件均在白名单内（douyin/ 8 文档 + quick-start + sidebar 1 行条目 + upgrade/v3.8.md + README + CHANGELOG + evidence）。
+- **范围外遗留（上抛用户）**：`web/docs/v3/quick-start/init.md` 117-134 行抖音配置块仍为老键（mch_id/mch_secret_token/mch_secret_salt/mini_app_id/thirdparty_id）——该文件不在 Task 11 白名单与 plan 验收范围，worker 遵守边界未动；属 plan 覆盖遗漏，待用户裁决是否补修。
+- 结论：Task 11 通过，勾选 [x]。全部 11 todo 完成，进入 Final verification wave。
