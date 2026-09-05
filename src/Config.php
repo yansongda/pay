@@ -40,13 +40,13 @@ class Config extends BaseConfig
     {
         parent::__construct($items);
 
-        // 转换 Provider 配置为对象
+        // 转换 Provider 配置为对象（支付宝按 version 拆分为 V2/V3 配置类，走工厂分派）
         foreach (self::PROVIDERS as $provider) {
             foreach ($this->items[$provider] ?? [] as $tenant => $config) {
                 if (is_array($config)) {
                     $this->items[$provider][$tenant] = match ($provider) {
                         Pay::PROVIDER_WECHAT => new WechatConfig($config, $tenant),
-                        Pay::PROVIDER_ALIPAY => new AlipayConfig($config, $tenant),
+                        Pay::PROVIDER_ALIPAY => AlipayConfig::fromArray($config, $tenant),
                         Pay::PROVIDER_AIRWALLEX => new AirwallexConfig($config, $tenant),
                         Pay::PROVIDER_UNIPAY => new UnipayConfig($config, $tenant),
                         Pay::PROVIDER_JSB => new JsbConfig($config, $tenant),

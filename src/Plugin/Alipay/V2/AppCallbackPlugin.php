@@ -13,7 +13,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV2Config;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -38,7 +38,7 @@ class AppCallbackPlugin implements PluginInterface
 
         $params = $rocket->getParams();
 
-        /** @var AlipayConfig $config */
+        /** @var AlipayV2Config $config */
         $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $params);
 
         if (empty($params['alipay_trade_app_pay_response'])) {

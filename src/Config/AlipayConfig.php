@@ -8,18 +8,43 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
-class AlipayConfig extends AbstractConfig
+abstract class AlipayConfig extends AbstractConfig
 {
-    private string $appId = '';
-    private string $appSecretCert = '';
-    private string $appPublicCertPath = '';
-    private string $alipayPublicCertPath = '';
-    private string $alipayRootCertPath = '';
-    private ?string $notifyUrl = null;
-    private ?string $returnUrl = null;
-    private ?string $appAuthToken = null;
-    private ?string $serviceProviderId = null;
-    private int $mode = Pay::MODE_NORMAL;
+    /**
+     * API 版本：V2 网关签名（form 表单，`gateway.do`）.
+     */
+    public const VERSION_V2 = 'v2';
+
+    /**
+     * API 版本：V3 OpenAPI（RESTful `/v3/` 路径 + HTTP 头签名）.
+     */
+    public const VERSION_V3 = 'v3';
+
+    protected string $appId = '';
+    protected string $appSecretCert = '';
+    protected ?string $notifyUrl = null;
+    protected ?string $returnUrl = null;
+    protected ?string $appAuthToken = null;
+    protected ?string $serviceProviderId = null;
+    protected int $mode = Pay::MODE_NORMAL;
+
+    /**
+     * 由配置数组构造租户配置：按 `version` 选择 V2/V3 配置类.
+     *
+     * @param array<string, mixed> $values
+     *
+     * @throws InvalidConfigException version 不支持时
+     */
+    public static function fromArray(array $values, string $tenant = 'default'): self
+    {
+        $version = $values['version'] ?? self::VERSION_V2;
+
+        return match ($version) {
+            self::VERSION_V2 => new AlipayV2Config($values, $tenant),
+            self::VERSION_V3 => new AlipayV3Config($values, $tenant),
+            default => throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: version 仅支持 v2 或 v3，当前为 ['.$version.']'),
+        };
+    }
 
     public function setAppId(string $value): void
     {
@@ -29,21 +54,6 @@ class AlipayConfig extends AbstractConfig
     public function setAppSecretCert(string $value): void
     {
         $this->appSecretCert = $value;
-    }
-
-    public function setAppPublicCertPath(string $value): void
-    {
-        $this->appPublicCertPath = $value;
-    }
-
-    public function setAlipayPublicCertPath(string $value): void
-    {
-        $this->alipayPublicCertPath = $value;
-    }
-
-    public function setAlipayRootCertPath(string $value): void
-    {
-        $this->alipayRootCertPath = $value;
     }
 
     public function setNotifyUrl(?string $value): void
@@ -81,21 +91,6 @@ class AlipayConfig extends AbstractConfig
         return $this->appSecretCert;
     }
 
-    public function getAppPublicCertPath(): string
-    {
-        return $this->appPublicCertPath;
-    }
-
-    public function getAlipayPublicCertPath(): string
-    {
-        return $this->alipayPublicCertPath;
-    }
-
-    public function getAlipayRootCertPath(): string
-    {
-        return $this->alipayRootCertPath;
-    }
-
     public function getNotifyUrl(): ?string
     {
         return $this->notifyUrl;
@@ -128,14 +123,7 @@ class AlipayConfig extends AbstractConfig
     }
 
     /**
-     * @throws InvalidConfigException 缺少必要配置参数
+     * 租户 API 版本（由配置类决定：`AlipayV2Config` 为 v2，`AlipayV3Config` 为 v3）.
      */
-    protected function validateRequired(): void
-    {
-        $this->validateNotEmpty(
-            ['appId', 'appSecretCert', 'appPublicCertPath', 'alipayPublicCertPath', 'alipayRootCertPath'],
-            Exception::CONFIG_ALIPAY_INVALID,
-            '配置异常: 缺少支付宝配置'
-        );
-    }
+    abstract public function getVersion(): string;
 }
