@@ -82,26 +82,36 @@ class AlipayV3ConfigTest extends TestCase
         $config->validate();
     }
 
-    public function testFromArrayWithV3(): void
+    public function testConfigDispatchToV3Config(): void
     {
-        $config = AlipayConfig::fromArray([
-            'app_id' => 'test_app_id',
-            'app_secret_cert' => 'test_secret',
-            'alipay_public_key' => 'test_public_key',
-            'version' => AlipayConfig::VERSION_V3,
-        ], 'tenant_v3');
+        $config = new \Yansongda\Pay\Config([
+            'alipay' => [
+                'tenant_v3' => [
+                    'app_id' => 'test_app_id',
+                    'app_secret_cert' => 'test_secret',
+                    'alipay_public_key' => 'test_public_key',
+                    'version' => AlipayConfig::VERSION_V3,
+                ],
+            ],
+        ]);
 
-        self::assertInstanceOf(AlipayV3Config::class, $config);
-        self::assertInstanceOf(AlipayConfig::class, $config);
-        self::assertSame(AlipayConfig::VERSION_V3, $config->getVersion());
-        self::assertSame('tenant_v3', $config->getTenant());
+        $alipayConfig = $config->getProviderConfig('alipay', 'tenant_v3');
+
+        self::assertInstanceOf(AlipayV3Config::class, $alipayConfig);
+        self::assertInstanceOf(AlipayConfig::class, $alipayConfig);
+        self::assertSame(AlipayConfig::VERSION_V3, $alipayConfig->getVersion());
+        self::assertSame('tenant_v3', $alipayConfig->getTenant());
     }
 
-    public function testFromArrayInvalidVersionThrows(): void
+    public function testConfigInvalidVersionThrows(): void
     {
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: version 仅支持 v2 或 v3，当前为 [v4]');
 
-        AlipayConfig::fromArray(['app_id' => 'test_app_id', 'version' => 'v4']);
+        new \Yansongda\Pay\Config([
+            'alipay' => [
+                'default' => ['app_id' => 'test_app_id', 'version' => 'v4'],
+            ],
+        ]);
     }
 }

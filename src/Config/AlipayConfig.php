@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Config;
 
-use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
 abstract class AlipayConfig extends AbstractConfig
@@ -27,24 +25,6 @@ abstract class AlipayConfig extends AbstractConfig
     protected ?string $appAuthToken = null;
     protected ?string $serviceProviderId = null;
     protected int $mode = Pay::MODE_NORMAL;
-
-    /**
-     * 由配置数组构造租户配置：按 `version` 选择 V2/V3 配置类.
-     *
-     * @param array<string, mixed> $values
-     *
-     * @throws InvalidConfigException version 不支持时
-     */
-    public static function fromArray(array $values, string $tenant = 'default'): self
-    {
-        $version = $values['version'] ?? self::VERSION_V2;
-
-        return match ($version) {
-            self::VERSION_V2 => new AlipayV2Config($values, $tenant),
-            self::VERSION_V3 => new AlipayV3Config($values, $tenant),
-            default => throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: version 仅支持 v2 或 v3，当前为 ['.$version.']'),
-        };
-    }
 
     public function setAppId(string $value): void
     {

@@ -7,6 +7,8 @@ namespace Yansongda\Pay;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AirwallexConfig;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV2Config;
+use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Config\PaypalConfig;
@@ -40,13 +42,17 @@ class Config extends BaseConfig
     {
         parent::__construct($items);
 
-        // 转换 Provider 配置为对象（支付宝按 version 拆分为 V2/V3 配置类，走工厂分派）
+        // 转换 Provider 配置为对象（支付宝按 version 构造 V2/V3 配置类）
         foreach (self::PROVIDERS as $provider) {
             foreach ($this->items[$provider] ?? [] as $tenant => $config) {
                 if (is_array($config)) {
                     $this->items[$provider][$tenant] = match ($provider) {
                         Pay::PROVIDER_WECHAT => new WechatConfig($config, $tenant),
-                        Pay::PROVIDER_ALIPAY => AlipayConfig::fromArray($config, $tenant),
+                        Pay::PROVIDER_ALIPAY => match ($config['version'] ?? AlipayConfig::VERSION_V2) {
+                            AlipayConfig::VERSION_V2 => new AlipayV2Config($config, $tenant),
+                            AlipayConfig::VERSION_V3 => new AlipayV3Config($config, $tenant),
+                            default => throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: version 仅支持 v2 或 v3，当前为 ['.$config['version'].']'),
+                        },
                         Pay::PROVIDER_AIRWALLEX => new AirwallexConfig($config, $tenant),
                         Pay::PROVIDER_UNIPAY => new UnipayConfig($config, $tenant),
                         Pay::PROVIDER_JSB => new JsbConfig($config, $tenant),

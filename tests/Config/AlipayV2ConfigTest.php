@@ -132,22 +132,34 @@ class AlipayV2ConfigTest extends TestCase
         self::assertSame(AlipayConfig::VERSION_V2, $config->getVersion());
     }
 
-    public function testFromArrayDefaultsToV2Config(): void
+    public function testConfigDefaultsToV2Config(): void
     {
-        $config = AlipayConfig::fromArray($this->validConfig);
+        $config = new \Yansongda\Pay\Config([
+            'alipay' => [
+                'default' => $this->validConfig,
+            ],
+        ]);
 
-        self::assertInstanceOf(AlipayV2Config::class, $config);
-        self::assertSame(AlipayConfig::VERSION_V2, $config->getVersion());
-        self::assertSame('default', $config->getTenant());
+        $alipayConfig = $config->getProviderConfig('alipay');
+
+        self::assertInstanceOf(AlipayV2Config::class, $alipayConfig);
+        self::assertSame(AlipayConfig::VERSION_V2, $alipayConfig->getVersion());
+        self::assertSame('default', $alipayConfig->getTenant());
     }
 
-    public function testFromArrayWithExplicitV2(): void
+    public function testConfigWithExplicitV2(): void
     {
-        $config = AlipayConfig::fromArray(array_merge($this->validConfig, [
-            'version' => AlipayConfig::VERSION_V2,
-        ]), 'tenant_v2');
+        $config = new \Yansongda\Pay\Config([
+            'alipay' => [
+                'tenant_v2' => array_merge($this->validConfig, [
+                    'version' => AlipayConfig::VERSION_V2,
+                ]),
+            ],
+        ]);
 
-        self::assertInstanceOf(AlipayV2Config::class, $config);
-        self::assertSame('tenant_v2', $config->getTenant());
+        $alipayConfig = $config->getProviderConfig('alipay', 'tenant_v2');
+
+        self::assertInstanceOf(AlipayV2Config::class, $alipayConfig);
+        self::assertSame('tenant_v2', $alipayConfig->getTenant());
     }
 }
