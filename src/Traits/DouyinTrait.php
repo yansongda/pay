@@ -5,11 +5,20 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Traits;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Yansongda\Artful\Artful;
+use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\GetClientTokenPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\GetClientTokenResponsePlugin;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Supports\Collection;
 
@@ -33,6 +42,47 @@ trait DouyinTrait
         }
 
         return Douyin::URL[$config->getMode()].$url;
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
+     */
+    public static function getDouyinClientToken(array $params): string
+    {
+        /** @var DouyinConfig $config */
+        $config = self::getProviderConfig(Pay::PROVIDER_DOUYIN, $params);
+
+        if (!empty($config->getAccessToken())
+            && !empty($config->getAccessTokenExpiry())
+            && time() < $config->getAccessTokenExpiry()) {
+            return $config->getAccessToken();
+        }
+
+        // 子调用仅传最小参数集：StartPlugin 会把完整外层 params merge 进 payload，
+        // 传入完整 $params 会把业务字段混进 client_token 请求体，且 `_return_rocket` 会改变返回值形态
+        // （PayPal 曾因此修复 #1196），最小参数集从结构上同时排除两个问题。
+        $subParams = isset($params['_config']) ? ['_config' => $params['_config']] : [];
+
+        $result = Artful::artful([
+            StartPlugin::class,
+            GetClientTokenPlugin::class,
+            AddRadarPlugin::class,
+            GetClientTokenResponsePlugin::class,
+            ParserPlugin::class,
+        ], $subParams);
+
+        $token = $result->get('data.access_token', '');
+        $expiresIn = $result->get('data.expires_in', 7200);
+
+        $config->setAccessToken($token);
+        $config->setAccessTokenExpiry(time() + $expiresIn - 60);
+
+        return $token;
     }
 
     /**
