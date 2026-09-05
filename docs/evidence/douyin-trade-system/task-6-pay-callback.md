@@ -61,3 +61,9 @@ $ git commit -m "feat(douyin): 新增支付回调验签解析插件"
 
 1. **机械性修正**：todo 环境事实块写 `use Yansongda\Artful\Plugin\NoHttpRequestDirection;`，但 vendor 实际路径为 `Yansongda\Artful\Direction\NoHttpRequestDirection`（老 master CallbackPlugin 同款 import）。按实际路径写，属环境事实笔误，不改设计。
 2. 无设计性偏差。
+
+# 2026-09-05 12:52:00 (main agent 亲自验证)
+
+- 文件级白名单：`vendor/bin/phpunit tests/Plugin/Douyin/V1/Pay/CallbackPluginTest.php` → `OK (4 tests, 15 assertions)`。
+- diff 内容级审查：pre-$next 模式（setPayload+setDirection(NoHttpRequestDirection)+setDestination(payload)）✅；_request 缺失/错型抛 9221 ✅；verifyDouyinTradeSign 验签 ✅；body 顶层 type==='payment' 校验 ✅；msg 二次 json_decode 失败抛 9221 ✅；未构造应答 Response ✅；未触碰邻居文件（commit 仅 3 文件：插件+测试+evidence）✅。
+- 结论：Task 6 通过，勾选 [x]。

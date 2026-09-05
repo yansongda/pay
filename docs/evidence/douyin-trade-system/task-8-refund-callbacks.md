@@ -45,3 +45,9 @@ OK (8 tests, 25 assertions)
 1. 证书路径层级写错：`tests/Plugin/Douyin/V1/Refund/` 到 `tests/Cert/` 应为 4 级 `../../../../Cert/`，初版写了 3 级导致 file_get_contents 返回 false。
 2. 测试 use 里 `InvalidParamsException` 误写为 `Yansongda\Pay\Exception\...`，实为 `Yansongda\Artful\Exception\InvalidParamsException`（与 src 内一致，learning Task 2 已记录该坑）。
 修正后全绿。
+
+# 2026-09-05 12:52:00 (main agent 亲自验证)
+
+- 文件级白名单：`CallbackPluginTest + PreRefundCallbackPluginTest` → `OK (8 tests, 25 assertions)`。
+- diff 内容级审查：Refund/CallbackPlugin type==='refund' 校验 ✅、PreRefundCallbackPlugin type==='pre_create_refund' 校验 ✅、均走 verifyDouyinTradeSign + msg 二次解码 + pre-$next 模式（setPayload/setDirection/setDestination）✅、destination 为 msg Collection 不代答 out_refund_no ✅；四用例×2（现签 round-trip/篡改 SIGN_ERROR/type 不匹配/缺 _request）✅；commit 边界干净（4 文件+evidence）✅。
+- 结论：Task 8 通过，勾选 [x]。

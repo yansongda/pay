@@ -50,3 +50,15 @@ test:   OK (1359 tests, 3281 assertions)  [基线 1401 tests/3357 assertions，�
 4. `test ! -e src/Plugin/Douyin/V1/Pay && test ! -e src/Shortcut/Douyin/MiniShortcut.php && echo OK` → OK ✅
 5. grep `miniAppId` 于 3 个指定文件：零命中（grep exit=1）✅
 6. `ls tests/Cert/douyin*.pem` 恰好 4 个 ✅
+
+# 2026-09-05 11:58:30 (main agent 亲自验证)
+
+- 三绿（Docker 容器复跑）：cs-fix `Found 0 of 470` / analyse `[OK] No errors` / test `OK (1359 tests, 3281 assertions)`（基线 1401 tests，删除老测试致减属预期）。
+- A2：`git status --short` 仅剩先于本计划存在的未跟踪 `docs/alipay-v3.md`、`docs/douyin-trade-system.md`（F1 白名单明确不计越界），无 Must NOT 文件。
+- A3/A5：scoped grep（ecpay/mch_secret/mini_app_id/thirdparty_id、miniAppId）均零命中。
+- A4：`test ! -e src/Plugin/Douyin/V1/Pay && test ! -e src/Shortcut/Douyin/MiniShortcut.php` → OK。
+- A6：`ls tests/Cert/douyin*.pem` 恰 4 个。
+- 内容级 diff 审查：DouyinConfig 新字段+token 缓存属性（$_accessToken/$_accessTokenExpiry 对齐 PaypalConfig 风格）+validateRequired(appId,appSecret) ✅；Provider URL=open.douyin.com、callback 保留宽签名纯抛异常、getCallbackParams 与 3 个失效 use 已删、@method 更新 ✅；TestCase douyin 块单 default 租户且真实引用 fixture ✅；DouyinTraitTest 构造字段换新键 ✅。
+- 偏差核实（worker 报告 3 项均属实且属机械性）：①Provider 加 `use DouyinTrait;` 消 phpstan trait.unused（Task 10 本需 trait，合理）；②cs-fix 修复末尾空行；③legacy 留存 13 文件（plan 枚举清单实为 13）。
+- evidence/learning：task-1-cleanup.md 时间戳追加 ✅、learning 追加 ✅、未改动历史内容 ✅。
+- 结论：Task 1 通过，勾选 [x]。

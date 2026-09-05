@@ -44,3 +44,11 @@ OK (1376 tests, 3336 assertions)
 1. **（机械性裁量）config 获取方式**：todo 快照只写了 `$config->getAppId()`，未说明 config 来源。按仓库既有模式（Stripe/Jsb/Alipay StartPlugin）以 `use ProviderConfigTrait` + `self::getProviderConfig(Pay::PROVIDER_DOUYIN, $rocket->getParams())` 获取，与设计文档 3.2 的 token 子调用管线（StartPlugin 会 merge `_config` 进 params）一致。
 2. **（机械性裁量）业务错误消息**：快照为 `'...: '.$description` 模板；实现为 `'获取抖音 client_token 失败: error_code=10013, description=...'`（对齐 WechatTrait 微信 access_token 消息风格，附带 error_code 便于排障）。
 3. **（机械性裁量）负向测试路径**：`getProviderConfig` 内部会先执行 `config->validate()`，空 appId/appSecret 在该层即抛 `InvalidConfigException(CONFIG_DOUYIN_INVALID)`（消息 `配置异常: 缺少抖音配置 -- [app_id]`），插件的防御校验在同链路上不可达，故负向测试无法直接命中插件内防御分支。测试采用仓库既有 `Pay::set(ConfigInterface::class, ...)` 模式覆盖容器 config（DouyinConfig 合法构造后 setter 清空），断言 `InvalidConfigException` + `CONFIG_DOUYIN_INVALID` —— 异常类与异常码与验收意图一致，但实际抛出点在 config validate 层。插件内防御校验保留（防御 config 绕过 validate 的直接调用场景）。
+
+# 2026-09-05 12:24:00 (main agent 亲自验证)
+
+- 单测：两个新测试文件 → `OK (6 tests, 16 assertions)`。
+- 三绿（容器复跑）：cs-fix `Found 0 of 472` / analyse `[OK] No errors` / test `OK (1376 tests, 3336 assertions)`（1370+6=1376 自洽）。
+- diff 内容级审查：GetClientTokenPlugin 契约精确（POST `/oauth/client_token/` 尾斜杠、grant_type/client_key/client_secret、CONFIG_DOUYIN_INVALID 防御）、Logger debug/info 模式与 @see 官方链接齐备；GetClientTokenResponsePlugin HTTP 非 2xx→RESPONSE_CODE_WRONG、`data.error_code !== 0`→RESPONSE_BUSINESS_CODE_WRONG（消息含 error_code+description），与 C2 一致。
+- worker 偏差核实：负向用例抛出点在 Config validateRequired 层（构造即校验必填），测试用 Pay::set 覆盖容器实现，异常类/码与验收一致；插件内防御校验保留为双保险。属机械性裁量，可接受。
+- 结论：Task 3 通过，勾选 [x]。

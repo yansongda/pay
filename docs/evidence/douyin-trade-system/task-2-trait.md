@@ -33,3 +33,11 @@ $ git status --short tests/TestCase.php
 - 测试内部修正：篡改 body 用例的 helper 初版对篡改后 body 签名（自证通过），改为支持 `signBody` 参数对原始 body 签名、发送篡改 body。
 - 无设计性偏差；未动 TestCase.php / 未建 GetClientToken 类 / 未实现 getDouyinClientToken（属 Task 4）。
 - 备注：git status 中 `M docs/evidence/douyin-trade-system/task-1-cleanup.md`、`?? docs/alipay-v3.md`、`?? docs/douyin-trade-system.md` 为非本任务产生的工作区既有状态，未触碰。
+
+# 2026-09-05 12:08:00 (main agent 亲自验证)
+
+- 单测：`vendor/bin/phpunit tests/Traits/DouyinTraitTest.php` → `OK (12 tests, 45 assertions)`。
+- 三绿（容器复跑）：cs-fix `Found 0 of 470` / analyse `[OK] No errors` / test `OK (1370 tests, 3320 assertions)`（1359−1+12=1370 自洽）。
+- `git status --short tests/TestCase.php` 输出为空（TestCase 冻结未被触碰）。
+- diff 内容级审查：getDouyinTradeSign 待签串 `$method."\n".$uri."\n".$timestamp."\n".$nonce."\n".$body."\n"` 与 C3 精确一致；私钥加载失败与 openssl_sign 失败均抛 InvalidConfigException(CONFIG_DOUYIN_INVALID)；头值 `SHA256-RSA2048 appid="...",nonce_str="...",timestamp="...",key_version=1,signature="..."` 带引号格式与 C3 一致。verifyDouyinTradeSign 头缺失/空 body→SIGN_EMPTY、公钥无效→InvalidConfigException、三行验签串、`1 !== openssl_verify`→SIGN_ERROR，均与 C4/plan 一致。
+- 结论：Task 2 通过，勾选 [x]。

@@ -36,3 +36,11 @@ docker run --rm -v "$(pwd)":/app -w /app registry.cn-shenzhen.aliyuncs.com/yanso
 1. `$token = $result->get('data.access_token')` 实现为 `$result->get('data.access_token', '')`（补空串默认值）：todo 同时要求「模式对齐 PaypalTrait::getPaypalAccessToken()」且方法返回类型为 `string`，无默认值时缺失键会返回 null 与返回类型冲突；机械性修正。
 2. ObtainClientTokenPluginTest 用例 ①额外加了 `sendRequest()->never()` mock + `Mockery::close()` 验证：todo 要求断言「不触发子调用」，仓库 tests/EdgeCase 已有 `Mockery::close()` 先例；比 PayPal 原版裸测试更严格，属对 todo 的直接落实。
 3. ResponsePlugin 业务异常 message 采用 `err_no=<值>, err_msg=<err_msg ?? err_tips>` 格式（老 master 版本只拼 err_tips），按 todo 指定表达式实现。
+
+# 2026-09-05 12:40:00 (main agent 亲自验证)
+
+- 目录单测：`vendor/bin/phpunit tests/Plugin/Douyin/V1/` → `OK (15 tests, 44 assertions)`（含 Task 3 的 6 用例）。
+- 三绿（容器复跑）：cs-fix `Found 0 of 475` / analyse `[OK] No errors` / test `OK (1385 tests, 3364 assertions)`（1376+9=1385 自洽）。
+- diff 内容级审查：getDouyinClientToken 缓存判断 + 最小参数集子调用（$subParams 仅 _config）+ Artful 五插件链 + expires_in 默认 7200 写回 expiry-60 ✅（#1196 结构性规避到位）；ObtainClientTokenPlugin _access_token 优先 ✅；AddRadarPlugin POST 一律 + _body 优先/filter_params 回退/空 payload 空串三分支 + User-Agent/Content-Type/access-token 条件头 + getDouyinUrl 拼接 ✅；ResponsePlugin 与 Task 3 同构（顶层 err_no 语义）✅。
+- worker 偏差核实：data.access_token 空串默认值（避免 null 与 string 返回类型冲突）、never()+Mockery::close 确定性断言，均机械性。
+- 结论：Task 4 通过，勾选 [x]。Wave 2 完成。
