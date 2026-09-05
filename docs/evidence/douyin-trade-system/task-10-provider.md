@@ -62,3 +62,11 @@ docker run --rm -v "$(pwd)":/app -w /app registry.cn-shenzhen.aliyuncs.com/yanso
   - `tests/Provider/DouyinTest.php`
   - `git add -f docs/evidence/douyin-trade-system/task-10-provider.md`（本文件）
 - commit message：`feat(douyin): Provider 接入新交易系统回调入口与公共插件链`；特性分支 `feature/douyin-trade-system`，未 push、未动 master。
+
+# 2026-09-05 13:20:00 (main agent 亲自验证)
+
+- 单文件：`vendor/bin/phpunit tests/Provider/DouyinTest.php` → `OK (12 tests, 52 assertions)`。
+- 全量三绿（容器复跑）：cs-fix `Found 0 of 487` / analyse `[OK] No errors` / test `OK (1438 tests, 3535 assertions)`（1426+12=1438 自洽）。
+- diff 内容级审查：callback() 保持接口宽签名（ProviderInterface.php:45 约束）✅；入参归一三分支（ServerRequest 直用/null→fromGlobals/array→9221）✅；Event::dispatch(CallbackReceived(PROVIDER_DOUYIN, clone $request, $params, null)) 对齐 Wechat 先例形态 ✅；分发 Pay\CallbackPlugin + `_request` 传参 ✅；refundCallback/preRefundCallback 窄签名新方法 + RefundCallbackPlugin 别名导入 + PreRefundCallbackPlugin 分发 ✅；未引入 mergeCommonPlugins ✅；success()/其余方法未动 ✅。
+- worker 偏差核实：payload 断言补 _body 键、notify_url 键序实测调整、@param iterable 注解补齐——均机械性。
+- 结论：Task 10 通过，勾选 [x]。

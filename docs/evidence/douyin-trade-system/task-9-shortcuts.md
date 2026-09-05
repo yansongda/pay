@@ -37,3 +37,11 @@ Task 9：抖音交易系统 Shortcut 三件套（下单签名 / 查询 / 退款�
 ## 偏差
 
 无设计性偏差。备注一处裁量：测试链断言用 `assertSame`（老 master 模板为 `assertEquals`），assertSame 对元素为 `::class` 常量字符串的数组做严格全等比较，满足 todo「插件链精确断言（精确顺序与内容）」要求，属测试写法机械性选择。
+
+# 2026-09-05 13:06:00 (main agent 亲自验证)
+
+- 目录单测：`vendor/bin/phpunit tests/Shortcut/Douyin/` → `OK (9 tests, 11 assertions)`。
+- 全量三绿（容器复跑）：cs-fix `Found 0 of 487` / analyse `[OK] No errors` / test `OK (1426 tests, 3483 assertions)`（1417+9=1426 自洽）。
+- diff 内容级审查：MiniShortcut 链恰 [StartPlugin, SignPlugin]、无 ParserPlugin/AddRadar（9208 规避 + 无 HTTP 语义正确）✅；QueryShortcut `Str::camel(_action??'default').'Plugins'` 分发 + method_exists 判非法抛 PARAMS_SHORTCUT_ACTION_INVALID ✅；default/order → Pay\QueryPlugin、cps → QueryCpsPlugin、refund → Refund\QueryRefundPlugin，公共段 [Start, ObtainClientToken, {业务查询}, AddPayloadBody, AddRadar, Response, Parser] 顺序精确 ✅；RefundShortcut default→RefundPlugin、audit→AuditPlugin ✅。
+- worker 偏差核实：链断言用 assertSame（老模板 assertEquals）——对 ::class 数组更严格，满足「精确断言」验收，机械性裁量可接受。
+- 结论：Task 9 通过，勾选 [x]。
