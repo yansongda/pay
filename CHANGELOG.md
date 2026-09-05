@@ -14,7 +14,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - V3 支持 `pos`/`scan`/`query`/`refund`/`cancel`/`close` 六个服务端接口，其余方法调用将抛出明确异常提示通过 `_config` 指向 V2 租户
   - 新增 V3 插件：`AddPayloadSignaturePlugin`、`AddRadarPlugin`、`VerifySignaturePlugin`、`ResponsePlugin`、`CallbackPlugin` 及 `Pay/{Pos,Precreate,Query,Refund,Cancel,Close}Plugin`，新增 `AlipayTrait` 的 V3 签名/验签方法
   - V3 异步通知仍为 form 参数格式，SDK 自动完成 RSA2 验签，应答为字面量 `success`；`CallbackReceived` 事件在 V3 分支携带 `ServerRequestInterface`
-  - `Provider\Alipay` 新增 `V3_URL`、`V3_SHORTCUTS` 常量；`AlipayTrait` 新增 `getAlipayV3Url`/`getAlipayV3Authorization`/`verifyAlipayV3Sign`/`verifyAlipayV3Timestamp` 方法
+  - `Provider\Alipay` 新增 `V3_SHORTCUTS` 常量；`AlipayTrait` 新增 `getAlipayV3Url`/`getAlipayV3Authorization`/`verifyAlipayV3Sign`/`verifyAlipayV3Timestamp` 方法
+
+### Changed
+
+- 支付宝配置按 API 版本拆分为独立配置类：`AlipayConfig`（抽象基类，公共字段 + `VERSION_V2`/`VERSION_V3` 版本常量 + 静态工厂 `fromArray()`）、`AlipayV2Config`（V2 专属证书三件套）、`AlipayV3Config`（V3 专属 `alipay_public_key` 与可选双证书）；配置数组中的 `version` 决定实例化哪个配置类，Provider 分流改用 `instanceof`，代码中不再出现 `v2`/`v3` 字面量魔法值
+- V3 证书模式不再强制要求支付宝根证书（V3 协议无 `root-cert-sn`），配置数组中的 `alipay_root_cert_path` 将被忽略
 
 
 ## [v3.8.0-beta.4] - 2026-08-25

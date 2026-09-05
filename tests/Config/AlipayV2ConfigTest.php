@@ -6,10 +6,11 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV2Config;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
-class AlipayConfigTest extends TestCase
+class AlipayV2ConfigTest extends TestCase
 {
     private array $validConfig;
 
@@ -27,17 +28,18 @@ class AlipayConfigTest extends TestCase
 
     public function testConstructValidConfig(): void
     {
-        $config = new AlipayConfig($this->validConfig);
+        $config = new AlipayV2Config($this->validConfig);
 
         self::assertSame('default', $config->getTenant());
         self::assertSame('test_app_id', $config->getAppId());
         self::assertSame('test_secret', $config->getAppSecretCert());
         self::assertSame(Pay::MODE_NORMAL, $config->getMode());
+        self::assertSame(AlipayConfig::VERSION_V2, $config->getVersion());
     }
 
     public function testConstructWithTenant(): void
     {
-        $config = new AlipayConfig($this->validConfig, 'custom_tenant');
+        $config = new AlipayV2Config($this->validConfig, 'custom_tenant');
 
         self::assertSame('custom_tenant', $config->getTenant());
     }
@@ -47,7 +49,7 @@ class AlipayConfigTest extends TestCase
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_id]');
 
-        $config = new AlipayConfig([
+        $config = new AlipayV2Config([
             // missing app_id
             'app_secret_cert' => 'test_secret',
             'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
@@ -59,7 +61,7 @@ class AlipayConfigTest extends TestCase
 
     public function testOptionalGetters(): void
     {
-        $config = new AlipayConfig(array_merge($this->validConfig, [
+        $config = new AlipayV2Config(array_merge($this->validConfig, [
             'notify_url' => 'https://notify.com',
             'return_url' => 'https://return.com',
             'app_auth_token' => 'auth_token',
@@ -74,7 +76,7 @@ class AlipayConfigTest extends TestCase
 
     public function testOptionalGettersNull(): void
     {
-        $config = new AlipayConfig($this->validConfig);
+        $config = new AlipayV2Config($this->validConfig);
 
         self::assertNull($config->getNotifyUrl());
         self::assertNull($config->getReturnUrl());
@@ -84,14 +86,17 @@ class AlipayConfigTest extends TestCase
 
     public function testToArrayKeepsBackwardCompatibleSnakeCaseKeys(): void
     {
-        $config = new AlipayConfig(array_merge($this->validConfig, [
+        $config = new AlipayV2Config(array_merge($this->validConfig, [
             'notify_url' => 'https://notify.com',
             'return_url' => 'https://return.com',
             'app_auth_token' => 'auth_token',
             'service_provider_id' => 'sp_id',
         ]));
 
-        self::assertSame([
+        $array = $config->toArray();
+        ksort($array);
+
+        $expected = [
             'app_id' => 'test_app_id',
             'app_secret_cert' => 'test_secret',
             'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
@@ -103,14 +108,17 @@ class AlipayConfigTest extends TestCase
             'service_provider_id' => 'sp_id',
             'mode' => Pay::MODE_NORMAL,
             'version' => 'v2',
-            'alipay_public_key' => null,
             'tenant' => 'default',
-        ], $config->toArray());
+        ];
+        ksort($expected);
+
+        // 拆分后属性分布在基类与子类，仅断言键值集合，不断言键序
+        self::assertSame($expected, $array);
     }
 
     public function testModeSandbox(): void
     {
-        $config = new AlipayConfig(array_merge($this->validConfig, [
+        $config = new AlipayV2Config(array_merge($this->validConfig, [
             'mode' => Pay::MODE_SANDBOX,
         ]));
 
@@ -119,63 +127,27 @@ class AlipayConfigTest extends TestCase
 
     public function testDefaultVersionIsV2(): void
     {
-        $config = new AlipayConfig($this->validConfig);
+        $config = new AlipayV2Config($this->validConfig);
 
-        self::assertSame('v2', $config->getVersion());
-        self::assertNull($config->getAlipayPublicKey());
+        self::assertSame(AlipayConfig::VERSION_V2, $config->getVersion());
     }
 
-    public function testV3PublicKeyModeValidateSuccess(): void
+    public function testFromArrayDefaultsToV2Config(): void
     {
-        $config = new AlipayConfig([
-            'app_id' => 'test_app_id',
-            'app_secret_cert' => 'test_secret',
-            'alipay_public_key' => 'test_public_key',
-            'version' => 'v3',
-        ]);
+        $config = AlipayConfig::fromArray($this->validConfig);
 
-        self::assertSame('v3', $config->getVersion());
-
-        $config->validate();
-
-        self::assertSame('test_public_key', $config->getAlipayPublicKey());
+        self::assertInstanceOf(AlipayV2Config::class, $config);
+        self::assertSame(AlipayConfig::VERSION_V2, $config->getVersion());
+        self::assertSame('default', $config->getTenant());
     }
 
-    public function testV3PublicKeyModeMissingAlipayPublicKey(): void
+    public function testFromArrayWithExplicitV2(): void
     {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [alipay_public_key]');
+        $config = AlipayConfig::fromArray(array_merge($this->validConfig, [
+            'version' => AlipayConfig::VERSION_V2,
+        ]), 'tenant_v2');
 
-        $config = new AlipayConfig([
-            'app_id' => 'test_app_id',
-            'app_secret_cert' => 'test_secret',
-            'version' => 'v3',
-        ]);
-        $config->validate();
-    }
-
-    public function testV3CertModeValidateSuccess(): void
-    {
-        $config = new AlipayConfig([
-            'app_id' => 'test_app_id',
-            'app_secret_cert' => 'test_secret',
-            'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
-            'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-            'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
-            'version' => 'v3',
-        ]);
-
-        $config->validate();
-
-        self::assertSame('v3', $config->getVersion());
-    }
-
-    public function testInvalidVersionThrows(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: version 仅支持 v2 或 v3，当前为 [v4]');
-
-        $config = new AlipayConfig(array_merge($this->validConfig, ['version' => 'v4']));
-        $config->validate();
+        self::assertInstanceOf(AlipayV2Config::class, $config);
+        self::assertSame('tenant_v2', $config->getTenant());
     }
 }

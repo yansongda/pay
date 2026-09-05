@@ -40,12 +40,14 @@ class Config extends BaseConfig
     {
         parent::__construct($items);
 
-        // 转换 Provider 配置为对象
+        // 转换 Provider 配置为对象（支付宝按 version 拆分为 V2/V3 配置类，走工厂分派）
         foreach (self::PROVIDER_CONFIG_MAP as $provider => $configClass) {
             if (isset($this->items[$provider])) {
                 foreach ($this->items[$provider] as $tenant => $config) {
                     if (is_array($config)) {
-                        $this->items[$provider][$tenant] = new $configClass($config, $tenant);
+                        $this->items[$provider][$tenant] = is_a($configClass, AlipayConfig::class, true)
+                            ? AlipayConfig::fromArray($config, $tenant)
+                            : new $configClass($config, $tenant);
                     }
                 }
             }

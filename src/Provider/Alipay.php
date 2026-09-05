@@ -16,6 +16,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
@@ -72,7 +73,7 @@ class Alipay implements ProviderInterface
         /** @var AlipayConfig $config */
         $config = self::getProviderConfig('alipay', (array) ($params[0] ?? []));
 
-        if ('v3' === $config->getVersion()) {
+        if ($config instanceof AlipayV3Config) {
             $shortcut = strtolower($shortcut);
 
             if (!in_array($shortcut, self::V3_SHORTCUTS, true)) {
@@ -154,7 +155,7 @@ class Alipay implements ProviderInterface
         /** @var AlipayConfig $config */
         $config = self::getProviderConfig('alipay', $params ?? []);
 
-        if ('v3' === $config->getVersion()) {
+        if ($config instanceof AlipayV3Config) {
             $request = $this->getV3CallbackParams($contents);
 
             Event::dispatch(new CallbackReceived('alipay', clone $request, $params, null));
@@ -183,7 +184,7 @@ class Alipay implements ProviderInterface
         /** @var AlipayConfig $config */
         $config = self::getProviderConfig('alipay', $params ?? []);
 
-        if ('v3' === $config->getVersion()) {
+        if ($config instanceof AlipayV3Config) {
             throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: Alipay V3 暂不支持应用回调，请通过 _config 指向 V2 租户');
         }
 

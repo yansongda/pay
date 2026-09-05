@@ -13,7 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
-use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Traits\AlipayTrait;
@@ -79,7 +79,7 @@ class VerifySignaturePlugin implements PluginInterface
             return;
         }
 
-        /** @var AlipayConfig $config */
+        /** @var AlipayV3Config $config */
         $config = self::getProviderConfig('alipay', $rocket->getParams());
 
         // 证书模式：按 `alipay-sn` 匹配本地支付宝公钥证书 SN。

@@ -10,6 +10,8 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV2Config;
+use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -24,7 +26,7 @@ trait AlipayTrait
      * @throws InvalidConfigException 缺少支付宝公钥证书配置
      * @throws InvalidSignException   签名为空或验签失败
      */
-    public static function verifyAlipaySign(AlipayConfig $config, string $contents, string $sign): void
+    public static function verifyAlipaySign(AlipayV2Config $config, string $contents, string $sign): void
     {
         if ('' === $sign) {
             throw new InvalidSignException(Exception::SIGN_EMPTY);
@@ -42,7 +44,7 @@ trait AlipayTrait
         }
     }
 
-    public static function getAlipayUrl(AlipayConfig $config, ?Collection $payload): string
+    public static function getAlipayUrl(AlipayV2Config $config, ?Collection $payload): string
     {
         $url = self::getRadarUrl($config, $payload);
 
@@ -70,7 +72,7 @@ trait AlipayTrait
     /**
      * 获取支付宝 V3 请求 URL：radar 完整 URL 优先，否则网关 host + 业务 path.
      */
-    public static function getAlipayV3Url(AlipayConfig $config, ?Collection $payload): string
+    public static function getAlipayV3Url(AlipayV3Config $config, ?Collection $payload): string
     {
         $url = self::getRadarUrl($config, $payload);
 
@@ -91,7 +93,7 @@ trait AlipayTrait
      *
      * @throws InvalidConfigException 缺少商户私钥配置或证书解析失败
      */
-    public static function getAlipayV3Authorization(AlipayConfig $config, string $httpMethod, string $httpRequestUri, string $httpRequestBody = '', ?string $appAuthToken = null): string
+    public static function getAlipayV3Authorization(AlipayV3Config $config, string $httpMethod, string $httpRequestUri, string $httpRequestBody = '', ?string $appAuthToken = null): string
     {
         $authString = 'app_id='.$config->getAppId();
 
@@ -119,7 +121,7 @@ trait AlipayTrait
      * @throws InvalidConfigException 缺少支付宝公钥配置
      * @throws InvalidSignException   签名为空或验签失败
      */
-    public static function verifyAlipayV3Sign(AlipayConfig $config, string $contents, string $sign): void
+    public static function verifyAlipayV3Sign(AlipayV3Config $config, string $contents, string $sign): void
     {
         if ('' === $sign) {
             throw new InvalidSignException(Exception::SIGN_EMPTY);

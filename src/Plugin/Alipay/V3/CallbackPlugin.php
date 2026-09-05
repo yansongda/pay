@@ -14,7 +14,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Traits\AlipayTrait;
@@ -40,7 +40,7 @@ class CallbackPlugin implements PluginInterface
 
         $params = $rocket->getParams();
 
-        /** @var AlipayConfig $config */
+        /** @var AlipayV3Config $config */
         $config = self::getProviderConfig('alipay', $params);
 
         // 支付宝 trade 异步通知为 V2 form 参数格式（非 V3 header 签名格式）：

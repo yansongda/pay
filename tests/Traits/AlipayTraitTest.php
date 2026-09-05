@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV2Config;
+use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -91,9 +92,9 @@ class AlipayTraitTest extends TestCase
         );
     }
 
-    protected function getAlipayConfig(int $mode = Pay::MODE_NORMAL): AlipayConfig
+    protected function getAlipayConfig(int $mode = Pay::MODE_NORMAL): AlipayV2Config
     {
-        return new AlipayConfig([
+        return new AlipayV2Config([
             'app_id' => 'app_id',
             'app_secret_cert' => 'app_secret_cert',
             'app_public_cert_path' => 'app_public_cert_path',
@@ -103,11 +104,21 @@ class AlipayTraitTest extends TestCase
         ], 'default');
     }
 
+    protected function getAlipayV3Config(int $mode = Pay::MODE_NORMAL): AlipayV3Config
+    {
+        return new AlipayV3Config([
+            'app_id' => 'app_id',
+            'app_secret_cert' => 'app_secret_cert',
+            'alipay_public_key' => 'alipay_public_key',
+            'mode' => $mode,
+        ], 'default');
+    }
+
     public function testGetAlipayV3UrlDefault(): void
     {
         self::assertSame(
             Alipay::V3_URL[Pay::MODE_NORMAL],
-            AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(), null)
+            AlipayTraitStub::getAlipayV3Url($this->getAlipayV3Config(), null)
         );
     }
 
@@ -115,7 +126,7 @@ class AlipayTraitTest extends TestCase
     {
         self::assertSame(
             Alipay::V3_URL[Pay::MODE_SANDBOX],
-            AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(Pay::MODE_SANDBOX), null)
+            AlipayTraitStub::getAlipayV3Url($this->getAlipayV3Config(Pay::MODE_SANDBOX), null)
         );
     }
 
@@ -123,7 +134,7 @@ class AlipayTraitTest extends TestCase
     {
         self::assertSame(
             'https://example.com/v3/alipay/trade/pay',
-            AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(), new Collection(['_url' => 'https://example.com/v3/alipay/trade/pay']))
+            AlipayTraitStub::getAlipayV3Url($this->getAlipayV3Config(), new Collection(['_url' => 'https://example.com/v3/alipay/trade/pay']))
         );
     }
 
@@ -131,7 +142,7 @@ class AlipayTraitTest extends TestCase
     {
         self::assertSame(
             Alipay::V3_URL[Pay::MODE_NORMAL].'/v3/alipay/trade/pay',
-            AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(), new Collection(['_url' => '/v3/alipay/trade/pay']))
+            AlipayTraitStub::getAlipayV3Url($this->getAlipayV3Config(), new Collection(['_url' => '/v3/alipay/trade/pay']))
         );
     }
 
@@ -232,10 +243,9 @@ class AlipayTraitTest extends TestCase
 
     public function testVerifyAlipayV3SignMissingAlipayPublicKey(): void
     {
-        $config = new AlipayConfig([
+        $config = new AlipayV3Config([
             'app_id' => 'app_id',
             'app_secret_cert' => 'app_secret_cert',
-            'version' => 'v3',
         ], 'alipay-v3-no-public-key');
 
         self::expectException(InvalidConfigException::class);

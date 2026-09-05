@@ -11,7 +11,7 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Traits\AlipayTrait;
 use Yansongda\Supports\Collection;
 
@@ -31,7 +31,7 @@ class AddRadarPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
 
-        /** @var AlipayConfig $config */
+        /** @var AlipayV3Config $config */
         $config = self::getProviderConfig('alipay', $rocket->getParams());
 
         $rocket->setRadar(new Request(

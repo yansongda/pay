@@ -40,6 +40,10 @@ V3 暂时支持以下服务端接口（与 V2 同名方法，调用方式不变�
 | `version` | string，默认 `v2` | 租户级 API 版本，可选 `v2` / `v3`；未设置时一切如旧 |
 | `alipay_public_key` | string，选填 | 支付宝公钥（**不含 PEM 头尾的纯 base64 单行**），V3 公钥模式下必填 |
 
+:::tip
+SDK 将根据 `version` 将租户配置实例化为不同的配置类：`v2` 对应 `AlipayV2Config`（网关签名），`v3` 对应 `AlipayV3Config`（OpenAPI V3）。两种配置类各自的专属字段一目了然，也便于后续按版本独立演进。
+:::
+
 ### 公钥模式（推荐，配置最简）
 
 在 [支付宝开放平台](https://open.alipay.com/develop/manage)《应用详情->开发设置->接口加签方式》中选择「公钥模式」，获取支付宝公钥：
@@ -65,7 +69,7 @@ $config = [
 
 ### 证书模式
 
-沿用 V2 的证书五件套配置，额外增加 `version` 即可：
+在 V2 证书配置的基础上增加 `version` 即可（V3 协议无 `root-cert-sn`，支付宝根证书可不再配置）：
 
 ```php
 $config = [
@@ -79,7 +83,7 @@ $config = [
             'app_public_cert_path' => '/Users/yansongda/pay/cert/appCertPublicKey_2021001178660000.crt',
             // 「必填」支付宝公钥证书 路径
             'alipay_public_cert_path' => '/Users/yansongda/pay/cert/alipayCertPublicKey_RSA2.crt',
-            // 「必填」支付宝根证书 路径
+            // 「选填」支付宝根证书 路径（V3 无需，多余配置会被忽略）
             'alipay_root_cert_path' => '/Users/yansongda/pay/cert/alipayRootCert.crt',
         ],
     ],
@@ -87,7 +91,7 @@ $config = [
 ```
 
 :::tip
-V3 租户配置了 `app_public_cert_path` 即按证书模式校验（要求证书五件套齐全）；未配置则按公钥模式校验（`app_id`、`app_secret_cert`、`alipay_public_key` 三项必填）。
+V3 租户配置了 `app_public_cert_path` 即按证书模式校验（要求 `app_id`、`app_secret_cert`、`app_public_cert_path`、`alipay_public_cert_path` 必填）；未配置则按公钥模式校验（`app_id`、`app_secret_cert`、`alipay_public_key` 三项必填）。
 :::
 
 其余共用字段（`notify_url`、`app_auth_token`、`service_provider_id`、`mode` 等）含义与 V2 一致，请参考 [初始化](/docs/v3/quick-start/init.md)。

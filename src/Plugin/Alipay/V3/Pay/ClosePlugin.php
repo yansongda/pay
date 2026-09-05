@@ -10,7 +10,7 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Traits\AlipayTrait;
 
 /**
@@ -36,7 +36,7 @@ class ClosePlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $params = $rocket->getParams();
 
-        /** @var AlipayConfig $config */
+        /** @var AlipayV3Config $config */
         $config = self::getProviderConfig('alipay', $params);
 
         $rocket->mergePayload([

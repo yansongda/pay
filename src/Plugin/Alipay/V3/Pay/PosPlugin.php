@@ -11,7 +11,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Traits\AlipayTrait;
 
@@ -35,7 +35,7 @@ class PosPlugin implements PluginInterface
 
         $payload = $rocket->getPayload();
 
-        /** @var AlipayConfig $config */
+        /** @var AlipayV3Config $config */
         $config = self::getProviderConfig('alipay', $rocket->getParams());
 
         if (is_null($payload)) {
