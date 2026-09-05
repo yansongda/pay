@@ -71,7 +71,7 @@ class AlipayTraitTest extends TestCase
     public function testGetAlipayUrlDefault(): void
     {
         self::assertSame(
-            Alipay::URL[Pay::MODE_NORMAL],
+            Alipay::URL[Pay::MODE_NORMAL].'/gateway.do?charset=utf-8',
             AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(), null)
         );
     }
@@ -79,7 +79,7 @@ class AlipayTraitTest extends TestCase
     public function testGetAlipayUrlSandbox(): void
     {
         self::assertSame(
-            Alipay::URL[Pay::MODE_SANDBOX],
+            Alipay::URL[Pay::MODE_SANDBOX].'/gateway.do?charset=utf-8',
             AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(Pay::MODE_SANDBOX), null)
         );
     }
@@ -117,7 +117,7 @@ class AlipayTraitTest extends TestCase
     public function testGetAlipayV3UrlDefault(): void
     {
         self::assertSame(
-            Alipay::V3_URL[Pay::MODE_NORMAL],
+            Alipay::URL[Pay::MODE_NORMAL],
             AlipayTraitStub::getAlipayV3Url($this->getAlipayV3Config(), null)
         );
     }
@@ -125,7 +125,7 @@ class AlipayTraitTest extends TestCase
     public function testGetAlipayV3UrlSandbox(): void
     {
         self::assertSame(
-            Alipay::V3_URL[Pay::MODE_SANDBOX],
+            Alipay::V3_SANDBOX_URL,
             AlipayTraitStub::getAlipayV3Url($this->getAlipayV3Config(Pay::MODE_SANDBOX), null)
         );
     }
@@ -141,7 +141,7 @@ class AlipayTraitTest extends TestCase
     public function testGetAlipayV3UrlWithPayloadPath(): void
     {
         self::assertSame(
-            Alipay::V3_URL[Pay::MODE_NORMAL].'/v3/alipay/trade/pay',
+            Alipay::URL[Pay::MODE_NORMAL].'/v3/alipay/trade/pay',
             AlipayTraitStub::getAlipayV3Url($this->getAlipayV3Config(), new Collection(['_url' => '/v3/alipay/trade/pay']))
         );
     }

@@ -52,7 +52,7 @@ trait AlipayTrait
             return $url;
         }
 
-        return Alipay::URL[$config->getMode()];
+        return Alipay::URL[$config->getMode()].'/gateway.do?charset=utf-8';
     }
 
     /**
@@ -70,7 +70,7 @@ trait AlipayTrait
     }
 
     /**
-     * 获取支付宝 V3 请求 URL：radar 完整 URL 优先，否则网关 host + 业务 path.
+     * 获取支付宝 V3 请求 URL：radar 完整 URL 优先，否则网关 host（沙箱为 V3 专用网关）+ 业务 path.
      */
     public static function getAlipayV3Url(AlipayV3Config $config, ?Collection $payload): string
     {
@@ -80,7 +80,9 @@ trait AlipayTrait
             return $url;
         }
 
-        return Alipay::V3_URL[$config->getMode()].($url ?? '');
+        $base = Pay::MODE_SANDBOX === $config->getMode() ? Alipay::V3_SANDBOX_URL : Alipay::URL[$config->getMode()];
+
+        return $base.($url ?? '');
     }
 
     /**

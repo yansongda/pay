@@ -43,17 +43,19 @@ class Alipay implements ProviderInterface
 {
     use ProviderConfigTrait;
 
+    /**
+     * 支付宝网关域名（V2/V3 共用：V2 拼接时追加 `gateway.do`，V3 直接拼 `/v3/` 路径）.
+     */
     public const URL = [
-        Pay::MODE_NORMAL => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
-        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com/gateway.do?charset=utf-8',
-        Pay::MODE_SERVICE => 'https://openapi.alipay.com/gateway.do?charset=utf-8',
-    ];
-
-    public const V3_URL = [
         Pay::MODE_NORMAL => 'https://openapi.alipay.com',
-        Pay::MODE_SANDBOX => 'http://openapi.sandbox.dl.alipaydev.com',
+        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com',
         Pay::MODE_SERVICE => 'https://openapi.alipay.com',
     ];
+
+    /**
+     * 支付宝 V3 沙箱网关（官方 V3 SDK 沙箱 host，与 V2 沙箱域名不同）.
+     */
+    public const V3_SANDBOX_URL = 'http://openapi.sandbox.dl.alipaydev.com';
 
     /**
      * Alipay V3 已支持的 shortcut（其余 shortcut 暂不支持，请通过 `_config` 指向 V2 租户）.

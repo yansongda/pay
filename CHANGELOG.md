@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - 支付宝配置按 API 版本拆分为独立配置类：`AlipayConfig`（抽象基类，公共字段 + `VERSION_V2`/`VERSION_V3` 版本常量 + 静态工厂 `fromArray()`）、`AlipayV2Config`（V2 专属证书三件套）、`AlipayV3Config`（V3 专属 `alipay_public_key` 与可选双证书）；配置数组中的 `version` 决定实例化哪个配置类，Provider 分流改用 `instanceof`，代码中不再出现 `v2`/`v3` 字面量魔法值
 - V3 证书模式不再强制要求支付宝根证书（V3 协议无 `root-cert-sn`），配置数组中的 `alipay_root_cert_path` 将被忽略
+- 统一支付宝网关域名常量：`Provider\Alipay::URL` 仅保留纯域名（V2/V3 共用），V2 拼接完整请求 URL 时追加 `gateway.do?charset=utf-8`；移除 `V3_URL`，V3 沙箱经新增的 `V3_SANDBOX_URL` 常量单独指向官方 V3 SDK 沙箱网关（`http://openapi.sandbox.dl.alipaydev.com`，与 V2 沙箱域名不同）
 
 
 ## [v3.8.0-beta.4] - 2026-08-25
