@@ -10,11 +10,12 @@ use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryPlugin as MiniQueryPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryRefundPlugin as MiniQueryRefundPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryCpsPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryRefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
 use Yansongda\Supports\Str;
 
 class QueryShortcut implements ShortcutInterface
@@ -42,26 +43,10 @@ class QueryShortcut implements ShortcutInterface
      */
     protected function defaultPlugins(): array
     {
-        return $this->miniPlugins();
-    }
-
-    /**
-     * @return array<class-string>
-     */
-    protected function refundPlugins(): array
-    {
-        return $this->refundMiniPlugins();
-    }
-
-    /**
-     * @return array<class-string>
-     */
-    protected function miniPlugins(): array
-    {
         return [
             StartPlugin::class,
-            MiniQueryPlugin::class,
-            AddPayloadSignaturePlugin::class,
+            ObtainClientTokenPlugin::class,
+            QueryPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
@@ -72,12 +57,36 @@ class QueryShortcut implements ShortcutInterface
     /**
      * @return array<class-string>
      */
-    protected function refundMiniPlugins(): array
+    protected function orderPlugins(): array
+    {
+        return $this->defaultPlugins();
+    }
+
+    /**
+     * @return array<class-string>
+     */
+    protected function cpsPlugins(): array
     {
         return [
             StartPlugin::class,
-            MiniQueryRefundPlugin::class,
-            AddPayloadSignaturePlugin::class,
+            ObtainClientTokenPlugin::class,
+            QueryCpsPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ];
+    }
+
+    /**
+     * @return array<class-string>
+     */
+    protected function refundPlugins(): array
+    {
+        return [
+            StartPlugin::class,
+            ObtainClientTokenPlugin::class,
+            QueryRefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,

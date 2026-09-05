@@ -9,11 +9,12 @@ use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryPlugin as MiniQueryPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\QueryRefundPlugin as MiniQueryRefundPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryCpsPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryRefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Douyin\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -38,10 +39,10 @@ class QueryShortcutTest extends TestCase
 
     public function testDefault()
     {
-        self::assertEquals([
+        self::assertSame([
             StartPlugin::class,
-            MiniQueryPlugin::class,
-            AddPayloadSignaturePlugin::class,
+            ObtainClientTokenPlugin::class,
+            QueryPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
@@ -49,42 +50,42 @@ class QueryShortcutTest extends TestCase
         ], $this->plugin->getPlugins([]));
     }
 
+    public function testOrder()
+    {
+        self::assertSame([
+            StartPlugin::class,
+            ObtainClientTokenPlugin::class,
+            QueryPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'order']));
+    }
+
+    public function testCps()
+    {
+        self::assertSame([
+            StartPlugin::class,
+            ObtainClientTokenPlugin::class,
+            QueryCpsPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'cps']));
+    }
+
     public function testRefund()
     {
-        self::assertEquals([
+        self::assertSame([
             StartPlugin::class,
-            MiniQueryRefundPlugin::class,
-            AddPayloadSignaturePlugin::class,
+            ObtainClientTokenPlugin::class,
+            QueryRefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'refund']));
-    }
-
-    public function testMini()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            MiniQueryPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'mini']));
-    }
-
-    public function testRefundMini()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            MiniQueryRefundPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'refund_mini']));
     }
 }

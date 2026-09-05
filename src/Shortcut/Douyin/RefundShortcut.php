@@ -10,10 +10,11 @@ use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\RefundPlugin as MiniRefundPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Refund\AuditPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Refund\RefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
 use Yansongda\Supports\Str;
 
 class RefundShortcut implements ShortcutInterface
@@ -41,18 +42,26 @@ class RefundShortcut implements ShortcutInterface
      */
     protected function defaultPlugins(): array
     {
-        return $this->miniPlugins();
+        return [
+            StartPlugin::class,
+            ObtainClientTokenPlugin::class,
+            RefundPlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ];
     }
 
     /**
      * @return array<class-string>
      */
-    protected function miniPlugins(): array
+    protected function auditPlugins(): array
     {
         return [
             StartPlugin::class,
-            MiniRefundPlugin::class,
-            AddPayloadSignaturePlugin::class,
+            ObtainClientTokenPlugin::class,
+            AuditPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,

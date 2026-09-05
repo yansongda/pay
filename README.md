@@ -79,7 +79,12 @@ yansongda/pay 100% 兼容 支付宝/微信/银联 所有功能（包括服务商
 
 ### 抖音
 
-- 小程序支付
+- 小程序支付（通用交易系统，JSAPI 下单签名）
+- 订单查询
+- CPS 查询
+- 退款
+- 退款审核
+- 支付/退款/退款申请回调
 - ...
 
 ### 银联
@@ -301,6 +306,7 @@ class WechatController
 
 namespace App\Http\Controllers;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Pay\Pay;
 
 class DouyinController
@@ -308,22 +314,22 @@ class DouyinController
     protected $config = [
         'douyin' => [
             'default' => [
-                // 选填-商户号
-                // 抖音开放平台 --> 应用详情 --> 支付信息 --> 产品管理 --> 商户号
-                'mch_id' => '73744242495132490630',
-                // 必填-支付 Token，用于支付回调签名
-                // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
-                'mch_secret_token' => 'douyin_mini_token',
-                // 必填-支付 SALT，用于支付签名
-                // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
-                'mch_secret_salt' => 'oDxWDBr4U7FAAQ8hnGDm29i4A6pbTMDKme4WLLvA',
-                // 必填-小程序 app_id
-                // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 小程序appid
-                'mini_app_id' => 'tt226e54d3bd581bf801',
-                // 选填-抖音开放平台服务商id
-                'thirdparty_id' => '',
+                // 必填-小程序 app_id（即 client_key）
+                // 抖音开放平台 --> 应用详情 --> 基础信息
+                'app_id' => 'tt226e54d3bd581bf801',
+                // 必填-应用密钥，用于获取 client_token
+                // 抖音开放平台 --> 应用详情 --> 基础信息
+                'app_secret' => 'your-app-secret',
+                // 必填-应用私钥，用于下单加签
+                // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 小程序支付密钥
+                'app_private_key' => "-----BEGIN RSA PRIVATE KEY-----\n...",
+                // 必填-抖音平台公钥，用于回调验签
+                // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 抖音平台公钥
+                'platform_public_key' => "-----BEGIN PUBLIC KEY-----\n...",
                 // 选填-抖音支付回调地址
                 'notify_url' => 'https://yansongda.cn/douyin/notify',
+                // 选填-抖音退款回调地址（不传则使用下单时传入的地址）
+                'refund_notify_url' => 'https://yansongda.cn/douyin/refund/notify',
             ],
         ],
         'logger' => [ // optional
@@ -343,30 +349,37 @@ class DouyinController
     public function pay()
     {
         Pay::config($this->config);
-        
+
+        // 服务端不发 HTTP 请求，只负责透传官方 camelCase 字段并生成签名
         $result = Pay::douyin()->mini([
-            'out_order_no' => date('YmdHis').mt_rand(1000, 9999),
-            'total_amount' => 1,
-            'subject' => '闫嵩达 - test - subject - 01',
-            'body' => '闫嵩达 - test - body - 01',
-            'valid_time' => 600,
-            'expand_order_info' => json_encode([
-                'original_delivery_fee' => 15,
-                'actual_delivery_fee' => 10
-            ])
+            'outOrderNo' => date('YmdHis').mt_rand(1000, 9999),
+            'totalAmount' => 1,
+            'skuList' => [
+                [
+                    'skuId' => 'sku-001',
+                    'title' => '闫嵩达 - test - subject - 01',
+                    'quantity' => 1,
+                    'price' => 1,
+                ],
+            ],
+            'orderEntrySchema' => [
+                'path' => 'pages/order/detail',
+                'params' => '{"out_order_no":"202408040747147327"}',
+            ],
         ]);
-        
-        return $result;
+
+        // 将 data 与 byteAuthorization 原样返回给前端，调用 tt.requestOrder 完成下单
+        return json_encode($result->all());
     }
 
-    public function callback()
+    public function callback(ServerRequestInterface $request)
     {
         Pay::config($this->config);
-    
-        try{
-            $data = Pay::douyin()->callback(); // 是的，验签就这么简单！
+
+        try {
+            $data = Pay::douyin()->callback($request); // 是的，验签就这么简单！
         } catch (\Throwable $e) {
-            dd($e)
+            dd($e);
         }
 
         return Pay::douyin()->success();

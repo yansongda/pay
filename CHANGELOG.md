@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## Unreleased
 
+## [v3.8.0-beta.6] - Unreleased
+
+### Added
+
+- 抖音支付全新接入「通用交易系统」（trade_basic），老的「担保支付」（ecpay）已全部删除：
+  - `Pay::douyin()->mini($order)` 小程序 JSAPI 下单签名：透传官方 camelCase 下单参数（`outOrderNo`/`totalAmount`/`skuList`/`orderEntrySchema` 等），返回 `{data, byteAuthorization}`（SHA256-RSA2048 应用私钥签名），配合前端 `tt.requestOrder(data, byteAuthorization)` 完成下单，服务端不发 HTTP 请求
+  - `Pay::douyin()->query($order)` 查询：`_action` 支持 `order`（默认，order_query）/`cps`（query_cps）/`refund`（refund_query）
+  - `Pay::douyin()->refund($order)` 创建退款（refund_create，未传 `notify_url` 时自动注入配置 `refund_notify_url`）；`['_action' => 'audit']` 退款审核（refund_audit_callback，`refund_audit_status` 1 同意/2 拒绝，拒绝时 `deny_message` 必填）
+  - 三类回调入口：`callback()` 支付结果回调、`refundCallback()` 退款结果回调、`preRefundCallback()` 退款申请回调，均基于平台公钥 RSA 验签（`Byte-Timestamp`/`Byte-Nonce-Str`/`Byte-Signature` 三行验签串 + 原始 body），并严格校验回调 `type` 防止误接线
+  - `client_token` 自动获取与进程内缓存（`oauth/client_token`，`expires_in - 60` 秒提前过期），支持 `['_access_token' => ...]` 外部注入自建共享缓存
+- 新增抖音配置字段：`app_id`（即 client_key）、`app_secret`、`app_private_key`（下单加签）、`platform_public_key`（回调验签）、`refund_notify_url`、`notify_url`、`mode`
+
+### Removed
+
+- **BREAKING**: 删除抖音「担保支付」（ecpay）全部实现，升级用户需按官方指引迁移至「通用交易系统」，主要包括：
+  - 删除插件：`Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin`、`Plugin\Douyin\V1\Pay\Mini\PayPlugin`、`Plugin\Douyin\V1\Pay\Mini\QueryPlugin`、`Plugin\Douyin\V1\Pay\Mini\RefundPlugin`、`Plugin\Douyin\V1\Pay\Mini\QueryRefundPlugin`（老 `AddRadarPlugin`/`ResponsePlugin`/`Pay\CallbackPlugin` 及三个 Shortcut 已按新交易系统重写，类名不变但实现与用法完全变化）
+  - 删除配置字段：`mini_app_id`、`mch_id`、`mch_secret_token`、`mch_secret_salt`、`thirdparty_id`
+  - 迁移要点：`mini_app_id` → `app_id`（即 client_key）；MD5 签名（`mch_secret_salt`）→ RSA 应用私钥加签（`app_private_key`，SHA256-RSA2048）；SHA1 回调校验（`mch_secret_token`）→ 平台公钥验签（`platform_public_key`）；回调入参 form 数组 → 必须传 `ServerRequestInterface`（需 `Byte-*` 回调头验签），`callback()` 保留宽签名但 array 入参不再支持回调处理（抛异常）
+  - 老担保支付回调（form 参数 + SHA1 token 验签）不再兼容；存量担保支付订单的退款/查询请停留在 v3.7.x 或自行对接官方接口
+
 ## [v3.8.0-beta.5] - 2026-09-05
 
 ### Added

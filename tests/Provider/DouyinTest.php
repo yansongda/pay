@@ -12,14 +12,10 @@ use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
-use Yansongda\Artful\Plugin\AddRadarPlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception as PayException;
+use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
-use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
@@ -33,155 +29,192 @@ class DouyinTest extends TestCase
         Pay::douyin()->foo();
     }
 
-    public function testShortcutIncompatible()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
-
-        Pay::douyin()->foo();
-    }
-
     public function testCallMini()
     {
-        $response = new Response(
-            200,
-            [],
-            '{"err_no":0,"err_tips":"","data":{"order_id":"7376826336364513572","order_token":"CgwIARDPKBjKMCABKAESTgpMTgGUG+Ms5klBoqYlsymcJWNMvgWCR8XH+9OO5vFPSl2zZcVKFX0sKRuG9zxMNlT43OJotxNNHaO4KLMbiqo6HYxMiRS5tkoeILFzexoA.W"}}',
-        );
+        $fields = [
+            'outOrderNo' => '20260905123456',
+            'totalAmount' => 100,
+            'skuList' => [
+                ['skuId' => 'sku_001', 'count' => 1, 'price' => 100],
+            ],
+            'orderEntrySchema' => ['path' => 'pages/index/index'],
+        ];
 
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturn($response);
-        Pay::set(HttpClientInterface::class, $http);
-
-        $response = Pay::douyin()->mini([
-            'out_order_no' => '202406100423024876',
-            'total_amount' => 1,
-            'subject' => '闫嵩达 - test - subject - 01',
-            'body' => '闫嵩达 - test - body - 01',
-            'valid_time' => 600,
-            // 'notify_url' => 'https://yansongda.cn/unipay/notify',
-            '_return_rocket' => true,
-        ]);
-
-        $result = $response->getDestination();
-        $payload = $response->getPayload();
+        $result = Pay::douyin()->mini($fields);
 
         self::assertInstanceOf(Collection::class, $result);
-        self::assertEquals('7376826336364513572', $result->get('data.order_id'));
-        self::assertEquals('CgwIARDPKBjKMCABKAESTgpMTgGUG+Ms5klBoqYlsymcJWNMvgWCR8XH+9OO5vFPSl2zZcVKFX0sKRuG9zxMNlT43OJotxNNHaO4KLMbiqo6HYxMiRS5tkoeILFzexoA.W', $result->get('data.order_token'));
-        self::assertEquals('771c1952ffb5e0744fc0ad1337aafa6a', $payload->get('sign'));
-    }
+        self::assertSame(['data', 'byteAuthorization'], array_keys($result->all()));
 
-    public function testClose()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
+        $data = $result->get('data');
+        $byteAuthorization = $result->get('byteAuthorization');
+        self::assertIsString($data);
+        self::assertIsString($byteAuthorization);
+        self::assertSame($fields, json_decode($data, true));
 
-        Pay::douyin()->close([]);
+        // 反解 byteAuthorization 中的 nonce_str/timestamp/signature，用 app 公钥复算验签（端到端兜底）
+        self::assertSame(1, preg_match(
+            '/nonce_str="([^"]+)",timestamp="([^"]+)",key_version=1,signature="([^"]+)"/',
+            $byteAuthorization,
+            $matches
+        ));
+
+        [, $nonce, $timestamp, $signature] = $matches;
+
+        $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../Cert/douyinAppPublicKey.pem'));
+        self::assertNotFalse($publicKey);
+        self::assertSame(1, openssl_verify(
+            "POST\n/requestOrder\n".$timestamp."\n".$nonce."\n".$data."\n",
+            base64_decode($signature),
+            $publicKey,
+            OPENSSL_ALGO_SHA256
+        ));
     }
 
     public function testCancel()
     {
         self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
+        self::expectExceptionCode(PayException::PARAMS_METHOD_NOT_SUPPORTED);
 
         Pay::douyin()->cancel([]);
     }
 
-    public function testQuery()
+    public function testClose()
     {
-        $response = new Response(
-            200,
-            [],
-            '{"err_no":0,"err_tips":"","out_order_no":"202408040747147327","order_id":"7398075047971440922","payment_info":{"total_fee":1,"order_status":"SUCCESS","pay_time":"2024-08-04 15:49:48","way":2,"channel_no":"","channel_gateway_no":"","seller_uid":"73744242495132490630","item_id":"","cp_extra":""}}',
-        );
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(PayException::PARAMS_METHOD_NOT_SUPPORTED);
 
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturn($response);
-        Pay::set(HttpClientInterface::class, $http);
-
-        $response = Pay::douyin()->query([
-            'out_order_no' => '202406100423024876',
-            '_return_rocket' => true,
-        ]);
-
-        $result = $response->getDestination();
-        $payload = $response->getPayload();
-
-        self::assertInstanceOf(Collection::class, $result);
-        self::assertEquals('7517fb55db55327c396e5b7c9cb1be31', $payload->get('sign'));
-        self::assertEquals('202408040747147327', $result->get('out_order_no'));
-        self::assertEquals('7398075047971440922', $result->get('order_id'));
-        self::assertEquals('SUCCESS', $result->get('payment_info.order_status'));
+        Pay::douyin()->close([]);
     }
 
-    public function testQueryRefund()
+    public function testQuery()
     {
-        $response = new Response(
-            200,
-            [],
-            '{"err_no":0,"err_tips":"success","refundInfo":{"refund_no":"7398108028894988571","refund_amount":1,"refund_status":"SUCCESS","refunded_at":1722762159,"is_all_settled":true,"cp_extra":""}}',
-        );
-
         $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturn($response);
+        $http->shouldReceive('sendRequest')->twice()->andReturn(
+            new Response(200, [], '{"data":{"access_token":"client_token_test","expires_in":7200,"error_code":0,"description":"success"}}'),
+            new Response(200, [], '{"err_no":0,"err_tips":"success","data":{"order_id":"7398075047971440922","out_order_no":"20260905123456"}}'),
+        );
         Pay::set(HttpClientInterface::class, $http);
 
-        $response = Pay::douyin()->query([
-            'out_refund_no' => '202408040747147327',
-            '_action' => 'refund',
+        $result = Pay::douyin()->query([
+            'out_order_no' => '20260905123456',
             '_return_rocket' => true,
         ]);
 
-        $result = $response->getDestination();
-        $payload = $response->getPayload();
+        self::assertInstanceOf(Rocket::class, $result);
 
-        self::assertInstanceOf(Collection::class, $result);
-        self::assertEquals('fa6511979b1185cf98df2538f63ee1a3', $payload->get('sign'));
-        self::assertEquals('7398108028894988571', $result->get('refundInfo.refund_no'));
+        $destination = $result->getDestination();
+        $payload = $result->getPayload();
+
+        self::assertInstanceOf(Collection::class, $destination);
+        self::assertSame('7398075047971440922', $destination->get('data.order_id'));
+        self::assertSame('20260905123456', $destination->get('data.out_order_no'));
+        self::assertSame(
+            ['out_order_no', '_return_rocket', '_access_token', '_method', '_url', '_body'],
+            array_keys($payload->all())
+        );
+        self::assertSame('client_token_test', $payload->get('_access_token'));
+
+        Mockery::close();
     }
 
     public function testRefund()
     {
-        $response = new Response(
-            200,
-            [],
-            '{"err_no":0,"err_tips":"受理成功","refund_no":"7398108028894988571"}',
-        );
-
         $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturn($response);
+        $http->shouldReceive('sendRequest')->twice()->andReturn(
+            new Response(200, [], '{"data":{"access_token":"client_token_test","expires_in":7200,"error_code":0,"description":"success"}}'),
+            new Response(200, [], '{"err_no":0,"err_tips":"受理成功","data":{"refund_id":"7398108028894988571"}}'),
+        );
         Pay::set(HttpClientInterface::class, $http);
 
-        $response = Pay::douyin()->refund([
-            'out_order_no' => '202408040747147327',
-            'out_refund_no' => '202408040747147327',
-            'reason' => '测试',
+        $result = Pay::douyin()->refund([
+            'order_id' => '7398075047971440922',
+            'out_refund_no' => '20260905123456',
+            'refund_reason' => '测试退款',
             'refund_amount' => 1,
             '_return_rocket' => true,
         ]);
 
-        $result = $response->getDestination();
-        $payload = $response->getPayload();
+        self::assertInstanceOf(Rocket::class, $result);
 
-        self::assertInstanceOf(Collection::class, $result);
-        self::assertEquals('32f9c840085091f5c84a346d87bd2b4e', $payload->get('sign'));
-        self::assertEquals('7398108028894988571', $result->get('refund_no'));
+        $destination = $result->getDestination();
+        $payload = $result->getPayload();
+
+        self::assertInstanceOf(Collection::class, $destination);
+        self::assertSame('7398108028894988571', $destination->get('data.refund_id'));
+        self::assertSame(
+            ['order_id', 'out_refund_no', 'refund_reason', 'refund_amount', '_return_rocket', '_access_token', '_method', '_url', 'notify_url', '_body'],
+            array_keys($payload->all())
+        );
+        self::assertSame('https://yansongda.cn/douyin/notify', $payload->get('notify_url'));
+
+        Mockery::close();
     }
 
     public function testCallback()
     {
-        $post = '{"msg":"{\"appid\":\"tt226e54d3bd581bf801\",\"cp_orderno\":\"202408041111312119\",\"cp_extra\":\"\",\"way\":\"2\",\"channel_no\":\"\",\"channel_gateway_no\":\"\",\"payment_order_no\":\"\",\"out_channel_order_no\":\"\",\"total_amount\":1,\"status\":\"SUCCESS\",\"seller_uid\":\"73744242495132490630\",\"extra\":\"\",\"item_id\":\"\",\"paid_at\":1722769986,\"message\":\"\",\"order_id\":\"7398108028895054107\"}","msg_signature":"840bdf067c1d6056becfe88735c8ebb7e1ab809c","nonce":"5280","timestamp":"1722769986","type":"payment"}';
+        $msg = '{"order_id":"7398108028895054107","out_trade_no":"yansongda","total_amount":1,"status":"SUCCESS","seller_uid":"73744242495132490630","paid_at":1722769986}';
+        $body = '{"version":"3.0","type":"payment","msg":'.json_encode($msg).'}';
 
-        $callback = Pay::douyin()->callback(json_decode($post, true));
-        self::assertInstanceOf(Collection::class, $callback);
-        self::assertNotEmpty($callback->all());
+        $request = $this->getDouyinCallbackRequest($body);
 
-        $request = new ServerRequest('POST', 'https://yansongda.cn/unipay/notify', [], $post);
-        $callback = Pay::douyin()->callback($request);
+        $result = Pay::douyin()->callback($request);
 
-        self::assertInstanceOf(Collection::class, $callback);
-        self::assertNotEmpty($callback->all());
+        self::assertInstanceOf(Collection::class, $result);
+        self::assertSame('7398108028895054107', $result->get('order_id'));
+        self::assertSame('yansongda', $result->get('out_trade_no'));
+        self::assertSame(1, $result->get('total_amount'));
+        self::assertSame('SUCCESS', $result->get('status'));
+    }
+
+    public function testCallbackWithArrayContents()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(PayException::PARAMS_CALLBACK_REQUEST_INVALID);
+
+        Pay::douyin()->callback(['type' => 'payment', 'msg' => '{}']);
+    }
+
+    public function testCallbackTamperedSignature()
+    {
+        $msg = '{"order_id":"7398108028895054107","out_trade_no":"yansongda"}';
+        $body = '{"version":"3.0","type":"payment","msg":'.json_encode($msg).'}';
+
+        $request = $this->getDouyinCallbackRequest($body, ['Byte-Signature' => base64_encode('tampered-signature')]);
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(PayException::SIGN_ERROR);
+
+        Pay::douyin()->callback($request);
+    }
+
+    public function testRefundCallback()
+    {
+        $msg = '{"refund_id":"7398108028895054107","out_refund_no":"yansongda-refund","refund_amount":1,"status":"SUCCESS"}';
+        $body = '{"version":"3.0","type":"refund","msg":'.json_encode($msg).'}';
+
+        $request = $this->getDouyinCallbackRequest($body);
+
+        $result = Pay::douyin()->refundCallback($request);
+
+        self::assertInstanceOf(Collection::class, $result);
+        self::assertSame('7398108028895054107', $result->get('refund_id'));
+        self::assertSame('yansongda-refund', $result->get('out_refund_no'));
+        self::assertSame('SUCCESS', $result->get('status'));
+    }
+
+    public function testPreRefundCallback()
+    {
+        $msg = '{"order_id":"7398108028895054107","out_refund_no":"yansongda-refund","refund_amount":1,"reason":"测试退款"}';
+        $body = '{"version":"3.0","type":"pre_create_refund","msg":'.json_encode($msg).'}';
+
+        $request = $this->getDouyinCallbackRequest($body);
+
+        $result = Pay::douyin()->preRefundCallback($request);
+
+        self::assertInstanceOf(Collection::class, $result);
+        self::assertSame('7398108028895054107', $result->get('order_id'));
+        self::assertSame('yansongda-refund', $result->get('out_refund_no'));
+        self::assertSame('测试退款', $result->get('reason'));
     }
 
     public function testSuccess()
@@ -189,6 +222,30 @@ class DouyinTest extends TestCase
         $result = Pay::douyin()->success();
 
         self::assertInstanceOf(ResponseInterface::class, $result);
-        self::assertStringContainsString('success', (string) $result->getBody());
+        self::assertSame('{"err_no":0,"err_tips":"success"}', (string) $result->getBody());
+    }
+
+    /**
+     * @param array<string, string> $overrideHeaders
+     */
+    private function getDouyinCallbackRequest(string $body, array $overrideHeaders = []): ServerRequest
+    {
+        $headers = [
+            'Byte-Timestamp' => '1700000000',
+            'Byte-Nonce-Str' => 'abcdef1234567890',
+            'Byte-Signature' => base64_encode($this->signDouyinContents("1700000000\nabcdef1234567890\n".$body."\n")),
+        ];
+
+        return new ServerRequest('POST', 'https://yansongda.cn/douyin/notify', array_merge($headers, $overrideHeaders), $body);
+    }
+
+    private function signDouyinContents(string $contents): string
+    {
+        $privateKey = openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/douyinPlatformPrivateKey.pem'));
+        self::assertNotFalse($privateKey);
+
+        self::assertTrue(openssl_sign($contents, $signature, $privateKey, OPENSSL_ALGO_SHA256));
+
+        return $signature;
     }
 }

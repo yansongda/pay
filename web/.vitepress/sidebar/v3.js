@@ -64,6 +64,7 @@ export default [
       { text: '支付', link: '/docs/v3/douyin/pay' },
       { text: '查询', link: '/docs/v3/douyin/query' },
       { text: '退款', link: '/docs/v3/douyin/refund' },
+      { text: '退款审核', link: '/docs/v3/douyin/refund-audit' },
       { text: '关闭', link: '/docs/v3/douyin/close' },
       { text: '取消', link: '/docs/v3/douyin/cancel' },
       { text: '接收回调', link: '/docs/v3/douyin/callback' },

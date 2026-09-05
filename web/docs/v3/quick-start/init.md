@@ -116,20 +116,20 @@ $config = [
     ],
     'douyin' => [
         'default' => [
-            // 「选填」商户号
-            // 抖音开放平台 --> 应用详情 --> 支付信息 --> 产品管理 --> 商户号
-            'mch_id' => '73744242495132490630',
-            // 「必填」支付 Token，用于支付回调签名
-            // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> Token(令牌)
-            'mch_secret_token' => 'douyin_mini_token',
-            // 「必填」支付 SALT，用于支付签名
-            // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> SALT
-            'mch_secret_salt' => 'oDxWDBr4U7FAAQ8hnGDm29i4A6pbTMDKme4WLLvA',
-            // 「必填」小程序 app_id
-            // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 小程序appid
-            'mini_app_id' => 'tt226e54d3bd581bf801',
-            // 「选填」抖音开放平台服务商id
-            'thirdparty_id' => '',
+            // 「必填」小程序 app_id（即 client_key）
+            // 抖音开放平台 --> 应用详情 --> 基础信息
+            'app_id' => 'tt226e54d3bd581bf801',
+            // 「必填」应用密钥，用于获取 client_token
+            // 抖音开放平台 --> 应用详情 --> 基础信息
+            'app_secret' => 'your-app-secret',
+            // 「必填」应用私钥，用于下单请求加签
+            // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 小程序支付密钥，自行生成后上传公钥
+            'app_private_key' => "-----BEGIN RSA PRIVATE KEY-----\n...",
+            // 「必填」抖音平台公钥，用于支付回调验签
+            // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 抖音平台公钥
+            'platform_public_key' => "-----BEGIN PUBLIC KEY-----\n...",
+            // 「选填」抖音退款回调地址（不传则使用下单时传入的地址）
+            'refund_notify_url' => 'https://yansongda.cn/douyin/refund/notify',
             // 「选填」抖音支付回调地址
             'notify_url' => 'https://yansongda.cn/douyin/notify',
         ],
