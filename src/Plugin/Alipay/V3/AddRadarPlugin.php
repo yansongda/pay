@@ -14,6 +14,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Traits\AlipayTrait;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Str;
 
 use function Yansongda\Artful\get_radar_method;
 
@@ -71,12 +72,10 @@ class AddRadarPlugin implements PluginInterface
     }
 
     /**
-     * 生成请求唯一 ID（对齐官方 `AlipayConfigUtil::createUuid()` 手法）.
+     * 生成请求唯一 ID（UUID v4，加密安全随机源）.
      */
     protected function getAlipayRequestId(): string
     {
-        $chars = md5(uniqid((string) mt_rand(), true));
-
-        return substr($chars, 0, 8).'-'.substr($chars, 8, 4).'-'.substr($chars, 12, 4).'-'.substr($chars, 16, 4).'-'.substr($chars, 20, 12);
+        return Str::uuidV4();
     }
 }

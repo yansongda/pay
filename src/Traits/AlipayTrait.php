@@ -17,6 +17,7 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Str;
 
 trait AlipayTrait
 {
@@ -195,12 +196,10 @@ trait AlipayTrait
     }
 
     /**
-     * 生成 UUID（对齐官方 `createUuid()` 手法）.
+     * 生成请求唯一 ID（UUID v4，加密安全随机源）.
      */
     private static function getAlipayV3Uuid(): string
     {
-        $chars = md5(uniqid((string) mt_rand(), true));
-
-        return substr($chars, 0, 8).'-'.substr($chars, 8, 4).'-'.substr($chars, 12, 4).'-'.substr($chars, 16, 4).'-'.substr($chars, 20, 12);
+        return Str::uuidV4();
     }
 }
