@@ -98,11 +98,23 @@ class VerifySignaturePlugin implements PluginInterface
         }
 
         // 时间戳校验（13 位毫秒，±300 秒）：强制路径无条件校验；非强制路径有签才校验
-        self::verifyAlipayV3Timestamp($timestamp);
+        $this->verifyAlipayV3Timestamp($timestamp);
 
         // 组串：`${timestamp}\n${nonce}\n${body}\n`（末尾必带 \n）
         $content = $timestamp."\n".$nonce."\n".$body."\n";
 
         self::verifyAlipaySign($config, $content, $sign);
+    }
+
+    /**
+     * 验证支付宝 V3 时间戳是否在有效期内（5 分钟，13 位毫秒）.
+     *
+     * @throws InvalidSignException 时间戳已过期
+     */
+    protected function verifyAlipayV3Timestamp(string $timestamp): void
+    {
+        if (abs(time() - intdiv((int) $timestamp, 1000)) > 300) {
+            throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 支付宝 V3 时间戳已过期', ['timestamp' => $timestamp, 'current_time' => time()]);
+        }
     }
 }

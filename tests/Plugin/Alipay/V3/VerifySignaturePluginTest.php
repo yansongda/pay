@@ -165,6 +165,36 @@ class VerifySignaturePluginTest extends TestCase
         $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
     }
 
+    public function testVerifyAlipayV3TimestampValid(): void
+    {
+        $stub = new class extends VerifySignaturePlugin {
+            public function exposeVerifyTimestamp(string $timestamp): void
+            {
+                $this->verifyAlipayV3Timestamp($timestamp);
+            }
+        };
+
+        $stub->exposeVerifyTimestamp((string) (time() * 1000));
+
+        self::assertTrue(true);
+    }
+
+    public function testVerifyAlipayV3TimestampExpired(): void
+    {
+        $stub = new class extends VerifySignaturePlugin {
+            public function exposeVerifyTimestamp(string $timestamp): void
+            {
+                $this->verifyAlipayV3Timestamp($timestamp);
+            }
+        };
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+        self::expectExceptionMessage('签名异常: 支付宝 V3 时间戳已过期');
+
+        $stub->exposeVerifyTimestamp('1735689600123');
+    }
+
     /**
      * 生成带签名的模拟响应（签名密钥与测试租户支付宝公钥证书同属一对密钥）.
      *

@@ -221,22 +221,6 @@ class AlipayTraitTest extends TestCase
         AlipayTraitStub::verifyAlipaySign($config, "1666004496123\nyansongda-nonce\n{}\n", 'not-empty-sign');
     }
 
-    public function testVerifyAlipayV3TimestampValid(): void
-    {
-        AlipayTraitStub::verifyAlipayV3Timestamp((string) (time() * 1000));
-
-        self::assertTrue(true);
-    }
-
-    public function testVerifyAlipayV3TimestampExpired(): void
-    {
-        self::expectException(InvalidSignException::class);
-        self::expectExceptionCode(Exception::SIGN_ERROR);
-        self::expectExceptionMessage('签名异常: 支付宝 V3 时间戳已过期');
-
-        AlipayTraitStub::verifyAlipayV3Timestamp('1735689600123');
-    }
-
     private static function getAuthString(string $authorization): string
     {
         $rest = substr($authorization, strlen('ALIPAY-SHA256withRSA '));

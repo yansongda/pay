@@ -104,7 +104,9 @@ trait AlipayTrait
 
         $authString .= ',app_cert_sn='.CertManager::alipayGetAppCertSn($appPublicCertPath);
 
-        $authString .= ',nonce='.self::getAlipayV3Uuid().',timestamp='.self::getAlipayV3Timestamp();
+        // 毫秒时间戳（对齐官方 `getCurrentMilis()` 手法）+ 请求唯一 ID（UUID v4）
+        $timeInfo = explode(' ', microtime());
+        $authString .= ',nonce='.Str::uuidV4().',timestamp='.sprintf('%d%03d', (int) $timeInfo[1], (int) ((float) $timeInfo[0] * 1000));
 
         $content = $authString."\n"
             .$httpMethod."\n"
@@ -115,18 +117,6 @@ trait AlipayTrait
         openssl_sign($content, $sign, self::getAlipayPrivateKey($config), OPENSSL_ALGO_SHA256);
 
         return 'ALIPAY-SHA256withRSA '.$authString.',sign='.base64_encode($sign);
-    }
-
-    /**
-     * 验证支付宝 V3 时间戳是否在有效期内（5 分钟，13 位毫秒）.
-     *
-     * @throws InvalidSignException 时间戳已过期
-     */
-    public static function verifyAlipayV3Timestamp(string $timestamp): void
-    {
-        if (abs(time() - intdiv((int) $timestamp, 1000)) > 300) {
-            throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: 支付宝 V3 时间戳已过期', ['timestamp' => $timestamp, 'current_time' => time()]);
-        }
     }
 
     /**
@@ -149,23 +139,5 @@ trait AlipayTrait
         $rocket->mergeParams([
             'extend_params' => array_merge($params['extend_params'] ?? [], ['sys_service_provider_id' => $serviceProviderId]),
         ]);
-    }
-
-    /**
-     * 获取当前毫秒时间戳（对齐官方 `getCurrentMilis()` 手法）.
-     */
-    private static function getAlipayV3Timestamp(): string
-    {
-        $timeInfo = explode(' ', microtime());
-
-        return sprintf('%d%03d', (int) $timeInfo[1], (int) ((float) $timeInfo[0] * 1000));
-    }
-
-    /**
-     * 生成请求唯一 ID（UUID v4，加密安全随机源）.
-     */
-    private static function getAlipayV3Uuid(): string
-    {
-        return Str::uuidV4();
     }
 }

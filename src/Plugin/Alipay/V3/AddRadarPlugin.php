@@ -58,7 +58,7 @@ class AddRadarPlugin implements PluginInterface
             'User-Agent' => 'yansongda/pay-v3',
             'Content-Type' => 'application/json; charset=utf-8',
             // 官方 SDK 无条件携带，用于网关侧定位一次请求
-            'alipay-request-id' => $this->getAlipayRequestId(),
+            'alipay-request-id' => Str::uuidV4(),
         ];
 
         if (!empty($authorization = $payload?->get('_authorization'))) {
@@ -70,13 +70,5 @@ class AddRadarPlugin implements PluginInterface
         }
 
         return $headers;
-    }
-
-    /**
-     * 生成请求唯一 ID（UUID v4，加密安全随机源）.
-     */
-    protected function getAlipayRequestId(): string
-    {
-        return Str::uuidV4();
     }
 }
