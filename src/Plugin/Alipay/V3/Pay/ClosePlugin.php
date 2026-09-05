@@ -19,7 +19,7 @@ use Yansongda\Pay\Traits\AlipayTrait;
  * 业务字段（`out_trade_no`/`trade_no` 二选一、`operator_id` 等）由调用方经订单参数直接透传；
  * `notify_url` 为官方 `AlipayTradeCloseModel` 独有字段，按调用方传入优先、租户配置回落注入.
  *
- * @see https://github.com/alipay/alipay-sdk-php-all `v3/src/Api/AlipayTradeApi::closeRequest()`
+ * @see https://opendocs.alipay.com/open-v3/48ea518b_alipay.trade.close
  */
 class ClosePlugin implements PluginInterface
 {

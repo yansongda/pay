@@ -54,7 +54,7 @@ class VerifySignaturePlugin implements PluginInterface
      * 验签策略对齐官方 SDK：HTTP 200 强制验签；其余响应存在 `alipay-signature` 时验签（防篡改），
      * 无签名直接放行进入错误处理（不做时间戳校验，避免无签且时间戳过期的错误响应被时间戳异常拦截）.
      *
-     * @see https://github.com/alipay/alipay-sdk-php-all `v3/src/Util/AlipayConfigUtil::verifyResponse()`
+     * @see https://opendocs.alipay.com/open-v3/054d0z 支付宝 V3 同步验签
      *
      * @throws ContainerException
      * @throws InvalidConfigException

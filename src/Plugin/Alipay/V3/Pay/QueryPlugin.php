@@ -14,7 +14,7 @@ use Yansongda\Artful\Rocket;
  *
  * 业务字段（`out_trade_no`/`trade_no` 二选一，`query_options` 等）由调用方经订单参数直接透传.
  *
- * @see https://github.com/alipay/alipay-sdk-php-all `v3/src/Api/AlipayTradeApi::queryRequest()`
+ * @see https://opendocs.alipay.com/open-v3/cbe8826d_alipay.trade.query
  */
 class QueryPlugin implements PluginInterface
 {

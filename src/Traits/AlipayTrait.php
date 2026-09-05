@@ -92,7 +92,7 @@ trait AlipayTrait
      * 待签名组串共 5 行：authString、httpMethod、requestUri（path+query，不含 host）、
      * requestBody（空 body 保留空行）、appAuthToken（缺省时整行缺省）.
      *
-     * @see https://github.com/alipay/alipay-sdk-php-all `v3/src/Util/AlipayConfigUtil::sign()`
+     * @see https://opendocs.alipay.com/open-v3/05419m 支付宝支付签名生成算法
      *
      * @throws InvalidConfigException 缺少商户私钥配置或证书解析失败
      */

@@ -18,7 +18,7 @@ use Yansongda\Pay\Traits\AlipayTrait;
 /**
  * 扫码支付（主动扫，预下单生成二维码）.
  *
- * @see https://github.com/alipay/alipay-sdk-php-all `v3/src/Api/AlipayTradeApi::precreate()`
+ * @see https://opendocs.alipay.com/open-v3/fa0c2141_alipay.trade.precreate
  */
 class PrecreatePlugin implements PluginInterface
 {

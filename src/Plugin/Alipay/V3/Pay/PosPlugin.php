@@ -18,7 +18,7 @@ use Yansongda\Pay\Traits\AlipayTrait;
 /**
  * 付款码支付（被扫码）.
  *
- * @see https://github.com/alipay/alipay-sdk-php-all `v3/src/Api/AlipayTradeApi::pay()`
+ * @see https://opendocs.alipay.com/open-v3/08c7f9f8_alipay.trade.pay
  */
 class PosPlugin implements PluginInterface
 {

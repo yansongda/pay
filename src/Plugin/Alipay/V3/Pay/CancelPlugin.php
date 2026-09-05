@@ -14,7 +14,7 @@ use Yansongda\Artful\Rocket;
  *
  * 业务字段（`out_trade_no`/`trade_no` 二选一）由调用方经订单参数直接透传.
  *
- * @see https://github.com/alipay/alipay-sdk-php-all `v3/src/Api/AlipayTradeApi::cancelRequest()`
+ * @see https://opendocs.alipay.com/open-v3/cd7d54d2_alipay.trade.cancel
  */
 class CancelPlugin implements PluginInterface
 {

@@ -20,7 +20,7 @@ use function Yansongda\Artful\get_radar_method;
 /**
  * 支付宝 V3 请求签名插件：生成 `Authorization` header 并写入 payload.
  *
- * @see https://github.com/alipay/alipay-sdk-php-all `v3/src/Util/AlipayConfigUtil::sign()`
+ * @see https://opendocs.alipay.com/open-v3/05419m 支付宝支付签名生成算法
  */
 class AddPayloadSignaturePlugin implements PluginInterface
 {
