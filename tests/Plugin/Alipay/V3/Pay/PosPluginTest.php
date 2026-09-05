@@ -67,9 +67,10 @@ class PosPluginTest extends TestCase
                 'alipay-v3-notify' => [
                     'app_id' => 'alipay_v3_test_app_id',
                     'app_secret_cert' => __DIR__.'/../../../../Cert/alipay-v3/app_secret_test.pem',
-                    'alipay_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzyN1XQGDxQW7Krn1Fs9vBQ02Ng9TYDMO2tBlaPZw8GUDljlD1fL3xxQT04shbVvDK2R28e1+JizqeAIaYtrjeMczGyKDwHhGYp9atMFCiUaE+IGb4IRzgZa9DZlv0W3PCULkL0Fuot1E/OsGeCX8Ny4ZWrj+KEhNg7A40M4RAkingvi47CxLYVHHyi59OkpXzGFR5gdqv0oFCUgFUp6QREnW3IOye8WCeJB1siWHRLvhUP9FP0h2sBbgcd/nKVakE0Ger7RySCUZI6Oap1oYNAH9Vnt4aeDJ9OIw47O3rQzVgn+6IGtupZ5aG6Z5CRgleII03HE681o3wrcpYX5XwQIDAQAB',
+
+                    'app_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
+                    'alipay_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
                     'notify_url' => 'https://pay.yansongda.cn/v3/notify',
-                    'version' => 'v3',
                 ],
             ],
             '_force' => true,
@@ -97,9 +98,10 @@ class PosPluginTest extends TestCase
                 'alipay-v3-notify' => [
                     'app_id' => 'alipay_v3_test_app_id',
                     'app_secret_cert' => __DIR__.'/../../../../Cert/alipay-v3/app_secret_test.pem',
-                    'alipay_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzyN1XQGDxQW7Krn1Fs9vBQ02Ng9TYDMO2tBlaPZw8GUDljlD1fL3xxQT04shbVvDK2R28e1+JizqeAIaYtrjeMczGyKDwHhGYp9atMFCiUaE+IGb4IRzgZa9DZlv0W3PCULkL0Fuot1E/OsGeCX8Ny4ZWrj+KEhNg7A40M4RAkingvi47CxLYVHHyi59OkpXzGFR5gdqv0oFCUgFUp6QREnW3IOye8WCeJB1siWHRLvhUP9FP0h2sBbgcd/nKVakE0Ger7RySCUZI6Oap1oYNAH9Vnt4aeDJ9OIw47O3rQzVgn+6IGtupZ5aG6Z5CRgleII03HE681o3wrcpYX5XwQIDAQAB',
+
+                    'app_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
+                    'alipay_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
                     'notify_url' => 'https://pay.yansongda.cn/v3/notify',
-                    'version' => 'v3',
                 ],
             ],
             '_force' => true,

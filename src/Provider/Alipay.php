@@ -15,18 +15,13 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\AlipayConfig;
-use Yansongda\Pay\Config\AlipayV3Config;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
-use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AppCallbackPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
-use Yansongda\Pay\Plugin\Alipay\V3\CallbackPlugin as V3CallbackPlugin;
-use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -41,8 +36,6 @@ use Yansongda\Supports\Str;
  */
 class Alipay implements ProviderInterface
 {
-    use ProviderConfigTrait;
-
     /**
      * 支付宝网关域名（V2/V3 共用：V2 拼接时追加 `gateway.do`，V3 直接拼 `/v3/` 路径）.
      */
@@ -58,7 +51,7 @@ class Alipay implements ProviderInterface
     public const V3_SANDBOX_URL = 'http://openapi.sandbox.dl.alipaydev.com';
 
     /**
-     * Alipay V3 已支持的 shortcut（其余 shortcut 暂不支持，请通过 `_config` 指向 V2 租户）.
+     * Alipay V3 已支持的 shortcut（接口级自动分流：命中则直接走 V3 最新版接口，其余走 V2）.
      */
     public const V3_SHORTCUTS = ['pos', 'scan', 'query', 'refund', 'cancel', 'close'];
 
@@ -72,22 +65,13 @@ class Alipay implements ProviderInterface
      */
     public function __call(string $shortcut, array $params): Collection|MessageInterface|Rocket|null
     {
-        /** @var AlipayConfig $config */
-        $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, (array) ($params[0] ?? []));
+        $shortcut = strtolower($shortcut);
 
-        if ($config instanceof AlipayV3Config) {
-            $shortcut = strtolower($shortcut);
-
-            if (!in_array($shortcut, self::V3_SHORTCUTS, true)) {
-                throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: Alipay V3 暂不支持 '.$shortcut.'，请通过 _config 指向 V2 租户');
-            }
-
+        if (in_array($shortcut, self::V3_SHORTCUTS, true)) {
             return Artful::shortcut('\Yansongda\Pay\Shortcut\Alipay\V3\\'.Str::studly($shortcut).'Shortcut', ...$params);
         }
 
-        $plugin = '\Yansongda\Pay\Shortcut\Alipay\\'.Str::studly($shortcut).'Shortcut';
-
-        return Artful::shortcut($plugin, ...$params);
+        return Artful::shortcut('\Yansongda\Pay\Shortcut\Alipay\\'.Str::studly($shortcut).'Shortcut', ...$params);
     }
 
     /**
@@ -154,22 +138,11 @@ class Alipay implements ProviderInterface
      */
     public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection
     {
-        /** @var AlipayConfig $config */
-        $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $params ?? []);
-
-        if ($config instanceof AlipayV3Config) {
-            $request = $this->getV3CallbackParams($contents);
-
-            Event::dispatch(new CallbackReceived(Pay::PROVIDER_ALIPAY, clone $request, $params, null));
-
-            return $this->pay([V3CallbackPlugin::class], ['_request' => $request, '_params' => $params]);
-        }
-
         $request = $this->getCallbackParams($contents);
 
         Event::dispatch(new CallbackReceived(Pay::PROVIDER_ALIPAY, $request->all(), $params, null));
 
-        return $this->pay([CallbackPlugin::class], $request->merge($params)->all());
+        return $this->pay([CallbackPlugin::class], $request->merge($params ?? [])->all());
     }
 
     /**
@@ -183,16 +156,9 @@ class Alipay implements ProviderInterface
      */
     public function appCallback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection
     {
-        /** @var AlipayConfig $config */
-        $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $params ?? []);
-
-        if ($config instanceof AlipayV3Config) {
-            throw new InvalidParamsException(Exception::PARAMS_METHOD_NOT_SUPPORTED, '参数异常: Alipay V3 暂不支持应用回调，请通过 _config 指向 V2 租户');
-        }
-
         $request = $this->getCallbackParams($contents);
 
-        return $this->pay([AppCallbackPlugin::class], $request->merge($params)->all());
+        return $this->pay([AppCallbackPlugin::class], $request->merge($params ?? [])->all());
     }
 
     public function success(): ResponseInterface
@@ -201,48 +167,32 @@ class Alipay implements ProviderInterface
     }
 
     /**
+     * 提取回调参数：数组直接使用；`body`/`headers` 形态（webhook 转发）解析 form 串；
+     * ServerRequest 按 GET/POST 取参数；空则从全局请求读取.
+     *
      * @param null|array<string, mixed>|ServerRequestInterface $contents
      */
     protected function getCallbackParams(array|ServerRequestInterface|null $contents = null): Collection
     {
-        if (is_array($contents)) {
-            return Collection::wrap($contents);
-        }
-
         if ($contents instanceof ServerRequestInterface) {
             return Collection::wrap('GET' === $contents->getMethod() ? $contents->getQueryParams()
                 : $contents->getParsedBody());
         }
 
-        $request = ServerRequest::fromGlobals();
-
-        return Collection::wrap(
-            array_merge($request->getQueryParams(), $request->getParsedBody())
-        );
-    }
-
-    /**
-     * @param null|array<string, mixed>|ServerRequestInterface $contents
-     */
-    protected function getV3CallbackParams(array|ServerRequestInterface|null $contents = null): ServerRequestInterface
-    {
-        if ($contents instanceof ServerRequestInterface) {
-            return $contents;
-        }
-
         if (is_array($contents) && isset($contents['body'], $contents['headers'])) {
-            $request = new ServerRequest('POST', 'http://localhost', $contents['headers'], $contents['body']);
-
             parse_str((string) $contents['body'], $parsedBody);
 
-            return $request->withParsedBody($parsedBody);
+            return Collection::wrap($parsedBody);
         }
 
         if (is_array($contents)) {
-            // 支付宝异步通知为 form 参数（非 JSON body）：普通数组构造为 parsedBody 的模拟回调请求
-            return (new ServerRequest('POST', 'http://localhost'))->withParsedBody($contents);
+            return Collection::wrap($contents);
         }
 
-        return ServerRequest::fromGlobals();
+        $request = ServerRequest::fromGlobals();
+
+        return Collection::wrap(
+            array_merge($request->getQueryParams(), $request->getParsedBody() ?? [])
+        );
     }
 }

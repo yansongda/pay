@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Alipay\V2;
+namespace Yansongda\Pay\Plugin\Alipay;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -12,7 +12,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\AlipayV2Config;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AlipayTrait;
@@ -24,6 +24,9 @@ class CallbackPlugin implements PluginInterface
     use AlipayTrait;
 
     /**
+     * 支付宝异步通知（V2 form 参数格式，V2/V3 接口的报文与验签组串同构）：
+     * 除去 `sign`/`sign_type` 后按字典序组串 + RSA2 验签；不校验 SN、无时间戳环节、无条件强制.
+     *
      * @throws ContainerException
      * @throws InvalidConfigException
      * @throws ServiceNotFoundException
@@ -35,7 +38,7 @@ class CallbackPlugin implements PluginInterface
 
         $params = $rocket->getParams();
 
-        /** @var AlipayV2Config $config */
+        /** @var AlipayConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $params);
 
         $value = filter_params($params, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k);

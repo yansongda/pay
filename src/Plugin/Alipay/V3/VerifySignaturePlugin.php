@@ -13,7 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
-use Yansongda\Pay\Config\AlipayV3Config;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -52,7 +52,7 @@ class VerifySignaturePlugin implements PluginInterface
     /**
      * 验证支付宝 V3 同步响应签名.
      *
-     * 验签策略对齐官方 SDK：HTTP 200 强制验签；其余响应存在 `alipay-signature` 时验签（防篡改），
+     * 验签策略对齐官方 SDK（证书模式）：HTTP 200 强制验签；其余响应存在 `alipay-signature` 时验签（防篡改），
      * 无签名直接放行进入错误处理（不做时间戳校验，避免无签且时间戳过期的错误响应被时间戳异常拦截）.
      *
      * @see https://opendocs.alipay.com/open-v3/054d0z 支付宝 V3 同步验签
@@ -80,13 +80,16 @@ class VerifySignaturePlugin implements PluginInterface
             return;
         }
 
-        /** @var AlipayV3Config $config */
+        /** @var AlipayConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $rocket->getParams());
 
         // 证书模式：按 `alipay-sn` 匹配本地支付宝公钥证书 SN。
         // 有意偏差：`alipay-sn` 缺失或与本地证书不匹配一律抛异常（官方会回落缓存第一个公钥，此处更严格）
-        if (!empty($config->getAlipayPublicCertPath())
-            && $response->getHeaderLine('alipay-sn') !== CertManager::alipayGetAppCertSn($config->getAlipayPublicCertPath())) {
+        if (empty($alipayPublicCertPath = $config->getAlipayPublicCertPath())) {
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [alipay_public_cert_path]');
+        }
+
+        if ($response->getHeaderLine('alipay-sn') !== CertManager::alipayGetAppCertSn($alipayPublicCertPath)) {
             throw new InvalidSignException(
                 Exception::SIGN_ERROR,
                 '签名异常: 支付宝公钥证书已过期/不匹配，请重新下载最新支付宝公钥证书并替换',
@@ -100,6 +103,6 @@ class VerifySignaturePlugin implements PluginInterface
         // 组串：`${timestamp}\n${nonce}\n${body}\n`（末尾必带 \n）
         $content = $timestamp."\n".$nonce."\n".$body."\n";
 
-        self::verifyAlipayV3Sign($config, $content, $sign);
+        self::verifyAlipaySign($config, $content, $sign);
     }
 }

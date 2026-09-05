@@ -78,6 +78,7 @@ class ScanShortcutTest extends TestCase
             'alipay-timestamp' => $timestamp,
             'alipay-nonce' => $nonce,
             'alipay-signature' => base64_encode($sign),
+            'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'),
         ], $body));
         Pay::set(HttpClientInterface::class, $http);
 
@@ -129,7 +130,7 @@ class ScanShortcutTest extends TestCase
         Pay::set(HttpClientInterface::class, $http);
 
         $result = Artful::artful($this->plugin->getPlugins([]), [
-            '_config' => 'alipay-v3-cert',
+            '_config' => 'alipay-v3',
             'out_trade_no' => 'v3scancert1704093802',
             'total_amount' => '0.01',
             'subject' => 'yansongda 测试 - V3 Scan Cert',

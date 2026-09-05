@@ -12,7 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
-use Yansongda\Pay\Config\AlipayV2Config;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AlipayTrait;
@@ -48,7 +48,7 @@ class StartPlugin implements PluginInterface
      */
     protected function getPayload(array $params): array
     {
-        /** @var AlipayV2Config $config */
+        /** @var AlipayConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $params);
 
         return [
@@ -72,7 +72,7 @@ class StartPlugin implements PluginInterface
     /**
      * @param array<string, mixed> $params
      */
-    protected function getReturnUrl(array $params, AlipayV2Config $config): string
+    protected function getReturnUrl(array $params, AlipayConfig $config): string
     {
         if (!empty($params['_return_url'])) {
             return $params['_return_url'];
@@ -84,7 +84,7 @@ class StartPlugin implements PluginInterface
     /**
      * @param array<string, mixed> $params
      */
-    protected function getNotifyUrl(array $params, AlipayV2Config $config): string
+    protected function getNotifyUrl(array $params, AlipayConfig $config): string
     {
         if (!empty($params['_notify_url'])) {
             return $params['_notify_url'];
@@ -96,7 +96,7 @@ class StartPlugin implements PluginInterface
     /**
      * @param array<string, mixed> $params
      */
-    protected function getAppAuthToken(array $params, AlipayV2Config $config): string
+    protected function getAppAuthToken(array $params, AlipayConfig $config): string
     {
         if (!empty($params['_app_auth_token'])) {
             return $params['_app_auth_token'];
@@ -108,7 +108,7 @@ class StartPlugin implements PluginInterface
     /**
      * @throws InvalidConfigException 缺少证书配置或证书解析失败
      */
-    protected function getAppCertSn(AlipayV2Config $config): string
+    protected function getAppCertSn(AlipayConfig $config): string
     {
         $path = $config->getAppPublicCertPath();
 
@@ -122,7 +122,7 @@ class StartPlugin implements PluginInterface
     /**
      * @throws InvalidConfigException 缺少证书配置或证书解析失败
      */
-    protected function getAlipayRootCertSn(AlipayV2Config $config): string
+    protected function getAlipayRootCertSn(AlipayConfig $config): string
     {
         $path = $config->getAlipayRootCertPath();
 

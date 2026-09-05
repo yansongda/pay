@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\AlipayV2Config;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
@@ -103,7 +103,7 @@ class StartPluginTest extends TestCase
         $rocket = new Rocket();
 
         // 证书路径不存在时，CertManager 解析失败抛出异常
-        /** @var AlipayV2Config $alipayConfig */
+        /** @var AlipayConfig $alipayConfig */
         $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
         $alipayConfig->setAppPublicCertPath('/nonexistent/path/cert.crt');
 
@@ -118,7 +118,7 @@ class StartPluginTest extends TestCase
     {
         $rocket = new Rocket();
 
-        /** @var AlipayV2Config $alipayConfig */
+        /** @var AlipayConfig $alipayConfig */
         $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
         $alipayConfig->setAppPublicCertPath(__DIR__.'/../../Cert/foo');
 
@@ -133,7 +133,7 @@ class StartPluginTest extends TestCase
     {
         $rocket = new Rocket();
 
-        /** @var AlipayV2Config $alipayConfig */
+        /** @var AlipayConfig $alipayConfig */
         $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
         $alipayConfig->setAlipayRootCertPath('');
 
@@ -148,7 +148,7 @@ class StartPluginTest extends TestCase
     {
         $rocket = new Rocket();
 
-        /** @var AlipayV2Config $alipayConfig */
+        /** @var AlipayConfig $alipayConfig */
         $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
         $alipayConfig->setAlipayRootCertPath(__DIR__.'/../../../Cert/foo');
 
@@ -189,7 +189,7 @@ class StartPluginTest extends TestCase
 
     public function testAlipayRootCertSnString()
     {
-        /** @var AlipayV2Config $alipayConfig */
+        /** @var AlipayConfig $alipayConfig */
         $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
         $alipayConfig->setAlipayRootCertPath('-----BEGIN CERTIFICATE-----
 MIIBszCCAVegAwIBAgIIaeL+wBcKxnswDAYIKoEcz1UBg3UFADAuMQswCQYDVQQG

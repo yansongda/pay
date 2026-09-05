@@ -12,6 +12,7 @@ use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin;
@@ -78,6 +79,7 @@ class PosShortcutTest extends TestCase
             'alipay-timestamp' => $timestamp,
             'alipay-nonce' => $nonce,
             'alipay-signature' => base64_encode($sign),
+            'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'),
         ], $body));
         Pay::set(HttpClientInterface::class, $http);
 

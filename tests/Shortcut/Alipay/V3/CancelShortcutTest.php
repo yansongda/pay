@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Tests\Shortcut\Alipay\V3;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
+use Yansongda\Pay\CertManager;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -86,6 +87,7 @@ class CancelShortcutTest extends TestCase
             'alipay-timestamp' => $timestamp,
             'alipay-nonce' => $nonce,
             'alipay-signature' => base64_encode($sign),
+            'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'),
         ], $body);
     }
 }

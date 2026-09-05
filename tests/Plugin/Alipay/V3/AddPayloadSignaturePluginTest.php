@@ -44,18 +44,18 @@ class AddPayloadSignaturePluginTest extends TestCase
         [$authString, $sign] = explode(',sign=', $rest, 2);
         self::assertEquals('ALIPAY-SHA256withRSA', $scheme);
 
-        // authString: 公钥模式无 app_cert_sn 段,顺序 app_id → nonce → timestamp(13 位毫秒)
+        // authString: 顺序 app_id → app_cert_sn → nonce → timestamp(13 位毫秒)
         self::assertMatchesRegularExpression(
-            '/^app_id=alipay_v3_test_app_id,nonce=[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12},timestamp=\d{13}$/',
+            '/^app_id=alipay_v3_test_app_id,app_cert_sn=[0-9a-f]+,nonce=[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12},timestamp=\d{13}$/',
             $authString
         );
 
-        // 重建 5 行组串(body 非空 + appAuthToken 缺省第 5 行整行缺省),签名可被支付宝公钥验证
+        // 重建 5 行组串(body 非空 + appAuthToken 缺省第 5 行整行缺省),签名可被支付宝公钥证书验证
         $content = $authString."\n"
             .'POST'."\n"
             .'/v3/alipay/trade/pay'."\n"
             .$body."\n";
-        $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/alipay_public_test.pem'));
+        $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'));
         self::assertEquals(1, openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256));
     }
 
@@ -79,39 +79,7 @@ class AddPayloadSignaturePluginTest extends TestCase
             .'GET'."\n"
             .'/v3/alipay/trade/query?out_trade_no=yansongda'."\n"
             ."\n";
-        $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/alipay_public_test.pem'));
-        self::assertEquals(1, openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256));
-    }
-
-    public function testCertMode(): void
-    {
-        $body = '{"out_trade_no":"yansongda"}';
-        $rocket = (new Rocket())
-            ->setParams(['_config' => 'alipay-v3-cert'])
-            ->setPayload(new Collection([
-                '_method' => 'POST',
-                '_url' => '/v3/alipay/trade/precreate',
-                '_body' => $body,
-            ]));
-
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-
-        $authorization = $result->getPayload()->get('_authorization');
-        [$scheme, $rest] = explode(' ', $authorization, 2);
-        [$authString, $sign] = explode(',sign=', $rest, 2);
-        self::assertEquals('ALIPAY-SHA256withRSA', $scheme);
-
-        // 证书模式 authString 含 app_cert_sn 段
-        self::assertMatchesRegularExpression(
-            '/^app_id=alipay_v3_test_app_id,app_cert_sn=[0-9a-f]+,nonce=[0-9a-f\-]{36},timestamp=\d{13}$/',
-            $authString
-        );
-
-        $content = $authString."\n"
-            .'POST'."\n"
-            .'/v3/alipay/trade/precreate'."\n"
-            .$body."\n";
-        $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/alipay_public_test.pem'));
+        $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'));
         self::assertEquals(1, openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256));
     }
 
@@ -140,7 +108,7 @@ class AddPayloadSignaturePluginTest extends TestCase
             .'/v3/alipay/trade/pay'."\n"
             .$body."\n"
             .'override_token'."\n";
-        $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/alipay_public_test.pem'));
+        $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'));
         self::assertEquals(1, openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256));
     }
 
@@ -151,9 +119,9 @@ class AddPayloadSignaturePluginTest extends TestCase
                 'alipay-v3-fallback' => [
                     'app_id' => 'alipay_v3_test_app_id',
                     'app_secret_cert' => __DIR__.'/../../../Cert/alipay-v3/app_secret_test.pem',
-                    'alipay_public_key' => 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzyN1XQGDxQW7Krn1Fs9vBQ02Ng9TYDMO2tBlaPZw8GUDljlD1fL3xxQT04shbVvDK2R28e1+JizqeAIaYtrjeMczGyKDwHhGYp9atMFCiUaE+IGb4IRzgZa9DZlv0W3PCULkL0Fuot1E/OsGeCX8Ny4ZWrj+KEhNg7A40M4RAkingvi47CxLYVHHyi59OkpXzGFR5gdqv0oFCUgFUp6QREnW3IOye8WCeJB1siWHRLvhUP9FP0h2sBbgcd/nKVakE0Ger7RySCUZI6Oap1oYNAH9Vnt4aeDJ9OIw47O3rQzVgn+6IGtupZ5aG6Z5CRgleII03HE681o3wrcpYX5XwQIDAQAB',
+                    'app_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
+                    'alipay_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
                     'app_auth_token' => 'config_fallback_token',
-                    'version' => 'v3',
                 ],
             ],
             '_force' => true,

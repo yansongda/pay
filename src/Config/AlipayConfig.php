@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Config;
 
+use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
-abstract class AlipayConfig extends AbstractConfig
+/**
+ * 支付宝租户配置（V2 网关签名与 V3 OpenAPI 共用一套配置）.
+ */
+class AlipayConfig extends AbstractConfig
 {
-    /**
-     * API 版本：V2 网关签名（form 表单，`gateway.do`）.
-     */
-    public const VERSION_V2 = 'v2';
-
-    /**
-     * API 版本：V3 OpenAPI（RESTful `/v3/` 路径 + HTTP 头签名）.
-     */
-    public const VERSION_V3 = 'v3';
+    // ── 公共 ──
 
     protected string $appId = '';
     protected string $appSecretCert = '';
@@ -25,6 +22,12 @@ abstract class AlipayConfig extends AbstractConfig
     protected ?string $appAuthToken = null;
     protected ?string $serviceProviderId = null;
     protected int $mode = Pay::MODE_NORMAL;
+
+    // ── 证书（V2/V3 完全共用）──
+
+    protected string $appPublicCertPath = '';
+    protected string $alipayPublicCertPath = '';
+    protected string $alipayRootCertPath = '';
 
     public function setAppId(string $value): void
     {
@@ -59,6 +62,21 @@ abstract class AlipayConfig extends AbstractConfig
     public function setMode(int $value): void
     {
         $this->mode = $value;
+    }
+
+    public function setAppPublicCertPath(string $value): void
+    {
+        $this->appPublicCertPath = $value;
+    }
+
+    public function setAlipayPublicCertPath(string $value): void
+    {
+        $this->alipayPublicCertPath = $value;
+    }
+
+    public function setAlipayRootCertPath(string $value): void
+    {
+        $this->alipayRootCertPath = $value;
     }
 
     public function getAppId(): string
@@ -102,8 +120,33 @@ abstract class AlipayConfig extends AbstractConfig
         return $this->mode;
     }
 
+    public function getAppPublicCertPath(): string
+    {
+        return $this->appPublicCertPath;
+    }
+
+    public function getAlipayPublicCertPath(): string
+    {
+        return $this->alipayPublicCertPath;
+    }
+
+    public function getAlipayRootCertPath(): string
+    {
+        return $this->alipayRootCertPath;
+    }
+
     /**
-     * 租户 API 版本（由配置类决定：`AlipayV2Config` 为 v2，`AlipayV3Config` 为 v3）.
+     * V2/V3 管道均依赖 `appId`、`appSecretCert`、`appPublicCertPath`、`alipayPublicCertPath`，构造时强制；
+     * `alipayRootCertPath` 仅 V2 管道计算 `root_cert_sn` 时需要，懒校验（V3 协议无 root-cert-sn）.
+     *
+     * @throws InvalidConfigException 缺少必要配置参数
      */
-    abstract public function getVersion(): string;
+    protected function validateRequired(): void
+    {
+        $this->validateNotEmpty(
+            ['appId', 'appSecretCert', 'appPublicCertPath', 'alipayPublicCertPath'],
+            Exception::CONFIG_ALIPAY_INVALID,
+            '配置异常: 缺少支付宝配置'
+        );
+    }
 }

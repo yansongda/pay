@@ -11,7 +11,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\AlipayV3Config;
+use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AlipayTrait;
 use Yansongda\Supports\Collection;
@@ -38,7 +38,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
 
         $params = $rocket->getParams();
 
-        /** @var AlipayV3Config $config */
+        /** @var AlipayConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $params);
         $payload = $rocket->getPayload();
 
@@ -66,7 +66,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     /**
      * 提取签名组串中的 requestUri（path+query，不含 host）.
      */
-    protected function getSignatureUri(AlipayV3Config $config, ?Collection $payload): string
+    protected function getSignatureUri(AlipayConfig $config, ?Collection $payload): string
     {
         $url = self::getAlipayV3Url($config, $payload);
         $urlPath = parse_url($url, PHP_URL_PATH);
@@ -78,7 +78,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
     /**
      * @param array<string, mixed> $params
      */
-    protected function getAppAuthToken(array $params, AlipayV3Config $config): string
+    protected function getAppAuthToken(array $params, AlipayConfig $config): string
     {
         if (!empty($params['_app_auth_token'])) {
             return $params['_app_auth_token'];

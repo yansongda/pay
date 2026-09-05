@@ -35,24 +35,12 @@ class VerifySignaturePluginTest extends TestCase
         self::assertSame($rocket, $result);
     }
 
-    public function testNormalPublicKeyMode(): void
+    public function testNormal(): void
     {
         $body = json_encode(['code' => '10000', 'msg' => 'Success']);
         $response = $this->makeSignedResponse(200, $body);
 
         $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
-
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-
-        self::assertSame($rocket, $result);
-    }
-
-    public function testNormalCertMode(): void
-    {
-        $body = json_encode(['code' => '10000', 'msg' => 'Success']);
-        $response = $this->makeSignedResponse(200, $body, 'alipay-v3-cert', CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'));
-
-        $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3-cert'])->setDestinationOrigin($response);
 
         $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
 
@@ -99,7 +87,7 @@ class VerifySignaturePluginTest extends TestCase
     public function testForceVerifyWithoutSign(): void
     {
         // HTTP 200 强制验签：无签名也必须验签（空签抛异常）
-        $response = new Response(200, ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce'], '{}');
+        $response = new Response(200, ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')], '{}');
 
         $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
 
@@ -113,7 +101,7 @@ class VerifySignaturePluginTest extends TestCase
     {
         $response = new Response(
             200,
-            ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-signature' => 'invalid-sign'],
+            ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-signature' => 'invalid-sign', 'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')],
             '{}'
         );
 
@@ -135,7 +123,7 @@ class VerifySignaturePluginTest extends TestCase
 
         $response = new Response(
             200,
-            ['alipay-timestamp' => $timestamp, 'alipay-nonce' => $nonce, 'alipay-signature' => base64_encode($sign)],
+            ['alipay-timestamp' => $timestamp, 'alipay-nonce' => $nonce, 'alipay-signature' => base64_encode($sign), 'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')],
             $body
         );
 
@@ -148,12 +136,12 @@ class VerifySignaturePluginTest extends TestCase
         $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
     }
 
-    public function testCertModeSnMismatch(): void
+    public function testSnMismatch(): void
     {
         $body = json_encode(['code' => '10000']);
-        $response = $this->makeSignedResponse(200, $body, 'alipay-v3-cert', 'invalid-alipay-sn');
+        $response = $this->makeSignedResponse(200, $body, 'invalid-alipay-sn');
 
-        $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3-cert'])->setDestinationOrigin($response);
+        $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
 
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
@@ -162,13 +150,13 @@ class VerifySignaturePluginTest extends TestCase
         $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
     }
 
-    public function testCertModeSnMissing(): void
+    public function testSnMissing(): void
     {
-        // 有意偏差：证书模式下 alipay-sn 缺失一律抛异常（官方会回落缓存第一个公钥，此处更严格）
+        // 有意偏差：alipay-sn 缺失一律抛异常（官方会回落缓存第一个公钥，此处更严格）
         $body = json_encode(['code' => '10000']);
-        $response = $this->makeSignedResponse(200, $body, 'alipay-v3-cert');
+        $response = $this->makeSignedResponse(200, $body, null);
 
-        $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3-cert'])->setDestinationOrigin($response);
+        $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
 
         self::expectException(InvalidSignException::class);
         self::expectExceptionCode(Exception::SIGN_ERROR);
@@ -178,9 +166,11 @@ class VerifySignaturePluginTest extends TestCase
     }
 
     /**
-     * 生成带签名的模拟响应（签名密钥与测试租户支付宝公钥/公钥证书同属一对密钥）.
+     * 生成带签名的模拟响应（签名密钥与测试租户支付宝公钥证书同属一对密钥）.
+     *
+     * @param null|string $alipaySn null 时省略 `alipay-sn` 头
      */
-    private function makeSignedResponse(int $status, string $body, string $tenant = 'alipay-v3', string $alipaySn = ''): Response
+    private function makeSignedResponse(int $status, string $body, ?string $alipaySn = 'valid'): Response
     {
         $timestamp = (string) (int) (microtime(true) * 1000);
         $nonce = 'yansongda-nonce';
@@ -188,8 +178,10 @@ class VerifySignaturePluginTest extends TestCase
 
         $headers = ['alipay-timestamp' => $timestamp, 'alipay-nonce' => $nonce, 'alipay-signature' => base64_encode($sign)];
 
-        if ('alipay-v3-cert' === $tenant) {
-            $headers['alipay-sn'] = $alipaySn;
+        if (null !== $alipaySn) {
+            $headers['alipay-sn'] = 'valid' === $alipaySn
+                ? CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')
+                : $alipaySn;
         }
 
         return new Response($status, $headers, $body);
