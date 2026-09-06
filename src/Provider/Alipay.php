@@ -51,11 +51,6 @@ class Alipay implements ProviderInterface
     public const V3_SANDBOX_URL = 'http://openapi.sandbox.dl.alipaydev.com';
 
     /**
-     * Alipay V3 已支持的 shortcut（接口级自动分流：命中则直接走 V3 最新版接口，其余走 V2）.
-     */
-    public const V3_SHORTCUTS = ['pos', 'scan', 'query', 'refund', 'cancel', 'close'];
-
-    /**
      * @param array<int, mixed> $params
      *
      * @throws ContainerException
@@ -67,12 +62,7 @@ class Alipay implements ProviderInterface
     {
         $shortcut = strtolower($shortcut);
 
-        // 默认 V2 shortcut；接口级自动分流：命中 V3_SHORTCUTS 则覆盖为 V3 最新版接口
         $plugin = '\Yansongda\Pay\Shortcut\Alipay\\'.Str::studly($shortcut).'Shortcut';
-
-        if (in_array($shortcut, self::V3_SHORTCUTS, true)) {
-            $plugin = '\Yansongda\Pay\Shortcut\Alipay\V3\\'.Str::studly($shortcut).'Shortcut';
-        }
 
         return Artful::shortcut($plugin, ...$params);
     }

@@ -1,6 +1,6 @@
 # 支付宝 V3 API 支持 · 技术设计文档
 
-> **状态**：已实现（阶段一，接口级自动分流架构，V3 仅证书模式）
+> **状态**：已实现（阶段一，默认全部走 V2、V3 管道就绪待接入，V3 仅证书模式）
 > **对照实现**：`feat/alipay-v3` 分支，基线 test 1469 / assertions 3534 全绿
 
 ---
@@ -9,34 +9,32 @@
 
 支付宝官方已推出 OpenAPI V3（RESTful `/v3/` 路径、纯 JSON、HTTP 头签名 `ALIPAY-SHA256withRSA`），与 V2（网关签名 + form 表单）的签名、传参、回调验签机制完全不同。
 
-**最终架构决策**（经过两轮迭代，最终采用接口级分流）：
+**最终架构决策**（经过多轮迭代，最终采用默认 V2 + V3 管道就绪待接入）：
 
-- **接口级自动分流**：调用某接口时，SDK 已实现 V3 版本的直接走 V3 最新版；未实现的自动回落 V2。**不引入 `version` 租户配置**，调用代码零改动
-- **单一配置类**：V2/V3 共用一套租户配置与证书体系，V3 **仅支持证书模式**（V2 无公钥模式，证书字段天然共用，存量用户零配置变更）
-- **存量为零影响**：`web/h5/app/mini/transfer` 走 V2 的行为完全不变
+- **默认全部走 V2**：`__call` 不做版本分流，所有 shortcut 均走 V2 管道，存量用户零影响、零行为变化
+- **V3 管道整体就绪**：插件/Shortcut/签名验签/配置全部就位，通过 `Pay::alipay()->pay((new V3Shortcut)->getPlugins([]), $order)` 显式使用；`__call` 入口集成方式阶段二确定
+- **单一配置类**：V2/V3 共用一套租户配置与证书体系，V3 **仅支持证书模式**（V2 无公钥模式，证书字段天然共用）
 
 ## 2. 整体架构
 
 ```
-调用入口（无任何版本配置）
+调用入口（默认全部走 V2）
         │
 Pay::alipay()
         │
-Provider\Alipay::__call(shortcut)
-        │
-        ├─ shortcut ∈ V3_SHORTCUTS ──► Shortcut\Alipay\V3\{X}Shortcut   （V3 管道）
-        └─ 其余 shortcut            ──► Shortcut\Alipay\{X}Shortcut     （V2 管道，不动）
+Provider\Alipay::__call(shortcut) ──► Shortcut\Alipay\{X}Shortcut   （V2 管道，全部 shortcut）
 
-V3 管道（以 scan 为例）：
+V3 管道（显式使用，以 scan 为例）：
+Pay::alipay()->pay((new \Yansongda\Pay\Shortcut\Alipay\V3\ScanShortcut())->getPlugins([]), $order)
+
+管道内部：
 StartPlugin(Artful) → Pay\PrecreatePlugin(设 _url/_method/payload)
 → AddPayloadBodyPlugin(Artful) → AddPayloadSignaturePlugin(V3) → AddRadarPlugin(V3)
 → [HTTP openapi.alipay.com/v3/...]
 → ResponsePlugin(V3) → VerifySignaturePlugin(V3) → ParserPlugin(Artful)
-
-V3_SHORTCUTS = ['pos', 'scan', 'query', 'refund', 'cancel', 'close']
 ```
 
-`V3_SHORTCUTS` 常量为接口级分流唯一依据；`query/cancel/close/refund` 等 ProviderInterface 方法经 `__call` 自动分流。**异步通知不走此分流**：无论通知来自 V2 还是 V3 接口，报文均为 V2 form 格式，由统一的回调插件处理（见 §5）。
+`__call` 不做版本分流；`query/cancel/close/refund` 等 ProviderInterface 方法走 V2 对应实现（含 `_action` 分流）。**异步通知统一处理**：无论通知来自 V2 还是 V3 接口，报文均为 V2 form 格式，由统一的回调插件处理（见 §5）。
 
 ## 3. 配置设计
 
@@ -53,7 +51,7 @@ V3_SHORTCUTS = ['pos', 'scan', 'query', 'refund', 'cancel', 'close']
 
 校验规则：构造时强制 `appId + appSecretCert + appPublicCertPath + alipayPublicCertPath`（两管道均依赖）；`alipayRootCertPath` 懒校验（V2 `StartPlugin` 计算 `root_cert_sn` 时要求）。
 
-已移除的配置项：`version`（接口级分流取代）、`alipay_public_key`（V3 不支持公钥模式）。`Config` 装配为 `new AlipayConfig($config, $tenant)`。
+已移除的配置项：`version` 与 `alipay_public_key`（V3 不支持公钥模式）。`Config` 装配为 `new AlipayConfig($config, $tenant)`。
 
 ## 4. 签名/验签契约（对照官方 SDK `alipay-sdk-php-all` `v3/src/` 一手核实）
 
@@ -115,7 +113,7 @@ Authorization: "ALIPAY-SHA256withRSA " + authString + ",sign=" + sign
 src/
 ├── Config/AlipayConfig.php                  [单一配置类，V2/V3 共用]
 ├── Contract/ProviderConfigInterface.php     [自 Config/ 移入，BC]
-├── Provider/Alipay.php                      [V3_SHORTCUTS 接口级分流；callback 统一]
+├── Provider/Alipay.php                      [默认 V2；V3 经 pay() 显式使用；callback 统一]
 ├── Plugin/Alipay/
 │   ├── CallbackPlugin.php                   [V2/V3 统一异步通知验签（自 V2/ 上移）]
 │   ├── V2/…                                 [V2 管道，页面类接口等，不动]
@@ -137,7 +135,7 @@ tests/
 
 ## 8. 兼容性（BC 清单）
 
-1. **接口行为变化**：`pos/scan/query/refund/cancel/close` 自动走 V3，响应字段为官方 V3 格式（与 V2 响应可能存在差异）；沙箱模式走 V3 沙箱网关
+1. **默认行为零变化**：`__call` 全部走 V2；V3 管道仅通过 `pay()` 显式插件数组使用（响应字段为官方 V3 格式，与 V2 响应可能存在差异）
 2. **配置项移除**：`version` 不再生效；`alipay_public_key` 移除（V3 仅证书模式）
 3. **配置类合并**：`AlipayV2Config`/`AlipayV3Config` 删除，`AlipayConfig` 变具体类；必填收窄为四件，`alipayRootCertPath` 懒校验
 4. **namespace 变更**：`ProviderConfigInterface` 迁至 `Yansongda\Pay\Contract`
@@ -146,7 +144,8 @@ tests/
 
 ## 9. 阶段二规划（本次未实现）
 
-- 页面类接口 V3 化（`web/h5/app/mini`，当前自动回落 V2）
+- V3 接口的入口集成方式（`__call` 分流策略或显式 shortcut）
+- 页面类接口 V3 化（`web/h5/app/mini`）
 - `transfer` V3 化、AES-128-CBC 通知解密（`encrypt_key`，文档已提示勿开通加密能力）
 - V3 公钥模式（`alipay_public_key`，如有需求按需支持）
 - 证书自动轮换（`alipay-sn` 变化时自动拉取新证书）

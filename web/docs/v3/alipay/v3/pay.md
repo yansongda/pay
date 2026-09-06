@@ -1,6 +1,6 @@
 # 支付宝 V3 支付
 
-V3 支持以下快捷方式支付方法（SDK 自动分流至 V3 管道，无需任何版本配置）：
+V3 支持以下支付接口（经 `pay()` 显式传入对应 V3 Shortcut 的插件数组使用）：
 
 |  method  |       说明       |      参数      |    返回值    |
 |:--------:|:--------------:|:------------:|:----------:|
@@ -8,7 +8,13 @@ V3 支持以下快捷方式支付方法（SDK 自动分流至 V3 管道，无需
 |   scan   | 扫码支付（预创建，主动扫） | array $order | Collection |
 
 :::tip
-页面类接口 `web` / `h5` / `app` / `mini` 自动走 V2 管道处理，请参考 [支付宝](/docs/v3/alipay/pay.md)。
+示例（以扫码支付为例）：
+
+```php
+use Yansongda\Pay\Shortcut\Alipay\V3\ScanShortcut;
+
+$result = Pay::alipay()->pay((new ScanShortcut())->getPlugins([]), $order);
+```
 :::
 
 ## 付款码支付（刷卡支付，被扫码）

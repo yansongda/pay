@@ -2,16 +2,23 @@
 
 `yansongda/pay` 现已支持支付宝 **OpenAPI V3**：RESTful 风格（`/v3/` 路径）、JSON 报文、HTTP 头签名（`ALIPAY-SHA256withRSA`）。
 
-SDK 采用 **接口级自动分流**：调用某个接口时，如果 SDK 已实现该接口的 V3 版本，则自动使用 V3 最新版 API；否则自动回落 V2（网关签名 + form 表单）。**无需任何版本配置**，调用代码不变：
+V3 管道（插件、签名、验签、配置）已整体就绪，但 **`__call` 默认全部走 V2**，不做自动分流；需要使用 V3 时，通过 `pay()` 显式传入 V3 插件数组：
 
-- `pos`、`scan`、`query`、`refund`、`cancel`、`close` 六个服务端接口自动走 V3（`https://openapi.alipay.com/v3/...`，`mode` 为沙箱时自动切换 V3 沙箱网关）；
-- `web`、`h5`、`app`、`mini`、`transfer` 等其余接口自动走 V2，行为完全不变。
+```php
+use Yansongda\Pay\Shortcut\Alipay\V3\ScanShortcut;
+
+$result = Pay::alipay()->pay((new ScanShortcut())->getPlugins([]), [
+    'out_trade_no' => ''.time(),
+    'total_amount' => '0.01',
+    'subject' => 'yansongda 测试 - 01',
+]);
+```
 
 本文档为 V3 API 的用法说明。V2 API 文档请见 [支付宝](/docs/v3/alipay/pay.md)。
 
 ## 支持的接口
 
-V3 支持以下服务端接口（与 V2 同名方法，调用方式不变）：
+V3 支持以下服务端接口（经 `pay()` 显式传入对应 V3 Shortcut 的插件数组使用）：
 
 |  method  |     说明      |      参数      |    返回值    |
 |:--------:|:-----------:|:------------:|:----------:|
@@ -23,7 +30,7 @@ V3 支持以下服务端接口（与 V2 同名方法，调用方式不变）：
 |  close   |    交易关闭     | array $order | Collection |
 
 :::tip
-页面类接口 `web` / `h5` / `app` / `mini` 与 `transfer` 由 SDK 自动回落 V2 管道处理，无需任何额外配置。
+`__call` 的 V3 入口集成方式（自动分流或显式 shortcut）将在后续版本确定，届时调用方式可能简化。
 :::
 
 ## 配置说明
@@ -74,6 +81,6 @@ $config = [
 - `version` 配置项已**移除**，配置数组中遗留的 `version` 键不再生效（可自行清理）；
 - `alipay_public_key` 配置项已**移除**，V3 仅支持证书模式：请为 V3 商户配置 `app_public_cert_path` 与 `alipay_public_cert_path`（均可在支付宝开放平台下载）；
 - `AlipayV2Config`/`AlipayV3Config` 配置类已合并为单一 `AlipayConfig`（`Yansongda\Pay\Config\AlipayConfig`）；
-- `pos`/`scan`/`query`/`refund`/`cancel`/`close` 的行为变化为走 V3 管道：返回 `Collection` 字段与支付宝官方 V3 接口响应体一致（与 V2 响应字段可能存在差异），请核对业务代码中依赖的响应字段；
-- 沙箱模式下六接口使用 V3 沙箱网关（与 V2 沙箱域名不同）；
+- `__call` 默认全部走 V2，无行为变化；显式使用 V3 时返回 `Collection` 字段与支付宝官方 V3 接口响应体一致（与 V2 响应字段可能存在差异）；
+- 沙箱模式下 V3 管道使用 V3 沙箱网关（与 V2 沙箱域名不同）；
 - `alipay_root_cert_path` 从配置构造必填改为 V2 管道调用时校验，仅使用 V3 接口的租户可不配置。

@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Yansongda\Pay\CertManager;
+use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -68,7 +69,7 @@ class CancelShortcutTest extends TestCase
         $http->shouldReceive('sendRequest')->andReturn($this->makeSignedResponse(200, $body));
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::alipay()->cancel(['_config' => 'alipay-v3', 'out_trade_no' => 'yansongda-2026']);
+        $result = Artful::artful($this->shortcut->getPlugins([]), ['_config' => 'alipay-v3', 'out_trade_no' => 'yansongda-2026']);
 
         self::assertEquals('yansongda-2026', $result->get('out_trade_no'));
         self::assertEquals('N', $result->get('retry_flag'));

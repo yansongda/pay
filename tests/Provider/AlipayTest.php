@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
+use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -281,7 +282,7 @@ class AlipayTest extends TestCase
         ], $body));
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::alipay()->scan([
+        $result = Artful::artful((new \Yansongda\Pay\Shortcut\Alipay\V3\ScanShortcut())->getPlugins([]), [
             '_config' => 'alipay-v3',
             'out_trade_no' => 'v3scan1704093802',
             'total_amount' => '0.01',
@@ -302,43 +303,6 @@ class AlipayTest extends TestCase
         self::assertEqualsCanonicalizing($responseData, $result->getDestination()->all());
     }
 
-    /**
-     * 大小写归一化：`Pos()`（大写）同样命中 V3 `PosShortcut`（正向链路验证）。
-     */
-    public function testV3ShortcutCaseInsensitive()
-    {
-        $responseData = [
-            'trade_no' => '2023122122001499160501589436',
-            'out_trade_no' => 'v3pos1704093802',
-        ];
-        $body = json_encode($responseData);
-        $timestamp = (string) (int) (microtime(true) * 1000);
-        $nonce = 'yansongda-nonce';
-
-        openssl_sign($timestamp."\n".$nonce."\n".$body."\n", $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
-
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [
-            'alipay-timestamp' => $timestamp,
-            'alipay-nonce' => $nonce,
-            'alipay-signature' => base64_encode($sign),
-            'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../Cert/alipay-v3/alipay_public_cert_test.crt'),
-        ], $body));
-        Pay::set(HttpClientInterface::class, $http);
-
-        $result = Pay::alipay()->Pos([
-            '_config' => 'alipay-v3',
-            'out_trade_no' => 'v3pos1704093802',
-            'total_amount' => '0.01',
-            'subject' => 'yansongda 测试 - V3 Pos',
-            'scene' => 'bar_code',
-            'auth_code' => '286958267789018980',
-            '_return_rocket' => true,
-        ]);
-
-        self::assertEquals('https://openapi.alipay.com/v3/alipay/trade/pay', (string) $result->getRadar()->getUri());
-        self::assertEqualsCanonicalizing($responseData, $result->getDestination()->all());
-    }
 
     public function testV3CallbackWithServerRequest()
     {

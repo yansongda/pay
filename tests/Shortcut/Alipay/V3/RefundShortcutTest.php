@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Yansongda\Pay\CertManager;
+use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
@@ -71,7 +72,7 @@ class RefundShortcutTest extends TestCase
         $http->shouldReceive('sendRequest')->andReturn($this->makeSignedResponse(200, $body));
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::alipay()->refund([
+        $result = Artful::artful($this->shortcut->getPlugins([]), [
             '_config' => 'alipay-v3',
             'out_trade_no' => 'yansongda-2026',
             'out_request_no' => 'yansongda-2026-refund',
@@ -99,7 +100,7 @@ class RefundShortcutTest extends TestCase
         self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
         self::expectExceptionMessage('支付宝返回状态码异常: [INVALID_PARAMETER] 参数错误，请检查参数是否错误');
 
-        Pay::alipay()->refund([
+        Artful::artful($this->shortcut->getPlugins([]), [
             '_config' => 'alipay-v3',
             'out_trade_no' => 'yansongda-2026',
             'out_request_no' => 'yansongda-2026-refund',

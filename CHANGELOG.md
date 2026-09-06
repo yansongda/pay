@@ -8,11 +8,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- 支付宝 OpenAPI V3 支持：SDK 采用**接口级自动分流**——`pos`/`scan`/`query`/`refund`/`cancel`/`close` 六个服务端接口自动走 V3 管道（RESTful `/v3/` 路径、JSON 报文、HTTP 头签名），`web`/`h5`/`app`/`mini`/`transfer` 等其余接口自动走 V2，无需任何版本配置，调用代码不变
+- 支付宝 OpenAPI V3 支持（RESTful `/v3/` 路径、JSON 报文、HTTP 头签名）：V3 管道整体就绪，`__call` **默认全部走 V2**（不做自动分流），需使用 V3 时通过 `Pay::alipay()->pay((new V3Shortcut)->getPlugins([]), $order)` 显式指定
   - V3 仅支持**证书模式**：与 V2 完全共用 `app_id`、`app_secret_cert`、`app_public_cert_path`、`alipay_public_cert_path` 配置，存量 V2 证书用户升级后调用 V3 接口零配置变更
   - 新增 V3 插件：`AddPayloadSignaturePlugin`、`AddRadarPlugin`、`VerifySignaturePlugin`、`ResponsePlugin` 及 `Pay/{Pos,Precreate,Query,Refund,Cancel,Close}Plugin`；`AlipayTrait` 新增 `getAlipayV3Url`/`getAlipayV3Authorization` 方法，验签统一复用 `verifyAlipaySign`
   - 异步通知（V2/V3 报文同构）由统一的 `Plugin\Alipay\CallbackPlugin` 自动完成 RSA2 验签（强制、不可关闭），应答为字面量 `success`
-  - `Provider\Alipay` 新增 `V3_SHORTCUTS` 常量（接口级分流依据）与 `V3_SANDBOX_URL` 常量（V3 沙箱网关与 V2 不同）
+  - `Provider\Alipay` 新增 `V3_SANDBOX_URL` 常量（V3 沙箱网关与 V2 不同）
 
 ### Changed
 

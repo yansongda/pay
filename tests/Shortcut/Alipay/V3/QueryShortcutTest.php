@@ -9,6 +9,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Yansongda\Pay\CertManager;
+use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -74,7 +75,7 @@ class QueryShortcutTest extends TestCase
         })->andReturn($this->makeSignedResponse(200, $body));
         Pay::set(HttpClientInterface::class, $http);
 
-        $result = Pay::alipay()->query(['_config' => 'alipay-v3', 'out_trade_no' => 'yansongda-2026']);
+        $result = Artful::artful($this->shortcut->getPlugins([]), ['_config' => 'alipay-v3', 'out_trade_no' => 'yansongda-2026']);
 
         self::assertInstanceOf(Request::class, $captured);
         self::assertEquals('POST', $captured->getMethod());
