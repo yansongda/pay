@@ -2,12 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
+namespace Yansongda\Pay\Tests\Plugin\Alipay;
 
 use GuzzleHttp\Psr7\ServerRequest;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Plugin\Alipay\V2\CallbackPlugin;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
+
+use function Yansongda\Artful\filter_params;
 
 class CallbackPluginTest extends TestCase
 {
@@ -84,5 +89,69 @@ class CallbackPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         self::assertNotEmpty($result->getPayload()->all());
+    }
+
+    /**
+     * V3 租户（证书模式）异步通知验签：报文与 V2 同构，同一插件统一处理.
+     */
+    public function testNotifyCallbackWithV3CertTenant(): void
+    {
+        $form = $this->makeSignedForm();
+
+        $rocket = (new Rocket())->setParams(array_merge($form, ['_config' => 'alipay-v3']));
+
+        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+
+        self::assertSame(NoHttpRequestDirection::class, $result->getDirection());
+        self::assertSame($form, $result->getPayload()->except('_config')->all());
+    }
+
+    public function testNotifyCallbackWithV3CertTenantTamperedParams(): void
+    {
+        $form = $this->makeSignedForm();
+        $form['total_amount'] = '999.00';
+
+        $rocket = (new Rocket())->setParams(array_merge($form, ['_config' => 'alipay-v3']));
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    }
+
+    public function testNotifyCallbackWithV3CertTenantMissingSign(): void
+    {
+        $form = $this->makeSignedForm();
+        $form['sign'] = '';
+
+        $rocket = (new Rocket())->setParams(array_merge($form, ['_config' => 'alipay-v3']));
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_EMPTY);
+
+        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    }
+
+    /**
+     * 生成模拟支付宝异步通知的 form 参数（用测试私钥按 V2 参数格式签名，密钥与 alipay-v3 测试租户支付宝公钥证书同属一对）.
+     */
+    private function makeSignedForm(): array
+    {
+        $form = [
+            'app_id' => 'alipay_v3_test_app_id',
+            'trade_no' => '2023122122001499160501589436',
+            'out_trade_no' => '1703147160',
+            'total_amount' => '0.01',
+            'trade_status' => 'TRADE_SUCCESS',
+            'sign_type' => 'RSA2',
+        ];
+
+        $value = filter_params($form, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k)->sortKeys()->toString();
+
+        openssl_sign($value, $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
+
+        $form['sign'] = base64_encode($sign);
+
+        return $form;
     }
 }

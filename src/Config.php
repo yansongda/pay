@@ -10,10 +10,10 @@ use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Config\PaypalConfig;
-use Yansongda\Pay\Config\ProviderConfigInterface;
 use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Contract\ProviderConfigInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Config as BaseConfig;
 

@@ -15,6 +15,7 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Supports\Collection;
+use Yansongda\Supports\Str;
 
 trait AlipayTrait
 {
@@ -50,7 +51,7 @@ trait AlipayTrait
             return $url;
         }
 
-        return Alipay::URL[$config->getMode()];
+        return Alipay::URL[$config->getMode()].'/gateway.do?charset=utf-8';
     }
 
     /**
@@ -65,6 +66,57 @@ trait AlipayTrait
         }
 
         return CertManager::getPrivateCert($privateKey);
+    }
+
+    /**
+     * 获取支付宝 V3 请求 URL：radar 完整 URL 优先，否则网关 host（沙箱为 V3 专用网关）+ 业务 path.
+     */
+    public static function getAlipayV3Url(AlipayConfig $config, ?Collection $payload): string
+    {
+        $url = self::getRadarUrl($config, $payload);
+
+        if (is_string($url) && str_starts_with($url, 'http')) {
+            return $url;
+        }
+
+        $base = Pay::MODE_SANDBOX === $config->getMode() ? Alipay::V3_SANDBOX_URL : Alipay::URL[$config->getMode()];
+
+        return $base.($url ?? '');
+    }
+
+    /**
+     * 生成支付宝 V3 请求 `Authorization` header 值.
+     *
+     * 待签名组串共 5 行：authString、httpMethod、requestUri（path+query，不含 host）、
+     * requestBody（空 body 保留空行）、appAuthToken（缺省时整行缺省）.
+     *
+     * @see https://opendocs.alipay.com/open-v3/05419m 支付宝支付签名生成算法
+     *
+     * @throws InvalidConfigException 缺少商户私钥/应用公钥证书配置或证书解析失败
+     */
+    public static function getAlipayV3Authorization(AlipayConfig $config, string $httpMethod, string $httpRequestUri, string $httpRequestBody = '', ?string $appAuthToken = null): string
+    {
+        $authString = 'app_id='.$config->getAppId();
+
+        if (empty($appPublicCertPath = $config->getAppPublicCertPath())) {
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
+        }
+
+        $authString .= ',app_cert_sn='.CertManager::alipayGetAppCertSn($appPublicCertPath);
+
+        // 毫秒时间戳（对齐官方 `getCurrentMilis()` 手法）+ 请求唯一 ID（UUID v4）
+        $timeInfo = explode(' ', microtime());
+        $authString .= ',nonce='.Str::uuidV4().',timestamp='.sprintf('%d%03d', (int) $timeInfo[1], (int) ((float) $timeInfo[0] * 1000));
+
+        $content = $authString."\n"
+            .$httpMethod."\n"
+            .$httpRequestUri."\n"
+            .('' !== $httpRequestBody ? $httpRequestBody : '')."\n"
+            .(null !== $appAuthToken && '' !== $appAuthToken ? $appAuthToken."\n" : '');
+
+        openssl_sign($content, $sign, self::getAlipayPrivateKey($config), OPENSSL_ALGO_SHA256);
+
+        return 'ALIPAY-SHA256withRSA '.$authString.',sign='.base64_encode($sign);
     }
 
     /**

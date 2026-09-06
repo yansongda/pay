@@ -43,6 +43,19 @@ export default [
     ]
   },
   {
+    text: '支付宝 V3 API',
+    collapsed: false,
+    items: [
+      { text: '概述与配置', link: '/docs/v3/alipay/v3/' },
+      { text: '支付', link: '/docs/v3/alipay/v3/pay' },
+      { text: '查询', link: '/docs/v3/alipay/v3/query' },
+      { text: '退款', link: '/docs/v3/alipay/v3/refund' },
+      { text: '取消', link: '/docs/v3/alipay/v3/cancel' },
+      { text: '关闭', link: '/docs/v3/alipay/v3/close' },
+      { text: '接收回调', link: '/docs/v3/alipay/v3/callback' },
+    ]
+  },
+  {
     text: '微信',
     collapsed: false,
     items: [

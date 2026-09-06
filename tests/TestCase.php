@@ -28,6 +28,14 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'notify_url' => 'https://pay.yansongda.cn',
                     'return_url' => 'https://pay.yansongda.cn',
                 ],
+                // Alipay V3 测试租户（证书模式）
+                'alipay-v3' => [
+                    'app_id' => 'alipay_v3_test_app_id',
+                    'app_secret_cert' => __DIR__.'/Cert/alipay-v3/app_secret_test.pem',
+                    'app_public_cert_path' => __DIR__.'/Cert/alipay-v3/alipay_public_cert_test.crt',
+                    'alipay_public_cert_path' => __DIR__.'/Cert/alipay-v3/alipay_public_cert_test.crt',
+                    'alipay_root_cert_path' => __DIR__.'/Cert/alipay-v3/alipay_public_cert_test.crt',
+                ],
             ],
             'airwallex' => [
                 'default' => [
