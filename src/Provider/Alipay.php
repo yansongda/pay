@@ -67,11 +67,14 @@ class Alipay implements ProviderInterface
     {
         $shortcut = strtolower($shortcut);
 
+        // 默认 V2 shortcut；接口级自动分流：命中 V3_SHORTCUTS 则覆盖为 V3 最新版接口
+        $plugin = '\Yansongda\Pay\Shortcut\Alipay\\'.Str::studly($shortcut).'Shortcut';
+
         if (in_array($shortcut, self::V3_SHORTCUTS, true)) {
-            return Artful::shortcut('\Yansongda\Pay\Shortcut\Alipay\V3\\'.Str::studly($shortcut).'Shortcut', ...$params);
+            $plugin = '\Yansongda\Pay\Shortcut\Alipay\V3\\'.Str::studly($shortcut).'Shortcut';
         }
 
-        return Artful::shortcut('\Yansongda\Pay\Shortcut\Alipay\\'.Str::studly($shortcut).'Shortcut', ...$params);
+        return Artful::shortcut($plugin, ...$params);
     }
 
     /**
