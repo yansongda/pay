@@ -15,6 +15,8 @@ use Yansongda\Artful\Rocket;
  * 抖音订单查询插件.
  *
  * 仅设置请求方法与请求地址，业务参数（`order_id`/`out_order_no` 二选一）由调用方透传，不注入任何字段。
+ *
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/general/order/query_order
  */
 class QueryPlugin implements PluginInterface
 {

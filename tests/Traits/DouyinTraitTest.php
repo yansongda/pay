@@ -28,13 +28,13 @@ class DouyinTraitTest extends TestCase
             'app_id' => 'tt226e54d3bd581bf801',
             'app_secret' => 'douyin_app_secret',
             'app_private_key' => 'douyin_app_private_key',
-            'platform_public_key' => 'douyin_platform_public_key',
+            'douyin_public_key' => 'douyin_platform_public_key',
         ]);
         $serviceConfig = new DouyinConfig([
             'app_id' => 'tt226e54d3bd581bf801',
             'app_secret' => 'douyin_app_secret',
             'app_private_key' => 'douyin_app_private_key',
-            'platform_public_key' => 'douyin_platform_public_key',
+            'douyin_public_key' => 'douyin_platform_public_key',
             'mode' => Pay::MODE_SERVICE,
         ]);
 
@@ -194,7 +194,7 @@ class DouyinTraitTest extends TestCase
         $config = new DouyinConfig([
             'app_id' => 'tt226e54d3bd581bf801',
             'app_secret' => 'douyin_app_secret',
-            'platform_public_key' => 'invalid_public_key',
+            'douyin_public_key' => 'invalid_public_key',
         ]);
 
         $request = $this->getDouyinCallbackRequest('{"out_trade_no":"yansongda","total_amount":1}');
@@ -211,7 +211,7 @@ class DouyinTraitTest extends TestCase
             'app_id' => 'tt226e54d3bd581bf801',
             'app_secret' => 'douyin_app_secret',
             'app_private_key' => file_get_contents(__DIR__.'/../Cert/douyinAppPrivateKey.pem'),
-            'platform_public_key' => file_get_contents(__DIR__.'/../Cert/douyinPlatformPublicKey.pem'),
+            'douyin_public_key' => file_get_contents(__DIR__.'/../Cert/douyinPlatformPublicKey.pem'),
         ]);
     }
 

@@ -36,7 +36,7 @@ class RefundPluginTest extends TestCase
 
         self::assertSame('POST', $payload->get('_method'));
         self::assertSame('/api/trade_basic/v1/developer/refund_create/', $payload->get('_url'));
-        // payload 无 notify_url 时，缺省注入 config 的 refund_notify_url
+        // payload 无 notify_url 时，缺省注入 config 的 notify_url
         self::assertSame('https://yansongda.cn/douyin/notify', $payload->get('notify_url'));
         // 业务字段透传保留
         self::assertSame('7016089888760043860', $payload->get('order_id'));
@@ -59,7 +59,7 @@ class RefundPluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
         $payload = $result->getPayload();
 
-        // 显式传入 notify_url 优先，不被 config 的 refund_notify_url 覆盖
+        // 显式传入 notify_url 优先，不被 config 的 notify_url 覆盖
         self::assertSame('https://explicit.yansongda.cn/douyin/notify', $payload->get('notify_url'));
     }
 

@@ -20,15 +20,13 @@ use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\CallbackPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Refund\CallbackPlugin as RefundCallbackPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Refund\PreRefundCallbackPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\CallbackPlugin;
 use Yansongda\Pay\Traits\DouyinTrait;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method Collection|Rocket mini(array<string, mixed> $order) 小程序下单签名（新交易系统）
+ * @method Collection|Rocket mini(array<string, mixed> $order) 小程序下单，返回前端调起参数
  */
 class Douyin implements ProviderInterface
 {
@@ -120,32 +118,6 @@ class Douyin implements ProviderInterface
         Event::dispatch(new CallbackReceived(Pay::PROVIDER_DOUYIN, clone $request, $params, null));
 
         return $this->pay([CallbackPlugin::class], array_merge($params ?? [], ['_request' => $request]));
-    }
-
-    /**
-     * @param null|array<string, mixed> $params
-     *
-     * @throws ContainerException
-     * @throws InvalidParamsException
-     */
-    public function refundCallback(ServerRequestInterface $request, ?array $params = null): Collection|Rocket
-    {
-        Event::dispatch(new CallbackReceived(Pay::PROVIDER_DOUYIN, clone $request, $params, null));
-
-        return $this->pay([RefundCallbackPlugin::class], array_merge($params ?? [], ['_request' => $request]));
-    }
-
-    /**
-     * @param null|array<string, mixed> $params
-     *
-     * @throws ContainerException
-     * @throws InvalidParamsException
-     */
-    public function preRefundCallback(ServerRequestInterface $request, ?array $params = null): Collection|Rocket
-    {
-        Event::dispatch(new CallbackReceived(Pay::PROVIDER_DOUYIN, clone $request, $params, null));
-
-        return $this->pay([PreRefundCallbackPlugin::class], array_merge($params ?? [], ['_request' => $request]));
     }
 
     public function success(): ResponseInterface

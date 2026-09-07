@@ -9,6 +9,7 @@ use Yansongda\Artful\Artful;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
@@ -18,13 +19,15 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\GetClientTokenPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\GetClientTokenResponsePlugin;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Supports\Collection;
 
 trait DouyinTrait
 {
     use ProviderConfigTrait;
+
+    /** @var array<string, array{token: string, expiry: int}> 进程内 client_token 缓存，key 为 app_id */
+    private static array $clientTokens = [];
 
     /**
      * @throws InvalidParamsException
@@ -50,6 +53,7 @@ trait DouyinTrait
      * @throws ContainerException
      * @throws InvalidConfigException
      * @throws InvalidParamsException
+     * @throws InvalidResponseException
      * @throws ServiceNotFoundException
      */
     public static function getDouyinClientToken(array $params): string
@@ -57,10 +61,10 @@ trait DouyinTrait
         /** @var DouyinConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_DOUYIN, $params);
 
-        if (!empty($config->getAccessToken())
-            && !empty($config->getAccessTokenExpiry())
-            && time() < $config->getAccessTokenExpiry()) {
-            return $config->getAccessToken();
+        $appId = $config->getAppId();
+
+        if (isset(self::$clientTokens[$appId]['expiry']) && time() < self::$clientTokens[$appId]['expiry']) {
+            return self::$clientTokens[$appId]['token'];
         }
 
         // 子调用仅传最小参数集：StartPlugin 会把完整外层 params merge 进 payload，
@@ -72,15 +76,16 @@ trait DouyinTrait
             StartPlugin::class,
             GetClientTokenPlugin::class,
             AddRadarPlugin::class,
-            GetClientTokenResponsePlugin::class,
             ParserPlugin::class,
         ], $subParams);
 
         $token = $result->get('data.access_token', '');
         $expiresIn = $result->get('data.expires_in', 7200);
 
-        $config->setAccessToken($token);
-        $config->setAccessTokenExpiry(time() + $expiresIn - 60);
+        self::$clientTokens[$appId] = [
+            'token' => $token,
+            'expiry' => time() + $expiresIn - 60,
+        ];
 
         return $token;
     }
@@ -123,7 +128,7 @@ trait DouyinTrait
             throw new InvalidSignException(Exception::SIGN_EMPTY);
         }
 
-        $publicKey = openssl_pkey_get_public($config->getPlatformPublicKey());
+        $publicKey = openssl_pkey_get_public($config->getDouyinPublicKey());
 
         if (false === $publicKey) {
             throw new InvalidConfigException(Exception::CONFIG_DOUYIN_INVALID, '配置异常: 抖音平台公钥无效');

@@ -7,7 +7,9 @@ namespace Yansongda\Pay\Tests;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Pimple\ContainerFactory;
 use PHPUnit\Framework\Attributes\CoversNothing;
+use ReflectionProperty;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
 
 /**
  */
@@ -218,9 +220,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     // 必填-应用私钥（商户侧用于签名）
                     'app_private_key' => file_get_contents(__DIR__.'/Cert/douyinAppPrivateKey.pem'),
                     // 必填-平台公钥（用于验证抖音开放平台回调签名）
-                    'platform_public_key' => file_get_contents(__DIR__.'/Cert/douyinPlatformPublicKey.pem'),
-                    // 选填-退款回调地址
-                    'refund_notify_url' => 'https://yansongda.cn/douyin/notify',
+                    'douyin_public_key' => file_get_contents(__DIR__.'/Cert/douyinPlatformPublicKey.pem'),
                     // 选填-支付回调地址
                     'notify_url' => 'https://yansongda.cn/douyin/notify',
                     // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:test环境,
@@ -266,6 +266,10 @@ class TestCase extends \PHPUnit\Framework\TestCase
         }
 
         Pay::config($config);
+
+        // 重置抖音进程内 client_token 静态缓存，避免跨测试污染（trait 静态属性按使用类隔离，反射需指向使用类）
+        $clientTokens = new ReflectionProperty(ObtainClientTokenPlugin::class, 'clientTokens');
+        $clientTokens->setValue(null, []);
     }
 
     protected function tearDown(): void

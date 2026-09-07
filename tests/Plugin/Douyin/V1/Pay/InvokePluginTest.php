@@ -8,19 +8,19 @@ use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\SignPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\InvokePlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class SignPluginTest extends TestCase
+class InvokePluginTest extends TestCase
 {
-    protected SignPlugin $plugin;
+    protected InvokePlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new SignPlugin();
+        $this->plugin = new InvokePlugin();
     }
 
     public function testNormal(): void

@@ -15,6 +15,8 @@ use function Yansongda\Artful\filter_params;
 
 /**
  * 查询退款：透传 refund_id/out_refund_no/order_id（三选一）等业务字段，业务字段均无 app_id，不注入.
+ *
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/self-operated-trading/refund/query-refund
  */
 class QueryRefundPlugin implements PluginInterface
 {

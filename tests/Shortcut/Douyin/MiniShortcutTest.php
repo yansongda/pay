@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Shortcut\Douyin;
 
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\SignPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\InvokePlugin;
 use Yansongda\Pay\Shortcut\Douyin\MiniShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -24,7 +24,7 @@ class MiniShortcutTest extends TestCase
     {
         self::assertSame([
             StartPlugin::class,
-            SignPlugin::class,
+            InvokePlugin::class,
         ], $this->plugin->getPlugins([]));
     }
 }

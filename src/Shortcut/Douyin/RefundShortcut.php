@@ -17,6 +17,12 @@ use Yansongda\Pay\Plugin\Douyin\V1\Refund\RefundPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
 use Yansongda\Supports\Str;
 
+/**
+ * 抖音退款：`_action` 分发 `default`（refund_create）/`audit`（refund_audit_callback）.
+ *
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/general/refund/create_refund
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/trading/refund/refund-audit-callback
+ */
 class RefundShortcut implements ShortcutInterface
 {
     /**

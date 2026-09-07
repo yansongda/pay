@@ -187,14 +187,14 @@ class DouyinTest extends TestCase
         Pay::douyin()->callback($request);
     }
 
-    public function testRefundCallback()
+    public function testCallbackRefundType()
     {
         $msg = '{"refund_id":"7398108028895054107","out_refund_no":"yansongda-refund","refund_amount":1,"status":"SUCCESS"}';
         $body = '{"version":"3.0","type":"refund","msg":'.json_encode($msg).'}';
 
         $request = $this->getDouyinCallbackRequest($body);
 
-        $result = Pay::douyin()->refundCallback($request);
+        $result = Pay::douyin()->callback($request);
 
         self::assertInstanceOf(Collection::class, $result);
         self::assertSame('7398108028895054107', $result->get('refund_id'));
@@ -202,14 +202,14 @@ class DouyinTest extends TestCase
         self::assertSame('SUCCESS', $result->get('status'));
     }
 
-    public function testPreRefundCallback()
+    public function testCallbackPreCreateRefundType()
     {
         $msg = '{"order_id":"7398108028895054107","out_refund_no":"yansongda-refund","refund_amount":1,"reason":"测试退款"}';
         $body = '{"version":"3.0","type":"pre_create_refund","msg":'.json_encode($msg).'}';
 
         $request = $this->getDouyinCallbackRequest($body);
 
-        $result = Pay::douyin()->preRefundCallback($request);
+        $result = Pay::douyin()->callback($request);
 
         self::assertInstanceOf(Collection::class, $result);
         self::assertSame('7398108028895054107', $result->get('order_id'));

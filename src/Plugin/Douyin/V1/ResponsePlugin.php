@@ -48,7 +48,7 @@ class ResponsePlugin implements PluginInterface
             );
         }
 
-        // 业务接口响应顶层为 err_no/err_msg（client_token 的 data.error_code 由 GetClientTokenResponsePlugin 校验，层级不同）
+        // 业务接口响应顶层为 err_no/err_msg（client_token 的 data.error_code 由 GetClientTokenPlugin 校验，层级不同）
         $destination = $rocket->getDestination();
 
         if ($destination instanceof Collection

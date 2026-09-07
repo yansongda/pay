@@ -22,13 +22,15 @@ use Yansongda\Supports\Collection;
 use function Yansongda\Artful\filter_params;
 
 /**
- * 抖音 JSAPI（小程序）下单签名插件.
+ * 抖音 JSAPI（小程序）下单插件：产出前端调起参数（不发 HTTP 请求）.
  *
  * 透传业务字段（outOrderNo/totalAmount/skuList/orderEntrySchema 等官方 camelCase 字段），
- * 按官方通用交易系统规范生成 `byteAuthorization` 请求头值，供前端 `tt.requestOrder(data, byteAuthorization)` 使用。
- * 本插件不发送 HTTP 请求。
+ * 按官方通用交易系统规范生成 `byteAuthorization` 请求头值，返回 `{data, byteAuthorization}`，
+ * 供前端 `tt.requestOrder(data, byteAuthorization)` 调起下单。
+ *
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/general/order/create_order
  */
-class SignPlugin implements PluginInterface
+class InvokePlugin implements PluginInterface
 {
     use DouyinTrait;
 
@@ -40,7 +42,7 @@ class SignPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Douyin][V1][Pay][SignPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Douyin][V1][Pay][InvokePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $params = $rocket->getParams();
         $payload = $rocket->getPayload();
@@ -50,7 +52,7 @@ class SignPlugin implements PluginInterface
 
         $fields = filter_params($payload)->all();
 
-        if ([] === $fields) {
+        if (empty($fields)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 抖音 JSAPI 下单签名，缺少业务参数（如 `outOrderNo`/`totalAmount`/`skuList` 等）');
         }
 
@@ -61,7 +63,7 @@ class SignPlugin implements PluginInterface
         // 客户端签名场景：不发送 HTTP 请求，直接返回签名数据给前端
         $rocket->setDirection(NoHttpRequestDirection::class);
 
-        Logger::info('[Douyin][V1][Pay][SignPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Douyin][V1][Pay][InvokePlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         /** @var Rocket $rocket */
         $rocket = $next($rocket);

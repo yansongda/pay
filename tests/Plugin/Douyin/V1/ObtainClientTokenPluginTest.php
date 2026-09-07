@@ -7,10 +7,9 @@ namespace Yansongda\Pay\Tests\Plugin\Douyin\V1;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Mockery;
-use Yansongda\Artful\Contract\ConfigInterface;
+use ReflectionProperty;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
 use Yansongda\Pay\Tests\TestCase;
@@ -24,6 +23,10 @@ class ObtainClientTokenPluginTest extends TestCase
         parent::setUp();
 
         $this->plugin = new ObtainClientTokenPlugin();
+
+        // 重置进程内 client_token 静态缓存（trait 静态属性按使用类隔离，反射需指向使用类）
+        $property = new ReflectionProperty(ObtainClientTokenPlugin::class, 'clientTokens');
+        $property->setValue(null, []);
     }
 
     public function testExternalAccessToken(): void
@@ -76,12 +79,35 @@ class ObtainClientTokenPluginTest extends TestCase
         $body = json_decode($capturedBody, true);
         self::assertSame(['grant_type', 'client_key', 'client_secret'], array_keys($body));
 
-        // token 正确写回缓存
-        $config = Pay::get(ConfigInterface::class)->get('douyin.default');
-        self::assertInstanceOf(DouyinConfig::class, $config);
-        self::assertEquals('clt.9f2c8a1e', $config->getAccessToken());
-        self::assertNotEmpty($config->getAccessTokenExpiry());
+        Mockery::close();
+    }
 
+    public function testStaticCachePreventsSecondSubCall(): void
+    {
+        // 进程内静态缓存：同 app_id 第二次调用直接命中缓存，不再触发 HTTP 子调用
+        $response = new Response(200, [], json_encode([
+            'data' => [
+                'access_token' => 'clt.9f2c8a1e',
+                'expires_in' => 7200,
+                'error_code' => 0,
+                'description' => '',
+            ],
+            'message' => 'success',
+        ]));
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->once()->andReturn($response);
+        Pay::set(HttpClientInterface::class, $http);
+
+        $plugin = new ObtainClientTokenPlugin();
+
+        $first = $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
+        $second = $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
+
+        self::assertEquals('clt.9f2c8a1e', $first->getPayload()->get('_access_token'));
+        self::assertEquals('clt.9f2c8a1e', $second->getPayload()->get('_access_token'));
+
+        // once() 验证：第二次调用命中缓存未再发请求
         Mockery::close();
     }
 
