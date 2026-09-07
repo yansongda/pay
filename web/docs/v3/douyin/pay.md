@@ -12,7 +12,7 @@ v3.8.0-beta.6 起接入抖音「通用交易系统」（trade_basic），老的�
 
 ## 小程序支付
 
-与微信/支付宝不同，抖音通用交易系统的小程序支付主路径为**前端 JSAPI 下单**：服务端**不发 HTTP 请求**，只负责透传官方下单参数并使用**应用私钥**生成签名，产出 `data` 与 `byteAuthorization` 两个值，交由前端 `tt.requestOrder` 发起下单。
+与微信/支付宝不同，抖音通用交易系统的小程序支付主路径为**前端 JSAPI 下单**（对应插件 `\Yansongda\Pay\Plugin\Douyin\V1\Pay\InvokePlugin`）：服务端**不发 HTTP 请求**，只负责透传官方下单参数并使用**应用私钥**生成签名，产出 `data` 与 `byteAuthorization` 两个值，交由前端 `tt.requestOrder` 发起下单。
 
 ### 例子
 

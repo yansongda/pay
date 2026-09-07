@@ -127,10 +127,8 @@ $config = [
             'app_private_key' => "-----BEGIN RSA PRIVATE KEY-----\n...",
             // 「必填」抖音平台公钥，用于支付回调验签
             // 抖音开放平台 --> 应用详情 --> 支付信息 --> 支付设置 --> 抖音平台公钥
-            'platform_public_key' => "-----BEGIN PUBLIC KEY-----\n...",
-            // 「选填」抖音退款回调地址（不传则使用下单时传入的地址）
-            'refund_notify_url' => 'https://yansongda.cn/douyin/refund/notify',
-            // 「选填」抖音支付回调地址
+            'douyin_public_key' => "-----BEGIN PUBLIC KEY-----\n...",
+            // 「选填」抖音支付/退款回调地址
             'notify_url' => 'https://yansongda.cn/douyin/notify',
         ],
     ],

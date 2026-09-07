@@ -23,15 +23,11 @@ $result = Pay::douyin()->pay($allPlugins, $params);
 
 ### client_token
 
-- 获取 client_token（子调用管线，校验响应并解析）
+- 获取 client_token（子调用管线，请求构建 + 响应校验）
 
   `\Yansongda\Pay\Plugin\Douyin\V1\GetClientTokenPlugin`
 
-- 获取 client_token 响应校验
-
-  `\Yansongda\Pay\Plugin\Douyin\V1\GetClientTokenResponsePlugin`
-
-- 注入 client_token（优先使用 `params['_access_token']` 外部注入，否则自动获取并缓存）
+- 注入 client_token（优先使用 `params['_access_token']` 外部注入，否则自动获取并进程内缓存）
 
   `\Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin`
 
@@ -49,9 +45,9 @@ $result = Pay::douyin()->pay($allPlugins, $params);
 
 ### 小程序支付（JSAPI 下单签名）
 
-- 小程序下单签名（不发 HTTP 请求，产出 `data` + `byteAuthorization`）
+- 小程序下单插件（不发 HTTP 请求，产出 `data` + `byteAuthorization` 供前端 `tt.requestOrder` 调起）
 
-  `\Yansongda\Pay\Plugin\Douyin\V1\Pay\SignPlugin`
+  `\Yansongda\Pay\Plugin\Douyin\V1\Pay\InvokePlugin`
 
 - 查询订单
 
@@ -61,13 +57,9 @@ $result = Pay::douyin()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryCpsPlugin`
 
-- 支付结果回调（RSA 验签 + 解析，`type=payment`）
-
-  `\Yansongda\Pay\Plugin\Douyin\V1\Pay\CallbackPlugin`
-
 ## 退款
 
-- 创建退款（自动注入配置的 `refund_notify_url`）
+- 创建退款（未传 `notify_url` 时自动注入配置的 `notify_url`）
 
   `\Yansongda\Pay\Plugin\Douyin\V1\Refund\RefundPlugin`
 
@@ -79,10 +71,8 @@ $result = Pay::douyin()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Douyin\V1\Refund\AuditPlugin`
 
-- 退款结果回调（RSA 验签 + 解析，`type=refund`）
+## 回调
 
-  `\Yansongda\Pay\Plugin\Douyin\V1\Refund\CallbackPlugin`
+- 统一回调入口（RSA 验签 + 解析，统一处理 `payment`/`refund`/`pre_create_refund` 三类回调，业务方按 body `type` 分发）
 
-- 退款申请回调（RSA 验签 + 解析，`type=pre_create_refund`，同步应答由业务方构造）
-
-  `\Yansongda\Pay\Plugin\Douyin\V1\Refund\PreRefundCallbackPlugin`
+  `\Yansongda\Pay\Plugin\Douyin\V1\CallbackPlugin`
