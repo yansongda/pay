@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
 
+use GuzzleHttp\Psr7\Response;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
@@ -78,6 +80,34 @@ class ResponseDecryptPluginTest extends TestCase
             ]));
 
         $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+    }
+
+    public function testNoHttpRequestDirectionNoop(): void
+    {
+        $destination = [
+            '_sign' => 'x',
+            'alipay_user_info_share_response' => 'base64密文串',
+        ];
+
+        $rocket = (new Rocket())
+            ->setDirection(NoHttpRequestDirection::class)
+            ->mergePayload(['method' => 'alipay.user.info.share'])
+            ->setDestination(new Collection($destination));
+
+        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+
+        self::assertSame($destination, $result->getDestination()->all());
+    }
+
+    public function testNonCollectionDestinationNoop(): void
+    {
+        $rocket = (new Rocket())
+            ->mergePayload(['method' => 'alipay.user.info.share'])
+            ->setDestination(new Response());
+
+        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+
+        self::assertSame($rocket, $result);
     }
 
     public function testEncryptedResponseBadJson(): void

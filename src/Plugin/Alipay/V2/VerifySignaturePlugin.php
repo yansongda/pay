@@ -52,10 +52,13 @@ class VerifySignaturePlugin implements PluginInterface
         /** @var AlipayConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $rocket->getParams());
 
-        // 加密响应场景：except('_sign') 后单键且值为 string（如 `{method}_response` 密文），签名源为带双引号的密文原文，
+        // 加密响应场景：destination 中 `{method}_response` 的值为字符串（密文），签名源为带双引号的密文原文，
         // 与官方 SDK 取串行为一致（JSON_UNESCAPED_SLASHES 保证 base64 密文中的 `/` 不被转义）；其余场景签名源保持原状
-        $signContent = 1 === count($result) && is_string(reset($result))
-            ? json_encode(reset($result), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+        $resultKey = str_replace('.', '_', (string) $rocket->getPayload()?->get('method')).'_response';
+        $cipher = $destination->get($resultKey);
+
+        $signContent = is_string($cipher)
+            ? json_encode($cipher, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
             : json_encode($result, JSON_UNESCAPED_UNICODE);
 
         self::verifyAlipaySign($config, $signContent, $destination->get('_sign', ''));

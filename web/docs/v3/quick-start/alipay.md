@@ -169,7 +169,8 @@ return Pay::alipay()->success();
 ```php
 Pay::config($this->config);
 
-// 以查询订单为例，会员手机号等返回加密响应的接口同理
+// 以下仅为返回结构示例；仅当接口返回加密响应且已配置 aes_key 时才会自动解密，
+// 普通明文接口（如普通查询）的返回行为不受影响
 $result = Pay::alipay()->query([
     'out_trade_no' => '1514027114',
 ]);

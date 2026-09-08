@@ -80,25 +80,11 @@ class VerifySignaturePluginTest extends TestCase
     }
 
     /**
-     * 加密响应场景：except('_sign') 后单键且值为 string，签名源为带双引号的密文原文.
+     * 加密响应场景：destination 中 `{method}_response` 的值为字符串（密文），签名源为带双引号的密文原文.
      */
     public function testEncryptedResponseSignature()
     {
-        // 默认验签证书 alipayPublicCert.crt 无配对私钥，重注册租户改用与测试私钥（alipayAppSecretCert.pem）配对的 alipayAppPublicCert.crt
-        Pay::config(array_merge([
-            'alipay' => [
-                'default' => [
-                    'app_id' => '9021000122682882',
-                    'app_secret_cert' => 'MIIEpAIBAAKCAQEApSA9oxvcqfbgpgkxXvyCpnxaR6TPaEMh/ij+PhF8180zL82ic4whkrRlcu1Y179AKEZNar71Ugi37fKcXWLerjPOeb8WHnZgNG19gkAcOIqZPRPpJ1eRtwKEclIzt+j3H/wgXWkD7BTr61RjuAcviyvDVbAJ/TPlMqXdJFIuJwZblN2WblIv+4Dm1iPOB+fVCU3rsgg4eajf3HrZ7sq6fBhQhO5krDmIIYGsFZ+fohEgnLkBaF0gqNUb5Yb4PBfaEcu8Hcwq+XyBSMOVOIABRPQVDedW2sE/2NsLkR62DaEe/Ri9VUDJe0pE39P+X22DicJ3E3yrxvdioMnLtDqEuwIDAQABAoIBAQCSHZ1tH9J7c8IGKkxNyROzToZ0rxn5IK6LwKp5MfBO5X1N56DArldnAcpjkDL1dn7HJK6Mrr1WAfD/1ZcX680wSReEE9r2ybkHq3tMLn7KaZp/uYavEYYXc1rP7n1lV/iVjPz2q16VIU5Bx0MWLQWdGPSYdlXggHNoBe1RnobIcCGOVe9HlzCBtWzGpCZvMlqRbCuWAdp14aCkaJqpRxG4PY9Kd/NzELvhnCd9k8e7G2qcwx6gAoXN8OXO8jmZg/6fOvFnrGl6CBp8sioe5F3R023fDum546IqS8EZdCl5T0gW/boTbSV8luitab65xBO3PmUI+V2OEFCL6WcJxawBAoGBAOZoft6/LatdoXzr8vh+rKzacUHw246fpacbgx0B5DDymM7hbhXbY/NoCWPgBJtV3XI3DtMJ5yvlEVDQvPfbSHRPx2XQknwrM7ly2SLbaC+tuhcvoG6F1RLWFx+y/583seSlVNuWC9KdpLTKzo8wl8Z4/kheLTBxTxL20NZu79XBAoGBALd3fNoXk5V+T16hnSinPtt2NEsZpn+4w07DikzcpdyjCL5PYjp/BppmX3xly96fCZh3MO3Vkuya1xgauMzxVKQlR/aD5yVmsqK7wxNTY1ZQM74B44/4Mks/8MG2r7o3DElA4/qIeMP4CwkWmYcuij7npm2bgIqFzS+4aGZfDRF7AoGAKMO2Jpy2bMo9BwgLzdFDpbVkMmF1xu8R9NXWRayO/eX+CSQzQOS281qlxqjcx8rSSiHZmpb28notrRmxRTzjvchbo/TZ5eQS262pIxSkg0L+WJnRjZxaDWIZZz9ZIIdPDv/9WnhakSHZAS+cihLz12aSvqUC4744WkeWvUmVX0ECgYAGLDoCKHrps7c96tgbzwy5W4/E2xcUAwZnNwMHNQFLnBymMouOhkmVlk4uJEqosdcjzxbRWbc4yLjl8bg4BQKhBzQVojh7tKnb+c9Fbi/QbqBfCzc519LxXzRdgCUHceSy7kD9Y+wUQ9szMhR2TOWP2kFqPKolfvz5Vw4EK7yH0wKBgQDerq9Pthbii7lNt528/q0cH9vOMn9z76o6jMMea9EibclVHtdcQBWLOn8Yw97k+WSXYGuUrQUWWQbyabZqWkkS4cEjJf5/DiwOuYdNVXg7FK56ucTczBA7lR4dnunPW6U1HbSWf0Cn4Y/cl/z7B5QBSQt0W38IYHSaf6/sqsV6SA==',
-                    'app_auth_token' => '',
-                    'app_public_cert_path' => __DIR__.'/../../../Cert/alipayAppPublicCert.crt',
-                    'alipay_public_cert_path' => __DIR__.'/../../../Cert/alipayAppPublicCert.crt',
-                    'alipay_root_cert_path' => __DIR__.'/../../../Cert/alipayRootCert.crt',
-                    'notify_url' => 'https://pay.yansongda.cn',
-                    'return_url' => 'https://pay.yansongda.cn',
-                ],
-            ],
-        ], ['_force' => true]));
+        self::reRegisterAlipayTenant();
 
         $encrypted = 'hJK2YhT7G0AcpjkDL1dn7HJK6Mrr1WAfD/1ZcX680wSReEE9r2ybkHq3tMLn7KaZp/uYavEYYXc1rP7n1lV/iVjPz2q16VIU5Bx0MWLQWdGPSYdlXggHNoBe1RnobIcCGOVe9HlzCBtWzGpCZvMlqRbCuWAdp14aCkaJqpRxG4PY9Kd/NzELvhnCd9k8e7G2qcwx6g==';
 
@@ -106,9 +92,32 @@ class VerifySignaturePluginTest extends TestCase
         openssl_sign('"'.$encrypted.'"', $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipayAppSecretCert.pem')), OPENSSL_ALGO_SHA256);
 
         $rocket = (new Rocket())
+            ->mergePayload(['method' => 'xxx'])
             ->setDestination(new Collection([
                 '_sign' => base64_encode($sign),
                 'xxx_response' => $encrypted,
+            ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertSame($rocket, $result);
+    }
+
+    /**
+     * 明文响应拆包后即使恰好单键且值为 string（如响应仅含 code 字段），签名源也必须按明文形态组串，不得误判为密文.
+     */
+    public function testPlainResponseWithSingleStringField()
+    {
+        self::reRegisterAlipayTenant();
+
+        // 签名源 = 明文形态 `{"code":"10000"}`
+        openssl_sign('{"code":"10000"}', $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipayAppSecretCert.pem')), OPENSSL_ALGO_SHA256);
+
+        $rocket = (new Rocket())
+            ->mergePayload(['method' => 'xxx'])
+            ->setDestination(new Collection([
+                '_sign' => base64_encode($sign),
+                'code' => '10000',
             ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -121,7 +130,33 @@ class VerifySignaturePluginTest extends TestCase
      */
     public function testEncryptedResponseSignatureWrongSource()
     {
-        Pay::config(array_merge([
+        self::reRegisterAlipayTenant();
+
+        $encrypted = 'hJK2YhT7G0AcpjkDL1dn7HJK6Mrr1WAfD/1ZcX680wSReEE9r2ybkHq3tMLn7KaZp/uYavEYYXc1rP7n1lV/iVjPz2q16VIU5Bx0MWLQWdGPSYdlXggHNoBe1RnobIcCGOVe9HlzCBtWzGpCZvMlqRbCuWAdp14aCkaJqpRxG4PY9Kd/NzELvhnCd9k8e7G2qcwx6g==';
+
+        // 以旧版逻辑组串方式（json_encode 整个 result，`/` 会被转义为 `\/`）签名，签名源与密文形态不匹配
+        openssl_sign(json_encode(['xxx_response' => $encrypted], JSON_UNESCAPED_UNICODE), $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipayAppSecretCert.pem')), OPENSSL_ALGO_SHA256);
+
+        $rocket = (new Rocket())
+            ->mergePayload(['method' => 'xxx'])
+            ->setDestination(new Collection([
+                '_sign' => base64_encode($sign),
+                'xxx_response' => $encrypted,
+            ]));
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::SIGN_ERROR);
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    /**
+     * 重注册支付宝租户：默认验签证书 alipayPublicCert.crt 无配对私钥，
+     * 改用与测试私钥（alipayAppSecretCert.pem）配对的 alipayAppPublicCert.crt 作为验签证书.
+     */
+    private function reRegisterAlipayTenant(): void
+    {
+        Pay::config([
             'alipay' => [
                 'default' => [
                     'app_id' => '9021000122682882',
@@ -134,22 +169,7 @@ class VerifySignaturePluginTest extends TestCase
                     'return_url' => 'https://pay.yansongda.cn',
                 ],
             ],
-        ], ['_force' => true]));
-
-        $encrypted = 'hJK2YhT7G0AcpjkDL1dn7HJK6Mrr1WAfD/1ZcX680wSReEE9r2ybkHq3tMLn7KaZp/uYavEYYXc1rP7n1lV/iVjPz2q16VIU5Bx0MWLQWdGPSYdlXggHNoBe1RnobIcCGOVe9HlzCBtWzGpCZvMlqRbCuWAdp14aCkaJqpRxG4PY9Kd/NzELvhnCd9k8e7G2qcwx6g==';
-
-        // 以旧版逻辑组串方式（json_encode 整个 result，`/` 会被转义为 `\/`）签名，签名源与密文形态不匹配
-        openssl_sign(json_encode(['xxx_response' => $encrypted], JSON_UNESCAPED_UNICODE), $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipayAppSecretCert.pem')), OPENSSL_ALGO_SHA256);
-
-        $rocket = (new Rocket())
-            ->setDestination(new Collection([
-                '_sign' => base64_encode($sign),
-                'xxx_response' => $encrypted,
-            ]));
-
-        self::expectException(InvalidSignException::class);
-        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::SIGN_ERROR);
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+            '_force' => true,
+        ]);
     }
 }

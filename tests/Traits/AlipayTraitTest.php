@@ -269,6 +269,22 @@ class AlipayTraitTest extends TestCase
         AlipayTraitStub::decryptAlipayContents('not-base64-contents!', $config);
     }
 
+    public function testDecryptAlipayContentsWithMismatchedKey(): void
+    {
+        $config = $this->getAlipayConfig();
+        // 密钥与加密方不一致：下方固定密文由密钥 [1234567890123456] 加密生成（AES 确定性，勿改动密文与密钥的配对关系）
+        $config->setAesKey(base64_encode('abcdefghijklmnop'));
+
+        self::expectException(DecryptException::class);
+        self::expectExceptionCode(Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
+        self::expectExceptionMessage('加密解密异常: 支付宝密文解密失败，请检查 AES 密钥是否与开放平台控制台一致（重新生成密钥后旧密钥立即失效）');
+
+        AlipayTraitStub::decryptAlipayContents(
+            '2U09l1AOxvuTPJp5IW4MXGCxM0a6CtXGxvrSzawMfUeU9+aFGNC9KrCMZc1LLhrjoiguutmwwqS3WWETCMC6nA==',
+            $config
+        );
+    }
+
     private static function getAuthString(string $authorization): string
     {
         $rest = substr($authorization, strlen('ALIPAY-SHA256withRSA '));
