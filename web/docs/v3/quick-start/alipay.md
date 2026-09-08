@@ -159,3 +159,25 @@ Pay::config($this->config);
 
 return Pay::alipay()->success();
 ```
+
+## 敏感信息加密响应解密
+
+部分接口（如获取会员手机号等涉及敏感信息的接口）返回的响应内容是 AES 加密的密文。
+
+在配置了 `aes_key` 后，Pay 会自动完成验签与解密动作，无需关心解密细节，返回结构中，`_sign` 为支付宝签名，其余字段均为解密后的业务字段（Collection）：
+
+```php
+Pay::config($this->config);
+
+// 以查询订单为例，会员手机号等返回加密响应的接口同理
+$result = Pay::alipay()->query([
+    'out_trade_no' => '1514027114',
+]);
+
+// `_sign` 为支付宝签名，其余字段为解密后的业务字段
+return $result->all();
+```
+
+::: warning 注意
+如果未配置 `aes_key`，当收到加密响应时，将会抛出异常，提示未配置支付宝 AES 密钥 [aes_key]。
+:::

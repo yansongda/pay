@@ -29,6 +29,8 @@ $config = [
             'app_auth_token' => '',
             // 「选填」服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数
             'service_provider_id' => '',
+            // 「选填」AES 密钥，用于解密响应内容（如会员手机号等敏感信息接口）
+            'aes_key' => '',
             // 「选填」默认为正常模式。可选为： MODE_NORMAL, MODE_SANDBOX, MODE_SERVICE
             'mode' => Pay::MODE_NORMAL,
         ]
@@ -205,6 +207,8 @@ $config = [
     ],
 ];
 ```
+
+上述配置中，支付宝的 `aes_key` 配置项（`string`，非必填）为在支付宝开放平台控制台「开发设置 → 接口内容加密方式」中生成的 base64 编码 AES 密钥（16 字节），配置后可自动解密会员手机号等接口返回的加密响应内容；请注意，重新生成密钥后，旧密钥立即失效。
 
 ## 初始化方式
 
