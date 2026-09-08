@@ -34,6 +34,16 @@ class ResponsePlugin implements PluginInterface
             $sign = $destination->get('sign', '');
             $response = $destination->get($resultKey, $destination->all());
 
+            if (is_string($response)) {
+                if (empty($sign)) {
+                    throw new InvalidResponseException(Exception::RESPONSE_BUSINESS_CODE_WRONG, '支付宝网关响应异常: 响应为加密密文但未包含签名', $rocket->getDestination());
+                }
+                $rocket->setDestination(new Collection(['_sign' => $sign, $resultKey => $response]));
+                Logger::info('[Alipay][ResponsePlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+                return $rocket;
+            }
+
             if (empty($sign) && '10000' !== ($response['code'] ?? 'null')) {
                 throw new InvalidResponseException(Exception::RESPONSE_BUSINESS_CODE_WRONG, '支付宝网关响应异常: '.($response['sub_msg'] ?? $response['msg'] ?? '未知错误，请查看支付宝原始响应'), $rocket->getDestination());
             }
