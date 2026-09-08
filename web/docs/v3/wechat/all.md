@@ -336,7 +336,9 @@ $result = Pay::wechat()->pay($allPlugins, $params);
   `\Yansongda\Pay\Plugin\Wechat\V3\Pay\Bill\DownloadPlugin`
 
   :::warning 注意
-  此插件不需要验证微信签名，即，一共只需要 `[StartPlugin::class, DownloadBillPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class]` 插件
+  此插件不需要验证微信签名（响应头不含微信签名），即，一共只需要 `[StartPlugin::class, DownloadPlugin::class, AddPayloadBodyPlugin::class, AddPayloadSignaturePlugin::class, AddRadarPlugin::class, ResponsePlugin::class, ParserPlugin::class]` 插件，请勿使用 `mergeCommonPlugins`（其会附加 `VerifySignaturePlugin` 导致「签名异常: 微信签名为空」）
+
+  同时，`download_url` 有效时间仅 5min，请获取后立即下载；返回内容为 GZIP 压缩的原始响应，需自行解压，建议与 `hash_value` 比对校验完整性。若报「微信返回状态码异常」，一般是 `download_url` 已过期，请重新申请账单获取
   :::
 
 ### 退款
@@ -513,6 +515,10 @@ $result = Pay::wechat()->pay($allPlugins, $params);
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\DownloadPlugin`
 
+  :::warning 注意
+  此插件不需要验证微信签名（响应为文件二进制流，通过 `SM3-Digest` 响应头校验完整性），且 `download_url` 有效时间仅 30s，插件组合中请去掉 `VerifySignaturePlugin`
+  :::
+
 ## 委托代扣
 
 [文档](https://pay.weixin.qq.com/wiki/doc/api/wxpay_v2/papay/chapter1_1.shtml)
@@ -631,6 +637,10 @@ $result = Pay::wechat()->papay([
 - 下载账单
 
   `\Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\DownloadBillPlugin`
+
+  :::warning 注意
+  此插件不需要验证微信签名，且 `download_url` 有效时间仅 30s，请获取后立即下载，插件组合中请去掉 `VerifySignaturePlugin`
+  :::
 
 ### 消费者投诉2.0
 
