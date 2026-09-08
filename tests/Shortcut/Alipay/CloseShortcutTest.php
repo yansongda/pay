@@ -18,6 +18,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\ClosePlugin as MiniClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Pos\ClosePlugin as PosClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Scan\ClosePlugin as ScanClosePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Web\ClosePlugin as WebClosePlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\ResponseDecryptPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
@@ -53,6 +54,7 @@ class CloseShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -69,6 +71,7 @@ class CloseShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -85,6 +88,7 @@ class CloseShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -101,6 +105,7 @@ class CloseShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -117,6 +122,7 @@ class CloseShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -133,6 +139,7 @@ class CloseShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -149,6 +156,7 @@ class CloseShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -165,6 +173,7 @@ class CloseShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -181,6 +190,7 @@ class CloseShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,

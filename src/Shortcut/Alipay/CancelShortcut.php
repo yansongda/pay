@@ -16,6 +16,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Auth\CancelPlugin as Author
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\CancelPlugin as MiniCancelPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Pos\CancelPlugin as PosCancelPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Scan\CancelPlugin as ScanCancelPlugin;
+use Yansongda\Pay\Plugin\Alipay\V2\ResponseDecryptPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
@@ -60,6 +61,7 @@ class CancelShortcut implements ShortcutInterface
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -77,6 +79,7 @@ class CancelShortcut implements ShortcutInterface
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -94,6 +97,7 @@ class CancelShortcut implements ShortcutInterface
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -111,6 +115,7 @@ class CancelShortcut implements ShortcutInterface
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -128,6 +133,7 @@ class CancelShortcut implements ShortcutInterface
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
+            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
