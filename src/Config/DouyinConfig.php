@@ -10,37 +10,31 @@ use Yansongda\Pay\Pay;
 
 class DouyinConfig extends AbstractConfig
 {
-    private ?string $mchId = null;
-    private string $mchSecretToken = '';
-    private string $mchSecretSalt = '';
-    private string $miniAppId = '';
-    private ?string $thirdpartyId = null;
+    private string $appId = '';
+    private string $appSecret = '';
+    private string $appPrivateKey = '';
+    private string $douyinPublicKey = '';
     private ?string $notifyUrl = null;
     private int $mode = Pay::MODE_NORMAL;
 
-    public function setMchId(?string $value): void
+    public function setAppId(string $value): void
     {
-        $this->mchId = $value;
+        $this->appId = $value;
     }
 
-    public function setMchSecretToken(string $value): void
+    public function setAppSecret(string $value): void
     {
-        $this->mchSecretToken = $value;
+        $this->appSecret = $value;
     }
 
-    public function setMchSecretSalt(string $value): void
+    public function setAppPrivateKey(string $value): void
     {
-        $this->mchSecretSalt = $value;
+        $this->appPrivateKey = $value;
     }
 
-    public function setMiniAppId(string $value): void
+    public function setDouyinPublicKey(string $value): void
     {
-        $this->miniAppId = $value;
-    }
-
-    public function setThirdpartyId(?string $value): void
-    {
-        $this->thirdpartyId = $value;
+        $this->douyinPublicKey = $value;
     }
 
     public function setNotifyUrl(?string $value): void
@@ -53,29 +47,24 @@ class DouyinConfig extends AbstractConfig
         $this->mode = $value;
     }
 
-    public function getMchId(): ?string
+    public function getAppId(): string
     {
-        return $this->mchId;
+        return $this->appId;
     }
 
-    public function getMchSecretToken(): string
+    public function getAppSecret(): string
     {
-        return $this->mchSecretToken;
+        return $this->appSecret;
     }
 
-    public function getMchSecretSalt(): string
+    public function getAppPrivateKey(): string
     {
-        return $this->mchSecretSalt;
+        return $this->appPrivateKey;
     }
 
-    public function getMiniAppId(): string
+    public function getDouyinPublicKey(): string
     {
-        return $this->miniAppId;
-    }
-
-    public function getThirdpartyId(): ?string
-    {
-        return $this->thirdpartyId;
+        return $this->douyinPublicKey;
     }
 
     public function getNotifyUrl(): ?string
@@ -94,7 +83,7 @@ class DouyinConfig extends AbstractConfig
     protected function validateRequired(): void
     {
         $this->validateNotEmpty(
-            ['miniAppId'],
+            ['appId', 'appSecret'],
             Exception::CONFIG_DOUYIN_INVALID,
             '配置异常: 缺少抖音配置'
         );
