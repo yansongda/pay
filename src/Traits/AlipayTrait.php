@@ -10,6 +10,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -41,6 +42,43 @@ trait AlipayTrait
         if (false === $publicKey || 1 !== openssl_verify($contents, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256)) {
             throw new InvalidSignException(Exception::SIGN_ERROR);
         }
+    }
+
+    /**
+     * 解密支付宝接口返回的加密内容（AES-128-CBC，IV 为 16 字节全零）.
+     *
+     * @see https://github.com/alipay/alipay-sdk-php-all/blob/master/v2/aop/AopEncrypt.php 官方加解密算法
+     *
+     * @throws InvalidConfigException 未配置 [aes_key] 或密钥格式非法
+     * @throws DecryptException       密文不是合法 base64 字符串或解密失败
+     */
+    public static function decryptAlipayContents(string $contents, AlipayConfig $config): string
+    {
+        $aesKey = $config->getAesKey();
+
+        if (empty($aesKey)) {
+            throw new InvalidConfigException(Exception::DECRYPT_ALIPAY_AES_KEY_INVALID, '加密解密异常: 未配置支付宝 AES 密钥 [aes_key]');
+        }
+
+        $key = base64_decode($aesKey, true);
+
+        if (false === $key || 16 !== strlen($key)) {
+            throw new InvalidConfigException(Exception::DECRYPT_ALIPAY_AES_KEY_INVALID, '加密解密异常: 支付宝 AES 密钥格式错误，须为 base64 编码的 16 字节密钥');
+        }
+
+        $data = base64_decode($contents, true);
+
+        if (false === $data) {
+            throw new DecryptException(Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID, '加密解密异常: 支付宝密文不是合法的 base64 字符串');
+        }
+
+        $plain = openssl_decrypt($data, 'aes-128-cbc', $key, OPENSSL_RAW_DATA, str_repeat("\0", 16));
+
+        if (false === $plain) {
+            throw new DecryptException(Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID, '加密解密异常: 支付宝密文解密失败，请检查 AES 密钥是否与开放平台控制台一致（重新生成密钥后旧密钥立即失效）');
+        }
+
+        return $plain;
     }
 
     public static function getAlipayUrl(AlipayConfig $config, ?Collection $payload): string

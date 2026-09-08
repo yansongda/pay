@@ -103,6 +103,10 @@ class Exception extends \Exception
 
     public const DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID = 9604;
 
+    public const DECRYPT_ALIPAY_AES_KEY_INVALID = 9610;
+
+    public const DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID = 9611;
+
     public mixed $extra;
 
     public function __construct(string $message = '未知异常', int $code = self::UNKNOWN_ERROR, mixed $extra = null, ?Throwable $previous = null)
