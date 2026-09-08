@@ -16,16 +16,16 @@ use function Yansongda\Artful\filter_params;
 /**
  * 查询退款：透传 refund_id/out_refund_no/order_id（三选一）等业务字段，业务字段均无 app_id，不注入.
  *
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/self-operated-trading/refund/query-refund
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/payment/trade-system/general/refund/query-refund
  */
-class QueryRefundPlugin implements PluginInterface
+class QueryPlugin implements PluginInterface
 {
     /**
      * @throws InvalidParamsException
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Douyin][V1][Refund][QueryRefundPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Douyin][V1][Refund][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $payload = $rocket->getPayload();
 
@@ -38,7 +38,7 @@ class QueryRefundPlugin implements PluginInterface
             '_url' => '/api/trade_basic/v1/developer/refund_query/',
         ]);
 
-        Logger::info('[Douyin][V1][Refund][QueryRefundPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Douyin][V1][Refund][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }

@@ -13,7 +13,7 @@ use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryCpsPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryRefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryPlugin as RefundQueryPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Douyin\QueryShortcut;
 use Yansongda\Pay\Tests\TestCase;
@@ -81,7 +81,7 @@ class QueryShortcutTest extends TestCase
         self::assertSame([
             StartPlugin::class,
             ObtainClientTokenPlugin::class,
-            QueryRefundPlugin::class,
+            RefundQueryPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,

@@ -10,8 +10,6 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\InvokePlugin;
 
 /**
  * 小程序下单，返回前端调起参数（`data` + `byteAuthorization`），供前端 `tt.requestOrder` 调起支付.
- *
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/general/order/create_order
  */
 class MiniShortcut implements ShortcutInterface
 {

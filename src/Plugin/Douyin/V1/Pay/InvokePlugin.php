@@ -28,7 +28,7 @@ use function Yansongda\Artful\filter_params;
  * 按官方通用交易系统规范生成 `byteAuthorization` 请求头值，返回 `{data, byteAuthorization}`，
  * 供前端 `tt.requestOrder(data, byteAuthorization)` 调起下单。
  *
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/general/order/create_order
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/payment/trade-system/general/order/request-order-data-sign
  */
 class InvokePlugin implements PluginInterface
 {

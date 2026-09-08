@@ -14,16 +14,12 @@ use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryCpsPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryRefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryPlugin as RefundQueryPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
 use Yansongda\Supports\Str;
 
 /**
  * 抖音查询：`_action` 分发 `order`（默认，order_query）/`cps`（query_cps）/`refund`（refund_query）.
- *
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/general/order/query_order
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/agency-trade-system/query-info/query-cps
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/self-operated-trading/refund/query-refund
  */
 class QueryShortcut implements ShortcutInterface
 {
@@ -93,7 +89,7 @@ class QueryShortcut implements ShortcutInterface
         return [
             StartPlugin::class,
             ObtainClientTokenPlugin::class,
-            QueryRefundPlugin::class,
+            RefundQueryPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,

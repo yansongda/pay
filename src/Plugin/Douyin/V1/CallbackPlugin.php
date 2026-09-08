@@ -25,9 +25,9 @@ use Yansongda\Supports\Collection;
  * 抖音回调插件：统一处理 payment（支付结果）/refund（退款结果）/pre_create_refund（退款申请）三类回调，
  * 验签后解析 body 中的 msg 并以 Collection 返回，业务方按 body.type 分发处理。
  *
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/trading/payment/notify-payment-result
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/trading/refund/notify-result
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/trading/refund/pre-create-refund-notify
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/payment/trade-system/general/order/notify-payment-result
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/payment/trade-system/general/refund/refund-notify
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/locallife/general-ability/self-operated-trading/refund/refund-callback
  */
 class CallbackPlugin implements PluginInterface
 {

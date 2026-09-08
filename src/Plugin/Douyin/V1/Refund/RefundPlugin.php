@@ -22,7 +22,7 @@ use function Yansongda\Artful\filter_params;
 /**
  * 创建退款：透传 order_id/out_refund_no/refund_reason 等业务字段，业务字段均无 app_id，不注入.
  *
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/general/refund/create_refund
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/payment/trade-system/general/refund/create-refund
  */
 class RefundPlugin implements PluginInterface
 {

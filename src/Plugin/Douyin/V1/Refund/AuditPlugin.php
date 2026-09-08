@@ -16,7 +16,7 @@ use function Yansongda\Artful\filter_params;
 /**
  * 退款审核：透传 refund_id/refund_audit_status(1 同意/2 拒绝)/deny_message 等业务字段，业务字段均无 app_id，不注入.
  *
- * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/trading/refund/refund-audit-callback
+ * @see https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/payment/trade-system/general/refund/refund-audit
  */
 class AuditPlugin implements PluginInterface
 {

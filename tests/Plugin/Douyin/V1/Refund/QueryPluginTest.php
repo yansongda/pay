@@ -7,19 +7,19 @@ namespace Yansongda\Pay\Tests\Plugin\Douyin\V1\Refund;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryRefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryRefundPluginTest extends TestCase
+class QueryPluginTest extends TestCase
 {
-    protected QueryRefundPlugin $plugin;
+    protected QueryPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new QueryRefundPlugin();
+        $this->plugin = new QueryPlugin();
     }
 
     public function testNormal(): void
