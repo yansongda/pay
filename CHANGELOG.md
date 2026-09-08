@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
-
 ## [v3.8.0-beta.6] - Unreleased
 
 ### Added
+
+- 支付宝 OpenAPI V3 支持（RESTful `/v3/` 路径、JSON 报文、HTTP 头签名）：V3 管道整体就绪，`__call` **默认全部走 V2**（不做自动分流），需使用 V3 时通过 `Pay::alipay()->pay((new V3Shortcut)->getPlugins([]), $order)` 显式指定
+  - V3 仅支持**证书模式**：与 V2 完全共用 `app_id`、`app_secret_cert`、`app_public_cert_path`、`alipay_public_cert_path` 配置，存量 V2 证书用户升级后调用 V3 接口零配置变更
+  - 新增 V3 插件：`AddPayloadSignaturePlugin`、`AddRadarPlugin`、`VerifySignaturePlugin`、`ResponsePlugin` 及 `Pay/{Pos,Precreate,Query,Refund,Cancel,Close}Plugin`；`AlipayTrait` 新增 `getAlipayV3Url`/`getAlipayV3Authorization` 方法，验签统一复用 `verifyAlipaySign`
+  - 异步通知（V2/V3 报文同构）由统一的 `Plugin\Alipay\CallbackPlugin` 自动完成 RSA2 验签（强制、不可关闭），应答为字面量 `success`
+  - `Provider\Alipay` 新增 `V3_SANDBOX_URL` 常量（V3 沙箱网关与 V2 不同）
 
 - 抖音支付全新接入「通用交易系统」（trade_basic），老的「担保支付」（ecpay）已全部删除：
   - `Pay::douyin()->mini($order)` 小程序 JSAPI 下单签名（`Plugin\Douyin\V1\Pay\InvokePlugin`）：透传官方 camelCase 下单参数（`outOrderNo`/`totalAmount`/`skuList`/`orderEntrySchema` 等），返回 `{data, byteAuthorization}`（SHA256-RSA2048 应用私钥签名），配合前端 `tt.requestOrder(data, byteAuthorization)` 完成下单，服务端不发 HTTP 请求
@@ -17,6 +21,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - 统一回调入口：`Pay::douyin()->callback($request)` 统一处理 `payment` 支付结果/`refund` 退款结果/`pre_create_refund` 退款申请三类回调（`Plugin\Douyin\V1\CallbackPlugin`），均基于平台公钥 RSA 验签（`Byte-Timestamp`/`Byte-Nonce-Str`/`Byte-Signature` 三行验签串 + 原始 body），校验 body 顶层 `type` 非空后解析 `msg`，业务方按 `type` 分发处理；退款申请回调需业务方自行构造同步应答
   - `client_token` 自动获取与进程内缓存（`oauth/client_token`，`expires_in - 60` 秒提前过期），支持 `['_access_token' => ...]` 外部注入自建共享缓存
 - 新增抖音配置字段：`app_id`（即 client_key）、`app_secret`、`app_private_key`（下单加签）、`douyin_public_key`（回调验签）、`notify_url`、`mode`
+
+### Changed
+
+- **[BC]** 支付宝配置合并为单一 `Yansongda\Pay\Config\AlipayConfig`：删除 `AlipayV2Config`/`AlipayV3Config` 与 `version`、`alipay_public_key` 配置项（`version` 键不再生效）；配置必填为 `appId`/`appSecretCert`/`appPublicCertPath`/`alipayPublicCertPath`，`alipayRootCertPath` 改为 V2 管道调用时懒校验（V3 协议无 `root-cert-sn` 不需要）
+- **[BC]** `ProviderConfigInterface` 从 `Yansongda\Pay\Config` 移动至 `Yansongda\Pay\Contract` 命名空间
+- **[BC]** `CallbackReceived` 事件载荷统一为解析后的通知参数数组（原 V3 分支携带 `ServerRequestInterface`）；V3 同步验签的 `alipay-sn` 证书 SN 匹配校验为无条件执行
+- 统一支付宝网关域名常量：`Provider\Alipay::URL` 仅保留纯域名（V2/V3 共用），V2 拼接完整请求 URL 时追加 `gateway.do?charset=utf-8`；移除 `V3_URL`，V3 沙箱经 `V3_SANDBOX_URL` 常量单独指向官方 V3 SDK 沙箱网关（`http://openapi.sandbox.dl.alipaydev.com`，与 V2 沙箱域名不同）
 
 ### Removed
 

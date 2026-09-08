@@ -57,6 +57,19 @@ class AlipayConfigTest extends TestCase
         $config->validate();
     }
 
+    public function testConstructMissingAppPublicCertPath(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
+
+        $config = new AlipayConfig([
+            'app_id' => 'test_app_id',
+            'app_secret_cert' => 'test_secret',
+            'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        ]);
+        $config->validate();
+    }
+
     public function testOptionalGetters(): void
     {
         $config = new AlipayConfig(array_merge($this->validConfig, [
@@ -82,6 +95,15 @@ class AlipayConfigTest extends TestCase
         self::assertNull($config->getServiceProviderId());
     }
 
+    public function testCertGetters(): void
+    {
+        $config = new AlipayConfig($this->validConfig);
+
+        self::assertSame(__DIR__.'/../Cert/alipayAppPublicCert.crt', $config->getAppPublicCertPath());
+        self::assertSame(__DIR__.'/../Cert/alipayPublicCert.crt', $config->getAlipayPublicCertPath());
+        self::assertSame(__DIR__.'/../Cert/alipayRootCert.crt', $config->getAlipayRootCertPath());
+    }
+
     public function testToArrayKeepsBackwardCompatibleSnakeCaseKeys(): void
     {
         $config = new AlipayConfig(array_merge($this->validConfig, [
@@ -91,7 +113,10 @@ class AlipayConfigTest extends TestCase
             'service_provider_id' => 'sp_id',
         ]));
 
-        self::assertSame([
+        $array = $config->toArray();
+        ksort($array);
+
+        $expected = [
             'app_id' => 'test_app_id',
             'app_secret_cert' => 'test_secret',
             'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
@@ -103,7 +128,10 @@ class AlipayConfigTest extends TestCase
             'service_provider_id' => 'sp_id',
             'mode' => Pay::MODE_NORMAL,
             'tenant' => 'default',
-        ], $config->toArray());
+        ];
+        ksort($expected);
+
+        self::assertSame($expected, $array);
     }
 
     public function testModeSandbox(): void
@@ -113,5 +141,20 @@ class AlipayConfigTest extends TestCase
         ]));
 
         self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+    }
+
+    public function testConfigDispatch(): void
+    {
+        $config = new \Yansongda\Pay\Config([
+            'alipay' => [
+                'default' => $this->validConfig,
+            ],
+        ]);
+
+        $alipayConfig = $config->getProviderConfig('alipay');
+
+        self::assertInstanceOf(AlipayConfig::class, $alipayConfig);
+        self::assertSame('test_app_id', $alipayConfig->getAppId());
+        self::assertSame('default', $alipayConfig->getTenant());
     }
 }

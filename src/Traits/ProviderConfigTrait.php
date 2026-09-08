@@ -8,7 +8,7 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
-use Yansongda\Pay\Config\ProviderConfigInterface;
+use Yansongda\Pay\Contract\ProviderConfigInterface;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
