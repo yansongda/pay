@@ -62,6 +62,7 @@ export default [
     items: [
       { text: '支付', link: '/docs/v3/wechat/pay' },
       { text: '虚拟支付', link: '/docs/v3/wechat/virtual' },
+      { text: '支付分', link: '/docs/v3/wechat/payscore' },
       { text: 'OAuth 用户身份', link: '/docs/v3/wechat/oauth' },
       { text: '查询', link: '/docs/v3/wechat/query' },
       { text: '退款', link: '/docs/v3/wechat/refund' },
