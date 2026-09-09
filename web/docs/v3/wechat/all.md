@@ -548,6 +548,8 @@ $result = Pay::wechat()->papay([
 
 > 具体签约相关参数，请参阅委托代扣的文档
 
+`_type` 与 `trade_type` 对应关系：`mini`/`mp` 对应 `JSAPI`（小程序/公众号），`app` 对应 `APP`，`scan` 对应 `NATIVE`，`h5` 对应 `MWEB`。
+
 ```php
 Pay::config($config);
 
@@ -568,6 +570,32 @@ $result = Pay::wechat()->papay([
     'contract_display_account' => '签约人',
     'contract_notify_url' => '签约成功回调地址',
 ])->toArray();
+```
+
+扫码（NATIVE）方式，响应中的 `code_url` 用于自行生成二维码：
+
+```php
+Pay::config($config);
+
+$result = Pay::wechat()->papay([
+    '_type' => 'scan',
+    'contract_mchid' => '签约商户ID',
+    'contract_appid' => '签约AppID',
+    'out_trade_no' => '我方订单号',
+    'body' => '委托代扣',
+    'notify_url' => '支付回调地址',
+    'total_fee' => 1000,
+    'spbill_create_ip' => '127.0.0.1',
+    'trade_type' => 'NATIVE',
+    'product_id' => '商品ID', // trade_type=NATIVE 时必传
+    'plan_id' => '委托代扣后台创建的模板ID',
+    'contract_code' => "我方签约号",
+    'request_serial' => '请求序列号',
+    'contract_display_account' => '签约人',
+    'contract_notify_url' => '签约成功回调地址',
+])->toArray();
+
+$codeUrl = $result['code_url']; // 自行生成二维码展示，用户扫码后完成支付与签约
 ```
 
 ### 代扣

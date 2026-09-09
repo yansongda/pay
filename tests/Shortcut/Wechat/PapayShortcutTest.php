@@ -17,6 +17,7 @@ use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\ContractOrderPlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\MiniOnlyContractPlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\Pay\App\InvokePlugin as AppInvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\Pay\Mini\InvokePlugin as MiniInvokePlugin;
+use Yansongda\Pay\Plugin\Wechat\V2\Pay\Mp\InvokePlugin as MpInvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\PapayShortcut;
 use Yansongda\Pay\Tests\TestCase;
@@ -58,10 +59,44 @@ class PapayShortcutTest extends TestCase
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_type' => 'app']));
 
+        self::assertEquals([
+            StartPlugin::class,
+            ContractOrderPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            MpInvokePlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_type' => 'mp']));
+
+        self::assertEquals([
+            StartPlugin::class,
+            ContractOrderPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_type' => 'scan']));
+
+        self::assertEquals([
+            StartPlugin::class,
+            ContractOrderPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_type' => 'h5']));
+
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED);
 
-        $this->plugin->getPlugins(['_type' => 'mp']);
+        $this->plugin->getPlugins(['_type' => 'foo']);
     }
 
     public function testOrder()
@@ -89,6 +124,28 @@ class PapayShortcutTest extends TestCase
             ResponsePlugin::class,
             ParserPlugin::class,
         ], $this->plugin->getPlugins(['_action' => 'order', '_type' => 'app']));
+
+        self::assertEquals([
+            StartPlugin::class,
+            ContractOrderPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'order', '_type' => 'scan']));
+
+        self::assertEquals([
+            StartPlugin::class,
+            ContractOrderPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddPayloadBodyPlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $this->plugin->getPlugins(['_action' => 'order', '_type' => 'h5']));
     }
 
     public function testApply()

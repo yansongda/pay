@@ -18,6 +18,7 @@ use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\ContractOrderPlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\MiniOnlyContractPlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\Pay\App\InvokePlugin as AppInvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\Pay\Mini\InvokePlugin as MiniInvokePlugin;
+use Yansongda\Pay\Plugin\Wechat\V2\Pay\Mp\InvokePlugin as MpInvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
@@ -62,17 +63,19 @@ class PapayShortcut implements ShortcutInterface
      */
     protected function orderPlugins(array $params): array
     {
-        return [
+        $plugins = [
             StartPlugin::class,
             ContractOrderPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
-            $this->getInvoke($params),
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
         ];
+
+        if (null !== ($invoke = $this->getInvoke($params))) {
+            $plugins[] = $invoke;
+        }
+
+        return [...$plugins, VerifySignaturePlugin::class, ResponsePlugin::class, ParserPlugin::class];
     }
 
     /**
@@ -112,11 +115,13 @@ class PapayShortcut implements ShortcutInterface
      *
      * @throws InvalidParamsException
      */
-    protected function getInvoke(array $params): string
+    protected function getInvoke(array $params): ?string
     {
         return match ($params['_type'] ?? 'default') {
             'app' => AppInvokePlugin::class,
             'mini' => MiniInvokePlugin::class,
+            'mp' => MpInvokePlugin::class,
+            'scan', 'h5' => null, // NATIVE 响应 code_url，MWEB 响应 mweb_url，均无需调起插件
             default => throw new InvalidParamsException(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED, '参数异常: 微信扣关服务支付中签约，当前传递的 `_type` 类型不支持')
         };
     }
