@@ -126,6 +126,7 @@ class AlipayConfigTest extends TestCase
             'return_url' => 'https://return.com',
             'app_auth_token' => 'auth_token',
             'service_provider_id' => 'sp_id',
+            'aes_key' => null,
             'mode' => Pay::MODE_NORMAL,
             'tenant' => 'default',
         ];

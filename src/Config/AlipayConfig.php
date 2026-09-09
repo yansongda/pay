@@ -20,6 +20,7 @@ class AlipayConfig extends AbstractConfig
     protected ?string $notifyUrl = null;
     protected ?string $returnUrl = null;
     protected ?string $appAuthToken = null;
+    protected ?string $aesKey = null;
     protected ?string $serviceProviderId = null;
     protected int $mode = Pay::MODE_NORMAL;
 
@@ -52,6 +53,11 @@ class AlipayConfig extends AbstractConfig
     public function setAppAuthToken(?string $value): void
     {
         $this->appAuthToken = $value;
+    }
+
+    public function setAesKey(?string $value): void
+    {
+        $this->aesKey = $value;
     }
 
     public function setServiceProviderId(?string $value): void
@@ -105,6 +111,14 @@ class AlipayConfig extends AbstractConfig
     public function getAppAuthToken(): ?string
     {
         return $this->appAuthToken;
+    }
+
+    /**
+     * 接口内容加解密密钥（AES，base64 编码的 16 字节密钥）.
+     */
+    public function getAesKey(): ?string
+    {
+        return $this->aesKey;
     }
 
     /**

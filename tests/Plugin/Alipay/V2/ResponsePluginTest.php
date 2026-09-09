@@ -109,4 +109,42 @@ class ResponsePluginTest extends TestCase
 
         $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
     }
+
+    public function testEncryptedResponseParams()
+    {
+        $destination = [
+            'alipay_user_info_share_response' => 'base64密文串',
+            'sign' => 'x',
+            'sign_type' => 'RSA2',
+        ];
+
+        $rocket = (new Rocket())
+            ->mergePayload(['method' => 'alipay.user.info.share'])
+            ->setDestination(new Collection($destination));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+
+        self::assertEquals(
+            ['_sign' => 'x', '_cipher' => 'base64密文串'],
+            $result->getDestination()->all()
+        );
+    }
+
+    public function testEncryptedResponseWithoutSign()
+    {
+        self::expectException(InvalidResponseException::class);
+        self::expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
+        self::expectExceptionMessage('支付宝网关响应异常: 响应为加密密文但未包含签名');
+
+        $destination = [
+            'alipay_user_info_share_response' => 'base64密文串',
+            'sign' => '',
+        ];
+
+        $rocket = (new Rocket())
+            ->mergePayload(['method' => 'alipay.user.info.share'])
+            ->setDestination(new Collection($destination));
+
+        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+    }
 }

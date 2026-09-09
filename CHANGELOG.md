@@ -22,6 +22,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - `client_token` 自动获取与进程内缓存（`oauth/client_token`，`expires_in - 60` 秒提前过期），支持 `['_access_token' => ...]` 外部注入自建共享缓存
 - 新增抖音配置字段：`app_id`（即 client_key）、`app_secret`、`app_private_key`（下单加签）、`douyin_public_key`（回调验签）、`notify_url`、`mode`
 
+- 支付宝 V2 响应内容 AES 解密支持（`alipay.user.info.share` 等敏感信息接口返回加密响应的场景）（#1204）
+  - `AlipayConfig` 新增可选配置 `aes_key`（开放平台控制台「接口内容加密方式」生成的 base64 编码 16 字节 AES 密钥），不配置时明文响应行为零变化
+  - `AlipayTrait` 新增 `decryptAlipayContents()` 静态方法（AES-128-CBC、16 字节全零 IV、密钥与密文双重 base64 解码），算法对齐官方 PHP/Java SDK
+  - `VerifySignaturePlugin` 支持加密响应验签（签名源为带双引号的密文原文），验签通过后自动解密拆包交付明文；解密原语严格门控于验签之后（encrypt-then-MAC，未认证密文不可达）
+  - `ResponsePlugin` 识别加密响应（`{method}_response` 为字符串）并以固定 `_cipher` 协议键交付（与 `_sign` 同构），密文无签名时沿用现有异常
+  - 新增异常码 `DECRYPT_ALIPAY_AES_KEY_INVALID`（9610）/ `DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID`（9611），未配置密钥或密文非法时抛出带中文提示的异常
+
 ### Changed
 
 - **[BC]** 支付宝配置合并为单一 `Yansongda\Pay\Config\AlipayConfig`：删除 `AlipayV2Config`/`AlipayV3Config` 与 `version`、`alipay_public_key` 配置项（`version` 键不再生效）；配置必填为 `appId`/`appSecretCert`/`appPublicCertPath`/`alipayPublicCertPath`，`alipayRootCertPath` 改为 V2 管道调用时懒校验（V3 协议无 `root-cert-sn` 不需要）
@@ -36,6 +43,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - 删除配置字段：`mini_app_id`、`mch_id`、`mch_secret_token`、`mch_secret_salt`、`thirdparty_id`
   - 迁移要点：`mini_app_id` → `app_id`（即 client_key）；MD5 签名（`mch_secret_salt`）→ RSA 应用私钥加签（`app_private_key`，SHA256-RSA2048）；SHA1 回调校验（`mch_secret_token`）→ 平台公钥验签（`douyin_public_key`）；回调入参 form 数组 → 必须传 `ServerRequestInterface`（需 `Byte-*` 回调头验签），`callback()` 统一处理三类回调（按 body `type` 分发），保留宽签名但 array 入参不再支持回调处理（抛异常）
   - 老担保支付回调（form 参数 + SHA1 token 验签）不再兼容；存量担保支付订单的退款/查询请停留在 v3.7.x 或自行对接官方接口
+
+### Fixed
+
+- 修复支付宝 V2 管道遇到加密响应（`{method}_response` 为 base64 密文字符串）时 `array_merge` 触发 `TypeError` 崩溃的问题（#1204）
 
 ## [v3.8.0-beta.5] - 2026-09-05
 

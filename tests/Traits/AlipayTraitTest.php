@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -219,6 +220,69 @@ class AlipayTraitTest extends TestCase
         self::expectExceptionMessage('配置异常: 缺少支付宝配置 -- [alipay_public_cert_path]');
 
         AlipayTraitStub::verifyAlipaySign($config, "1666004496123\nyansongda-nonce\n{}\n", 'not-empty-sign');
+    }
+
+    public function testDecryptAlipayContents(): void
+    {
+        $plaintext = '{"code":"10000","msg":"Success","订单号":"2023122022560000","金额":"0.01"}';
+        $key = base64_encode(random_bytes(16));
+
+        $config = $this->getAlipayConfig();
+        $config->setAesKey($key);
+
+        $ciphertext = openssl_encrypt($plaintext, 'aes-128-cbc', base64_decode($key, true), OPENSSL_RAW_DATA, str_repeat("\0", 16));
+        self::assertNotFalse($ciphertext);
+
+        self::assertSame($plaintext, AlipayTraitStub::decryptAlipayContents(base64_encode($ciphertext), $config));
+    }
+
+    public function testDecryptAlipayContentsWithoutAesKey(): void
+    {
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::DECRYPT_ALIPAY_AES_KEY_INVALID);
+        self::expectExceptionMessage('加密解密异常: 未配置支付宝 AES 密钥 [aes_key]');
+
+        AlipayTraitStub::decryptAlipayContents('not-empty-contents', $this->getAlipayConfig());
+    }
+
+    public function testDecryptAlipayContentsWithInvalidAesKey(): void
+    {
+        $config = $this->getAlipayConfig();
+        $config->setAesKey(base64_encode('12345678901234567890'));
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::DECRYPT_ALIPAY_AES_KEY_INVALID);
+        self::expectExceptionMessage('加密解密异常: 支付宝 AES 密钥格式错误，须为 base64 编码的 16 字节密钥');
+
+        AlipayTraitStub::decryptAlipayContents(base64_encode('ciphertext'), $config);
+    }
+
+    public function testDecryptAlipayContentsWithInvalidContents(): void
+    {
+        $config = $this->getAlipayConfig();
+        $config->setAesKey(base64_encode(random_bytes(16)));
+
+        self::expectException(DecryptException::class);
+        self::expectExceptionCode(Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
+        self::expectExceptionMessage('加密解密异常: 支付宝密文不是合法的 base64 字符串');
+
+        AlipayTraitStub::decryptAlipayContents('not-base64-contents!', $config);
+    }
+
+    public function testDecryptAlipayContentsWithMismatchedKey(): void
+    {
+        $config = $this->getAlipayConfig();
+        // 密钥与加密方不一致：下方固定密文由密钥 [1234567890123456] 加密生成（AES 确定性，勿改动密文与密钥的配对关系）
+        $config->setAesKey(base64_encode('abcdefghijklmnop'));
+
+        self::expectException(DecryptException::class);
+        self::expectExceptionCode(Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
+        self::expectExceptionMessage('加密解密异常: 支付宝密文解密失败，请检查 AES 密钥是否与开放平台控制台一致（重新生成密钥后旧密钥立即失效）');
+
+        AlipayTraitStub::decryptAlipayContents(
+            '2U09l1AOxvuTPJp5IW4MXGCxM0a6CtXGxvrSzawMfUeU9+aFGNC9KrCMZc1LLhrjoiguutmwwqS3WWETCMC6nA==',
+            $config
+        );
     }
 
     private static function getAuthString(string $authorization): string
