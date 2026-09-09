@@ -19,8 +19,10 @@ use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
+use Yansongda\Pay\Plugin\Alipay\GatewayCallbackPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AppCallbackPlugin;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
@@ -130,13 +132,23 @@ class Alipay implements ProviderInterface
      * @throws InvalidConfigException
      * @throws InvalidParamsException
      */
-    public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection
+    public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection|MessageInterface|Rocket
     {
         $request = $this->getCallbackParams($contents);
 
         Event::dispatch(new CallbackReceived(Pay::PROVIDER_ALIPAY, $request->all(), $params, null));
 
-        return $this->pay([CallbackPlugin::class], $request->merge($params ?? [])->all());
+        // `_action` 从 merge 后数组读取（与微信先例只读第二实参不同），以兼容已拍板入口 callback(['_action' => 'gw'])（_action 位于第一参数 contents）。
+        // 风险已评估：外部注入 _action 必须先过验签（伪造签名必败，只会得到 VERIFY_FAILED XML），异常路径不可达。
+        $params = $request->merge($params ?? [])->all();
+
+        $plugins = match ($params['_action'] ?? null) {
+            null => [CallbackPlugin::class],
+            'gw' => [GatewayCallbackPlugin::class],
+            default => throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '参数异常: 不支持的回调 _action ['.$params['_action'].']'),
+        };
+
+        return $this->pay($plugins, $params);
     }
 
     /**
