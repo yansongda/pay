@@ -30,6 +30,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - `ResponsePlugin` 识别加密响应（`{method}_response` 为字符串）并以固定 `_cipher` 协议键交付（与 `_sign` 同构），密文无签名时沿用现有异常
   - 新增异常码 `DECRYPT_ALIPAY_AES_KEY_INVALID`（9610）/ `DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID`（9611），未配置密钥或密文非法时抛出带中文提示的异常
 
+- 微信委托代扣「支付中签约」新增 `scan`（NATIVE 扫码，响应 `code_url`）、`h5`（MWEB，响应 `mweb_url`）、`mp`（公众号 JSAPI）支持；补全 `Wechat` Provider 的 `papay/pos/redpack` `@method` 注解，修复 IDE 无法提示 `papay` 方法的问题（#1111, #1113）
+
 ### Changed
 
 - **[BC]** 支付宝配置合并为单一 `Yansongda\Pay\Config\AlipayConfig`：删除 `AlipayV2Config`/`AlipayV3Config` 与 `version`、`alipay_public_key` 配置项（`version` 键不再生效）；配置必填为 `appId`/`appSecretCert`/`appPublicCertPath`/`alipayPublicCertPath`，`alipayRootCertPath` 改为 V2 管道调用时懒校验（V3 协议无 `root-cert-sn` 不需要）

@@ -33,6 +33,9 @@ use Yansongda\Supports\Str;
  * @method Collection|Rocket transfer(array<string, mixed> $order) 帐户转账
  * @method Collection|Rocket virtual(array<string, mixed> $order)  虚拟支付
  * @method Collection|Rocket oauth(array<string, mixed> $order)    OAuth 用户身份
+ * @method Collection|Rocket papay(array<string, mixed> $order)    委托代扣（签约/支付中签约/代扣）
+ * @method Collection|Rocket pos(array<string, mixed> $order)      刷卡支付（付款码）
+ * @method Collection|Rocket redpack(array<string, mixed> $order)  现金红包
  */
 class Wechat implements ProviderInterface
 {
