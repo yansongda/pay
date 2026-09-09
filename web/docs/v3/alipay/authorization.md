@@ -1,8 +1,8 @@
 # 支付宝应用授权（ISV）
 
-|   方法名   | 参数  |    返回值     |
+|  方法名  | 参数  |    返回值     |
 |:------:|:---:|:----------:|
-| token_app | array | Collection |
+|  auth  | array | Collection |
 
 ## 前置说明
 
@@ -52,14 +52,16 @@ $appAuthCode = $_GET['app_auth_code'] ?? '';
 
 ## 换取 app_auth_token
 
-拿到 `app_auth_code` 后，调用 `token_app` 换取 `app_auth_token`（注意调用名为 snake_case 的 `token_app`）：
+拿到 `app_auth_code` 后，调用 `auth` 换取 `app_auth_token`：
 
 ```php
-$result = Pay::alipay()->token_app([
+$result = Pay::alipay()->auth([
     'grant_type' => 'authorization_code',
     'code' => $appAuthCode,
 ]);
 ```
+
+> 缺省时 `auth` 即为换取/刷新令牌（等价于显式传 `'_action' => 'token_app'`）；下文的查询场景则需显式传 `'_action' => 'query'`。
 
 成功响应（返回 `Yansongda\Supports\Collection`，字段以实际响应为准）：
 
@@ -95,7 +97,7 @@ $result = Pay::alipay()->token_app([
 `app_refresh_token` 的刷新窗口内，刷新令牌：
 
 ```php
-$result = Pay::alipay()->token_app([
+$result = Pay::alipay()->auth([
     'grant_type' => 'refresh_token',
     'refresh_token' => $appRefreshToken,
 ]);
@@ -108,7 +110,7 @@ $result = Pay::alipay()->token_app([
 查询商户的授权信息，例如授权商户的 `auth_app_id`、`user_id` 及授权了哪些接口（`auth_methods`）等（字段以实际响应为准）：
 
 ```php
-$result = Pay::alipay()->token_app([
+$result = Pay::alipay()->auth([
     '_action' => 'query',
     'app_auth_token' => $appAuthToken,
 ]);

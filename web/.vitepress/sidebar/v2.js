@@ -19,8 +19,7 @@ export default [
       { text: '关闭', link: '/docs/v2/alipay/close' },
       { text: '退款', link: '/docs/v2/alipay/refund' },
       { text: '接收回调', link: '/docs/v2/alipay/callback' },
-      { text: '确认回调', link: '/docs/v2/alipay/response' },
-      { text: '应用授权（ISV）', link: '/docs/v2/alipay/authorization' }
+      { text: '确认回调', link: '/docs/v2/alipay/response' }
     ]
   },
   {
