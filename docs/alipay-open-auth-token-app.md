@@ -1,8 +1,8 @@
 # 支付宝第三方应用授权（app_auth_token）支持 · 技术设计文档
 
 > **时间**：2026-09-09
-> **作者**：GLM-5.3 + yansongda（用户睡前预授权推进，醒来后复核）
-> **状态**：plan-reviewer 审查中
+> **作者**：GLM-5.3 + yansongda
+> **状态**：经人工审核确认
 
 对应 Issue：[#1091](https://github.com/yansongda/pay/issues/1091)（支付宝的第三方应用授权 token：app_auth_token 获取问题）
 
