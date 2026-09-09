@@ -23,6 +23,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - 新增抖音配置字段：`app_id`（即 client_key）、`app_secret`、`app_private_key`（下单加签）、`douyin_public_key`（回调验签）、`notify_url`、`mode`
 - 支付宝第三方应用授权（ISV 代理商模式）支持：新增 `auth` 快捷调用（`_action=token_app` 换取/刷新 `alipay.open.auth.token.app`、`_action=query` 查询 `alipay.open.auth.token.app.query`），插件归属 `Plugin/Alipay/V2/Open/Authorization`，补充 ISV 授权流程文档 (#1091)
 
+- 支付宝应用网关验证（ISV）支持：`Pay::alipay()->callback($contents, ['_action' => 'gw'])` 处理开放平台「应用网关 URL」收到的请求（`_action` 也可放第一参数数组内），按「保留 `sign_type`、仅剔除 `sign`」的组串规则完成 RSA2 验签后解析 `biz_content`
+  - `EventType=verifygw`（应用网关验证请求）：自动返回签名的 XML 应答（`Psr\Http\Message\ResponseInterface`，HTTP 200，`Content-Type: text/xml;charset=utf-8`，含应用公钥），业务侧直接 `return` 回吐即可，否则开放平台会报「网关地址和公钥验证失败」
+  - 其他 `EventType` 网关消息：验签通过后透传 `Yansongda\Supports\Collection`，由业务侧自行处理并自行回吐官方要求的 ack XML（SDK 本期不做自动应答）
+  - 验签失败不抛异常：返回 `success=false`、`error_code=VERIFY_FAILED` 的同结构 XML 应答；应答依赖公钥证书模式完整配置（`app_secret_cert`/`app_public_cert_path`），缺失时抛出 `InvalidConfigException`
+  - 新增 `Yansongda\Pay\Plugin\Alipay\GatewayCallbackPlugin`；`ProviderInterface::callback()` 返回类型放宽为 `Collection|MessageInterface|Rocket`
+
 - 支付宝 V2 响应内容 AES 解密支持（`alipay.user.info.share` 等敏感信息接口返回加密响应的场景）（#1204）
   - `AlipayConfig` 新增可选配置 `aes_key`（开放平台控制台「接口内容加密方式」生成的 base64 编码 16 字节 AES 密钥），不配置时明文响应行为零变化
   - `AlipayTrait` 新增 `decryptAlipayContents()` 静态方法（AES-128-CBC、16 字节全零 IV、密钥与密文双重 base64 解码），算法对齐官方 PHP/Java SDK
