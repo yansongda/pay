@@ -14,6 +14,8 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Exception\DecryptException;
+use Yansongda\Pay\Exception\Exception as PayException;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AlipayTrait;
@@ -26,8 +28,12 @@ class VerifySignaturePlugin implements PluginInterface
     use AlipayTrait;
 
     /**
+     * 验签通过后，若 `{method}_response` 为密文字符串，则在此解密并拆包交付（官方要求验签先于解密，
+     * 解密原语严格门控于 verifyAlipaySign() 正常返回之后，未认证密文不可达）。
+     *
      * @throws ContainerException
-     * @throws InvalidConfigException
+     * @throws DecryptException         验签通过后密文解密失败或解密后不是合法 JSON 响应
+     * @throws InvalidConfigException   验签通过后因未配置 [aes_key] 或密钥格式非法而无法解密
      * @throws ServiceNotFoundException
      * @throws InvalidSignException
      * @throws InvalidParamsException
@@ -62,6 +68,19 @@ class VerifySignaturePlugin implements PluginInterface
             : json_encode($result, JSON_UNESCAPED_UNICODE);
 
         self::verifyAlipaySign($config, $signContent, $destination->get('_sign', ''));
+
+        // 验签已通过：密文场景在此解密拆包（encrypt-then-MAC，解密原语不可达于未认证密文）
+        if (is_string($cipher)) {
+            $data = json_decode(self::decryptAlipayContents($cipher, $config), true);
+
+            if (!is_array($data)) {
+                throw new DecryptException(PayException::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID, '加密解密异常: 支付宝密文解密后不是合法的 JSON 响应');
+            }
+
+            Logger::info('[Alipay][VerifySignaturePlugin] 响应解密成功', ['method' => $rocket->getPayload()?->get('method')]);
+
+            $rocket->setDestination(new Collection(array_merge(['_sign' => $destination->get('_sign', '')], $data)));
+        }
 
         Logger::info('[Alipay][VerifySignaturePlugin] 插件装载完毕', ['rocket' => $rocket]);
 

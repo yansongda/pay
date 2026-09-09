@@ -19,7 +19,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Pos\RefundPlugin as PosRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Scan\RefundPlugin as ScanRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Web\RefundPlugin as WebRefundPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\ResponseDecryptPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
@@ -55,7 +54,6 @@ class RefundShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -72,7 +70,6 @@ class RefundShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -89,7 +86,6 @@ class RefundShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -106,7 +102,6 @@ class RefundShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -123,7 +118,6 @@ class RefundShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -140,7 +134,6 @@ class RefundShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -157,7 +150,6 @@ class RefundShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -174,7 +166,6 @@ class RefundShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -191,7 +182,6 @@ class RefundShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
@@ -208,7 +198,6 @@ class RefundShortcutTest extends TestCase
             FormatPayloadBizContentPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            ResponseDecryptPlugin::class,
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,

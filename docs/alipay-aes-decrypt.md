@@ -19,14 +19,14 @@
 
 ## 2. 整体方案
 
-**核心思路**：沿用微信既有三层模式（Config 字段 + Trait 静态解密方法 + 薄插件调用），在 V2 响应链「验签之后」追加解密环节，通过「`{method}_response` 值是否为 string」识别密文。
+**核心思路**：沿用微信既有三层模式（Config 字段 + Trait 静态解密方法），在 V2 响应链 `VerifySignaturePlugin` 验签通过之后追加解密环节（解密原语严格门控于 `verifyAlipaySign()` 正常返回之后，未认证密文不可达，满足官方「先验签后解密」顺序与 encrypt-then-MAC 原则），通过「`{method}_response` 值是否为 string」识别密文。
 
 ```
                         V2 响应链（after 阶段逆序）
 ┌─────────────────────────────────────────────────────────────────────┐
-│ ParserPlugin(解析) → ResponsePlugin(拆包) → VerifySignaturePlugin     │
-│                                     (验签: 密文用带引号密文源)         │
-│         → ResponseDecryptPlugin(新增: 密文→AES解密→JSON→Collection)   │
+│ ParserPlugin(解析) → ResponsePlugin(拆包，密文保留原文形态)           │
+│         → VerifySignaturePlugin(验签: 密文用带引号密文源；            │
+│            验签通过后密文场景 → AES解密 → JSON → Collection 拆包交付)  │
 │         → ... 其余插件                                                │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -40,10 +40,8 @@ src/
 ├── Exception/Exception.php                    [改] +2 个 DECRYPT 异常码
 └── Plugin/Alipay/V2/
     ├── ResponsePlugin.php                     [改] 密文 string 拆包兼容
-    ├── VerifySignaturePlugin.php              [改] 密文验签源分支
-    └── ResponseDecryptPlugin.php              [新增]
-src/Shortcut/Alipay/{8 个含验签的 Shortcut}.php  [改] 插入新插件
-tests/...(镜像)                                  [改/新增]
+    └── VerifySignaturePlugin.php              [改] 密文验签源分支 + 验签后解密拆包
+tests/...(镜像)                                  [改]
 web/docs/v3/...                                  [改] aesKey 配置说明 + FAQ 更新
 ```
 
@@ -103,16 +101,7 @@ return plain   // 明文 JSON 字符串；json_decode 留给调用方，保持�
 
 **(a) `ResponsePlugin`（改）**：拆包时识别 `$response` 为 string（密文）→ 走独立分支 `destination = ['_sign' => $sign, $resultKey => $密文]`（不再 array_merge string）；sign 为空时沿用现有 InvalidResponseException（加密响应必然带签名，sign 空说明网关异常）。明文路径完全不变。
 
-**(b) `VerifySignaturePlugin`（改）**：验签前检查 `except('_sign')` 后的结果——当为「单键且值为 string」时（密文形态），签名源改为 `json_encode($密文, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)`（即 `"密文"`，`/` 不转义与官方原文一致；base64 字符集无其他需转义字符）；否则走现有逻辑。
-
-**(c) `ResponseDecryptPlugin`（新增）**：位于管道数组中 `AddRadarPlugin` 之后、`VerifySignaturePlugin` 之前（after 逆序下确保**验签→解密**顺序）。逻辑：
-
-```
-非 HTTP 请求方向 / destination 非 Collection / resultKey 值非 string → no-op 返回
-取 resultKey 密文 → decryptAlipayContents() → json_decode(assoc)
-解码非数组 → DecryptException；无 aesKey 且遇密文 → InvalidConfigException(KEY_INVALID)
-setDestination(['_sign' => ...] + 明文数组)
-```
+**(b) `VerifySignaturePlugin`（改）**：验签前检查 resultKey（`{method}_response`）的值——当为 string 时（密文形态，resultKey 精确匹配），签名源改为 `json_encode($密文, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)`（即 `"密文"`，`/` 不转义与官方原文一致；base64 字符集无其他需转义字符）；否则走现有逻辑。**验签通过后**，密文场景在此解密：`decryptAlipayContents()` → `json_decode(assoc)` → 解码非数组抛 DecryptException → `setDestination(['_sign' => ...] + 明文数组)`。解密原语严格门控于 `verifyAlipaySign()` 正常返回之后（encrypt-then-MAC：未认证密文在控制流上不可达解密，结构性消除 padding oracle 面）。未配置 aes_key 时验签通过后抛 InvalidConfigException（9610）。明文响应路径零变化（含未配置 aes_key 场景）。
 
 ### 3.4 接口对接契约（关键标注）
 
@@ -161,4 +150,4 @@ setDestination(['_sign' => ...] + 明文数组)
 
 ## 6. 监控与可观测性
 
-SDK 无上报通道，沿用现有 `Logger`：解密插件在进入解密分支时 `Logger::info`、失败抛异常（含中文提示）。用户侧观察点：日志出现 `[Alipay][ResponseDecryptPlugin]`；对接异常监控需**分别捕获两类异常**——`InvalidConfigException`（9610，密钥缺失/格式错误）与 `DecryptException`（9611，密文非法/解密失败），两者无继承关系，只捕获一类会漏报。
+SDK 无上报通道，沿用现有 `Logger`：解密分支在验签通过后 `Logger::info`、失败抛异常（含中文提示）。用户侧观察点：日志出现 `[Alipay][VerifySignaturePlugin] 响应解密成功`；对接异常监控需**分别捕获两类异常**——`InvalidConfigException`（9610，密钥缺失/格式错误）与 `DecryptException`（9611，密文非法/解密失败），两者无继承关系，只捕获一类会漏报；两者均仅在验签通过后抛出（密钥/密文问题），验签失败始终抛 `InvalidSignException`。
