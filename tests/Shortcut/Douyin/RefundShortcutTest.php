@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Shortcut\Douyin;
+namespace Yansongda\Pay\Tests\Shortcut\Douyin;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\RefundPlugin as MiniRefundPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Refund\AuditPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Refund\RefundPlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Douyin\RefundShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -37,10 +38,10 @@ class RefundShortcutTest extends TestCase
 
     public function testDefault()
     {
-        self::assertEquals([
+        self::assertSame([
             StartPlugin::class,
-            MiniRefundPlugin::class,
-            AddPayloadSignaturePlugin::class,
+            ObtainClientTokenPlugin::class,
+            RefundPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
@@ -48,16 +49,16 @@ class RefundShortcutTest extends TestCase
         ], $this->plugin->getPlugins([]));
     }
 
-    public function testMini()
+    public function testAudit()
     {
-        self::assertEquals([
+        self::assertSame([
             StartPlugin::class,
-            MiniRefundPlugin::class,
-            AddPayloadSignaturePlugin::class,
+            ObtainClientTokenPlugin::class,
+            AuditPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'mini']));
+        ], $this->plugin->getPlugins(['_action' => 'audit']));
     }
 }

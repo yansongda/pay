@@ -35,3 +35,9 @@
 7. Get Wechat Public Cert Error
 
    检查微信商户密钥（mch_secret_key），非 v2 秘钥
+
+8. 微信下载账单报错「签名异常: 微信签名为空」或「微信返回状态码异常」
+
+   微信「下载账单」接口响应头不含签名值，无需验签，插件组合中请去掉 `VerifySignaturePlugin`（不要使用 `mergeCommonPlugins`）。参考 issue：[#1021](https://github.com/yansongda/pay/issues/1021)、[#882](https://github.com/yansongda/pay/issues/882)
+
+   若去掉验签插件后报「微信返回状态码异常」，一般是 `download_url` 已过期（有效期仅 5min/30s），请重新申请账单获取新链接后立即下载

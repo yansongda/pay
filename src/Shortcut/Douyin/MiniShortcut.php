@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Shortcut\Douyin;
 
 use Yansongda\Artful\Contract\ShortcutInterface;
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\Mini\PayPlugin;
-use Yansongda\Pay\Plugin\Douyin\V1\Pay\ResponsePlugin;
+use Yansongda\Pay\Plugin\Douyin\V1\Pay\InvokePlugin;
 
+/**
+ * 小程序下单，返回前端调起参数（`data` + `byteAuthorization`），供前端 `tt.requestOrder` 调起支付.
+ */
 class MiniShortcut implements ShortcutInterface
 {
     /**
@@ -24,12 +22,7 @@ class MiniShortcut implements ShortcutInterface
     {
         return [
             StartPlugin::class,
-            PayPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
+            InvokePlugin::class,
         ];
     }
 }
