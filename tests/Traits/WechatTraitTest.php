@@ -64,6 +64,7 @@ class WechatTraitTest extends TestCase
         self::assertEquals('https://api.mch.weixin.qq.com/api/v1/yansongda', WechatTraitStub::getWechatUrl(WechatTraitStub::getProviderConfig('wechat'), new Collection(['_url' => '/api/v1/yansongda'])));
         self::assertEquals('https://api.weixin.qq.com/xpay/query_user_balance', WechatTraitStub::getWechatUrl($config, new Collection(['_url' => '/xpay/query_user_balance'])));
         self::assertEquals('https://api.weixin.qq.com/cgi-bin/stable_token', WechatTraitStub::getWechatUrl($config, new Collection(['_url' => '/cgi-bin/stable_token'])));
+        self::assertEquals('https://api.weixin.qq.com/sns/jscode2session', WechatTraitStub::getWechatUrl($config, new Collection(['_url' => '/sns/jscode2session'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_URL_MISSING);

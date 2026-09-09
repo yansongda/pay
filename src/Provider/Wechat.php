@@ -32,6 +32,7 @@ use Yansongda\Supports\Str;
  * @method Collection|Rocket h5(array<string, mixed> $order)       H5 支付
  * @method Collection|Rocket transfer(array<string, mixed> $order) 帐户转账
  * @method Collection|Rocket virtual(array<string, mixed> $order)  虚拟支付
+ * @method Collection|Rocket oauth(array<string, mixed> $order)    OAuth 用户身份
  */
 class Wechat implements ProviderInterface
 {
@@ -45,7 +46,7 @@ class Wechat implements ProviderInterface
         Pay::MODE_SERVICE => 'https://api.mch.weixin.qq.com',
     ];
 
-    public const URL_VIRTUAL = 'https://api.weixin.qq.com';
+    public const URL_OPENAPI = 'https://api.weixin.qq.com';
 
     /**
      * @param array<int, mixed> $params

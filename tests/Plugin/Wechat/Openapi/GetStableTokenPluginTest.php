@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual;
+namespace Yansongda\Pay\Tests\Plugin\Wechat\Openapi;
 
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Plugin\Wechat\Virtual\GetAccessTokenPlugin;
+use Yansongda\Pay\Plugin\Wechat\Openapi\GetStableTokenPlugin;
 use Yansongda\Pay\Tests\TestCase;
 
-class GetAccessTokenPluginTest extends TestCase
+class GetStableTokenPluginTest extends TestCase
 {
-    protected GetAccessTokenPlugin $plugin;
+    protected GetStableTokenPlugin $plugin;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->plugin = new GetAccessTokenPlugin();
+        $this->plugin = new GetStableTokenPlugin();
     }
 
     public function testNormal(): void

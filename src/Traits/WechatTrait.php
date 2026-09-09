@@ -22,10 +22,10 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
+use Yansongda\Pay\Plugin\Wechat\Openapi\GetStableTokenPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\GetAccessTokenPlugin;
 use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Supports\Collection;
 
@@ -61,9 +61,9 @@ trait WechatTrait
             return $url;
         }
 
-        // 虚拟支付（服务端 API /xpay/* 与 access_token 接口 /cgi-bin/*）使用 api.weixin.qq.com，非 api.mch.weixin.qq.com
-        if (str_starts_with($url, '/xpay/') || str_starts_with($url, '/cgi-bin/')) {
-            return Wechat::URL_VIRTUAL.$url;
+        // 微信开放接口（虚拟支付 /xpay/*、接口凭据 /cgi-bin/*、OAuth /sns/*）使用 api.weixin.qq.com，非 api.mch.weixin.qq.com
+        if (str_starts_with($url, '/xpay/') || str_starts_with($url, '/cgi-bin/') || str_starts_with($url, '/sns/')) {
+            return Wechat::URL_OPENAPI.$url;
         }
 
         return Wechat::URL[$config->getMode()].$url;
@@ -446,7 +446,7 @@ trait WechatTrait
 
         $result = Artful::artful([
             StartPlugin::class,
-            GetAccessTokenPlugin::class,
+            GetStableTokenPlugin::class,
             AddPayloadBodyPlugin::class,
             AddRadarPlugin::class,
             ResponsePlugin::class,
