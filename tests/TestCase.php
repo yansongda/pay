@@ -75,6 +75,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
                     'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
                     'notify_url' => 'https://pay.yansongda.cn',
+                    'service_id' => '12345678901234567890123456789012',
                     'wechat_public_cert_path' => [
                         // 注意：正常情况下此处应配置微信官方公钥（wechatPublicKey.crt），但由于单元测试中的签名
                         // 均使用 wechatAppPrivateKey.pem 生成，而 wechatPublicKey.crt 对应的私钥我们并不持有，

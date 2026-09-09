@@ -159,6 +159,22 @@ class WechatConfigTest extends TestCase
         self::assertNull($config->getSubMchId());
     }
 
+    public function testServiceIdGetter(): void
+    {
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'service_id' => '12345678901234567890123456789012',
+        ]));
+
+        self::assertSame('12345678901234567890123456789012', $config->getServiceId());
+    }
+
+    public function testServiceIdGetterNull(): void
+    {
+        $config = new WechatConfig($this->validConfig);
+
+        self::assertNull($config->getServiceId());
+    }
+
     public function testWechatConfigInitImportsToCertManager(): void
     {
         CertManager::clearCache();

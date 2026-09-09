@@ -23,6 +23,7 @@ class WechatConfig extends AbstractConfig
     private ?string $mpAppSecret = null;
     private ?string $miniAppSecret = null;
     private ?string $appId = null;
+    private ?string $serviceId = null;
     private ?string $subMchId = null;
     private ?string $subMpAppId = null;
     private ?string $subMiniAppId = null;
@@ -92,6 +93,11 @@ class WechatConfig extends AbstractConfig
     public function setAppId(?string $value): void
     {
         $this->appId = $value;
+    }
+
+    public function setServiceId(?string $value): void
+    {
+        $this->serviceId = $value;
     }
 
     public function setSubMchId(?string $value): void
@@ -182,6 +188,11 @@ class WechatConfig extends AbstractConfig
     public function getAppId(): ?string
     {
         return $this->appId;
+    }
+
+    public function getServiceId(): ?string
+    {
+        return $this->serviceId;
     }
 
     public function getSubMchId(): ?string
