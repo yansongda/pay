@@ -21,6 +21,7 @@ use Yansongda\Pay\Event\MethodCalled;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\CallbackPlugin as VirtualCallbackPlugin;
+use Yansongda\Pay\Shortcut\Wechat\PayScoreShortcut;
 use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
@@ -36,6 +37,7 @@ use Yansongda\Supports\Str;
  * @method Collection|Rocket papay(array<string, mixed> $order)    委托代扣（签约/支付中签约/代扣）
  * @method Collection|Rocket pos(array<string, mixed> $order)      刷卡支付（付款码）
  * @method Collection|Rocket redpack(array<string, mixed> $order)  现金红包
+ * @method Collection|Rocket payscore(array<string, mixed> $order) 支付分（服务订单/商户预授权）
  */
 class Wechat implements ProviderInterface
 {
@@ -125,6 +127,20 @@ class Wechat implements ProviderInterface
     }
 
     /**
+     * @param array<string, mixed> $order
+     *
+     * @throws ContainerException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
+     */
+    public function payscore(array $order): Collection|Rocket
+    {
+        Event::dispatch(new MethodCalled(Pay::PROVIDER_WECHAT, __METHOD__, $order, null));
+
+        return Artful::shortcut(PayScoreShortcut::class, $order);
+    }
+
+    /**
      * @throws ContainerException
      * @throws InvalidParamsException
      */
@@ -149,6 +165,10 @@ class Wechat implements ProviderInterface
      */
     public function success(array $params = []): ResponseInterface
     {
+        if ('payscore' === ($params['_action'] ?? null)) {
+            return new Response(204, ['Content-Type' => 'application/json'], '');
+        }
+
         [$contentType, $body] = match ($params['_action'] ?? null) {
             'virtual' => match ($params['_format'] ?? null) {
                 'json' => ['application/json', json_encode(['ErrCode' => 0, 'ErrMsg' => 'success'])],

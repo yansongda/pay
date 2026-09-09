@@ -171,6 +171,50 @@ class WechatTest extends TestCase
         self::assertStringContainsString('SUCCESS', (string) $result->getBody());
     }
 
+    public function testPayscore()
+    {
+        $response = new Response(
+            200,
+            [
+                'Wechatpay-Nonce' => 'e59e78a6c3f7dfd7e84aabee71be0452',
+                'Wechatpay-Signature' => 'Ut3dG8cMx5W1lbSQhHay068F6khScuPQJM/Z9+suaaSkbYUspFRlkdp2VR/6w5UMvioN0EveSgfypQFVqmT6tI//cWrA1J9rlnKmZ+FgdCMqg7FQnpMRzc1Ap+3mZMtN9GrzYqp/UdgotX6HRfGL3hP8pG1YuijHNrL0QRS17bNYwZX8Mj3qLKUQRpqbfE+TC5yvzh1gEVPBFTwvZdZvXIQpjC/sB2QDSvo72CWgm4huh1h/kMzsrsO+wXXLqDfU01YX8aLbBrjvpcob50lc5XZ2WX5nBbpJXaRatIhBUmkR/ccrQhxWN7YqEobBGK/2DYhr6e6CvTgVdpZUUEcMFw==',
+                'Wechatpay-Timestamp' => '1626444144',
+                'Wechatpay-Serial' => '45F59D4DABF31918AFCEC556D5D2C6E376675D57',
+            ],
+            json_encode(['h5_url' => 'https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx16220223998099f898c5b24eed5c320000&package=4049184564'], JSON_UNESCAPED_SLASHES),
+        );
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn($response);
+        Pay::set(HttpClientInterface::class, $http);
+        Pay::set(VerifySignaturePlugin::class, new VerifySignaturePluginStub());
+
+        // 自备 _url：不依赖 QueryPlugin 装配细节即可跑通全管道（QueryPlugin 落地后会覆盖 _url，用例不变）；
+        // mock 响应沿用 testCancel 的签名头与配套 body，保证真实 openssl 验签通过（Stub 仅绕过时间戳校验）
+        Pay::wechat()->payscore(['_action' => 'query', '_url' => '/v3/payscore/user-service-plan', 'out_order_no' => '123']);
+
+        self::assertTrue(true);
+    }
+
+    public function testSuccessPayscore()
+    {
+        $result = Pay::wechat()->success(['_action' => 'payscore']);
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertEquals(204, $result->getStatusCode());
+        self::assertEquals('', (string) $result->getBody());
+        self::assertStringContainsString('application/json', $result->getHeaderLine('Content-Type'));
+    }
+
+    public function testSuccessDefaultUnchanged()
+    {
+        $result = Pay::wechat()->success();
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertEquals(200, $result->getStatusCode());
+        self::assertEquals(['code' => 'SUCCESS', 'message' => '成功'], json_decode((string) $result->getBody(), true));
+    }
+
     public function testCallbackVirtual()
     {
         $body = '<xml><Encrypt><![CDATA[test-encrypt-data]]></Encrypt></xml>';
