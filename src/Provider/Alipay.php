@@ -33,6 +33,7 @@ use Yansongda\Supports\Str;
  * @method ResponseInterface|Rocket h5(array<string, mixed> $order)       手机网站支付
  * @method ResponseInterface|Rocket web(array<string, mixed> $order)      电脑支付
  * @method Collection|Rocket        mini(array<string, mixed> $order)     小程序支付
+ * @method Collection|Rocket        auth(array<string, mixed> $order)     应用授权令牌（ISV 换取/刷新/查询）
  */
 class Alipay implements ProviderInterface
 {

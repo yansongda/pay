@@ -562,3 +562,13 @@ $result = Pay::alipay()->pay($allPlugins, $params);
 - 商品文件上传
 
   `\Yansongda\Pay\Plugin\Alipay\V2\Merchant\Item\FileUploadPlugin`
+
+## 应用授权
+
+- 换取/刷新应用授权令牌（app_auth_token）
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Open\Authorization\TokenAppPlugin`
+
+- 查询应用授权令牌
+
+  `\Yansongda\Pay\Plugin\Alipay\V2\Open\Authorization\TokenAppQueryPlugin`
