@@ -18,7 +18,6 @@ use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin as VirtualAddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\CallbackPlugin as VirtualCallbackPlugin;
@@ -26,7 +25,7 @@ use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\CurrencyPayPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\QueryBalancePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\QueryOrderPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\RefundOrderPlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\CheckResponsePlugin as VirtualCheckResponsePlugin;
+use Yansongda\Pay\Plugin\Wechat\Openapi\ResponsePlugin as VirtualCheckResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\CallbackPluginStub;
@@ -299,7 +298,6 @@ class WechatTest extends TestCase
                 VirtualAddPayloadSignaturePlugin::class,
                 AddRadarPlugin::class,
                 VirtualCheckResponsePlugin::class,
-                ResponsePlugin::class,
                 ParserPlugin::class,
             ],
             [
@@ -334,7 +332,6 @@ class WechatTest extends TestCase
                 VirtualAddPayloadSignaturePlugin::class,
                 AddRadarPlugin::class,
                 VirtualCheckResponsePlugin::class,
-                ResponsePlugin::class,
                 ParserPlugin::class,
             ],
             [
@@ -373,7 +370,6 @@ class WechatTest extends TestCase
                 VirtualAddPayloadSignaturePlugin::class,
                 AddRadarPlugin::class,
                 VirtualCheckResponsePlugin::class,
-                ResponsePlugin::class,
                 ParserPlugin::class,
             ],
             [
@@ -409,7 +405,6 @@ class WechatTest extends TestCase
                 VirtualAddPayloadSignaturePlugin::class,
                 AddRadarPlugin::class,
                 VirtualCheckResponsePlugin::class,
-                ResponsePlugin::class,
                 ParserPlugin::class,
             ],
             [

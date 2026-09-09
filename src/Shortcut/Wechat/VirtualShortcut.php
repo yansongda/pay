@@ -11,9 +11,8 @@ use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
+use Yansongda\Pay\Plugin\Wechat\Openapi\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\CheckResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\CancelCurrencyPayPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\CurrencyPayPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\PresentCurrencyPlugin;
@@ -253,7 +252,6 @@ class VirtualShortcut implements ShortcutInterface
             AddPayloadBodyPlugin::class,
             AddPayloadSignaturePlugin::class,
             AddRadarPlugin::class,
-            CheckResponsePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
