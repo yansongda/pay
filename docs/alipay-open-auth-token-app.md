@@ -202,3 +202,7 @@ https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id={第三方应用APPID
 - 查询应用授权信息：https://opendocs.alipay.com/isv/04hgcp
 - 第三方应用授权总览：https://opendocs.alipay.com/open/10603/drudqy
 - 官方 PHP SDK 模型（字段权威来源）：https://github.com/alipay/alipay-sdk-php-all（`v3/src/Model/AlipayOpenAuthTokenApp{Model,ResponseModel}.php`；其中 `setExpiresIn` 注释明确「该字段已作废，应用令牌长期有效」，`setReExpiresIn` 注释「刷新令牌的有效时间（从接口调用时间作为起始时间），单位到秒」）
+
+## 变更记录
+
+- 2026-09-09（PR #1206 review）：对外调用名由 `token_app` 更名为 `auth`（`AuthShortcut`），分发改为 `_action` 缺省 `token_app`（换取/刷新）/ `query`（查询）；用户文档由 v2 文档站迁移至 v3。§3.3/§3.4 中 `token_app` 调用形态的描述以本记录为准。

@@ -21,7 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - 统一回调入口：`Pay::douyin()->callback($request)` 统一处理 `payment` 支付结果/`refund` 退款结果/`pre_create_refund` 退款申请三类回调（`Plugin\Douyin\V1\CallbackPlugin`），均基于平台公钥 RSA 验签（`Byte-Timestamp`/`Byte-Nonce-Str`/`Byte-Signature` 三行验签串 + 原始 body），校验 body 顶层 `type` 非空后解析 `msg`，业务方按 `type` 分发处理；退款申请回调需业务方自行构造同步应答
   - `client_token` 自动获取与进程内缓存（`oauth/client_token`，`expires_in - 60` 秒提前过期），支持 `['_access_token' => ...]` 外部注入自建共享缓存
 - 新增抖音配置字段：`app_id`（即 client_key）、`app_secret`、`app_private_key`（下单加签）、`douyin_public_key`（回调验签）、`notify_url`、`mode`
-- 支付宝第三方应用授权（ISV 代理商模式）支持：新增 `token_app` 快捷调用（换取/刷新 `alipay.open.auth.token.app`、查询 `alipay.open.auth.token.app.query`），插件归属 `Plugin/Alipay/V2/Open/Authorization`，补充 ISV 授权流程文档 (#1091)
+- 支付宝第三方应用授权（ISV 代理商模式）支持：新增 `auth` 快捷调用（`_action=token_app` 换取/刷新 `alipay.open.auth.token.app`、`_action=query` 查询 `alipay.open.auth.token.app.query`），插件归属 `Plugin/Alipay/V2/Open/Authorization`，补充 ISV 授权流程文档 (#1091)
 
 ### Changed
 

@@ -15,31 +15,39 @@ use Yansongda\Pay\Plugin\Alipay\V2\Open\Authorization\TokenAppQueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Pay\Shortcut\Alipay\TokenAppShortcut;
+use Yansongda\Pay\Shortcut\Alipay\AuthShortcut;
 use Yansongda\Pay\Tests\TestCase;
 
-class TokenAppShortcutTest extends TestCase
+class AuthShortcutTest extends TestCase
 {
-    protected TokenAppShortcut $shortcut;
+    protected AuthShortcut $shortcut;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->shortcut = new TokenAppShortcut();
+        $this->shortcut = new AuthShortcut();
     }
 
-    public function testFooParam()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->shortcut->getPlugins(['_action' => 'foo']);
-    }
-
-    public function testDefault()
+    public function testTokenAppDefault()
     {
         $result = $this->shortcut->getPlugins([]);
+
+        self::assertEquals([
+            StartPlugin::class,
+            TokenAppPlugin::class,
+            FormatPayloadBizContentPlugin::class,
+            AddPayloadSignaturePlugin::class,
+            AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
+            ResponsePlugin::class,
+            ParserPlugin::class,
+        ], $result);
+    }
+
+    public function testTokenAppExplicit()
+    {
+        $result = $this->shortcut->getPlugins(['_action' => 'token_app']);
 
         self::assertEquals([
             StartPlugin::class,
@@ -67,5 +75,13 @@ class TokenAppShortcutTest extends TestCase
             ResponsePlugin::class,
             ParserPlugin::class,
         ], $result);
+    }
+
+    public function testFooParam()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+
+        $this->shortcut->getPlugins(['_action' => 'foo']);
     }
 }

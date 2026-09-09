@@ -18,7 +18,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Supports\Str;
 
-class TokenAppShortcut implements ShortcutInterface
+class AuthShortcut implements ShortcutInterface
 {
     /**
      * @param array<string, mixed> $params
@@ -29,7 +29,7 @@ class TokenAppShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $method = Str::camel($params['_action'] ?? 'token_app').'Plugins';
 
         if (method_exists($this, $method)) {
             return $this->{$method}();
@@ -41,7 +41,7 @@ class TokenAppShortcut implements ShortcutInterface
     /**
      * @return array<class-string>
      */
-    protected function defaultPlugins(): array
+    protected function tokenAppPlugins(): array
     {
         return [
             StartPlugin::class,

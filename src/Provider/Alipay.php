@@ -26,14 +26,14 @@ use Yansongda\Supports\Collection;
 use Yansongda\Supports\Str;
 
 /**
- * @method ResponseInterface|Rocket app(array<string, mixed> $order)       APP 支付
- * @method Collection|Rocket        pos(array<string, mixed> $order)       刷卡支付（付款码，被扫码）
- * @method Collection|Rocket        scan(array<string, mixed> $order)      扫码支付（摄像头，主动扫）
- * @method Collection|Rocket        transfer(array<string, mixed> $order)  帐户转账
- * @method ResponseInterface|Rocket h5(array<string, mixed> $order)        手机网站支付
- * @method ResponseInterface|Rocket web(array<string, mixed> $order)       电脑支付
- * @method Collection|Rocket        mini(array<string, mixed> $order)      小程序支付
- * @method Collection|Rocket        token_app(array<string, mixed> $order) 应用授权令牌（ISV 换取/刷新/查询）
+ * @method ResponseInterface|Rocket app(array<string, mixed> $order)      APP 支付
+ * @method Collection|Rocket        pos(array<string, mixed> $order)      刷卡支付（付款码，被扫码）
+ * @method Collection|Rocket        scan(array<string, mixed> $order)     扫码支付（摄像头，主动扫）
+ * @method Collection|Rocket        transfer(array<string, mixed> $order) 帐户转账
+ * @method ResponseInterface|Rocket h5(array<string, mixed> $order)       手机网站支付
+ * @method ResponseInterface|Rocket web(array<string, mixed> $order)      电脑支付
+ * @method Collection|Rocket        mini(array<string, mixed> $order)     小程序支付
+ * @method Collection|Rocket        auth(array<string, mixed> $order)     应用授权令牌（ISV 换取/刷新/查询）
  */
 class Alipay implements ProviderInterface
 {
