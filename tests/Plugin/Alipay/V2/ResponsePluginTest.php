@@ -125,7 +125,7 @@ class ResponsePluginTest extends TestCase
         $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
         self::assertEquals(
-            ['_sign' => 'x', 'alipay_user_info_share_response' => 'base64密文串'],
+            ['_sign' => 'x', '_cipher' => 'base64密文串'],
             $result->getDestination()->all()
         );
     }

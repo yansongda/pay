@@ -28,7 +28,8 @@ class VerifySignaturePlugin implements PluginInterface
     use AlipayTrait;
 
     /**
-     * 验签通过后，若 `{method}_response` 为密文字符串，则在此解密并拆包交付（官方要求验签先于解密，
+     * 验签通过后，若 destination 含 `_cipher` 密文标记（由 ResponsePlugin 拆包时写入），
+     * 则在此解密并拆包交付（官方要求验签先于解密，
      * 解密原语严格门控于 verifyAlipaySign() 正常返回之后，未认证密文不可达）。
      *
      * @throws ContainerException
@@ -58,10 +59,10 @@ class VerifySignaturePlugin implements PluginInterface
         /** @var AlipayConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $rocket->getParams());
 
-        // 加密响应场景：destination 中 `{method}_response` 的值为字符串（密文），签名源为带双引号的密文原文，
-        // 与官方 SDK 取串行为一致（JSON_UNESCAPED_SLASHES 保证 base64 密文中的 `/` 不被转义）；其余场景签名源保持原状
-        $resultKey = str_replace('.', '_', (string) $rocket->getPayload()?->get('method')).'_response';
-        $cipher = $destination->get($resultKey);
+        // 加密响应场景：ResponsePlugin 以固定 `_cipher` 协议键交付密文（与 `_sign` 同构），
+        // 签名源为带双引号的密文原文，与官方 SDK 取串行为一致（JSON_UNESCAPED_SLASHES 保证
+        // base64 密文中的 `/` 不被转义）；其余场景签名源保持原状
+        $cipher = $destination->get('_cipher');
 
         $signContent = is_string($cipher)
             ? json_encode($cipher, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)

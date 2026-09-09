@@ -39,8 +39,8 @@ class ResponsePlugin implements PluginInterface
                     throw new InvalidResponseException(Exception::RESPONSE_BUSINESS_CODE_WRONG, '支付宝网关响应异常: 响应为加密密文但未包含签名', $rocket->getDestination());
                 }
 
-                // 加密响应：保持 `{method}_response` 键值形态（密文原文），由 VerifySignaturePlugin 验签通过后解密
-                $response = [$resultKey => $response];
+                // 加密响应：密文以固定 `_cipher` 协议键交付（与 `_sign` 同构），由 VerifySignaturePlugin 验签通过后解密
+                $response = ['_cipher' => $response];
             }
 
             if (empty($sign) && '10000' !== ($response['code'] ?? 'null')) {

@@ -120,7 +120,7 @@ class VerifySignaturePluginTest extends TestCase
             ->mergePayload(['method' => 'xxx'])
             ->setDestination(new Collection([
                 '_sign' => base64_encode($sign),
-                'xxx_response' => $encrypted,
+                '_cipher' => $encrypted,
             ]));
 
         self::expectException(InvalidSignException::class);
@@ -149,7 +149,7 @@ class VerifySignaturePluginTest extends TestCase
             ->mergePayload(['method' => 'alipay.user.info.share'])
             ->setDestination(new Collection([
                 '_sign' => base64_encode($sign),
-                'alipay_user_info_share_response' => $cipher,
+                '_cipher' => $cipher,
             ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -175,7 +175,7 @@ class VerifySignaturePluginTest extends TestCase
             ->mergePayload(['method' => 'alipay.user.info.share'])
             ->setDestination(new Collection([
                 '_sign' => 'wrong-sign',
-                'alipay_user_info_share_response' => $cipher,
+                '_cipher' => $cipher,
             ]));
 
         try {
@@ -183,7 +183,7 @@ class VerifySignaturePluginTest extends TestCase
             self::fail('应当抛出验签失败异常');
         } catch (InvalidSignException $e) {
             // 验签失败 → 解密未执行，密文未被拆包替换
-            self::assertSame($cipher, $rocket->getDestination()->get('alipay_user_info_share_response'));
+            self::assertSame($cipher, $rocket->getDestination()->get('_cipher'));
         }
     }
 
@@ -224,7 +224,7 @@ class VerifySignaturePluginTest extends TestCase
             ->mergePayload(['method' => 'alipay.user.info.share'])
             ->setDestination(new Collection([
                 '_sign' => base64_encode($sign),
-                'alipay_user_info_share_response' => $cipher,
+                '_cipher' => $cipher,
             ]));
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -252,7 +252,7 @@ class VerifySignaturePluginTest extends TestCase
             ->mergePayload(['method' => 'alipay.user.info.share'])
             ->setDestination(new Collection([
                 '_sign' => base64_encode($sign),
-                'alipay_user_info_share_response' => $cipher,
+                '_cipher' => $cipher,
             ]));
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -265,7 +265,7 @@ class VerifySignaturePluginTest extends TestCase
     {
         $destination = [
             '_sign' => 'x',
-            'alipay_user_info_share_response' => 'base64密文串',
+            '_cipher' => 'base64密文串',
         ];
 
         $rocket = (new Rocket())
