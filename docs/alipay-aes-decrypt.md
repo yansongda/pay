@@ -3,6 +3,7 @@
 > **时间**：2026-09-07
 > **作者**：GLM + yansongda
 > **状态**：经过人工审核确认；plan-reviewer 审查通过（2026-09-08：初审「修改后执行」，1 MAJOR + 9 MINOR 已全部吸纳；第 1 轮复审结论「可执行」，复审 MINOR 意见已同步修正）
+> **实施演进**（2026-09-09，本文档已按最终代码同步）：实施阶段两项替代——① 独立 `ResponseDecryptPlugin` 方案被替代，解密并入 `VerifySignaturePlugin` 验签通过后执行（消除 43 处 Shortcut 管道插入，管道回到 master 8 插件形态，encrypt-then-MAC 门控不变）；② 密文不再以 `{method}_response` 键值形态跨插件传递，改为 `_cipher` 固定协议键（与 `_sign` 同构），消除两插件间 resultKey 重复计算
 
 ## 1. 背景与问题
 
@@ -93,9 +94,9 @@ plain === false → DecryptException(DATA_INVALID)
 return plain   // 明文 JSON 字符串；json_decode 留给调用方，保持方法纯粹
 ```
 
-严格 16 字节（AES-128）为**已确认的方案决策**；注意「官方密钥为 16 字节」属推断（官方 SDK 源码不强制长度，见 3.1 注），故解密插件遇到非 16 字节密钥时抛明确异常引导，而非猜测行为。
+严格 16 字节（AES-128）为**已确认的方案决策**；注意「官方密钥为 16 字节」属推断（官方 SDK 源码不强制长度，见 3.1 注），故解密遇到非 16 字节密钥时抛明确异常引导，而非猜测行为。
 
-**密文判定的已知边界**：「`except('_sign')` 后单键且值为 string」在理论上存在两条等价误判路径——① 某明文接口的 `{method}_response` 恰为**单键字符串**；② `{method}_response` 为**单键对象**（如仅 `{"code":"10000"}`），经 `ResponsePlugin` 拆包扁平化后 destination 恰为「单键且值为 string」。两条路径后果相同：验签源从对象形态变为带引号字符串，导致合法响应抛 `InvalidSignException`（不会静默出错）。经核实 SDK 内 8 个 Shortcut 涉及的全部接口响应节点均含 `code`/`msg` 等多键（同时覆盖两条路径），实际风险趋近于零；该分支仅影响含验签插件的 V2 管道，且失败模式为显式异常，安全可控。
+**密文判定的已知边界**（最终实现）：`ResponsePlugin` 以「resultKey（`{method}_response`）的值是否为 string」精确匹配判定密文（resultKey 精确匹配，非旧版「except 后单键 string」形态推断——后者存在「单键对象拆包扁平化后误判」的第二路径，已随 resultKey 精确匹配消除）。理论上若某明文接口的 `{method}_response` 恰为单键字符串值，将被误判为密文：验签源从对象形态变为带引号字符串，导致合法响应抛 `InvalidSignException`（显式失败，不会静默出错）。经核实 SDK 内 8 个 Shortcut 涉及的全部接口响应节点均为 JSON object（含 `code`/`msg` 等多键），实际风险趋近于零。另，`_cipher` 为 SDK 内部保留协议键（`_` 前缀，与 `_sign` 同构），明文业务数据理论上若含同名键会被 `VerifySignaturePlugin` 误判为密文；支付宝业务字段不以 `_` 开头，风险同样趋近于零。
 
 ### 3.3 插件改造与新增
 
@@ -125,14 +126,14 @@ return plain   // 明文 JSON 字符串；json_decode 留给调用方，保持�
 
 ### 3.5 兼容性设计
 
-- 不配 `aesKey`：新插件对明文响应 no-op、对密文响应抛出**明确**的「缺少 AES 密钥」异常（优于当前 TypeError 崩溃或拿到裸密文）。
+- 不配 `aesKey`：明文响应零变化；密文响应在验签通过后抛出**明确**的「缺少 AES 密钥」异常（优于当前 TypeError 崩溃或拿到裸密文）。
 - 配 `aesKey`：明文接口行为不变；加密接口自动解密。
 - V3 管道不涉及（V3 无 AES 内容加密体系）；`CallbackPlugin`/`AppCallbackPlugin` 不改动。
 - **请求侧加密**（`encrypt_type=AES` + 整体加密 biz_content 上送）**不在本期范围**，仅 ISV 密钥管理类接口（`alipay.open.auth.app.aes.set/get`）需要，列为后续可选扩展。
 
 ## 4. 推进策略
 
-- **阶段 1（本仓库实现）**：Config + Trait + 异常码 + 3 个插件（2 改 1 新增）→ `composer cs-fix && composer analyse && composer test` 全绿；回滚 = 纯代码 revert，无配置/数据迁移。
+- **阶段 1（本仓库实现）**：Config + Trait + 异常码 + 2 个插件（2 改 0 新增，解密并入 `VerifySignaturePlugin`，无 Shortcut 改动）→ `composer cs-fix && composer analyse && composer test` 全绿；回滚 = 纯代码 revert，无配置/数据迁移。
 - **阶段 2（真实环境验证，可选）**：用户开通 AES 的支付宝应用实测 `alipay.user.info.share` 加密响应；验证点 = 解密后拿到 `mobile` 字段；无环境则跳过，靠单测 + 官方向量覆盖。
 - **阶段 3（文档）**：`web/docs/v3/` 文档更新 aesKey 配置说明、加解密使用说明、FAQ「不支持 AES」措辞修订。
 
@@ -144,7 +145,8 @@ return plain   // 明文 JSON 字符串；json_decode 留给调用方，保持�
 | 控制台重新生成 aesKey 后旧密钥立即失效 | 低 | 文档明示；解密失败抛 DecryptException 带中文提示引导检查密钥 |
 | 支付宝个别接口返回非整段加密（字段级）或 AES_V2（随机 IV）变体 | 中 | 密文判定不解（值为 string）时按 v1 算法尝试；失败异常中输出 debug 信息；留后续扩展点 |
 | 用户误配非 16 字节 key / 官方密钥口径与 16 字节不符 | 低 | 严格校验 + 明确异常文案；若真实环境出现官方下发的非 16 字节密钥，属设计性偏差，停下报告后再议宽容分支（官方 Java SDK 按长度自适应 128/192/256） |
-| 明文响应恰为「单键字符串或单键对象（拆包扁平化后）」被误判为密文（两条等价路径，见 §3.2） | 低 | 仅影响含验签插件的 V2 管道；SDK 范围内所有接口响应节点均 ≥2 键（含 code/msg）；失败模式为显式 `InvalidSignException` 而非静默错误 |
+| 明文响应的 `{method}_response` 恰为字符串值被误判为密文（单一路径，见 §3.2；旧版「单键对象拆包扁平化」第二路径已随 resultKey 精确匹配消除） | 低 | 仅影响含验签插件的 V2 管道；SDK 范围内所有接口响应节点均为多键 object（含 code/msg）；失败模式为显式 `InvalidSignException` 而非静默错误 |
+| 明文业务数据含 `_cipher` 保留键被误判（见 §3.2） | 低 | `_` 前缀为 SDK 内部保留命名空间（`_sign` 先例）；支付宝业务字段不以 `_` 开头；失败模式同为显式 `InvalidSignException` |
 | 加密 `error_response`（官方 SDK 对错误响应也有解密防御） | 低 | 本方案中加密错误响应走 fallback 多键路径 → 验签失败抛 `InvalidSignException`，与现状行为一致（无回归）；留扩展点，遇真实场景再补 |
 | 现有明文路径回归 | 低 | 现有全量测试守护 + 明文分支零改动原则 |
 

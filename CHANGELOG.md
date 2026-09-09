@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - 新增 V3 插件：`AddPayloadSignaturePlugin`、`AddRadarPlugin`、`VerifySignaturePlugin`、`ResponsePlugin` 及 `Pay/{Pos,Precreate,Query,Refund,Cancel,Close}Plugin`；`AlipayTrait` 新增 `getAlipayV3Url`/`getAlipayV3Authorization` 方法，验签统一复用 `verifyAlipaySign`
   - 异步通知（V2/V3 报文同构）由统一的 `Plugin\Alipay\CallbackPlugin` 自动完成 RSA2 验签（强制、不可关闭），应答为字面量 `success`
   - `Provider\Alipay` 新增 `V3_SANDBOX_URL` 常量（V3 沙箱网关与 V2 不同）
+- 支付宝 V2 响应内容 AES 解密支持（`alipay.user.info.share` 等敏感信息接口返回加密响应的场景）（#1204）
+  - `AlipayConfig` 新增可选配置 `aes_key`（开放平台控制台「接口内容加密方式」生成的 base64 编码 16 字节 AES 密钥），不配置时明文响应行为零变化
+  - `AlipayTrait` 新增 `decryptAlipayContents()` 静态方法（AES-128-CBC、16 字节全零 IV、密钥与密文双重 base64 解码），算法对齐官方 PHP/Java SDK
+  - `VerifySignaturePlugin` 支持加密响应验签（签名源为带双引号的密文原文），验签通过后自动解密拆包交付明文；解密原语严格门控于验签之后（encrypt-then-MAC，未认证密文不可达）
+  - `ResponsePlugin` 识别加密响应（`{method}_response` 为字符串）并以固定 `_cipher` 协议键交付（与 `_sign` 同构），密文无签名时沿用现有异常
+  - 新增异常码 `DECRYPT_ALIPAY_AES_KEY_INVALID`（9610）/ `DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID`（9611），未配置密钥或密文非法时抛出带中文提示的异常
 
 ### Changed
 
@@ -20,6 +26,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - **[BC]** `ProviderConfigInterface` 从 `Yansongda\Pay\Config` 移动至 `Yansongda\Pay\Contract` 命名空间
 - **[BC]** `CallbackReceived` 事件载荷统一为解析后的通知参数数组（原 V3 分支携带 `ServerRequestInterface`）；V3 同步验签的 `alipay-sn` 证书 SN 匹配校验为无条件执行
 - 统一支付宝网关域名常量：`Provider\Alipay::URL` 仅保留纯域名（V2/V3 共用），V2 拼接完整请求 URL 时追加 `gateway.do?charset=utf-8`；移除 `V3_URL`，V3 沙箱经 `V3_SANDBOX_URL` 常量单独指向官方 V3 SDK 沙箱网关（`http://openapi.sandbox.dl.alipaydev.com`，与 V2 沙箱域名不同）
+
+### Fixed
+
+- 修复支付宝 V2 管道遇到加密响应（`{method}_response` 为 base64 密文字符串）时 `array_merge` 触发 `TypeError` 崩溃的问题（#1204）
 
 
 ## [v3.8.0-beta.5] - 2026-09-05
