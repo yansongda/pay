@@ -10,7 +10,7 @@ use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
+use Yansongda\Pay\Plugin\Wechat\Openapi\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\CancelCurrencyPayPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\CurrencyPayPlugin;
@@ -31,7 +31,6 @@ use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\CancelSubscribeContractPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\QuerySubscribeContractPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\SendSubscribePrePaymentPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\SubmitSubscribePayOrderPlugin;
-use Yansongda\Pay\Plugin\Wechat\Virtual\CheckResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\CreateWithdrawOrderPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryBizBalancePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryWithdrawOrderPlugin;
@@ -68,9 +67,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testOrderRefund(): void
@@ -81,9 +79,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(RefundOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testOrderStartDownload(): void
@@ -94,9 +91,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(StartDownloadOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testOrderQueryDownload(): void
@@ -107,9 +103,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryDownloadOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testOrderDownloadBill(): void
@@ -120,9 +115,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(DownloadBillPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testOrderNotifyProvideGoods(): void
@@ -133,9 +127,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(NotifyProvideGoodsPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testCurrencyPay(): void
@@ -146,9 +139,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(CurrencyPayPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testCurrencyCancel(): void
@@ -159,9 +151,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(CancelCurrencyPayPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testCurrencyQueryBalance(): void
@@ -172,9 +163,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryBalancePlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testCurrencyPresent(): void
@@ -185,9 +175,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(PresentCurrencyPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testGoodsStartUpload(): void
@@ -198,9 +187,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(StartUploadGoodsPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testGoodsQueryUpload(): void
@@ -211,9 +199,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryUploadGoodsPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testGoodsStartPublish(): void
@@ -224,9 +211,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(StartPublishGoodsPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testGoodsQueryPublish(): void
@@ -237,9 +223,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryPublishGoodsPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testWithdrawCreate(): void
@@ -250,9 +235,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(CreateWithdrawOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testWithdrawQuery(): void
@@ -263,9 +247,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryWithdrawOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testWithdrawQueryBalance(): void
@@ -276,9 +259,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QueryBizBalancePlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testSubscribeSendPrePayment(): void
@@ -289,9 +271,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(SendSubscribePrePaymentPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testSubscribeSubmitPayOrder(): void
@@ -302,9 +283,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(SubmitSubscribePayOrderPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testSubscribeQueryContract(): void
@@ -315,9 +295,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(QuerySubscribeContractPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testSubscribeCancelContract(): void
@@ -328,9 +307,8 @@ class VirtualShortcutTest extends TestCase
         self::assertSame(StartPlugin::class, $plugins[0]);
         self::assertSame(CancelSubscribeContractPlugin::class, $plugins[1]);
         self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(CheckResponsePlugin::class, $plugins[5]);
-        self::assertSame(ResponsePlugin::class, $plugins[6]);
-        self::assertSame(ParserPlugin::class, $plugins[7]);
+        self::assertSame(ResponsePlugin::class, $plugins[5]);
+        self::assertSame(ParserPlugin::class, $plugins[6]);
     }
 
     public function testInvalidAction(): void
