@@ -2,7 +2,7 @@
 
 > **时间**：2026-09-09
 > **作者**：GLM-5.3 + yansongda
-> **状态**：经人工审核确认
+> **状态**：已实现（PR #1206）
 
 对应 Issue：[#1091](https://github.com/yansongda/pay/issues/1091)（支付宝的第三方应用授权 token：app_auth_token 获取问题）
 
@@ -12,7 +12,7 @@
 
 - 全局配置：`AlipayConfig::$appAuthToken`（`src/Config/AlipayConfig.php`）
 - 单次覆盖：`$params['_app_auth_token']`，V2 由 `StartPlugin::getAppAuthToken()` 写入公共参数，V3 由 `AddPayloadSignaturePlugin` → `AddRadarPlugin` 写入请求头 `alipay-app-auth-token`
-- 注：现有 V2 用户文档 `web/docs/v2/alipay/index.md` 仅有「服务商模式」小节（mode=service + pid），**无** `app_auth_token` 专项用法说明，由本次新增文档补齐
+- 注：现有用户文档（v2 时代的 alipay 文档）仅有「服务商模式」小节（mode=service + pid），**无** `app_auth_token` 专项用法说明，由本次新增的用户文档（`web/docs/v3/alipay/authorization.md`，v3 文档站）补齐
 
 **「获取侧」完全缺失**：ISV/代理商模式必须先完成「商户授权 → 回调 `app_auth_code` → 换取 `app_auth_token`」链路，而代码中无 `alipay.open.auth.token.app`（换取/刷新）与 `alipay.open.auth.token.app.query`（查询）的任何实现。
 
@@ -30,14 +30,14 @@
 
 ## 2. 整体方案
 
-**核心思路**：新增 `Open/Authorization` 插件族 + 单一 `TokenAppShortcut`（`_action` 分发换取/查询），响应链零改动。
+**核心思路**：新增 `Open/Authorization` 插件族 + 单一 `AuthShortcut`（`_action` 分发换取/查询），响应链零改动。
 
 ```
 用户代码
-   │ Pay::alipay()->token_app(['grant_type'=>'authorization_code','code'=>$code])
+   │ Pay::alipay()->auth(['grant_type'=>'authorization_code','code'=>$code])
    ▼
-TokenAppShortcut (Shortcut/Alipay/)
-   │ _action=default → 换取/刷新      _action=query → 查询授权信息
+AuthShortcut (Shortcut/Alipay/)
+   │ _action=token_app（缺省）→ 换取/刷新      _action=query → 查询授权信息
    ▼
 StartPlugin → TokenAppPlugin|TokenAppQueryPlugin → FormatPayloadBizContentPlugin
    → AddPayloadSignaturePlugin → AddRadarPlugin → VerifySignaturePlugin
@@ -56,11 +56,12 @@ src/
 │       ├── TokenAppPlugin.php       # alipay.open.auth.token.app
 │       └── TokenAppQueryPlugin.php  # alipay.open.auth.token.app.query
 ├── Shortcut/Alipay/
-│   └── TokenAppShortcut.php         # ★ 新增
+│   └── AuthShortcut.php              # ★ 新增
 └── Provider/Alipay.php              # 修改：补 @method 注解
-tests/                               # 镜像新增 3 个测试
-web/docs/v2/alipay/authorization.md  # ★ 新增用户文档
-web/.vitepress/sidebar/v2.js         # 修改：补侧边栏项
+tests/                               # 镜像新增 3 个测试类（插件×2 + AuthShortcut 4 用例）
+web/docs/v3/alipay/authorization.md  # ★ 新增用户文档
+web/docs/v3/alipay/all.md            # 修改：插件索引登记
+web/.vitepress/sidebar/v3.js         # 修改：补侧边栏项
 CHANGELOG.md                         # 修改：Unreleased Added
 ```
 
@@ -124,24 +125,24 @@ curl -s https://openapi.alipay.com/gateway.do?charset=utf-8 \
 
 ### 3.3 Shortcut 设计
 
-`TokenAppShortcut`，`_action` 分发（`Str::camel($params['_action'] ?? 'default').'Plugins'`，照 `CancelShortcut` 惯例）：
+`AuthShortcut`，`_action` 分发（`Str::camel($params['_action'] ?? 'token_app').'Plugins'`，照 `CancelShortcut` 惯例）：
 
 | action | method | 插件链 |
 |---|---|---|
-| `default`（缺省） | `alipay.open.auth.token.app` | StartPlugin → TokenAppPlugin → FormatPayloadBizContentPlugin → AddPayloadSignaturePlugin → AddRadarPlugin → VerifySignaturePlugin → ResponsePlugin → ParserPlugin |
+| `token_app`（缺省） | `alipay.open.auth.token.app` | StartPlugin → TokenAppPlugin → FormatPayloadBizContentPlugin → AddPayloadSignaturePlugin → AddRadarPlugin → VerifySignaturePlugin → ResponsePlugin → ParserPlugin |
 | `query` | `alipay.open.auth.token.app.query` | 同上，业务插件换 TokenAppQueryPlugin |
 
-- 换取与刷新**共用 default**（同一 API，`grant_type` 由用户 params 决定，不设冗余 action）
+- 换取与刷新**共用 token_app**（同一 API，`grant_type` 由用户 params 决定，不设冗余 action）
 - 非法 action 抛 `InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID)`
-- **对外调用名为 `token_app`（而非 `tokenApp`）**：`Alipay::__call` 先 `strtolower($shortcut)`（`src/Provider/Alipay.php:63`）再 `Str::studly`（`vendor/yansongda/supports/src/Str.php:290-295`，`ucwords` 实现，单词内大写丢失），转换链完整验证：`token_app` → strtolower → `token_app` → studly（`_` 转空格再 ucwords）→ `'TokenApp'` → `Yansongda\Pay\Shortcut\Alipay\TokenAppShortcut` ✓；而 `tokenApp` → `tokenapp` → `'Tokenapp'` → 类不存在 → Linux/CI 大小写敏感文件系统下运行时必抛 `InvalidParamsException`（macOS 默认大小写不敏感 FS 会侥幸命中文件，形成本地绿线上崩的隐蔽缺陷；现有 Shortcut 全为单词条，此坑未暴露过）。**二者不可兼得：若偏好 `tokenApp` 驼峰调用名，则类/文件名须改为 `TokenappShortcut`——待用户醒后二选一确认，默认采用 `token_app`**
+- **对外调用名定为 `auth`，类名 `AuthShortcut`（PR #1206 review 阶段定案）**：`Alipay::__call` 先 `strtolower($shortcut)`（`src/Provider/Alipay.php:63`）再 `Str::studly`（`vendor/yansongda/supports/src/Str.php:290-295`，`ucwords` 实现，单词内大写丢失）。多词命名存在陷阱：`tokenApp` → `tokenapp` → `'Tokenapp'` → 类不存在 → Linux/CI 大小写敏感文件系统下运行时必抛 `InvalidParamsException`（macOS 默认大小写不敏感 FS 会侥幸命中文件，形成本地绿线上崩的隐蔽缺陷；现有 Shortcut 全为单词条，此坑未暴露过）。设计期曾在 `token_app`（snake_case，可规避该陷阱，转换链 `token_app` → strtolower → `token_app` → studly（`_` 转空格再 ucwords）→ `'TokenApp'` → `TokenAppShortcut` ✓）与 `tokenApp`（类名须为 `TokenappShortcut`）间权衡并默认采用前者；review 阶段最终定案对外调用名为单词 `auth`——单词名天然无大小写陷阱，转换链 `auth` → strtolower → `auth` → studly → `'Auth'` → `Yansongda\Pay\Shortcut\Alipay\AuthShortcut` ✓，且语义更贴合「应用授权」
 - 返回 `$rocket->getDestination()`（`Collection`），传 `_return_rocket` 时返回 `Rocket`
 
 ### 3.4 使用示例（写进用户文档）
 
 ```php
 // ① 回调页接收 app_auth_code（state 原样回传防 CSRF；code 一次性、24h 有效）
-// ② 换取（注意调用名为 snake_case 的 token_app，见 §3.3 命名说明）
-$result = Pay::alipay()->token_app([
+// ② 换取（调用名 auth，缺省 _action=token_app，见 §3.3 命名说明）
+$result = Pay::alipay()->auth([
     'grant_type' => 'authorization_code',
     'code' => $code,
 ]);
@@ -149,10 +150,10 @@ $token = $result->get('app_auth_token');          // 入库；app_auth_token 长
                                                   // 以 app_refresh_token + re_expires_in 管理刷新窗口
 
 // ③ refresh_token 刷新窗口内刷新
-Pay::alipay()->token_app(['grant_type' => 'refresh_token', 'refresh_token' => $refreshToken]);
+Pay::alipay()->auth(['grant_type' => 'refresh_token', 'refresh_token' => $refreshToken]);
 
 // ④ 查询授权信息（auth_methods 确认商户授权了哪些接口）
-Pay::alipay()->token_app(['_action' => 'query', 'app_auth_token' => $token]);
+Pay::alipay()->auth(['_action' => 'query', 'app_auth_token' => $token]);
 
 // ⑤ 代商户调用业务接口（V2 公共参数 / V3 请求头 alipay-app-auth-token，行为同现状）
 Pay::alipay()->scan(['_app_auth_token' => $token, /* ... */]);
@@ -168,7 +169,7 @@ https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id={第三方应用APPID
 
 ### 3.5 兼容性设计
 
-- **纯增量**：不改任何现有类/配置/行为；新目录 PSR-4 自动覆盖，composer.json 无需变更；多词 Shortcut 的对外调用名遵循 `__call` 的 `strtolower`+`studly` 转换链（snake_case 输入）
+- **纯增量**：不改任何现有类/配置/行为；新目录 PSR-4 自动覆盖，composer.json 无需变更；多词 Shortcut 的对外调用名遵循 `__call` 的 `strtolower`+`studly` 转换链（snake_case 输入）。本能力对外调用名为单词 `auth`，天然规避多词命名的转换链大小写问题（通用规则与陷阱分析见 §3.3）
 - **响应链零改动**：`ResponsePlugin` 包裹键自动定位（已验证无 method 白名单）；`VerifySignaturePlugin` 对 destination 去除 `_sign` 后用支付宝公钥验签，新接口天然兼容
 - **业务错误**：与其他 V2 接口一致——响应无 `sign` 且 `code≠10000` 时抛 `InvalidResponseException(RESPONSE_BUSINESS_CODE_WRONG)`；**带签名的业务错误响应验签通过后按 `Collection` 原样透传**（已验证 `ResponsePlugin.php:37` 条件 `empty($sign) && '10000' !== code`），业务侧自行判断 code
 - **授权链接不提供 helper**（用户已确认）：文档说明 URL 拼接规则
@@ -190,7 +191,7 @@ https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id={第三方应用APPID
 | `_action` 泄漏进 biz_content | 低 | `filter_params` 剥离已验证；单测断言 biz_content JSON 无 `_` 键 |
 | 与现有 `Member/Authorization` 混淆 | 低 | 独立 `Open/Authorization` 命名空间 + `@see` 官方文档链接；文档中显式区分 |
 | 盲区：网关对「换 token 请求携带 app_auth_token 公共参数」的行为未知 | 低 | forget 防御后不存在该场景 |
-| 多词 Shortcut 方法名与 `__call` 转换链不匹配（如 `tokenApp`） | 高 | 已定案：对外调用名 `token_app`（snake_case），类名 `TokenAppShortcut`；转换链已逐环验证；如用户偏好驼峰调用名需同步改类名为 `TokenappShortcut`（二选一，醒后确认） |
+| 多词 Shortcut 方法名与 `__call` 转换链不匹配（如 `tokenApp`） | 高 | 已定案：对外调用名 `auth`（单词，无转换链大小写问题），类名 `AuthShortcut`（PR #1206 review 定案；多词命名的转换链陷阱分析见 §3.3）；转换链已逐环验证 |
 
 ## 6. 监控与可观测性
 
@@ -206,3 +207,4 @@ https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id={第三方应用APPID
 ## 变更记录
 
 - 2026-09-09（PR #1206 review）：对外调用名由 `token_app` 更名为 `auth`（`AuthShortcut`），分发改为 `_action` 缺省 `token_app`（换取/刷新）/ `query`（查询）；用户文档由 v2 文档站迁移至 v3。§3.3/§3.4 中 `token_app` 调用形态的描述以本记录为准。
+- 2026-09-09：技术设计文档全文与最终实现对齐（调用名 auth / AuthShortcut / _action 缺省 token_app / 文档站 v3），§1–§5 已按实现修订，命名权衡过程保留于 §3.3。
