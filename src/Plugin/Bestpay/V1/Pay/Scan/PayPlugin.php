@@ -14,6 +14,9 @@ use Yansongda\Pay\Config\BestpayConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\BestpayTrait;
 
+/**
+ * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?productCode=1006 线下聚合 /aggregate/aggregatepay/offline/c2b/payOrder
+ */
 class PayPlugin implements PluginInterface
 {
     use BestpayTrait;

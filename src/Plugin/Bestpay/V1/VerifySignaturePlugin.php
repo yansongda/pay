@@ -22,6 +22,8 @@ use function Yansongda\Artful\should_do_http_request;
 
 /**
  * 响应验签：解析后的 JSON 报文 + 平台公钥（SHA1/SHA256 双试）.
+ *
+ * @see https://github.com/Belos10/DiningOrder/blob/master/src/main/java/com/example/utils/payUtil/Demo/CallMapiSDKInterface.java CallMapiSDKInterface.verify
  */
 class VerifySignaturePlugin implements PluginInterface
 {
@@ -48,7 +50,7 @@ class VerifySignaturePlugin implements PluginInterface
                 /** @var BestpayConfig $config */
                 $config = self::getProviderConfig(Pay::PROVIDER_BESTPAY, $rocket->getParams());
 
-                self::verifyBestpayResponseSign($config, $destination->all());
+                self::verifyBestpaySign($config, $destination->all());
             }
         }
 

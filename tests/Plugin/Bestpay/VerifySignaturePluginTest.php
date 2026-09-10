@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Bestpay;
 
+use Yansongda\Artful\Direction\CollectionDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\BestpayConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
@@ -18,18 +19,17 @@ class VerifySignaturePluginTest extends TestCase
 
     public function testValidResponseSign(): void
     {
-        $config = $this->makeConfig();
         $body = [
             'success' => true,
             'errorCode' => null,
             'errorMsg' => null,
             'result' => ['outTradeNo' => 'ORDER001', 'tradeStatus' => 'SUCCESS'],
         ];
-        $body['sign'] = self::signBestpayContent($config, self::getBestpayResponseSignContent($body));
+        $body['sign'] = self::signBestpayContent($this->makeConfig(), self::getBestpaySignContent($body));
 
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'default']);
-        $rocket->setDirection(\Yansongda\Artful\Direction\CollectionDirection::class);
+        $rocket->setDirection(CollectionDirection::class);
         $rocket->setDestination(new Collection($body));
 
         $result = (new VerifySignaturePlugin())->assembly($rocket, fn ($r) => $r);
@@ -49,7 +49,7 @@ class VerifySignaturePluginTest extends TestCase
 
         $rocket = new Rocket();
         $rocket->setParams(['_config' => 'default']);
-        $rocket->setDirection(\Yansongda\Artful\Direction\CollectionDirection::class);
+        $rocket->setDirection(CollectionDirection::class);
         $rocket->setDestination(new Collection($body));
 
         (new VerifySignaturePlugin())->assembly($rocket, fn ($r) => $r);
@@ -57,7 +57,7 @@ class VerifySignaturePluginTest extends TestCase
 
     public function testResponseSignContentNestedJson(): void
     {
-        $content = self::getBestpayResponseSignContent([
+        $content = self::getBestpaySignContent([
             'result' => ['b' => 1, 'a' => 2],
             'success' => true,
             'errorCode' => null,
@@ -66,6 +66,23 @@ class VerifySignaturePluginTest extends TestCase
 
         self::assertEquals(
             'errorCode=null&result={"a":2,"b":1}&success=true',
+            $content
+        );
+    }
+
+    public function testSignContentKeepsEmptyValues(): void
+    {
+        // 对齐官方 AssembleSignatureData：null → k=null，空串 → k=
+        $content = self::getBestpaySignContent([
+            'empty' => '',
+            'null' => null,
+            'bool' => false,
+            'path' => '/pay/tradeCreate',
+            'sign' => 'removed',
+        ]);
+
+        self::assertEquals(
+            'bool=false&empty=&null=null&path=/pay/tradeCreate',
             $content
         );
     }

@@ -11,6 +11,9 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
+/**
+ * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?productCode=1008 超级收银台 /pay/closeOrder
+ */
 class ClosePlugin implements PluginInterface
 {
     /**

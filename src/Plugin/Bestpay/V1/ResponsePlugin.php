@@ -13,6 +13,9 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 
+/**
+ * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?auxiliaryCode=PublicParameters1007 翼支付公共响应参数（success/errorCode/errorMsg/sign）
+ */
 class ResponsePlugin implements PluginInterface
 {
     /**

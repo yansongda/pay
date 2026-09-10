@@ -15,10 +15,8 @@ class BestpayConfig extends AbstractConfig
     private string $institutionType = 'MERCHANT';
     private string $mchSecretCertPath = '';
     private string $mchSecretCertPassword = '';
-    private string $mchSecretCertAlias = 'conname';
     private string $bestpayPublicCertPath = '';
     private string $apiVersion = '1.0.3';
-    private string $signType = 'S002';
     private ?string $notifyUrl = null;
     private ?string $returnUrl = null;
     private int $mode = Pay::MODE_NORMAL;
@@ -48,11 +46,6 @@ class BestpayConfig extends AbstractConfig
         $this->mchSecretCertPassword = $value;
     }
 
-    public function setMchSecretCertAlias(string $value): void
-    {
-        $this->mchSecretCertAlias = $value;
-    }
-
     public function setBestpayPublicCertPath(string $value): void
     {
         $this->bestpayPublicCertPath = $value;
@@ -61,11 +54,6 @@ class BestpayConfig extends AbstractConfig
     public function setApiVersion(string $value): void
     {
         $this->apiVersion = $value;
-    }
-
-    public function setSignType(string $value): void
-    {
-        $this->signType = $value;
     }
 
     public function setNotifyUrl(?string $value): void
@@ -108,11 +96,6 @@ class BestpayConfig extends AbstractConfig
         return $this->mchSecretCertPassword;
     }
 
-    public function getMchSecretCertAlias(): string
-    {
-        return $this->mchSecretCertAlias;
-    }
-
     public function getBestpayPublicCertPath(): string
     {
         return $this->bestpayPublicCertPath;
@@ -121,11 +104,6 @@ class BestpayConfig extends AbstractConfig
     public function getApiVersion(): string
     {
         return $this->apiVersion;
-    }
-
-    public function getSignType(): string
-    {
-        return $this->signType;
     }
 
     public function getNotifyUrl(): ?string

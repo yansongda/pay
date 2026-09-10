@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Plugin\Bestpay;
 
+use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Bestpay\V1\AddPayloadSignPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\StartPlugin;
 use Yansongda\Pay\Tests\TestCase;
-use Yansongda\Pay\Traits\BestpayTrait;
 
 class AddPayloadSignPluginTest extends TestCase
 {
-    use BestpayTrait;
-
     public function testAssembly(): void
     {
         $rocket = new Rocket();
@@ -38,6 +37,7 @@ class AddPayloadSignPluginTest extends TestCase
         $biz = json_decode((string) $payload->get('bizContent'), true);
         self::assertEquals('ORDER001', $biz['outTradeNo']);
         self::assertEquals('99', $biz['tradeAmt']);
+        self::assertEquals('3178033925245778', $biz['merchantNo']);
         self::assertArrayNotHasKey('institutionType', $biz);
         self::assertArrayNotHasKey('institutionCode', $biz);
         self::assertArrayNotHasKey('_path', $biz);
@@ -45,5 +45,41 @@ class AddPayloadSignPluginTest extends TestCase
         $common = json_decode((string) $payload->get('commonParams'), true);
         self::assertEquals('MERCHANT', $common['institutionType']);
         self::assertEquals('3178033925245778', $common['institutionCode']);
+    }
+
+    public function testAssemblyFiltersNullFieldsFromBizContent(): void
+    {
+        $rocket = new Rocket();
+        $rocket->setParams([
+            'outTradeNo' => 'ORDER001',
+            'storeCode' => null,
+            'remark' => '',
+        ]);
+
+        $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
+        $rocket->mergePayload(['_path' => '/pay/tradeCreate', 'notifyUrl' => null]);
+
+        $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
+
+        $biz = json_decode((string) $rocket->getPayload()->get('bizContent'), true);
+
+        // null 字段不进入 bizContent（对齐官方 fastjson 默认不序列化 null）
+        self::assertArrayNotHasKey('storeCode', $biz);
+        self::assertArrayNotHasKey('notifyUrl', $biz);
+        // 空字符串保留（官方语义：签名拼为 k=，非 null）
+        self::assertSame('', $biz['remark']);
+    }
+
+    public function testAssemblyThrowsWhenPathMissing(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+        $this->expectExceptionCode(Exception::PARAMS_BESTPAY_PATH_MISSING);
+
+        $rocket = new Rocket();
+        $rocket->setParams(['outTradeNo' => 'ORDER001']);
+
+        $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
+
+        (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
     }
 }

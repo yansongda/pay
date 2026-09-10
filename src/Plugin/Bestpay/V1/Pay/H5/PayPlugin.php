@@ -14,6 +14,9 @@ use Yansongda\Pay\Config\BestpayConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\BestpayTrait;
 
+/**
+ * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?productCode=1008 超级收银台 /pay/tradeCreate（MOBILECASHIER）
+ */
 class PayPlugin implements PluginInterface
 {
     use BestpayTrait;

@@ -20,6 +20,11 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\BestpayTrait;
 use Yansongda\Supports\Collection;
 
+/**
+ * 支付/退款结果异步通知验签（平台公钥）.
+ *
+ * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?auxiliaryCode=aggregatePayOrRefundNotify 翼支付支付/退款结果通知 aggregatePayOrRefundNotify
+ */
 class CallbackPlugin implements PluginInterface
 {
     use BestpayTrait;

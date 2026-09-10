@@ -20,7 +20,10 @@ use Yansongda\Supports\Collection;
 /**
  * 组装 sdkRequest 信封：path / commonParams / bizContent / sign.
  *
- * @see https://github.com/Belos10/DiningOrder CallMapiSDKInterface
+ * bizContent 过滤 null 值字段，对齐官方 Java SDK fastjson 默认不序列化 null 的行为.
+ *
+ * @see https://github.com/Belos10/DiningOrder/blob/master/src/main/java/com/example/utils/payUtil/Demo/CallMapiSDKInterface.java CallMapiSDKInterface.getCallRequestParam/sign
+ * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?auxiliaryCode=PublicParameters1007 翼支付公共请求参数
  */
 class AddPayloadSignPlugin implements PluginInterface
 {
@@ -44,10 +47,17 @@ class AddPayloadSignPlugin implements PluginInterface
         $path = $payload->get('_path');
 
         if (empty($path)) {
-            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少翼支付 `_path`，可能插件用错顺序，应该先使用业务插件');
+            throw new InvalidParamsException(Exception::PARAMS_BESTPAY_PATH_MISSING, '参数异常: 缺少翼支付 `_path`，可能插件用错顺序，应该先使用业务插件');
         }
 
-        $bizContent = $payload->except(['_path', '_method', '_url', 'sign', 'institutionType', 'institutionCode'])->all();
+        $bizContent = array_filter(
+            $payload->all(),
+            static fn (mixed $v, string $k): bool => !is_null($v)
+                && !str_starts_with($k, '_')
+                && !in_array($k, ['sign', 'institutionType', 'institutionCode'], true),
+            ARRAY_FILTER_USE_BOTH
+        );
+
         $commonParams = [
             'institutionType' => $payload->get('institutionType', $config->getInstitutionType()),
             'institutionCode' => $payload->get('institutionCode', $config->getInstitutionCode()),

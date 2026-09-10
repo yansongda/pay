@@ -14,6 +14,9 @@ use Yansongda\Pay\Config\BestpayConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\BestpayTrait;
 
+/**
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/accessProcess 翼支付开发者平台
+ */
 class StartPlugin implements PluginInterface
 {
     use BestpayTrait;
@@ -32,11 +35,12 @@ class StartPlugin implements PluginInterface
         $config = self::getProviderConfig(Pay::PROVIDER_BESTPAY, $params);
 
         $rocket->mergePayload(array_merge(
-            array_filter($params, fn ($v, $k) => !str_starts_with((string) $k, '_'), ARRAY_FILTER_USE_BOTH),
             [
+                'merchantNo' => $config->getMerchantNo(),
                 'institutionType' => $config->getInstitutionType(),
                 'institutionCode' => $config->getInstitutionCode(),
             ],
+            array_filter($params, fn ($v, $k) => !str_starts_with((string) $k, '_'), ARRAY_FILTER_USE_BOTH),
         ));
 
         Logger::info('[Bestpay][V1][StartPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -12,9 +12,9 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
 /**
- * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?productCode=1008 超级收银台 /integrate/orderQuery
+ * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?productCode=1006 线下聚合 /aggregate/aggregatepay/tradeQuery
  */
-class QueryPlugin implements PluginInterface
+class AggregateQueryPlugin implements PluginInterface
 {
     /**
      * @throws ContainerException
@@ -22,14 +22,14 @@ class QueryPlugin implements PluginInterface
      */
     public function assembly(Rocket $rocket, Closure $next): Rocket
     {
-        Logger::debug('[Bestpay][V1][Pay][QueryPlugin] 插件开始装载', ['rocket' => $rocket]);
+        Logger::debug('[Bestpay][V1][Pay][AggregateQueryPlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
-            '_path' => '/integrate/orderQuery',
+            '_path' => '/aggregate/aggregatepay/tradeQuery',
             '_method' => 'POST',
         ]);
 
-        Logger::info('[Bestpay][V1][Pay][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
+        Logger::info('[Bestpay][V1][Pay][AggregateQueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
     }
