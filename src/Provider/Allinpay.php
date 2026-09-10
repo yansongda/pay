@@ -131,7 +131,7 @@ class Allinpay implements ProviderInterface
     {
         return new Response(
             200,
-            ['Content-Type' => 'text/html'],
+            ['Content-Type' => 'text/plain'],
             'success',
         );
     }

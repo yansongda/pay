@@ -1,14 +1,25 @@
 ---
 feature: allinpay
-status: in-progress
+status: delivered
 updated: 2026-09-10
 branch: feat/allinpay
-commits: 9fdd0f34..9fdd0f34
+commits: 9fdd0f34..e76ebbc7
 ---
 
 # 通联支付（Allinpay）Provider
 
 ## Report
+
+**What was built** — 新增 `Pay::allinpay()` 通联支付 Provider，对齐经典开放平台 apiweb（`vsp.allinpay.com` / 沙箱 `syb-test.allinpay.com`）。支持 RSA-SHA1 请求签名与响应/回调本地验签，九个 Shortcut：`unified`/`scan`/`native`/`query`/`queryConfirm`/`refund`/`cancel`/`close`/`nativeClose`。`query`/`cancel`/`close`/`refund` 满足 `ProviderInterface` 并派发事件；`success()` 返回 200 + `success`。
+
+**Verification** — Apple Container PHP 8.5：`vendor/bin/phpunit --filter Allinpay` 29 tests OK；全量 1663 tests OK（14 条既有 deprecation）；`phpstan -l 6 ./src` No errors；php-cs-fixer dry-run 通过。
+
+**Journey log**
+1. 统一支付 Shortcut 原定名 `pay`，与 `ProviderInterface::pay(plugins, params)` 冲突，改为 `unified`。
+2. 签名串须排除 `_` 前缀字段（`_url` 等），否则通联会拒签。
+3. 单测中签发/验签须使用同一密钥对；响应签名用平台私钥、验签用平台公钥。
+4. 本机无 PHP，走 `.agents/skills/container-dev` 的 Apple Container 镜像完成验证。
+5. Review 无 critical；已将 `success()` Content-Type 改为 `text/plain`。
 
 ## [S1] Problem
 
@@ -112,8 +123,8 @@ Pay::allinpay()->callback(); // 本地验签
 
 ## Tasks
 
-- [ ] T1: AllinpayConfig + Exception 常量 + Config 注册 — acceptance: `Pay::allinpay()` 可取到配置；缺 `cusid`/`appid`/`mch_secret_key`/`allinpay_public_key` 时抛 `CONFIG_ALLINPAY_INVALID` (covers: S2)
-- [ ] T2: AllinpayTrait + Provider + Service + Pay 常量 — acceptance: `Pay::PROVIDER_ALLINPAY`、`Pay::allinpay()` 可用；query/cancel/close/refund 派发事件并走 Shortcut (covers: S2)
-- [ ] T3: 通用插件 Start/Sign/Radar/Verify/Response/Callback — acceptance: 管道可对 form 请求签名、验 JSON 响应签、`retcode!=SUCCESS` 抛错、callback 本地验签 (covers: S2)
-- [ ] T4: 九个业务 Plugin + Shortcut — acceptance: `unified/scan/native/query/queryConfirm/refund/cancel/close/nativeClose` 可调用且 `_url`/必填字段正确 (covers: S2; depends: T3)
-- [ ] T5: 单元测试 + 测试证书 — acceptance: `vendor/bin/phpunit --filter Allinpay` 全绿，覆盖配置/签名/回调/业务码错误 (covers: S2; depends: T1, T2, T3, T4)
+- [x] T1: AllinpayConfig + Exception 常量 + Config 注册 — acceptance: `Pay::allinpay()` 可取到配置；缺 `cusid`/`appid`/`mch_secret_key`/`allinpay_public_key` 时抛 `CONFIG_ALLINPAY_INVALID` (covers: S2)
+- [x] T2: AllinpayTrait + Provider + Service + Pay 常量 — acceptance: `Pay::PROVIDER_ALLINPAY`、`Pay::allinpay()` 可用；query/cancel/close/refund 派发事件并走 Shortcut (covers: S2)
+- [x] T3: 通用插件 Start/Sign/Radar/Verify/Response/Callback — acceptance: 管道可对 form 请求签名、验 JSON 响应签、`retcode!=SUCCESS` 抛错、callback 本地验签 (covers: S2)
+- [x] T4: 九个业务 Plugin + Shortcut — acceptance: `unified/scan/native/query/queryConfirm/refund/cancel/close/nativeClose` 可调用且 `_url`/必填字段正确 (covers: S2; depends: T3)
+- [x] T5: 单元测试 + 测试证书 — acceptance: `vendor/bin/phpunit --filter Allinpay` 全绿，覆盖配置/签名/回调/业务码错误 (covers: S2; depends: T1, T2, T3, T4)
