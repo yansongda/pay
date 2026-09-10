@@ -38,6 +38,10 @@ class QueryPlugin implements PluginInterface
         /** @var WechatConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
+        if (Pay::MODE_SERVICE === $config->getMode()) {
+            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 查询支付分预授权（签约），只支持普通商户模式，当前配置为服务商模式');
+        }
+
         $authorizationCode = $payload?->get('authorization_code') ?? null;
 
         if (empty($authorizationCode)) {

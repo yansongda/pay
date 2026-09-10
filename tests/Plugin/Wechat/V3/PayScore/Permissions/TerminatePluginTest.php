@@ -66,6 +66,36 @@ class TerminatePluginTest extends TestCase
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
 
+    public function testOpenidAndAuthorizationCodeBothFilled()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'openid' => 'oXopenid123',
+            'authorization_code' => 'AUTH_CODE',
+            'reason' => 'test',
+        ]));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        self::expectExceptionMessage('参数异常: 解除支付分预授权（签约），`openid` 与 `authorization_code` 不允许同时填写');
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testServiceModeRejected()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+            'openid' => 'oXopenid123',
+            'reason' => 'test',
+        ]));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
     public function testOpenidBranch()
     {
         $rocket = new Rocket();

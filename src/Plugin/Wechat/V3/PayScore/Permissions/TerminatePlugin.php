@@ -43,6 +43,10 @@ class TerminatePlugin implements PluginInterface
         /** @var WechatConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
+        if (Pay::MODE_SERVICE === $config->getMode()) {
+            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 解除支付分预授权（签约），只支持普通商户模式，当前配置为服务商模式');
+        }
+
         if (is_null($payload)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 解除支付分预授权（签约），参数为空');
         }
@@ -60,23 +64,32 @@ class TerminatePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 解除支付分预授权（签约），参数缺少 `openid` 或 `authorization_code`');
         }
 
+        if (!empty($openid) && !empty($authorizationCode)) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 解除支付分预授权（签约），`openid` 与 `authorization_code` 不允许同时填写');
+        }
+
+        // 路径参数不得进入 body
+        $rocket->getPayload()->forget(['openid', 'authorization_code']);
+
         if (!empty($openid)) {
-            // 按 openid 解除授权：appid/service_id 进 body，URL 无 query
+            $appid = $payload->get('appid') ?? $config->getAppIdByType($params['_type'] ?? 'mp');
+
+            if (empty($appid)) {
+                throw new InvalidParamsException(Exception::PARAMS_WECHAT_APPID_MISSING, '参数异常: 缺少公众账号ID -- [appid]');
+            }
+
             $rocket->setDirection(OriginResponseDirection::class)->mergePayload([
                 '_method' => 'POST',
                 '_url' => '/v3/payscore/permissions/openid/'.$openid.'/terminate',
-                'appid' => $payload->get('appid') ?? $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
+                'appid' => $appid,
                 'service_id' => $serviceId,
             ]);
-            $rocket->getPayload()->forget('openid');
         } else {
-            // 按协议号解除授权：body 仅 service_id，官方无 appid
             $rocket->setDirection(OriginResponseDirection::class)->mergePayload([
                 '_method' => 'POST',
                 '_url' => '/v3/payscore/permissions/authorization-code/'.$authorizationCode.'/terminate',
                 'service_id' => $serviceId,
             ]);
-            $rocket->getPayload()->forget('authorization_code');
         }
 
         Logger::info('[Wechat][V3][PayScore][Permissions][TerminatePlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -53,7 +53,7 @@ $order = [
         'end_time' => '20260910120000', // 选填，用户预计结束使用服务时间
     ],
     'risk_fund' => [
-        'risk_fund_name' => 'ESTIMATE_ORDER_COST', // 风险金名称，详见官方文档
+        'name' => 'ESTIMATE_ORDER_COST', // 风险金名称，详见官方文档
         'amount' => 10000, // 单位：分，须大于 0
         'description' => '订单的预估费用', // 选填
     ],
@@ -76,7 +76,7 @@ $result = Pay::wechat()->payscore($order);
 | out_order_no |  ✅  |        商户服务订单号（32 字符内）        |
 | service_introduction |  ✅  | 服务信息，不超过 20 个字符，包括中英文和数字 |
 | time_range   |  ✅  | 服务时间范围：`start_time` 必填，`end_time` 选填 |
-| risk_fund    |  ✅  | 订单风险金：`risk_fund_name`、`amount`（单位分）、`description` |
+| risk_fund    |  ✅  | 订单风险金：`name`、`amount`（单位分）、`description` |
 | location     |  ❌  |            使用服务地点            |
 | attach       |  ❌  |      附加数据，回调时原样返回      |
 
@@ -96,7 +96,7 @@ wx.openBusinessView({
 
 ## 查询支付分订单
 
-`out_order_no`（商户服务订单号）与 `query_id`（微信支付分订单 ID，即创建接口应答中的 `order_id`）**二选一**，都不填写或同时填写 SDK 均会抛出异常。
+`out_order_no`（商户服务订单号）与 `query_id`（查单 ID：商户调起支付分小程序确认订单页后，用户回到商户前端时带回）**二选一**，都不填写或同时填写 SDK 均会抛出异常。注意 `query_id` 不是创建应答中的 `order_id`（微信服务订单号），二者不可混用。
 
 ### 例子
 
@@ -106,7 +106,7 @@ Pay::config($config);
 $order = [
     '_action' => 'query',
     'out_order_no' => time().'',
-    // 'query_id' => '微信支付分订单ID', // 与 out_order_no 二选一
+    // 'query_id' => '查单ID（前端确认页回跳带回）', // 与 out_order_no 二选一
 ];
 
 $result = Pay::wechat()->payscore($order);
@@ -119,11 +119,11 @@ $result = Pay::wechat()->payscore($order);
 |     参数     | 必填 |                        说明                        |
 |:------------:|:----:|:--------------------------------------------------:|
 | out_order_no |  二选一  |                  商户服务订单号                  |
-|   query_id   |  二选一  | 微信支付分订单 ID（创建接口应答中的 `order_id`） |
+|   query_id   |  二选一  | 查单 ID（前端调起确认页后回跳带回，不是 `order_id`） |
 
 ## 取消支付分订单
 
-只有「已创建（WAIT_PAY）」状态的订单可以取消。
+只有「已创建（CREATED）」状态的订单可以取消。
 
 ### 例子
 

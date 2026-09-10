@@ -189,9 +189,9 @@ class WechatTest extends TestCase
         Pay::set(HttpClientInterface::class, $http);
         Pay::set(VerifySignaturePlugin::class, new VerifySignaturePluginStub());
 
-        // 自备 _url：不依赖 QueryPlugin 装配细节即可跑通全管道（QueryPlugin 落地后会覆盖 _url，用例不变）；
+        // QueryPlugin 会 setPayload 覆盖为完整 GET URL；此处仅需合法 out_order_no 跑通全管道
         // mock 响应沿用 testCancel 的签名头与配套 body，保证真实 openssl 验签通过（Stub 仅绕过时间戳校验）
-        Pay::wechat()->payscore(['_action' => 'query', '_url' => '/v3/payscore/user-service-plan', 'out_order_no' => '123']);
+        Pay::wechat()->payscore(['_action' => 'query', 'out_order_no' => '123']);
 
         self::assertTrue(true);
     }

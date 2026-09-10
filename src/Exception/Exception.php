@@ -53,6 +53,8 @@ class Exception extends \Exception
 
     public const PARAMS_WECHAT_SERVICE_ID_MISSING = 9229;
 
+    public const PARAMS_WECHAT_APPID_MISSING = 9230;
+
     /**
      * 关于响应.
      */

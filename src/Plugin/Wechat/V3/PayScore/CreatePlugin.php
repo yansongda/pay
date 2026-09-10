@@ -38,6 +38,10 @@ class CreatePlugin implements PluginInterface
         /** @var WechatConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
+        if (Pay::MODE_SERVICE === $config->getMode()) {
+            throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 创建支付分订单，只支持普通商户模式，当前配置为服务商模式');
+        }
+
         if (is_null($payload)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 创建支付分订单，参数为空');
         }
@@ -48,10 +52,16 @@ class CreatePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING, '参数异常: 缺少支付分服务ID -- [service_id]');
         }
 
+        $appid = $payload->get('appid') ?? $config->getAppIdByType($params['_type'] ?? 'mp');
+
+        if (empty($appid)) {
+            throw new InvalidParamsException(Exception::PARAMS_WECHAT_APPID_MISSING, '参数异常: 缺少公众账号ID -- [appid]');
+        }
+
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => '/v3/payscore/serviceorder',
-            'appid' => $payload->get('appid') ?? $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
+            'appid' => $appid,
             'service_id' => $serviceId,
             'notify_url' => $payload->get('notify_url') ?? $config->getNotifyUrl(),
         ]);

@@ -40,7 +40,7 @@ class CreatePluginTest extends TestCase
             'out_order_no' => '202409101234567890',
             'service_introduction' => '停车服务',
             'time_range' => ['start_time' => '20240910100000'],
-            'risk_fund' => ['fund_type' => 'PARKING_FEE', 'amount' => 100],
+            'risk_fund' => ['name' => 'DEPOSIT', 'amount' => 100],
         ]));
 
         $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
@@ -54,7 +54,7 @@ class CreatePluginTest extends TestCase
             'out_order_no' => '202409101234567890',
             'service_introduction' => '停车服务',
             'time_range' => ['start_time' => '20240910100000'],
-            'risk_fund' => ['fund_type' => 'PARKING_FEE', 'amount' => 100],
+            'risk_fund' => ['name' => 'DEPOSIT', 'amount' => 100],
         ], $result->getPayload()->all());
 
         self::assertArrayNotHasKey('mchid', $result->getPayload()->all());
@@ -111,6 +111,34 @@ class CreatePluginTest extends TestCase
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
         self::expectExceptionMessage('参数异常: 缺少支付分服务ID -- [service_id]');
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testAppIdMissing()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'out_order_no' => '202409101234567890',
+            'appid' => '',
+        ]));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_WECHAT_APPID_MISSING);
+        self::expectExceptionMessage('参数异常: 缺少公众账号ID -- [appid]');
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testServiceModeRejected()
+    {
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+            'out_order_no' => '202409101234567890',
+        ]));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }
