@@ -9,6 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Action\PaypalAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\ObtainAccessTokenPlugin;
@@ -27,12 +28,15 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = $params['_action'] ?? 'default';
+        $action = $params['_action'] ?? PaypalAction::QUERY_DEFAULT;
 
         return match ($action) {
-            'default', 'order' => $this->orderPlugins(),
-            'refund' => $this->refundPlugins(),
-            default => throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "不支持的 PayPal Query 操作: [{$action}]"),
+            PaypalAction::QUERY_DEFAULT, PaypalAction::QUERY_ORDER => $this->orderPlugins(),
+            PaypalAction::QUERY_REFUND => $this->refundPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

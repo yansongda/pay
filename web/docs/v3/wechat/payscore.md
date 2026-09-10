@@ -12,8 +12,8 @@
 |       sync        | `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\SyncPlugin` | [同步支付分订单信息](https://pay.weixin.qq.com/doc/v3/merchant/4012587962) | 同步订单信息（POST /v3/payscore/serviceorder/{no}/sync） |
 |        pay        | `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\PayPlugin` | [催收扣款](https://pay.weixin.qq.com/doc/v3/merchant/4013394596) | 订单催收扣款（POST /v3/payscore/serviceorder/{no}/pay） |
 |   permissions     | `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\CreatePlugin` | [商户预授权（签约）](https://pay.weixin.qq.com/doc/v3/merchant/4012647349) | 商户预授权（POST /v3/payscore/permissions） |
-| permissionsQuery  | `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\QueryPlugin` | [查询用户授权记录（协议号）](https://pay.weixin.qq.com/doc/v3/merchant/4012647401) | 查询用户授权记录（GET /v3/payscore/permissions/authorization-code/{no}） |
-| permissionsTerminate | `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\TerminatePlugin` | [解除授权（协议号）](https://pay.weixin.qq.com/doc/v3/merchant/4012647410) / [解除授权（openid）](https://pay.weixin.qq.com/doc/v3/merchant/4012647413) | 解除用户授权（**应答 204 无包体**，返回 `Response`） |
+| permissions_query  | `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\QueryPlugin` | [查询用户授权记录（协议号）](https://pay.weixin.qq.com/doc/v3/merchant/4012647401) | 查询用户授权记录（GET /v3/payscore/permissions/authorization-code/{no}） |
+| permissions_terminate | `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\TerminatePlugin` | [解除授权（协议号）](https://pay.weixin.qq.com/doc/v3/merchant/4012647410) / [解除授权（openid）](https://pay.weixin.qq.com/doc/v3/merchant/4012647413) | 解除用户授权（**应答 204 无包体**，返回 `Response`） |
 
 :::tip 使用前须知
 
@@ -316,7 +316,7 @@ wx.openBusinessView({
 Pay::config($config);
 
 $order = [
-    '_action' => 'permissionsQuery',
+    '_action' => 'permissions_query',
     'authorization_code' => '预授权授权码',
 ];
 
@@ -345,7 +345,7 @@ $result = Pay::wechat()->payscore($order);
 Pay::config($config);
 
 $order = [
-    '_action' => 'permissionsTerminate',
+    '_action' => 'permissions_terminate',
     'authorization_code' => '授权协议号', // 与 openid 二选一
     // 'openid' => '用户openid', // 通过 openid 解除授权时传入
     'reason' => '用户解除授权',

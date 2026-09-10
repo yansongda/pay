@@ -15,6 +15,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Action\AlipayAction;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
@@ -143,10 +144,12 @@ class Alipay implements ProviderInterface
         // 风险已评估：外部注入 _action 必须先过验签（伪造签名必败，只会得到 VERIFY_FAILED XML），异常路径不可达。
         $params = $request->merge($params ?? [])->all();
 
-        $plugins = match ($params['_action'] ?? null) {
+        $rawAction = $params['_action'] ?? null;
+
+        $plugins = match ($rawAction) {
             null => [CallbackPlugin::class],
-            'gw' => [GatewayCallbackPlugin::class],
-            default => throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '参数异常: 不支持的回调 _action ['.$params['_action'].']'),
+            AlipayAction::CALLBACK_GW => [GatewayCallbackPlugin::class],
+            default => throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '参数异常: 不支持的回调 _action ['.$rawAction.']'),
         };
 
         /* @var Collection|ResponseInterface|Rocket */

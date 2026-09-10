@@ -9,6 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Action\DouyinAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
@@ -16,7 +17,6 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryCpsPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryPlugin as RefundQueryPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
-use Yansongda\Supports\Str;
 
 /**
  * 抖音查询：`_action` 分发 `order`（默认，order_query）/`cps`（query_cps）/`refund`（refund_query）.
@@ -32,13 +32,17 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = $params['_action'] ?? DouyinAction::QUERY_DEFAULT;
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            DouyinAction::QUERY_DEFAULT, DouyinAction::QUERY_ORDER => $this->orderPlugins(),
+            DouyinAction::QUERY_CPS => $this->cpsPlugins(),
+            DouyinAction::QUERY_REFUND => $this->refundPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
+        };
     }
 
     /**

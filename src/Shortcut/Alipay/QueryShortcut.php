@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Shortcut\Alipay;
 use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Action\AlipayAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
@@ -31,7 +32,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\Pay\Web\QueryRefundPlugin as WebQueryRefundPl
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Supports\Str;
 
 class QueryShortcut implements ShortcutInterface
 {
@@ -44,17 +44,37 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
-
         if (isset($params['out_request_no'])) {
             return $this->refundPlugins();
         }
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
+        $action = $params['_action'] ?? AlipayAction::QUERY_DEFAULT;
 
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            AlipayAction::QUERY_DEFAULT => $this->defaultPlugins(),
+            AlipayAction::QUERY_AGREEMENT => $this->agreementPlugins(),
+            AlipayAction::QUERY_APP => $this->appPlugins(),
+            AlipayAction::QUERY_AUTHORIZATION => $this->authorizationPlugins(),
+            AlipayAction::QUERY_FACE => $this->facePlugins(),
+            AlipayAction::QUERY_MINI => $this->miniPlugins(),
+            AlipayAction::QUERY_POS => $this->posPlugins(),
+            AlipayAction::QUERY_SCAN => $this->scanPlugins(),
+            AlipayAction::QUERY_H5 => $this->h5Plugins(),
+            AlipayAction::QUERY_WEB => $this->webPlugins(),
+            AlipayAction::QUERY_TRANSFER => $this->transferPlugins(),
+            AlipayAction::QUERY_REFUND => $this->refundPlugins(),
+            AlipayAction::QUERY_REFUND_APP => $this->refundAppPlugins(),
+            AlipayAction::QUERY_REFUND_AUTHORIZATION => $this->refundAuthorizationPlugins(),
+            AlipayAction::QUERY_REFUND_MINI => $this->refundMiniPlugins(),
+            AlipayAction::QUERY_REFUND_POS => $this->refundPosPlugins(),
+            AlipayAction::QUERY_REFUND_SCAN => $this->refundScanPlugins(),
+            AlipayAction::QUERY_REFUND_H5 => $this->refundH5Plugins(),
+            AlipayAction::QUERY_REFUND_WEB => $this->refundWebPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
+        };
     }
 
     /**

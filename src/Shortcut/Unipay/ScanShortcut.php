@@ -8,6 +8,7 @@ use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Action\UnipayAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
@@ -17,7 +18,6 @@ use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\ScanPreAuthPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\ScanPreOrderPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
-use Yansongda\Supports\Str;
 
 class ScanShortcut implements ShortcutInterface
 {
@@ -30,13 +30,18 @@ class ScanShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = $params['_action'] ?? UnipayAction::SCAN_DEFAULT;
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            UnipayAction::SCAN_DEFAULT => $this->defaultPlugins(),
+            UnipayAction::SCAN_PRE_AUTH => $this->preAuthPlugins(),
+            UnipayAction::SCAN_PRE_ORDER => $this->preOrderPlugins(),
+            UnipayAction::SCAN_FEE => $this->feePlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
+        };
     }
 
     /**

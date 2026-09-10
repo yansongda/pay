@@ -9,6 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Action\WechatAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
@@ -20,7 +21,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\RefundPlugin as JsapiRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\RefundPlugin as MiniRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\RefundPlugin as NativeRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
-use Yansongda\Supports\Str;
 
 class RefundShortcut implements ShortcutInterface
 {
@@ -33,13 +33,21 @@ class RefundShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = $params['_action'] ?? WechatAction::REFUND_DEFAULT;
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            WechatAction::REFUND_DEFAULT => $this->defaultPlugins(),
+            WechatAction::REFUND_APP => $this->appPlugins(),
+            WechatAction::REFUND_COMBINE => $this->combinePlugins(),
+            WechatAction::REFUND_H5 => $this->h5Plugins(),
+            WechatAction::REFUND_JSAPI => $this->jsapiPlugins(),
+            WechatAction::REFUND_MINI => $this->miniPlugins(),
+            WechatAction::REFUND_NATIVE => $this->nativePlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
+        };
     }
 
     /**
