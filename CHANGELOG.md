@@ -27,7 +27,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - `EventType=verifygw`（应用网关验证请求）：自动返回签名的 XML 应答（`Psr\Http\Message\ResponseInterface`，HTTP 200，`Content-Type: text/xml;charset=utf-8`，含应用公钥），业务侧直接 `return` 回吐即可，否则开放平台会报「网关地址和公钥验证失败」
   - 其他 `EventType` 网关消息：验签通过后透传 `Yansongda\Supports\Collection`，由业务侧自行处理并自行回吐官方要求的 ack XML（SDK 本期不做自动应答）
   - 验签失败不抛异常：返回 `success=false`、`error_code=VERIFY_FAILED` 的同结构 XML 应答；应答依赖公钥证书模式完整配置（`app_secret_cert`/`app_public_cert_path`），缺失时抛出 `InvalidConfigException`
-  - 新增 `Yansongda\Pay\Plugin\Alipay\GatewayCallbackPlugin`；`ProviderInterface::callback()` 返回类型放宽为 `Collection|MessageInterface|Rocket`
+  - 新增 `Yansongda\Pay\Plugin\Alipay\GatewayCallbackPlugin`；`ProviderInterface::callback()` 返回类型为 `Collection|ResponseInterface|Rocket`
+  - 应答 `openssl_sign` 失败时抛出 `InvalidConfigException`（不再静默产出空签名）；webhook 形态下 `_action` 只能通过第二实参传入（详见文档）
 
 - 支付宝 V2 响应内容 AES 解密支持（`alipay.user.info.share` 等敏感信息接口返回加密响应的场景）（#1204）
   - `AlipayConfig` 新增可选配置 `aes_key`（开放平台控制台「接口内容加密方式」生成的 base64 编码 16 字节 AES 密钥），不配置时明文响应行为零变化

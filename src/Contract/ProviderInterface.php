@@ -42,7 +42,7 @@ interface ProviderInterface
      * @param null|array<string, mixed>|ServerRequestInterface $contents
      * @param null|array<string, mixed>                        $params
      */
-    public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection|MessageInterface|Rocket;
+    public function callback(array|ServerRequestInterface|null $contents = null, ?array $params = null): Collection|ResponseInterface|Rocket;
 
     public function success(): ResponseInterface;
 }

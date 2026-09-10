@@ -91,7 +91,7 @@ class GatewayCallbackPlugin implements PluginInterface
     /**
      * 构造应用网关应答 XML：`<sign>` 为 `<response>` 节点内部文本（$response）原文的 RSA2 签名 + base64.
      *
-     * 无论成败均依赖完整商户配置（`app_secret_cert`/`app_public_cert_path`），缺失时抛出 InvalidConfigException 属预期行为，不做降级.
+     * 无论成败均依赖完整商户配置（`app_secret_cert`/`app_public_cert_path`），缺失或签名失败时抛出 InvalidConfigException，不做降级.
      *
      * @throws InvalidConfigException
      */
@@ -101,7 +101,11 @@ class GatewayCallbackPlugin implements PluginInterface
             $response = '<success>false</success><error_code>VERIFY_FAILED</error_code><biz_content>'.self::getAlipayAppPublicKey($config).'</biz_content>';
         }
 
-        openssl_sign($response, $sign, self::getAlipayPrivateKey($config), OPENSSL_ALGO_SHA256);
+        $ok = openssl_sign($response, $sign, self::getAlipayPrivateKey($config), OPENSSL_ALGO_SHA256);
+
+        if (false === $ok || !is_string($sign) || '' === $sign) {
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 应用网关应答签名失败，请检查 [app_secret_cert]');
+        }
 
         return new Response(200, ['Content-Type' => 'text/xml;charset=utf-8'], '<?xml version="1.0" encoding="utf-8"?><alipay><response>'.$response.'</response><sign>'.base64_encode($sign).'</sign><sign_type>RSA2</sign_type></alipay>');
     }
