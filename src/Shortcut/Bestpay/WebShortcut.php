@@ -11,6 +11,7 @@ use Yansongda\Pay\Plugin\Bestpay\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\Pay\Web\PayPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\ResponsePlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\StartPlugin;
+use Yansongda\Pay\Plugin\Bestpay\V1\VerifySignaturePlugin;
 
 class WebShortcut implements ShortcutInterface
 {
@@ -26,6 +27,7 @@ class WebShortcut implements ShortcutInterface
             PayPlugin::class,
             AddPayloadSignPlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];

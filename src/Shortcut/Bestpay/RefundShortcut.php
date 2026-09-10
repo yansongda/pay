@@ -11,6 +11,7 @@ use Yansongda\Pay\Plugin\Bestpay\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\Pay\RefundPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\ResponsePlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\StartPlugin;
+use Yansongda\Pay\Plugin\Bestpay\V1\VerifySignaturePlugin;
 
 class RefundShortcut implements ShortcutInterface
 {
@@ -26,6 +27,7 @@ class RefundShortcut implements ShortcutInterface
             RefundPlugin::class,
             AddPayloadSignPlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];

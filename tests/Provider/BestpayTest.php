@@ -93,8 +93,7 @@ class BestpayTest extends TestCase
 
     public function testWebPay(): void
     {
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode([
+        $body = [
             'success' => true,
             'errorCode' => null,
             'errorMsg' => null,
@@ -103,8 +102,11 @@ class BestpayTest extends TestCase
                 'tradeNo' => 'TRADE001',
                 'tradeStatus' => 'WAITFORPAY',
             ],
-            'sign' => 'dummy-sign',
-        ])));
+        ];
+        $body['sign'] = $this->signResponseBody($body);
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($body)));
         Pay::set(HttpClientInterface::class, $http);
 
         $result = Pay::bestpay()->web([
@@ -145,5 +147,21 @@ class BestpayTest extends TestCase
     {
         self::assertInstanceOf(Bestpay::class, Pay::bestpay());
         self::assertEquals(Bestpay::URL[Pay::MODE_NORMAL], 'https://mapi.bestpay.com.cn/mapi');
+    }
+
+    /**
+     * @param array<string, mixed> $body
+     */
+    private function signResponseBody(array $body): string
+    {
+        $config = new \Yansongda\Pay\Config\BestpayConfig([
+            'merchant_no' => '3178033925245778',
+            'institution_code' => '3178033925245778',
+            'mch_secret_cert_path' => __DIR__.'/../Cert/bestpay/bestpay.p12',
+            'mch_secret_cert_password' => 'test123456',
+            'bestpay_public_cert_path' => __DIR__.'/../Cert/bestpay/bestpay.cer',
+        ]);
+
+        return self::signBestpayContent($config, self::getBestpayResponseSignContent($body));
     }
 }

@@ -11,6 +11,7 @@ use Yansongda\Pay\Plugin\Bestpay\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\Pay\H5\PayPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\ResponsePlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\StartPlugin;
+use Yansongda\Pay\Plugin\Bestpay\V1\VerifySignaturePlugin;
 
 class H5Shortcut implements ShortcutInterface
 {
@@ -26,6 +27,7 @@ class H5Shortcut implements ShortcutInterface
             PayPlugin::class,
             AddPayloadSignPlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];

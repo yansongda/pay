@@ -14,11 +14,11 @@ commits: 9fdd0f34..HEAD
 
 ## Report
 
-**What was built** — 按代际 B（MAPI）落地翼支付 Provider：`BestpayConfig`（PKCS12 + 平台公钥）、`Pay::bestpay()`、SDK 信封加签（TreeMap `k=v&` + SHA256withRSA）、`/mapi/sdkRequest` 网关、P0 业务（`web`/`h5`/`scan`/`query`/`refund`/`close`）、回调证书验签与官方成功应答 `{"resultCode":"SUCCESS","resultMsg":"OK"}`。
+**What was built** — 按代际 B（MAPI）落地翼支付 Provider：`BestpayConfig`（PKCS12 + 平台公钥）、`Pay::bestpay()`、SDK 信封加签（TreeMap `k=v&` + SHA256withRSA）、`/mapi/sdkRequest` 网关、P0 业务（`web`/`h5`/`scan`/`query`/`refund`/`close`）、**API 响应验签 `VerifySignaturePlugin`**（嵌套 JSON 有序序列化后验签）、回调证书验签与官方成功应答 `{"resultCode":"SUCCESS","resultMsg":"OK"}`。
 
-**Verification** — 容器 PHP 8.5：`phpunit --filter Bestpay` 16 tests OK；全量 `phpunit` 1650 tests OK；`phpstan -l 6 ./src` OK；`php-cs-fixer --dry-run` 0 files need fix。
+**Verification** — 容器 PHP 8.5：`phpunit --filter Bestpay` 19 tests OK；全量 `phpunit` OK；`phpstan -l 6 ./src` OK；`php-cs-fixer --dry-run` OK。
 
-**Journey log** — Copilot 旧分支 MD5 与现网不一致不可合入；官方文档 API 无鉴权可读接口目录/回调；GitHub 的 DiningOrder（官方 SDK 反推）与 ShopXO（PHP）锁定信封与加签；响应验签 SHA1/SHA256 双试以兼容 Demo 与联调。
+**Journey log** — Copilot 旧分支 MD5 不可合入；DiningOrder/ShopXO 锁定信封与加签；评审要求补响应验签后，按 Java SDK `translateMapData` 语义实现嵌套 JSON 待签串；机构字段仅写 commonParams。
 
 ## [S1] Problem
 

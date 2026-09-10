@@ -11,6 +11,7 @@ use Yansongda\Pay\Plugin\Bestpay\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\Pay\QueryPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\ResponsePlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\StartPlugin;
+use Yansongda\Pay\Plugin\Bestpay\V1\VerifySignaturePlugin;
 
 class QueryShortcut implements ShortcutInterface
 {
@@ -26,6 +27,7 @@ class QueryShortcut implements ShortcutInterface
             QueryPlugin::class,
             AddPayloadSignPlugin::class,
             AddRadarPlugin::class,
+            VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
         ];
