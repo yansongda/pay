@@ -6,7 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [v3.8.0-beta.6] - Unreleased
 
+### Changed
+
+- **破坏性变更**：全库 `_action` 取值统一为 snake_case，并落入 `Yansongda\Pay\Action\*Action` string-backed enum；Shortcut/Provider 分发改为 `tryFrom` + `match`（移除 `Str::camel` 动态方法匹配）
+  - `Pay::wechat()->payscore()`：`permissionsQuery` → `permissions_query`，`permissionsTerminate` → `permissions_terminate`（旧 camel 值不再接受）
+  - 其余历史“顺带可用”的非 snake_case 形态（如 Unipay `preAuth`）一并失效，请改用规范值
+
 ### Added
+
+- 新增 `src/Action/` 下按功能/入口拆分的 `_action` 枚举，作为各分发点的单一事实来源
 
 - 支付宝 OpenAPI V3 支持（RESTful `/v3/` 路径、JSON 报文、HTTP 头签名）：V3 管道整体就绪，`__call` **默认全部走 V2**（不做自动分流），需使用 V3 时通过 `Pay::alipay()->pay((new V3Shortcut)->getPlugins([]), $order)` 显式指定
   - V3 仅支持**证书模式**：与 V2 完全共用 `app_id`、`app_secret_cert`、`app_public_cert_path`、`alipay_public_cert_path` 配置，存量 V2 证书用户升级后调用 V3 接口零配置变更

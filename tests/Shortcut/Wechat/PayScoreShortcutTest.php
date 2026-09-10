@@ -160,7 +160,7 @@ class PayScoreShortcutTest extends TestCase
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'permissionsQuery']));
+        ], $this->plugin->getPlugins(['_action' => 'permissions_query']));
     }
 
     public function testPermissionsTerminate()
@@ -174,7 +174,7 @@ class PayScoreShortcutTest extends TestCase
             VerifySignaturePlugin::class,
             ResponsePlugin::class,
             ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'permissionsTerminate']));
+        ], $this->plugin->getPlugins(['_action' => 'permissions_terminate']));
     }
 
     public function testDefaultAction()

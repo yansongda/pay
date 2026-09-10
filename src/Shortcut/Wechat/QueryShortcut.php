@@ -9,6 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Action\WechatQueryAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
@@ -28,7 +29,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\QueryRefundPlugin as MiniQueryRefund
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryPlugin as NativeQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryRefundPlugin as NativeQueryRefundPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
-use Yansongda\Supports\Str;
 
 class QueryShortcut implements ShortcutInterface
 {
@@ -45,13 +45,29 @@ class QueryShortcut implements ShortcutInterface
             return $this->combinePlugins();
         }
 
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = WechatQueryAction::tryFrom($params['_action'] ?? WechatQueryAction::Default->value)
+            ?? throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            );
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}($params);
-        }
-
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            WechatQueryAction::Default => $this->defaultPlugins(),
+            WechatQueryAction::App => $this->appPlugins(),
+            WechatQueryAction::Combine => $this->combinePlugins(),
+            WechatQueryAction::H5 => $this->h5Plugins(),
+            WechatQueryAction::Jsapi => $this->jsapiPlugins(),
+            WechatQueryAction::Mini => $this->miniPlugins(),
+            WechatQueryAction::Native => $this->nativePlugins(),
+            WechatQueryAction::Transfer => $this->transferPlugins($params),
+            WechatQueryAction::Refund => $this->refundPlugins(),
+            WechatQueryAction::RefundApp => $this->refundAppPlugins(),
+            WechatQueryAction::RefundCombine => $this->refundCombinePlugins(),
+            WechatQueryAction::RefundH5 => $this->refundH5Plugins(),
+            WechatQueryAction::RefundJsapi => $this->refundJsapiPlugins(),
+            WechatQueryAction::RefundMini => $this->refundMiniPlugins(),
+            WechatQueryAction::RefundNative => $this->refundNativePlugins(),
+        };
     }
 
     /**

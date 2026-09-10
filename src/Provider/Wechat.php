@@ -14,6 +14,8 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Action\WechatCallbackAction;
+use Yansongda\Pay\Action\WechatSuccessAction;
 use Yansongda\Pay\Contract\ProviderInterface;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
@@ -150,9 +152,12 @@ class Wechat implements ProviderInterface
 
         Event::dispatch(new CallbackReceived(Pay::PROVIDER_WECHAT, clone $request, $params, null));
 
-        $plugin = (($params ?? [])['_action'] ?? null) === 'virtual'
-            ? VirtualCallbackPlugin::class
-            : CallbackPlugin::class;
+        $action = WechatCallbackAction::tryFrom((string) (($params ?? [])['_action'] ?? ''));
+
+        $plugin = match ($action) {
+            WechatCallbackAction::Virtual => VirtualCallbackPlugin::class,
+            null => CallbackPlugin::class,
+        };
 
         return $this->pay(
             [$plugin],
@@ -165,12 +170,14 @@ class Wechat implements ProviderInterface
      */
     public function success(array $params = []): ResponseInterface
     {
-        if ('payscore' === ($params['_action'] ?? null)) {
+        $action = WechatSuccessAction::tryFrom((string) ($params['_action'] ?? ''));
+
+        if (WechatSuccessAction::Payscore === $action) {
             return new Response(204, ['Content-Type' => 'application/json'], '');
         }
 
-        [$contentType, $body] = match ($params['_action'] ?? null) {
-            'virtual' => match ($params['_format'] ?? null) {
+        [$contentType, $body] = match ($action) {
+            WechatSuccessAction::Virtual => match ($params['_format'] ?? null) {
                 'json' => ['application/json', json_encode(['ErrCode' => 0, 'ErrMsg' => 'success'])],
                 default => ['application/xml', '<xml><ErrCode>0</ErrCode><ErrMsg>success</ErrMsg></xml>'],
             },

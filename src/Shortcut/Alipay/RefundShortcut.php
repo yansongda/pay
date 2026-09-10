@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Shortcut\Alipay;
 use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Action\AlipayRefundAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
@@ -23,7 +24,6 @@ use Yansongda\Pay\Plugin\Alipay\V2\Pay\Web\RefundPlugin as WebRefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Supports\Str;
 
 class RefundShortcut implements ShortcutInterface
 {
@@ -36,13 +36,24 @@ class RefundShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = AlipayRefundAction::tryFrom($params['_action'] ?? AlipayRefundAction::Default->value)
+            ?? throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            );
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            AlipayRefundAction::Default => $this->defaultPlugins(),
+            AlipayRefundAction::Agreement => $this->agreementPlugins(),
+            AlipayRefundAction::App => $this->appPlugins(),
+            AlipayRefundAction::Authorization => $this->authorizationPlugins(),
+            AlipayRefundAction::Mini => $this->miniPlugins(),
+            AlipayRefundAction::Pos => $this->posPlugins(),
+            AlipayRefundAction::Scan => $this->scanPlugins(),
+            AlipayRefundAction::H5 => $this->h5Plugins(),
+            AlipayRefundAction::Web => $this->webPlugins(),
+            AlipayRefundAction::Transfer => $this->transferPlugins(),
+        };
     }
 
     /**

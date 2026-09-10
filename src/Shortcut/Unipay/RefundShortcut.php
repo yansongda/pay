@@ -8,6 +8,7 @@ use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
+use Yansongda\Pay\Action\UnipayRefundAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
@@ -19,7 +20,6 @@ use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin as QraAddPayloadSi
 use Yansongda\Pay\Plugin\Unipay\Qra\Pos\RefundPlugin as QraPosRefundPlugin;
 use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
-use Yansongda\Supports\Str;
 
 class RefundShortcut implements ShortcutInterface
 {
@@ -32,13 +32,14 @@ class RefundShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = UnipayRefundAction::tryFrom($params['_action'] ?? UnipayRefundAction::Default->value)
+            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            UnipayRefundAction::Default, UnipayRefundAction::Web => $this->webPlugins(),
+            UnipayRefundAction::QrCode => $this->qrCodePlugins(),
+            UnipayRefundAction::QraPos => $this->qraPosPlugins(),
+        };
     }
 
     /**

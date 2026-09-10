@@ -9,13 +9,13 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Action\DouyinRefundAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Refund\AuditPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Refund\RefundPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
-use Yansongda\Supports\Str;
 
 /**
  * 抖音退款：`_action` 分发 `default`（refund_create）/`audit`（refund_audit_callback）.
@@ -31,13 +31,13 @@ class RefundShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = DouyinRefundAction::tryFrom($params['_action'] ?? DouyinRefundAction::Default->value)
+            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            DouyinRefundAction::Default => $this->defaultPlugins(),
+            DouyinRefundAction::Audit => $this->auditPlugins(),
+        };
     }
 
     /**

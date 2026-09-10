@@ -9,6 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Action\WechatCloseAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
@@ -20,7 +21,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\ClosePlugin as JsapiClosePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\ClosePlugin as MiniClosePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\ClosePlugin as NativeClosePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
-use Yansongda\Supports\Str;
 
 class CloseShortcut implements ShortcutInterface
 {
@@ -37,13 +37,21 @@ class CloseShortcut implements ShortcutInterface
             return $this->combinePlugins();
         }
 
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = WechatCloseAction::tryFrom($params['_action'] ?? WechatCloseAction::Default->value)
+            ?? throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            );
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            WechatCloseAction::Default => $this->defaultPlugins(),
+            WechatCloseAction::App => $this->appPlugins(),
+            WechatCloseAction::H5 => $this->H5Plugins(),
+            WechatCloseAction::Jsapi => $this->jsapiPlugins(),
+            WechatCloseAction::Mini => $this->miniPlugins(),
+            WechatCloseAction::Native => $this->nativePlugins(),
+            WechatCloseAction::Combine => $this->combinePlugins(),
+        };
     }
 
     /**

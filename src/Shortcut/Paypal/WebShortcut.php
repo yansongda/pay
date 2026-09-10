@@ -9,6 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Action\PaypalWebAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\ObtainAccessTokenPlugin;
@@ -27,12 +28,12 @@ class WebShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = $params['_action'] ?? 'default';
+        $action = PaypalWebAction::tryFrom($params['_action'] ?? PaypalWebAction::Default->value)
+            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
 
         return match ($action) {
-            'default', 'pay' => $this->payPlugins(),
-            'capture' => $this->capturePlugins(),
-            default => throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "不支持的 PayPal Web 操作: [{$action}]"),
+            PaypalWebAction::Default, PaypalWebAction::Pay => $this->payPlugins(),
+            PaypalWebAction::Capture => $this->capturePlugins(),
         };
     }
 

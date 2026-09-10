@@ -9,6 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Action\WechatPapayAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
@@ -20,7 +21,6 @@ use Yansongda\Pay\Plugin\Wechat\V2\Pay\App\InvokePlugin as AppInvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\Pay\Mini\InvokePlugin as MiniInvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\Pay\Mp\InvokePlugin as MpInvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
-use Yansongda\Supports\Str;
 
 class PapayShortcut implements ShortcutInterface
 {
@@ -33,13 +33,17 @@ class PapayShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $method = Str::camel($params['_action'] ?? 'default').'Plugins';
+        $action = WechatPapayAction::tryFrom($params['_action'] ?? WechatPapayAction::Default->value)
+            ?? throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            );
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}($params);
-        }
-
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            WechatPapayAction::Default, WechatPapayAction::Order => $this->orderPlugins($params),
+            WechatPapayAction::Contract => $this->contractPlugins($params),
+            WechatPapayAction::Apply => $this->applyPlugins(),
+        };
     }
 
     /**

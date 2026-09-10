@@ -9,6 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
+use Yansongda\Pay\Action\WechatPayScoreAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
@@ -24,7 +25,6 @@ use Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\TerminatePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\PayScore\QueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\PayScore\SyncPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
-use Yansongda\Supports\Str;
 
 class PayScoreShortcut implements ShortcutInterface
 {
@@ -37,13 +37,24 @@ class PayScoreShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $method = Str::camel($params['_action'] ?? 'create').'Plugins';
+        $action = WechatPayScoreAction::tryFrom($params['_action'] ?? WechatPayScoreAction::Create->value)
+            ?? throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            );
 
-        if (method_exists($this, $method)) {
-            return $this->{$method}();
-        }
-
-        throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, "您所提供的 action 方法 [{$method}] 不支持，请参考文档或源码确认");
+        return match ($action) {
+            WechatPayScoreAction::Default, WechatPayScoreAction::Create => $this->createPlugins(),
+            WechatPayScoreAction::Query => $this->queryPlugins(),
+            WechatPayScoreAction::Cancel => $this->cancelPlugins(),
+            WechatPayScoreAction::Complete => $this->completePlugins(),
+            WechatPayScoreAction::Modify => $this->modifyPlugins(),
+            WechatPayScoreAction::Sync => $this->syncPlugins(),
+            WechatPayScoreAction::Pay => $this->payPlugins(),
+            WechatPayScoreAction::Permissions => $this->permissionsPlugins(),
+            WechatPayScoreAction::PermissionsQuery => $this->permissionsQueryPlugins(),
+            WechatPayScoreAction::PermissionsTerminate => $this->permissionsTerminatePlugins(),
+        };
     }
 
     /**
