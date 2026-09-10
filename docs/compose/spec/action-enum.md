@@ -1,14 +1,27 @@
 ---
 feature: action-enum
-status: in-progress
+status: delivered
 updated: 2026-09-10
 branch: feat/action-enum
-commits: 9fdd0f34..9fdd0f34
+commits: 9fdd0f34..b9936646
 ---
 
 # `_action` 统一为 string-backed enum + match 分发
 
 ## Report
+
+**What was built** — 在 `src/Action/` 新增 28 个按功能/入口拆分的 string-backed enum，作为全库 `_action` 的单一事实来源（取值统一 snake_case）。Provider（Alipay callback、Wechat callback/success）与全部读取 `_action` 的 Shortcut 改为 `tryFrom` + `match($enum)`，删除 `Str::camel` 动态方法分发。破坏性变更：payscore 的 `permissionsQuery`/`permissionsTerminate` 硬切为 `permissions_query`/`permissions_terminate`；PayScore 保留显式 `default` 别名（与 `create` 同管道）。测试、payscore 文档与 CHANGELOG 已同步。
+
+**Verification** — 容器镜像 `registry.cn-shenzhen.aliyuncs.com/yansongda/php:cli-8.5-alpine`：
+- `php vendor/bin/phpstan analyse -l 6 ./src` → PASS
+- `php vendor/bin/phpunit -c phpunit.xml` → PASS（1634 tests, 4075 assertions）
+- `php vendor/bin/php-cs-fixer fix --dry-run` → PASS（0 files）
+
+**Journey log** —
+1. 本地无 PHP：按 `AGENTS.md` → `dev-guide` → `container-dev`，用 Apple Container 跑验证，不再在 PATH 上空转找 php。
+2. 评审 major「Wechat callback 未知 `_action` 未抛错」判定为 **不成立**：改造前 `=== 'virtual' ? VirtualCallback : Callback` 对任意非 virtual 值本就回落 CallbackPlugin，属保留行为；Alipay 因历史就对非法值抛错而保持抛错。
+3. PayScore 原 `defaultPlugins` 可被显式 `'_action'=>'default'` 命中，清单补 `Default=default` 并与 `Create` 同臂，否则单测 `testDefaultAction` 回归。
+4. 异常消息统一为 `($params['_action'] ?? '')`，避免缺键时 PHP 8 告警。
 
 ## [S1] Problem
 
@@ -150,8 +163,9 @@ return match ($action) {
 
 ### 错误行为
 
-- 非法/已废弃值：抛 `InvalidParamsException` + `PARAMS_SHORTCUT_ACTION_INVALID`。
-- 异常消息包含用户传入的原始 `_action` 值。
+- Shortcut 分发：非法/已废弃值抛 `InvalidParamsException` + `PARAMS_SHORTCUT_ACTION_INVALID`，消息包含用户传入的原始 `_action` 值。
+- Alipay `callback`：非法 `_action` 抛错（与改造前一致）。
+- Wechat `callback` / `success`：**非 virtual / 非 payscore 的未知值回落默认路径**（CallbackPlugin / 通用成功应答），与改造前 `=== 'virtual' ? ... : default` 语义一致，不抛错。
 - 不引入新的异常码。
 
 ### 测试与文档
@@ -169,11 +183,11 @@ return match ($action) {
 
 ## Tasks
 
-- [ ] T1: 落盘 `src/Action/` 全部 enum，value 全 snake_case 且与清单一致 — acceptance: 枚举可加载，payscore 两枚举值为 `permissions_query`/`permissions_terminate` (covers: S2)
-- [ ] T2: Provider 级改为 enum+match（Alipay callback / Wechat callback+success）— acceptance: 无 `Str::camel` 分发；非法 `_action` 行为符合 S2 (covers: S2; depends: T1)
-- [ ] T3: Wechat 全部 Shortcut 改为 tryFrom+match — acceptance: Papay/PayScore/Virtual/Oauth/Transfer/Close/Refund/Cancel/Query 均不再动态拼方法名 (covers: S2; depends: T1)
-- [ ] T4: Alipay 全部 Shortcut 改为 tryFrom+match — acceptance: Auth/Close/Cancel/Query/Refund 均 match enum；Auth 缺省仍 `token_app` (covers: S2; depends: T1)
-- [ ] T5: Douyin/Unipay/Paypal/Stripe/Airwallex 改为 tryFrom+match — acceptance: 上述分发点全部 enum match (covers: S2; depends: T1)
-- [ ] T6: 更新受影响单测字面量与异常断言 — acceptance: `composer test` PASS（容器）(covers: S2; depends: T2,T3,T4,T5)
-- [ ] T7: CHANGELOG 记录破坏性变更；文档站 payscore 旧值修正 — acceptance: 仓库内不再以文档推荐 `permissionsQuery` (covers: S2; depends: T3)
-- [ ] T8: 容器内 `composer cs-fix`、`composer analyse`、`composer test` 全绿 — acceptance: 三项 PASS 或仅 PRE-EXISTING (covers: S2; depends: T6)
+- [x] T1: 落盘 `src/Action/` 全部 enum，value 全 snake_case 且与清单一致 — acceptance: 枚举可加载，payscore 两枚举值为 `permissions_query`/`permissions_terminate` (covers: S2)
+- [x] T2: Provider 级改为 enum+match（Alipay callback / Wechat callback+success）— acceptance: 无 `Str::camel` 分发；非法 `_action` 行为符合 S2 (covers: S2; depends: T1)
+- [x] T3: Wechat 全部 Shortcut 改为 tryFrom+match — acceptance: Papay/PayScore/Virtual/Oauth/Transfer/Close/Refund/Cancel/Query 均不再动态拼方法名 (covers: S2; depends: T1)
+- [x] T4: Alipay 全部 Shortcut 改为 tryFrom+match — acceptance: Auth/Close/Cancel/Query/Refund 均 match enum；Auth 缺省仍 `token_app` (covers: S2; depends: T1)
+- [x] T5: Douyin/Unipay/Paypal/Stripe/Airwallex 改为 tryFrom+match — acceptance: 上述分发点全部 enum match (covers: S2; depends: T1)
+- [x] T6: 更新受影响单测字面量与异常断言 — acceptance: `composer test` PASS（容器）(covers: S2; depends: T2,T3,T4,T5)
+- [x] T7: CHANGELOG 记录破坏性变更；文档站 payscore 旧值修正 — acceptance: 仓库内不再以文档推荐 `permissionsQuery` (covers: S2; depends: T3)
+- [x] T8: 容器内 `composer cs-fix`、`composer analyse`、`composer test` 全绿 — acceptance: 三项 PASS 或仅 PRE-EXISTING (covers: S2; depends: T6)
