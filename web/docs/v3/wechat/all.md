@@ -359,6 +359,54 @@ $result = Pay::wechat()->pay($allPlugins, $params);
   传递明文即可，内部会自动加密
   :::
 
+## 支付分
+
+详细用法请参考 [支付分](/docs/v3/wechat/payscore.md)，通过 `Pay::wechat()->payscore(['_action' => ...])` 快捷调用。
+
+- 创建支付分订单
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\CreatePlugin`
+
+- 查询支付分订单
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\QueryPlugin`
+
+- 取消支付分订单
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\CancelPlugin`
+
+- 完结支付分订单
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\CompletePlugin`
+
+- 修改支付分订单金额
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\ModifyPlugin`
+
+- 同步支付分订单信息
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\SyncPlugin`
+
+- 催收扣款
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\PayPlugin`
+
+- 商户预授权（签约）
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\CreatePlugin`
+
+- 查询用户授权记录（协议号）
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\QueryPlugin`
+
+- 解除用户授权（协议号/openid）
+
+  `\Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\TerminatePlugin`
+
+  :::warning 注意
+  解除授权接口微信应答为 HTTP 204 无包体，插件内部已使用 `OriginResponseDirection` 原样返回 `Response` 对象（非 `Collection`），直接将其返回给微信即可
+  :::
+
 ## 运营工具
 
 ### 平台收付通（余额查询）
