@@ -69,7 +69,8 @@ class TerminatePlugin implements PluginInterface
         }
 
         // 路径参数不得进入 body
-        $rocket->getPayload()->forget(['openid', 'authorization_code']);
+        $rocket->getPayload()->forget('openid');
+        $rocket->getPayload()->forget('authorization_code');
 
         if (!empty($openid)) {
             $appid = $payload->get('appid') ?? $config->getAppIdByType($params['_type'] ?? 'mp');
