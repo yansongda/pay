@@ -24,6 +24,7 @@ export default [
       { text: 'Stripe', link: '/docs/v3/quick-start/stripe' },
       { text: '银联', link: '/docs/v3/quick-start/unipay' },
       { text: '江苏银行', link: '/docs/v3/quick-start/jsb' },
+      { text: '通联支付', link: '/docs/v3/quick-start/allinpay' },
       { text: 'Airwallex', link: '/docs/v3/quick-start/airwallex' },
       { text: '返回格式', link: '/docs/v3/quick-start/return-format' }
     ]
@@ -140,6 +141,20 @@ export default [
       { text: '接收回调', link: '/docs/v3/jsb/callback' },
       { text: '确认回调', link: '/docs/v3/jsb/response' },
       { text: '所有内置插件', link: '/docs/v3/jsb/all' }
+    ]
+  },
+  {
+    text: '通联支付',
+    collapsed: true,
+    items: [
+      { text: '支付', link: '/docs/v3/allinpay/pay' },
+      { text: '查询', link: '/docs/v3/allinpay/query' },
+      { text: '退款', link: '/docs/v3/allinpay/refund' },
+      { text: '关闭', link: '/docs/v3/allinpay/close' },
+      { text: '取消', link: '/docs/v3/allinpay/cancel' },
+      { text: '接收回调', link: '/docs/v3/allinpay/callback' },
+      { text: '确认回调', link: '/docs/v3/allinpay/response' },
+      { text: '所有内置插件', link: '/docs/v3/allinpay/all' }
     ]
   },
   {

@@ -269,6 +269,17 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mode' => Pay::MODE_SANDBOX,
                 ],
             ],
+            'allinpay' => [
+                'default' => [
+                    'cusid' => '9900000',
+                    'appid' => '000000',
+                    'orgid' => '999999',
+                    'mch_secret_key' => __DIR__.'/Cert/allinpayAppPrivateKey.pem',
+                    'allinpay_public_key' => __DIR__.'/Cert/allinpayPlatformPublicKey.pem',
+                    'notify_url' => 'https://pay.yansongda.cn/allinpay/notify',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+            ],
         ];
 
         // hyperf 单测时，未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个
