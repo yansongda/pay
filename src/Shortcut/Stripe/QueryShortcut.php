@@ -26,12 +26,15 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = StripeAction::tryFrom($params['_action'] ?? StripeAction::Default->value)
-            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
+        $action = $params['_action'] ?? StripeAction::QUERY_DEFAULT;
 
         return match ($action) {
-            StripeAction::Default, StripeAction::Order => $this->orderPlugins(),
-            StripeAction::Refund => $this->refundPlugins(),
+            StripeAction::QUERY_DEFAULT, StripeAction::QUERY_ORDER => $this->orderPlugins(),
+            StripeAction::QUERY_REFUND => $this->refundPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

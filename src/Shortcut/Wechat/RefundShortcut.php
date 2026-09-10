@@ -33,20 +33,16 @@ class RefundShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = WechatAction::tryFrom($params['_action'] ?? WechatAction::Default->value)
-            ?? throw new InvalidParamsException(
-                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
-                '不支持的 _action ['.($params['_action'] ?? '').']',
-            );
+        $action = $params['_action'] ?? WechatAction::REFUND_DEFAULT;
 
         return match ($action) {
-            WechatAction::Default => $this->defaultPlugins(),
-            WechatAction::App => $this->appPlugins(),
-            WechatAction::Combine => $this->combinePlugins(),
-            WechatAction::H5 => $this->h5Plugins(),
-            WechatAction::Jsapi => $this->jsapiPlugins(),
-            WechatAction::Mini => $this->miniPlugins(),
-            WechatAction::Native => $this->nativePlugins(),
+            WechatAction::REFUND_DEFAULT => $this->defaultPlugins(),
+            WechatAction::REFUND_APP => $this->appPlugins(),
+            WechatAction::REFUND_COMBINE => $this->combinePlugins(),
+            WechatAction::REFUND_H5 => $this->h5Plugins(),
+            WechatAction::REFUND_JSAPI => $this->jsapiPlugins(),
+            WechatAction::REFUND_MINI => $this->miniPlugins(),
+            WechatAction::REFUND_NATIVE => $this->nativePlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

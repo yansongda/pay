@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Action;
 
-enum AirwallexAction: string
+final class AirwallexAction
 {
-    case Default = 'default';
-    case Order = 'order';
-    case Refund = 'refund';
+    /* QUERY */
+    public const QUERY_DEFAULT = 'default';
+    public const QUERY_ORDER = 'order';
+    public const QUERY_REFUND = 'refund';
 }

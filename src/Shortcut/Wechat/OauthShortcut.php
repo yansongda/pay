@@ -28,17 +28,11 @@ class OauthShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = WechatAction::tryFrom($params['_action'] ?? '')
-            ?? throw new InvalidParamsException(
-                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
-                '不支持的 _action ['.($params['_action'] ?? '').']',
-            );
-
-        return match ($action) {
-            WechatAction::WebToken => $this->webTokenPlugins(),
-            WechatAction::Refresh => $this->refreshPlugins(),
-            WechatAction::Userinfo => $this->userinfoPlugins(),
-            WechatAction::Session => $this->sessionPlugins(),
+        return match ($params['_action'] ?? null) {
+            WechatAction::OAUTH_WEB_TOKEN => $this->webTokenPlugins(),
+            WechatAction::OAUTH_REFRESH => $this->refreshPlugins(),
+            WechatAction::OAUTH_USERINFO => $this->userinfoPlugins(),
+            WechatAction::OAUTH_SESSION => $this->sessionPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

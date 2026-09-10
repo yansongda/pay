@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
-- **破坏性变更**：全库 `_action` 取值统一为 snake_case，并落入 `Yansongda\Pay\Action\{Provider}Action` string-backed enum（每 Provider 一个文件，case 为动作值的 Studly 形式）；Shortcut/Provider 分发改为 `tryFrom` + `match`（移除 `Str::camel` 动态方法匹配）
+- **破坏性变更**：全库 `_action` 取值统一为 snake_case，并落入 `Yansongda\Pay\Action\{Provider}Action` 常量类（每 Provider 一个文件；常量名带功能前缀，如 `AlipayAction::CALLBACK_GW`、`WechatAction::PAYSCORE_PERMISSIONS_QUERY`）；Shortcut/Provider 分发改为 `match` + 前缀常量（移除 `Str::camel` 动态方法匹配）
   - `Pay::wechat()->payscore()`：`permissionsQuery` → `permissions_query`，`permissionsTerminate` → `permissions_terminate`（旧 camel 值不再接受）
   - 其余历史“顺带可用”的非 snake_case 形态（如 Unipay `preAuth`）一并失效，请改用规范值
 

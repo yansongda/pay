@@ -29,15 +29,11 @@ class AuthShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = AlipayAction::tryFrom($params['_action'] ?? AlipayAction::TokenApp->value)
-            ?? throw new InvalidParamsException(
-                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
-                '不支持的 _action ['.($params['_action'] ?? '').']',
-            );
+        $action = $params['_action'] ?? AlipayAction::AUTH_TOKEN_APP;
 
         return match ($action) {
-            AlipayAction::TokenApp => $this->tokenAppPlugins(),
-            AlipayAction::Query => $this->queryPlugins(),
+            AlipayAction::AUTH_TOKEN_APP => $this->tokenAppPlugins(),
+            AlipayAction::AUTH_QUERY => $this->queryPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

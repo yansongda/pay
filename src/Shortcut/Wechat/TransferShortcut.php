@@ -28,15 +28,11 @@ class TransferShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = WechatAction::tryFrom($params['_action'] ?? WechatAction::Default->value)
-            ?? throw new InvalidParamsException(
-                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
-                '不支持的 _action ['.($params['_action'] ?? '').']',
-            );
+        $action = $params['_action'] ?? WechatAction::TRANSFER_DEFAULT;
 
         return match ($action) {
-            WechatAction::Default => $this->defaultPlugins(),
-            WechatAction::Transfer => $this->transferPlugins(),
+            WechatAction::TRANSFER_DEFAULT => $this->defaultPlugins(),
+            WechatAction::TRANSFER_TRANSFER => $this->transferPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

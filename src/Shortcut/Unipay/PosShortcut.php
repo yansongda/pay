@@ -32,13 +32,12 @@ class PosShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = UnipayAction::tryFrom($params['_action'] ?? UnipayAction::Default->value)
-            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
+        $action = $params['_action'] ?? UnipayAction::POS_DEFAULT;
 
         return match ($action) {
-            UnipayAction::Default => $this->defaultPlugins(),
-            UnipayAction::PreAuth => $this->preAuthPlugins(),
-            UnipayAction::Qra => $this->qraPlugins(),
+            UnipayAction::POS_DEFAULT => $this->defaultPlugins(),
+            UnipayAction::POS_PRE_AUTH => $this->preAuthPlugins(),
+            UnipayAction::POS_QRA => $this->qraPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

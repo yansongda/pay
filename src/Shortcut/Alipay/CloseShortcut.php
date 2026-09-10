@@ -35,22 +35,18 @@ class CloseShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = AlipayAction::tryFrom($params['_action'] ?? AlipayAction::Default->value)
-            ?? throw new InvalidParamsException(
-                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
-                '不支持的 _action ['.($params['_action'] ?? '').']',
-            );
+        $action = $params['_action'] ?? AlipayAction::CLOSE_DEFAULT;
 
         return match ($action) {
-            AlipayAction::Default => $this->defaultPlugins(),
-            AlipayAction::Agreement => $this->agreementPlugins(),
-            AlipayAction::App => $this->appPlugins(),
-            AlipayAction::Authorization => $this->authorizationPlugins(),
-            AlipayAction::Mini => $this->miniPlugins(),
-            AlipayAction::Pos => $this->posPlugins(),
-            AlipayAction::Scan => $this->scanPlugins(),
-            AlipayAction::H5 => $this->h5Plugins(),
-            AlipayAction::Web => $this->webPlugins(),
+            AlipayAction::CLOSE_DEFAULT => $this->defaultPlugins(),
+            AlipayAction::CLOSE_AGREEMENT => $this->agreementPlugins(),
+            AlipayAction::CLOSE_APP => $this->appPlugins(),
+            AlipayAction::CLOSE_AUTHORIZATION => $this->authorizationPlugins(),
+            AlipayAction::CLOSE_MINI => $this->miniPlugins(),
+            AlipayAction::CLOSE_POS => $this->posPlugins(),
+            AlipayAction::CLOSE_SCAN => $this->scanPlugins(),
+            AlipayAction::CLOSE_H5 => $this->h5Plugins(),
+            AlipayAction::CLOSE_WEB => $this->webPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

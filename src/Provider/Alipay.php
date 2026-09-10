@@ -145,14 +145,10 @@ class Alipay implements ProviderInterface
         $params = $request->merge($params ?? [])->all();
 
         $rawAction = $params['_action'] ?? null;
-        $action = null === $rawAction
-            ? null
-            : AlipayAction::tryFrom((string) $rawAction)
-                ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '参数异常: 不支持的回调 _action ['.$rawAction.']');
 
-        $plugins = match ($action) {
+        $plugins = match ($rawAction) {
             null => [CallbackPlugin::class],
-            AlipayAction::Gw => [GatewayCallbackPlugin::class],
+            AlipayAction::CALLBACK_GW => [GatewayCallbackPlugin::class],
             default => throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '参数异常: 不支持的回调 _action ['.$rawAction.']'),
         };
 

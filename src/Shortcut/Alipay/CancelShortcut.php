@@ -32,19 +32,15 @@ class CancelShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = AlipayAction::tryFrom($params['_action'] ?? AlipayAction::Default->value)
-            ?? throw new InvalidParamsException(
-                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
-                '不支持的 _action ['.($params['_action'] ?? '').']',
-            );
+        $action = $params['_action'] ?? AlipayAction::CANCEL_DEFAULT;
 
         return match ($action) {
-            AlipayAction::Default => $this->defaultPlugins(),
-            AlipayAction::Agreement => $this->agreementPlugins(),
-            AlipayAction::Authorization => $this->authorizationPlugins(),
-            AlipayAction::Mini => $this->miniPlugins(),
-            AlipayAction::Pos => $this->posPlugins(),
-            AlipayAction::Scan => $this->scanPlugins(),
+            AlipayAction::CANCEL_DEFAULT => $this->defaultPlugins(),
+            AlipayAction::CANCEL_AGREEMENT => $this->agreementPlugins(),
+            AlipayAction::CANCEL_AUTHORIZATION => $this->authorizationPlugins(),
+            AlipayAction::CANCEL_MINI => $this->miniPlugins(),
+            AlipayAction::CANCEL_POS => $this->posPlugins(),
+            AlipayAction::CANCEL_SCAN => $this->scanPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

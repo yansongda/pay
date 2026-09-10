@@ -45,28 +45,24 @@ class QueryShortcut implements ShortcutInterface
             return $this->combinePlugins();
         }
 
-        $action = WechatAction::tryFrom($params['_action'] ?? WechatAction::Default->value)
-            ?? throw new InvalidParamsException(
-                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
-                '不支持的 _action ['.($params['_action'] ?? '').']',
-            );
+        $action = $params['_action'] ?? WechatAction::QUERY_DEFAULT;
 
         return match ($action) {
-            WechatAction::Default => $this->defaultPlugins(),
-            WechatAction::App => $this->appPlugins(),
-            WechatAction::Combine => $this->combinePlugins(),
-            WechatAction::H5 => $this->h5Plugins(),
-            WechatAction::Jsapi => $this->jsapiPlugins(),
-            WechatAction::Mini => $this->miniPlugins(),
-            WechatAction::Native => $this->nativePlugins(),
-            WechatAction::Transfer => $this->transferPlugins($params),
-            WechatAction::Refund => $this->refundPlugins(),
-            WechatAction::RefundApp => $this->refundAppPlugins(),
-            WechatAction::RefundCombine => $this->refundCombinePlugins(),
-            WechatAction::RefundH5 => $this->refundH5Plugins(),
-            WechatAction::RefundJsapi => $this->refundJsapiPlugins(),
-            WechatAction::RefundMini => $this->refundMiniPlugins(),
-            WechatAction::RefundNative => $this->refundNativePlugins(),
+            WechatAction::QUERY_DEFAULT => $this->defaultPlugins(),
+            WechatAction::QUERY_APP => $this->appPlugins(),
+            WechatAction::QUERY_COMBINE => $this->combinePlugins(),
+            WechatAction::QUERY_H5 => $this->h5Plugins(),
+            WechatAction::QUERY_JSAPI => $this->jsapiPlugins(),
+            WechatAction::QUERY_MINI => $this->miniPlugins(),
+            WechatAction::QUERY_NATIVE => $this->nativePlugins(),
+            WechatAction::QUERY_TRANSFER => $this->transferPlugins($params),
+            WechatAction::QUERY_REFUND => $this->refundPlugins(),
+            WechatAction::QUERY_REFUND_APP => $this->refundAppPlugins(),
+            WechatAction::QUERY_REFUND_COMBINE => $this->refundCombinePlugins(),
+            WechatAction::QUERY_REFUND_H5 => $this->refundH5Plugins(),
+            WechatAction::QUERY_REFUND_JSAPI => $this->refundJsapiPlugins(),
+            WechatAction::QUERY_REFUND_MINI => $this->refundMiniPlugins(),
+            WechatAction::QUERY_REFUND_NATIVE => $this->refundNativePlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

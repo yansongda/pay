@@ -28,12 +28,11 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = PaypalAction::tryFrom($params['_action'] ?? PaypalAction::Default->value)
-            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
+        $action = $params['_action'] ?? PaypalAction::QUERY_DEFAULT;
 
         return match ($action) {
-            PaypalAction::Default, PaypalAction::Order => $this->orderPlugins(),
-            PaypalAction::Refund => $this->refundPlugins(),
+            PaypalAction::QUERY_DEFAULT, PaypalAction::QUERY_ORDER => $this->orderPlugins(),
+            PaypalAction::QUERY_REFUND => $this->refundPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

@@ -37,20 +37,16 @@ class CloseShortcut implements ShortcutInterface
             return $this->combinePlugins();
         }
 
-        $action = WechatAction::tryFrom($params['_action'] ?? WechatAction::Default->value)
-            ?? throw new InvalidParamsException(
-                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
-                '不支持的 _action ['.($params['_action'] ?? '').']',
-            );
+        $action = $params['_action'] ?? WechatAction::CLOSE_DEFAULT;
 
         return match ($action) {
-            WechatAction::Default => $this->defaultPlugins(),
-            WechatAction::App => $this->appPlugins(),
-            WechatAction::H5 => $this->H5Plugins(),
-            WechatAction::Jsapi => $this->jsapiPlugins(),
-            WechatAction::Mini => $this->miniPlugins(),
-            WechatAction::Native => $this->nativePlugins(),
-            WechatAction::Combine => $this->combinePlugins(),
+            WechatAction::CLOSE_DEFAULT => $this->defaultPlugins(),
+            WechatAction::CLOSE_APP => $this->appPlugins(),
+            WechatAction::CLOSE_H5 => $this->H5Plugins(),
+            WechatAction::CLOSE_JSAPI => $this->jsapiPlugins(),
+            WechatAction::CLOSE_MINI => $this->miniPlugins(),
+            WechatAction::CLOSE_NATIVE => $this->nativePlugins(),
+            WechatAction::CLOSE_COMBINE => $this->combinePlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

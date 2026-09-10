@@ -28,12 +28,11 @@ class WebShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = PaypalAction::tryFrom($params['_action'] ?? PaypalAction::Default->value)
-            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
+        $action = $params['_action'] ?? PaypalAction::WEB_DEFAULT;
 
         return match ($action) {
-            PaypalAction::Default, PaypalAction::Pay => $this->payPlugins(),
-            PaypalAction::Capture => $this->capturePlugins(),
+            PaypalAction::WEB_DEFAULT, PaypalAction::WEB_PAY => $this->payPlugins(),
+            PaypalAction::WEB_CAPTURE => $this->capturePlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

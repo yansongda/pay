@@ -33,14 +33,13 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = UnipayAction::tryFrom($params['_action'] ?? UnipayAction::Default->value)
-            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
+        $action = $params['_action'] ?? UnipayAction::QUERY_DEFAULT;
 
         return match ($action) {
-            UnipayAction::Default, UnipayAction::Web => $this->webPlugins(),
-            UnipayAction::QrCode => $this->qrCodePlugins(),
-            UnipayAction::QraPos => $this->qraPosPlugins(),
-            UnipayAction::QraPosRefund => $this->qraPosRefundPlugins(),
+            UnipayAction::QUERY_DEFAULT, UnipayAction::QUERY_WEB => $this->webPlugins(),
+            UnipayAction::QUERY_QR_CODE => $this->qrCodePlugins(),
+            UnipayAction::QUERY_QRA_POS => $this->qraPosPlugins(),
+            UnipayAction::QUERY_QRA_POS_REFUND => $this->qraPosRefundPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

@@ -37,23 +37,19 @@ class PayScoreShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = WechatAction::tryFrom($params['_action'] ?? WechatAction::Create->value)
-            ?? throw new InvalidParamsException(
-                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
-                '不支持的 _action ['.($params['_action'] ?? '').']',
-            );
+        $action = $params['_action'] ?? WechatAction::PAYSCORE_CREATE;
 
         return match ($action) {
-            WechatAction::Default, WechatAction::Create => $this->createPlugins(),
-            WechatAction::Query => $this->queryPlugins(),
-            WechatAction::Cancel => $this->cancelPlugins(),
-            WechatAction::Complete => $this->completePlugins(),
-            WechatAction::Modify => $this->modifyPlugins(),
-            WechatAction::Sync => $this->syncPlugins(),
-            WechatAction::Pay => $this->payPlugins(),
-            WechatAction::Permissions => $this->permissionsPlugins(),
-            WechatAction::PermissionsQuery => $this->permissionsQueryPlugins(),
-            WechatAction::PermissionsTerminate => $this->permissionsTerminatePlugins(),
+            WechatAction::PAYSCORE_DEFAULT, WechatAction::PAYSCORE_CREATE => $this->createPlugins(),
+            WechatAction::PAYSCORE_QUERY => $this->queryPlugins(),
+            WechatAction::PAYSCORE_CANCEL => $this->cancelPlugins(),
+            WechatAction::PAYSCORE_COMPLETE => $this->completePlugins(),
+            WechatAction::PAYSCORE_MODIFY => $this->modifyPlugins(),
+            WechatAction::PAYSCORE_SYNC => $this->syncPlugins(),
+            WechatAction::PAYSCORE_PAY => $this->payPlugins(),
+            WechatAction::PAYSCORE_PERMISSIONS => $this->permissionsPlugins(),
+            WechatAction::PAYSCORE_PERMISSIONS_QUERY => $this->permissionsQueryPlugins(),
+            WechatAction::PAYSCORE_PERMISSIONS_TERMINATE => $this->permissionsTerminatePlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

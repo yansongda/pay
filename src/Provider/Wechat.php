@@ -151,10 +151,10 @@ class Wechat implements ProviderInterface
 
         Event::dispatch(new CallbackReceived(Pay::PROVIDER_WECHAT, clone $request, $params, null));
 
-        $action = WechatAction::tryFrom((string) (($params ?? [])['_action'] ?? ''));
+        $action = ($params ?? [])['_action'] ?? null;
 
         $plugin = match ($action) {
-            WechatAction::Virtual => VirtualCallbackPlugin::class,
+            WechatAction::CALLBACK_VIRTUAL => VirtualCallbackPlugin::class,
             default => CallbackPlugin::class,
         };
 
@@ -169,14 +169,14 @@ class Wechat implements ProviderInterface
      */
     public function success(array $params = []): ResponseInterface
     {
-        $action = WechatAction::tryFrom((string) ($params['_action'] ?? ''));
+        $action = $params['_action'] ?? null;
 
-        if (WechatAction::Payscore === $action) {
+        if (WechatAction::SUCCESS_PAYSCORE === $action) {
             return new Response(204, ['Content-Type' => 'application/json'], '');
         }
 
         [$contentType, $body] = match ($action) {
-            WechatAction::Virtual => match ($params['_format'] ?? null) {
+            WechatAction::SUCCESS_VIRTUAL => match ($params['_format'] ?? null) {
                 'json' => ['application/json', json_encode(['ErrCode' => 0, 'ErrMsg' => 'success'])],
                 default => ['application/xml', '<xml><ErrCode>0</ErrCode><ErrMsg>success</ErrMsg></xml>'],
             },

@@ -28,12 +28,15 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = AirwallexAction::tryFrom($params['_action'] ?? AirwallexAction::Default->value)
-            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
+        $action = $params['_action'] ?? AirwallexAction::QUERY_DEFAULT;
 
         return match ($action) {
-            AirwallexAction::Default, AirwallexAction::Order => $this->orderPlugins(),
-            AirwallexAction::Refund => $this->refundPlugins(),
+            AirwallexAction::QUERY_DEFAULT, AirwallexAction::QUERY_ORDER => $this->orderPlugins(),
+            AirwallexAction::QUERY_REFUND => $this->refundPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

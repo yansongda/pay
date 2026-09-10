@@ -30,14 +30,13 @@ class ScanShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = UnipayAction::tryFrom($params['_action'] ?? UnipayAction::Default->value)
-            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
+        $action = $params['_action'] ?? UnipayAction::SCAN_DEFAULT;
 
         return match ($action) {
-            UnipayAction::Default => $this->defaultPlugins(),
-            UnipayAction::PreAuth => $this->preAuthPlugins(),
-            UnipayAction::PreOrder => $this->preOrderPlugins(),
-            UnipayAction::Fee => $this->feePlugins(),
+            UnipayAction::SCAN_DEFAULT => $this->defaultPlugins(),
+            UnipayAction::SCAN_PRE_AUTH => $this->preAuthPlugins(),
+            UnipayAction::SCAN_PRE_ORDER => $this->preOrderPlugins(),
+            UnipayAction::SCAN_FEE => $this->feePlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

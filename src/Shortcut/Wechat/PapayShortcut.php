@@ -33,16 +33,12 @@ class PapayShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = WechatAction::tryFrom($params['_action'] ?? WechatAction::Default->value)
-            ?? throw new InvalidParamsException(
-                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
-                '不支持的 _action ['.($params['_action'] ?? '').']',
-            );
+        $action = $params['_action'] ?? WechatAction::PAPAY_DEFAULT;
 
         return match ($action) {
-            WechatAction::Default, WechatAction::Order => $this->orderPlugins($params),
-            WechatAction::Contract => $this->contractPlugins($params),
-            WechatAction::Apply => $this->applyPlugins(),
+            WechatAction::PAPAY_DEFAULT, WechatAction::PAPAY_ORDER => $this->orderPlugins($params),
+            WechatAction::PAPAY_CONTRACT => $this->contractPlugins($params),
+            WechatAction::PAPAY_APPLY => $this->applyPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

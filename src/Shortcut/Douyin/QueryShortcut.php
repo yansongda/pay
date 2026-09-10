@@ -32,13 +32,12 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = DouyinAction::tryFrom($params['_action'] ?? DouyinAction::Default->value)
-            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
+        $action = $params['_action'] ?? DouyinAction::QUERY_DEFAULT;
 
         return match ($action) {
-            DouyinAction::Default, DouyinAction::Order => $this->orderPlugins(),
-            DouyinAction::Cps => $this->cpsPlugins(),
-            DouyinAction::Refund => $this->refundPlugins(),
+            DouyinAction::QUERY_DEFAULT, DouyinAction::QUERY_ORDER => $this->orderPlugins(),
+            DouyinAction::QUERY_CPS => $this->cpsPlugins(),
+            DouyinAction::QUERY_REFUND => $this->refundPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',

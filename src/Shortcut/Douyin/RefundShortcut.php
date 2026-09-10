@@ -31,12 +31,11 @@ class RefundShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = DouyinAction::tryFrom($params['_action'] ?? DouyinAction::Default->value)
-            ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
+        $action = $params['_action'] ?? DouyinAction::REFUND_DEFAULT;
 
         return match ($action) {
-            DouyinAction::Default => $this->defaultPlugins(),
-            DouyinAction::Audit => $this->auditPlugins(),
+            DouyinAction::REFUND_DEFAULT => $this->defaultPlugins(),
+            DouyinAction::REFUND_AUDIT => $this->auditPlugins(),
             default => throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',
