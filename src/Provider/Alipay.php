@@ -149,10 +149,8 @@ class Alipay implements ProviderInterface
             default => throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '参数异常: 不支持的回调 _action ['.$params['_action'].']'),
         };
 
-        /** @var Collection|ResponseInterface|Rocket $result */
-        $result = $this->pay($plugins, $params);
-
-        return $result;
+        /* @var Collection|ResponseInterface|Rocket */
+        return $this->pay($plugins, $params);
     }
 
     /**
