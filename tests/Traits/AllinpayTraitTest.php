@@ -91,6 +91,20 @@ class AllinpayTraitTest extends TestCase
         AllinpayTraitStub::verifyAllinpaySign($this->getConfig(), ['retcode' => 'SUCCESS']);
     }
 
+    public function testGetAllinpaySignMissingSecretKey(): void
+    {
+        $config = new AllinpayConfig([
+            'cusid' => '9900000',
+            'appid' => '000000',
+            'allinpay_public_key' => __DIR__.'/../Cert/allinpayPlatformPublicKey.pem',
+        ]);
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionCode(Exception::CONFIG_ALLINPAY_INVALID);
+
+        AllinpayTraitStub::getAllinpaySign($config, ['reqsn' => 'order-1']);
+    }
+
     public function testVerifyAllinpaySignInvalid(): void
     {
         $this->expectException(InvalidSignException::class);

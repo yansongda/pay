@@ -10,10 +10,14 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
 use Psr\Http\Message\RequestInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
+use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
+use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
+use Yansongda\Pay\Plugin\Allinpay\AddPayloadSignPlugin;
+use Yansongda\Pay\Plugin\Allinpay\CallbackPlugin;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\AllinpayTrait;
 
@@ -83,6 +87,158 @@ class AllinpayTest extends TestCase
             'reqsn' => 'order-1001',
             'paytype' => 'W02',
         ]);
+    }
+
+    public function testSignWithoutPayload(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+        $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+
+        Pay::allinpay()->pay([AddPayloadSignPlugin::class], []);
+    }
+
+    public function testSignMissingSecretKey(): void
+    {
+        Pay::config([
+            '_force' => true,
+            'allinpay' => [
+                'default' => [
+                    'cusid' => '9900000',
+                    'appid' => '000000',
+                    'allinpay_public_key' => __DIR__.'/../Cert/allinpayPlatformPublicKey.pem',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+            ],
+        ]);
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionCode(Exception::CONFIG_ALLINPAY_INVALID);
+
+        Pay::allinpay()->pay([AddPayloadSignPlugin::class], ['reqsn' => 'order-1001']);
+    }
+
+    public function testScanMissingParams(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Pay::allinpay()->scan([
+            'reqsn' => 'order-1002',
+        ]);
+    }
+
+    public function testNativeMissingParams(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Pay::allinpay()->native([
+            'reqsn' => 'order-1003',
+            'trxamt' => 1,
+        ]);
+    }
+
+    public function testQueryMissingParams(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Pay::allinpay()->query([]);
+    }
+
+    public function testQueryConfirmMissingParams(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Pay::allinpay()->queryConfirm([]);
+    }
+
+    public function testRefundMissingParams(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Pay::allinpay()->refund([
+            'oldreqsn' => 'order-1001',
+        ]);
+    }
+
+    public function testCancelMissingParams(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Pay::allinpay()->cancel([
+            'oldtrxid' => '240101120000000001',
+        ]);
+    }
+
+    public function testCancelMissingOldOrder(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Pay::allinpay()->cancel([
+            'reqsn' => 'cancel-1',
+            'trxamt' => 1,
+        ]);
+    }
+
+    public function testCloseMissingParams(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Pay::allinpay()->close([]);
+    }
+
+    public function testNativeCloseMissingParams(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Pay::allinpay()->nativeClose([]);
+    }
+
+    public function testHttpStatusCodeError(): void
+    {
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(
+            new Response(500, ['Content-Type' => 'application/json'], json_encode(['retcode' => 'SUCCESS', 'retmsg' => 'ok']))
+        );
+        Pay::set(HttpClientInterface::class, $http);
+
+        $this->expectException(InvalidResponseException::class);
+        $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
+
+        Pay::allinpay()->query(['reqsn' => 'order-x']);
+    }
+
+    public function testCallbackWithInvalidRequest(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+        $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
+
+        Pay::allinpay()->pay([CallbackPlugin::class], ['_request' => 'invalid', '_params' => []]);
+    }
+
+    public function testCallbackFromGlobals(): void
+    {
+        $payload = $this->signedResponse([
+            'cusid' => '9900000',
+            'appid' => '000000',
+            'trxid' => '240101120000000001',
+            'reqsn' => 'order-1001',
+            'trxstatus' => 'SUCCESS',
+            'randomstr' => 'abc',
+        ]);
+
+        $backupServer = $_SERVER;
+        $backupPost = $_POST;
+
+        try {
+            $_SERVER['REQUEST_METHOD'] = 'POST';
+            $_POST = $payload;
+
+            $result = Pay::allinpay()->callback();
+
+            self::assertSame('order-1001', $result->get('reqsn'));
+        } finally {
+            $_SERVER = $backupServer;
+            $_POST = $backupPost;
+        }
     }
 
     public function testArrayParamsNormalizedToJsonString(): void
