@@ -176,6 +176,54 @@ class AlipayTraitTest extends TestCase
         AlipayTraitStub::getAlipayV3Authorization($config, 'POST', '/v3/alipay/trade/pay', '{}');
     }
 
+    public function testGetAlipayAppPublicKey(): void
+    {
+        $certPath = __DIR__.'/../Cert/alipayAppPublicCert.crt';
+        $config = new AlipayConfig([
+            'app_id' => 'app_id',
+            'app_secret_cert' => 'app_secret_cert',
+            'app_public_cert_path' => $certPath,
+            'alipay_public_cert_path' => 'alipay_public_cert_path',
+            'alipay_root_cert_path' => 'alipay_root_cert_path',
+        ]);
+
+        $appPublicKey = AlipayTraitStub::getAlipayAppPublicKey($config);
+
+        self::assertStringNotContainsString('-----BEGIN', $appPublicKey);
+        self::assertStringNotContainsString("\n", $appPublicKey);
+        self::assertStringNotContainsString("\r", $appPublicKey);
+        self::assertNotFalse(base64_decode($appPublicKey, true));
+
+        // 与 openssl 直接从证书提取公钥（剥离头尾后）的结果一致
+        $publicKey = openssl_pkey_get_public(file_get_contents($certPath));
+        self::assertNotFalse($publicKey);
+        $details = openssl_pkey_get_details($publicKey);
+        self::assertNotFalse($details);
+        self::assertIsString($details['key'] ?? null);
+
+        self::assertSame(
+            str_replace(['-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----', "\r", "\n"], '', $details['key']),
+            $appPublicKey
+        );
+    }
+
+    public function testGetAlipayAppPublicKeyWithoutConfig(): void
+    {
+        $config = new AlipayConfig([
+            'app_id' => 'app_id',
+            'app_secret_cert' => 'app_secret_cert',
+            'app_public_cert_path' => '',
+            'alipay_public_cert_path' => 'alipay_public_cert_path',
+            'alipay_root_cert_path' => 'alipay_root_cert_path',
+        ]);
+
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
+        self::expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
+
+        AlipayTraitStub::getAlipayAppPublicKey($config);
+    }
+
     public function testVerifyAlipayV3SignCertModeSuccess(): void
     {
         $config = AlipayTraitStub::getProviderConfig('alipay', ['_config' => 'alipay-v3']);

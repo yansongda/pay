@@ -352,6 +352,43 @@ class AlipayTest extends TestCase
         Pay::alipay()->callback($form, ['_config' => 'alipay-v3']);
     }
 
+    public function testCallbackWithGwAction()
+    {
+        // 拍板入口形态：`_action` 位于第一参数 contents
+        $form = $this->makeGwVerifyForm();
+
+        $result = Pay::alipay()->callback(array_merge($form, ['_action' => 'gw']), ['_config' => 'alipay-v3']);
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertSame(200, $result->getStatusCode());
+        self::assertStringContainsString('<success>true</success>', (string) $result->getBody());
+        self::assertStringContainsString('<sign_type>RSA2</sign_type>', (string) $result->getBody());
+    }
+
+    public function testCallbackWithGwActionViaWebhookForm()
+    {
+        // webhook 转发形态：`body`/`headers` 结构，`_action` 位于第二实参
+        $form = $this->makeGwVerifyForm();
+
+        $result = Pay::alipay()->callback(
+            ['body' => http_build_query($form), 'headers' => ['Content-Type' => 'application/x-www-form-urlencoded']],
+            ['_config' => 'alipay-v3', '_action' => 'gw']
+        );
+
+        self::assertInstanceOf(ResponseInterface::class, $result);
+        self::assertSame(200, $result->getStatusCode());
+        self::assertStringContainsString('<success>true</success>', (string) $result->getBody());
+    }
+
+    public function testCallbackWithUnknownAction()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+        self::expectExceptionMessage('参数异常: 不支持的回调 _action [foo]');
+
+        Pay::alipay()->callback(['_action' => 'foo']);
+    }
+
     /**
      * 生成模拟支付宝异步通知的 form 参数（用测试私钥按 V2 参数格式签名，密钥与 alipay-v3 测试租户支付宝公钥证书同属一对）.
      */
@@ -367,6 +404,27 @@ class AlipayTest extends TestCase
         ];
 
         $value = filter_params($form, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k)->sortKeys()->toString();
+
+        openssl_sign($value, $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
+
+        $form['sign'] = base64_encode($sign);
+
+        return $form;
+    }
+
+    /**
+     * 生成模拟支付宝应用网关验证请求的 form 参数（用测试私钥按 verifygw 组串规则签名：仅剔除 `sign`，保留 `sign_type`，密钥与 alipay-v3 测试租户支付宝公钥证书同属一对）.
+     */
+    private function makeGwVerifyForm(): array
+    {
+        $form = [
+            'service' => 'alipay.service.check',
+            'charset' => 'utf-8',
+            'sign_type' => 'RSA2',
+            'biz_content' => '<XML><AppId>alipay_v3_test_app_id</AppId><MsgType>event</MsgType><EventType>verifygw</EventType></XML>',
+        ];
+
+        $value = filter_params($form, fn ($k, $v) => '' !== $v && 'sign' != $k)->sortKeys()->toString();
 
         openssl_sign($value, $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
 
