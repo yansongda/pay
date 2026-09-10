@@ -47,7 +47,7 @@ class AddPayloadSignPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少翼支付 `_path`，可能插件用错顺序，应该先使用业务插件');
         }
 
-        $bizContent = $payload->except(['_path', '_method', '_url', 'sign'])->all();
+        $bizContent = $payload->except(['_path', '_method', '_url', 'sign', 'institutionType', 'institutionCode'])->all();
         $commonParams = [
             'institutionType' => $payload->get('institutionType', $config->getInstitutionType()),
             'institutionCode' => $payload->get('institutionCode', $config->getInstitutionCode()),

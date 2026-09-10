@@ -38,7 +38,9 @@ class AddPayloadSignPluginTest extends TestCase
         $biz = json_decode((string) $payload->get('bizContent'), true);
         self::assertEquals('ORDER001', $biz['outTradeNo']);
         self::assertEquals('99', $biz['tradeAmt']);
-        self::assertEquals('MERCHANT', $biz['institutionType']);
+        self::assertArrayNotHasKey('institutionType', $biz);
+        self::assertArrayNotHasKey('institutionCode', $biz);
+        self::assertArrayNotHasKey('_path', $biz);
 
         $common = json_decode((string) $payload->get('commonParams'), true);
         self::assertEquals('MERCHANT', $common['institutionType']);
