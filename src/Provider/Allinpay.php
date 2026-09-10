@@ -123,7 +123,7 @@ class Allinpay implements ProviderInterface
 
         return $this->pay(
             [CallbackPlugin::class],
-            ['request' => $request, 'params' => $params]
+            ['_request' => $request, '_params' => $params]
         );
     }
 

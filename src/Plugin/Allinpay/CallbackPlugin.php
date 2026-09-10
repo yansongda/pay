@@ -60,12 +60,12 @@ class CallbackPlugin implements PluginInterface
      */
     protected function formatRequestAndParams(Rocket $rocket): void
     {
-        $request = $rocket->getParams()['request'] ?? null;
+        $request = $rocket->getParams()['_request'] ?? null;
 
         if (!$request instanceof Collection) {
             throw new InvalidParamsException(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
         }
 
-        $rocket->setPayload($request)->setParams($rocket->getParams()['params'] ?? []);
+        $rocket->setPayload($request)->setParams($rocket->getParams()['_params'] ?? []);
     }
 }

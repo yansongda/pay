@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Config;
 
-use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
@@ -88,17 +87,11 @@ class AllinpayConfig extends AbstractConfig
         return $this->mode;
     }
 
-    /**
-     * @throws InvalidConfigException mode 配置值不合法
-     */
     protected function supportedModes(): array
     {
         return [Pay::MODE_NORMAL, Pay::MODE_SANDBOX];
     }
 
-    /**
-     * @throws InvalidConfigException 缺少必要配置参数
-     */
     protected function validateRequired(): void
     {
         $this->validateNotEmpty(
