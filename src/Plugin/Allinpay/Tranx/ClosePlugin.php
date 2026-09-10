@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Plugin\Allinpay\UnitOrder;
+namespace Yansongda\Pay\Plugin\Allinpay\Tranx;
 
 use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
@@ -11,6 +11,9 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
+/**
+ * @see https://prodoc.allinpay.com/doc/983/ 通联交易关单接口（/tranx/close），version 默认填 12
+ */
 class ClosePlugin implements PluginInterface
 {
     /**
@@ -27,9 +30,10 @@ class ClosePlugin implements PluginInterface
         }
 
         $rocket->mergePayload([
-            '_url' => '/unitorder/close',
+            '_url' => '/tranx/close',
             'oldreqsn' => $params['oldreqsn'] ?? null,
             'oldtrxid' => $params['oldtrxid'] ?? null,
+            'version' => $params['version'] ?? '12',
         ]);
 
         Logger::info('[Allinpay][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);

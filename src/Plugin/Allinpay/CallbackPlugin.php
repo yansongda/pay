@@ -20,6 +20,9 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AllinpayTrait;
 use Yansongda\Supports\Collection;
 
+/**
+ * @see https://prodoc.allinpay.com/doc/191/ 通联交易结果通知（POST form 回调，验签后应答 success）
+ */
 class CallbackPlugin implements PluginInterface
 {
     use AllinpayTrait;

@@ -11,6 +11,9 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
+/**
+ * @see https://prodoc.allinpay.com/doc/982/ 通联交易查询接口（/tranx/query），version 默认填 12
+ */
 class QueryPlugin implements PluginInterface
 {
     /**
@@ -30,6 +33,7 @@ class QueryPlugin implements PluginInterface
             '_url' => '/tranx/query',
             'reqsn' => $params['reqsn'] ?? null,
             'trxid' => $params['trxid'] ?? null,
+            'version' => $params['version'] ?? '12',
         ]);
 
         Logger::info('[Allinpay][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

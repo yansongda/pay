@@ -18,6 +18,9 @@ use Yansongda\Pay\Traits\AllinpayTrait;
 
 use function Yansongda\Artful\should_do_http_request;
 
+/**
+ * @see https://prodoc.allinpay.com/doc/2318/ 通联支付接口安全规范 - 响应验签（除 sign 外所有非空字段排序组装后以通联公钥验签）
+ */
 class VerifySignaturePlugin implements PluginInterface
 {
     use AllinpayTrait;

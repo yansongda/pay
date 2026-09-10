@@ -11,6 +11,9 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
+/**
+ * @see https://prodoc.allinpay.com/doc/2439/ 通联统一主扫关闭接口（/unitorder/closenative），version 固定填 12
+ */
 class NativeClosePlugin implements PluginInterface
 {
     /**
@@ -30,6 +33,7 @@ class NativeClosePlugin implements PluginInterface
             '_url' => '/unitorder/closenative',
             'oldreqsn' => $params['oldreqsn'] ?? null,
             'oldtrxid' => $params['oldtrxid'] ?? null,
+            'version' => $params['version'] ?? '12',
         ]);
 
         Logger::info('[Allinpay][NativeClosePlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -19,6 +19,9 @@ use Yansongda\Supports\Collection;
 use function Yansongda\Artful\filter_params;
 use function Yansongda\Artful\get_radar_method;
 
+/**
+ * @see https://prodoc.allinpay.com/doc/256/ 通联 apiweb 接口以 POST + application/x-www-form-urlencoded 方式交互
+ */
 class AddRadarPlugin implements PluginInterface
 {
     use AllinpayTrait;

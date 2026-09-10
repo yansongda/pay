@@ -16,7 +16,11 @@ use Yansongda\Pay\Config\AllinpayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AllinpayTrait;
+use Yansongda\Supports\Collection;
 
+/**
+ * @see https://prodoc.allinpay.com/doc/2318/ 通联支付接口安全规范（RSA-SHA1 签名）
+ */
 class AddPayloadSignPlugin implements PluginInterface
 {
     use AllinpayTrait;
@@ -45,6 +49,8 @@ class AddPayloadSignPlugin implements PluginInterface
             throw new InvalidConfigException(Exception::CONFIG_ALLINPAY_INVALID, '配置异常: 缺少配置参数 -- [mch_secret_key]');
         }
 
+        self::normalizePayloadArrayParams($payload);
+
         $rocket->mergePayload([
             'sign' => self::getAllinpaySign($config, $payload),
         ]);
@@ -52,5 +58,20 @@ class AddPayloadSignPlugin implements PluginInterface
         Logger::info('[Allinpay][AddPayloadSignPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
+    }
+
+    /**
+     * 通联官方契约中复合参数（terminfo/benefitdetail/extendparams 等）均为 json 字符串（"注意是 String"）.
+     *
+     * 为避免调用方直接传数组时，签名串跳过该参数而请求体却以 `key[子键]=` 展开导致通联侧拒签，
+     * 统一在签名前将数组参数转为 json 字符串，保证签名与请求体一致。
+     */
+    protected static function normalizePayloadArrayParams(Collection $payload): void
+    {
+        foreach ($payload->toArray() as $key => $value) {
+            if (is_array($value)) {
+                $payload->set($key, json_encode($value, JSON_UNESCAPED_UNICODE));
+            }
+        }
     }
 }

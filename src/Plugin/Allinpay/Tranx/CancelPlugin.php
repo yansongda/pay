@@ -11,6 +11,9 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 
+/**
+ * @see https://prodoc.allinpay.com/doc/314/ 通联交易撤销接口（/tranx/cancel），version 默认填 11
+ */
 class CancelPlugin implements PluginInterface
 {
     /**
@@ -36,6 +39,7 @@ class CancelPlugin implements PluginInterface
             'trxamt' => $params['trxamt'],
             'oldreqsn' => $params['oldreqsn'] ?? null,
             'oldtrxid' => $params['oldtrxid'] ?? null,
+            'version' => $params['version'] ?? '11',
         ]);
 
         Logger::info('[Allinpay][CancelPlugin] 插件装载完毕', ['rocket' => $rocket]);

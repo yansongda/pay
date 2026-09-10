@@ -10,7 +10,7 @@ use Yansongda\Pay\Plugin\Allinpay\AddPayloadSignPlugin;
 use Yansongda\Pay\Plugin\Allinpay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Allinpay\ResponsePlugin;
 use Yansongda\Pay\Plugin\Allinpay\StartPlugin;
-use Yansongda\Pay\Plugin\Allinpay\UnitOrder\ClosePlugin;
+use Yansongda\Pay\Plugin\Allinpay\Tranx\ClosePlugin;
 use Yansongda\Pay\Plugin\Allinpay\VerifySignaturePlugin;
 
 class CloseShortcut implements ShortcutInterface

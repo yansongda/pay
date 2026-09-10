@@ -13,6 +13,9 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 
+/**
+ * @see https://prodoc.allinpay.com/doc/256/ 通联支付响应参数说明（retcode 为通信标识，交易结果以 trxstatus 为准）
+ */
 class ResponsePlugin implements PluginInterface
 {
     /**

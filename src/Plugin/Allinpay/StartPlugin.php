@@ -17,6 +17,9 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AllinpayTrait;
 use Yansongda\Supports\Str;
 
+/**
+ * @see https://prodoc.allinpay.com/doc/256/ 通联支付公共请求参数（cusid/appid/orgid/signtype/randomstr/version）
+ */
 class StartPlugin implements PluginInterface
 {
     use AllinpayTrait;
@@ -35,31 +38,23 @@ class StartPlugin implements PluginInterface
         /** @var AllinpayConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_ALLINPAY, $params);
 
+        $common = [
+            'cusid' => $config->getCusid(),
+            'appid' => $config->getAppid(),
+            'signtype' => 'RSA',
+            'randomstr' => Str::random(20),
+        ];
+
+        // orgid 官方为可选参数（"共享集团号/代理商参数时必填"），仅在配置后才发送
+        if (!empty($config->getOrgid())) {
+            $common['orgid'] = $config->getOrgid();
+        }
+
         $rocket->setPacker(JsonPacker::class)
-            ->mergePayload(array_merge($params, [
-                'cusid' => $config->getCusid(),
-                'appid' => $config->getAppid(),
-                'orgid' => $config->getOrgid(),
-                'signtype' => 'RSA',
-                'version' => $params['version'] ?? '11',
-                'randomstr' => Str::random(20),
-                'notifyurl' => $this->getNotifyUrl($params, $config),
-            ]));
+            ->mergePayload(array_merge($params, $common));
 
         Logger::info('[Allinpay][StartPlugin] 插件装载完毕', ['rocket' => $rocket]);
 
         return $next($rocket);
-    }
-
-    /**
-     * @param array<string, mixed> $params
-     */
-    protected function getNotifyUrl(array $params, AllinpayConfig $config): ?string
-    {
-        if (!empty($params['_notify_url'])) {
-            return (string) $params['_notify_url'];
-        }
-
-        return $config->getNotifyUrl();
     }
 }

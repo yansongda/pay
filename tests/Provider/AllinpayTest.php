@@ -8,6 +8,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Mockery;
+use Psr\Http\Message\RequestInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
@@ -23,6 +24,8 @@ class AllinpayTraitHelper
 
 class AllinpayTest extends TestCase
 {
+    private ?RequestInterface $capturedRequest = null;
+
     public function testShortcutNotFound(): void
     {
         self::expectException(InvalidParamsException::class);
@@ -53,6 +56,14 @@ class AllinpayTest extends TestCase
 
         self::assertSame('SUCCESS', $result->get('retcode'));
         self::assertSame('weixin://wxpay/bizpayurl?pr=xxxx', $result->get('payinfo'));
+
+        $fields = $this->capturedBody();
+
+        self::assertSame('11', $fields['version'] ?? null);
+        self::assertSame('W02', $fields['paytype'] ?? null);
+        self::assertSame('999999', $fields['orgid'] ?? null);
+        self::assertSame('https://pay.yansongda.cn/allinpay/notify', $fields['notify_url'] ?? null);
+        self::assertArrayNotHasKey('notifyurl', $fields);
     }
 
     public function testPayMissingParams(): void
@@ -62,6 +73,42 @@ class AllinpayTest extends TestCase
         Pay::allinpay()->unified([
             'trxamt' => 1,
         ]);
+    }
+
+    public function testPayMissingTrxamt(): void
+    {
+        $this->expectException(InvalidParamsException::class);
+
+        Pay::allinpay()->unified([
+            'reqsn' => 'order-1001',
+            'paytype' => 'W02',
+        ]);
+    }
+
+    public function testArrayParamsNormalizedToJsonString(): void
+    {
+        $this->mockHttp($this->signedResponse([
+            'retcode' => 'SUCCESS',
+            'retmsg' => '交易成功',
+            'cusid' => '9900000',
+            'appid' => '000000',
+            'reqsn' => 'order-1004',
+            'trxstatus' => 'INIT',
+            'randomstr' => 'abc',
+        ]));
+
+        $result = Pay::allinpay()->unified([
+            'reqsn' => 'order-1004',
+            'trxamt' => 1,
+            'paytype' => 'W02',
+            'extendparams' => ['activity' => 'x1'],
+        ]);
+
+        self::assertSame('SUCCESS', $result->get('retcode'));
+
+        $fields = $this->capturedBody();
+
+        self::assertSame('{"activity":"x1"}', $fields['extendparams'] ?? null);
     }
 
     public function testScan(): void
@@ -78,11 +125,17 @@ class AllinpayTest extends TestCase
 
         $result = Pay::allinpay()->scan([
             'reqsn' => 'order-1002',
+            'trxamt' => 1,
             'authcode' => '134567890123456789',
             'terminfo' => ['devicetype' => '11', 'termno' => 'T001'],
         ]);
 
         self::assertSame('SUCCESS', $result->get('trxstatus'));
+
+        $fields = $this->capturedBody();
+
+        self::assertSame('11', $fields['version'] ?? null);
+        self::assertSame('{"devicetype":"11","termno":"T001"}', $fields['terminfo'] ?? null);
     }
 
     public function testNative(): void
@@ -101,10 +154,15 @@ class AllinpayTest extends TestCase
         $result = Pay::allinpay()->native([
             'reqsn' => 'order-1003',
             'trxamt' => 100,
-            'expiretime' => '10',
+            'expiretime' => '20991231235959',
         ]);
 
         self::assertSame('https://qr.allinpay.com/xxx', $result->get('payinfo'));
+
+        $fields = $this->capturedBody();
+
+        self::assertSame('12', $fields['version'] ?? null);
+        self::assertSame('20991231235959', $fields['expiretime'] ?? null);
     }
 
     public function testQuery(): void
@@ -125,6 +183,10 @@ class AllinpayTest extends TestCase
 
         self::assertSame('SUCCESS', $result->get('trxstatus'));
         self::assertSame('order-1001', $result->get('reqsn'));
+
+        $fields = $this->capturedBody();
+
+        self::assertSame('12', $fields['version'] ?? null);
     }
 
     public function testQueryConfirm(): void
@@ -142,6 +204,10 @@ class AllinpayTest extends TestCase
         $result = Pay::allinpay()->queryConfirm(['trxid' => '240101120000000001']);
 
         self::assertSame('SUCCESS', $result->get('retcode'));
+
+        $fields = $this->capturedBody();
+
+        self::assertSame('12', $fields['version'] ?? null);
     }
 
     public function testRefund(): void
@@ -163,6 +229,11 @@ class AllinpayTest extends TestCase
         ]);
 
         self::assertSame('SUCCESS', $result->get('trxstatus'));
+
+        $fields = $this->capturedBody();
+
+        self::assertSame('11', $fields['version'] ?? null);
+        self::assertSame('https://pay.yansongda.cn/allinpay/notify', $fields['notify_url'] ?? null);
     }
 
     public function testRefundMissingOldOrder(): void
@@ -194,6 +265,10 @@ class AllinpayTest extends TestCase
         ]);
 
         self::assertSame('SUCCESS', $result->get('retcode'));
+
+        $fields = $this->capturedBody();
+
+        self::assertSame('11', $fields['version'] ?? null);
     }
 
     public function testClose(): void
@@ -212,6 +287,11 @@ class AllinpayTest extends TestCase
         ]);
 
         self::assertSame('CLOSED', $result->get('trxstatus'));
+
+        $fields = $this->capturedBody();
+
+        self::assertSame('12', $fields['version'] ?? null);
+        self::assertStringContainsString('/tranx/close', (string) $this->capturedRequest?->getUri());
     }
 
     public function testNativeClose(): void
@@ -230,6 +310,11 @@ class AllinpayTest extends TestCase
         ]);
 
         self::assertSame('CLOSED', $result->get('trxstatus'));
+
+        $fields = $this->capturedBody();
+
+        self::assertSame('12', $fields['version'] ?? null);
+        self::assertStringContainsString('/unitorder/closenative', (string) $this->capturedRequest?->getUri());
     }
 
     public function testBusinessError(): void
@@ -326,8 +411,25 @@ class AllinpayTest extends TestCase
      */
     private function mockHttp(array $data): void
     {
+        $this->capturedRequest = null;
+
         $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturn(new Response(200, ['Content-Type' => 'application/json'], json_encode($data)));
+        $http->shouldReceive('sendRequest')->andReturnUsing(function (RequestInterface $request) use ($data) {
+            $this->capturedRequest = $request;
+
+            return new Response(200, ['Content-Type' => 'application/json'], json_encode($data));
+        });
         Pay::set(HttpClientInterface::class, $http);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function capturedBody(): array
+    {
+        $fields = [];
+        parse_str((string) ($this->capturedRequest?->getBody() ?? ''), $fields);
+
+        return $fields;
     }
 }
