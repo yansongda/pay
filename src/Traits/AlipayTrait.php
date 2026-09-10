@@ -107,6 +107,35 @@ trait AlipayTrait
     }
 
     /**
+     * 从应用公钥证书中提取应用公钥（剥离 PEM 头尾与换行的裸公钥串）.
+     *
+     * `openssl_pkey_get_public` 可直接接受 X.509 证书内容并提取公钥（与 `verifyAlipaySign` 用法同源）.
+     *
+     * @throws InvalidConfigException 缺少应用公钥证书配置或证书解析失败
+     */
+    public static function getAlipayAppPublicKey(AlipayConfig $config): string
+    {
+        if (empty($config->getAppPublicCertPath())) {
+            throw new InvalidConfigException(Exception::CONFIG_ALIPAY_INVALID, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
+        }
+
+        $publicKey = openssl_pkey_get_public(CertManager::getPublicCert($config->getAppPublicCertPath()));
+
+        if (false === $publicKey) {
+            throw new InvalidConfigException(Exception::CONFIG_CERT_PARSE_FAILED, '配置异常: 应用公钥证书解析失败，请检查 [app_public_cert_path]');
+        }
+
+        $details = openssl_pkey_get_details($publicKey);
+        $pem = is_array($details) ? ($details['key'] ?? null) : null;
+
+        if (!is_string($pem)) {
+            throw new InvalidConfigException(Exception::CONFIG_CERT_PARSE_FAILED, '配置异常: 应用公钥证书解析失败，请检查 [app_public_cert_path]');
+        }
+
+        return str_replace(['-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----', "\r", "\n"], '', $pem);
+    }
+
+    /**
      * 获取支付宝 V3 请求 URL：radar 完整 URL 优先，否则网关 host（沙箱为 V3 专用网关）+ 业务 path.
      */
     public static function getAlipayV3Url(AlipayConfig $config, ?Collection $payload): string

@@ -144,4 +144,5 @@ $result = Pay::alipay()->scan([
 
 - `app_auth_code`、`app_auth_token`、`app_refresh_token` 均属敏感信息，**不得**明文入库、**不得**打印到日志；
 - token 的存储与刷新由业务方自行负责，SDK 仅提供发起换取/刷新/查询请求的能力，不会自动刷新；
-- 失败不一定抛出异常：未携带签名的错误响应，SDK 会抛出 `InvalidResponseException`；而**带签名的业务错误响应在验签通过后，会按 `Collection` 原样返回**（例如商户已解除授权等场景），业务代码需**自行判断响应中的 `code` 字段**是否为 `10000`，再进行兜底处理。
+- 失败不一定抛出异常：未携带签名的错误响应，SDK 会抛出 `InvalidResponseException`；而**带签名的业务错误响应在验签通过后，会按 `Collection` 原样返回**（例如商户已解除授权等场景），业务代码需**自行判断响应中的 `code` 字段**是否为 `10000`，再进行兜底处理；
+- 如果你在开放平台为第三方应用配置了「应用网关 URL」，支付宝会向该地址发送 `EventType=verifygw` 的验证请求，请通过 `Pay::alipay()->callback($params, ['_action' => 'gw'])` 处理并回吐，详见 [接收支付宝回调 - 应用网关验证（ISV）](/docs/v3/alipay/callback.md#应用网关验证-isv)。

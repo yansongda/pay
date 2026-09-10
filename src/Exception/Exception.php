@@ -51,9 +51,11 @@ class Exception extends \Exception
 
     public const PARAMS_PAYPAL_BODY_INVALID = 9228;
 
-    public const PARAMS_WECHAT_SERVICE_ID_MISSING = 9229;
+    public const PARAMS_ALIPAY_GW_BIZ_CONTENT_INVALID = 9229;
 
-    public const PARAMS_WECHAT_APPID_MISSING = 9230;
+    public const PARAMS_WECHAT_SERVICE_ID_MISSING = 9230;
+
+    public const PARAMS_WECHAT_APPID_MISSING = 9231;
 
     /**
      * 关于响应.
