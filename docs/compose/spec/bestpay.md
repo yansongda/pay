@@ -3,7 +3,7 @@ feature: bestpay
 status: designed
 updated: 2026-03-25
 branch: feat/bestpay-provider
-commits: 9fdd0f34..453e9751 # 首版 Spec；调研增量待二次提交回填
+commits: 9fdd0f34..HEAD # 调研 Spec 两笔 docs 提交；实现提交后回填
 ---
 
 # 翼支付（BestPay）Provider 调研与设计
@@ -142,28 +142,33 @@ src/
 ├── Config/BestpayConfig.php
 ├── Provider/Bestpay.php
 ├── Service/BestpayServiceProvider.php
-├── Traits/BestpayTrait.php          # getBestpayUrl / verifyBestpaySign /（MAPI 则加）encryptBestpayPayload
+├── Traits/BestpayTrait.php          # getBestpayUrl / verifyBestpaySign / 加签辅助
 ├── Plugin/Bestpay/V1/
-│   ├── StartPlugin.php              # 注入 merchantNo/platform/时间戳等公共字段
-│   ├── GetPublicKeyPlugin.php       # 代际 B：拉取平台 RSA 公钥（可缓存 CertManager）
-│   ├── AddPayloadSignPlugin.php     # 代际 A: MD5；代际 B: AES+RSA 信封
-│   ├── AddRadarPlugin.php
-│   ├── ResponsePlugin.php           # 业务码校验（A: returnCode 0000；B: 按官方文档）
-│   ├── CallbackPlugin.php           # 必须验签
+│   ├── StartPlugin.php              # 注入 merchantNo/institutionCode/signType 等公共字段
+│   ├── AddPayloadSignPlugin.php     # CA 证书加签（S002；S008 视 [S4]）
+│   ├── AddRadarPlugin.php           # POST https://mapi.bestpay.com.cn/mapi + JSON body
+│   ├── ResponsePlugin.php           # success + errorCode/errorMsg + 响应验签
+│   ├── CallbackPlugin.php           # 必须验签；tradeStatus 判定
 │   └── Pay/
-│       ├── Web/PayPlugin.php        # 收银台/电脑网站
-│       ├── H5/PayPlugin.php         # 手机网站（若 API 有）
-│       ├── App/PayPlugin.php        # APP 支付（若 API 有）
-│       ├── Scan/PayPlugin.php       # 扫码/被扫
-│       ├── QueryPlugin.php
-│       └── RefundPlugin.php
+│       ├── Web/PayPlugin.php        # tradeCreate + WEBCASHIER
+│       ├── H5/PayPlugin.php         # tradeCreate + MOBILECASHIER
+│       ├── App/PayPlugin.php        # tradeCreate APP（P1）
+│       ├── Scan/PayPlugin.php       # 1006 c2b payOrder
+│       ├── MicropayPlugin.php       # 1006 b2c pay（P1）
+│       ├── QueryPlugin.php          # /integrate/orderQuery
+│       ├── RefundPlugin.php         # /integrate/refund
+│       ├── ClosePlugin.php          # /pay/closeOrder
+│       └── QueryRefundPlugin.php    # P1
 └── Shortcut/Bestpay/
     ├── WebShortcut.php
-    ├── H5Shortcut.php               # 视接口事实裁剪
-    ├── AppShortcut.php
+    ├── H5Shortcut.php
+    ├── AppShortcut.php              # P1
     ├── ScanShortcut.php
+    ├── MicropayShortcut.php         # P1
     ├── QueryShortcut.php
-    └── RefundShortcut.php
+    ├── RefundShortcut.php
+    ├── CloseShortcut.php
+    └── QueryRefundShortcut.php      # P1
 ```
 
 注册触点（实现时同步改）：
@@ -178,15 +183,14 @@ src/
 
 ```
 StartPlugin
-  → [GetPublicKeyPlugin]          # 仅代际 B 需要时
-  → 业务插件 (Web|H5|App|Scan|Query|Refund)
+  → 业务插件 (Web|H5|App|Scan|Micropay|Query|Refund|Close|QueryRefund)
   → AddPayloadSignPlugin
   → AddRadarPlugin
   → ResponsePlugin
   → ParserPlugin
 ```
 
-`cancel` / `close`：若官方无对应 API，与 Jsb 一致抛 `PARAMS_METHOD_NOT_SUPPORTED`。
+`ProviderInterface::cancel()`：官方无对等取消；1006 `offlineCancel` 映射为 `micropay()` 族 shortcut，不占用 `cancel()`，避免与微信/支付宝语义混淆。
 
 ### [S2.4] 配置契约（基于官方公共参数，字段名可落码）
 
