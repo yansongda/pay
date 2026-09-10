@@ -50,10 +50,11 @@ src/
 | 银联 | 证书签名本地验证 | `UnipayTrait::verifyUnipaySign()` |
 | 江苏银行 | RSA 本地验证 | `JsbTrait::verifyJsbSign()` |
 | 抖音 | SHA1 本地验证 | `CallbackPlugin::verifySign()` |
+| 通联支付 | RSA-SHA1 本地验证 | `AllinpayTrait::verifyAllinpaySign()` |
 
 回调处理差异：
 - **Wechat/Stripe/Paypal**：传 `_request`（ServerRequestInterface）到 CallbackPlugin
-- **Alipay/Douyin/Unipay/Jsb**：通过 `getCallbackParams()` 获取 Collection
+- **Alipay/Douyin/Unipay/Jsb/Allinpay**：通过 `getCallbackParams()` 获取 Collection
 
 ## Trait 参考
 | 用途 | 方法（示例） |

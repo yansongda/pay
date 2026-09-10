@@ -57,6 +57,8 @@ class Exception extends \Exception
 
     public const PARAMS_WECHAT_APPID_MISSING = 9231;
 
+    public const PARAMS_ALLINPAY_URL_MISSING = 9232;
+
     /**
      * 关于响应.
      */
@@ -88,6 +90,8 @@ class Exception extends \Exception
     public const CONFIG_CERT_PARSE_FAILED = 9409;
 
     public const CONFIG_AIRWALLEX_INVALID = 9410;
+
+    public const CONFIG_ALLINPAY_INVALID = 9411;
 
     /**
      * 关于签名.
