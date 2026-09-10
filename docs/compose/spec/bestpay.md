@@ -1,20 +1,24 @@
 ---
 feature: bestpay
-status: designed
+status: delivered
 updated: 2026-03-25
 branch: feat/bestpay-provider
-commits: 9fdd0f34..HEAD # 调研 Spec 两笔 docs 提交；实现提交后回填
+commits: 9fdd0f34..HEAD
 ---
 
 # 翼支付（BestPay）Provider 调研与设计
 
 对应 Issue：[yansongda/pay#1030](https://github.com/yansongda/pay/issues/1030)
 
-本轮边界：**只调研与设计，不写业务代码**。公开文档接口清单与回调/公共参数契约已核验；下单请求字段与数字信封细节仍需商户侧文档或 Java demo（见 [S4]）。
+一期 P0 已实现；P1（app/micropay/queryRefund）与沙箱联调见 Tasks / [S4]。
 
 ## Report
 
-（交付时填写）
+**What was built** — 按代际 B（MAPI）落地翼支付 Provider：`BestpayConfig`（PKCS12 + 平台公钥）、`Pay::bestpay()`、SDK 信封加签（TreeMap `k=v&` + SHA256withRSA）、`/mapi/sdkRequest` 网关、P0 业务（`web`/`h5`/`scan`/`query`/`refund`/`close`）、回调证书验签与官方成功应答 `{"resultCode":"SUCCESS","resultMsg":"OK"}`。
+
+**Verification** — 容器 PHP 8.5：`phpunit --filter Bestpay` 16 tests OK；全量 `phpunit` 1650 tests OK；`phpstan -l 6 ./src` OK；`php-cs-fixer --dry-run` 0 files need fix。
+
+**Journey log** — Copilot 旧分支 MD5 与现网不一致不可合入；官方文档 API 无鉴权可读接口目录/回调；GitHub 的 DiningOrder（官方 SDK 反推）与 ShopXO（PHP）锁定信封与加签；响应验签 SHA1/SHA256 双试以兼容 Demo 与联调。
 
 ## [S1] Problem
 
@@ -377,13 +381,13 @@ StartPlugin
 
 实现阶段任务：
 
-- [ ] T1: 骨架注册 — BestpayConfig + Provider + ServiceProvider + Pay/Config/Exception 常量 — acceptance: `Pay::bestpay()` 可实例化；缺配置抛 `CONFIG_BESTPAY_INVALID` (covers: S2.1, S2.4)
-- [ ] T2: 加签/验签与网络插件 — StartPlugin / AddPayloadSignPlugin / AddRadarPlugin / ResponsePlugin + BestpayTrait（TreeMap 串、SHA256withRSA、sdkRequest URL）— acceptance: 固定样例签名单测通过（可用测试证书）；管道可组装 (covers: S2.2, S2.3, S2.6; depends: T1)
-- [ ] T3: P0 业务插件与 Shortcut（web/h5/scan/query/refund/close）— acceptance: path 与 [S2.2] 一致，Mock HTTP 返回 Collection (covers: S2.3, S2.5; depends: T2)
-- [ ] T4: 回调验签 + `success()` — acceptance: 合法/非法签名用例全绿；应答 body 精确匹配 (covers: S2.6; depends: T2)
+- [x] T1: 骨架注册 — BestpayConfig + Provider + ServiceProvider + Pay/Config/Exception 常量 — acceptance: `Pay::bestpay()` 可实例化；缺配置抛 `CONFIG_BESTPAY_INVALID` (covers: S2.1, S2.4)
+- [x] T2: 加签/验签与网络插件 — StartPlugin / AddPayloadSignPlugin / AddRadarPlugin / ResponsePlugin + BestpayTrait（TreeMap 串、SHA256withRSA、sdkRequest URL）— acceptance: 固定样例签名单测通过（可用测试证书）；管道可组装 (covers: S2.2, S2.3, S2.6; depends: T1)
+- [x] T3: P0 业务插件与 Shortcut（web/h5/scan/query/refund/close）— acceptance: path 与 [S2.2] 一致，Mock HTTP 返回 Collection (covers: S2.3, S2.5; depends: T2)
+- [x] T4: 回调验签 + `success()` — acceptance: 合法/非法签名用例全绿；应答 body 精确匹配 (covers: S2.6; depends: T2)
 - [ ] T5: P1（app/micropay/queryRefund/micropayCancel）— acceptance: 有字段依据才合入，否则文档声明不支持 (covers: S2.5; depends: T3)
-- [ ] T6: `composer cs-fix && composer analyse && composer test` — acceptance: 三项全绿 (covers: S2.7; depends: T3, T4)
-- [ ] T7: 文档 — README、quick-start、bestpay 文档、sidebar；金额「分」与证书配置醒目 — acceptance: 示例与 BestpayConfig 一致 (covers: S2.1, S2.4; depends: T1, T3, T4)
+- [x] T6: `composer cs-fix && composer analyse && composer test` — acceptance: 三项全绿 (covers: S2.7; depends: T3, T4)
+- [x] T7: 文档 — README、quick-start、bestpay 文档、sidebar；金额「分」与证书配置醒目 — acceptance: 示例与 BestpayConfig 一致 (covers: S2.1, S2.4; depends: T1, T3, T4)
 - [ ] T8: 联调校准（需商户沙箱）— tradeCreate/1006 字段与验签哈希 — acceptance: 真实沙箱下单/查询/回调通过 (covers: S4; depends: T6)
 
 ## 调研附录

@@ -25,6 +25,7 @@ export default [
       { text: '银联', link: '/docs/v3/quick-start/unipay' },
       { text: '江苏银行', link: '/docs/v3/quick-start/jsb' },
       { text: 'Airwallex', link: '/docs/v3/quick-start/airwallex' },
+      { text: '翼支付', link: '/docs/v3/quick-start/bestpay' },
       { text: '返回格式', link: '/docs/v3/quick-start/return-format' }
     ]
   },

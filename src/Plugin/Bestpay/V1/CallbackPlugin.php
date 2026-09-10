@@ -1,0 +1,70 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Yansongda\Pay\Plugin\Bestpay\V1;
+
+use Closure;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Direction\NoHttpRequestDirection;
+use Yansongda\Artful\Exception\ContainerException;
+use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Config\BestpayConfig;
+use Yansongda\Pay\Exception\Exception;
+use Yansongda\Pay\Exception\InvalidSignException;
+use Yansongda\Pay\Pay;
+use Yansongda\Pay\Traits\BestpayTrait;
+use Yansongda\Supports\Collection;
+
+class CallbackPlugin implements PluginInterface
+{
+    use BestpayTrait;
+
+    /**
+     * @throws ContainerException
+     * @throws InvalidConfigException
+     * @throws InvalidParamsException
+     * @throws ServiceNotFoundException
+     * @throws InvalidSignException
+     */
+    public function assembly(Rocket $rocket, Closure $next): Rocket
+    {
+        Logger::debug('[Bestpay][V1][CallbackPlugin] 插件开始装载', ['rocket' => $rocket]);
+
+        $this->formatRequestAndParams($rocket);
+
+        $params = $rocket->getParams();
+
+        /** @var BestpayConfig $config */
+        $config = self::getProviderConfig(Pay::PROVIDER_BESTPAY, $params);
+
+        $payload = $rocket->getPayload();
+
+        self::verifyBestpaySign($config, $payload->all());
+
+        $rocket->setDirection(NoHttpRequestDirection::class)
+            ->setDestination($payload);
+
+        Logger::info('[Bestpay][V1][CallbackPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
+    }
+
+    /**
+     * @throws InvalidParamsException
+     */
+    protected function formatRequestAndParams(Rocket $rocket): void
+    {
+        $request = $rocket->getParams()['request'] ?? null;
+
+        if (!$request instanceof Collection) {
+            throw new InvalidParamsException(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
+        }
+
+        $rocket->setPayload($request)->setParams($rocket->getParams()['params'] ?? []);
+    }
+}

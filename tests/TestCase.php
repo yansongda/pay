@@ -269,6 +269,21 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mode' => Pay::MODE_SANDBOX,
                 ],
             ],
+            'bestpay' => [
+                'default' => [
+                    'merchant_no' => '3178033925245778',
+                    'institution_code' => '3178033925245778',
+                    'institution_type' => 'MERCHANT',
+                    'mch_secret_cert_path' => __DIR__.'/Cert/bestpay/bestpay.p12',
+                    'mch_secret_cert_password' => 'test123456',
+                    'mch_secret_cert_alias' => 'conname',
+                    'bestpay_public_cert_path' => __DIR__.'/Cert/bestpay/bestpay.cer',
+                    'api_version' => '1.0.3',
+                    'notify_url' => 'https://pay.yansongda.cn/bestpay/notify',
+                    'return_url' => 'https://pay.yansongda.cn/bestpay/return',
+                    'mode' => Pay::MODE_NORMAL,
+                ],
+            ],
         ];
 
         // hyperf 单测时，未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个
