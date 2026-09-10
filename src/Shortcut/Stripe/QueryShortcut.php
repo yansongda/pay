@@ -8,7 +8,7 @@ use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Action\StripeQueryAction;
+use Yansongda\Pay\Action\StripeAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\QueryPlugin;
@@ -26,12 +26,12 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = StripeQueryAction::tryFrom($params['_action'] ?? StripeQueryAction::Default->value)
+        $action = StripeAction::tryFrom($params['_action'] ?? StripeAction::Default->value)
             ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
 
         return match ($action) {
-            StripeQueryAction::Default, StripeQueryAction::Order => $this->orderPlugins(),
-            StripeQueryAction::Refund => $this->refundPlugins(),
+            StripeAction::Default, StripeAction::Order => $this->orderPlugins(),
+            StripeAction::Refund => $this->refundPlugins(),
         };
     }
 

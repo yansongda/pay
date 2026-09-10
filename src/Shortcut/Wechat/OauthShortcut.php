@@ -8,7 +8,7 @@ use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Action\WechatOauthAction;
+use Yansongda\Pay\Action\WechatAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\Openapi\Oauth\Code2SessionPlugin;
@@ -28,17 +28,21 @@ class OauthShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = WechatOauthAction::tryFrom($params['_action'] ?? '')
+        $action = WechatAction::tryFrom($params['_action'] ?? '')
             ?? throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',
             );
 
         return match ($action) {
-            WechatOauthAction::WebToken => $this->webTokenPlugins(),
-            WechatOauthAction::Refresh => $this->refreshPlugins(),
-            WechatOauthAction::Userinfo => $this->userinfoPlugins(),
-            WechatOauthAction::Session => $this->sessionPlugins(),
+            WechatAction::WebToken => $this->webTokenPlugins(),
+            WechatAction::Refresh => $this->refreshPlugins(),
+            WechatAction::Userinfo => $this->userinfoPlugins(),
+            WechatAction::Session => $this->sessionPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

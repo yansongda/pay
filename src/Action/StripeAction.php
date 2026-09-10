@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Action;
 
-enum PaypalWebAction: string
+enum StripeAction: string
 {
     case Default = 'default';
-    case Pay = 'pay';
-    case Capture = 'capture';
+    case Order = 'order';
+    case Refund = 'refund';
 }

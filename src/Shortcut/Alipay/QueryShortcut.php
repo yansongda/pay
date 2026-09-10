@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Shortcut\Alipay;
 use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Action\AlipayQueryAction;
+use Yansongda\Pay\Action\AlipayAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
@@ -48,32 +48,36 @@ class QueryShortcut implements ShortcutInterface
             return $this->refundPlugins();
         }
 
-        $action = AlipayQueryAction::tryFrom($params['_action'] ?? AlipayQueryAction::Default->value)
+        $action = AlipayAction::tryFrom($params['_action'] ?? AlipayAction::Default->value)
             ?? throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',
             );
 
         return match ($action) {
-            AlipayQueryAction::Default => $this->defaultPlugins(),
-            AlipayQueryAction::Agreement => $this->agreementPlugins(),
-            AlipayQueryAction::App => $this->appPlugins(),
-            AlipayQueryAction::Authorization => $this->authorizationPlugins(),
-            AlipayQueryAction::Face => $this->facePlugins(),
-            AlipayQueryAction::Mini => $this->miniPlugins(),
-            AlipayQueryAction::Pos => $this->posPlugins(),
-            AlipayQueryAction::Scan => $this->scanPlugins(),
-            AlipayQueryAction::H5 => $this->h5Plugins(),
-            AlipayQueryAction::Web => $this->webPlugins(),
-            AlipayQueryAction::Transfer => $this->transferPlugins(),
-            AlipayQueryAction::Refund => $this->refundPlugins(),
-            AlipayQueryAction::RefundApp => $this->refundAppPlugins(),
-            AlipayQueryAction::RefundAuthorization => $this->refundAuthorizationPlugins(),
-            AlipayQueryAction::RefundMini => $this->refundMiniPlugins(),
-            AlipayQueryAction::RefundPos => $this->refundPosPlugins(),
-            AlipayQueryAction::RefundScan => $this->refundScanPlugins(),
-            AlipayQueryAction::RefundH5 => $this->refundH5Plugins(),
-            AlipayQueryAction::RefundWeb => $this->refundWebPlugins(),
+            AlipayAction::Default => $this->defaultPlugins(),
+            AlipayAction::Agreement => $this->agreementPlugins(),
+            AlipayAction::App => $this->appPlugins(),
+            AlipayAction::Authorization => $this->authorizationPlugins(),
+            AlipayAction::Face => $this->facePlugins(),
+            AlipayAction::Mini => $this->miniPlugins(),
+            AlipayAction::Pos => $this->posPlugins(),
+            AlipayAction::Scan => $this->scanPlugins(),
+            AlipayAction::H5 => $this->h5Plugins(),
+            AlipayAction::Web => $this->webPlugins(),
+            AlipayAction::Transfer => $this->transferPlugins(),
+            AlipayAction::Refund => $this->refundPlugins(),
+            AlipayAction::RefundApp => $this->refundAppPlugins(),
+            AlipayAction::RefundAuthorization => $this->refundAuthorizationPlugins(),
+            AlipayAction::RefundMini => $this->refundMiniPlugins(),
+            AlipayAction::RefundPos => $this->refundPosPlugins(),
+            AlipayAction::RefundScan => $this->refundScanPlugins(),
+            AlipayAction::RefundH5 => $this->refundH5Plugins(),
+            AlipayAction::RefundWeb => $this->refundWebPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

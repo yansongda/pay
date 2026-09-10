@@ -8,7 +8,7 @@ use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Action\UnipayRefundAction;
+use Yansongda\Pay\Action\UnipayAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
@@ -32,13 +32,17 @@ class RefundShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = UnipayRefundAction::tryFrom($params['_action'] ?? UnipayRefundAction::Default->value)
+        $action = UnipayAction::tryFrom($params['_action'] ?? UnipayAction::Default->value)
             ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
 
         return match ($action) {
-            UnipayRefundAction::Default, UnipayRefundAction::Web => $this->webPlugins(),
-            UnipayRefundAction::QrCode => $this->qrCodePlugins(),
-            UnipayRefundAction::QraPos => $this->qraPosPlugins(),
+            UnipayAction::Default, UnipayAction::Web => $this->webPlugins(),
+            UnipayAction::QrCode => $this->qrCodePlugins(),
+            UnipayAction::QraPos => $this->qraPosPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

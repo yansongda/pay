@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Shortcut\Alipay;
 use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Action\AlipayCancelAction;
+use Yansongda\Pay\Action\AlipayAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
@@ -32,19 +32,23 @@ class CancelShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = AlipayCancelAction::tryFrom($params['_action'] ?? AlipayCancelAction::Default->value)
+        $action = AlipayAction::tryFrom($params['_action'] ?? AlipayAction::Default->value)
             ?? throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',
             );
 
         return match ($action) {
-            AlipayCancelAction::Default => $this->defaultPlugins(),
-            AlipayCancelAction::Agreement => $this->agreementPlugins(),
-            AlipayCancelAction::Authorization => $this->authorizationPlugins(),
-            AlipayCancelAction::Mini => $this->miniPlugins(),
-            AlipayCancelAction::Pos => $this->posPlugins(),
-            AlipayCancelAction::Scan => $this->scanPlugins(),
+            AlipayAction::Default => $this->defaultPlugins(),
+            AlipayAction::Agreement => $this->agreementPlugins(),
+            AlipayAction::Authorization => $this->authorizationPlugins(),
+            AlipayAction::Mini => $this->miniPlugins(),
+            AlipayAction::Pos => $this->posPlugins(),
+            AlipayAction::Scan => $this->scanPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

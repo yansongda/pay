@@ -9,7 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Action\WechatCloseAction;
+use Yansongda\Pay\Action\WechatAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
@@ -37,20 +37,24 @@ class CloseShortcut implements ShortcutInterface
             return $this->combinePlugins();
         }
 
-        $action = WechatCloseAction::tryFrom($params['_action'] ?? WechatCloseAction::Default->value)
+        $action = WechatAction::tryFrom($params['_action'] ?? WechatAction::Default->value)
             ?? throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',
             );
 
         return match ($action) {
-            WechatCloseAction::Default => $this->defaultPlugins(),
-            WechatCloseAction::App => $this->appPlugins(),
-            WechatCloseAction::H5 => $this->H5Plugins(),
-            WechatCloseAction::Jsapi => $this->jsapiPlugins(),
-            WechatCloseAction::Mini => $this->miniPlugins(),
-            WechatCloseAction::Native => $this->nativePlugins(),
-            WechatCloseAction::Combine => $this->combinePlugins(),
+            WechatAction::Default => $this->defaultPlugins(),
+            WechatAction::App => $this->appPlugins(),
+            WechatAction::H5 => $this->H5Plugins(),
+            WechatAction::Jsapi => $this->jsapiPlugins(),
+            WechatAction::Mini => $this->miniPlugins(),
+            WechatAction::Native => $this->nativePlugins(),
+            WechatAction::Combine => $this->combinePlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

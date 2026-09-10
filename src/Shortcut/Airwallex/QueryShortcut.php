@@ -9,7 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Action\AirwallexQueryAction;
+use Yansongda\Pay\Action\AirwallexAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Airwallex\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Airwallex\V1\ObtainAccessTokenPlugin;
@@ -28,12 +28,12 @@ class QueryShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = AirwallexQueryAction::tryFrom($params['_action'] ?? AirwallexQueryAction::Default->value)
+        $action = AirwallexAction::tryFrom($params['_action'] ?? AirwallexAction::Default->value)
             ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
 
         return match ($action) {
-            AirwallexQueryAction::Default, AirwallexQueryAction::Order => $this->orderPlugins(),
-            AirwallexQueryAction::Refund => $this->refundPlugins(),
+            AirwallexAction::Default, AirwallexAction::Order => $this->orderPlugins(),
+            AirwallexAction::Refund => $this->refundPlugins(),
         };
     }
 

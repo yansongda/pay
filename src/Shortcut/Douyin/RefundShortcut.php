@@ -9,7 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Action\DouyinRefundAction;
+use Yansongda\Pay\Action\DouyinAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
@@ -31,12 +31,16 @@ class RefundShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = DouyinRefundAction::tryFrom($params['_action'] ?? DouyinRefundAction::Default->value)
+        $action = DouyinAction::tryFrom($params['_action'] ?? DouyinAction::Default->value)
             ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
 
         return match ($action) {
-            DouyinRefundAction::Default => $this->defaultPlugins(),
-            DouyinRefundAction::Audit => $this->auditPlugins(),
+            DouyinAction::Default => $this->defaultPlugins(),
+            DouyinAction::Audit => $this->auditPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Shortcut\Alipay;
 use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Action\AlipayRefundAction;
+use Yansongda\Pay\Action\AlipayAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
@@ -36,23 +36,27 @@ class RefundShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = AlipayRefundAction::tryFrom($params['_action'] ?? AlipayRefundAction::Default->value)
+        $action = AlipayAction::tryFrom($params['_action'] ?? AlipayAction::Default->value)
             ?? throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',
             );
 
         return match ($action) {
-            AlipayRefundAction::Default => $this->defaultPlugins(),
-            AlipayRefundAction::Agreement => $this->agreementPlugins(),
-            AlipayRefundAction::App => $this->appPlugins(),
-            AlipayRefundAction::Authorization => $this->authorizationPlugins(),
-            AlipayRefundAction::Mini => $this->miniPlugins(),
-            AlipayRefundAction::Pos => $this->posPlugins(),
-            AlipayRefundAction::Scan => $this->scanPlugins(),
-            AlipayRefundAction::H5 => $this->h5Plugins(),
-            AlipayRefundAction::Web => $this->webPlugins(),
-            AlipayRefundAction::Transfer => $this->transferPlugins(),
+            AlipayAction::Default => $this->defaultPlugins(),
+            AlipayAction::Agreement => $this->agreementPlugins(),
+            AlipayAction::App => $this->appPlugins(),
+            AlipayAction::Authorization => $this->authorizationPlugins(),
+            AlipayAction::Mini => $this->miniPlugins(),
+            AlipayAction::Pos => $this->posPlugins(),
+            AlipayAction::Scan => $this->scanPlugins(),
+            AlipayAction::H5 => $this->h5Plugins(),
+            AlipayAction::Web => $this->webPlugins(),
+            AlipayAction::Transfer => $this->transferPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

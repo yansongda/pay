@@ -9,7 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Action\WechatVirtualAction;
+use Yansongda\Pay\Action\WechatAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\Openapi\ResponsePlugin;
@@ -48,35 +48,39 @@ class VirtualShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = WechatVirtualAction::tryFrom($params['_action'] ?? WechatVirtualAction::Default->value)
+        $action = WechatAction::tryFrom($params['_action'] ?? WechatAction::Default->value)
             ?? throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',
             );
 
         return match ($action) {
-            WechatVirtualAction::Default => $this->defaultPlugins(),
-            WechatVirtualAction::OrderQuery => $this->orderQueryPlugins(),
-            WechatVirtualAction::OrderRefund => $this->orderRefundPlugins(),
-            WechatVirtualAction::OrderStartDownload => $this->orderStartDownloadPlugins(),
-            WechatVirtualAction::OrderQueryDownload => $this->orderQueryDownloadPlugins(),
-            WechatVirtualAction::OrderDownloadBill => $this->orderDownloadBillPlugins(),
-            WechatVirtualAction::OrderNotifyProvideGoods => $this->orderNotifyProvideGoodsPlugins(),
-            WechatVirtualAction::CurrencyPay => $this->currencyPayPlugins(),
-            WechatVirtualAction::CurrencyCancel => $this->currencyCancelPlugins(),
-            WechatVirtualAction::CurrencyQueryBalance => $this->currencyQueryBalancePlugins(),
-            WechatVirtualAction::CurrencyPresent => $this->currencyPresentPlugins(),
-            WechatVirtualAction::GoodsStartUpload => $this->goodsStartUploadPlugins(),
-            WechatVirtualAction::GoodsQueryUpload => $this->goodsQueryUploadPlugins(),
-            WechatVirtualAction::GoodsStartPublish => $this->goodsStartPublishPlugins(),
-            WechatVirtualAction::GoodsQueryPublish => $this->goodsQueryPublishPlugins(),
-            WechatVirtualAction::WithdrawCreate => $this->withdrawCreatePlugins(),
-            WechatVirtualAction::WithdrawQuery => $this->withdrawQueryPlugins(),
-            WechatVirtualAction::WithdrawQueryBalance => $this->withdrawQueryBalancePlugins(),
-            WechatVirtualAction::SubscribeSendPrePayment => $this->subscribeSendPrePaymentPlugins(),
-            WechatVirtualAction::SubscribeSubmitPayOrder => $this->subscribeSubmitPayOrderPlugins(),
-            WechatVirtualAction::SubscribeQueryContract => $this->subscribeQueryContractPlugins(),
-            WechatVirtualAction::SubscribeCancelContract => $this->subscribeCancelContractPlugins(),
+            WechatAction::Default => $this->defaultPlugins(),
+            WechatAction::OrderQuery => $this->orderQueryPlugins(),
+            WechatAction::OrderRefund => $this->orderRefundPlugins(),
+            WechatAction::OrderStartDownload => $this->orderStartDownloadPlugins(),
+            WechatAction::OrderQueryDownload => $this->orderQueryDownloadPlugins(),
+            WechatAction::OrderDownloadBill => $this->orderDownloadBillPlugins(),
+            WechatAction::OrderNotifyProvideGoods => $this->orderNotifyProvideGoodsPlugins(),
+            WechatAction::CurrencyPay => $this->currencyPayPlugins(),
+            WechatAction::CurrencyCancel => $this->currencyCancelPlugins(),
+            WechatAction::CurrencyQueryBalance => $this->currencyQueryBalancePlugins(),
+            WechatAction::CurrencyPresent => $this->currencyPresentPlugins(),
+            WechatAction::GoodsStartUpload => $this->goodsStartUploadPlugins(),
+            WechatAction::GoodsQueryUpload => $this->goodsQueryUploadPlugins(),
+            WechatAction::GoodsStartPublish => $this->goodsStartPublishPlugins(),
+            WechatAction::GoodsQueryPublish => $this->goodsQueryPublishPlugins(),
+            WechatAction::WithdrawCreate => $this->withdrawCreatePlugins(),
+            WechatAction::WithdrawQuery => $this->withdrawQueryPlugins(),
+            WechatAction::WithdrawQueryBalance => $this->withdrawQueryBalancePlugins(),
+            WechatAction::SubscribeSendPrePayment => $this->subscribeSendPrePaymentPlugins(),
+            WechatAction::SubscribeSubmitPayOrder => $this->subscribeSubmitPayOrderPlugins(),
+            WechatAction::SubscribeQueryContract => $this->subscribeQueryContractPlugins(),
+            WechatAction::SubscribeCancelContract => $this->subscribeCancelContractPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

@@ -9,7 +9,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Pay\Action\WechatPayScoreAction;
+use Yansongda\Pay\Action\WechatAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
@@ -37,23 +37,27 @@ class PayScoreShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = WechatPayScoreAction::tryFrom($params['_action'] ?? WechatPayScoreAction::Create->value)
+        $action = WechatAction::tryFrom($params['_action'] ?? WechatAction::Create->value)
             ?? throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',
             );
 
         return match ($action) {
-            WechatPayScoreAction::Default, WechatPayScoreAction::Create => $this->createPlugins(),
-            WechatPayScoreAction::Query => $this->queryPlugins(),
-            WechatPayScoreAction::Cancel => $this->cancelPlugins(),
-            WechatPayScoreAction::Complete => $this->completePlugins(),
-            WechatPayScoreAction::Modify => $this->modifyPlugins(),
-            WechatPayScoreAction::Sync => $this->syncPlugins(),
-            WechatPayScoreAction::Pay => $this->payPlugins(),
-            WechatPayScoreAction::Permissions => $this->permissionsPlugins(),
-            WechatPayScoreAction::PermissionsQuery => $this->permissionsQueryPlugins(),
-            WechatPayScoreAction::PermissionsTerminate => $this->permissionsTerminatePlugins(),
+            WechatAction::Default, WechatAction::Create => $this->createPlugins(),
+            WechatAction::Query => $this->queryPlugins(),
+            WechatAction::Cancel => $this->cancelPlugins(),
+            WechatAction::Complete => $this->completePlugins(),
+            WechatAction::Modify => $this->modifyPlugins(),
+            WechatAction::Sync => $this->syncPlugins(),
+            WechatAction::Pay => $this->payPlugins(),
+            WechatAction::Permissions => $this->permissionsPlugins(),
+            WechatAction::PermissionsQuery => $this->permissionsQueryPlugins(),
+            WechatAction::PermissionsTerminate => $this->permissionsTerminatePlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

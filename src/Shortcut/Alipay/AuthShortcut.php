@@ -7,7 +7,7 @@ namespace Yansongda\Pay\Shortcut\Alipay;
 use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Action\AlipayAuthAction;
+use Yansongda\Pay\Action\AlipayAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
@@ -29,15 +29,19 @@ class AuthShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = AlipayAuthAction::tryFrom($params['_action'] ?? AlipayAuthAction::TokenApp->value)
+        $action = AlipayAction::tryFrom($params['_action'] ?? AlipayAction::TokenApp->value)
             ?? throw new InvalidParamsException(
                 Exception::PARAMS_SHORTCUT_ACTION_INVALID,
                 '不支持的 _action ['.($params['_action'] ?? '').']',
             );
 
         return match ($action) {
-            AlipayAuthAction::TokenApp => $this->tokenAppPlugins(),
-            AlipayAuthAction::Query => $this->queryPlugins(),
+            AlipayAction::TokenApp => $this->tokenAppPlugins(),
+            AlipayAction::Query => $this->queryPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

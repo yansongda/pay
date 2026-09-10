@@ -8,7 +8,7 @@ use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Action\UnipayPosAction;
+use Yansongda\Pay\Action\UnipayAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
@@ -32,13 +32,17 @@ class PosShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = UnipayPosAction::tryFrom($params['_action'] ?? UnipayPosAction::Default->value)
+        $action = UnipayAction::tryFrom($params['_action'] ?? UnipayAction::Default->value)
             ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
 
         return match ($action) {
-            UnipayPosAction::Default => $this->defaultPlugins(),
-            UnipayPosAction::PreAuth => $this->preAuthPlugins(),
-            UnipayPosAction::Qra => $this->qraPlugins(),
+            UnipayAction::Default => $this->defaultPlugins(),
+            UnipayAction::PreAuth => $this->preAuthPlugins(),
+            UnipayAction::Qra => $this->qraPlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 

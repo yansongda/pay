@@ -8,7 +8,7 @@ use Yansongda\Artful\Contract\ShortcutInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Pay\Action\UnipayScanAction;
+use Yansongda\Pay\Action\UnipayAction;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
@@ -30,14 +30,18 @@ class ScanShortcut implements ShortcutInterface
      */
     public function getPlugins(array $params): array
     {
-        $action = UnipayScanAction::tryFrom($params['_action'] ?? UnipayScanAction::Default->value)
+        $action = UnipayAction::tryFrom($params['_action'] ?? UnipayAction::Default->value)
             ?? throw new InvalidParamsException(Exception::PARAMS_SHORTCUT_ACTION_INVALID, '不支持的 _action ['.($params['_action'] ?? '').']');
 
         return match ($action) {
-            UnipayScanAction::Default => $this->defaultPlugins(),
-            UnipayScanAction::PreAuth => $this->preAuthPlugins(),
-            UnipayScanAction::PreOrder => $this->preOrderPlugins(),
-            UnipayScanAction::Fee => $this->feePlugins(),
+            UnipayAction::Default => $this->defaultPlugins(),
+            UnipayAction::PreAuth => $this->preAuthPlugins(),
+            UnipayAction::PreOrder => $this->preOrderPlugins(),
+            UnipayAction::Fee => $this->feePlugins(),
+            default => throw new InvalidParamsException(
+                Exception::PARAMS_SHORTCUT_ACTION_INVALID,
+                '不支持的 _action ['.($params['_action'] ?? '').']',
+            ),
         };
     }
 
