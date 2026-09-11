@@ -4,13 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [v3.8.0-beta.6] - Unreleased
-
-### Changed
-
-- **破坏性变更**：全库 `_action` 取值统一为 snake_case，并落入 `Yansongda\Pay\Action\{Provider}Action` 常量类（每 Provider 一个文件；常量名带功能前缀，如 `AlipayAction::CALLBACK_GW`、`WechatAction::PAYSCORE_PERMISSIONS_QUERY`）；Shortcut/Provider 分发改为 `match` + 前缀常量（移除 `Str::camel` 动态方法匹配）
-  - `Pay::wechat()->payscore()`：`permissionsQuery` → `permissions_query`，`permissionsTerminate` → `permissions_terminate`（旧 camel 值不再接受）
-  - 其余历史“顺带可用”的非 snake_case 形态（如 Unipay `preAuth`）一并失效，请改用规范值
+## [v3.8.0-beta.6] - 2026-09-11
 
 ### Added
 
@@ -57,6 +51,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - 微信委托代扣「支付中签约」新增 `scan`（NATIVE 扫码，响应 `code_url`）、`h5`（MWEB，响应 `mweb_url`）、`mp`（公众号 JSAPI）支持；补全 `Wechat` Provider 的 `papay/pos/redpack` `@method` 注解，修复 IDE 无法提示 `papay` 方法的问题（#1111, #1113）
 
+- 微信支付分（PayScore）功能（#1211）：`Pay::wechat()->payscore()` 快捷入口，`_action` 缺省 `create`，支持 `create`（创建服务订单，POST /v3/payscore/serviceorder）/`query`（查询，`out_order_no` 与 `query_id` 二选一互斥）/`cancel`（取消）/`complete`（完结）/`modify`（修改订单金额）/`sync`（同步订单信息）/`pay`（催收扣款）/`permissions`（商户预授权签约）/`permissions_query`（查询用户授权记录）/`permissions_terminate`（解除授权，**应答 204 无包体**返回 `Response`）
+  - `WechatConfig` 新增可选 `service_id`（支付分服务 ID，支持配置级或参数级传递，优先级：调用参数 > 配置文件；均未设置时抛「缺少支付分服务ID」异常）；目前仅支持直连商户模式
+  - 文档：`web/docs/v3/wechat/payscore.md` 提供全量动作与官方链接说明，侧边栏已挂载
+
+- 微信 OAuth 用户身份能力（Openapi 插件域，#788）：`Pay::wechat()->oauth()` 快捷入口，`_action` 支持 `session`（小程序登录凭证校验 code2session，需 `mini_app_id` + `mini_app_secret`）/`web_token`（公众号网页授权换取 access_token，需 `mp_app_id` + `mp_app_secret`）/`refresh`（刷新 access_token）/`userinfo`（拉取用户信息，凭 `access_token` + `openid`，无需 secret）
+  - `WechatConfig` 新增可选 `mp_app_secret`/`mini_app_secret`（复用既有 `mp_app_id`/`mini_app_id`）；未使用 OAuth 的纯支付用户无需配置，零影响
+  - 文档：`web/docs/v3/wechat/oauth.md`（含日志可能携带带 secret URL 的安全提示）
+
 - 新增通联支付（Allinpay）Provider，对齐经典开放平台 apiweb（生产 `vsp.allinpay.com/apiweb` / 沙箱 `syb-test.allinpay.com/apiweb`）（#917, #1214）
   - 九个快捷方式：`unified`（统一支付，支持微信/支付宝/银联/数字人民币/云闪付等 paytype）、`scan`（被扫付款码）、`native`（主扫二维码）、`query`/`queryConfirm`（交易/确认查询）、`refund`（退款）、`cancel`（撤销）、`close`/`nativeClose`（关单/主扫关单）
   - RSA-SHA1 请求签名与响应/回调本地验签（对齐官方安全规范）；复合参数（`terminfo`/`extendparams`/`benefitdetail`）自动转为 json 字符串，保证签名与请求体一致
@@ -65,10 +67,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- **破坏性变更**：全库 `_action` 取值统一为 snake_case，并落入 `Yansongda\Pay\Action\{Provider}Action` 常量类（每 Provider 一个文件；常量名带功能前缀，如 `AlipayAction::CALLBACK_GW`、`WechatAction::PAYSCORE_PERMISSIONS_QUERY`）；Shortcut/Provider 分发改为 `match` + 前缀常量（移除 `Str::camel` 动态方法匹配）
+  - `Pay::wechat()->payscore()`：`permissionsQuery` → `permissions_query`，`permissionsTerminate` → `permissions_terminate`（旧 camel 值不再接受）
+  - 其余历史“顺带可用”的非 snake_case 形态（如 Unipay `preAuth`）一并失效，请改用规范值
 - **[BC]** 支付宝配置合并为单一 `Yansongda\Pay\Config\AlipayConfig`：删除 `AlipayV2Config`/`AlipayV3Config` 与 `version`、`alipay_public_key` 配置项（`version` 键不再生效）；配置必填为 `appId`/`appSecretCert`/`appPublicCertPath`/`alipayPublicCertPath`，`alipayRootCertPath` 改为 V2 管道调用时懒校验（V3 协议无 `root-cert-sn` 不需要）
 - **[BC]** `ProviderConfigInterface` 从 `Yansongda\Pay\Config` 移动至 `Yansongda\Pay\Contract` 命名空间
 - **[BC]** `CallbackReceived` 事件载荷统一为解析后的通知参数数组（原 V3 分支携带 `ServerRequestInterface`）；V3 同步验签的 `alipay-sn` 证书 SN 匹配校验为无条件执行
 - 统一支付宝网关域名常量：`Provider\Alipay::URL` 仅保留纯域名（V2/V3 共用），V2 拼接完整请求 URL 时追加 `gateway.do?charset=utf-8`；移除 `V3_URL`，V3 沙箱经 `V3_SANDBOX_URL` 常量单独指向官方 V3 SDK 沙箱网关（`http://openapi.sandbox.dl.alipaydev.com`，与 V2 沙箱域名不同）
+- **[BC]** 微信开放接口域（Openapi）整合：`Wechat::URL_VIRTUAL` 常量重命名为 `URL_OPENAPI` 并扩展路由 `/sns/` 到开放接口域名；`Plugin\Wechat\Virtual\GetAccessTokenPlugin` 迁移至 `Plugin\Wechat\Openapi\GetStableTokenPlugin`，`Plugin\Wechat\Virtual\CheckResponsePlugin` 迁移至 `Plugin\Wechat\Openapi\ResponsePlugin`（合并 HTTP 状态码与业务 errcode 校验；异常文案由「微信虚拟支付返回业务异常/微信返回状态码异常」变为「微信开放接口返回业务/状态码异常」，异常码不变）（#788）
 
 ### Removed
 
