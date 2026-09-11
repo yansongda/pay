@@ -126,15 +126,15 @@ class CertManager
     }
 
     /**
-     * 获取银联 PKCS12 证书内容.
+     * 获取 PKCS12 证书内容（银联/翼支付等共用）.
      *
      * @return array<string, string>
      *
      * @throws InvalidConfigException 证书读取失败
      */
-    public static function unipayGetPkcs12Certs(string $path, string $password): array
+    public static function getPkcs12Certs(string $path, string $password): array
     {
-        return self::getCachedContent('unipay_pkcs12', $path.$password, function () use ($path, $password): array {
+        return self::getCachedContent('pkcs12', $path.$password, function () use ($path, $password): array {
             $content = is_file($path) ? file_get_contents($path) : $path;
             $certs = [];
 
@@ -144,6 +144,18 @@ class CertManager
 
             return $certs;
         });
+    }
+
+    /**
+     * 获取银联 PKCS12 证书内容.
+     *
+     * @return array<string, string>
+     *
+     * @throws InvalidConfigException 证书读取失败
+     */
+    public static function unipayGetPkcs12Certs(string $path, string $password): array
+    {
+        return self::getPkcs12Certs($path, $password);
     }
 
     /**

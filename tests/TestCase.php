@@ -269,6 +269,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mode' => Pay::MODE_SANDBOX,
                 ],
             ],
+
             'allinpay' => [
                 'default' => [
                     'cusid' => '9900000',
@@ -278,6 +279,30 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'allinpay_public_key' => __DIR__.'/Cert/allinpayPlatformPublicKey.pem',
                     'notify_url' => 'https://pay.yansongda.cn/allinpay/notify',
                     'mode' => Pay::MODE_SANDBOX,
+                ],
+            ],
+            'bestpay' => [
+                'default' => [
+                    'merchant_no' => '3178033925245778',
+                    'institution_code' => '3178033925245778',
+                    'institution_type' => 'MERCHANT',
+                    'mch_secret_cert_path' => __DIR__.'/Cert/bestpay/bestpay.p12',
+                    'mch_secret_cert_password' => 'test123456',
+                    'bestpay_public_cert_path' => __DIR__.'/Cert/bestpay/bestpay.cer',
+                    'api_version' => '1.0.3',
+                    'notify_url' => 'https://pay.yansongda.cn/bestpay/notify',
+                    'return_url' => 'https://pay.yansongda.cn/bestpay/return',
+                    'mode' => Pay::MODE_NORMAL,
+                ],
+                'second' => [
+                    'merchant_no' => '3178033925245779',
+                    'institution_code' => '3178033925245779',
+                    'institution_type' => 'MERCHANT',
+                    'mch_secret_cert_path' => __DIR__.'/Cert/bestpay/second.p12',
+                    'mch_secret_cert_password' => 'test123456',
+                    'bestpay_public_cert_path' => __DIR__.'/Cert/bestpay/second.cer',
+                    'api_version' => '1.0.3',
+                    'mode' => Pay::MODE_NORMAL,
                 ],
             ],
         ];

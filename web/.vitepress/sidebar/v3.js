@@ -26,6 +26,7 @@ export default [
       { text: '江苏银行', link: '/docs/v3/quick-start/jsb' },
       { text: '通联支付', link: '/docs/v3/quick-start/allinpay' },
       { text: 'Airwallex', link: '/docs/v3/quick-start/airwallex' },
+      { text: '翼支付', link: '/docs/v3/quick-start/bestpay' },
       { text: '返回格式', link: '/docs/v3/quick-start/return-format' }
     ]
   },
@@ -155,6 +156,19 @@ export default [
       { text: '接收回调', link: '/docs/v3/allinpay/callback' },
       { text: '确认回调', link: '/docs/v3/allinpay/response' },
       { text: '所有内置插件', link: '/docs/v3/allinpay/all' }
+    ]
+  },
+  {
+    text: '翼支付',
+    collapsed: true,
+    items: [
+      { text: '支付', link: '/docs/v3/bestpay/pay' },
+      { text: '查询', link: '/docs/v3/bestpay/query' },
+      { text: '退款', link: '/docs/v3/bestpay/refund' },
+      { text: '关闭', link: '/docs/v3/bestpay/close' },
+      { text: '接收回调', link: '/docs/v3/bestpay/callback' },
+      { text: '确认回调', link: '/docs/v3/bestpay/response' },
+      { text: '所有内置插件', link: '/docs/v3/bestpay/all' }
     ]
   },
   {
