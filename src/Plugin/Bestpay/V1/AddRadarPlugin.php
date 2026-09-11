@@ -19,7 +19,7 @@ use Yansongda\Pay\Traits\BestpayTrait;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://github.com/Belos10/DiningOrder/blob/master/src/main/java/com/example/utils/payUtil/Demo/CallMapiSDKInterface.java CallMapiSDKInterface.URL_PREFIX（POST /mapi/sdkRequest?BESTPAY_MAPI_VERSION=）
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/developGuide 翼支付官方文档（开发指南）
  */
 class AddRadarPlugin implements PluginInterface
 {

@@ -55,7 +55,7 @@ trait BestpayTrait
      *   混合 int/string 键时排序语义不同。翼支付报文字段名均为驼峰字符串（如 `outTradeNo`），
      *   实际不触发；如遇数字字段名请确认官方排序规则。
      *
-     * @see https://github.com/Belos10/DiningOrder/blob/master/src/main/java/com/example/utils/payUtil/AssembleUtil.java AssembleUtil.AssembleSignatureData/translateMapData
+     * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/developGuide 翼支付官方文档（开发指南，签名/拼串对齐官方 Java SDK）
      *
      * @param array<string, mixed> $data
      */
@@ -80,7 +80,7 @@ trait BestpayTrait
      * 的 alias 选择能力（官方 Demo 使用 alias=`conname`）。若商户 p12 包含多把私钥，
      * 请确认第一把即为加签私钥，否则需拆分证书文件。
      *
-     * @see https://github.com/Belos10/DiningOrder/blob/master/src/main/java/com/example/utils/payUtil/SignEncryptUtil.java SignEncryptUtil.sign
+     * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/developGuide 翼支付官方文档（开发指南，签名/拼串对齐官方 Java SDK）
      *
      * @throws InvalidConfigException
      * @throws InvalidSignException

@@ -31,7 +31,7 @@ class CallbackPluginTest extends TestCase
         $data['sign'] = self::signBestpayContent($this->defaultConfig(), self::getBestpaySignContent($data));
 
         $rocket = new Rocket();
-        $rocket->setParams(['request' => new Collection($data), 'params' => []]);
+        $rocket->setParams(['_request' => new Collection($data), '_params' => []]);
 
         $result = (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
 
@@ -57,7 +57,7 @@ class CallbackPluginTest extends TestCase
         $data['sign'] = self::signBestpayContent($this->defaultConfig(), self::getBestpaySignContent($data));
 
         $rocket = new Rocket();
-        $rocket->setParams(['request' => new Collection($data), 'params' => []]);
+        $rocket->setParams(['_request' => new Collection($data), '_params' => []]);
 
         $result = (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
 
@@ -75,7 +75,7 @@ class CallbackPluginTest extends TestCase
         ];
 
         $rocket = new Rocket();
-        $rocket->setParams(['request' => new Collection($data), 'params' => []]);
+        $rocket->setParams(['_request' => new Collection($data), '_params' => []]);
 
         (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
     }
@@ -95,7 +95,7 @@ class CallbackPluginTest extends TestCase
         $data['sign'] = self::signBestpayContent($this->secondConfig(), self::getBestpaySignContent($data));
 
         $rocket = new Rocket();
-        $rocket->setParams(['request' => new Collection($data), 'params' => ['_config' => 'second']]);
+        $rocket->setParams(['_request' => new Collection($data), '_params' => ['_config' => 'second']]);
 
         $result = (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
 
@@ -116,7 +116,7 @@ class CallbackPluginTest extends TestCase
         $data['sign'] = self::signBestpayContent($this->defaultConfig(), self::getBestpaySignContent($data));
 
         $rocket = new Rocket();
-        $rocket->setParams(['request' => new Collection($data), 'params' => ['_config' => 'second']]);
+        $rocket->setParams(['_request' => new Collection($data), '_params' => ['_config' => 'second']]);
 
         (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
     }

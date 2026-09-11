@@ -15,7 +15,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\BestpayTrait;
 
 /**
- * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?productCode=1008 超级收银台 /pay/tradeCreate（MOBILECASHIER）
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?apiPath=/pay/tradeCreate&productId=1008 翼支付官方文档（接口详情）
  */
 class PayPlugin implements PluginInterface
 {
@@ -35,7 +35,7 @@ class PayPlugin implements PluginInterface
         $config = self::getProviderConfig(Pay::PROVIDER_BESTPAY, $params);
 
         $rocket->mergePayload([
-            '_path' => '/pay/tradeCreate',
+            '_url' => '/pay/tradeCreate',
             'tradeChannel' => 'MOBILECASHIER',
             'accessCode' => 'CASHIER',
             'ccy' => $rocket->getPayload()?->get('ccy') ?? '156',

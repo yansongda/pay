@@ -59,7 +59,7 @@ class Exception extends \Exception
 
     public const PARAMS_ALLINPAY_URL_MISSING = 9232;
 
-    public const PARAMS_BESTPAY_PATH_MISSING = 9233;
+    public const PARAMS_BESTPAY_URL_MISSING = 9233;
 
     /**
      * 关于响应.

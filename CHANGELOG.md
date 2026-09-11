@@ -21,7 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - 查询支持 `_action` 分流：默认超级收银台 `/integrate/orderQuery`，`['_action' => 'aggregate']` 走线下聚合 `/aggregate/aggregatepay/tradeQuery`（`BestpayAction` 常量类）
   - 配置：`merchant_no`（自动注入 `bizContent.merchantNo`，可覆盖）、`institution_code`、`mch_secret_cert_path`/`mch_secret_cert_password`（PKCS12）、`bestpay_public_cert_path`（平台公钥验签）、`api_version`（默认 1.0.3）等；金额单位为**分**
   - `CertManager` 新增通用 `getPkcs12Certs()`（原银联专用 `unipayGetPkcs12Certs()` 保留并委托，不破坏 BC）
-  - 异常码：`PARAMS_BESTPAY_PATH_MISSING`（9233）、`CONFIG_BESTPAY_INVALID`（9412）
+  - 异常码：`PARAMS_BESTPAY_URL_MISSING`（9233）、`CONFIG_BESTPAY_INVALID`（9412）
   - 文档：`web/docs/v3/bestpay/` 提供支付/查询/退款/关单/回调/应答/插件全量页面，侧边栏已挂载
 
 - 新增 `src/Action/{Alipay,Wechat,Douyin,Unipay,Paypal,Stripe,Airwallex}Action.php`，作为各 Provider `_action` 的单一事实来源

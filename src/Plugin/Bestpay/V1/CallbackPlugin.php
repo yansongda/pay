@@ -23,7 +23,7 @@ use Yansongda\Supports\Collection;
 /**
  * 支付/退款结果异步通知验签（平台公钥）.
  *
- * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?auxiliaryCode=aggregatePayOrRefundNotify 翼支付支付/退款结果通知 aggregatePayOrRefundNotify
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?apiPath=aggregatePayOrRefundNotify&productId=1008 翼支付官方文档（支付/退款结果通知）
  */
 class CallbackPlugin implements PluginInterface
 {
@@ -64,12 +64,12 @@ class CallbackPlugin implements PluginInterface
      */
     protected function formatRequestAndParams(Rocket $rocket): void
     {
-        $request = $rocket->getParams()['request'] ?? null;
+        $request = $rocket->getParams()['_request'] ?? null;
 
         if (!$request instanceof Collection) {
             throw new InvalidParamsException(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
         }
 
-        $rocket->setPayload($request)->setParams($rocket->getParams()['params'] ?? []);
+        $rocket->setPayload($request)->setParams($rocket->getParams()['_params'] ?? []);
     }
 }

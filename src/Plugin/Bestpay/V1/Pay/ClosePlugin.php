@@ -12,7 +12,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
 /**
- * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?productCode=1008 超级收银台 /pay/closeOrder
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?apiPath=/pay/closeOrder&productId=1008 翼支付官方文档（接口详情）
  */
 class ClosePlugin implements PluginInterface
 {
@@ -25,7 +25,7 @@ class ClosePlugin implements PluginInterface
         Logger::debug('[Bestpay][V1][Pay][ClosePlugin] 插件开始装载', ['rocket' => $rocket]);
 
         $rocket->mergePayload([
-            '_path' => '/pay/closeOrder',
+            '_url' => '/pay/closeOrder',
         ]);
 
         Logger::info('[Bestpay][V1][Pay][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);

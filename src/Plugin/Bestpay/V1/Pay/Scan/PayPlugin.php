@@ -15,7 +15,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\BestpayTrait;
 
 /**
- * @see https://mapi.bestpay.com.cn/gapi/telecomPortal/getApiDocument?productCode=1006 线下聚合 /aggregate/aggregatepay/offline/c2b/payOrder
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?apiPath=/aggregate/aggregatepay/offline/c2b/payOrder&productId=1006 翼支付官方文档（接口详情）
  */
 class PayPlugin implements PluginInterface
 {
@@ -35,7 +35,7 @@ class PayPlugin implements PluginInterface
         $config = self::getProviderConfig(Pay::PROVIDER_BESTPAY, $params);
 
         $rocket->mergePayload([
-            '_path' => '/aggregate/aggregatepay/offline/c2b/payOrder',
+            '_url' => '/aggregate/aggregatepay/offline/c2b/payOrder',
             'notifyUrl' => $rocket->getPayload()?->get('notifyUrl') ?? $config->getNotifyUrl(),
         ]);
 

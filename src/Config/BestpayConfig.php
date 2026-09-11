@@ -121,9 +121,6 @@ class BestpayConfig extends AbstractConfig
         return $this->mode;
     }
 
-    /**
-     * @throws InvalidConfigException
-     */
     protected function supportedModes(): array
     {
         // 翼支付一期无服务商模式

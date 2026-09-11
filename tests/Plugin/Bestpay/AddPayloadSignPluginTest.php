@@ -23,7 +23,7 @@ class AddPayloadSignPluginTest extends TestCase
         ]);
 
         $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
-        $rocket->mergePayload(['_path' => '/pay/tradeCreate']);
+        $rocket->mergePayload(['_url' => '/pay/tradeCreate']);
 
         $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
 
@@ -40,7 +40,7 @@ class AddPayloadSignPluginTest extends TestCase
         self::assertEquals('3178033925245778', $biz['merchantNo']);
         self::assertArrayNotHasKey('institutionType', $biz);
         self::assertArrayNotHasKey('institutionCode', $biz);
-        self::assertArrayNotHasKey('_path', $biz);
+        self::assertArrayNotHasKey('_url', $biz);
 
         $common = json_decode((string) $payload->get('commonParams'), true);
         self::assertEquals('MERCHANT', $common['institutionType']);
@@ -57,7 +57,7 @@ class AddPayloadSignPluginTest extends TestCase
         ]);
 
         $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
-        $rocket->mergePayload(['_path' => '/pay/tradeCreate', 'notifyUrl' => null]);
+        $rocket->mergePayload(['_url' => '/pay/tradeCreate', 'notifyUrl' => null]);
 
         $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
 
@@ -81,7 +81,7 @@ class AddPayloadSignPluginTest extends TestCase
         ]);
 
         $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
-        $rocket->mergePayload(['_path' => '/pay/tradeCreate']);
+        $rocket->mergePayload(['_url' => '/pay/tradeCreate']);
 
         $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
 
@@ -95,7 +95,7 @@ class AddPayloadSignPluginTest extends TestCase
     public function testAssemblyThrowsWhenPathMissing(): void
     {
         $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionCode(Exception::PARAMS_BESTPAY_PATH_MISSING);
+        $this->expectExceptionCode(Exception::PARAMS_BESTPAY_URL_MISSING);
 
         $rocket = new Rocket();
         $rocket->setParams(['outTradeNo' => 'ORDER001']);

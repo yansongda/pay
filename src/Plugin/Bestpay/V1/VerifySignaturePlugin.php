@@ -23,7 +23,7 @@ use function Yansongda\Artful\should_do_http_request;
 /**
  * 响应验签：解析后的 JSON 报文 + 平台公钥（SHA1/SHA256 双试）.
  *
- * @see https://github.com/Belos10/DiningOrder/blob/master/src/main/java/com/example/utils/payUtil/Demo/CallMapiSDKInterface.java CallMapiSDKInterface.verify
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/developGuide 翼支付官方文档（开发指南）
  */
 class VerifySignaturePlugin implements PluginInterface
 {
