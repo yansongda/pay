@@ -3,6 +3,11 @@
 中国电信翼支付商户开放平台（MAPI）。
 
 > **金额单位为「分」**，与其他渠道习惯不同，请注意换算。
+>
+> 更详细的接口说明见[支付](/docs/v3/bestpay/pay)、[查询](/docs/v3/bestpay/query)、
+> [退款](/docs/v3/bestpay/refund)、[关单](/docs/v3/bestpay/close)、
+> [回调](/docs/v3/bestpay/callback)、[应答](/docs/v3/bestpay/response)、
+> [所有内置插件](/docs/v3/bestpay/all)等文档。
 
 ## 配置
 
@@ -29,7 +34,7 @@ $config = [
             // 选填
             'notify_url' => 'https://yansongda.cn/bestpay/notify',
             'return_url' => 'https://yansongda.cn/bestpay/return',
-            // 选填-MODE_NORMAL / MODE_SANDBOX
+            // 选填-MODE_NORMAL / MODE_SANDBOX（翼支付无服务商模式）
             'mode' => Pay::MODE_NORMAL,
         ],
     ],
@@ -37,6 +42,11 @@ $config = [
 
 Pay::config($config);
 ```
+
+::: warning 证书说明
+商户 PKCS12 证书通过 `openssl_pkcs12_read` 读取**第一把私钥**（不具备官方 Java KeyStore 的
+alias 选择能力）。若商户 p12 包含多把私钥，请确认第一把即为加签私钥，否则需拆分证书文件。
+:::
 
 ## 支付
 
@@ -113,4 +123,13 @@ return Pay::bestpay()->success();
 ```
 
 > 验签使用平台公钥（SHA1withRSA / SHA256withRSA 均尝试）；请求加签为 SHA256withRSA（PKCS12）。
-> 回调处理请以翼支付官方文档 `aggregatePayOrRefundNotify` 契约为准：需处理重复通知，失败应答 `{"resultCode":"FAILED","resultMsg":"FAILED"}`。
+> 回调处理请以翼支付官方文档 `aggregatePayOrRefundNotify` 契约为准：需处理重复通知，
+> 失败应答 `{"resultCode":"FAILED","resultMsg":"FAILED"}`；
+> 成功应答 `{"resultCode":"SUCCESS","resultMsg":"OK"}` 因官方文档需商户登录，建议沙箱联调时复核。
+
+## 已知限制
+
+- **沙箱环境**：翼支付沙箱 base URL 与生产相同，是否支持沙箱联调以商户侧开通为准。
+- **接口字段**：`tradeCreate`（web/h5）、`payOrder`（scan）等接口的精确 `bizContent` 字段
+  以沙箱联调与商户开通产品为准。
+- **撤销**：官方无对等 `cancel` 接口，调用 `Pay::bestpay()->cancel()` 抛出异常。

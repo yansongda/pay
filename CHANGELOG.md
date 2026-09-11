@@ -17,10 +17,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - 翼支付（BestPay）Provider 全新接入（基于现行 MAPI 开放平台，#1030）：
   - `Pay::bestpay()` 快捷入口，P0 能力：`web`（PC 收银台）/`h5`（手机收银台）/`scan`（聚合收款码）/`query`/`refund`/`close`/`callback`；`cancel` 官方无对等接口，调用时抛出异常
   - 请求加签：`sdkRequest` 信封（`path`/`commonParams`/`bizContent`）→ TreeMap `k=v&` 拼 → SHA256withRSA（PKCS12 私钥）→ Base64；bizContent 过滤 null 字段，对齐官方 Java SDK fastjson 默认行为
-  - 响应/回调验签：平台公钥（SHA1withRSA / SHA256withRSA 均尝试），待签串对齐官方 `AssembleSignatureData`（空值字段拼为 `k=null`/`k=`、嵌套转 key 升序 JSON）；回调成功应答 `{"resultCode":"SUCCESS","resultMsg":"OK"}`
+  - 响应/回调验签：平台公钥（SHA1withRSA / SHA256withRSA 均尝试），待签串对齐官方 `AssembleSignatureData`（空值字段拼为 `k=null`/`k=`、嵌套转 key 升序 JSON 且 `/` 不转义）；回调成功应答 `{"resultCode":"SUCCESS","resultMsg":"OK"}`
   - 查询支持 `_action` 分流：默认超级收银台 `/integrate/orderQuery`，`['_action' => 'aggregate']` 走线下聚合 `/aggregate/aggregatepay/tradeQuery`（`BestpayAction` 常量类）
   - 配置：`merchant_no`（自动注入 `bizContent.merchantNo`，可覆盖）、`institution_code`、`mch_secret_cert_path`/`mch_secret_cert_password`（PKCS12）、`bestpay_public_cert_path`（平台公钥验签）、`api_version`（默认 1.0.3）等；金额单位为**分**
   - `CertManager` 新增通用 `getPkcs12Certs()`（原银联专用 `unipayGetPkcs12Certs()` 保留并委托，不破坏 BC）
+  - 异常码：`PARAMS_BESTPAY_PATH_MISSING`（9233）、`CONFIG_BESTPAY_INVALID`（9412）
+  - 文档：`web/docs/v3/bestpay/` 提供支付/查询/退款/关单/回调/应答/插件全量页面，侧边栏已挂载
 
 - 新增 `src/Action/{Alipay,Wechat,Douyin,Unipay,Paypal,Stripe,Airwallex}Action.php`，作为各 Provider `_action` 的单一事实来源
 
