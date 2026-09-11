@@ -55,6 +55,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - 微信委托代扣「支付中签约」新增 `scan`（NATIVE 扫码，响应 `code_url`）、`h5`（MWEB，响应 `mweb_url`）、`mp`（公众号 JSAPI）支持；补全 `Wechat` Provider 的 `papay/pos/redpack` `@method` 注解，修复 IDE 无法提示 `papay` 方法的问题（#1111, #1113）
 
+- 新增通联支付（Allinpay）Provider，对齐经典开放平台 apiweb（生产 `vsp.allinpay.com/apiweb` / 沙箱 `syb-test.allinpay.com/apiweb`）（#917, #1214）
+  - 九个快捷方式：`unified`（统一支付，支持微信/支付宝/银联/数字人民币/云闪付等 paytype）、`scan`（被扫付款码）、`native`（主扫二维码）、`query`/`queryConfirm`（交易/确认查询）、`refund`（退款）、`cancel`（撤销）、`close`/`nativeClose`（关单/主扫关单）
+  - RSA-SHA1 请求签名与响应/回调本地验签（对齐官方安全规范）；复合参数（`terminfo`/`extendparams`/`benefitdetail`）自动转为 json 字符串，保证签名与请求体一致
+  - 配置：`cusid`、`appid`、`orgid`（可选）、`mch_secret_key`（商户私钥）、`allinpay_public_key`（通联公钥）、`notify_url`、`mode`（不支持服务商模式）；`version` 按接口区分默认值（pay/scanqrpay/refund/cancel=11，nativepay/query/queryconfirm/close/closenative=12），支持订单级覆盖
+  - 新增异常码 `PARAMS_ALLINPAY_URL_MISSING`（9232）/ `CONFIG_ALLINPAY_INVALID`（9411）；全部插件带官方文档 `@see` 链接
+
 ### Changed
 
 - **[BC]** 支付宝配置合并为单一 `Yansongda\Pay\Config\AlipayConfig`：删除 `AlipayV2Config`/`AlipayV3Config` 与 `version`、`alipay_public_key` 配置项（`version` 键不再生效）；配置必填为 `appId`/`appSecretCert`/`appPublicCertPath`/`alipayPublicCertPath`，`alipayRootCertPath` 改为 V2 管道调用时懒校验（V3 协议无 `root-cert-sn` 不需要）

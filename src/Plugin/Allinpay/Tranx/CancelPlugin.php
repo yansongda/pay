@@ -1,0 +1,49 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Yansongda\Pay\Plugin\Allinpay\Tranx;
+
+use Closure;
+use Yansongda\Artful\Contract\PluginInterface;
+use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Artful\Logger;
+use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Exception\Exception;
+
+/**
+ * @see https://prodoc.allinpay.com/doc/314/ 通联交易撤销接口（/tranx/cancel），version 默认填 11
+ */
+class CancelPlugin implements PluginInterface
+{
+    /**
+     * @throws InvalidParamsException
+     */
+    public function assembly(Rocket $rocket, Closure $next): Rocket
+    {
+        Logger::info('[Allinpay][CancelPlugin] 插件开始装载', ['rocket' => $rocket]);
+
+        $params = $rocket->getParams();
+
+        if (empty($params['reqsn']) || empty($params['trxamt'])) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 通联撤销缺少必要参数 reqsn/trxamt');
+        }
+
+        if (empty($params['oldreqsn']) && empty($params['oldtrxid'])) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 通联撤销缺少必要参数 oldreqsn/oldtrxid 其一');
+        }
+
+        $rocket->mergePayload([
+            '_url' => '/tranx/cancel',
+            'reqsn' => $params['reqsn'],
+            'trxamt' => $params['trxamt'],
+            'oldreqsn' => $params['oldreqsn'] ?? null,
+            'oldtrxid' => $params['oldtrxid'] ?? null,
+            'version' => $params['version'] ?? '11',
+        ]);
+
+        Logger::info('[Allinpay][CancelPlugin] 插件装载完毕', ['rocket' => $rocket]);
+
+        return $next($rocket);
+    }
+}

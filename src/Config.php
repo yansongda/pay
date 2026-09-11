@@ -7,6 +7,7 @@ namespace Yansongda\Pay;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AirwallexConfig;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Config\AllinpayConfig;
 use Yansongda\Pay\Config\BestpayConfig;
 use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Config\JsbConfig;
@@ -32,6 +33,7 @@ class Config extends BaseConfig
         Pay::PROVIDER_DOUYIN,
         Pay::PROVIDER_PAYPAL,
         Pay::PROVIDER_STRIPE,
+        Pay::PROVIDER_ALLINPAY,
         Pay::PROVIDER_BESTPAY,
     ];
 
@@ -55,6 +57,7 @@ class Config extends BaseConfig
                         Pay::PROVIDER_DOUYIN => new DouyinConfig($config, $tenant),
                         Pay::PROVIDER_PAYPAL => new PaypalConfig($config, $tenant),
                         Pay::PROVIDER_STRIPE => new StripeConfig($config, $tenant),
+                        Pay::PROVIDER_ALLINPAY => new AllinpayConfig($config, $tenant),
                         Pay::PROVIDER_BESTPAY => new BestpayConfig($config, $tenant),
                     };
                 }

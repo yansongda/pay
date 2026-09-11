@@ -57,7 +57,9 @@ class Exception extends \Exception
 
     public const PARAMS_WECHAT_APPID_MISSING = 9231;
 
-    public const PARAMS_BESTPAY_PATH_MISSING = 9232;
+    public const PARAMS_ALLINPAY_URL_MISSING = 9232;
+
+    public const PARAMS_BESTPAY_PATH_MISSING = 9233;
 
     /**
      * 关于响应.
@@ -91,7 +93,9 @@ class Exception extends \Exception
 
     public const CONFIG_AIRWALLEX_INVALID = 9410;
 
-    public const CONFIG_BESTPAY_INVALID = 9411;
+    public const CONFIG_ALLINPAY_INVALID = 9411;
+
+    public const CONFIG_BESTPAY_INVALID = 9412;
 
     /**
      * 关于签名.
