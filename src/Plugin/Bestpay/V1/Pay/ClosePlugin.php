@@ -26,7 +26,6 @@ class ClosePlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_path' => '/pay/closeOrder',
-            '_method' => 'POST',
         ]);
 
         Logger::info('[Bestpay][V1][Pay][ClosePlugin] 插件装载完毕', ['rocket' => $rocket]);

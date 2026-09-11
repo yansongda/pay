@@ -121,6 +121,13 @@ class Bestpay implements ProviderInterface
         );
     }
 
+    /**
+     * 异步通知成功应答.
+     *
+     * 注意：应答格式 `{"resultCode":"SUCCESS","resultMsg":"OK"}` 以翼支付开发者文档
+     * `aggregatePayOrRefundNotify` 契约为准（失败应答 `{"resultCode":"FAILED","resultMsg":"FAILED"}`），
+     * 因官方文档需商户登录，建议沙箱联调时复核。
+     */
     public function success(): ResponseInterface
     {
         return new Response(

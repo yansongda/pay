@@ -65,8 +65,10 @@ class AddPayloadSignPlugin implements PluginInterface
 
         $envelope = [
             'path' => (string) $path,
-            'commonParams' => json_encode($commonParams, JSON_UNESCAPED_UNICODE),
-            'bizContent' => json_encode($bizContent, JSON_UNESCAPED_UNICODE),
+            // JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES 对齐官方 fastjson 默认序列化
+            // （非 ASCII 与 `/` 均不转义），避免含 URL 的字段被转义为 `\/` 影响签名一致性与服务端处理。
+            'commonParams' => json_encode($commonParams, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            'bizContent' => json_encode($bizContent, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
         ];
 
         $envelope['sign'] = self::signBestpayContent(

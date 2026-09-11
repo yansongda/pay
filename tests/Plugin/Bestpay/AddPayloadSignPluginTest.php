@@ -23,7 +23,7 @@ class AddPayloadSignPluginTest extends TestCase
         ]);
 
         $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
-        $rocket->mergePayload(['_path' => '/pay/tradeCreate', '_method' => 'POST']);
+        $rocket->mergePayload(['_path' => '/pay/tradeCreate']);
 
         $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
 
@@ -68,6 +68,28 @@ class AddPayloadSignPluginTest extends TestCase
         self::assertArrayNotHasKey('notifyUrl', $biz);
         // 空字符串保留（官方语义：签名拼为 k=，非 null）
         self::assertSame('', $biz['remark']);
+    }
+
+    public function testAssemblyBizContentDoesNotEscapeSlash(): void
+    {
+        // 对齐官方 fastjson 默认序列化：URL 中的 `/` 不转义为 `\/`（JSON_UNESCAPED_SLASHES）
+        $rocket = new Rocket();
+        $rocket->setParams([
+            'outTradeNo' => 'ORDER001',
+            'notifyUrl' => 'https://pay.yansongda.cn/bestpay/notify',
+            'subject' => '测试',
+        ]);
+
+        $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
+        $rocket->mergePayload(['_path' => '/pay/tradeCreate']);
+
+        $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
+
+        $bizContent = (string) $rocket->getPayload()->get('bizContent');
+
+        self::assertStringContainsString('"notifyUrl":"https://pay.yansongda.cn/bestpay/notify"', $bizContent);
+        self::assertStringNotContainsString('\\/', $bizContent);
+        self::assertStringContainsString('"subject":"测试"', $bizContent);
     }
 
     public function testAssemblyThrowsWhenPathMissing(): void

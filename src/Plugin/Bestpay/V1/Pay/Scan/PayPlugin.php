@@ -36,7 +36,6 @@ class PayPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_path' => '/aggregate/aggregatepay/offline/c2b/payOrder',
-            '_method' => 'POST',
             'notifyUrl' => $rocket->getPayload()?->get('notifyUrl') ?? $config->getNotifyUrl(),
         ]);
 

@@ -37,6 +37,36 @@ class VerifySignaturePluginTest extends TestCase
         self::assertTrue((bool) $result->getDestination()->get('success'));
     }
 
+    public function testValidResponseSignWithSlashAndUnicodeInNestedResult(): void
+    {
+        // 嵌套 result 含 URL（`/`）与中文：对齐官方 fastjson 序列化（`/` 与中文均不转义），
+        // 回归验证 JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE 拼串语义。
+        $body = [
+            'success' => true,
+            'errorCode' => null,
+            'errorMsg' => null,
+            'result' => [
+                'codeUrl' => 'https://qr.bestpay.com.cn/aggpay/1001',
+                'subject' => '测试订单',
+                'payUrl' => 'https://pay.bestpay.com.cn/mobile/pay?id=1001',
+            ],
+        ];
+        $body['sign'] = self::signBestpayContent($this->makeConfig(), self::getBestpaySignContent($body));
+
+        $rocket = new Rocket();
+        $rocket->setParams(['_config' => 'default']);
+        $rocket->setDirection(CollectionDirection::class);
+        $rocket->setDestination(new Collection($body));
+
+        $result = (new VerifySignaturePlugin())->assembly($rocket, fn ($r) => $r);
+
+        self::assertTrue((bool) $result->getDestination()->get('success'));
+        self::assertEquals(
+            'https://qr.bestpay.com.cn/aggpay/1001',
+            $result->getDestination()->get('result.codeUrl')
+        );
+    }
+
     public function testInvalidResponseSign(): void
     {
         $this->expectException(InvalidSignException::class);
@@ -66,6 +96,23 @@ class VerifySignaturePluginTest extends TestCase
 
         self::assertEquals(
             'errorCode=null&result={"a":2,"b":1}&success=true',
+            $content
+        );
+    }
+
+    public function testResponseSignContentNestedJsonSlashNotEscaped(): void
+    {
+        // fastjson 默认不转义 `/` 与中文；回归验证 JSON_UNESCAPED_SLASHES。
+        $content = self::getBestpaySignContent([
+            'result' => [
+                'codeUrl' => 'https://qr.bestpay.com.cn/aggpay/1001',
+                'subject' => '测试订单',
+            ],
+            'success' => true,
+        ]);
+
+        self::assertEquals(
+            'result={"codeUrl":"https://qr.bestpay.com.cn/aggpay/1001","subject":"测试订单"}&success=true',
             $content
         );
     }

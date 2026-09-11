@@ -36,7 +36,6 @@ class PayPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_path' => '/pay/tradeCreate',
-            '_method' => 'POST',
             'tradeChannel' => 'WEBCASHIER',
             'accessCode' => 'CASHIER',
             'ccy' => $rocket->getPayload()?->get('ccy') ?? '156',

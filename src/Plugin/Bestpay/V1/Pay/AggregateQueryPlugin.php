@@ -26,7 +26,6 @@ class AggregateQueryPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_path' => '/aggregate/aggregatepay/tradeQuery',
-            '_method' => 'POST',
         ]);
 
         Logger::info('[Bestpay][V1][Pay][AggregateQueryPlugin] 插件装载完毕', ['rocket' => $rocket]);

@@ -26,7 +26,6 @@ class RefundPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_path' => '/integrate/refund',
-            '_method' => 'POST',
         ]);
 
         Logger::info('[Bestpay][V1][Pay][RefundPlugin] 插件装载完毕', ['rocket' => $rocket]);

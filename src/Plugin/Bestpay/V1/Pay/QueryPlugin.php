@@ -26,7 +26,6 @@ class QueryPlugin implements PluginInterface
 
         $rocket->mergePayload([
             '_path' => '/integrate/orderQuery',
-            '_method' => 'POST',
         ]);
 
         Logger::info('[Bestpay][V1][Pay][QueryPlugin] 插件装载完毕', ['rocket' => $rocket]);
