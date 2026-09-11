@@ -23,7 +23,7 @@ use Yansongda\Supports\Collection;
 /**
  * 支付/退款结果异步通知验签（平台公钥）.
  *
- * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?apiPath=aggregatePayOrRefundNotify&productId=1008 翼支付官方文档（支付/退款结果通知）
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?productId=1008&apiPath=aggregatePayOrRefundNotify 翼支付官方文档（支付/退款结果通知）
  */
 class CallbackPlugin implements PluginInterface
 {

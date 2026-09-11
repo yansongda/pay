@@ -15,7 +15,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\BestpayTrait;
 
 /**
- * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?apiPath=/pay/tradeCreate&productId=1008 翼支付官方文档（接口详情）
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?productId=1008&apiPath=/pay/tradeCreate@@1.0@@0 翼支付官方文档（接口详情）
  */
 class PayPlugin implements PluginInterface
 {

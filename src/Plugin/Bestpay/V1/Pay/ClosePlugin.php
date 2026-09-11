@@ -12,7 +12,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
 /**
- * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?apiPath=/pay/closeOrder&productId=1008 翼支付官方文档（接口详情）
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?productId=1008&apiPath=/pay/closeOrder@@1.0@@0 翼支付官方文档（接口详情）
  */
 class ClosePlugin implements PluginInterface
 {

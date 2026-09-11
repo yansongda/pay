@@ -23,7 +23,7 @@ use Yansongda\Supports\Collection;
  * bizContent 过滤 null 值字段，对齐官方 Java SDK fastjson 默认不序列化 null 的行为.
  *
  * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/developGuide 翼支付官方文档（开发指南，签名/拼串对齐官方 Java SDK AssembleUtil）
- * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?apiPath=PublicParameters1007&productId=1008 翼支付官方文档（公共请求参数）
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?productId=1008&apiPath=PublicParameters1007 翼支付官方文档（公共请求参数）
  */
 class AddPayloadSignPlugin implements PluginInterface
 {

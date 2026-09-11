@@ -12,7 +12,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 
 /**
- * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?apiPath=/aggregate/aggregatepay/tradeQuery&productId=1006 翼支付官方文档（接口详情）
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?productId=1006&apiPath=/aggregate/aggregatepay/tradeQuery/Support 翼支付官方文档（接口详情）
  */
 class AggregateQueryPlugin implements PluginInterface
 {

@@ -14,7 +14,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Supports\Collection;
 
 /**
- * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?apiPath=PublicParameters1007&productId=1008 翼支付官方文档（公共请求/响应参数）
+ * @see https://render.bestpay.cn/open-developers/index.html#/documentCenterLayout/apiDetail?productId=1008&apiPath=PublicParameters1007 翼支付官方文档（公共请求/响应参数）
  */
 class ResponsePlugin implements PluginInterface
 {
