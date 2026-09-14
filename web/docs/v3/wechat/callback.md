@@ -11,6 +11,15 @@ Pay::config($this->config);
 
 // 是的，你没有看错，就是这么简单！
 $result = Pay::wechat()->callback();
+
+// 异步通知返回值相关参数
+$cipherText = $result['resource']['ciphertext'];
+// 只有交易通知状态为 TRANSACTION.SUCCESS 且 SUCCESS 时，微信才会认定为买家付款成功。
+if($result['event_type'] == 'TRANSACTION.SUCCESS' and $cipherText['trade_state'] == 'SUCCESS'){
+  // 您的业务逻辑
+  // do something...
+}
+// 商家订单号：$cipherText['out_trade_no']，用户付款金额：$cipherText['amount']['payer_total']
 ```
 
 ## 参数
