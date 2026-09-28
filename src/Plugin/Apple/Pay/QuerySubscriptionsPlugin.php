@@ -30,7 +30,7 @@ class QuerySubscriptionsPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Apple 查询订阅状态，缺少 transaction_id 参数');
         }
 
-        $statuses = $payload?->get('_status') ?? [1, 4];
+        $statuses = $payload->get('_status') ?? [1, 4];
         if (!is_array($statuses)) {
             $statuses = [$statuses];
         }
