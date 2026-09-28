@@ -305,6 +305,30 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mode' => Pay::MODE_NORMAL,
                 ],
             ],
+            'apple' => [
+                'default' => [
+                    'merchant_id' => 'merchant.com.yansongda.pay',
+                    'payment_processing_cert' => __DIR__.'/Cert/apple/merchant.pem',
+                    'apple_root_ca' => __DIR__.'/Cert/apple/token-root.crt',
+                    'issuer_id' => '69a6de87-test-issuer-id',
+                    'bundle_id' => 'com.yansongda.pay.test',
+                    'api_key_id' => 'X5D4K9J2Q1',
+                    'api_private_key' => __DIR__.'/Cert/apple/api.key',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+                'rsa' => [   // RSA_v1 测试租户（商户为 RSA 证书）
+                    'merchant_id' => 'merchant.com.yansongda.pay',
+                    'payment_processing_cert' => __DIR__.'/Cert/apple/merchant-rsa.pem',
+                    'apple_root_ca' => __DIR__.'/Cert/apple/token-root.crt',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+                'no_api_key' => [   // 仅验签解密租户（API 四字段未配置）
+                    'merchant_id' => 'merchant.com.yansongda.pay',
+                    'payment_processing_cert' => __DIR__.'/Cert/apple/merchant.pem',
+                    'apple_root_ca' => __DIR__.'/Cert/apple/token-root.crt',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
+            ],
         ];
 
         // hyperf 单测时，未在 hyperf 框架内，所以 sdk 没有 container, 手动设置一个
