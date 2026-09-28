@@ -79,4 +79,30 @@ class QueryShortcutTest extends TestCase
 
         $this->shortcut->getPlugins(['_action' => 'foo']);
     }
+    public function testQueryEndToEndWithHttpMock(): void
+    {
+        $http = \Mockery::mock(\GuzzleHttp\Client::class);
+        $captured = null;
+        $http->shouldReceive('sendRequest')->once()->with(\Mockery::on(function ($request) use (&$captured) {
+            $captured = $request;
+
+            return true;
+        }))->andReturn(new \GuzzleHttp\Psr7\Response(200, [], (string) json_encode(['signedTransactions' => [], 'revision' => '1'])));
+
+        \Yansongda\Pay\Pay::set(\Yansongda\Artful\Contract\HttpClientInterface::class, $http);
+
+        $result = \Yansongda\Pay\Pay::apple()->query([
+            'transaction_id' => '1000000047447934749',
+            '_action' => 'history',
+        ]);
+
+        self::assertSame('https://api.storekit-sandbox.apple.com/inApps/v2/history/1000000047447934749', (string) $captured->getUri());
+        self::assertStringStartsWith('Bearer ', $captured->getHeaderLine('Authorization'));
+        self::assertCount(3, explode('.', substr($captured->getHeaderLine('Authorization'), 7)));
+        self::assertInstanceOf(\Yansongda\Supports\Collection::class, $result);
+        self::assertSame('1', (string) $result->get('revision'));
+
+        \Mockery::close();
+    }
+
 }
