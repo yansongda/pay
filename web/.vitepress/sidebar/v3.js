@@ -27,6 +27,7 @@ export default [
       { text: '通联支付', link: '/docs/v3/quick-start/allinpay' },
       { text: 'Airwallex', link: '/docs/v3/quick-start/airwallex' },
       { text: '翼支付', link: '/docs/v3/quick-start/bestpay' },
+      { text: 'Apple', link: '/docs/v3/quick-start/apple' },
       { text: '返回格式', link: '/docs/v3/quick-start/return-format' }
     ]
   },
@@ -169,6 +170,18 @@ export default [
       { text: '接收回调', link: '/docs/v3/bestpay/callback' },
       { text: '确认回调', link: '/docs/v3/bestpay/response' },
       { text: '所有内置插件', link: '/docs/v3/bestpay/all' }
+    ]
+  },
+  {
+    text: 'Apple',
+    collapsed: true,
+    items: [
+      { text: '支付', link: '/docs/v3/apple/pay' },
+      { text: '查询', link: '/docs/v3/apple/query' },
+      { text: '退款', link: '/docs/v3/apple/refund' },
+      { text: '接收回调', link: '/docs/v3/apple/callback' },
+      { text: '确认回调', link: '/docs/v3/apple/response' },
+      { text: '所有内置插件', link: '/docs/v3/apple/all' }
     ]
   },
   {
