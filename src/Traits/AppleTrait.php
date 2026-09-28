@@ -66,7 +66,8 @@ trait AppleTrait
     /**
      * 本地验签解密 Apple Pay 支付令牌。
      *
-     * @param array<string, mixed> $params
+     * @param array<string, mixed>|Collection|string $token
+     * @param array<string, mixed>                   $params
      *
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -421,7 +422,7 @@ trait AppleTrait
     private static function encodeAsn1Oid(string $oid): string
     {
         $parts = array_map('intval', explode('.', $oid));
-        $first = array_shift($parts) ?? 0;
+        $first = array_shift($parts);
         $second = array_shift($parts) ?? 0;
         $der = chr($first * 40 + $second);
 
