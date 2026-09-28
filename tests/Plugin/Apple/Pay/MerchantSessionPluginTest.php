@@ -25,7 +25,10 @@ class MerchantSessionPluginTest extends TestCase
     {
         $url = 'https://apple-pay-gateway.apple.com/paymentservices/startSession';
 
-        $rocket = (new Rocket())->setParams(['validation_url' => $url]);
+        $rocket = (new Rocket())->setParams([
+            'validation_url' => $url,
+            'initiative_context' => 'https://shop.yansongda.cn',
+        ]);
 
         $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
         $payload = $result->getPayload();
@@ -39,7 +42,7 @@ class MerchantSessionPluginTest extends TestCase
             'merchantIdentifier' => 'merchant.com.yansongda.pay',
             'displayName' => 'merchant.com.yansongda.pay',
             'initiative' => 'web',
-            'initiativeContext' => '',
+            'initiativeContext' => 'https://shop.yansongda.cn',
         ], $body);
     }
 
@@ -64,11 +67,24 @@ class MerchantSessionPluginTest extends TestCase
     {
         $url = 'https://Apple-Pay-Gateway.APPLE.COM/paymentservices/startSession';
 
-        $rocket = (new Rocket())->setParams(['validation_url' => $url]);
+        $rocket = (new Rocket())->setParams([
+            'validation_url' => $url,
+            'initiative_context' => 'https://shop.yansongda.cn',
+        ]);
 
         $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
 
         self::assertEquals($url, $result->getPayload()->get('_url'));
+    }
+
+    public function testMissingInitiativeContextThrowsException(): void
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+
+        $rocket = (new Rocket())->setParams(['validation_url' => 'https://apple-pay-gateway.apple.com/paymentservices/startSession']);
+
+        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
     }
 
     public function testMissingValidationUrlThrowsException(): void

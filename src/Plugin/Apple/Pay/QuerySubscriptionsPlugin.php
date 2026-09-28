@@ -35,6 +35,13 @@ class QuerySubscriptionsPlugin implements PluginInterface
             $statuses = [$statuses];
         }
 
+        // 官方 status 枚举：1=active 2=expired 3=billing retry 4=billing grace period 5=revoked
+        foreach ($statuses as $status) {
+            if (!is_int($status) || $status < 1 || $status > 5) {
+                throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Apple 查询订阅状态，_status 仅允许 1-5 的整数');
+            }
+        }
+
         $statusQuery = '';
         foreach ($statuses as $status) {
             $statusQuery .= 'status='.$status.'&';

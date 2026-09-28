@@ -45,6 +45,12 @@ trait AppleTrait
     /** signingTime 允许的时钟偏差窗口（秒） */
     private const APPLE_SIGNING_TIME_WINDOW = 300;
 
+    /** PKCS#7 签名 DER 的最大长度（字节），真实 Apple token 约 3-4KB，超出直接拒绝 */
+    private const APPLE_PKCS7_MAX_LENGTH = 65536;
+
+    /** ASN.1 解析的最大嵌套深度（防恶意深嵌套 DER 导致递归栈溢出） */
+    private const APPLE_ASN1_MAX_DEPTH = 64;
+
     /**
      * @throws InvalidParamsException
      */
@@ -184,25 +190,21 @@ trait AppleTrait
     {
         /** @var AppleConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_APPLE, $params);
-        $rootCa = $config->getAppleRootCa();
 
-        if (empty($rootCa)) {
-            throw new InvalidConfigException(Exception::CONFIG_APPLE_INVALID, '配置异常: Apple JWS 验签需要配置 -- [apple_root_ca]');
-        }
+        $rootDer = self::certPemToDer(CertManager::getPublicCert($config->getAppleRootCa()));
 
-        $rootDer = self::certPemToDer(CertManager::getPublicCert($rootCa));
+        $payload = self::verifyAppleJwsNode($signedPayload, $rootDer);
 
-        $verified = self::verifyAppleJwsNode($signedPayload, $rootDer, null);
-        $payload = $verified['payload'];
+        // 归属校验：防「真实 Apple 签名但错误归属」的伪造通知（跨 App/跨环境）
+        self::assertAppleJwsOwnership($payload, $config);
 
         if (isset($payload['data']) && is_array($payload['data'])) {
             foreach (['signedTransactionInfo', 'signedRenewalInfo'] as $key) {
                 if (isset($payload['data'][$key])) {
                     $payload['data'][$key] = self::verifyAppleJwsNode(
                         (string) $payload['data'][$key],
-                        $rootDer,
-                        $verified['leafPem']
-                    )['payload'];
+                        $rootDer
+                    );
                 }
             }
         }
@@ -263,6 +265,61 @@ trait AppleTrait
     }
 
     /**
+     * 校验 JWS 解码数据的归属（bundleId/environment 与配置匹配），
+     * 对齐官方库（app-store-server-library）防跨 App/跨环境伪造。
+     *
+     * 通知（ResponseBodyV2）形态取 data/summary/externalPurchaseToken/appData 首个存在分支；
+     * 交易/续订（signedTransactionInfo/signedRenewalInfo）形态字段在顶层。
+     * 未配置 bundle_id 的租户（如仅验签解密租户）跳过 bundleId 校验，environment 始终校验。
+     *
+     * @param array<string, mixed> $payload
+     *
+     * @throws InvalidSignException
+     */
+    private static function assertAppleJwsOwnership(array $payload, AppleConfig $config): void
+    {
+        $branch = null;
+        $branchKey = '';
+
+        foreach (['data', 'summary', 'externalPurchaseToken', 'appData'] as $key) {
+            if (isset($payload[$key]) && is_array($payload[$key])) {
+                $branch = $payload[$key];
+                $branchKey = $key;
+
+                break;
+            }
+        }
+
+        if (null === $branch && isset($payload['bundleId'])) {
+            $branch = $payload;
+        }
+
+        if (null === $branch) {
+            // 无法识别的数据形态（如二级 JWS），签名验证已通过，不做归属校验
+            return;
+        }
+
+        $configuredBundleId = $config->getBundleId();
+
+        if (!empty($configuredBundleId)
+            && (string) ($branch['bundleId'] ?? '') !== $configuredBundleId
+        ) {
+            throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple 通知归属校验失败 -- [bundleId] 与配置不匹配');
+        }
+
+        $expected = Pay::MODE_SANDBOX === $config->getMode() ? 'Sandbox' : 'Production';
+
+        // externalPurchaseToken 分支无 environment 字段，按官方库从 externalPurchaseId 前缀推断
+        $environment = 'externalPurchaseToken' === $branchKey
+            ? (str_starts_with((string) ($branch['externalPurchaseId'] ?? ''), 'SANDBOX') ? 'Sandbox' : 'Production')
+            : (string) ($branch['environment'] ?? '');
+
+        if ('' === $environment || $environment !== $expected) {
+            throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple 通知归属校验失败 -- [environment] 与配置模式不匹配');
+        }
+    }
+
+    /**
      * 解析 ASN.1 DER 节点（PKCS#7 专用）。
      *
      * 返回节点的 tag、原始内容切片与子节点；子节点内容为原 DER 的完整切片，
@@ -270,8 +327,12 @@ trait AppleTrait
      *
      * @return array{tag: int, value: string, children: array<int, array{tag: int, value: string, children: array<int, mixed>}>}
      */
-    private static function parseAppleAsn1(string $der, int &$offset = 0): array
+    private static function parseAppleAsn1(string $der, int &$offset = 0, int $depth = 0): array
     {
+        if ($depth > self::APPLE_ASN1_MAX_DEPTH) {
+            throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple ASN.1 嵌套深度超限');
+        }
+
         $tag = ord($der[$offset++]);
         $lengthByte = ord($der[$offset++]);
         $length = $lengthByte;
@@ -295,7 +356,7 @@ trait AppleTrait
             $valueLength = strlen($value);
 
             while ($childOffset < $valueLength) {
-                $children[] = self::parseAppleAsn1($value, $childOffset);
+                $children[] = self::parseAppleAsn1($value, $childOffset, $depth + 1);
             }
         }
 
@@ -466,7 +527,7 @@ trait AppleTrait
     {
         $p7 = base64_decode($signature, true);
 
-        if (false === $p7 || '' === $p7) {
+        if (false === $p7 || '' === $p7 || self::APPLE_PKCS7_MAX_LENGTH < strlen($p7)) {
             throw new InvalidParamsException(Exception::PARAMS_APPLE_TOKEN_INVALID, '参数异常: Apple 支付令牌 `signature` 非法');
         }
 
@@ -546,19 +607,10 @@ trait AppleTrait
             throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple 支付令牌 PKCS#7 缺少证书');
         }
 
-        $rootCa = $config->getAppleRootCa();
+        $rootPem = CertManager::getPublicCert($config->getAppleRootCa());
 
-        if (empty($rootCa)) {
-            throw new InvalidConfigException(Exception::CONFIG_APPLE_INVALID, '配置异常: Apple 支付令牌验签需要配置 -- [apple_root_ca]');
-        }
-
-        $rootPem = CertManager::getPublicCert($rootCa);
-
-        $intermediateCa = $config->getAppleIntermediateCa();
-
-        if (!empty($intermediateCa)) {
-            $certs[] = CertManager::getPublicCert($intermediateCa);
-        }
+        // 中间证书兜底：PKCS#7 报文缺少 intermediate 时使用内置/配置的中间 CA
+        $certs[] = CertManager::getPublicCert($config->getAppleIntermediateCa());
 
         $leafPem = self::verifyAppleChain($certs, $rootPem, self::APPLE_TOKEN_INTERMEDIATE_OID, self::APPLE_TOKEN_LEAF_OID);
 
@@ -692,10 +744,12 @@ trait AppleTrait
             $extensions = $info['extensions'] ?? [];
 
             if (null === $leafPem && isset($extensions[$leafOid])) {
+                self::assertAppleCertNotExpired($info, 'leaf');
                 $leafPem = $pem;
             }
 
             if (null === $intermediatePem && isset($extensions[$intermediateOid])) {
+                self::assertAppleCertNotExpired($info, 'intermediate');
                 $intermediatePem = $pem;
             }
         }
@@ -708,6 +762,12 @@ trait AppleTrait
             throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple 证书链缺少 intermediate 证书（可配置 -- [apple_intermediate_ca] 兜底）');
         }
 
+        $rootInfo = openssl_x509_parse($rootPem);
+
+        if (false !== $rootInfo) {
+            self::assertAppleCertNotExpired($rootInfo, 'root');
+        }
+
         if (1 !== openssl_x509_verify($leafPem, $intermediatePem)) {
             throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple 证书链验证失败（leaf ← intermediate）');
         }
@@ -717,6 +777,23 @@ trait AppleTrait
         }
 
         return $leafPem;
+    }
+
+    /**
+     * 校验证书有效期（对齐官方库 ChainVerifier 的时间窗口检查）。
+     *
+     * @param array<string, mixed> $certInfo openssl_x509_parse 的解析结果
+     *
+     * @throws InvalidSignException
+     */
+    private static function assertAppleCertNotExpired(array $certInfo, string $role): void
+    {
+        $now = time();
+
+        if (!isset($certInfo['validFrom_time_t'], $certInfo['validTo_time_t'])
+            || $now < (int) $certInfo['validFrom_time_t'] || $now > (int) $certInfo['validTo_time_t']) {
+            throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple '.$role.' 证书不在有效期内');
+        }
     }
 
     /**
@@ -742,7 +819,7 @@ trait AppleTrait
         // SHA256(0x00 0x00 0x00 0x01 || Z || 0x0D || "id-aes256-GCM" || "Apple" || SHA256(merchantId))
         return hash(
             'sha256',
-            "\x00\x00\x00\x01".$sharedSecret.chr(0x0D).'id-aes256-GCMApple'.hash('sha256', trim($merchantId), true),
+            "\x00\x00\x00\x01".$sharedSecret.chr(0x0D).'id-aes256-GCMApple'.hash('sha256', $merchantId, true),
             true
         );
     }
@@ -812,13 +889,13 @@ trait AppleTrait
     }
 
     /**
-     * 验证单节点 JWS：x5c 全链验证（末位须与配置 root 一致）；无 x5c 时回退已信任 leaf 公钥。
+     * 验证单节点 JWS：x5c 全链验证（末位须与配置 root 一致），每个 JWS 均独立全链验证。
      *
-     * @return array{leafPem: string, payload: array<string, mixed>}
+     * @return array<string, mixed>
      *
      * @throws InvalidSignException
      */
-    private static function verifyAppleJwsNode(string $signedPayload, string $rootDer, ?string $fallbackLeafPem): array
+    private static function verifyAppleJwsNode(string $signedPayload, string $rootDer): array
     {
         $parts = explode('.', $signedPayload);
 
@@ -838,7 +915,6 @@ trait AppleTrait
             throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple JWS 签名算法非法');
         }
 
-        $leafPem = null;
         $x5c = $header['x5c'] ?? null;
 
         if (is_array($x5c)) {
@@ -875,30 +951,35 @@ trait AppleTrait
                 $chainPems[] = self::pemWrap($certDer, 'CERTIFICATE');
             }
 
+            $chainInfos = [];
+
+            foreach ($chainPems as $chainPem) {
+                $chainInfo = openssl_x509_parse($chainPem);
+
+                if (false === $chainInfo) {
+                    throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple JWS 证书链非法');
+                }
+
+                self::assertAppleCertNotExpired($chainInfo, 'JWS x5c');
+                $chainInfos[] = $chainInfo;
+            }
+
             for ($i = 0; $i < count($chainPems) - 1; ++$i) {
                 if (1 !== openssl_x509_verify($chainPems[$i], $chainPems[$i + 1])) {
                     throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple JWS 证书链验证失败');
                 }
             }
 
-            $leafInfo = openssl_x509_parse($chainPems[0]);
-            $intermediateInfo = openssl_x509_parse($chainPems[1]);
-
-            if (false === $leafInfo || false === $intermediateInfo
-                || !isset($leafInfo['extensions'][self::APPLE_JWS_LEAF_OID])
-                || !isset($intermediateInfo['extensions'][self::APPLE_JWS_INTERMEDIATE_OID])
+            if (!isset($chainInfos[0]['extensions'][self::APPLE_JWS_LEAF_OID])
+                || !isset($chainInfos[1]['extensions'][self::APPLE_JWS_INTERMEDIATE_OID])
             ) {
                 throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple JWS 证书 OID 不匹配');
             }
 
             $leafPem = $chainPems[0];
         } else {
-            // 二级 JWS（signedTransactionInfo/signedRenewalInfo）通常无 x5c：使用已信任 leaf 公钥
-            if (null === $fallbackLeafPem) {
-                throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple JWS 缺少证书链');
-            }
-
-            $leafPem = $fallbackLeafPem;
+            // 对齐官方库（app-store-server-library）：每个 JWS 均须自带 x5c 证书链，独立全链验证
+            throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple JWS 缺少证书链');
         }
 
         $leafPublicKey = openssl_pkey_get_public($leafPem);
@@ -915,7 +996,7 @@ trait AppleTrait
             throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple JWS payload 非法');
         }
 
-        return ['leafPem' => $leafPem, 'payload' => $payload];
+        return $payload;
     }
 
     /**

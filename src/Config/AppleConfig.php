@@ -10,6 +10,12 @@ use Yansongda\Pay\Pay;
 
 class AppleConfig extends AbstractConfig
 {
+    /** 未配置 apple_root_ca 时的内置信任锚（可配置覆盖） */
+    private const DEFAULT_ROOT_CA = __DIR__.'/../Certificate/AppleRootCA-G3.pem';
+
+    /** 未配置 apple_intermediate_ca 时的内置中间证书（仅作 PKCS#7 报文缺少 intermediate 时的兜底） */
+    private const DEFAULT_INTERMEDIATE_CA = __DIR__.'/../Certificate/AppleAAICAG3.pem';
+
     private string $merchantId = '';
     private string $paymentProcessingCert = '';
     private ?string $paymentProcessingCertPassphrase = null;
@@ -92,14 +98,14 @@ class AppleConfig extends AbstractConfig
         return $this->paymentProcessingCertPassphrase;
     }
 
-    public function getAppleRootCa(): ?string
+    public function getAppleRootCa(): string
     {
-        return $this->appleRootCa;
+        return $this->appleRootCa ?? self::DEFAULT_ROOT_CA;
     }
 
-    public function getAppleIntermediateCa(): ?string
+    public function getAppleIntermediateCa(): string
     {
-        return $this->appleIntermediateCa;
+        return $this->appleIntermediateCa ?? self::DEFAULT_INTERMEDIATE_CA;
     }
 
     public function getIssuerId(): ?string

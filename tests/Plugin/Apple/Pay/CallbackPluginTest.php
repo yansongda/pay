@@ -29,7 +29,7 @@ class CallbackPluginTest extends TestCase
 
     public function testCallbackSuccess()
     {
-        $signedTransactionInfo = self::makeInnerJws([
+        $signedTransactionInfo = AppleJwsFactory::makeJws([
             'transactionId' => '1000001234567890',
             'originalTransactionId' => '1000001234567890',
             'bundleId' => 'com.yansongda.pay.test',
@@ -117,15 +117,41 @@ class CallbackPluginTest extends TestCase
 
     public function testTamperedNestedJwsThrowsException()
     {
-        $inner = self::makeInnerJws(['transactionId' => '1000001234567890']);
+        $inner = AppleJwsFactory::makeJws(['transactionId' => '1000001234567890']);
         $payload = [
             'notificationType' => 'SUBSCRIBED',
             'data' => [
+                'bundleId' => 'com.yansongda.pay.test',
+                'environment' => 'Sandbox',
                 'signedTransactionInfo' => $inner,
             ],
         ];
         $payload['data']['signedTransactionInfo'] = self::tamperJwsPayload($inner, ['transactionId' => 'EVIL']);
         $jws = AppleJwsFactory::makeJws($payload);
+
+        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/apple/notify', [], json_encode(['signedPayload' => $jws]));
+
+        $rocket = new Rocket();
+        $rocket->setParams(['_request' => $request, '_params' => []]);
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testInnerJwsWithoutX5cRejected()
+    {
+        // 对齐官方库：二级 JWS 须自带 x5c，无 x5c 一律拒绝
+        $inner = self::makeInnerJws(['transactionId' => '1000001234567890']);
+        $jws = AppleJwsFactory::makeJws([
+            'notificationType' => 'SUBSCRIBED',
+            'data' => [
+                'bundleId' => 'com.yansongda.pay.test',
+                'environment' => 'Sandbox',
+                'signedTransactionInfo' => $inner,
+            ],
+        ]);
 
         $request = new ServerRequest('POST', 'https://pay.yansongda.cn/apple/notify', [], json_encode(['signedPayload' => $jws]));
 
@@ -160,7 +186,7 @@ class CallbackPluginTest extends TestCase
             'data' => [
                 'bundleId' => 'com.yansongda.pay.test',
                 'environment' => 'Sandbox',
-                'signedTransactionInfo' => self::makeInnerJws([
+                'signedTransactionInfo' => AppleJwsFactory::makeJws([
                     'transactionId' => '1000001234567890',
                     'originalTransactionId' => '1000001234567890',
                     'bundleId' => 'com.yansongda.pay.test',
@@ -189,7 +215,8 @@ class CallbackPluginTest extends TestCase
     }
 
     /**
-     * 构造二级 JWS（signedTransactionInfo/signedRenewalInfo）：无 x5c，使用已信任 leaf 公钥验签。
+     * 构造无 x5c 的二级 JWS（signedTransactionInfo/signedRenewalInfo）——反路径专用：
+     * 对齐官方库后，二级 JWS 须自带 x5c，此形态应被拒绝。
      *
      * @param array<string, mixed> $payload
      */

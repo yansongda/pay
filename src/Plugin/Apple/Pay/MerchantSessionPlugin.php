@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Plugin\Apple\Pay;
 
 use Closure;
+use JsonException;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -56,16 +57,29 @@ class MerchantSessionPlugin implements PluginInterface
         /** @var AppleConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_APPLE, $params);
 
+        // 官方要求 initiativeContext 必填（Apple Pay 网页注册的商户域名），缺失时 Apple 网关必拒绝
+        $initiativeContext = $params['initiative_context'] ?? '';
+
+        if ('' === $initiativeContext) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Apple merchant session 缺 initiative_context 参数（Apple Pay 网页注册的商户域名）');
+        }
+
+        try {
+            $body = json_encode([
+                'merchantIdentifier' => $config->getMerchantId(),
+                'displayName' => $params['display_name'] ?? $config->getMerchantId(),
+                'initiative' => 'web',
+                'initiativeContext' => $initiativeContext,
+            ], JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Apple merchant session 请求体构造失败');
+        }
+
         $rocket->mergePayload([
             '_method' => 'POST',
             '_url' => $url,
             '_no_jwt' => true,
-            '_body' => json_encode([
-                'merchantIdentifier' => $config->getMerchantId(),
-                'displayName' => $params['display_name'] ?? $config->getMerchantId(),
-                'initiative' => 'web',
-                'initiativeContext' => $params['initiative_context'] ?? '',
-            ]),
+            '_body' => $body,
         ]);
 
         Logger::info('[Apple][Pay][MerchantSessionPlugin] 插件装载完毕', ['rocket' => $rocket]);

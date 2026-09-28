@@ -328,6 +328,11 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'apple_root_ca' => __DIR__.'/Cert/apple/token-root.crt',
                     'mode' => Pay::MODE_SANDBOX,
                 ],
+                'no_root_ca' => [   // 不配置 apple_root_ca（验证内置证书默认生效）
+                    'merchant_id' => 'merchant.com.yansongda.pay',
+                    'payment_processing_cert' => __DIR__.'/Cert/apple/merchant.pem',
+                    'mode' => Pay::MODE_SANDBOX,
+                ],
             ],
         ];
 

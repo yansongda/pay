@@ -17,6 +17,10 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\AppleTrait;
 use Yansongda\Supports\Collection;
 
+use function Yansongda\Artful\filter_params;
+use function Yansongda\Artful\get_radar_headers;
+use function Yansongda\Artful\get_radar_method;
+
 class AddRadarPlugin implements PluginInterface
 {
     use AppleTrait;
@@ -37,7 +41,7 @@ class AddRadarPlugin implements PluginInterface
         $config = self::getProviderConfig(Pay::PROVIDER_APPLE, $params);
 
         $rocket->setRadar(new Request(
-            (string) ($payload?->get('_method') ?? 'POST'),
+            get_radar_method($payload) ?? 'POST',
             self::getAppleUrl($config, $payload).$this->getQueryString($payload),
             $this->getHeaders($payload, $params),
             (string) ($payload?->get('_body') ?? ''),
@@ -65,7 +69,7 @@ class AddRadarPlugin implements PluginInterface
         }
 
         // 支持通过 `_headers` 注入自定义请求头（如 `Idempotency-Key`），可覆盖默认值
-        $customHeaders = $payload?->get('_headers');
+        $customHeaders = get_radar_headers($payload);
 
         if (is_array($customHeaders)) {
             $headers = array_merge($headers, $customHeaders);
@@ -85,7 +89,7 @@ class AddRadarPlugin implements PluginInterface
             return '';
         }
 
-        $queryString = http_build_query($query);
+        $queryString = http_build_query(filter_params($query)->toArray());
 
         if (str_contains((string) $payload->get('_url'), '?')) {
             return '&'.$queryString;

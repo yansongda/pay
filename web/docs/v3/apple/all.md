@@ -12,7 +12,7 @@ $params = [
     '_action' => 'history',
 ];
 
-$allPlugins = [\Yansongda\Pay\Plugin\StartPlugin::class, \Yansongda\Pay\Plugin\Apple\Pay\QueryHistoryPlugin::class, \Yansongda\Pay\Plugin\Apple\AddRadarPlugin::class, \Yansongda\Pay\Plugin\Apple\ResponsePlugin::class, \Yansongda\Pay\Plugin\ParserPlugin::class];
+$allPlugins = [\Yansongda\Artful\Plugin\StartPlugin::class, \Yansongda\Pay\Plugin\Apple\Pay\QueryHistoryPlugin::class, \Yansongda\Pay\Plugin\Apple\AddRadarPlugin::class, \Yansongda\Pay\Plugin\Apple\ResponsePlugin::class, \Yansongda\Artful\Plugin\ParserPlugin::class];
 
 $result = Pay::apple()->pay($allPlugins, $params);
 ```

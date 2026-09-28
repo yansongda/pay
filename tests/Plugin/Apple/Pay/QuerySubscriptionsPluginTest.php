@@ -89,6 +89,28 @@ class QuerySubscriptionsPluginTest extends TestCase
         self::assertEquals('keep_me', $payload->get('other'));
     }
 
+    public function testInvalidStatusThrowsException()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [0]]));
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testNonIntStatusThrowsException()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => ['abc']]));
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
     public function testMissingTransactionId()
     {
         self::expectException(InvalidParamsException::class);

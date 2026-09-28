@@ -163,4 +163,25 @@ class AddRadarPluginTest extends TestCase
             (string) $radar->getUri()
         );
     }
+
+    public function testQueryFiltersNullValues(): void
+    {
+        // filter_params 对齐 Stripe：null 值不进入最终 query string
+        $payload = new Collection([
+            '_method' => 'GET',
+            '_url' => '/inApps/v2/history/123',
+            '_query' => ['revision' => 'abc', 'startDate' => null, 'endDate' => null],
+            '_no_jwt' => true,
+        ]);
+
+        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+
+        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+        $radar = $result->getRadar();
+
+        self::assertEquals(
+            'https://api.storekit-sandbox.apple.com/inApps/v2/history/123?revision=abc',
+            (string) $radar->getUri()
+        );
+    }
 }

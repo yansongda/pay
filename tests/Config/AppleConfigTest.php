@@ -51,6 +51,24 @@ class AppleConfigTest extends TestCase
         self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
     }
 
+    public function testDefaultAppleRootCaAndIntermediateCa(): void
+    {
+        // 未配置时回退内置证书（BUG 修复：文档宣称的「默认内置」此前为死代码）
+        $config = new AppleConfig($this->validConfig);
+
+        $rootCa = $config->getAppleRootCa();
+
+        self::assertSame(realpath(dirname(__DIR__, 2).'/src/Certificate/AppleRootCA-G3.pem'), realpath($rootCa));
+        self::assertFileExists($rootCa);
+        self::assertNotFalse(openssl_x509_parse((string) file_get_contents($rootCa)));
+
+        $intermediateCa = $config->getAppleIntermediateCa();
+
+        self::assertSame(realpath(dirname(__DIR__, 2).'/src/Certificate/AppleAAICAG3.pem'), realpath($intermediateCa));
+        self::assertFileExists($intermediateCa);
+        self::assertNotFalse(openssl_x509_parse((string) file_get_contents($intermediateCa)));
+    }
+
     public function testConstructMissingMerchantId(): void
     {
         $this->expectException(InvalidConfigException::class);
@@ -96,8 +114,9 @@ class AppleConfigTest extends TestCase
         self::assertNull($config->getApiKeyId());
         self::assertNull($config->getApiPrivateKey());
         self::assertNull($config->getNotifyUrl());
-        self::assertNull($config->getAppleRootCa());
-        self::assertNull($config->getAppleIntermediateCa());
+        // 未配置时回退内置证书（不再返回 null）
+        self::assertFileExists($config->getAppleRootCa());
+        self::assertFileExists($config->getAppleIntermediateCa());
         self::assertSame(Pay::MODE_NORMAL, $config->getMode());
 
         $config->validate();

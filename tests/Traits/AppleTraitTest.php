@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Traits;
 
 use PHPUnit\Framework\Attributes\RequiresPhp;
+use ReflectionMethod;
 use RuntimeException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -185,6 +186,76 @@ class AppleTraitTest extends TestCase
         );
     }
 
+    public function testVerifyAppleTokenWithDefaultRootCa(): void
+    {
+        // 未配置 apple_root_ca：默认使用内置 AppleRootCA-G3.pem 参与链验证，
+        // fixture 的 token-root 不在内置信任链内 → 验签失败（而非配置缺失异常）
+        $token = AppleTokenFactory::makeToken(self::PAYMENT_DATA);
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        AppleTraitStub::verifyAppleToken($token, ['_config' => 'no_root_ca']);
+    }
+
+    public function testVerifyAppleTokenAsn1DepthExceeded(): void
+    {
+        $token = AppleTokenFactory::makeToken(self::PAYMENT_DATA);
+
+        // 70 层嵌套 SEQUENCE（超过 64 层上限），防恶意深嵌套 DER 栈溢出
+        $der = "\x41";
+
+        for ($i = 0; $i < 70; ++$i) {
+            $len = strlen($der);
+            $lenBytes = $len < 0x80 ? chr($len) : chr(0x81).chr($len);
+            $der = "\x30".$lenBytes.$der;
+        }
+
+        $token['signature'] = base64_encode($der);
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        AppleTraitStub::verifyAppleToken($token, []);
+    }
+
+    public function testVerifyAppleTokenSignatureTooLong(): void
+    {
+        $token = AppleTokenFactory::makeToken(self::PAYMENT_DATA);
+
+        // 超过 64KB 上限（真实 Apple token 约 3-4KB）
+        $token['signature'] = base64_encode(str_repeat("\x30", 65537));
+
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
+
+        AppleTraitStub::verifyAppleToken($token, []);
+    }
+
+    public function testAssertAppleCertNotExpired(): void
+    {
+        $method = new ReflectionMethod(AppleTraitStub::class, 'assertAppleCertNotExpired');
+
+        // 有效期内：不抛异常
+        $method->invoke(null, ['validFrom_time_t' => time() - 100, 'validTo_time_t' => time() + 100], 'leaf');
+
+        // 已过期
+        try {
+            $method->invoke(null, ['validFrom_time_t' => time() - 200, 'validTo_time_t' => time() - 100], 'leaf');
+            self::fail('期望抛出 InvalidSignException');
+        } catch (InvalidSignException $e) {
+            self::assertSame(Exception::SIGN_ERROR, $e->getCode());
+        }
+
+        // 尚未生效
+        try {
+            $method->invoke(null, ['validFrom_time_t' => time() + 100, 'validTo_time_t' => time() + 200], 'leaf');
+            self::fail('期望抛出 InvalidSignException');
+        } catch (InvalidSignException $e) {
+            self::assertSame(Exception::SIGN_ERROR, $e->getCode());
+        }
+    }
+
     public function testVerifyAppleJws(): void
     {
         $signedTransactionInfo = AppleJwsFactory::makeJws([
@@ -240,6 +311,75 @@ class AppleTraitTest extends TestCase
         self::expectExceptionCode(Exception::SIGN_ERROR);
 
         AppleTraitStub::verifyAppleJws($shortChain, []);
+    }
+
+    public function testVerifyAppleJwsOwnershipBundleMismatch(): void
+    {
+        // 归属校验：真实签名但 bundleId 与配置不匹配（防跨 App 伪造）
+        $jws = AppleJwsFactory::makeJws([
+            'notificationType' => 'SUBSCRIBED',
+            'data' => [
+                'bundleId' => 'com.evil.app',
+                'environment' => 'Sandbox',
+            ],
+        ]);
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        AppleTraitStub::verifyAppleJws($jws, []);
+    }
+
+    public function testVerifyAppleJwsOwnershipEnvironmentMismatch(): void
+    {
+        // 归属校验：environment 与配置模式不匹配（防沙盒/生产串扰）
+        $jws = AppleJwsFactory::makeJws([
+            'notificationType' => 'SUBSCRIBED',
+            'data' => [
+                'bundleId' => 'com.yansongda.pay.test',
+                'environment' => 'Production',  // default 租户 mode 为 MODE_SANDBOX
+            ],
+        ]);
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        AppleTraitStub::verifyAppleJws($jws, []);
+    }
+
+    public function testVerifyAppleJwsOwnershipSkipsBundleIdWithoutConfig(): void
+    {
+        // no_api_key 租户未配置 bundle_id：跳过 bundleId 校验，environment 仍须匹配
+        $jws = AppleJwsFactory::makeJws([
+            'notificationType' => 'SUBSCRIBED',
+            'data' => [
+                'bundleId' => 'com.any-other.app',
+                'environment' => 'Sandbox',
+            ],
+        ]);
+
+        $result = AppleTraitStub::verifyAppleJws($jws, ['_config' => 'no_api_key']);
+
+        self::assertSame('SUBSCRIBED', $result['notificationType']);
+    }
+
+    public function testVerifyAppleJwsInnerJwsWithoutX5cRejected(): void
+    {
+        // 对齐官方库：二级 JWS 也须自带 x5c，无 x5c 一律拒绝（原「回退已信任 leaf 公钥」已移除）
+        $inner = self::signWithJwsLeaf(['alg' => 'ES256'], ['transactionId' => '1000001234567890']);
+        $jws = AppleJwsFactory::makeJws([
+            'notificationType' => 'SUBSCRIBED',
+            'data' => [
+                'bundleId' => 'com.yansongda.pay.test',
+                'environment' => 'Sandbox',
+                'signedTransactionInfo' => $inner,
+            ],
+        ]);
+
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+
+        AppleTraitStub::verifyAppleJws($jws, []);
     }
 
     public function testGenerateAppleJwt(): void

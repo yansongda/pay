@@ -53,8 +53,8 @@ Pay::config($this->config);
 
 $result = Pay::apple()->merchantSession([
     'validation_url' => $url, // 前端 onvalidatemerchant 事件获取的一次性 URL（5 分钟过期）
+    'initiative_context' => 'shop.yansongda.cn', // 必填：Apple Pay 网页注册的商户域名
     'display_name' => '示例商户', // 选填
-    'initiative_context' => '', // 选填
     '_http' => [
         'cert' => ['/path/to/cert.pem', 'passphrase'], // TLS 双向认证证书透传
     ],
