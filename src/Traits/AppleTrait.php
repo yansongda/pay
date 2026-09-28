@@ -118,6 +118,15 @@ trait AppleTrait
         if ('EC_v1' === $token['version']) {
             $signingKeyName = 'ephemeralPublicKey';
         } elseif ('RSA_v1' === $token['version']) {
+            // RSA_v1 解包依赖 openssl_private_decrypt 的 digest_algo（PHP 8.5 新增，8.2–8.4 硬编码 OAEP SHA-1），
+            // 无法解密的版本在此直接拒绝，避免白做 PKCS#7 验签与证书解析
+            if (PHP_VERSION_ID < 80500) {
+                throw new InvalidConfigException(
+                    Exception::DECRYPT_APPLE_FAILED,
+                    '解密异常: Apple RSA_v1 令牌解密需要 PHP >= 8.5（OAEP-SHA256 参数限制），EC_v1 无此要求'
+                );
+            }
+
             $signingKeyName = 'wrappedKey';
         } else {
             throw new InvalidParamsException(Exception::PARAMS_APPLE_TOKEN_INVALID, '参数异常: Apple 支付令牌 `version` 非法');
@@ -776,8 +785,11 @@ trait AppleTrait
                 throw new InvalidConfigException(Exception::DECRYPT_APPLE_FAILED, '解密异常: Apple 支付令牌 `header.wrappedKey` 非法');
             }
 
-            // PHP 8.5 起 digest_algo 为第 5 位置参数（8.2–8.4 硬编码 OAEP SHA-1，故版本检查在入口）
-            if (!openssl_private_decrypt($wrappedKey, $symmetricKey, $merchantPrivateKey, OPENSSL_PKCS1_OAEP_PADDING, 'sha256')) {
+            // PHP 8.5 起 digest_algo 为第 5 位置参数（版本检查见 verifyAppleToken 入口）
+            /** @var array<int, int|string> $oaepOptions 展开传入以规避 PHPStan 在 < 8.5 存根下的 arguments.count 误报 */
+            $oaepOptions = [OPENSSL_PKCS1_OAEP_PADDING, 'sha256'];
+
+            if (!openssl_private_decrypt($wrappedKey, $symmetricKey, $merchantPrivateKey, ...$oaepOptions)) {
                 throw new InvalidConfigException(Exception::DECRYPT_APPLE_FAILED, '解密异常: Apple 支付令牌 RSA-OAEP 解包失败');
             }
 

@@ -330,8 +330,18 @@ class AppleTraitTest extends TestCase
             self::markTestSkipped('PHP 8.5 容器无法覆盖 RSA_v1 的 PHP < 8.5 版本检查分支（见 evidence）');
         }
 
-        // PHP < 8.5 环境：openssl_private_decrypt 无 digest_algo 参数，Trait 应在解密入口拒绝
-        $token = ['data' => 'x', 'header' => ['wrappedKey' => 'x', 'publicKeyHash' => 'x', 'transactionId' => '00'], 'signature' => 'x', 'version' => 'RSA_v1'];
+        // PHP < 8.5 环境：openssl_private_decrypt 无 digest_algo 参数，Trait 应在入口（版本解析）拒绝，
+        // 早于结构/签名/证书校验；故此处只需结构合法的最小令牌（字段非 base64 会被前置校验提前拦下）
+        $token = [
+            'data' => base64_encode(str_repeat('A', 32)),
+            'header' => [
+                'wrappedKey' => base64_encode(str_repeat('B', 256)),
+                'publicKeyHash' => base64_encode(str_repeat('C', 32)),
+                'transactionId' => '00',
+            ],
+            'signature' => base64_encode(str_repeat('D', 64)),
+            'version' => 'RSA_v1',
+        ];
 
         self::expectException(InvalidConfigException::class);
         self::expectExceptionCode(Exception::DECRYPT_APPLE_FAILED);
