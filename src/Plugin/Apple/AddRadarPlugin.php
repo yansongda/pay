@@ -87,7 +87,7 @@ class AddRadarPlugin implements PluginInterface
 
         $queryString = http_build_query($query);
 
-        if (str_contains((string) $payload?->get('_url'), '?')) {
+        if (str_contains((string) $payload->get('_url'), '?')) {
             return '&'.$queryString;
         }
 
