@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Apple（苹果支付）Provider 全新接入（#597）：
+  - `Pay::apple()` 快捷入口：`payToken`（支付令牌本地验签解密：PKCS#7 证书链 + ECDH + AES-256-GCM，零新增依赖）、`merchantSession`（Apple Pay 网页商户验证代理，TLS 双向认证经 `_http` 透传）、`query`（`_action`：transaction/history/subscriptions）、`refund`（退款历史查询——Apple 无服务端主动退款）、`callback`（App Store Server Notifications V2 JWS x5c 验签 + 内嵌交易 JWS 二级解码）；`cancel`/`close` 无对等接口，调用时抛出异常
+  - App Store Server API 认证：App Store Connect ES256 JWT（`issuer_id`/`bundle_id`/`api_key_id`/`api_private_key`）
+  - 内置 Apple 公开证书（`src/Certificate/AppleRootCA-G3.pem`、`AppleAAICAG3.pem`），未配置时默认生效，支持 `apple_root_ca`/`apple_intermediate_ca` 覆盖
+  - 回调验签含归属校验（bundleId/environment 与配置匹配，对齐 Apple 官方库）与证书有效期检查；`merchantSession` 的 `initiative_context` 必填校验；订阅查询 `_status` 白名单（1-5）
+  - RSA_v1 令牌解密需 PHP ≥ 8.5（OAEP-SHA256 参数限制；EC_v1 无版本要求）
+  - 异常码：`PARAMS_APPLE_URL_MISSING`（9234）、`PARAMS_APPLE_TOKEN_INVALID`（9235）、`CONFIG_APPLE_INVALID`（9413）、`DECRYPT_APPLE_FAILED`（9612）
+  - 文档：`web/docs/v3/apple/` 提供支付/查询/退款/回调/应答/插件页面，侧边栏已挂载
+
 ## [v3.8.0-beta.6] - 2026-09-11
 
 ### Added
