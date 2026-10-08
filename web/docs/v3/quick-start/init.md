@@ -37,6 +37,9 @@ $config = [
     ],
     'wechat' => [
         'default' => [
+            // 注意：若仅使用「微信小程序虚拟支付」（已同时配置下方 virtual_pay.app_key 与 virtual_pay.app_secret），
+            // 则 mch_id / mch_secret_key / mch_secret_cert / mch_public_cert_path 可全部留空；
+            // 一旦配置了其中任意一项，则以下多项仍需完整填写（不会放行漏配）
             // 「必填」商户号，服务商模式下为服务商商户号
             // 可在 https://pay.weixin.qq.com/ 账户中心->商户信息 查看
             'mch_id' => '',
@@ -81,6 +84,7 @@ $config = [
                 'sandbox_app_key' => 'your_sandbox_app_key',
                 // 「选填」服务端 API 自动获取 access_token 用
                 // 配置后启用自动获取（stable_token 接口）；仅用客户端签名可不配置
+                // 但注意：只有同时配置 app_key 与 app_secret 时，上方微信支付 mch_* 凭据才允许留空
                 'app_secret' => 'your_app_secret',
                 // 「必填」回调验签 Token
                 'callback_token' => 'your_callback_token',
