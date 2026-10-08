@@ -4,11 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v3.8.0-beta.7] - 2026-10-08
 
 ### Fixed
 
-- 修复仅使用微信小程序虚拟支付时必须配置微信支付商户凭据的问题：同时配置 `virtual_pay.app_key` 与 `virtual_pay.app_secret` 后，`mch_id`、`mch_secret_key`、`mch_secret_cert`、`mch_public_cert_path` 可全部留空；配置了其中任意一项时仍保持完整校验，不会放行漏配（#1218）
+- 修复仅使用微信小程序虚拟支付时必须配置微信支付商户凭据的问题：同时配置 `virtual_pay.app_key` 与 `virtual_pay.app_secret` 后，`mch_id`、`mch_secret_key`、`mch_secret_cert`、`mch_public_cert_path` 可全部留空；配置了其中任意一项时仍保持完整校验，不会放行漏配（#1218、#1219）
 
 ## [v3.8.0-beta.6] - 2026-09-11
 
