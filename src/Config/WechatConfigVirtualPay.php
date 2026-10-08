@@ -101,6 +101,14 @@ class WechatConfigVirtualPay
         return $this->appSecret;
     }
 
+    /**
+     * 是否已声明虚拟支付意图：app_key 与 app_secret 均已配置.
+     */
+    public function isConfigured(): bool
+    {
+        return !empty($this->getAppKey()) && !empty($this->getAppSecret());
+    }
+
     public function setAccessToken(?string $value): void
     {
         $this->_accessToken = $value;

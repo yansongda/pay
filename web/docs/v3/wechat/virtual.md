@@ -18,6 +18,29 @@
 虚拟支付必须配置 `mini_app_id`，因为虚拟支付仅支持小程序场景。
 :::
 
+:::tip 仅有虚拟商品时无需配置微信支付
+微信小程序若仅出售虚拟商品，微信会强制关闭微信支付，此时拿不到 `mch_id` 等商户凭据。只需**同时配置 `virtual_pay.app_key` 与 `virtual_pay.app_secret`**，微信支付的 `mch_id`、`mch_secret_key`、`mch_secret_cert`、`mch_public_cert_path` 可以全部留空：
+
+```php
+Pay::config([
+    'wechat' => [
+        'default' => [
+            'mini_app_id' => 'wx1234567890abcdef',
+            'virtual_pay' => [
+                'offer_id' => '1234567890',
+                'app_key' => 'your_app_key',
+                'app_secret' => 'your_app_secret',
+                'callback_token' => 'your_callback_token',
+                'encoding_aes_key' => 'your_encoding_aes_key',
+            ],
+        ],
+    ],
+]);
+```
+
+注意：一旦配置了上述微信支付商户凭据中的任意一项，则四项仍需完整填写（校验不会放行漏配）。
+:::
+
 ## 客户端签名（代币充值）
 
 客户端签名用于小程序端调起虚拟支付，SDK 会生成签名数据供前端使用，**不会发送 HTTP 请求**。
