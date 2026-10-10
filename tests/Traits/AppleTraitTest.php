@@ -10,6 +10,7 @@ use RuntimeException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\AppleConfig;
+use Yansongda\Pay\Crypto\Apple\Cryptor;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -234,7 +235,7 @@ class AppleTraitTest extends TestCase
 
     public function testAssertAppleCertNotExpired(): void
     {
-        $method = new ReflectionMethod(AppleTraitStub::class, 'assertAppleCertNotExpired');
+        $method = new ReflectionMethod(Cryptor::class, 'assertCertNotExpired');
 
         // 有效期内：不抛异常
         $method->invoke(null, ['validFrom_time_t' => time() - 100, 'validTo_time_t' => time() + 100], 'leaf');

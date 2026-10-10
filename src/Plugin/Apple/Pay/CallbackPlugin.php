@@ -49,7 +49,7 @@ class CallbackPlugin implements PluginInterface
 
         $signedPayload = $body['signedPayload'] ?? '';
 
-        if ('' === $signedPayload) {
+        if (empty($signedPayload)) {
             throw new InvalidSignException(Exception::SIGN_EMPTY, '签名异常: Apple 回调缺少 signedPayload');
         }
 

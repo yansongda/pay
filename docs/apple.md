@@ -35,7 +35,7 @@ Issue #597 社区请求支持苹果支付。仓库现有 10 个 Provider，新�
 
 ### 2.1 核心思路
 
-**以微信/支付宝为骨架，新增 `Apple` Provider（`Pay::apple()`），一期覆盖 Apple 服务端三大能力：支付令牌验签解密（本地，`payToken()`）、App Store Server API（`query()`/`refund()`，ES256 JWT 认证）、App Store Server Notifications V2（`callback()`，JWS 验签）。** 密码学全部集成在 `Traits/AppleTrait.php`（零依赖），内置证书存放 `src/Certificate/`（公开证书，可配置覆盖）。
+**以微信/支付宝为骨架，新增 `Apple` Provider（`Pay::apple()`），一期覆盖 Apple 服务端三大能力：支付令牌验签解密（本地，`payToken()`）、App Store Server API（`query()`/`refund()`，ES256 JWT 认证）、App Store Server Notifications V2（`callback()`，JWS 验签）。** 密码学实现拆至 `src/Crypto/Apple/`（`Cryptor`/`TokenVerifier`/`JwsVerifier`，零依赖），`Traits/AppleTrait.php` 作为对外唯一 Trait 门面，内置证书存放 `src/Certificate/`（公开证书，可配置覆盖）。
 
 ### 2.2 架构图
 
@@ -73,7 +73,11 @@ src/
 ├── Provider/Apple.php                    ← 新增（骨架对齐 Wechat：URL 三模式常量 + __call + callback）
 ├── Service/AppleServiceProvider.php      ← 新增
 ├── Config/AppleConfig.php                ← 新增（对齐 WechatConfig：属性+getter/setter+validateRequired）
-├── Traits/AppleTrait.php                 ← 新增（对齐 WechatTrait：public static 方法群 + private 密码学实现）
+├── Traits/AppleTrait.php                 ← 新增（对外唯一 Trait：URL 组装 + ES256 JWT + 密码学入口）
+├── Enum/Apple/SubscriptionStatus.php     ← 新增（订阅 status 枚举：ACTIVE..REVOKED）
+├── Crypto/Apple/Cryptor.php              ← 新增（ASN.1/PEM/base64url/ECDSA 转换 + 证书链验证）
+├── Crypto/Apple/TokenVerifier.php        ← 新增（payToken 验签解密：PKCS#7/ECDH-KDF/AES-GCM）
+├── Crypto/Apple/JwsVerifier.php          ← 新增（Notifications V2 JWS 验签 + 归属校验）
 ├── Action/AppleAction.php                ← 新增（QUERY_TRANSACTION/HISTORY/SUBSCRIPTIONS）
 ├── Certificate/                          ← 新增（内置公开证书目录）
 │   ├── AppleRootCA-G3.pem                ← 新增（Apple 根证书，公开）
@@ -175,7 +179,7 @@ Callback（Provider 内置）：pay([CallbackPlugin::class], ['_request' => ...,
 
 `validateRequired()`：`merchant_id` + `payment_processing_cert` 必填；若配置任一项 API 密钥字段则要求四项齐全，否则抛 `CONFIG_APPLE_INVALID`。支持三模式。
 
-### 3.3 支付令牌验签解密（AppleTrait 核心，对齐 WechatTrait 组织）
+### 3.3 支付令牌验签解密（TokenVerifier 核心；对齐 WechatTrait 风格，单文件过大故把实现下沉为 `src/Crypto/Apple/` 下的最终类，`AppleTrait` 仅保留门面）
 
 **Trait 对外 API**（public static，插件内 `self::xxx()` 调用）：
 
@@ -295,7 +299,7 @@ verifyAppleJws(signedPayload):
 阶段 3 — Provider 骨架（串行，先于 Trait）：Provider + ServiceProvider + 注册链（提供 Apple::URL 常量）
 └── 验证点：Pay::apple() 可实例化，多租户配置读取正确
 
-阶段 4 — 密码学核心（串行）：AppleTrait（ASN.1/PKCS#7/ECDH/KDF/AES-GCM/JWS/JWT）+ fixture 构造器 + 单测
+阶段 4 — 密码学核心（串行）：AppleTrait（门面）+ Crypto/Apple/{Cryptor,TokenVerifier,JwsVerifier}（ASN.1/PKCS#7/ECDH/KDF/AES-GCM/JWS/JWT）+ fixture 构造器 + 单测
 ├── 验证点：自造 token 验签解密全链路单测通过；PKCS#7 与 openssl_pkcs7_verify 对拍
 └── 里程碑：最大技术风险消化
 

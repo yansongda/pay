@@ -44,12 +44,25 @@ $result = Pay::apple()->query([
 ]);
 ```
 
-默认查询 `status=1&status=4`（活跃 + 账单宽限期，与官方文档示例一致）。可通过 `_status` 覆盖，仅允许 1-5 的整数：
+默认查询 `status=1&status=4`（活跃 + 账单宽限期，与官方文档示例一致）。可通过 `_status` 覆盖，支持 `SubscriptionStatus` 枚举或 1-5 的整数：
+
+```php
+use Yansongda\Pay\Enum\Apple\SubscriptionStatus;
+
+$result = Pay::apple()->query([
+    'transaction_id' => '1234567890',
+    '_action' => 'subscriptions',
+    // ACTIVE=1 活跃、EXPIRED=2 已过期、BILLING_RETRY=3 账单重试、BILLING_GRACE_PERIOD=4 账单宽限期、REVOKED=5 已撤销
+    '_status' => [SubscriptionStatus::ACTIVE, SubscriptionStatus::EXPIRED],
+]);
+```
+
+也可直接传整数：
 
 ```php
 $result = Pay::apple()->query([
     'transaction_id' => '1234567890',
     '_action' => 'subscriptions',
-    '_status' => [1, 2],   // 1=活跃 2=已过期 3=账单重试 4=账单宽限期 5=已撤销
+    '_status' => [1, 2],
 ]);
 ```

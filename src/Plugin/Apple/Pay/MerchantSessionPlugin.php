@@ -60,7 +60,7 @@ class MerchantSessionPlugin implements PluginInterface
         // 官方要求 initiativeContext 必填（Apple Pay 网页注册的商户域名），缺失时 Apple 网关必拒绝
         $initiativeContext = $params['initiative_context'] ?? '';
 
-        if ('' === $initiativeContext) {
+        if (empty($initiativeContext)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Apple merchant session 缺 initiative_context 参数（Apple Pay 网页注册的商户域名）');
         }
 

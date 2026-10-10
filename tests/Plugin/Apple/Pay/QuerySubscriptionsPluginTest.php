@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Plugin\Apple\Pay;
 
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Apple\SubscriptionStatus;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Apple\Pay\QuerySubscriptionsPlugin;
 use Yansongda\Pay\Tests\TestCase;
@@ -66,6 +67,34 @@ class QuerySubscriptionsPluginTest extends TestCase
         self::assertStringNotContainsString('%5B', $payload->get('_url'));
     }
 
+    public function testStatusOverrideEnum()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'transaction_id' => 'tx_test_456',
+            '_status' => [SubscriptionStatus::EXPIRED, SubscriptionStatus::REVOKED],
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+        $url = $result->getPayload()->get('_url');
+
+        self::assertStringContainsString('status=2&status=5', $url);
+        self::assertStringNotContainsString('status=1', $url);
+    }
+
+    public function testStatusOverrideScalarEnum()
+    {
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection([
+            'transaction_id' => 'tx_test_456',
+            '_status' => SubscriptionStatus::BILLING_RETRY,
+        ]));
+
+        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+
+        self::assertStringContainsString('status=3', $result->getPayload()->get('_url'));
+    }
+
     public function testUrlEncodedTransactionId()
     {
         $rocket = new Rocket();
@@ -107,6 +136,18 @@ class QuerySubscriptionsPluginTest extends TestCase
 
         $rocket = new Rocket();
         $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => ['abc']]));
+
+        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    }
+
+    public function testOutOfRangeStatusThrowsException()
+    {
+        self::expectException(InvalidParamsException::class);
+        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+        self::expectExceptionMessage('参数异常: Apple 查询订阅状态，_status 仅允许 SubscriptionStatus 枚举或 1-5 的整数');
+
+        $rocket = new Rocket();
+        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [6]]));
 
         $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
     }

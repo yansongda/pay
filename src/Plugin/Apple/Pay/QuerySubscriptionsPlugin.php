@@ -9,6 +9,7 @@ use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Apple\SubscriptionStatus;
 use Yansongda\Pay\Exception\Exception;
 
 /**
@@ -30,21 +31,23 @@ class QuerySubscriptionsPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Apple 查询订阅状态，缺少 transaction_id 参数');
         }
 
-        $statuses = $payload->get('_status') ?? [1, 4];
+        // 默认 active + billing grace period（与官方文档示例一致）
+        $statuses = $payload->get('_status') ?? [SubscriptionStatus::ACTIVE, SubscriptionStatus::BILLING_GRACE_PERIOD];
         if (!is_array($statuses)) {
             $statuses = [$statuses];
         }
 
-        // 官方 status 枚举：1=active 2=expired 3=billing retry 4=billing grace period 5=revoked
-        foreach ($statuses as $status) {
-            if (!is_int($status) || $status < 1 || $status > 5) {
-                throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Apple 查询订阅状态，_status 仅允许 1-5 的整数');
-            }
-        }
-
         $statusQuery = '';
         foreach ($statuses as $status) {
-            $statusQuery .= 'status='.$status.'&';
+            $statusEnum = $status instanceof SubscriptionStatus
+                ? $status
+                : (is_int($status) ? SubscriptionStatus::tryFrom($status) : null);
+
+            if (null === $statusEnum) {
+                throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Apple 查询订阅状态，_status 仅允许 SubscriptionStatus 枚举或 1-5 的整数');
+            }
+
+            $statusQuery .= 'status='.$statusEnum->value.'&';
         }
         $statusQuery = rtrim($statusQuery, '&');
 
