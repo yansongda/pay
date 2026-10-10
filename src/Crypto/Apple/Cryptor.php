@@ -42,6 +42,11 @@ final class Cryptor
             throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple ASN.1 嵌套深度超限');
         }
 
+        $total = strlen($der);
+
+        // 长度前缀至少 2 字节（tag + length），越界读取会触发 PHP 告警并得到错误的 tag/length
+        self::assertAsn1WithinBounds($offset + 2, $total);
+
         $tag = ord($der[$offset++]);
         $lengthByte = ord($der[$offset++]);
         $length = $lengthByte;
@@ -50,10 +55,14 @@ final class Cryptor
             $bytesCount = $lengthByte & 0x7F;
             $length = 0;
 
+            self::assertAsn1WithinBounds($offset + $bytesCount, $total);
+
             for ($i = 0; $i < $bytesCount; ++$i) {
                 $length = ($length << 8) | ord($der[$offset++]);
             }
         }
+
+        self::assertAsn1WithinBounds($offset + $length, $total);
 
         $value = substr($der, $offset, $length);
         $offset += $length;
@@ -363,5 +372,17 @@ final class Cryptor
         }
 
         return $value;
+    }
+
+    /**
+     * DER 读取边界检查（防越界读触发 PHP 告警、防长度声明超出缓冲区）。
+     *
+     * @throws InvalidSignException
+     */
+    private static function assertAsn1WithinBounds(int $end, int $total): void
+    {
+        if (0 > $end || $end > $total) {
+            throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple ASN.1 数据截断');
+        }
     }
 }

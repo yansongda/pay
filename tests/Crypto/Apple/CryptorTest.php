@@ -60,6 +60,31 @@ class CryptorTest extends TestCase
         Cryptor::parseAsn1("\x02\x01\x01", $offset, 65);
     }
 
+    #[DataProvider('provideTruncatedAsn1')]
+    public function testParseAsn1TruncatedThrowsException(string $der): void
+    {
+        self::expectException(InvalidSignException::class);
+        self::expectExceptionCode(Exception::SIGN_ERROR);
+        self::expectExceptionMessage('签名异常: Apple ASN.1 数据截断');
+
+        $offset = 0;
+
+        Cryptor::parseAsn1($der, $offset);
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function provideTruncatedAsn1(): array
+    {
+        return [
+            'missing length byte' => ["\x30"],
+            'missing long form length bytes' => ["\x30\x82\x01"],
+            'length beyond buffer' => ["\x30\x0a\x02\x01\x01"],
+            'nested child truncated' => ["\x30\x05\x04\x05abc"],
+        ];
+    }
+
     public function testEncodeAsn1Oid(): void
     {
         // 1.2.840.113549.1.9.4 → 2A 86 48 86 F7 0D 01 09 04
