@@ -268,6 +268,12 @@ class WechatConfig extends AbstractConfig
      */
     protected function validateRequired(): void
     {
+        // 已声明虚拟支付意图（virtual_pay.app_key + app_secret）且未配置任何微信支付商户凭据时，
+        // 跳过微信支付配置校验（仅有虚拟商品的小程序无法开通微信支付，拿不到这组凭据）
+        if ($this->virtualPay->isConfigured() && !$this->hasAnyWechatPayCredential()) {
+            return;
+        }
+
         $this->validateNotEmpty(
             ['mchId', 'mchSecretKey', 'mchSecretCert', 'mchPublicCertPath'],
             Exception::CONFIG_WECHAT_INVALID,
@@ -287,5 +293,16 @@ class WechatConfig extends AbstractConfig
                 '配置异常: 服务商模式下缺少 [sub_mch_id]'
             );
         }
+    }
+
+    /**
+     * 微信支付商户凭据是否配置了至少一项——任一非空即视为已配置，避免漏配被静默放行.
+     */
+    private function hasAnyWechatPayCredential(): bool
+    {
+        return !empty($this->getMchId())
+            || !empty($this->getMchSecretKey())
+            || !empty($this->getMchSecretCert())
+            || !empty($this->getMchPublicCertPath());
     }
 }

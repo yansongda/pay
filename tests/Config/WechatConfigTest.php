@@ -269,6 +269,95 @@ class WechatConfigTest extends TestCase
         self::assertSame('array-offer', $vp->getOfferId());
     }
 
+    #[Group('VirtualPay')]
+    public function testVirtualPayIsConfiguredRequiresAppKeyAndAppSecret(): void
+    {
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'virtual_pay' => [
+                'app_key' => 'vp-app-key',
+                'offer_id' => 'vp-offer-123',
+            ],
+        ]));
+
+        self::assertFalse($config->getVirtualPay()->isConfigured());
+
+        $config->setVirtualPay([
+            'app_key' => 'vp-app-key',
+            'app_secret' => 'vp-app-secret',
+        ]);
+
+        self::assertTrue($config->getVirtualPay()->isConfigured());
+    }
+
+    #[Group('VirtualPay')]
+    public function testVirtualPayOnlyConfigSkipsWechatPayValidation(): void
+    {
+        $config = new WechatConfig([
+            'mini_app_id' => 'wx1234567890abcdef',
+            'virtual_pay' => [
+                'offer_id' => 'vp-offer-123',
+                'app_key' => 'vp-app-key',
+                'app_secret' => 'vp-app-secret',
+                'callback_token' => 'vp-callback-token',
+                'encoding_aes_key' => 'vp-encoding-aes-key',
+            ],
+        ]);
+
+        $config->validate();
+
+        self::assertSame('', $config->getMchId());
+        self::assertSame('', $config->getMchSecretKey());
+        self::assertSame('', $config->getMchSecretCert());
+        self::assertSame('', $config->getMchPublicCertPath());
+    }
+
+    #[Group('VirtualPay')]
+    public function testVirtualPayOnlyConfigSkipsSubMchIdValidationInServiceMode(): void
+    {
+        $config = new WechatConfig([
+            'mode' => Pay::MODE_SERVICE,
+            'virtual_pay' => [
+                'app_key' => 'vp-app-key',
+                'app_secret' => 'vp-app-secret',
+            ],
+        ]);
+
+        $config->validate();
+
+        self::assertSame(Pay::MODE_SERVICE, $config->getMode());
+    }
+
+    #[Group('VirtualPay')]
+    public function testVirtualPayWithoutAppSecretStillRequiresWechatPayCredentials(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
+
+        $config = new WechatConfig([
+            'virtual_pay' => [
+                'offer_id' => 'vp-offer-123',
+                'app_key' => 'vp-app-key',
+            ],
+        ]);
+        $config->validate();
+    }
+
+    #[Group('VirtualPay')]
+    public function testPartialWechatPayCredentialsStillValidateWithVirtualPay(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_secret_key]');
+
+        $config = new WechatConfig([
+            'mch_id' => 'test_mch_id',
+            'virtual_pay' => [
+                'app_key' => 'vp-app-key',
+                'app_secret' => 'vp-app-secret',
+            ],
+        ]);
+        $config->validate();
+    }
+
     public function testInvalidModeThrowsException(): void
     {
         // 未覆盖 supportedModes 的 Provider 默认支持三种 mode，其余取值应被校验拦截

@@ -18,6 +18,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - 文档：`web/docs/v3/apple/` 提供支付/查询/退款/回调/应答/插件页面，侧边栏已挂载
   - 内部结构：`AppleTrait` 仅保留门面（URL/ES256 JWT/密码学入口），实现下沉至 `src/Crypto/Apple/`（`Cryptor` 通用工具 / `TokenVerifier` 令牌验签解密 / `JwsVerifier` JWS 验签），对外调用方式不变
 
+## [v3.8.0-beta.7] - 2026-10-08
+
+### Fixed
+
+- 修复仅使用微信小程序虚拟支付时必须配置微信支付商户凭据的问题：同时配置 `virtual_pay.app_key` 与 `virtual_pay.app_secret` 后，`mch_id`、`mch_secret_key`、`mch_secret_cert`、`mch_public_cert_path` 可全部留空；配置了其中任意一项时仍保持完整校验，不会放行漏配（#1218、#1219）
+
 ## [v3.8.0-beta.6] - 2026-09-11
 
 ### Added
