@@ -18,6 +18,16 @@ hyperf 扩展包请 [传送至这里](https://github.com/yansongda/hyperf-pay)
 
 laravel 扩展包请 [传送至这里](https://github.com/yansongda/laravel-pay)
 
+## 特别说明
+
+以下 Provider 的实现由 AI 生成并经人工审核，但由于测试资源限制，尚未经过实际测试，请在充分验证后再用于生产环境：
+
+- PayPal
+- Apple（苹果支付）
+- 翼支付（BestPay）
+- 通联支付（Allinpay）
+- Stripe
+
 ## 特点
 
 - 多租户支持
