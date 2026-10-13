@@ -156,10 +156,10 @@ class AlipayController
                 'notify_url' => 'https://yansongda.cn/alipay/notify',
                 // 选填-第三方应用授权token
                 'app_auth_token' => '',
-                // 选填-服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数
+                // 选填-服务商模式下的服务商 id，当 mode 为 PayMode::SERVICE 时使用该参数
                 'service_provider_id' => '',
-                // 选填-默认为正常模式。可选为： MODE_NORMAL, MODE_SANDBOX, MODE_SERVICE
-                'mode' => Pay::MODE_NORMAL,
+                // 选填-默认为正常模式。可选为： PayMode::NORMAL, PayMode::SANDBOX, PayMode::SERVICE
+                'mode' => PayMode::NORMAL,
             ],       
         ],   
         'logger' => [ // optional
@@ -265,8 +265,8 @@ class WechatController
                 'wechat_public_cert_path' => [
                     '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatpay_45F***D57.pem',
                 ],
-                // 选填-默认为正常模式。可选为： MODE_NORMAL, MODE_SERVICE
-                'mode' => Pay::MODE_NORMAL,
+                // 选填-默认为正常模式。可选为： PayMode::NORMAL, PayMode::SERVICE
+                'mode' => PayMode::NORMAL,
             ]
         ],
         'logger' => [ // optional
@@ -434,8 +434,8 @@ class JsbController
                 'jsb_public_cert_path' => '',
                 //支付通知地址
                 'notify_url'            => '', 
-                // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:测试环境
-                'mode' => Pay::MODE_NORMAL,
+                // 选填-默认为正常模式。可选为： PayMode::NORMAL:正式环境, PayMode::SANDBOX:测试环境
+                'mode' => PayMode::NORMAL,
             ]
         ],
         'logger' => [ // optional

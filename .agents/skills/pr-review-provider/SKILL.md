@@ -240,9 +240,9 @@ public function mergeCommonPlugins(array $plugins): array
 
 ```php
 public const URL = [
-    Pay::MODE_NORMAL => 'https://api.xxx.com/',
-    Pay::MODE_SANDBOX => 'https://sandbox.api.xxx.com/',
-    Pay::MODE_SERVICE => 'https://api.xxx.com/',
+    PayMode::NORMAL->value => 'https://api.xxx.com/',
+    PayMode::SANDBOX->value => 'https://sandbox.api.xxx.com/',
+    PayMode::SERVICE->value => 'https://api.xxx.com/',
 ];
 ```
 

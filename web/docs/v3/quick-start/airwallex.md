@@ -27,9 +27,9 @@ $config = [
             // 「选填」平台模式代商户调用时使用
             // 'on_behalf_of' => 'open_id_xxx',
             // 「选填」默认为正式模式。可选值：
-            // MODE_NORMAL: 正式环境
-            // MODE_SANDBOX: 沙箱环境
-            'mode' => Pay::MODE_NORMAL,
+            // PayMode::NORMAL: 正式环境
+            // PayMode::SANDBOX: 沙箱环境
+            'mode' => PayMode::NORMAL,
         ],
     ],
 ];

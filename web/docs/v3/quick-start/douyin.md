@@ -34,5 +34,5 @@ $result = Pay::douyin()->mini($order);
 ```
 
 :::warning 沙盒环境说明
-`trade_basic` 业务接口**无沙盒环境**；`MODE_SANDBOX` 会把全部请求（含业务接口）指向 `open-sandbox.douyin.com`，该域名并无 `trade_basic` 部署，仅适合验证 `client_token`。
+`trade_basic` 业务接口**无沙盒环境**；`PayMode::SANDBOX` 会把全部请求（含业务接口）指向 `open-sandbox.douyin.com`，该域名并无 `trade_basic` 部署，仅适合验证 `client_token`。
 :::
