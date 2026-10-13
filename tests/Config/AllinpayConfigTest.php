@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AllinpayConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
@@ -69,6 +70,16 @@ class AllinpayConfigTest extends TestCase
         self::assertSame('999999', $config->getOrgid());
         self::assertSame('https://notify.com', $config->getNotifyUrl());
         self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+    }
+
+    public function testModeWithPayModeEnum(): void
+    {
+        $config = new AllinpayConfig(array_merge($this->validConfig, [
+            'mode' => PayMode::SANDBOX,
+        ]));
+
+        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+        self::assertSame(PayMode::SANDBOX, $config->getModeEnum());
     }
 
     public function testServiceModeThrowsException(): void

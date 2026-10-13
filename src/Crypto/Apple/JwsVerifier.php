@@ -9,7 +9,6 @@ use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\AppleConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 
 /**
  * App Store Server Notifications V2 JWS 验签。
@@ -104,7 +103,7 @@ final class JwsVerifier
             throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple 通知归属校验失败 -- [bundleId] 与配置不匹配');
         }
 
-        $expected = Pay::MODE_SANDBOX === $config->getMode() ? 'Sandbox' : 'Production';
+        $expected = $config->getModeEnum()->isSandbox() ? 'Sandbox' : 'Production';
 
         // externalPurchaseToken 分支无 environment 字段，按官方库从 externalPurchaseId 前缀推断
         $environment = 'externalPurchaseToken' === $branchKey

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
@@ -42,9 +43,9 @@ class StripeConfig extends AbstractConfig
         $this->cancelUrl = $value;
     }
 
-    public function setMode(int $value): void
+    public function setMode(int|PayMode $value): void
     {
-        $this->mode = $value;
+        $this->mode = $value instanceof PayMode ? $value->value : $value;
     }
 
     public function getSecretKey(): string

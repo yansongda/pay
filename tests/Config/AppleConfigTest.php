@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AppleConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
@@ -120,6 +121,16 @@ class AppleConfigTest extends TestCase
         self::assertSame(Pay::MODE_NORMAL, $config->getMode());
 
         $config->validate();
+    }
+
+    public function testModeWithPayModeEnum(): void
+    {
+        $config = new AppleConfig(array_merge($this->validConfig, [
+            'mode' => PayMode::SANDBOX,
+        ]));
+
+        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+        self::assertSame(PayMode::SANDBOX, $config->getModeEnum());
     }
 
     public function testInvalidModeThrowsException(): void

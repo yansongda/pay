@@ -146,7 +146,9 @@ trait AlipayTrait
             return $url;
         }
 
-        $base = Pay::MODE_SANDBOX === $config->getMode() ? Alipay::V3_SANDBOX_URL : Alipay::URL[$config->getMode()];
+        $mode = $config->getModeEnum();
+
+        $base = $mode->isSandbox() ? Alipay::V3_SANDBOX_URL : Alipay::URL[$mode->value];
 
         return $base.($url ?? '');
     }
@@ -198,7 +200,7 @@ trait AlipayTrait
         $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $params);
         $serviceProviderId = $config->getServiceProviderId();
 
-        if (Pay::MODE_SERVICE !== $config->getMode()
+        if (!$config->getModeEnum()->isService()
             || empty($serviceProviderId)) {
             return;
         }

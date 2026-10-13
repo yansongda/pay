@@ -8,7 +8,9 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Config\AbstractConfig;
 use Yansongda\Pay\Contract\ProviderConfigInterface;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
@@ -25,6 +27,8 @@ trait ProviderConfigTrait
 
     /**
      * @param array<string, mixed> $params
+     *
+     * @return AbstractConfig
      *
      * @throws ContainerException
      * @throws InvalidConfigException
@@ -56,10 +60,10 @@ trait ProviderConfigTrait
             return null;
         }
 
-        return match ($config->getMode()) {
-            Pay::MODE_SERVICE => $payload->get('_service_url', $payload->get('_url')),
-            Pay::MODE_SANDBOX => $payload->get('_sandbox_url', $payload->get('_url')),
-            default => $payload->get('_url'),
+        return match (PayMode::fromLoose($config->getMode())) {
+            PayMode::SERVICE => $payload->get('_service_url', $payload->get('_url')),
+            PayMode::SANDBOX => $payload->get('_sandbox_url', $payload->get('_url')),
+            PayMode::NORMAL => $payload->get('_url'),
         };
     }
 }

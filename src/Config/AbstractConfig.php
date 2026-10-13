@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Contract\ProviderConfigInterface;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Str;
@@ -45,6 +46,14 @@ abstract class AbstractConfig implements ProviderConfigInterface
     }
 
     abstract public function getMode(): int;
+
+    /**
+     * 以枚举形式返回当前 mode（与 `getMode()` 数值一一对应）。
+     */
+    public function getModeEnum(): PayMode
+    {
+        return PayMode::fromLoose($this->getMode());
+    }
 
     abstract protected function validateRequired(): void;
 

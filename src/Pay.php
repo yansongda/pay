@@ -14,6 +14,7 @@ use Yansongda\Artful\Event\HttpEnd;
 use Yansongda\Artful\Event\HttpStart;
 use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Provider\Airwallex;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Allinpay;
@@ -69,16 +70,22 @@ class Pay
 
     /**
      * 正常模式.
+     *
+     * 对应枚举见 {@see PayMode}
      */
     public const MODE_NORMAL = 0;
 
     /**
      * 沙箱模式.
+     *
+     * 对应枚举见 {@see PayMode}
      */
     public const MODE_SANDBOX = 1;
 
     /**
      * 服务商模式.
+     *
+     * 对应枚举见 {@see PayMode}
      */
     public const MODE_SERVICE = 2;
 

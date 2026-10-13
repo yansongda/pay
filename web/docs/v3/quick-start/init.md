@@ -32,6 +32,7 @@ $config = [
             // 「选填」AES 密钥，用于解密响应内容（如会员手机号等敏感信息接口）
             'aes_key' => '',
             // 「选填」默认为正常模式。可选为： MODE_NORMAL, MODE_SANDBOX, MODE_SERVICE
+            // 也可写枚举 `PayMode::SANDBOX`（`use Yansongda\Pay\Enum\PayMode;`），与 `Pay::MODE_*` 等价。
             'mode' => Pay::MODE_NORMAL,
         ]
     ],
@@ -98,6 +99,7 @@ $config = [
                 'PUB_KEY_ID_0000000000000024101100397200000006' => __DIR__.'/Cert/publickey.pem',
             ],
             // 「选填」默认为正常模式。可选为： MODE_NORMAL, MODE_SERVICE
+            // 也可写枚举 `PayMode::SANDBOX`（`use Yansongda\Pay\Enum\PayMode;`），与 `Pay::MODE_*` 等价。
             'mode' => Pay::MODE_NORMAL,
         ]
     ],
@@ -117,6 +119,7 @@ $config = [
             'return_url' => 'https://yansongda.cn/unipay/return',
             // 「必填」
             'notify_url' => 'https://yansongda.cn/unipay/notify',
+            // 也可写枚举 `PayMode::SANDBOX`（`use Yansongda\Pay\Enum\PayMode;`），与 `Pay::MODE_*` 等价。
             'mode' => Pay::MODE_NORMAL,
         ],
     ],
@@ -156,6 +159,7 @@ $config = [
             // 「选填」异步通知地址（如有需要请自行在 PayPal 后台配置 Webhook）
             'notify_url' => 'https://yansongda.cn/paypal/notify',
             // 「选填」默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:沙箱环境
+            // 也可写枚举 `PayMode::SANDBOX`（`use Yansongda\Pay\Enum\PayMode;`），与 `Pay::MODE_*` 等价。
             'mode' => Pay::MODE_NORMAL,
         ],
     ],
@@ -172,6 +176,7 @@ $config = [
             // 「选填」用户取消支付后 Stripe 跳转的取消地址（Checkout Session 模式使用）
             'cancel_url' => 'https://yansongda.cn/stripe/cancel',
             // 「选填」默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:沙箱环境
+            // 也可写枚举 `PayMode::SANDBOX`（`use Yansongda\Pay\Enum\PayMode;`），与 `Pay::MODE_*` 等价。
             'mode' => Pay::MODE_NORMAL,
         ],
     ],
@@ -192,6 +197,7 @@ $config = [
             // 支付通知地址
             'notify_url' => '',
             // 「选填」默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:测试环境
+            // 也可写枚举 `PayMode::SANDBOX`（`use Yansongda\Pay\Enum\PayMode;`），与 `Pay::MODE_*` 等价。
             'mode' => Pay::MODE_NORMAL,
         ],
     ],
