@@ -8,9 +8,9 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\DouyinConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\DouyinTrait;
 use Yansongda\Supports\Collection;
@@ -35,7 +35,7 @@ class DouyinTraitTest extends TestCase
             'app_secret' => 'douyin_app_secret',
             'app_private_key' => 'douyin_app_private_key',
             'douyin_public_key' => 'douyin_platform_public_key',
-            'mode' => Pay::MODE_SERVICE,
+            'mode' => PayMode::SERVICE,
         ]);
 
         self::assertEquals('https://yansongda.cn', DouyinTraitStub::getDouyinUrl($normalConfig, new Collection(['_url' => 'https://yansongda.cn'])));

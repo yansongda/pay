@@ -8,6 +8,7 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Pimple\ContainerFactory;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use ReflectionProperty;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
 
@@ -46,7 +47,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'webhook_secret' => 'airwallex_webhook_secret',
                     'return_url' => 'https://pay.yansongda.cn/airwallex/return',
                     'api_version' => '2024-06-14',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
                 'secondary' => [
                     'client_id' => 'airwallex_secondary_client_id',
@@ -54,12 +55,12 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'webhook_secret' => 'airwallex_secondary_webhook_secret',
                     'return_url' => 'https://pay.yansongda.cn/airwallex/secondary-return',
                     'api_version' => '2024-06-14',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
                 'no_webhook_secret' => [
                     'client_id' => 'airwallex_client_id',
                     'api_key' => 'airwallex_api_key',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
             ],
             'wechat' => [
@@ -83,7 +84,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                         '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatAppPublicKey.pem',
                         'yansongda' => __DIR__.'/Cert/wechatPublicKey.crt',
                     ],
-                    'mode' => Pay::MODE_NORMAL,
+                    'mode' => PayMode::NORMAL,
                     'virtual_pay' => [
                         'app_key' => 'yansongda_virtual_pay',
                         'sandbox_app_key' => 'yansongda_virtual_pay_sandbox',
@@ -109,7 +110,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'sub_app_id' => 'wx55955316af4ef16',
                     'sub_mini_app_id' => 'wx55955316af4ef17',
                     'sub_mch_id' => '1600314070',
-                    'mode' => Pay::MODE_SERVICE,
+                    'mode' => PayMode::SERVICE,
                 ],
                 'service_provider2' => [
                     'mp_app_id' => 'wx55955316af4ef18',
@@ -126,7 +127,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'sub_app_id' => 'wx55955316af4ef20',
                     'sub_mini_app_id' => 'wx55955316af4ef21',
                     'sub_mch_id' => '1600314072',
-                    'mode' => Pay::MODE_SERVICE,
+                    'mode' => PayMode::SERVICE,
                 ],
                 'service_provider3' => [
                     'mp_app_id' => 'wx55955316af4ef18',
@@ -143,7 +144,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'sub_app_id' => 'wx55955316af4ef20',
                     'sub_mini_app_id' => '',
                     'sub_mch_id' => '1600314072',
-                    'mode' => Pay::MODE_SERVICE,
+                    'mode' => PayMode::SERVICE,
                 ],
                 'service_provider4' => [
                     'mp_app_id' => 'wx55955316af4ef13',
@@ -161,7 +162,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'sub_app_id' => 'wx55955316af4ef16',
                     'sub_mini_app_id' => 'wx55955316af4ef17',
                     'sub_mch_id' => '1600314070',
-                    'mode' => Pay::MODE_SERVICE,
+                    'mode' => PayMode::SERVICE,
                 ],
                 'empty_wechat_public_cert' => [
                     'app_id' => 'yansongda',
@@ -174,7 +175,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
                     'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [],
-                    'mode' => Pay::MODE_NORMAL,
+                    'mode' => PayMode::NORMAL,
                 ],
             ],
             'unipay' => [
@@ -193,12 +194,12 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'unipay_public_cert_path' => __DIR__.'/Cert/unipayCertPublicKey.cer',
                     'return_url' => 'http://127.0.0.1:8000/unipay/return',
                     'notify_url' => 'https://yansongda.cn/unipay/notify',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
                 'qra' => [
                     'mch_id' => 'QRA29045311KKR1',
                     'mch_secret_key' => '979da4cfccbae7923641daa5dd7047c2',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
             ],
             'jsb' => [
@@ -216,8 +217,8 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     // 必填-江苏银行的公钥(用于解密江苏银行返回的数据)
                     'jsb_public_cert_path' => __DIR__.'/Cert/jschina.cer',
                     'notify_url' => 'http://127.0.0.1:8000/epay/return',
-                    // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:test环境,
-                    'mode' => Pay::MODE_SANDBOX,
+                    // 选填-默认为正常模式。可选为： PayMode::NORMAL:正式环境, PayMode::SANDBOX:test环境,
+                    'mode' => PayMode::SANDBOX,
                 ],
             ],
             'douyin' => [
@@ -234,8 +235,8 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'douyin_public_key' => file_get_contents(__DIR__.'/Cert/douyinPlatformPublicKey.pem'),
                     // 选填-支付回调地址
                     'notify_url' => 'https://yansongda.cn/douyin/notify',
-                    // 选填-默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:test环境,
-                    'mode' => Pay::MODE_SANDBOX,
+                    // 选填-默认为正常模式。可选为： PayMode::NORMAL:正式环境, PayMode::SANDBOX:test环境,
+                    'mode' => PayMode::SANDBOX,
                 ],
             ],
             'paypal' => [
@@ -246,7 +247,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'return_url' => 'https://pay.yansongda.cn/paypal/return',
                     'cancel_url' => 'https://pay.yansongda.cn/paypal/cancel',
                     'webhook_id' => 'paypal_webhook_id',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
             ],
             'stripe' => [
@@ -255,18 +256,18 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'webhook_secret' => 'whsec_stripe_webhook_secret',
                     'success_url' => 'https://pay.yansongda.cn/stripe/success',
                     'cancel_url' => 'https://pay.yansongda.cn/stripe/cancel',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
                 'no_webhook_secret' => [
                     'secret_key' => 'sk_test_stripe_secret',
                     'success_url' => 'https://pay.yansongda.cn/stripe/success',
                     'cancel_url' => 'https://pay.yansongda.cn/stripe/cancel',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
                 'no_success_url' => [
                     'secret_key' => 'sk_test_stripe_secret',
                     'webhook_secret' => 'whsec_stripe_webhook_secret',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
             ],
 
@@ -278,7 +279,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_secret_key' => __DIR__.'/Cert/allinpayAppPrivateKey.pem',
                     'allinpay_public_key' => __DIR__.'/Cert/allinpayPlatformPublicKey.pem',
                     'notify_url' => 'https://pay.yansongda.cn/allinpay/notify',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
             ],
             'bestpay' => [
@@ -292,7 +293,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'api_version' => '1.0.3',
                     'notify_url' => 'https://pay.yansongda.cn/bestpay/notify',
                     'return_url' => 'https://pay.yansongda.cn/bestpay/return',
-                    'mode' => Pay::MODE_NORMAL,
+                    'mode' => PayMode::NORMAL,
                 ],
                 'second' => [
                     'merchant_no' => '3178033925245779',
@@ -302,7 +303,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'mch_secret_cert_password' => 'test123456',
                     'bestpay_public_cert_path' => __DIR__.'/Cert/bestpay/second.cer',
                     'api_version' => '1.0.3',
-                    'mode' => Pay::MODE_NORMAL,
+                    'mode' => PayMode::NORMAL,
                 ],
             ],
             'apple' => [
@@ -314,24 +315,24 @@ class TestCase extends \PHPUnit\Framework\TestCase
                     'bundle_id' => 'com.yansongda.pay.test',
                     'api_key_id' => 'X5D4K9J2Q1',
                     'api_private_key' => __DIR__.'/Cert/apple/api.key',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
                 'rsa' => [   // RSA_v1 测试租户（商户为 RSA 证书）
                     'merchant_id' => 'merchant.com.yansongda.pay',
                     'payment_processing_cert' => __DIR__.'/Cert/apple/merchant-rsa.pem',
                     'apple_root_ca' => __DIR__.'/Cert/apple/token-root.crt',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
                 'no_api_key' => [   // 仅验签解密租户（API 四字段未配置）
                     'merchant_id' => 'merchant.com.yansongda.pay',
                     'payment_processing_cert' => __DIR__.'/Cert/apple/merchant.pem',
                     'apple_root_ca' => __DIR__.'/Cert/apple/token-root.crt',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
                 'no_root_ca' => [   // 不配置 apple_root_ca（验证内置证书默认生效）
                     'merchant_id' => 'merchant.com.yansongda.pay',
                     'payment_processing_cert' => __DIR__.'/Cert/apple/merchant.pem',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
             ],
         ];

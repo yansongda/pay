@@ -12,6 +12,7 @@ use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Pay\Config\BestpayConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Bestpay;
 use Yansongda\Pay\Tests\TestCase;
@@ -228,7 +229,7 @@ class BestpayTest extends TestCase
     public function testProviderClass(): void
     {
         self::assertInstanceOf(Bestpay::class, Pay::bestpay());
-        self::assertEquals(Bestpay::URL[Pay::MODE_NORMAL], 'https://mapi.bestpay.com.cn/mapi');
+        self::assertEquals(Bestpay::URL[PayMode::NORMAL->value], 'https://mapi.bestpay.com.cn/mapi');
     }
 
     /**

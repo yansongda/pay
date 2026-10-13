@@ -8,7 +8,6 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AllinpayConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
 class AllinpayConfigTest extends TestCase
@@ -36,7 +35,7 @@ class AllinpayConfigTest extends TestCase
         self::assertNull($config->getOrgid());
         self::assertSame('/path/to/secret.pem', $config->getMchSecretKey());
         self::assertSame('/path/to/allinpay.pem', $config->getAllinpayPublicKey());
-        self::assertSame(Pay::MODE_NORMAL, $config->getMode());
+        self::assertSame(PayMode::NORMAL, $config->getMode());
     }
 
     public function testConstructWithTenant(): void
@@ -64,12 +63,12 @@ class AllinpayConfigTest extends TestCase
         $config = new AllinpayConfig(array_merge($this->validConfig, [
             'orgid' => '999999',
             'notify_url' => 'https://notify.com',
-            'mode' => Pay::MODE_SANDBOX,
+            'mode' => PayMode::SANDBOX,
         ]));
 
         self::assertSame('999999', $config->getOrgid());
         self::assertSame('https://notify.com', $config->getNotifyUrl());
-        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
     }
 
     public function testModeWithPayModeEnum(): void
@@ -78,8 +77,7 @@ class AllinpayConfigTest extends TestCase
             'mode' => PayMode::SANDBOX,
         ]));
 
-        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
-        self::assertSame(PayMode::SANDBOX, $config->getModeEnum());
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
     }
 
     public function testServiceModeThrowsException(): void
@@ -88,7 +86,7 @@ class AllinpayConfigTest extends TestCase
         $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
 
         $config = new AllinpayConfig(array_merge($this->validConfig, [
-            'mode' => Pay::MODE_SERVICE,
+            'mode' => PayMode::SERVICE,
         ]));
         $config->validate();
     }

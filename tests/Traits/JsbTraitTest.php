@@ -6,9 +6,9 @@ namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\JsbConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Collection;
@@ -33,14 +33,14 @@ class JsbTraitTest extends TestCase
             'public_key_code' => '00',
             'mch_secret_cert_path' => __DIR__.'/../Cert/EpayKey.pem',
             'jsb_public_cert_path' => __DIR__.'/../Cert/jschina.cer',
-            'mode' => Pay::MODE_NORMAL,
+            'mode' => PayMode::NORMAL,
         ]), new Collection()));
         self::assertEquals('https://epaytest.jsbchina.cn:9999/eis/merchant/merchantServices.htm', JsbTraitStub::getJsbUrl(new JsbConfig([
             'partner_id' => '6a13eab71c4f4b0aa4757eda6fc59710',
             'public_key_code' => '00',
             'mch_secret_cert_path' => __DIR__.'/../Cert/EpayKey.pem',
             'jsb_public_cert_path' => __DIR__.'/../Cert/jschina.cer',
-            'mode' => Pay::MODE_SANDBOX,
+            'mode' => PayMode::SANDBOX,
         ]), new Collection()));
     }
 

@@ -8,9 +8,9 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\StripeConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\StripeTrait;
 use Yansongda\Supports\Collection;
@@ -35,7 +35,7 @@ class StripeTraitTest extends TestCase
             'webhook_secret' => 'whsec_stripe_webhook_secret',
             'success_url' => 'https://pay.yansongda.cn/stripe/success',
             'cancel_url' => 'https://pay.yansongda.cn/stripe/cancel',
-            'mode' => Pay::MODE_SANDBOX,
+            'mode' => PayMode::SANDBOX,
         ]);
 
         self::assertEquals('https://yansongda.cn', StripeTraitStub::getStripeUrl($config, new Collection(['_url' => 'https://yansongda.cn'])));

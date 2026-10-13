@@ -8,7 +8,6 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AppleConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
 class AppleConfigTest extends TestCase
@@ -35,7 +34,7 @@ class AppleConfigTest extends TestCase
             'api_key_id' => 'key-id-123',
             'api_private_key' => '/path/to/api.key',
             'notify_url' => 'https://notify.com',
-            'mode' => Pay::MODE_SANDBOX,
+            'mode' => PayMode::SANDBOX,
         ]));
 
         self::assertSame('default', $config->getTenant());
@@ -49,7 +48,7 @@ class AppleConfigTest extends TestCase
         self::assertSame('key-id-123', $config->getApiKeyId());
         self::assertSame('/path/to/api.key', $config->getApiPrivateKey());
         self::assertSame('https://notify.com', $config->getNotifyUrl());
-        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
     }
 
     public function testDefaultAppleRootCaAndIntermediateCa(): void
@@ -118,7 +117,7 @@ class AppleConfigTest extends TestCase
         // 未配置时回退内置证书（不再返回 null）
         self::assertFileExists($config->getAppleRootCa());
         self::assertFileExists($config->getAppleIntermediateCa());
-        self::assertSame(Pay::MODE_NORMAL, $config->getMode());
+        self::assertSame(PayMode::NORMAL, $config->getMode());
 
         $config->validate();
     }
@@ -129,8 +128,7 @@ class AppleConfigTest extends TestCase
             'mode' => PayMode::SANDBOX,
         ]));
 
-        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
-        self::assertSame(PayMode::SANDBOX, $config->getModeEnum());
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
     }
 
     public function testInvalidModeThrowsException(): void

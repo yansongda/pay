@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Provider;
 
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Apple;
@@ -50,8 +51,8 @@ class AppleTest extends TestCase
 
     public function testUrl()
     {
-        self::assertEquals('https://api.storekit.apple.com', Apple::URL[Pay::MODE_NORMAL]);
-        self::assertEquals('https://api.storekit-sandbox.apple.com', Apple::URL[Pay::MODE_SANDBOX]);
-        self::assertEquals('https://api.storekit.apple.com', Apple::URL[Pay::MODE_SERVICE]);
+        self::assertEquals('https://api.storekit.apple.com', Apple::URL[PayMode::NORMAL->value]);
+        self::assertEquals('https://api.storekit-sandbox.apple.com', Apple::URL[PayMode::SANDBOX->value]);
+        self::assertEquals('https://api.storekit.apple.com', Apple::URL[PayMode::SERVICE->value]);
     }
 }

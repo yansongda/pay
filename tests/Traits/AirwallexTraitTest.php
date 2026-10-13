@@ -9,6 +9,7 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\AirwallexConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -40,7 +41,7 @@ class AirwallexTraitTest extends TestCase
         $sandboxConfig = new AirwallexConfig([
             'client_id' => 'airwallex_client_id',
             'api_key' => 'airwallex_api_key',
-            'mode' => Pay::MODE_SANDBOX,
+            'mode' => PayMode::SANDBOX,
         ]);
 
         self::assertSame('https://yansongda.cn', AirwallexTraitStub::getAirwallexUrl($config, new Collection(['_url' => 'https://yansongda.cn'])));

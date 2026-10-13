@@ -7,7 +7,6 @@ namespace Yansongda\Pay\Tests\Config;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Enum\PayMode;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
 class StripeConfigTest extends TestCase
@@ -28,7 +27,7 @@ class StripeConfigTest extends TestCase
 
         self::assertSame('default', $config->getTenant());
         self::assertSame('sk_test_123', $config->getSecretKey());
-        self::assertSame(Pay::MODE_NORMAL, $config->getMode());
+        self::assertSame(PayMode::NORMAL, $config->getMode());
     }
 
     public function testConstructWithTenant(): void
@@ -75,10 +74,11 @@ class StripeConfigTest extends TestCase
     public function testModeSandbox(): void
     {
         $config = new StripeConfig(array_merge($this->validConfig, [
-            'mode' => Pay::MODE_SANDBOX,
+            // 兼容历史 int 写法：0/1/2
+            'mode' => 1,
         ]));
 
-        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
     }
 
     public function testModeWithPayModeEnum(): void
@@ -87,7 +87,6 @@ class StripeConfigTest extends TestCase
             'mode' => PayMode::SANDBOX,
         ]));
 
-        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
-        self::assertSame(PayMode::SANDBOX, $config->getModeEnum());
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
     }
 }

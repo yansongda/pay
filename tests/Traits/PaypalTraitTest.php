@@ -13,6 +13,7 @@ use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\PaypalConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -40,7 +41,7 @@ class PaypalTraitTest extends TestCase
         self::assertEquals('https://api-m.sandbox.paypal.com/v2/checkout/orders', PaypalTraitStub::getPaypalUrl(new PaypalConfig([
             'client_id' => 'paypal_client_id',
             'app_secret' => 'paypal_app_secret',
-            'mode' => Pay::MODE_SANDBOX,
+            'mode' => PayMode::SANDBOX,
         ]), new Collection(['_url' => '/v2/checkout/orders'])));
 
         self::expectException(InvalidParamsException::class);

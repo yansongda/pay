@@ -5,16 +5,16 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Tests\Enum;
 
 use Yansongda\Pay\Enum\PayMode;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
 class PayModeTest extends TestCase
 {
-    public function testValuesAlignWithPayConstants(): void
+    public function testValuesAlignWithConfigStorage(): void
     {
-        self::assertSame(Pay::MODE_NORMAL, PayMode::NORMAL->value);
-        self::assertSame(Pay::MODE_SANDBOX, PayMode::SANDBOX->value);
-        self::assertSame(Pay::MODE_SERVICE, PayMode::SERVICE->value);
+        // 配置仍兼容 int 写法（0/1/2），枚举取值必须与其对齐（AbstractConfig 内部按 int 存储）
+        self::assertSame(0, PayMode::NORMAL->value);
+        self::assertSame(1, PayMode::SANDBOX->value);
+        self::assertSame(2, PayMode::SERVICE->value);
     }
 
     public function testCases(): void

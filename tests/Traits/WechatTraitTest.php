@@ -15,6 +15,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
@@ -54,7 +55,7 @@ class WechatTraitTest extends TestCase
                 'yansongda' => __DIR__.'/../Cert/wechatPublicKey.crt',
             ],
             'sub_mch_id' => '1600314070',
-            'mode' => Pay::MODE_SERVICE,
+            'mode' => PayMode::SERVICE,
         ]);
 
         self::assertEquals('https://yansongda.cn', WechatTraitStub::getWechatUrl($config, new Collection(['_url' => 'https://yansongda.cn'])));
@@ -135,7 +136,7 @@ class WechatTraitTest extends TestCase
                         '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
                         'yansongda' => __DIR__.'/../Cert/wechatPublicKey.crt',
                     ],
-                    'mode' => Pay::MODE_NORMAL,
+                    'mode' => PayMode::NORMAL,
                 ]))->toArray(), ['mch_secret_key_v2' => '']),
             ],
         ];
@@ -424,7 +425,7 @@ class WechatTraitTest extends TestCase
             'wechat_public_cert_path' => [
                 '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
             ],
-            'mode' => Pay::MODE_NORMAL,
+            'mode' => PayMode::NORMAL,
         ]);
 
         $uri = '/xpay/query_user_balance';

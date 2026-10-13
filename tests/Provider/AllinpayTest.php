@@ -13,6 +13,7 @@ use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
@@ -106,7 +107,7 @@ class AllinpayTest extends TestCase
                     'cusid' => '9900000',
                     'appid' => '000000',
                     'allinpay_public_key' => __DIR__.'/../Cert/allinpayPlatformPublicKey.pem',
-                    'mode' => Pay::MODE_SANDBOX,
+                    'mode' => PayMode::SANDBOX,
                 ],
             ],
         ]);
