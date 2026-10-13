@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -64,7 +65,7 @@ class GetTitleUrlPlugin implements PluginInterface
         $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
         return filter_params($payload)->merge([
-            'appid' => $payload->get('appid', $config->getAppIdByType($params['_type'] ?? 'mp') ?? ''),
+            'appid' => $payload->get('appid', $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? ''),
         ]);
     }
 }

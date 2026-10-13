@@ -8,6 +8,7 @@ use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Alipay\ProductCode;
 
 /**
  * @see https://opendocs.alipay.com/open/62987723_alipay.fund.trans.uni.transfer?pathHash=66064890&ref=api&scene=ca56bca529e64125a2786703c6192d41
@@ -24,7 +25,7 @@ class TransferPlugin implements PluginInterface
             'biz_content' => array_merge(
                 [
                     'biz_scene' => 'DIRECT_TRANSFER',
-                    'product_code' => 'TRANS_ACCOUNT_NO_PWD',
+                    'product_code' => ProductCode::TRANS_ACCOUNT_NO_PWD->value,
                 ],
                 $rocket->getParams(),
             ),

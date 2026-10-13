@@ -13,6 +13,7 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
@@ -39,7 +40,7 @@ class SendPlugin implements PluginInterface
         /** @var WechatConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getMode()->isService()) {
             $data = $this->service($payload, $config, $params);
         }
 
@@ -70,7 +71,7 @@ class SendPlugin implements PluginInterface
     protected function normal(WechatConfig $config, array $params): array
     {
         return [
-            'wxappid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
+            'wxappid' => $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? '',
             'mch_id' => $config->getMchId(),
         ];
     }
@@ -83,10 +84,10 @@ class SendPlugin implements PluginInterface
     protected function service(Collection $payload, WechatConfig $config, array $params): array
     {
         return [
-            'wxappid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
+            'wxappid' => $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? '',
             'mch_id' => $config->getMchId(),
             'sub_mch_id' => $payload->get('sub_mch_id', $config->getSubMchId() ?? ''),
-            'msgappid' => $config->getSubAppIdByType($params['_type'] ?? 'mp') ?? '',
+            'msgappid' => $config->getSubAppIdByType($params['_type'] ?? AppType::MP) ?? '',
         ];
     }
 }

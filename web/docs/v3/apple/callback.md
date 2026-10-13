@@ -56,7 +56,7 @@ $result = Pay::apple()->callback();
 验签通过后，SDK 会自动进行归属校验（对齐 Apple 官方库行为，防「真实 Apple 签名但错误归属」的伪造通知）：
 
 - 若配置了 `bundle_id`，则通知内的 `bundleId` 必须与之一致，否则抛出验签异常
-- 通知内的 `environment` 必须与 `mode` 匹配（`MODE_SANDBOX` 对应 `Sandbox`，`MODE_NORMAL`/`MODE_SERVICE` 对应 `Production`），否则抛出验签异常；TestFlight（`Xcode`）与本地 StoreKit 测试（`LocalTesting`）的通知会被拒绝
+- 通知内的 `environment` 必须与 `mode` 匹配（`PayMode::SANDBOX` 对应 `Sandbox`，`PayMode::NORMAL`/`PayMode::SERVICE` 对应 `Production`），否则抛出验签异常；TestFlight（`Xcode`）与本地 StoreKit 测试（`LocalTesting`）的通知会被拒绝
 
 未配置 App Store Server API 四件套（`issuer_id` 等）的租户会跳过 `bundleId` 校验，但 `environment` 校验始终执行。
 

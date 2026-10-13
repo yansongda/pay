@@ -7,6 +7,7 @@ namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\Virtual\PayPlugin;
@@ -125,7 +126,7 @@ class PayPluginTest extends TestCase
                     'wechat_public_cert_path' => [
                         '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../../../Cert/wechatAppPublicKey.pem',
                     ],
-                    'mode' => Pay::MODE_NORMAL,
+                    'mode' => PayMode::NORMAL,
                     'virtual_pay' => [
                         'app_key' => 'yansongda_virtual_pay',
                         'sandbox_app_key' => 'yansongda_virtual_pay_sandbox',

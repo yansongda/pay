@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -40,7 +41,7 @@ class DetailPlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $openId = $payload?->get('openid') ?? null;
         $couponId = $payload?->get('coupon_id') ?? null;
-        $appId = $payload?->get('appid') ?? $config->getAppIdByType($params['_type'] ?? 'mp') ?? 'null';
+        $appId = $payload?->get('appid') ?? $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? 'null';
 
         if (empty($openId) || empty($couponId)) {
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 查询代金券详情，参数缺少 `openid` 或 `coupon_id`');

@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -45,7 +46,7 @@ class QueryPlugin implements PluginInterface
         /** @var WechatConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getMode()->isService()) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 查询支付分订单，只支持普通商户模式，当前配置为服务商模式');
         }
 
@@ -55,7 +56,7 @@ class QueryPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING, '参数异常: 缺少支付分服务ID -- [service_id]');
         }
 
-        $appid = $payload?->get('appid') ?? $config->getAppIdByType($params['_type'] ?? 'mp');
+        $appid = $payload?->get('appid') ?? $config->getAppIdByType($params['_type'] ?? AppType::MP);
         if (empty($appid)) {
             throw new InvalidParamsException(Exception::PARAMS_WECHAT_APPID_MISSING, '参数异常: 缺少公众账号ID -- [appid]');
         }

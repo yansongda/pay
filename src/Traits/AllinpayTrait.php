@@ -32,7 +32,7 @@ trait AllinpayTrait
             return $url;
         }
 
-        return Allinpay::URL[$config->getMode()].$url;
+        return Allinpay::URL[$config->getMode()->value].$url;
     }
 
     /**

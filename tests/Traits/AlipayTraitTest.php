@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
@@ -71,7 +72,7 @@ class AlipayTraitTest extends TestCase
     public function testGetAlipayUrlDefault(): void
     {
         self::assertSame(
-            Alipay::URL[Pay::MODE_NORMAL].'/gateway.do?charset=utf-8',
+            Alipay::URL[PayMode::NORMAL->value].'/gateway.do?charset=utf-8',
             AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(), null)
         );
     }
@@ -79,8 +80,8 @@ class AlipayTraitTest extends TestCase
     public function testGetAlipayUrlSandbox(): void
     {
         self::assertSame(
-            Alipay::URL[Pay::MODE_SANDBOX].'/gateway.do?charset=utf-8',
-            AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(Pay::MODE_SANDBOX), null)
+            Alipay::URL[PayMode::SANDBOX->value].'/gateway.do?charset=utf-8',
+            AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(PayMode::SANDBOX), null)
         );
     }
 
@@ -92,7 +93,7 @@ class AlipayTraitTest extends TestCase
         );
     }
 
-    protected function getAlipayConfig(int $mode = Pay::MODE_NORMAL): AlipayConfig
+    protected function getAlipayConfig(PayMode|int $mode = PayMode::NORMAL): AlipayConfig
     {
         return new AlipayConfig([
             'app_id' => 'app_id',
@@ -107,7 +108,7 @@ class AlipayTraitTest extends TestCase
     public function testGetAlipayV3UrlDefault(): void
     {
         self::assertSame(
-            Alipay::URL[Pay::MODE_NORMAL],
+            Alipay::URL[PayMode::NORMAL->value],
             AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(), null)
         );
     }
@@ -116,7 +117,7 @@ class AlipayTraitTest extends TestCase
     {
         self::assertSame(
             Alipay::V3_SANDBOX_URL,
-            AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(Pay::MODE_SANDBOX), null)
+            AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(PayMode::SANDBOX), null)
         );
     }
 
@@ -131,7 +132,7 @@ class AlipayTraitTest extends TestCase
     public function testGetAlipayV3UrlWithPayloadPath(): void
     {
         self::assertSame(
-            Alipay::URL[Pay::MODE_NORMAL].'/v3/alipay/trade/pay',
+            Alipay::URL[PayMode::NORMAL->value].'/v3/alipay/trade/pay',
             AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(), new Collection(['_url' => '/v3/alipay/trade/pay']))
         );
     }

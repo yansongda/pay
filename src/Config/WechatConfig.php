@@ -6,8 +6,8 @@ namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\CertManager;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 
 class WechatConfig extends AbstractConfig
@@ -28,7 +28,6 @@ class WechatConfig extends AbstractConfig
     private ?string $subMpAppId = null;
     private ?string $subMiniAppId = null;
     private ?string $subAppId = null;
-    private int $mode = Pay::MODE_NORMAL;
     private WechatConfigVirtualPay $virtualPay;
 
     /**
@@ -130,11 +129,6 @@ class WechatConfig extends AbstractConfig
         }
     }
 
-    public function setMode(int $value): void
-    {
-        $this->mode = $value;
-    }
-
     public function getMchId(): string
     {
         return $this->mchId;
@@ -215,11 +209,6 @@ class WechatConfig extends AbstractConfig
         return $this->subAppId;
     }
 
-    public function getMode(): int
-    {
-        return $this->mode;
-    }
-
     /**
      * @param array<string, mixed>|WechatConfigVirtualPay $value
      */
@@ -238,28 +227,28 @@ class WechatConfig extends AbstractConfig
     /**
      * 根据微信支付类型获取对应的 AppId.
      *
-     * @param string $type 支付类型: 'mp'(公众号), 'mini'(小程序), 'app'(APP)
+     * @param AppType|string $type 支付类型: MP(公众号, 默认), MINI(小程序), APP(APP)；未知值按 MP 处理（历史行为）
      */
-    public function getAppIdByType(string $type = 'mp'): ?string
+    public function getAppIdByType(AppType|string $type = AppType::MP): ?string
     {
-        return match ($type) {
-            'mini' => $this->miniAppId,
-            'app' => $this->appId,
-            default => $this->mpAppId,
+        return match (AppType::fromLoose($type)) {
+            AppType::MINI => $this->miniAppId,
+            AppType::APP => $this->appId,
+            AppType::MP => $this->mpAppId,
         };
     }
 
     /**
      * 根据微信支付类型获取对应的子商户 AppId（服务商模式）.
      *
-     * @param string $type 支付类型: 'mp'(公众号), 'mini'(小程序), 'app'(APP)
+     * @param AppType|string $type 支付类型: MP(公众号, 默认), MINI(小程序), APP(APP)；未知值按 MP 处理（历史行为）
      */
-    public function getSubAppIdByType(string $type = 'mp'): ?string
+    public function getSubAppIdByType(AppType|string $type = AppType::MP): ?string
     {
-        return match ($type) {
-            'mini' => $this->subMiniAppId,
-            'app' => $this->subAppId,
-            default => $this->subMpAppId,
+        return match (AppType::fromLoose($type)) {
+            AppType::MINI => $this->subMiniAppId,
+            AppType::APP => $this->subAppId,
+            AppType::MP => $this->subMpAppId,
         };
     }
 
@@ -287,7 +276,7 @@ class WechatConfig extends AbstractConfig
             );
         }
 
-        if (Pay::MODE_SERVICE === $this->mode && empty($this->subMchId)) {
+        if ($this->getMode()->isService() && empty($this->subMchId)) {
             throw new InvalidConfigException(
                 Exception::CONFIG_WECHAT_INVALID,
                 '配置异常: 服务商模式下缺少 [sub_mch_id]'

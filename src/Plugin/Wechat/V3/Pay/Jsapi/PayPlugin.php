@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -44,7 +45,7 @@ class PayPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Jsapi 下单，参数为空');
         }
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getMode()->isService()) {
             $data = $this->service($payload, $config, $params);
         }
 
@@ -71,7 +72,7 @@ class PayPlugin implements PluginInterface
     protected function normal(WechatConfig $config, array $params): array
     {
         return [
-            'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
+            'appid' => $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? '',
             'mchid' => $config->getMchId(),
         ];
     }
@@ -84,13 +85,13 @@ class PayPlugin implements PluginInterface
     protected function service(Collection $payload, WechatConfig $config, array $params): array
     {
         $data = [
-            'sp_appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
+            'sp_appid' => $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? '',
             'sp_mchid' => $config->getMchId(),
             'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
         ];
 
         if ($payload->has('payer.sub_openid')) {
-            $data['sub_appid'] = $config->getSubAppIdByType($params['_type'] ?? 'mp') ?? '';
+            $data['sub_appid'] = $config->getSubAppIdByType($params['_type'] ?? AppType::MP) ?? '';
         }
 
         return $data;

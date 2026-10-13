@@ -8,6 +8,7 @@ use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Alipay\ProductCode;
 
 /**
  * @see https://opendocs.alipay.com/open/09bj50?pathHash=9c577eb9&ref=api&scene=b58198cdbff342edad810bfee704489a
@@ -22,7 +23,7 @@ class ScanFreezePlugin implements PluginInterface
             'method' => 'alipay.fund.auth.order.voucher.create',
             'biz_content' => array_merge(
                 [
-                    'product_code' => 'PREAUTH_PAY',
+                    'product_code' => ProductCode::PREAUTH_PAY->value,
                 ],
                 $rocket->getParams()
             ),

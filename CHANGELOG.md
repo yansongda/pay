@@ -18,6 +18,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   - 文档：`web/docs/v3/apple/` 提供支付/查询/退款/回调/应答/插件页面，侧边栏已挂载
   - 内部结构：`AppleTrait` 仅保留门面（URL/ES256 JWT/密码学入口），实现下沉至 `src/Crypto/Apple/`（`Cryptor` 通用工具 / `TokenVerifier` 令牌验签解密 / `JwsVerifier` JWS 验签），对外调用方式不变
 
+- 枚举化（`src/Enum/`，沿用 Apple `SubscriptionStatus` 风格；全部为新增能力，默认行为与报文逐字节不变）：
+  - 新增 `PayMode`（配置项 `mode`）：`'mode' => PayMode::SANDBOX`，同时兼容历史 int 写法（`0`/`1`/`2`）；`$config->getMode()` 返回 `PayMode`，插件内 `Pay::MODE_* === $config->getMode()` 统一收口为 `$config->getMode()->isService()/isNormal()/isSandbox()`；`toArray()['mode']` 同步为枚举（`toJson()`/`json_encode()` 仍输出 `0`/`1`/`2`）
+  - 微信：新增 `AppType`（`_type`：mp/mini/app）、`PapayScene`（委托代扣 `_type` 场景：mp/mini/app/scan/h5）、`ReceiverType`（分账接收方 `type`：MERCHANT_ID/PERSONAL_OPENID/PERSONAL_SUB_OPENID）、`VirtualPayEnv`（虚拟支付 `env`：0/1）；`_type` 未知值仍按 MP 处理、分账未知 `type` 仍透传、`env` 未知值仍按正式环境处理（均为历史行为）
+  - 支付宝：新增 `ProductCode`（`biz_content.product_code`）与 `BizCode`（数字身份/人脸 `biz_content.biz_code`），插件内字面量统一改为枚举取值
+  - 文档：`web/docs/v3/wechat/pay.md`、`web/docs/v3/wechat/virtual.md`、`web/docs/v3/quick-start/init.md` 补充枚举用法
+
+### Changed
+
+- `ProviderConfigInterface::getMode()` 返回类型由 `int` 变更为 `PayMode` 枚举，`AbstractConfig` 统一实现 `$mode` / `setMode()` / `getMode()`（各 Provider Config 不再重复声明），`AbstractConfig::getModeEnum()` 移除；对外 `$config->getMode() === 1` 这类与 int 的比较恒为 `false`，请改用 `$config->getMode()->isSandbox()` / `isService()`（#1221）
+
+### Removed
+
+- 删除 `Pay::MODE_NORMAL` / `Pay::MODE_SANDBOX` / `Pay::MODE_SERVICE` 常量，请改用 `PayMode::NORMAL` / `PayMode::SANDBOX` / `PayMode::SERVICE`（`use Yansongda\Pay\Enum\PayMode;`）；配置项 `mode` 仍兼容历史 int 写法（#1221）
+
 ## [v3.8.0-beta.7] - 2026-10-08
 
 ### Fixed

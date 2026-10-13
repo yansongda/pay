@@ -17,6 +17,7 @@ use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\VirtualPayEnv;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
@@ -66,7 +67,7 @@ trait WechatTrait
             return Wechat::URL_OPENAPI.$url;
         }
 
-        return Wechat::URL[$config->getMode()].$url;
+        return Wechat::URL[$config->getMode()->value].$url;
     }
 
     /**
@@ -397,7 +398,7 @@ trait WechatTrait
     /**
      * @throws InvalidConfigException
      */
-    public static function getWechatVirtualPaySignature(WechatConfig $config, string $uri, string $body, int $env = 0): string
+    public static function getWechatVirtualPaySignature(WechatConfig $config, string $uri, string $body, int|VirtualPayEnv $env = VirtualPayEnv::PRODUCTION): string
     {
         $appKey = $config->getVirtualPay()->getAppKey($env);
 

@@ -8,6 +8,8 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Config\WechatConfigVirtualPay;
+use Yansongda\Pay\Enum\PayMode;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use PHPUnit\Framework\Attributes\Group;
@@ -39,7 +41,7 @@ class WechatConfigTest extends TestCase
         self::assertSame('test_cert', $config->getMchSecretCert());
         self::assertSame('test_path', $config->getMchPublicCertPath());
         self::assertSame('https://test.com', $config->getNotifyUrl());
-        self::assertSame(Pay::MODE_NORMAL, $config->getMode());
+        self::assertSame(PayMode::NORMAL, $config->getMode());
     }
 
     public function testConstructWithTenant(): void
@@ -47,6 +49,64 @@ class WechatConfigTest extends TestCase
         $config = new WechatConfig($this->validConfig, 'custom_tenant');
 
         self::assertSame('custom_tenant', $config->getTenant());
+    }
+
+    public function testModeSandbox(): void
+    {
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'mode' => PayMode::SANDBOX,
+        ]));
+
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
+        self::assertTrue($config->getMode()->isSandbox());
+
+        $config->validate();
+    }
+
+    public function testModeWithIntValue(): void
+    {
+        // 兼容历史 int 写法：0/1/2
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'mode' => 1,
+        ]));
+
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
+    }
+
+    public function testGetAppIdByType(): void
+    {
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'mp_app_id' => 'mp_app_id',
+            'mini_app_id' => 'mini_app_id',
+            'app_id' => 'app_id',
+            'sub_mp_app_id' => 'sub_mp_app_id',
+            'sub_mini_app_id' => 'sub_mini_app_id',
+            'sub_app_id' => 'sub_app_id',
+        ]));
+
+        self::assertSame('mp_app_id', $config->getAppIdByType(AppType::MP));
+        self::assertSame('mini_app_id', $config->getAppIdByType(AppType::MINI));
+        self::assertSame('app_id', $config->getAppIdByType(AppType::APP));
+        // 未知值按 MP 处理（历史行为）
+        self::assertSame('mp_app_id', $config->getAppIdByType('foo'));
+    }
+
+    public function testGetSubAppIdByType(): void
+    {
+        $config = new WechatConfig(array_merge($this->validConfig, [
+            'mp_app_id' => 'mp_app_id',
+            'mini_app_id' => 'mini_app_id',
+            'app_id' => 'app_id',
+            'sub_mp_app_id' => 'sub_mp_app_id',
+            'sub_mini_app_id' => 'sub_mini_app_id',
+            'sub_app_id' => 'sub_app_id',
+        ]));
+
+        self::assertSame('sub_mp_app_id', $config->getSubAppIdByType(AppType::MP));
+        self::assertSame('sub_mini_app_id', $config->getSubAppIdByType(AppType::MINI));
+        self::assertSame('sub_app_id', $config->getSubAppIdByType(AppType::APP));
+        // 未知值按 MP 处理（历史行为）
+        self::assertSame('sub_mp_app_id', $config->getSubAppIdByType('foo'));
     }
 
     public function testConstructWithoutNotifyUrl(): void
@@ -102,7 +162,7 @@ class WechatConfigTest extends TestCase
             'mch_secret_cert' => 'test_cert',
             'mch_public_cert_path' => 'test_path',
             'notify_url' => 'https://test.com',
-            'mode' => Pay::MODE_SERVICE,
+            'mode' => PayMode::SERVICE,
             // missing sub_mch_id
         ]);
         $config->validate();
@@ -116,11 +176,11 @@ class WechatConfigTest extends TestCase
             'mch_secret_cert' => 'test_cert',
             'mch_public_cert_path' => 'test_path',
             'notify_url' => 'https://test.com',
-            'mode' => Pay::MODE_SERVICE,
+            'mode' => PayMode::SERVICE,
             'sub_mch_id' => 'sub_mch_id',
         ]);
 
-        self::assertSame(Pay::MODE_SERVICE, $config->getMode());
+        self::assertSame(PayMode::SERVICE, $config->getMode());
         self::assertSame('sub_mch_id', $config->getSubMchId());
     }
 
@@ -315,7 +375,7 @@ class WechatConfigTest extends TestCase
     public function testVirtualPayOnlyConfigSkipsSubMchIdValidationInServiceMode(): void
     {
         $config = new WechatConfig([
-            'mode' => Pay::MODE_SERVICE,
+            'mode' => PayMode::SERVICE,
             'virtual_pay' => [
                 'app_key' => 'vp-app-key',
                 'app_secret' => 'vp-app-secret',
@@ -324,7 +384,7 @@ class WechatConfigTest extends TestCase
 
         $config->validate();
 
-        self::assertSame(Pay::MODE_SERVICE, $config->getMode());
+        self::assertSame(PayMode::SERVICE, $config->getMode());
     }
 
     #[Group('VirtualPay')]

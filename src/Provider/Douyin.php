@@ -15,6 +15,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
@@ -33,9 +34,9 @@ class Douyin implements ProviderInterface
     use DouyinTrait;
 
     public const URL = [
-        Pay::MODE_NORMAL => 'https://open.douyin.com',
-        Pay::MODE_SANDBOX => 'https://open-sandbox.douyin.com',
-        Pay::MODE_SERVICE => 'https://open.douyin.com',
+        PayMode::NORMAL->value => 'https://open.douyin.com',
+        PayMode::SANDBOX->value => 'https://open-sandbox.douyin.com',
+        PayMode::SERVICE->value => 'https://open.douyin.com',
     ];
 
     /**

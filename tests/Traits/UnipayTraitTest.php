@@ -9,9 +9,9 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\UnipayConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\UnipayTrait;
 use Yansongda\Supports\Collection;
@@ -78,8 +78,8 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
         self::assertEquals('https://yansongda.cn', UnipayTraitStub::getUnipayUrl($config, new Collection(['_url' => 'https://yansongda.cn'])));
         self::assertEquals('https://gateway.95516.com/api/v1/yansongda', UnipayTraitStub::getUnipayUrl($config, new Collection(['_url' => '/api/v1/yansongda'])));
-        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => Pay::MODE_SERVICE]), new Collection(['_service_url' => '/api/v1/service/yansongda'])));
-        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => Pay::MODE_SERVICE]), new Collection(['_url' => '/foo', '_service_url' => '/api/v1/service/yansongda'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => PayMode::SERVICE]), new Collection(['_service_url' => '/api/v1/service/yansongda'])));
+        self::assertEquals('https://gateway.95516.com/api/v1/service/yansongda', UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => PayMode::SERVICE]), new Collection(['_url' => '/foo', '_service_url' => '/api/v1/service/yansongda'])));
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_UNIPAY_URL_MISSING);

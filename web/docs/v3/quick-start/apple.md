@@ -25,8 +25,8 @@ Pay::config([
             'api_private_key' => '/path/to/api.key',
             // 选填-通知地址（文档用，SDK 不主动上报）
             'notify_url' => 'https://yansongda.cn/apple/notify',
-            // 选填-默认为正常模式。可选为： MODE_NORMAL, MODE_SANDBOX, MODE_SERVICE
-            'mode' => Pay::MODE_NORMAL,
+            // 选填-默认为正常模式。可选为： PayMode::NORMAL、PayMode::SANDBOX、PayMode::SERVICE（需 `use Yansongda\Pay\Enum\PayMode;`）
+            'mode' => PayMode::NORMAL,
         ],
     ],
 ]);

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Config;
 
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 class AllinpayConfig extends AbstractConfig
 {
@@ -15,7 +15,6 @@ class AllinpayConfig extends AbstractConfig
     private string $mchSecretKey = '';
     private string $allinpayPublicKey = '';
     private ?string $notifyUrl = null;
-    private int $mode = Pay::MODE_NORMAL;
 
     public function setCusid(string $value): void
     {
@@ -45,11 +44,6 @@ class AllinpayConfig extends AbstractConfig
     public function setNotifyUrl(?string $value): void
     {
         $this->notifyUrl = $value;
-    }
-
-    public function setMode(int $value): void
-    {
-        $this->mode = $value;
     }
 
     public function getCusid(): string
@@ -82,14 +76,9 @@ class AllinpayConfig extends AbstractConfig
         return $this->notifyUrl;
     }
 
-    public function getMode(): int
-    {
-        return $this->mode;
-    }
-
     protected function supportedModes(): array
     {
-        return [Pay::MODE_NORMAL, Pay::MODE_SANDBOX];
+        return [PayMode::NORMAL, PayMode::SANDBOX];
     }
 
     protected function validateRequired(): void

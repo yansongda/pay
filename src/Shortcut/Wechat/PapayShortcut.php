@@ -10,6 +10,7 @@ use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Action\WechatAction;
+use Yansongda\Pay\Enum\Wechat\PapayScene;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
@@ -91,10 +92,11 @@ class PapayShortcut implements ShortcutInterface
      */
     protected function contractPlugins(array $params): array
     {
-        return match ($params['_type'] ?? 'default') {
-            'mini' => [StartPlugin::class, MiniOnlyContractPlugin::class, AddPayloadSignaturePlugin::class],
-            default => throw new InvalidParamsException(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED, '参数异常: 微信扣关服务纯签约，当前传递的 `_type` 类型不支持')
-        };
+        if (PapayScene::MINI !== PapayScene::fromLoose($params['_type'] ?? null)) {
+            throw new InvalidParamsException(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED, '参数异常: 微信扣关服务纯签约，当前传递的 `_type` 类型不支持');
+        }
+
+        return [StartPlugin::class, MiniOnlyContractPlugin::class, AddPayloadSignaturePlugin::class];
     }
 
     /**
@@ -121,12 +123,17 @@ class PapayShortcut implements ShortcutInterface
      */
     protected function getInvoke(array $params): ?string
     {
-        return match ($params['_type'] ?? 'default') {
-            'app' => AppInvokePlugin::class,
-            'mini' => MiniInvokePlugin::class,
-            'mp' => MpInvokePlugin::class,
-            'scan', 'h5' => null, // NATIVE 响应 code_url，MWEB 响应 mweb_url，均无需调起插件
-            default => throw new InvalidParamsException(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED, '参数异常: 微信扣关服务支付中签约，当前传递的 `_type` 类型不支持')
+        $scene = PapayScene::fromLoose($params['_type'] ?? null);
+
+        if (is_null($scene)) {
+            throw new InvalidParamsException(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED, '参数异常: 微信扣关服务支付中签约，当前传递的 `_type` 类型不支持');
+        }
+
+        return match ($scene) {
+            PapayScene::MINI => MiniInvokePlugin::class,
+            PapayScene::APP => AppInvokePlugin::class,
+            PapayScene::MP => MpInvokePlugin::class,
+            PapayScene::SCAN, PapayScene::H5 => null, // NATIVE 响应 code_url，MWEB 响应 mweb_url，均无需调起插件
         };
     }
 }

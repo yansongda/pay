@@ -8,6 +8,7 @@ use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Alipay\BizCode;
 
 /**
  * @see https://opendocs.alipay.com/open/02zloa?pathHash=b0b7fece&ref=api&scene=common
@@ -22,7 +23,7 @@ class H5InitPlugin implements PluginInterface
             'method' => 'datadigital.fincloud.generalsaas.face.certify.initialize',
             'biz_content' => array_merge(
                 [
-                    'biz_code' => 'FUTURE_TECH_BIZ_FACE_SDK',
+                    'biz_code' => BizCode::FUTURE_TECH_BIZ_FACE_SDK->value,
                 ],
                 $rocket->getParams(),
             ),

@@ -44,7 +44,7 @@ trait DouyinTrait
             return $url;
         }
 
-        return Douyin::URL[$config->getMode()].$url;
+        return Douyin::URL[$config->getMode()->value].$url;
     }
 
     /**

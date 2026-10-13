@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Alipay\ProductCode;
 use Yansongda\Pay\Traits\AlipayTrait;
 
 /**
@@ -35,7 +36,7 @@ class PayPlugin implements PluginInterface
                 'method' => 'alipay.trade.page.pay',
                 'biz_content' => array_merge(
                     [
-                        'product_code' => 'FAST_INSTANT_TRADE_PAY',
+                        'product_code' => ProductCode::FAST_INSTANT_TRADE_PAY->value,
                     ],
                     $rocket->getParams()
                 ),

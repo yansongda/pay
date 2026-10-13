@@ -6,7 +6,6 @@ namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 /**
  * 支付宝租户配置（V2 网关签名与 V3 OpenAPI 共用一套配置）.
@@ -22,7 +21,6 @@ class AlipayConfig extends AbstractConfig
     protected ?string $appAuthToken = null;
     protected ?string $aesKey = null;
     protected ?string $serviceProviderId = null;
-    protected int $mode = Pay::MODE_NORMAL;
 
     // ── 证书（V2/V3 完全共用）──
 
@@ -63,11 +61,6 @@ class AlipayConfig extends AbstractConfig
     public function setServiceProviderId(?string $value): void
     {
         $this->serviceProviderId = $value;
-    }
-
-    public function setMode(int $value): void
-    {
-        $this->mode = $value;
     }
 
     public function setAppPublicCertPath(string $value): void
@@ -127,11 +120,6 @@ class AlipayConfig extends AbstractConfig
     public function getServiceProviderId(): ?string
     {
         return $this->serviceProviderId;
-    }
-
-    public function getMode(): int
-    {
-        return $this->mode;
     }
 
     public function getAppPublicCertPath(): string

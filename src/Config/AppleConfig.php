@@ -6,7 +6,6 @@ namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 class AppleConfig extends AbstractConfig
 {
@@ -26,7 +25,6 @@ class AppleConfig extends AbstractConfig
     private ?string $apiKeyId = null;
     private ?string $apiPrivateKey = null;
     private ?string $notifyUrl = null;
-    private int $mode = Pay::MODE_NORMAL;
 
     public function setMerchantId(string $value): void
     {
@@ -78,11 +76,6 @@ class AppleConfig extends AbstractConfig
         $this->notifyUrl = $value;
     }
 
-    public function setMode(int $value): void
-    {
-        $this->mode = $value;
-    }
-
     public function getMerchantId(): string
     {
         return $this->merchantId;
@@ -131,11 +124,6 @@ class AppleConfig extends AbstractConfig
     public function getNotifyUrl(): ?string
     {
         return $this->notifyUrl;
-    }
-
-    public function getMode(): int
-    {
-        return $this->mode;
     }
 
     /**

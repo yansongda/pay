@@ -6,7 +6,6 @@ namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 class AirwallexConfig extends AbstractConfig
 {
@@ -18,7 +17,6 @@ class AirwallexConfig extends AbstractConfig
     private ?string $onBehalfOf = null;
     private ?string $accessToken = null;
     private ?int $accessTokenExpiry = null;
-    private int $mode = Pay::MODE_NORMAL;
 
     public function setClientId(string $value): void
     {
@@ -60,11 +58,6 @@ class AirwallexConfig extends AbstractConfig
         $this->accessTokenExpiry = null === $value ? null : (int) $value;
     }
 
-    public function setMode(int $value): void
-    {
-        $this->mode = $value;
-    }
-
     public function getClientId(): string
     {
         return $this->clientId;
@@ -103,11 +96,6 @@ class AirwallexConfig extends AbstractConfig
     public function getAccessTokenExpiry(): ?int
     {
         return $this->accessTokenExpiry;
-    }
-
-    public function getMode(): int
-    {
-        return $this->mode;
     }
 
     /**

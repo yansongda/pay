@@ -68,21 +68,6 @@ class Pay
     public const PROVIDER_APPLE = 'apple';
 
     /**
-     * 正常模式.
-     */
-    public const MODE_NORMAL = 0;
-
-    /**
-     * 沙箱模式.
-     */
-    public const MODE_SANDBOX = 1;
-
-    /**
-     * 服务商模式.
-     */
-    public const MODE_SERVICE = 2;
-
-    /**
      * @var array<class-string>
      */
     protected static array $providers = [

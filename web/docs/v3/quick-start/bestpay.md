@@ -34,8 +34,8 @@ $config = [
             // 选填
             'notify_url' => 'https://yansongda.cn/bestpay/notify',
             'return_url' => 'https://yansongda.cn/bestpay/return',
-            // 选填-MODE_NORMAL / MODE_SANDBOX（翼支付无服务商模式）
-            'mode' => Pay::MODE_NORMAL,
+            // 选填-PayMode::NORMAL / PayMode::SANDBOX（翼支付无服务商模式；需 `use Yansongda\Pay\Enum\PayMode;`）
+            'mode' => PayMode::NORMAL,
         ],
     ],
 ];

@@ -9,6 +9,7 @@ use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Alipay\ProductCode;
 
 /**
  * @see https://opendocs.alipay.com/open/064jhe?pathHash=629fa9a5&ref=api&scene=2a9ad7e9012248b0acd5edd04c9f31b6
@@ -24,7 +25,7 @@ class AppFreezePlugin implements PluginInterface
                 'method' => 'alipay.fund.auth.order.app.freeze',
                 'biz_content' => array_merge(
                     [
-                        'product_code' => 'PREAUTH_PAY',
+                        'product_code' => ProductCode::PREAUTH_PAY->value,
                     ],
                     $rocket->getParams()
                 ),

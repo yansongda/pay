@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
@@ -43,7 +44,7 @@ class CreatePlugin implements PluginInterface
         /** @var WechatConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getMode()->isService()) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 发起商家转账，只支持普通商户模式，当前配置为服务商模式');
         }
 
@@ -55,7 +56,7 @@ class CreatePlugin implements PluginInterface
             [
                 '_method' => 'POST',
                 '_url' => '/v3/fund-app/mch-transfer/transfer-bills',
-                'appid' => $payload->get('appid', $config->getAppIdByType($params['_type'] ?? 'mp') ?? ''),
+                'appid' => $payload->get('appid', $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? ''),
                 'notify_url' => $payload->get('notify_url', $config->getNotifyUrl()),
             ],
             $this->normal($params, $payload)

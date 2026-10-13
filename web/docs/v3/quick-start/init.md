@@ -27,12 +27,13 @@ $config = [
             'notify_url' => 'https://yansongda.cn/alipay/notify',
             // 「选填」第三方应用授权token
             'app_auth_token' => '',
-            // 「选填」服务商模式下的服务商 id，当 mode 为 Pay::MODE_SERVICE 时使用该参数
+            // 「选填」服务商模式下的服务商 id，当 mode 为 PayMode::SERVICE 时使用该参数
             'service_provider_id' => '',
             // 「选填」AES 密钥，用于解密响应内容（如会员手机号等敏感信息接口）
             'aes_key' => '',
-            // 「选填」默认为正常模式。可选为： MODE_NORMAL, MODE_SANDBOX, MODE_SERVICE
-            'mode' => Pay::MODE_NORMAL,
+            // 「选填」默认为正常模式。可选为： PayMode::NORMAL、PayMode::SANDBOX、PayMode::SERVICE
+            // 需 `use Yansongda\Pay\Enum\PayMode;`；也兼容历史 int 写法（0/1/2）
+            'mode' => PayMode::NORMAL,
         ]
     ],
     'wechat' => [
@@ -97,8 +98,9 @@ $config = [
                 '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
                 'PUB_KEY_ID_0000000000000024101100397200000006' => __DIR__.'/Cert/publickey.pem',
             ],
-            // 「选填」默认为正常模式。可选为： MODE_NORMAL, MODE_SERVICE
-            'mode' => Pay::MODE_NORMAL,
+            // 「选填」默认为正常模式。可选为： PayMode::NORMAL、PayMode::SERVICE
+            // 需 `use Yansongda\Pay\Enum\PayMode;`；也兼容历史 int 写法（0/1/2）
+            'mode' => PayMode::NORMAL,
         ]
     ],
     'unipay' => [
@@ -117,7 +119,8 @@ $config = [
             'return_url' => 'https://yansongda.cn/unipay/return',
             // 「必填」
             'notify_url' => 'https://yansongda.cn/unipay/notify',
-            'mode' => Pay::MODE_NORMAL,
+            // 需 `use Yansongda\Pay\Enum\PayMode;`；也兼容历史 int 写法（0/1/2）
+            'mode' => PayMode::NORMAL,
         ],
     ],
     'douyin' => [
@@ -155,8 +158,9 @@ $config = [
             'cancel_url' => 'https://yansongda.cn/paypal/cancel',
             // 「选填」异步通知地址（如有需要请自行在 PayPal 后台配置 Webhook）
             'notify_url' => 'https://yansongda.cn/paypal/notify',
-            // 「选填」默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:沙箱环境
-            'mode' => Pay::MODE_NORMAL,
+            // 「选填」默认为正常模式。可选为： PayMode::NORMAL:正式环境、PayMode::SANDBOX:沙箱环境
+            // 需 `use Yansongda\Pay\Enum\PayMode;`；也兼容历史 int 写法（0/1/2）
+            'mode' => PayMode::NORMAL,
         ],
     ],
     'stripe' => [
@@ -171,8 +175,9 @@ $config = [
             'success_url' => 'https://yansongda.cn/stripe/success',
             // 「选填」用户取消支付后 Stripe 跳转的取消地址（Checkout Session 模式使用）
             'cancel_url' => 'https://yansongda.cn/stripe/cancel',
-            // 「选填」默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:沙箱环境
-            'mode' => Pay::MODE_NORMAL,
+            // 「选填」默认为正常模式。可选为： PayMode::NORMAL:正式环境、PayMode::SANDBOX:沙箱环境
+            // 需 `use Yansongda\Pay\Enum\PayMode;`；也兼容历史 int 写法（0/1/2）
+            'mode' => PayMode::NORMAL,
         ],
     ],
     'jsb' => [
@@ -191,8 +196,9 @@ $config = [
             'jsb_public_cert_path' => '',
             // 支付通知地址
             'notify_url' => '',
-            // 「选填」默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:测试环境
-            'mode' => Pay::MODE_NORMAL,
+            // 「选填」默认为正常模式。可选为： PayMode::NORMAL:正式环境、PayMode::SANDBOX:测试环境
+            // 需 `use Yansongda\Pay\Enum\PayMode;`；也兼容历史 int 写法（0/1/2）
+            'mode' => PayMode::NORMAL,
         ],
     ],
     'logger' => [

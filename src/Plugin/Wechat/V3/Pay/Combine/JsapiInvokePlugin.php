@@ -14,6 +14,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -104,10 +105,10 @@ class JsapiInvokePlugin implements PluginInterface
      */
     protected function getAppId(?Collection $payload, WechatConfig $config, array $params): string
     {
-        if (Pay::MODE_SERVICE === $config->getMode()) {
-            return $payload?->get('_invoke_appid') ?? ($config->getSubAppIdByType($params['_type'] ?? 'mp') ?? '');
+        if ($config->getMode()->isService()) {
+            return $payload?->get('_invoke_appid') ?? ($config->getSubAppIdByType($params['_type'] ?? AppType::MP) ?? '');
         }
 
-        return $payload?->get('_invoke_appid') ?? ($config->getAppIdByType($params['_type'] ?? 'mp') ?? '');
+        return $payload?->get('_invoke_appid') ?? ($config->getAppIdByType($params['_type'] ?? AppType::MP) ?? '');
     }
 }

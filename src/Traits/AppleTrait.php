@@ -49,7 +49,7 @@ trait AppleTrait
             return $url;
         }
 
-        return Apple::URL[$config->getMode()].$url;
+        return Apple::URL[$config->getMode()->value].$url;
     }
 
     /**

@@ -42,7 +42,7 @@ trait AirwallexTrait
             return $url;
         }
 
-        return Airwallex::URL[$config->getMode()].$url;
+        return Airwallex::URL[$config->getMode()->value].$url;
     }
 
     public static function getAirwallexRequestId(): string

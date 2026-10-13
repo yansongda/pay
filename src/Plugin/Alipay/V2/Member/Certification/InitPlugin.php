@@ -8,6 +8,7 @@ use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Alipay\ProductCode;
 
 /**
  * @see https://opendocs.alipay.com/open/02ahjy?pathHash=ed72e8ea&ref=api&scene=common
@@ -22,7 +23,7 @@ class InitPlugin implements PluginInterface
             'method' => 'alipay.user.certify.open.initialize',
             'biz_content' => array_merge(
                 [
-                    'product_code' => 'FACE',
+                    'product_code' => ProductCode::FACE->value,
                 ],
                 $rocket->getParams(),
             ),

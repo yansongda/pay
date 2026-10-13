@@ -6,8 +6,8 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\PaypalConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
 class PaypalConfigTest extends TestCase
@@ -30,7 +30,7 @@ class PaypalConfigTest extends TestCase
         self::assertSame('default', $config->getTenant());
         self::assertSame('test_client_id', $config->getClientId());
         self::assertSame('test_app_secret', $config->getAppSecret());
-        self::assertSame(Pay::MODE_NORMAL, $config->getMode());
+        self::assertSame(PayMode::NORMAL, $config->getMode());
     }
 
     public function testConstructWithTenant(): void
@@ -96,10 +96,20 @@ class PaypalConfigTest extends TestCase
     public function testModeSandbox(): void
     {
         $config = new PaypalConfig(array_merge($this->validConfig, [
-            'mode' => Pay::MODE_SANDBOX,
+            // 兼容历史 int 写法：0/1/2
+            'mode' => 1,
         ]));
 
-        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
+    }
+
+    public function testModeWithPayModeEnum(): void
+    {
+        $config = new PaypalConfig(array_merge($this->validConfig, [
+            'mode' => PayMode::SANDBOX,
+        ]));
+
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
     }
 
     public function testInvalidModeThrowsException(): void

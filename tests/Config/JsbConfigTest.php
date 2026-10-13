@@ -6,8 +6,8 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\JsbConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
 class JsbConfigTest extends TestCase
@@ -34,7 +34,7 @@ class JsbConfigTest extends TestCase
         self::assertSame('00', $config->getPublicKeyCode());
         self::assertSame('/path/to/secret.pem', $config->getMchSecretCertPath());
         self::assertSame('/path/to/jsb.pem', $config->getJsbPublicCertPath());
-        self::assertSame(Pay::MODE_NORMAL, $config->getMode());
+        self::assertSame(PayMode::NORMAL, $config->getMode());
     }
 
     public function testConstructWithTenant(): void
@@ -83,10 +83,20 @@ class JsbConfigTest extends TestCase
     public function testModeSandbox(): void
     {
         $config = new JsbConfig(array_merge($this->validConfig, [
-            'mode' => Pay::MODE_SANDBOX,
+            // 兼容历史 int 写法：0/1/2
+            'mode' => 1,
         ]));
 
-        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
+    }
+
+    public function testModeWithPayModeEnum(): void
+    {
+        $config = new JsbConfig(array_merge($this->validConfig, [
+            'mode' => PayMode::SANDBOX,
+        ]));
+
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
     }
 
     public function testServiceModeThrowsException(): void
@@ -97,7 +107,7 @@ class JsbConfigTest extends TestCase
         $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
         $config = new JsbConfig(array_merge($this->validConfig, [
-            'mode' => Pay::MODE_SERVICE,
+            'mode' => PayMode::SERVICE,
         ]));
         $config->validate();
     }

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 class JsbConfig extends AbstractConfig
 {
@@ -17,7 +17,6 @@ class JsbConfig extends AbstractConfig
     private ?string $mchPublicCertPath = null;
     private string $jsbPublicCertPath = '';
     private ?string $notifyUrl = null;
-    private int $mode = Pay::MODE_NORMAL;
 
     public function setSvrCode(string $value): void
     {
@@ -52,11 +51,6 @@ class JsbConfig extends AbstractConfig
     public function setNotifyUrl(?string $value): void
     {
         $this->notifyUrl = $value;
-    }
-
-    public function setMode(int $value): void
-    {
-        $this->mode = $value;
     }
 
     public function getSvrCode(): string
@@ -94,18 +88,13 @@ class JsbConfig extends AbstractConfig
         return $this->notifyUrl;
     }
 
-    public function getMode(): int
-    {
-        return $this->mode;
-    }
-
     /**
      * @throws InvalidConfigException 缺少必要配置参数
      */
     protected function supportedModes(): array
     {
         // 江苏银行无服务商模式
-        return [Pay::MODE_NORMAL, Pay::MODE_SANDBOX];
+        return [PayMode::NORMAL, PayMode::SANDBOX];
     }
 
     protected function validateRequired(): void

@@ -6,7 +6,7 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AirwallexConfig;
-use Yansongda\Pay\Pay;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Tests\TestCase;
 
 class AirwallexConfigTest extends TestCase
@@ -30,7 +30,7 @@ class AirwallexConfigTest extends TestCase
         self::assertSame('default', $config->getTenant());
         self::assertSame('airwallex_client_id', $config->getClientId());
         self::assertSame('airwallex_api_key', $config->getApiKey());
-        self::assertSame(Pay::MODE_NORMAL, $config->getMode());
+        self::assertSame(PayMode::NORMAL, $config->getMode());
     }
 
     public function testConstructWithTenant(): void
@@ -65,14 +65,23 @@ class AirwallexConfigTest extends TestCase
             'return_url' => 'https://pay.yansongda.cn/airwallex/return',
             'api_version' => '2024-06-14',
             'on_behalf_of' => 'acct_123',
-            'mode' => Pay::MODE_SANDBOX,
+            'mode' => PayMode::SANDBOX,
         ]));
 
         self::assertSame('airwallex_webhook_secret', $config->getWebhookSecret());
         self::assertSame('https://pay.yansongda.cn/airwallex/return', $config->getReturnUrl());
         self::assertSame('2024-06-14', $config->getApiVersion());
         self::assertSame('acct_123', $config->getOnBehalfOf());
-        self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
+    }
+
+    public function testModeWithPayModeEnum(): void
+    {
+        $config = new AirwallexConfig(array_merge($this->validConfig, [
+            'mode' => PayMode::SANDBOX,
+        ]));
+
+        self::assertSame(PayMode::SANDBOX, $config->getMode());
     }
 
     public function testAccessTokenCacheFields(): void

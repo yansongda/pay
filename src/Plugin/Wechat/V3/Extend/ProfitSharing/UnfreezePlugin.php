@@ -44,7 +44,7 @@ class UnfreezePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账解冻剩余资金参数');
         }
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getMode()->isService()) {
             $data = $this->service($payload, $config);
         }
 

@@ -24,7 +24,7 @@ trait JsbTrait
             return $url;
         }
 
-        return Jsb::URL[$config->getMode()];
+        return Jsb::URL[$config->getMode()->value];
     }
 
     /**

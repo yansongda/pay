@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -38,9 +39,9 @@ class ApplyPlugin implements PluginInterface
         /** @var WechatConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
         $subMchId = $payload?->get('sub_mchid') ?? ($config->getSubMchId() ?? '');
-        $spAppId = $payload?->get('sp_appid') ?? ($config->getAppIdByType($params['_type'] ?? 'mp') ?? '');
+        $spAppId = $payload?->get('sp_appid') ?? ($config->getAppIdByType($params['_type'] ?? AppType::MP) ?? '');
 
-        if (Pay::MODE_NORMAL === $config->getMode()) {
+        if ($config->getMode()->isNormal()) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE, '参数异常: 平台收付通（退款）-申请退款，只支持服务商模式，当前配置为普通商户模式');
         }
 

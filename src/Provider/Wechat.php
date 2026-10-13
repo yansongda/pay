@@ -16,6 +16,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Action\WechatAction;
 use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
@@ -47,9 +48,9 @@ class Wechat implements ProviderInterface
     public const MCH_SECRET_KEY_LENGTH_BYTE = 32;
 
     public const URL = [
-        Pay::MODE_NORMAL => 'https://api.mch.weixin.qq.com',
-        Pay::MODE_SANDBOX => 'https://api.mch.weixin.qq.com/sandboxnew',
-        Pay::MODE_SERVICE => 'https://api.mch.weixin.qq.com',
+        PayMode::NORMAL->value => 'https://api.mch.weixin.qq.com',
+        PayMode::SANDBOX->value => 'https://api.mch.weixin.qq.com/sandboxnew',
+        PayMode::SERVICE->value => 'https://api.mch.weixin.qq.com',
     ];
 
     public const URL_OPENAPI = 'https://api.weixin.qq.com';

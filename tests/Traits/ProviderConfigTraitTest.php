@@ -10,6 +10,7 @@ use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Contract\ProviderConfigInterface;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Pay as PayFacade;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\ProviderConfigTrait;
@@ -175,9 +176,9 @@ class ProviderConfigTraitTest extends TestCase
                 return 'default';
             }
 
-            public function getMode(): int
+            public function getMode(): PayMode
             {
-                return PayFacade::MODE_NORMAL;
+                return PayMode::NORMAL;
             }
 
             public function get(?string $key = null, mixed $default = null): mixed
@@ -238,7 +239,7 @@ class ProviderConfigTraitTest extends TestCase
                 'yansongda' => __DIR__.'/../Cert/wechatPublicKey.crt',
             ],
             'sub_mch_id' => '1600314070',
-            'mode' => PayFacade::MODE_SERVICE,
+            'mode' => PayMode::SERVICE,
         ]);
         self::assertSame(
             'https://yansongda.cnaaa',

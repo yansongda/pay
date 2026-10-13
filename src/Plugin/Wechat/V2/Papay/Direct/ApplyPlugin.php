@@ -13,6 +13,8 @@ use Yansongda\Artful\Logger;
 use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
+use Yansongda\Pay\Enum\Wechat\PapayScene;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Str;
@@ -43,7 +45,7 @@ class ApplyPlugin implements PluginInterface
             ->mergePayload([
                 '_url' => '/pay/pappayapply',
                 '_content_type' => 'application/xml',
-                'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
+                'appid' => $config->getAppIdByType(PapayScene::fromLoose($params['_type'] ?? null)?->appType() ?? AppType::MP) ?? '',
                 'mch_id' => $config->getMchId(),
                 'nonce_str' => Str::random(32),
                 'sign_type' => 'MD5',

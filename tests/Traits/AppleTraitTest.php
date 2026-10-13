@@ -11,9 +11,9 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\AppleConfig;
 use Yansongda\Pay\Crypto\Apple\Cryptor;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\Support\Apple\AppleJwsFactory;
 use Yansongda\Pay\Tests\Support\Apple\AppleTokenFactory;
 use Yansongda\Pay\Tests\TestCase;
@@ -43,9 +43,9 @@ class AppleTraitTest extends TestCase
 
     public function testGetAppleUrl(): void
     {
-        $normal = new AppleConfig(['mode' => Pay::MODE_NORMAL]);
-        $sandbox = new AppleConfig(['mode' => Pay::MODE_SANDBOX]);
-        $service = new AppleConfig(['mode' => Pay::MODE_SERVICE]);
+        $normal = new AppleConfig(['mode' => PayMode::NORMAL]);
+        $sandbox = new AppleConfig(['mode' => PayMode::SANDBOX]);
+        $service = new AppleConfig(['mode' => PayMode::SERVICE]);
 
         self::assertSame(
             'https://api.storekit.apple.com/inApps/v1/subscriptions',
@@ -72,7 +72,7 @@ class AppleTraitTest extends TestCase
 
     public function testGetAppleUrlMissingThrowsException(): void
     {
-        $config = new AppleConfig(['mode' => Pay::MODE_NORMAL]);
+        $config = new AppleConfig(['mode' => PayMode::NORMAL]);
 
         self::expectException(InvalidParamsException::class);
         self::expectExceptionCode(Exception::PARAMS_APPLE_URL_MISSING);
@@ -338,7 +338,7 @@ class AppleTraitTest extends TestCase
             'notificationType' => 'SUBSCRIBED',
             'data' => [
                 'bundleId' => 'com.yansongda.pay.test',
-                'environment' => 'Production',  // default 租户 mode 为 MODE_SANDBOX
+                'environment' => 'Production',  // default 租户 mode 为 PayMode::SANDBOX
             ],
         ]);
 

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 class BestpayConfig extends AbstractConfig
 {
@@ -19,7 +19,6 @@ class BestpayConfig extends AbstractConfig
     private string $apiVersion = '1.0.3';
     private ?string $notifyUrl = null;
     private ?string $returnUrl = null;
-    private int $mode = Pay::MODE_NORMAL;
 
     public function setMerchantNo(string $value): void
     {
@@ -64,11 +63,6 @@ class BestpayConfig extends AbstractConfig
     public function setReturnUrl(?string $value): void
     {
         $this->returnUrl = $value;
-    }
-
-    public function setMode(int $value): void
-    {
-        $this->mode = $value;
     }
 
     public function getMerchantNo(): string
@@ -116,15 +110,10 @@ class BestpayConfig extends AbstractConfig
         return $this->returnUrl;
     }
 
-    public function getMode(): int
-    {
-        return $this->mode;
-    }
-
     protected function supportedModes(): array
     {
         // 翼支付一期无服务商模式
-        return [Pay::MODE_NORMAL, Pay::MODE_SANDBOX];
+        return [PayMode::NORMAL, PayMode::SANDBOX];
     }
 
     /**

@@ -6,9 +6,9 @@ namespace Yansongda\Pay\Tests\Traits;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AllinpayConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\AllinpayTrait;
 use Yansongda\Supports\Collection;
@@ -29,13 +29,13 @@ class AllinpayTraitTest extends TestCase
             AllinpayTraitStub::getAllinpayUrl($config, new Collection(['_url' => 'https://yansongda.cn']))
         );
 
-        $config->setMode(Pay::MODE_SANDBOX);
+        $config->setMode(PayMode::SANDBOX);
         self::assertEquals(
             'https://syb-test.allinpay.com/apiweb/tranx/query',
             AllinpayTraitStub::getAllinpayUrl($config, new Collection(['_url' => '/tranx/query']))
         );
 
-        $config->setMode(Pay::MODE_NORMAL);
+        $config->setMode(PayMode::NORMAL);
         self::assertEquals(
             'https://vsp.allinpay.com/apiweb/tranx/query',
             AllinpayTraitStub::getAllinpayUrl($config, new Collection(['_url' => '/tranx/query']))

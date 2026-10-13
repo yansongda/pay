@@ -133,9 +133,9 @@ CHANGELOG.md、README.md（修改）
 
 ```php
 public const URL = [
-    Pay::MODE_NORMAL => 'https://api.storekit.apple.com',
-    Pay::MODE_SANDBOX => 'https://api.storekit-sandbox.apple.com',
-    Pay::MODE_SERVICE => 'https://api.storekit.apple.com',
+    PayMode::NORMAL->value => 'https://api.storekit.apple.com',
+    PayMode::SANDBOX->value => 'https://api.storekit-sandbox.apple.com',
+    PayMode::SERVICE->value => 'https://api.storekit.apple.com',
 ];
 ```
 
@@ -162,7 +162,7 @@ Callback（Provider 内置）：pay([CallbackPlugin::class], ['_request' => ...,
         'bundle_id' => 'com.yansongda.pay.test',
         'api_key_id' => 'X5D4K9J2Q1',
         'api_private_key' => __DIR__.'/Cert/apple/api.key',
-        'mode' => Pay::MODE_SANDBOX,
+        'mode' => PayMode::SANDBOX,
     ],
 ],
 ```
@@ -175,7 +175,7 @@ Callback（Provider 内置）：pay([CallbackPlugin::class], ['_request' => ...,
 | apple_root_ca / apple_intermediate_ca | ?string | 否 | 覆盖内置 `src/Certificate/` 信任锚与中间 CA（路径或 PEM 内容）。**PKCS#7 与 x5c 链内的 intermediate 优先取自报文本身，配置项为兜底** | 已验证（官方 CA 页） |
 | issuer_id / bundle_id / api_key_id / api_private_key | string | 仅 API 功能 | App Store Server API 的 ES256 JWT 认证（bid claim = bundle_id） | 已验证（官方文档） |
 | notify_url | ?string | 否 | 文档用，SDK 不主动上报 | — |
-| mode | int | 是 | 取值 `Pay::MODE_NORMAL`/`Pay::MODE_SANDBOX`/`Pay::MODE_SERVICE`（**配置示例与文档一律写常量，不出现裸数字**） | — |
+| mode | PayMode | 是 | 取值 `PayMode::NORMAL`/`PayMode::SANDBOX`/`PayMode::SERVICE`（**配置示例与文档一律写枚举，不出现裸数字**；v3.8 起枚举为唯一具名写法，兼容 int `0`/`1`/`2`） | — |
 
 `validateRequired()`：`merchant_id` + `payment_processing_cert` 必填；若配置任一项 API 密钥字段则要求四项齐全，否则抛 `CONFIG_APPLE_INVALID`。支持三模式。
 
@@ -347,7 +347,7 @@ verifyAppleJws(signedPayload):
     'default' => [
         'merchant_id' => 'merchant.com.example',
         'payment_processing_cert' => '/path/to/payment-processing.pem',
-        'mode' => Pay::MODE_NORMAL,
+        'mode' => PayMode::NORMAL,
     ],
 ],
 ```
@@ -367,7 +367,7 @@ verifyAppleJws(signedPayload):
         'api_key_id' => 'X5D4K9J2Q1',
         'api_private_key' => '/path/to/SubscriptionKey.p8',
         'notify_url' => 'https://example.com/notify',
-        'mode' => Pay::MODE_SANDBOX,
+        'mode' => PayMode::SANDBOX,
     ],
 ],
 ```

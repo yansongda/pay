@@ -35,7 +35,7 @@ trait StripeTrait
             return $url;
         }
 
-        return Stripe::URL[$config->getMode()].$url;
+        return Stripe::URL[$config->getMode()->value].$url;
     }
 
     /**

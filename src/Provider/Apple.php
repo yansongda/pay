@@ -15,6 +15,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
@@ -31,9 +32,9 @@ use Yansongda\Supports\Str;
 class Apple implements ProviderInterface
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://api.storekit.apple.com',
-        Pay::MODE_SANDBOX => 'https://api.storekit-sandbox.apple.com',
-        Pay::MODE_SERVICE => 'https://api.storekit.apple.com',
+        PayMode::NORMAL->value => 'https://api.storekit.apple.com',
+        PayMode::SANDBOX->value => 'https://api.storekit-sandbox.apple.com',
+        PayMode::SERVICE->value => 'https://api.storekit.apple.com',
     ];
 
     /**

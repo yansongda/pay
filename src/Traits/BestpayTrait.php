@@ -7,9 +7,9 @@ namespace Yansongda\Pay\Traits;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\BestpayConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Bestpay;
 use Yansongda\Supports\Collection;
 
@@ -35,7 +35,7 @@ trait BestpayTrait
             $url = Bestpay::PATH_SDK_REQUEST;
         }
 
-        $base = Bestpay::URL[$config->getMode()] ?? Bestpay::URL[Pay::MODE_NORMAL];
+        $base = Bestpay::URL[$config->getMode()->value] ?? Bestpay::URL[PayMode::NORMAL->value];
 
         return rtrim($base, '/').$url;
     }

@@ -22,8 +22,8 @@ $config = [
             'success_url' => 'https://example.com/stripe/success',
             // 「选填」用户取消支付后 Stripe 跳转的取消地址（Checkout Session 模式使用）
             'cancel_url' => 'https://example.com/stripe/cancel',
-            // 「选填」默认为正常模式。可选为： MODE_NORMAL:正式环境, MODE_SANDBOX:沙箱环境
-            'mode' => Pay::MODE_NORMAL,
+            // 「选填」默认为正常模式。可选为： PayMode::NORMAL:正式环境、PayMode::SANDBOX:沙箱环境
+            'mode' => PayMode::NORMAL,
         ],
     ],
 ];
