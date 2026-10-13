@@ -8,6 +8,7 @@ use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Alipay\ProductCode;
 
 /**
  * @see https://opendocs.alipay.com/open/09bk7c?pathHash=d86258e3&ref=api&scene=9453b93a5f93490893e7ea5d19d754c9
@@ -23,7 +24,7 @@ class PosFreezePlugin implements PluginInterface
             'biz_content' => array_merge(
                 [
                     'auth_code_type' => 'bar_code',
-                    'product_code' => 'PREAUTH_PAY',
+                    'product_code' => ProductCode::PREAUTH_PAY->value,
                 ],
                 $rocket->getParams()
             ),

@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -142,6 +143,16 @@ class AlipayConfigTest extends TestCase
         ]));
 
         self::assertSame(Pay::MODE_SANDBOX, $config->getMode());
+    }
+
+    public function testModeSandboxEnum(): void
+    {
+        $config = new AlipayConfig(array_merge($this->validConfig, [
+            'mode' => PayMode::SANDBOX,
+        ]));
+
+        self::assertSame(1, $config->getMode());
+        self::assertSame(PayMode::SANDBOX, $config->getModeEnum());
     }
 
     public function testConfigDispatch(): void

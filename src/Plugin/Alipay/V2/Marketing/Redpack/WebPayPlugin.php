@@ -9,6 +9,7 @@ use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Alipay\ProductCode;
 
 /**
  * @see https://opendocs.alipay.com/open/03rbye?pathHash=1c8d9fcb&ref=api&scene=common
@@ -24,7 +25,7 @@ class WebPayPlugin implements PluginInterface
                 'method' => 'alipay.fund.trans.page.pay',
                 'biz_content' => array_merge(
                     [
-                        'product_code' => 'STD_APP_TRANSFER',
+                        'product_code' => ProductCode::STD_APP_TRANSFER->value,
                     ],
                     $rocket->getParams()
                 ),

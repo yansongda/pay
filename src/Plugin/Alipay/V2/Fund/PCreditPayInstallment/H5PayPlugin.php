@@ -11,6 +11,7 @@ use Yansongda\Artful\Exception\ContainerException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Alipay\ProductCode;
 use Yansongda\Pay\Traits\AlipayTrait;
 
 /**
@@ -35,7 +36,7 @@ class H5PayPlugin implements PluginInterface
                 'method' => 'alipay.trade.wap.pay',
                 'biz_content' => array_merge(
                     [
-                        'product_code' => 'QUICK_WAP_WAY',
+                        'product_code' => ProductCode::QUICK_WAP_WAY->value,
                     ],
                     $rocket->getParams(),
                 ),

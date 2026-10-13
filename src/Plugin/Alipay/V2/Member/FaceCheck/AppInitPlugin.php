@@ -8,6 +8,7 @@ use Closure;
 use Yansongda\Artful\Contract\PluginInterface;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
+use Yansongda\Pay\Enum\Alipay\BizCode;
 
 /**
  * @see https://opendocs.alipay.com/open/03nisu?pathHash=43fcb08b&ref=api&scene=common
@@ -22,7 +23,7 @@ class AppInitPlugin implements PluginInterface
             'method' => 'datadigital.fincloud.generalsaas.face.check.initialize',
             'biz_content' => array_merge(
                 [
-                    'biz_code' => 'DATA_DIGITAL_BIZ_CODE_FACE_CHECK_LIVE',
+                    'biz_code' => BizCode::DATA_DIGITAL_BIZ_CODE_FACE_CHECK_LIVE->value,
                 ],
                 $rocket->getParams(),
             ),
