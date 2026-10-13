@@ -1,7 +1,7 @@
 # PayPal 支付
 
-:::tip
-PayPal 的实现由 GitHub Copilot 生成
+:::warning
+PayPal 的实现由 AI 生成并经人工审核，但由于测试资源限制，尚未经过实际测试，请在充分验证后再用于生产环境。
 :::
 
 PayPal 支付目前直接内置支持以下快捷方式支付方法，对应的支付 method 如下：
