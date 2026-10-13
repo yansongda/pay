@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\VirtualPayEnv;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -39,7 +40,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
 
         $uri = $payload->get('_url', '');
         $body = self::getWechatBody($payload);
-        $env = (int) $payload->get('env', 0);
+        $env = VirtualPayEnv::fromLoose($payload->get('env'));
 
         $accessToken = $payload->get('access_token');
         $isClientSigning = 'requestVirtualPayment' === $uri;

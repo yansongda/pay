@@ -82,7 +82,7 @@ $result = Pay::wechat()->virtual($order);
 | outTradeNo | ✅ | 商户订单号 |
 | currencyType | ❌ | 货币类型，默认 `CNY` |
 | attach | ❌ | 自定义数据 |
-| env | ❌ | 环境：`0`=正式（默认），`1`=沙箱 |
+| env | ❌ | 环境：`0`=正式（默认），`1`=沙箱；也可传 `VirtualPayEnv::SANDBOX`（`use Yansongda\Pay\Enum\Wechat\VirtualPayEnv;`） |
 
 :::tip
 客户端签名场景下，SDK 返回签名数据后，需要在小程序端调用 `wx.requestVirtualPayment()` 完成支付。
@@ -96,7 +96,7 @@ $order = [
     'productId' => 'product_001',
     'goodsPrice' => 1,
     'outTradeNo' => time().'',
-    'env' => 1, // 沙箱环境
+    'env' => 1, // 沙箱环境；也可传 VirtualPayEnv::SANDBOX（use Yansongda\Pay\Enum\Wechat\VirtualPayEnv;）
 ];
 
 $result = Pay::wechat()->virtual($order);
@@ -145,7 +145,7 @@ $result = Pay::wechat()->virtual($order);
 ```php
 $order = [
     'openid' => '用户的 openid',
-    'env' => 0, // 0=正式，1=沙箱
+    'env' => 0, // 0=正式，1=沙箱；也可传 VirtualPayEnv::SANDBOX（use Yansongda\Pay\Enum\Wechat\VirtualPayEnv;）
 ];
 
 $result = Pay::wechat()->virtual([
@@ -207,7 +207,7 @@ $result = Pay::wechat()->virtual([
 ```php
 $order = [
     'openid' => '用户的 openid',
-    'env' => 0,
+    'env' => 0, // 环境（也可传 VirtualPayEnv::SANDBOX：use Yansongda\Pay\Enum\Wechat\VirtualPayEnv;）
     'order_id' => '商户订单号', // 与 wx_order_id 二选一
     // 'wx_order_id' => '微信订单号',
 ];

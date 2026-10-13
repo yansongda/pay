@@ -49,7 +49,7 @@ class RefundAbnormalPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 发起异常退款，参数缺少 `refund_id`');
         }
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getModeEnum()->isService()) {
             $data = $this->service($params, $config, $payload);
         }
 

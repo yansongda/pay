@@ -46,7 +46,7 @@ class ClosePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Native 关闭订单，参数缺少 `out_trade_no`');
         }
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getModeEnum()->isService()) {
             $data = $this->service($payload, $config);
         }
 

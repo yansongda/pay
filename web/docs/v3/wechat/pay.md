@@ -16,6 +16,8 @@
 默认情况下，除 APP支付、小程序支付 外所使用的 appid 均是微信公众号的 appid，即配置文件中的 `mp_app_id` 参数
 
 如果想使用其他类型的 appid，则只需要在调用参数中增加 `_type` 参数即可，例如，如果想使用小程序的 appid，则：`['_type' => 'mini']`
+
+`_type` 也可传 `AppType::MINI` 等枚举值（`use Yansongda\Pay\Enum\Wechat\AppType;`）：`['_type' => AppType::MINI]`
 :::
 
 ## 公众号支付
@@ -91,7 +93,7 @@ return Pay::wechat()->h5($order);
 
 #### 使用小程序的 app_id 关联 h5 支付
 
-默认情况下，H5 支付所使用的 appid 是微信公众号的 appid，即配置文件中的 mp_app_id 参数，如果想使用关联的小程序的 appid，则只需要在调用参数中增加 `['_type' => 'mini']` 即可，例如：
+默认情况下，H5 支付所使用的 appid 是微信公众号的 appid，即配置文件中的 mp_app_id 参数，如果想使用关联的小程序的 appid，则只需要在调用参数中增加 `['_type' => 'mini']` 即可（也可传 `AppType::MINI`：`use Yansongda\Pay\Enum\Wechat\AppType;`），例如：
 
 ```php
 $order = [

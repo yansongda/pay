@@ -44,7 +44,7 @@ class RefundPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: H5 退款申请，参数为空');
         }
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getModeEnum()->isService()) {
             $data = $this->service($payload, $config);
         }
 

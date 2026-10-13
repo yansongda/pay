@@ -6,6 +6,7 @@ namespace Yansongda\Pay\Tests\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\WechatConfigVirtualPay;
+use Yansongda\Pay\Enum\Wechat\VirtualPayEnv;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Tests\TestCase;
 
@@ -75,6 +76,24 @@ class WechatConfigVirtualPayTest extends TestCase
         $vp->setAppKey('prod-key');
 
         self::assertSame('prod-key', $vp->getAppKey(0));
+    }
+
+    public function testGetAppKeyWithVirtualPayEnvProductionReturnsAppKey(): void
+    {
+        $vp = new WechatConfigVirtualPay();
+        $vp->setAppKey('prod-key');
+        $vp->setSandboxAppKey('sandbox-key');
+
+        self::assertSame('prod-key', $vp->getAppKey(VirtualPayEnv::PRODUCTION));
+    }
+
+    public function testGetAppKeyWithVirtualPayEnvSandboxReturnsSandboxKey(): void
+    {
+        $vp = new WechatConfigVirtualPay();
+        $vp->setAppKey('prod-key');
+        $vp->setSandboxAppKey('sandbox-key');
+
+        self::assertSame('sandbox-key', $vp->getAppKey(VirtualPayEnv::SANDBOX));
     }
 
     public function testGetAppKeyWithEnvOneReturnsSandboxWhenConfigured(): void

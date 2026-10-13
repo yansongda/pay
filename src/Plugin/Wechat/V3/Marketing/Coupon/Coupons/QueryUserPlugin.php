@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -66,7 +67,7 @@ class QueryUserPlugin implements PluginInterface
         $appId = $payload->get('appid');
 
         if (is_null($appId)) {
-            $payload->set('appid', $config->getAppIdByType($params['_type'] ?? 'mp') ?? '');
+            $payload->set('appid', $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? '');
         }
 
         return filter_params($payload)->except('openid')->query();

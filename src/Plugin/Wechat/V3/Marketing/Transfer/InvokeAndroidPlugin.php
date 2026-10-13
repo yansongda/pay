@@ -13,6 +13,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -44,7 +45,7 @@ class InvokeAndroidPlugin implements PluginInterface
         $destination = $rocket->getDestination();
         $packageInfo = $destination?->get('package_info');
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getModeEnum()->isService()) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: Android调起用户确认收款，只支持普通商户模式，当前配置为服务商模式');
         }
 
@@ -72,7 +73,7 @@ class InvokeAndroidPlugin implements PluginInterface
         return new Config([
             'businessType' => 'requestMerchantTransfer',
             'query' => http_build_query([
-                'appId' => $payload?->get('_invoke_appId') ?? ($config->getAppIdByType($params['_type'] ?? 'mp') ?? ''),
+                'appId' => $payload?->get('_invoke_appId') ?? ($config->getAppIdByType($params['_type'] ?? AppType::MP) ?? ''),
                 'mchId' => $payload?->get('_invoke_mchId') ?? $config->getMchId(),
                 'package' => $packageInfo,
             ]),

@@ -12,6 +12,8 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
+use Yansongda\Pay\Enum\Wechat\ReceiverType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -44,7 +46,7 @@ class DeleteReceiverPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 缺少分账参数');
         }
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getModeEnum()->isService()) {
             $data = $this->service($payload, $params, $config);
         }
 
@@ -70,7 +72,7 @@ class DeleteReceiverPlugin implements PluginInterface
     protected function normal(array $params, WechatConfig $config): array
     {
         return [
-            'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
+            'appid' => $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? '',
         ];
     }
 
@@ -83,11 +85,11 @@ class DeleteReceiverPlugin implements PluginInterface
     {
         $data = [
             'sub_mchid' => $payload->get('sub_mchid', $config->getSubMchId() ?? ''),
-            'appid' => $config->getAppIdByType($params['_type'] ?? 'mp') ?? '',
+            'appid' => $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? '',
         ];
 
-        if ('PERSONAL_SUB_OPENID' === $payload->get('type')) {
-            $data['sub_appid'] = $config->getSubAppIdByType($params['_type'] ?? 'mp') ?? '';
+        if (ReceiverType::PERSONAL_SUB_OPENID === ReceiverType::fromLoose($payload->get('type'))) {
+            $data['sub_appid'] = $config->getSubAppIdByType($params['_type'] ?? AppType::MP) ?? '';
         }
 
         return $data;

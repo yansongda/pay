@@ -12,6 +12,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Logger;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Config\WechatConfig;
+use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Traits\WechatTrait;
@@ -67,7 +68,7 @@ class SendPlugin implements PluginInterface
     protected function normal(Collection $payload, array $params, WechatConfig $config): array
     {
         if (empty($payload->get('appid'))) {
-            $payload->set('appid', $config->getAppIdByType($params['_type'] ?? 'mp') ?? '');
+            $payload->set('appid', $config->getAppIdByType($params['_type'] ?? AppType::MP) ?? '');
         }
 
         if (empty($payload->get('stock_creator_mchid'))) {

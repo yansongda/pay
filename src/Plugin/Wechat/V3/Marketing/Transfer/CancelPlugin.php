@@ -37,7 +37,7 @@ class CancelPlugin implements PluginInterface
         $payload = $rocket->getPayload();
         $outBillNo = $payload?->get('out_bill_no') ?? null;
 
-        if (Pay::MODE_SERVICE === $config->getMode()) {
+        if ($config->getModeEnum()->isService()) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 撤销转账，只支持普通商户模式，当前配置为服务商模式');
         }
 
