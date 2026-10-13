@@ -61,6 +61,12 @@ class Exception extends \Exception
 
     public const PARAMS_BESTPAY_URL_MISSING = 9233;
 
+    // 缺少 Apple 回调地址
+    public const PARAMS_APPLE_URL_MISSING = 9234;
+
+    // Apple 通知数据无效
+    public const PARAMS_APPLE_TOKEN_INVALID = 9235;
+
     /**
      * 关于响应.
      */
@@ -97,6 +103,9 @@ class Exception extends \Exception
 
     public const CONFIG_BESTPAY_INVALID = 9412;
 
+    // Apple 配置无效
+    public const CONFIG_APPLE_INVALID = 9413;
+
     /**
      * 关于签名.
      */
@@ -120,6 +129,9 @@ class Exception extends \Exception
     public const DECRYPT_ALIPAY_AES_KEY_INVALID = 9610;
 
     public const DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID = 9611;
+
+    // Apple 数据解密失败
+    public const DECRYPT_APPLE_FAILED = 9612;
 
     public mixed $extra;
 

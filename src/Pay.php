@@ -17,6 +17,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Pay\Provider\Airwallex;
 use Yansongda\Pay\Provider\Alipay;
 use Yansongda\Pay\Provider\Allinpay;
+use Yansongda\Pay\Provider\Apple;
 use Yansongda\Pay\Provider\Bestpay;
 use Yansongda\Pay\Provider\Douyin;
 use Yansongda\Pay\Provider\Jsb;
@@ -27,6 +28,7 @@ use Yansongda\Pay\Provider\Wechat;
 use Yansongda\Pay\Service\AirwallexServiceProvider;
 use Yansongda\Pay\Service\AlipayServiceProvider;
 use Yansongda\Pay\Service\AllinpayServiceProvider;
+use Yansongda\Pay\Service\AppleServiceProvider;
 use Yansongda\Pay\Service\BestpayServiceProvider;
 use Yansongda\Pay\Service\DouyinServiceProvider;
 use Yansongda\Pay\Service\JsbServiceProvider;
@@ -46,6 +48,7 @@ use Yansongda\Pay\Service\WechatServiceProvider;
  * @method static Stripe    stripe(array<string, mixed> $config = [], $container = null)
  * @method static Allinpay  allinpay(array<string, mixed> $config = [], $container = null)
  * @method static Bestpay   bestpay(array<string, mixed> $config = [], $container = null)
+ * @method static Apple     apple(array<string, mixed> $config = [], $container = null)
  */
 class Pay
 {
@@ -62,6 +65,7 @@ class Pay
     public const PROVIDER_STRIPE = 'stripe';
     public const PROVIDER_ALLINPAY = 'allinpay';
     public const PROVIDER_BESTPAY = 'bestpay';
+    public const PROVIDER_APPLE = 'apple';
 
     /**
      * 正常模式.
@@ -92,6 +96,7 @@ class Pay
         StripeServiceProvider::class,
         AllinpayServiceProvider::class,
         BestpayServiceProvider::class,
+        AppleServiceProvider::class,
     ];
 
     /**

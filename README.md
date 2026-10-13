@@ -115,6 +115,13 @@ yansongda/pay 100% 兼容 支付宝/微信/银联 所有功能（包括服务商
 - 支付/退款回调（证书验签）
 - ...
 
+### Apple（苹果支付）
+
+- Apple Pay 支付令牌验签解密（服务端本地验签 + 解密卡数据）
+- Apple Pay 网页商户验证（merchant session 代理）
+- App Store 交易查询 / 退款历史查询 / 订阅状态
+- App Store Server Notifications V2 回调验签
+
 ## 安装
 ```shell
 composer require yansongda/pay:~3.7.0 -vvv
