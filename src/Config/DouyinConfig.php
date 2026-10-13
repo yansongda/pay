@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 class DouyinConfig extends AbstractConfig
 {
@@ -16,7 +14,6 @@ class DouyinConfig extends AbstractConfig
     private string $appPrivateKey = '';
     private string $douyinPublicKey = '';
     private ?string $notifyUrl = null;
-    private int $mode = Pay::MODE_NORMAL;
 
     public function setAppId(string $value): void
     {
@@ -43,11 +40,6 @@ class DouyinConfig extends AbstractConfig
         $this->notifyUrl = $value;
     }
 
-    public function setMode(int|PayMode $value): void
-    {
-        $this->mode = $value instanceof PayMode ? $value->value : $value;
-    }
-
     public function getAppId(): string
     {
         return $this->appId;
@@ -71,11 +63,6 @@ class DouyinConfig extends AbstractConfig
     public function getNotifyUrl(): ?string
     {
         return $this->notifyUrl;
-    }
-
-    public function getMode(): int
-    {
-        return $this->mode;
     }
 
     /**

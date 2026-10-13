@@ -103,7 +103,7 @@ final class JwsVerifier
             throw new InvalidSignException(Exception::SIGN_ERROR, '签名异常: Apple 通知归属校验失败 -- [bundleId] 与配置不匹配');
         }
 
-        $expected = $config->getModeEnum()->isSandbox() ? 'Sandbox' : 'Production';
+        $expected = $config->getMode()->isSandbox() ? 'Sandbox' : 'Production';
 
         // externalPurchaseToken 分支无 environment 字段，按官方库从 externalPurchaseId 前缀推断
         $environment = 'externalPurchaseToken' === $branchKey

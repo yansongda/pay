@@ -6,10 +6,8 @@ namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\CertManager;
-use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Wechat;
 
 class WechatConfig extends AbstractConfig
@@ -30,7 +28,6 @@ class WechatConfig extends AbstractConfig
     private ?string $subMpAppId = null;
     private ?string $subMiniAppId = null;
     private ?string $subAppId = null;
-    private int $mode = Pay::MODE_NORMAL;
     private WechatConfigVirtualPay $virtualPay;
 
     /**
@@ -132,11 +129,6 @@ class WechatConfig extends AbstractConfig
         }
     }
 
-    public function setMode(int|PayMode $value): void
-    {
-        $this->mode = $value instanceof PayMode ? $value->value : $value;
-    }
-
     public function getMchId(): string
     {
         return $this->mchId;
@@ -217,11 +209,6 @@ class WechatConfig extends AbstractConfig
         return $this->subAppId;
     }
 
-    public function getMode(): int
-    {
-        return $this->mode;
-    }
-
     /**
      * @param array<string, mixed>|WechatConfigVirtualPay $value
      */
@@ -289,7 +276,7 @@ class WechatConfig extends AbstractConfig
             );
         }
 
-        if ($this->getModeEnum()->isService() && empty($this->subMchId)) {
+        if ($this->getMode()->isService() && empty($this->subMchId)) {
             throw new InvalidConfigException(
                 Exception::CONFIG_WECHAT_INVALID,
                 '配置异常: 服务商模式下缺少 [sub_mch_id]'

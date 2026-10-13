@@ -48,7 +48,7 @@ class CancelPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 付款码支付撤销订单，参数缺少 `out_trade_no`');
         }
 
-        if ($config->getModeEnum()->isService()) {
+        if ($config->getMode()->isService()) {
             $data = $this->service($payload, $params, $config);
         }
 

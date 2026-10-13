@@ -44,7 +44,7 @@ class RefundPlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: Jsapi 退款申请，参数为空');
         }
 
-        if ($config->getModeEnum()->isService()) {
+        if ($config->getMode()->isService()) {
             $data = $this->service($payload, $config);
         }
 

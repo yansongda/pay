@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 class StripeConfig extends AbstractConfig
 {
@@ -16,7 +14,6 @@ class StripeConfig extends AbstractConfig
     private ?string $notifyUrl = null;
     private ?string $successUrl = null;
     private ?string $cancelUrl = null;
-    private int $mode = Pay::MODE_NORMAL;
 
     public function setSecretKey(string $value): void
     {
@@ -43,11 +40,6 @@ class StripeConfig extends AbstractConfig
         $this->cancelUrl = $value;
     }
 
-    public function setMode(int|PayMode $value): void
-    {
-        $this->mode = $value instanceof PayMode ? $value->value : $value;
-    }
-
     public function getSecretKey(): string
     {
         return $this->secretKey;
@@ -71,11 +63,6 @@ class StripeConfig extends AbstractConfig
     public function getCancelUrl(): ?string
     {
         return $this->cancelUrl;
-    }
-
-    public function getMode(): int
-    {
-        return $this->mode;
     }
 
     /**

@@ -67,7 +67,7 @@ trait WechatTrait
             return Wechat::URL_OPENAPI.$url;
         }
 
-        return Wechat::URL[$config->getMode()].$url;
+        return Wechat::URL[$config->getMode()->value].$url;
     }
 
     /**

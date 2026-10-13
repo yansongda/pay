@@ -44,7 +44,7 @@ class SyncPlugin implements PluginInterface
         /** @var WechatConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
-        if ($config->getModeEnum()->isService()) {
+        if ($config->getMode()->isService()) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: 同步支付分订单，只支持普通商户模式，当前配置为服务商模式');
         }
 

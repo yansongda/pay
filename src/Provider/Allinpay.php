@@ -15,6 +15,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
@@ -36,8 +37,8 @@ class Allinpay implements ProviderInterface
     use AllinpayTrait;
 
     public const URL = [
-        Pay::MODE_NORMAL => 'https://vsp.allinpay.com/apiweb',
-        Pay::MODE_SANDBOX => 'https://syb-test.allinpay.com/apiweb',
+        PayMode::NORMAL->value => 'https://vsp.allinpay.com/apiweb',
+        PayMode::SANDBOX->value => 'https://syb-test.allinpay.com/apiweb',
     ];
 
     /**

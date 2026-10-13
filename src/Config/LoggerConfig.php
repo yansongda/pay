@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Config;
 
-use Yansongda\Pay\Pay;
-
 class LoggerConfig extends AbstractConfig
 {
     private bool $enable = false;
@@ -67,11 +65,6 @@ class LoggerConfig extends AbstractConfig
     public function getMaxFile(): int
     {
         return $this->maxFile;
-    }
-
-    public function getMode(): int
-    {
-        return Pay::MODE_NORMAL;
     }
 
     protected function validateRequired(): void {}

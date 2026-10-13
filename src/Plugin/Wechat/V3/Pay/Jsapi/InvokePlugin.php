@@ -105,7 +105,7 @@ class InvokePlugin implements PluginInterface
      */
     protected function getAppId(?Collection $payload, WechatConfig $config, array $params): string
     {
-        if ($config->getModeEnum()->isService()) {
+        if ($config->getMode()->isService()) {
             return $payload?->get('_invoke_appid') ?? $config->getSubAppIdByType($params['_type'] ?? AppType::MP) ?? '';
         }
 

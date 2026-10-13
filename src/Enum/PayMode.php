@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Enum;
 
-use Yansongda\Pay\Pay;
-
 /**
  * Provider 运行模式（配置项 `mode`）。
  *
- * 数值与 {@see Pay::MODE_NORMAL} / {@see Pay::MODE_SANDBOX} / {@see Pay::MODE_SERVICE} 一一对应，
- * 常量保留以便平滑迁移：`'mode' => PayMode::SANDBOX` 与 `'mode' => Pay::MODE_SANDBOX` 等价。
+ * 配置与读取统一使用枚举：`'mode' => PayMode::SANDBOX`、`$config->getMode()->isService()`。
+ * 内部以 int 存储（`AbstractConfig::$mode`）：`toArray()['mode']` 经 getter 返回本枚举，
+ * `toJson()` / `json_encode()` 仍输出 `0`/`1`/`2`（backed enum 序列化行为）。
  */
 enum PayMode: int
 {
@@ -26,7 +25,8 @@ enum PayMode: int
     /**
      * 宽松归一化：支持枚举 / 整数 / 数字字符串，未知值回落 NORMAL。
      *
-     * 非法 mode 的拦截仍由 `AbstractConfig::validateMode()` 负责（抛 CONFIG_PROVIDER_INVALID）。
+     * 非法 mode 的拦截仍由 `AbstractConfig::validateMode()` 负责（抛 CONFIG_PROVIDER_INVALID）；
+     * `getMode()` 依赖本方法把已校验的内部 int 转成枚举。
      */
     public static function fromLoose(int|self|string|null $mode): self
     {

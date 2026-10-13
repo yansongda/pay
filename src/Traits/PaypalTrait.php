@@ -42,7 +42,7 @@ trait PaypalTrait
             return $url;
         }
 
-        return Paypal::URL[$config->getMode()].$url;
+        return Paypal::URL[$config->getMode()->value].$url;
     }
 
     /**
@@ -136,7 +136,7 @@ trait PaypalTrait
         ];
 
         $token = self::getPaypalAccessToken($params);
-        $url = Paypal::URL[$config->getMode()].'/v1/notifications/verify-webhook-signature';
+        $url = Paypal::URL[$config->getMode()->value].'/v1/notifications/verify-webhook-signature';
 
         // 内部子调用需剔除影响返回值形态的控制参数，否则会导致验证结果解析失败
         unset($params['_return_rocket']);

@@ -45,7 +45,7 @@ class InvokeJsapiPlugin implements PluginInterface
         $destination = $rocket->getDestination();
         $packageInfo = $destination?->get('package_info');
 
-        if ($config->getModeEnum()->isService()) {
+        if ($config->getMode()->isService()) {
             throw new InvalidParamsException(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE, '参数异常: JSAPI调起用户确认收款，只支持普通商户模式，当前配置为服务商模式');
         }
 

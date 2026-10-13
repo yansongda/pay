@@ -34,7 +34,7 @@ trait UnipayTrait
             return $url;
         }
 
-        return Unipay::URL[$config->getMode()].$url;
+        return Unipay::URL[$config->getMode()->value].$url;
     }
 
     /**

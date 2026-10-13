@@ -89,7 +89,7 @@ trait AlipayTrait
             return $url;
         }
 
-        return Alipay::URL[$config->getMode()].'/gateway.do?charset=utf-8';
+        return Alipay::URL[$config->getMode()->value].'/gateway.do?charset=utf-8';
     }
 
     /**
@@ -146,7 +146,7 @@ trait AlipayTrait
             return $url;
         }
 
-        $mode = $config->getModeEnum();
+        $mode = $config->getMode();
 
         $base = $mode->isSandbox() ? Alipay::V3_SANDBOX_URL : Alipay::URL[$mode->value];
 
@@ -200,7 +200,7 @@ trait AlipayTrait
         $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $params);
         $serviceProviderId = $config->getServiceProviderId();
 
-        if (!$config->getModeEnum()->isService()
+        if (!$config->getMode()->isService()
             || empty($serviceProviderId)) {
             return;
         }

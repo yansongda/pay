@@ -15,6 +15,7 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
@@ -30,9 +31,9 @@ use Yansongda\Supports\Str;
 class Airwallex implements ProviderInterface
 {
     public const URL = [
-        Pay::MODE_NORMAL => 'https://api.airwallex.com',
-        Pay::MODE_SANDBOX => 'https://api-demo.airwallex.com',
-        Pay::MODE_SERVICE => 'https://api.airwallex.com',
+        PayMode::NORMAL->value => 'https://api.airwallex.com',
+        PayMode::SANDBOX->value => 'https://api-demo.airwallex.com',
+        PayMode::SERVICE->value => 'https://api.airwallex.com',
     ];
 
     /**

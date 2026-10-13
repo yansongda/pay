@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 class UnipayConfig extends AbstractConfig
 {
@@ -18,7 +16,6 @@ class UnipayConfig extends AbstractConfig
     private ?string $notifyUrl = null;
     private ?string $mchId = null;
     private ?string $returnUrl = null;
-    private int $mode = Pay::MODE_NORMAL;
 
     public function setMchCertPath(string $value): void
     {
@@ -55,11 +52,6 @@ class UnipayConfig extends AbstractConfig
         $this->returnUrl = $value;
     }
 
-    public function setMode(int|PayMode $value): void
-    {
-        $this->mode = $value instanceof PayMode ? $value->value : $value;
-    }
-
     public function getMchCertPath(): string
     {
         return $this->mchCertPath;
@@ -93,11 +85,6 @@ class UnipayConfig extends AbstractConfig
     public function getReturnUrl(): ?string
     {
         return $this->returnUrl;
-    }
-
-    public function getMode(): int
-    {
-        return $this->mode;
     }
 
     /**

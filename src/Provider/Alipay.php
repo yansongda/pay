@@ -17,6 +17,7 @@ use Yansongda\Artful\Exception\ServiceNotFoundException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Action\AlipayAction;
 use Yansongda\Pay\Contract\ProviderInterface;
+use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Event;
 use Yansongda\Pay\Event\CallbackReceived;
 use Yansongda\Pay\Event\MethodCalled;
@@ -44,9 +45,9 @@ class Alipay implements ProviderInterface
      * 支付宝网关域名（V2/V3 共用：V2 拼接时追加 `gateway.do`，V3 直接拼 `/v3/` 路径）.
      */
     public const URL = [
-        Pay::MODE_NORMAL => 'https://openapi.alipay.com',
-        Pay::MODE_SANDBOX => 'https://openapi-sandbox.dl.alipaydev.com',
-        Pay::MODE_SERVICE => 'https://openapi.alipay.com',
+        PayMode::NORMAL->value => 'https://openapi.alipay.com',
+        PayMode::SANDBOX->value => 'https://openapi-sandbox.dl.alipaydev.com',
+        PayMode::SERVICE->value => 'https://openapi.alipay.com',
     ];
 
     /**

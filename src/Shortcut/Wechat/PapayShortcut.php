@@ -125,7 +125,7 @@ class PapayShortcut implements ShortcutInterface
     {
         $scene = PapayScene::fromLoose($params['_type'] ?? null);
 
-        if (null === $scene) {
+        if (is_null($scene)) {
             throw new InvalidParamsException(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED, '参数异常: 微信扣关服务支付中签约，当前传递的 `_type` 类型不支持');
         }
 

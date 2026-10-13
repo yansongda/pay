@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Yansongda\Pay\Config;
 
 use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 class PaypalConfig extends AbstractConfig
 {
@@ -18,7 +16,6 @@ class PaypalConfig extends AbstractConfig
     private ?string $returnUrl = null;
     private ?string $cancelUrl = null;
     private ?string $brandName = null;
-    private int $mode = Pay::MODE_NORMAL;
     private ?string $_accessToken = null;
     private ?int $_accessTokenExpiry = null;
 
@@ -55,11 +52,6 @@ class PaypalConfig extends AbstractConfig
     public function setBrandName(?string $value): void
     {
         $this->brandName = $value;
-    }
-
-    public function setMode(int|PayMode $value): void
-    {
-        $this->mode = $value instanceof PayMode ? $value->value : $value;
     }
 
     public function setAccessToken(?string $value): void
@@ -105,11 +97,6 @@ class PaypalConfig extends AbstractConfig
     public function getBrandName(): ?string
     {
         return $this->brandName;
-    }
-
-    public function getMode(): int
-    {
-        return $this->mode;
     }
 
     public function getAccessToken(): ?string

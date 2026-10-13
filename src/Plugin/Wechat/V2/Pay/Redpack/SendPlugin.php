@@ -40,7 +40,7 @@ class SendPlugin implements PluginInterface
         /** @var WechatConfig $config */
         $config = self::getProviderConfig(Pay::PROVIDER_WECHAT, $params);
 
-        if ($config->getModeEnum()->isService()) {
+        if ($config->getMode()->isService()) {
             $data = $this->service($payload, $config, $params);
         }
 

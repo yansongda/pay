@@ -60,7 +60,7 @@ trait ProviderConfigTrait
             return null;
         }
 
-        return match (PayMode::fromLoose($config->getMode())) {
+        return match ($config->getMode()) {
             PayMode::SERVICE => $payload->get('_service_url', $payload->get('_url')),
             PayMode::SANDBOX => $payload->get('_sandbox_url', $payload->get('_url')),
             PayMode::NORMAL => $payload->get('_url'),
