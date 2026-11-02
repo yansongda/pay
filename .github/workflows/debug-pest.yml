@@ -42,6 +42,22 @@ jobs:
           fwrite(STDERR, "cache first=" . json_encode(array_values($args2), JSON_UNESCAPED_SLASHES) . "\n");
           $args2 = (new Pest\Plugins\Configuration())->handleArguments($args2);
           fwrite(STDERR, "then configuration=" . json_encode(array_values($args2), JSON_UNESCAPED_SLASHES) . "\n");
+
+          fwrite(STDERR, "zend.assertions=" . ini_get('zend.assertions') . "\n");
+          fwrite(STDERR, "writable cwd=" . var_export(is_writable(getcwd()), true) . "\n");
+          $doc = new DOMDocument();
+          $base = 'vendor/pestphp/pest/resources/base-phpunit.xml';
+          fwrite(STDERR, "base exists=" . var_export(file_exists($base), true) . "\n");
+          $loaded = @$doc->load($base);
+          fwrite(STDERR, "doc load=" . var_export($loaded, true) . "\n");
+          $contents = $doc->saveXML();
+          fwrite(STDERR, "saveXML len=" . (is_string($contents) ? strlen($contents) : var_export($contents, true)) . "\n");
+          $wrote = @file_put_contents(getcwd() . '/zz-probe.xml', $contents);
+          fwrite(STDERR, "put contents=" . var_export($wrote, true) . "\n");
+          fwrite(STDERR, "zz exists=" . var_export(file_exists('zz-probe.xml'), true) . "\n");
+          fwrite(STDERR, "zz realpath=" . var_export(realpath('zz-probe.xml'), true) . "\n");
+          fwrite(STDERR, "last error=" . json_encode(error_get_last()) . "\n");
+          @unlink('zz-probe.xml');
           PHP
           php /tmp/probe.php
       - name: Probe real argv
