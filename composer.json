@@ -37,7 +37,8 @@
         "symfony/psr-http-message-bridge": "^6.4",
         "hyperf/pimple": "^2.2",
         "guzzlehttp/guzzle": "^7.0 || ^8.0",
-        "jetbrains/phpstorm-attributes": "^1.1"
+        "jetbrains/phpstorm-attributes": "^1.1",
+        "pestphp/pest": "^3.0"
     },
     "conflict": {
         "hyperf/framework": "<3.0"
@@ -53,8 +54,14 @@
         }
     },
     "scripts": {
-        "test": "./vendor/bin/phpunit -c phpunit.xml --colors=always",
+        "test": "./vendor/bin/pest --colors=always",
+        "test:phpunit": "./vendor/bin/phpunit -c phpunit.xml --colors=always",
         "cs-fix": "php-cs-fixer fix --dry-run --diff 1>&2",
         "analyse": "phpstan analyse --memory-limit 300M -l 6 ./src"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     }
 }
