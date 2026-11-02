@@ -15,8 +15,14 @@ composer cs-fix && composer analyse && composer test
 
 ### 测试
 ```bash
-composer test       # PHPUnit 11.x + Mockery 1.6
+composer test              # Pest 3.x（底层 PHPUnit 11）+ Mockery 1.6
+./vendor/bin/pest --filter=xxx   # 单测过滤
+./vendor/bin/pest tests/Plugin/Alipay   # 按目录运行
 ```
+- 测试写法为 Pest 函数式：`it('...', function () { expect($actual)->toBe($expected); })`
+- 断言映射：`assertSame/assertTrue/assertNull` → `toBe/toBeTrue/toBeNull`；`assertEquals` → `toEqual`
+- 异常断言可继续使用 `$this->expectException()/expectExceptionCode()/expectExceptionMessage()`（Pest 闭包绑定 TestCase）
+- 测试基类 `tests/TestCase.php` 由 `tests/Pest.php` 的 `uses(TestCase::class)->in(__DIR__)` 绑定，勿删
 - 测试前需安装 `hyperf/pimple`
 - Mock HTTP 客户端避免真实请求
 
