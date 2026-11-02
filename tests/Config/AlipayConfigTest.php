@@ -2,170 +2,203 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Config;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Enum\PayMode;
-use Yansongda\Pay\Tests\TestCase;
 
-class AlipayConfigTest extends TestCase
-{
-    private array $validConfig;
+it('construct valid config', function () {
+    $validConfig = [
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+    ];
+    $config = new AlipayConfig($validConfig);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->validConfig = [
-            'app_id' => 'test_app_id',
-            'app_secret_cert' => 'test_secret',
-            'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
-            'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-            'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
-        ];
-    }
+    expect($config->getTenant())->toBe('default');
+    expect($config->getAppId())->toBe('test_app_id');
+    expect($config->getAppSecretCert())->toBe('test_secret');
+    expect($config->getMode())->toBe(PayMode::NORMAL);
+});
 
-    public function testConstructValidConfig(): void
-    {
-        $config = new AlipayConfig($this->validConfig);
+it('construct with tenant', function () {
+    $validConfig = [
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+    ];
+    $config = new AlipayConfig($validConfig, 'custom_tenant');
 
-        self::assertSame('default', $config->getTenant());
-        self::assertSame('test_app_id', $config->getAppId());
-        self::assertSame('test_secret', $config->getAppSecretCert());
-        self::assertSame(PayMode::NORMAL, $config->getMode());
-    }
+    expect($config->getTenant())->toBe('custom_tenant');
+});
 
-    public function testConstructWithTenant(): void
-    {
-        $config = new AlipayConfig($this->validConfig, 'custom_tenant');
+it('construct missing required', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_id]');
 
-        self::assertSame('custom_tenant', $config->getTenant());
-    }
+    $config = new AlipayConfig([
+        // missing app_id
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+    ]);
+    $config->validate();
+});
 
-    public function testConstructMissingRequired(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_id]');
+it('construct missing app public cert path', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
 
-        $config = new AlipayConfig([
-            // missing app_id
-            'app_secret_cert' => 'test_secret',
-            'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
-            'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-            'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
-        ]);
-        $config->validate();
-    }
+    $config = new AlipayConfig([
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+    ]);
+    $config->validate();
+});
 
-    public function testConstructMissingAppPublicCertPath(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
+it('optional getters', function () {
+    $validConfig = [
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+    ];
+    $config = new AlipayConfig(array_merge($validConfig, [
+        'notify_url' => 'https://notify.com',
+        'return_url' => 'https://return.com',
+        'app_auth_token' => 'auth_token',
+        'service_provider_id' => 'sp_id',
+    ]));
 
-        $config = new AlipayConfig([
-            'app_id' => 'test_app_id',
-            'app_secret_cert' => 'test_secret',
-            'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-        ]);
-        $config->validate();
-    }
+    expect($config->getNotifyUrl())->toBe('https://notify.com');
+    expect($config->getReturnUrl())->toBe('https://return.com');
+    expect($config->getAppAuthToken())->toBe('auth_token');
+    expect($config->getServiceProviderId())->toBe('sp_id');
+});
 
-    public function testOptionalGetters(): void
-    {
-        $config = new AlipayConfig(array_merge($this->validConfig, [
-            'notify_url' => 'https://notify.com',
-            'return_url' => 'https://return.com',
-            'app_auth_token' => 'auth_token',
-            'service_provider_id' => 'sp_id',
-        ]));
+it('optional getters null', function () {
+    $validConfig = [
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+    ];
+    $config = new AlipayConfig($validConfig);
 
-        self::assertSame('https://notify.com', $config->getNotifyUrl());
-        self::assertSame('https://return.com', $config->getReturnUrl());
-        self::assertSame('auth_token', $config->getAppAuthToken());
-        self::assertSame('sp_id', $config->getServiceProviderId());
-    }
+    expect($config->getNotifyUrl())->toBeNull();
+    expect($config->getReturnUrl())->toBeNull();
+    expect($config->getAppAuthToken())->toBeNull();
+    expect($config->getServiceProviderId())->toBeNull();
+});
 
-    public function testOptionalGettersNull(): void
-    {
-        $config = new AlipayConfig($this->validConfig);
+it('cert getters', function () {
+    $validConfig = [
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+    ];
+    $config = new AlipayConfig($validConfig);
 
-        self::assertNull($config->getNotifyUrl());
-        self::assertNull($config->getReturnUrl());
-        self::assertNull($config->getAppAuthToken());
-        self::assertNull($config->getServiceProviderId());
-    }
+    expect($config->getAppPublicCertPath())->toBe(__DIR__.'/../Cert/alipayAppPublicCert.crt');
+    expect($config->getAlipayPublicCertPath())->toBe(__DIR__.'/../Cert/alipayPublicCert.crt');
+    expect($config->getAlipayRootCertPath())->toBe(__DIR__.'/../Cert/alipayRootCert.crt');
+});
 
-    public function testCertGetters(): void
-    {
-        $config = new AlipayConfig($this->validConfig);
+it('to array keeps backward compatible snake case keys', function () {
+    $validConfig = [
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+    ];
+    $config = new AlipayConfig(array_merge($validConfig, [
+        'notify_url' => 'https://notify.com',
+        'return_url' => 'https://return.com',
+        'app_auth_token' => 'auth_token',
+        'service_provider_id' => 'sp_id',
+    ]));
 
-        self::assertSame(__DIR__.'/../Cert/alipayAppPublicCert.crt', $config->getAppPublicCertPath());
-        self::assertSame(__DIR__.'/../Cert/alipayPublicCert.crt', $config->getAlipayPublicCertPath());
-        self::assertSame(__DIR__.'/../Cert/alipayRootCert.crt', $config->getAlipayRootCertPath());
-    }
+    $array = $config->toArray();
+    ksort($array);
 
-    public function testToArrayKeepsBackwardCompatibleSnakeCaseKeys(): void
-    {
-        $config = new AlipayConfig(array_merge($this->validConfig, [
-            'notify_url' => 'https://notify.com',
-            'return_url' => 'https://return.com',
-            'app_auth_token' => 'auth_token',
-            'service_provider_id' => 'sp_id',
-        ]));
+    $expected = [
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+        'notify_url' => 'https://notify.com',
+        'return_url' => 'https://return.com',
+        'app_auth_token' => 'auth_token',
+        'service_provider_id' => 'sp_id',
+        'aes_key' => null,
+        'mode' => PayMode::NORMAL,
+        'tenant' => 'default',
+    ];
+    ksort($expected);
 
-        $array = $config->toArray();
-        ksort($array);
+    expect($array)->toBe($expected);
+});
 
-        $expected = [
-            'app_id' => 'test_app_id',
-            'app_secret_cert' => 'test_secret',
-            'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
-            'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-            'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
-            'notify_url' => 'https://notify.com',
-            'return_url' => 'https://return.com',
-            'app_auth_token' => 'auth_token',
-            'service_provider_id' => 'sp_id',
-            'aes_key' => null,
-            'mode' => PayMode::NORMAL,
-            'tenant' => 'default',
-        ];
-        ksort($expected);
+it('mode sandbox', function () {
+    $validConfig = [
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+    ];
+    $config = new AlipayConfig(array_merge($validConfig, [
+        // 兼容历史 int 写法：0/1/2
+        'mode' => 1,
+    ]));
 
-        self::assertSame($expected, $array);
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeSandbox(): void
-    {
-        $config = new AlipayConfig(array_merge($this->validConfig, [
-            // 兼容历史 int 写法：0/1/2
-            'mode' => 1,
-        ]));
+it('mode sandbox enum', function () {
+    $validConfig = [
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+    ];
+    $config = new AlipayConfig(array_merge($validConfig, [
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeSandboxEnum(): void
-    {
-        $config = new AlipayConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SANDBOX,
-        ]));
+it('config dispatch', function () {
+    $validConfig = [
+        'app_id' => 'test_app_id',
+        'app_secret_cert' => 'test_secret',
+        'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+        'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+        'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+    ];
+    $config = new \Yansongda\Pay\Config([
+        'alipay' => [
+            'default' => $validConfig,
+        ],
+    ]);
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    $alipayConfig = $config->getProviderConfig('alipay');
 
-    public function testConfigDispatch(): void
-    {
-        $config = new \Yansongda\Pay\Config([
-            'alipay' => [
-                'default' => $this->validConfig,
-            ],
-        ]);
+    expect($alipayConfig)->toBeInstanceOf(AlipayConfig::class);
+    expect($alipayConfig->getAppId())->toBe('test_app_id');
+    expect($alipayConfig->getTenant())->toBe('default');
+});
 
-        $alipayConfig = $config->getProviderConfig('alipay');
-
-        self::assertInstanceOf(AlipayConfig::class, $alipayConfig);
-        self::assertSame('test_app_id', $alipayConfig->getAppId());
-        self::assertSame('default', $alipayConfig->getTenant());
-    }
-}
