@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Alipay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Exception\Exception;
@@ -19,120 +17,108 @@ use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\CancelShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class CancelShortcutTest extends TestCase
-{
-    protected CancelShortcut $shortcut;
+it('foo param', function () {
+    $shortcut = new CancelShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $shortcut->getPlugins(['_action' => 'foo']);
+});
 
-        $this->shortcut = new CancelShortcut();
-    }
+it('default', function () {
+    $shortcut = new CancelShortcut();
+    $result = $shortcut->getPlugins([]);
 
-    public function testFooParam()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        PosCancelPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->shortcut->getPlugins(['_action' => 'foo']);
-    }
+it('agreement', function () {
+    $shortcut = new CancelShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'agreement']);
 
-    public function testDefault()
-    {
-        $result = $this->shortcut->getPlugins([]);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        AgreementCancelPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            PosCancelPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('authorization', function () {
+    $shortcut = new CancelShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'authorization']);
 
-    public function testAgreement()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'agreement']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        AuthorizationCancelPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            AgreementCancelPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('mini', function () {
+    $shortcut = new CancelShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'mini']);
 
-    public function testAuthorization()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'authorization']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        MiniCancelPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            AuthorizationCancelPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('pos', function () {
+    $shortcut = new CancelShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'pos']);
 
-    public function testMini()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'mini']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        PosCancelPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            MiniCancelPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('scan', function () {
+    $shortcut = new CancelShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'scan']);
 
-    public function testPos()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'pos']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        ScanCancelPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            PosCancelPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
-
-    public function testScan()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'scan']);
-
-        self::assertEquals([
-            StartPlugin::class,
-            ScanCancelPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
-}

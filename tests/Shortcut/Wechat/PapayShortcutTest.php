@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Wechat;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -20,167 +18,155 @@ use Yansongda\Pay\Plugin\Wechat\V2\Pay\Mini\InvokePlugin as MiniInvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\Pay\Mp\InvokePlugin as MpInvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\PapayShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class PapayShortcutTest extends TestCase
-{
-    protected PapayShortcut $plugin;
+it('default', function () {
+    $plugin = new PapayShortcut();
+    expect($plugin->getPlugins(['_type' => 'mini']))->toEqual([
+        StartPlugin::class,
+        ContractOrderPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        MiniInvokePlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    expect($plugin->getPlugins(['_type' => 'app']))->toEqual([
+        StartPlugin::class,
+        ContractOrderPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        AppInvokePlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
 
-        $this->plugin = new PapayShortcut();
-    }
+    expect($plugin->getPlugins(['_type' => 'mp']))->toEqual([
+        StartPlugin::class,
+        ContractOrderPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        MpInvokePlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ContractOrderPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            MiniInvokePlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'mini']));
+    expect($plugin->getPlugins(['_type' => 'scan']))->toEqual([
+        StartPlugin::class,
+        ContractOrderPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
 
-        self::assertEquals([
-            StartPlugin::class,
-            ContractOrderPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            AppInvokePlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'app']));
+    expect($plugin->getPlugins(['_type' => 'h5']))->toEqual([
+        StartPlugin::class,
+        ContractOrderPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
 
-        self::assertEquals([
-            StartPlugin::class,
-            ContractOrderPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            MpInvokePlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'mp']));
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED);
 
-        self::assertEquals([
-            StartPlugin::class,
-            ContractOrderPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'scan']));
+    $plugin->getPlugins(['_type' => 'foo']);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            ContractOrderPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_type' => 'h5']));
+it('order', function () {
+    $plugin = new PapayShortcut();
+    expect($plugin->getPlugins(['_action' => 'order', '_type' => 'mini']))->toEqual([
+        StartPlugin::class,
+        ContractOrderPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        MiniInvokePlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED);
+    expect($plugin->getPlugins(['_action' => 'order', '_type' => 'app']))->toEqual([
+        StartPlugin::class,
+        ContractOrderPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        AppInvokePlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
 
-        $this->plugin->getPlugins(['_type' => 'foo']);
-    }
+    expect($plugin->getPlugins(['_action' => 'order', '_type' => 'scan']))->toEqual([
+        StartPlugin::class,
+        ContractOrderPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
 
-    public function testOrder()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ContractOrderPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            MiniInvokePlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'order', '_type' => 'mini']));
+    expect($plugin->getPlugins(['_action' => 'order', '_type' => 'h5']))->toEqual([
+        StartPlugin::class,
+        ContractOrderPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            ContractOrderPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            AppInvokePlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'order', '_type' => 'app']));
+it('apply', function () {
+    $plugin = new PapayShortcut();
+    expect($plugin->getPlugins(['_action' => 'apply']))->toEqual([
+        StartPlugin::class,
+        ApplyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            ContractOrderPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'order', '_type' => 'scan']));
+it('contract', function () {
+    $plugin = new PapayShortcut();
+    expect($plugin->getPlugins(['_action' => 'contract', '_type' => 'mini']))->toEqual([
+        StartPlugin::class,
+        MiniOnlyContractPlugin::class,
+        AddPayloadSignaturePlugin::class,
+    ]);
 
-        self::assertEquals([
-            StartPlugin::class,
-            ContractOrderPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'order', '_type' => 'h5']));
-    }
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED);
 
-    public function testApply()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ApplyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'apply']));
-    }
+    $plugin->getPlugins(['_action' => 'contract', '_type' => 'app']);
+});
 
-    public function testContract()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            MiniOnlyContractPlugin::class,
-            AddPayloadSignaturePlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'contract', '_type' => 'mini']));
+it('foo', function () {
+    $plugin = new PapayShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED);
+    $plugin->getPlugins(['_action' => 'foo']);
+});
 
-        $this->plugin->getPlugins(['_action' => 'contract', '_type' => 'app']);
-    }
-
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'foo']);
-    }
-}

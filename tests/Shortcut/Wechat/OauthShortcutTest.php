@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Wechat;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
@@ -15,72 +13,60 @@ use Yansongda\Pay\Plugin\Wechat\Openapi\Oauth\UserInfoPlugin;
 use Yansongda\Pay\Plugin\Wechat\Openapi\Oauth\WebAccessTokenPlugin;
 use Yansongda\Pay\Plugin\Wechat\Openapi\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Wechat\OauthShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class OauthShortcutTest extends TestCase
-{
-    protected OauthShortcut $plugin;
+it('web token', function () {
+    $plugin = new OauthShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'web_token', 'code' => 'mock-code']);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(WebAccessTokenPlugin::class);
+    expect($plugins[2])->toBe(AddRadarPlugin::class);
+    expect($plugins[3])->toBe(ResponsePlugin::class);
+    expect($plugins[4])->toBe(ParserPlugin::class);
+});
 
-        $this->plugin = new OauthShortcut();
-    }
+it('refresh', function () {
+    $plugin = new OauthShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'refresh', 'refresh_token' => 'mock-refresh-token']);
 
-    public function testWebToken(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'web_token', 'code' => 'mock-code']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(RefreshTokenPlugin::class);
+    expect($plugins[2])->toBe(AddRadarPlugin::class);
+    expect($plugins[3])->toBe(ResponsePlugin::class);
+    expect($plugins[4])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(WebAccessTokenPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[2]);
-        self::assertSame(ResponsePlugin::class, $plugins[3]);
-        self::assertSame(ParserPlugin::class, $plugins[4]);
-    }
+it('userinfo', function () {
+    $plugin = new OauthShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'userinfo', 'access_token' => 'mock-access-token', 'openid' => 'mock-openid']);
 
-    public function testRefresh(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'refresh', 'refresh_token' => 'mock-refresh-token']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(UserInfoPlugin::class);
+    expect($plugins[2])->toBe(AddRadarPlugin::class);
+    expect($plugins[3])->toBe(ResponsePlugin::class);
+    expect($plugins[4])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(RefreshTokenPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[2]);
-        self::assertSame(ResponsePlugin::class, $plugins[3]);
-        self::assertSame(ParserPlugin::class, $plugins[4]);
-    }
+it('session', function () {
+    $plugin = new OauthShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'session', 'js_code' => 'mock-js-code']);
 
-    public function testUserinfo(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'userinfo', 'access_token' => 'mock-access-token', 'openid' => 'mock-openid']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(Code2SessionPlugin::class);
+    expect($plugins[2])->toBe(AddRadarPlugin::class);
+    expect($plugins[3])->toBe(ResponsePlugin::class);
+    expect($plugins[4])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(UserInfoPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[2]);
-        self::assertSame(ResponsePlugin::class, $plugins[3]);
-        self::assertSame(ParserPlugin::class, $plugins[4]);
-    }
+it('invalid action throws', function () {
+    $plugin = new OauthShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    public function testSession(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'session', 'js_code' => 'mock-js-code']);
+    $plugin->getPlugins(['_action' => 'invalid_action']);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(Code2SessionPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[2]);
-        self::assertSame(ResponsePlugin::class, $plugins[3]);
-        self::assertSame(ParserPlugin::class, $plugins[4]);
-    }
-
-    public function testInvalidActionThrows(): void
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'invalid_action']);
-    }
-}

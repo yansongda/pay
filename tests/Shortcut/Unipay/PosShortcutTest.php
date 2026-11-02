@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Unipay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -19,63 +17,51 @@ use Yansongda\Pay\Plugin\Unipay\Qra\Pos\PayPlugin;
 use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\PosShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class PosShortcutTest extends TestCase
-{
-    protected PosShortcut $plugin;
+it('default', function () {
+    $plugin = new PosShortcut();
+    expect($plugin->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        PosPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('pre auth', function () {
+    $plugin = new PosShortcut();
+    expect($plugin->getPlugins(['_action' => 'pre_auth']))->toEqual([
+        StartPlugin::class,
+        PosPreAuthPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->plugin = new PosShortcut();
-    }
+it('qra', function () {
+    $plugin = new PosShortcut();
+    expect($plugin->getPlugins(['_action' => 'qra']))->toEqual([
+        QraStartPlugin::class,
+        PayPlugin::class,
+        QraAddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        QraVerifySignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            PosPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
+it('foo', function () {
+    $plugin = new PosShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    public function testPreAuth()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            PosPreAuthPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'pre_auth']));
-    }
+    $plugin->getPlugins(['_action' => 'foo']);
+});
 
-    public function testQra()
-    {
-        self::assertEquals([
-            QraStartPlugin::class,
-            PayPlugin::class,
-            QraAddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            QraVerifySignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'qra']));
-    }
-
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'foo']);
-    }
-}

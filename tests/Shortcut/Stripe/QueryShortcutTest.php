@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Stripe;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
@@ -13,57 +11,45 @@ use Yansongda\Pay\Plugin\Stripe\V1\Pay\QueryPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\QueryRefundPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Stripe\QueryShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class QueryShortcutTest extends TestCase
-{
-    protected QueryShortcut $shortcut;
+it('foo', function () {
+    $shortcut = new QueryShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $shortcut->getPlugins(['_action' => 'foo']);
+});
 
-        $this->shortcut = new QueryShortcut();
-    }
+it('default', function () {
+    $shortcut = new QueryShortcut();
+    expect($shortcut->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        QueryPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+it('order', function () {
+    $shortcut = new QueryShortcut();
+    expect($shortcut->getPlugins(['_action' => 'order']))->toEqual([
+        StartPlugin::class,
+        QueryPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->shortcut->getPlugins(['_action' => 'foo']);
-    }
+it('refund', function () {
+    $shortcut = new QueryShortcut();
+    expect($shortcut->getPlugins(['_action' => 'refund']))->toEqual([
+        StartPlugin::class,
+        QueryRefundPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            QueryPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->shortcut->getPlugins([]));
-    }
-
-    public function testOrder()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            QueryPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->shortcut->getPlugins(['_action' => 'order']));
-    }
-
-    public function testRefund()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            QueryRefundPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->shortcut->getPlugins(['_action' => 'refund']));
-    }
-}

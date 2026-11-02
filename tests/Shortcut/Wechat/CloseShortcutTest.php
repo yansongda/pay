@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Wechat;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -16,85 +14,73 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\ClosePlugin as CombineClosePlugin
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\ClosePlugin as JsapiClosePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\CloseShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class CloseShortcutTest extends TestCase
-{
-    protected CloseShortcut $plugin;
+it('default', function () {
+    $plugin = new CloseShortcut();
+    expect($plugin->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        JsapiClosePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('combine', function () {
+    $plugin = new CloseShortcut();
+    expect($plugin->getPlugins(['_action' => 'combine']))->toEqual([
+        StartPlugin::class,
+        CombineClosePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->plugin = new CloseShortcut();
-    }
+it('combine params', function () {
+    $plugin = new CloseShortcut();
+    expect($plugin->getPlugins(['combine_out_trade_no' => '123abc']))->toEqual([
+        StartPlugin::class,
+        CombineClosePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            JsapiClosePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
+    expect($plugin->getPlugins(['sub_orders' => '123abc']))->toEqual([
+        StartPlugin::class,
+        CombineClosePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testCombine()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CombineClosePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'combine']));
-    }
+it('virtual', function () {
+    $plugin = new CloseShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    public function testCombineParams()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CombineClosePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['combine_out_trade_no' => '123abc']));
+    $plugin->getPlugins(['_action' => 'virtual']);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            CombineClosePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['sub_orders' => '123abc']));
-    }
+it('foo', function () {
+    $plugin = new CloseShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    public function testVirtual()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+    $plugin->getPlugins(['_action' => 'foo']);
+});
 
-        $this->plugin->getPlugins(['_action' => 'virtual']);
-    }
-
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'foo']);
-    }
-}

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Paypal;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -15,63 +13,51 @@ use Yansongda\Pay\Plugin\Paypal\V2\Pay\CapturePlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\PayPlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Paypal\WebShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class WebShortcutTest extends TestCase
-{
-    protected WebShortcut $shortcut;
+it('foo', function () {
+    $shortcut = new WebShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $shortcut->getPlugins(['_action' => 'foo']);
+});
 
-        $this->shortcut = new WebShortcut();
-    }
+it('default', function () {
+    $shortcut = new WebShortcut();
+    expect($shortcut->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        ObtainAccessTokenPlugin::class,
+        PayPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+it('pay', function () {
+    $shortcut = new WebShortcut();
+    expect($shortcut->getPlugins(['_action' => 'pay']))->toEqual([
+        StartPlugin::class,
+        ObtainAccessTokenPlugin::class,
+        PayPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->shortcut->getPlugins(['_action' => 'foo']);
-    }
+it('capture', function () {
+    $shortcut = new WebShortcut();
+    expect($shortcut->getPlugins(['_action' => 'capture']))->toEqual([
+        StartPlugin::class,
+        ObtainAccessTokenPlugin::class,
+        CapturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ObtainAccessTokenPlugin::class,
-            PayPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->shortcut->getPlugins([]));
-    }
-
-    public function testPay()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ObtainAccessTokenPlugin::class,
-            PayPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->shortcut->getPlugins(['_action' => 'pay']));
-    }
-
-    public function testCapture()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ObtainAccessTokenPlugin::class,
-            CapturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->shortcut->getPlugins(['_action' => 'capture']));
-    }
-}

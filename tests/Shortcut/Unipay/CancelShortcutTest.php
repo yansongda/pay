@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Unipay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -19,63 +17,51 @@ use Yansongda\Pay\Plugin\Unipay\Qra\Pos\CancelPlugin as QraPosCancelQueryPlugin;
 use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\CancelShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class CancelShortcutTest extends TestCase
-{
-    protected CancelShortcut $plugin;
+it('default', function () {
+    $plugin = new CancelShortcut();
+    expect($plugin->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        OnlineGatewayCancelPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('qr code', function () {
+    $plugin = new CancelShortcut();
+    expect($plugin->getPlugins(['_action' => 'qr_code']))->toEqual([
+        StartPlugin::class,
+        QrCodeCancelPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->plugin = new CancelShortcut();
-    }
+it('qra pos', function () {
+    $plugin = new CancelShortcut();
+    expect($plugin->getPlugins(['_action' => 'qra_pos']))->toEqual([
+        QraStartPlugin::class,
+        QraPosCancelQueryPlugin::class,
+        QraAddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        QraVerifySignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            OnlineGatewayCancelPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
+it('foo', function () {
+    $plugin = new CancelShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    public function testQrCode()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            QrCodeCancelPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'qr_code']));
-    }
+    $plugin->getPlugins(['_action' => 'foo']);
+});
 
-    public function testQraPos()
-    {
-        self::assertEquals([
-            QraStartPlugin::class,
-            QraPosCancelQueryPlugin::class,
-            QraAddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            QraVerifySignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'qra_pos']));
-    }
-
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'foo']);
-    }
-}

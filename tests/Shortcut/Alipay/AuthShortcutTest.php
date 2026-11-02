@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Alipay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Exception\Exception;
@@ -16,72 +14,60 @@ use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\AuthShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class AuthShortcutTest extends TestCase
-{
-    protected AuthShortcut $shortcut;
+it('token app default', function () {
+    $shortcut = new AuthShortcut();
+    $result = $shortcut->getPlugins([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    expect($result)->toEqual([
+        StartPlugin::class,
+        TokenAppPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->shortcut = new AuthShortcut();
-    }
+it('token app explicit', function () {
+    $shortcut = new AuthShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'token_app']);
 
-    public function testTokenAppDefault()
-    {
-        $result = $this->shortcut->getPlugins([]);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        TokenAppPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            TokenAppPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('query', function () {
+    $shortcut = new AuthShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'query']);
 
-    public function testTokenAppExplicit()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'token_app']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        TokenAppQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            TokenAppPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('foo param', function () {
+    $shortcut = new AuthShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    public function testQuery()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'query']);
+    $shortcut->getPlugins(['_action' => 'foo']);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            TokenAppQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
-
-    public function testFooParam()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->shortcut->getPlugins(['_action' => 'foo']);
-    }
-}

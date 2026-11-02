@@ -2,29 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Douyin;
-
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\InvokePlugin;
 use Yansongda\Pay\Shortcut\Douyin\MiniShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class MiniShortcutTest extends TestCase
-{
-    protected MiniShortcut $plugin;
+it('default', function () {
+    $plugin = new MiniShortcut();
+    expect($plugin->getPlugins([]))->toBe([
+        StartPlugin::class,
+        InvokePlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->plugin = new MiniShortcut();
-    }
-
-    public function testDefault()
-    {
-        self::assertSame([
-            StartPlugin::class,
-            InvokePlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
-}

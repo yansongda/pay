@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Wechat;
-
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
@@ -14,31 +12,19 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\InvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\PayPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\MiniShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class MiniShortcutTest extends TestCase
-{
-    protected MiniShortcut $plugin;
+it('default', function () {
+    $plugin = new MiniShortcut();
+    expect($plugin->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        PayPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        InvokePlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->plugin = new MiniShortcut();
-    }
-
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            PayPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            InvokePlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
-}

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Wechat;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -24,178 +22,166 @@ use Yansongda\Pay\Plugin\Wechat\V3\PayScore\QueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\PayScore\SyncPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\PayScoreShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class PayScoreShortcutTest extends TestCase
-{
-    protected PayScoreShortcut $plugin;
+it('default', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        CreatePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('query', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins(['_action' => 'query']))->toEqual([
+        StartPlugin::class,
+        QueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->plugin = new PayScoreShortcut();
-    }
+it('cancel', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins(['_action' => 'cancel']))->toEqual([
+        StartPlugin::class,
+        CancelPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CreatePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
+it('complete', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins(['_action' => 'complete']))->toEqual([
+        StartPlugin::class,
+        CompletePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testQuery()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            QueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'query']));
-    }
+it('modify', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins(['_action' => 'modify']))->toEqual([
+        StartPlugin::class,
+        ModifyPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testCancel()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CancelPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'cancel']));
-    }
+it('sync', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins(['_action' => 'sync']))->toEqual([
+        StartPlugin::class,
+        SyncPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testComplete()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CompletePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'complete']));
-    }
+it('pay', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins(['_action' => 'pay']))->toEqual([
+        StartPlugin::class,
+        PayPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testModify()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ModifyPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'modify']));
-    }
+it('permissions', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins(['_action' => 'permissions']))->toEqual([
+        StartPlugin::class,
+        PermissionsCreatePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testSync()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            SyncPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'sync']));
-    }
+it('permissions query', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins(['_action' => 'permissions_query']))->toEqual([
+        StartPlugin::class,
+        PermissionsQueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testPay()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            PayPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'pay']));
-    }
+it('permissions terminate', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins(['_action' => 'permissions_terminate']))->toEqual([
+        StartPlugin::class,
+        PermissionsTerminatePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testPermissions()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            PermissionsCreatePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'permissions']));
-    }
+it('default action', function () {
+    $plugin = new PayScoreShortcut();
+    expect($plugin->getPlugins(['_action' => 'default']))->toEqual([
+        StartPlugin::class,
+        CreatePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testPermissionsQuery()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            PermissionsQueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'permissions_query']));
-    }
+it('foo', function () {
+    $plugin = new PayScoreShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    public function testPermissionsTerminate()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            PermissionsTerminatePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'permissions_terminate']));
-    }
+    $plugin->getPlugins(['_action' => 'foo']);
+});
 
-    public function testDefaultAction()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CreatePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'default']));
-    }
-
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'foo']);
-    }
-}

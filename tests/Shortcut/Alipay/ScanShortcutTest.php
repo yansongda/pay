@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Alipay;
-
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
@@ -13,32 +11,20 @@ use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\ScanShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class ScanShortcutTest extends TestCase
-{
-    protected ScanShortcut $shortcut;
+it('normal', function () {
+    $shortcut = new ScanShortcut();
+    $result = $shortcut->getPlugins([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    expect($result)->toEqual([
+        StartPlugin::class,
+        PayPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->shortcut = new ScanShortcut();
-    }
-
-    public function testNormal()
-    {
-        $result = $this->shortcut->getPlugins([]);
-
-        self::assertEquals([
-            StartPlugin::class,
-            PayPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
-}
