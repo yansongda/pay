@@ -2,17 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Douyin\V1;
-
-use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Douyin\V1\CallbackPlugin;
+use Yansongda\Pay\Tests\Support\Traits\DouyinHelpers;
 
-uses(CallbackPluginTestHelpers::class);
+uses(DouyinHelpers::class);
 
 it('支付回调', function () {
     $plugin = new CallbackPlugin();
@@ -142,31 +140,3 @@ it('缺少请求对象', function () {
 
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 })->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
-
-trait CallbackPluginTestHelpers
-{
-    private function getDouyinCallbackRequest(string $body, array $overrideHeaders = []): ServerRequest
-    {
-        $headers = [
-            'Byte-Timestamp' => '1700000000',
-            'Byte-Nonce-Str' => 'abcdef1234567890',
-            'Byte-Logid' => '202408041111312119',
-            'Byte-Identifyname' => 'trade',
-            'Byte-Signature' => base64_encode(
-                $this->signDouyinContents("1700000000\nabcdef1234567890\n".$body."\n")
-            ),
-        ];
-    
-        return new ServerRequest('POST', 'https://yansongda.cn/douyin/notify', array_merge($headers, $overrideHeaders), $body);
-    }
-    
-    private function signDouyinContents(string $contents): string
-    {
-        $privateKey = openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/douyinPlatformPrivateKey.pem'));
-        self::assertNotFalse($privateKey);
-    
-        self::assertTrue(openssl_sign($contents, $signature, $privateKey, OPENSSL_ALGO_SHA256));
-    
-        return $signature;
-    }
-}

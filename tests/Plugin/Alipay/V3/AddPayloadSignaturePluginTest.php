@@ -38,7 +38,7 @@ it('正常', function () {
         .'POST'."\n"
         .'/v3/alipay/trade/pay'."\n"
         .$body."\n";
-    $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'));
+    $publicKey = openssl_pkey_get_public(file_get_contents(cert_path('alipay-v3/alipay_public_cert_test.crt')));
     expect(openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256))->toEqual(1);
 });
 
@@ -62,7 +62,7 @@ it('无 body 的正常场景', function () {
         .'GET'."\n"
         .'/v3/alipay/trade/query?out_trade_no=yansongda'."\n"
         ."\n";
-    $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'));
+    $publicKey = openssl_pkey_get_public(file_get_contents(cert_path('alipay-v3/alipay_public_cert_test.crt')));
     expect(openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256))->toEqual(1);
 });
 
@@ -91,7 +91,7 @@ it('app_auth_token 覆盖', function () {
         .'/v3/alipay/trade/pay'."\n"
         .$body."\n"
         .'override_token'."\n";
-    $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'));
+    $publicKey = openssl_pkey_get_public(file_get_contents(cert_path('alipay-v3/alipay_public_cert_test.crt')));
     expect(openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256))->toEqual(1);
 });
 
@@ -101,9 +101,9 @@ it('app_auth_token 回退', function () {
         'alipay' => [
             'alipay-v3-fallback' => [
                 'app_id' => 'alipay_v3_test_app_id',
-                'app_secret_cert' => __DIR__.'/../../../Cert/alipay-v3/app_secret_test.pem',
-                'app_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
-                'alipay_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
+                'app_secret_cert' => cert_path('alipay-v3/app_secret_test.pem'),
+                'app_public_cert_path' => cert_path('alipay-v3/alipay_public_cert_test.crt'),
+                'alipay_public_cert_path' => cert_path('alipay-v3/alipay_public_cert_test.crt'),
                 'app_auth_token' => 'config_fallback_token',
             ],
         ],

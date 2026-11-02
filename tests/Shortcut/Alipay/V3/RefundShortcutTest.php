@@ -2,12 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Alipay\V3;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
-use Mockery;
-use Yansongda\Pay\CertManager;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidResponseException;
@@ -22,8 +18,9 @@ use Yansongda\Pay\Plugin\Alipay\V3\Pay\RefundPlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\V3\RefundShortcut;
+use Yansongda\Pay\Tests\Support\Traits\AlipayV3SignedResponseHelpers;
 
-uses(RefundShortcutTestHelpers::class);
+uses(AlipayV3SignedResponseHelpers::class);
 
 it('正常', function () {
     $shortcut = new RefundShortcut();
@@ -73,6 +70,7 @@ it('HTTP 退款', function () {
 });
 
 it('退款错误响应', function () {
+    // 支付宝返回非 2xx 错误体：无签名（有签才验放行）→ ResponsePlugin 抛业务异常，消息含 code 与 message
     $shortcut = new RefundShortcut();
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->andReturn(new Response(
@@ -89,20 +87,3 @@ it('退款错误响应', function () {
         'refund_amount' => '-1.00',
     ]);
 })->throws(InvalidResponseException::class, '支付宝返回状态码异常: [INVALID_PARAMETER] 参数错误，请检查参数是否错误', Exception::RESPONSE_CODE_WRONG);
-
-trait RefundShortcutTestHelpers
-{
-    private function makeSignedResponse(int $status, string $body): Response
-    {
-        $timestamp = (string) (int) (microtime(true) * 1000);
-        $nonce = 'yansongda-nonce';
-        openssl_sign($timestamp."\n".$nonce."\n".$body."\n", $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
-    
-        return new Response($status, [
-            'alipay-timestamp' => $timestamp,
-            'alipay-nonce' => $nonce,
-            'alipay-signature' => base64_encode($sign),
-            'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'),
-        ], $body);
-    }
-}

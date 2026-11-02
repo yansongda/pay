@@ -2,13 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Provider;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
-use Mockery;
-use Psr\Http\Message\RequestInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
@@ -19,14 +15,9 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Allinpay\AddPayloadSignPlugin;
 use Yansongda\Pay\Plugin\Allinpay\CallbackPlugin;
-use Yansongda\Pay\Traits\AllinpayTrait;
+use Yansongda\Pay\Tests\Support\Traits\AllinpayProviderHelpers;
 
-class AllinpayTraitHelper
-{
-use AllinpayTrait;
-}
-
-uses(AllinpayTestHelpers::class);
+uses(AllinpayProviderHelpers::class);
 
 it('快捷方式不存在', function () {
 
@@ -92,7 +83,7 @@ it('签名缺少密钥', function () {
             'default' => [
                 'cusid' => '9900000',
                 'appid' => '000000',
-                'allinpay_public_key' => __DIR__.'/../Cert/allinpayPlatformPublicKey.pem',
+                'allinpay_public_key' => cert_path('allinpayPlatformPublicKey.pem'),
                 'mode' => PayMode::SANDBOX,
             ],
         ],
@@ -482,42 +473,3 @@ it('从 ServerRequest 回调', function () {
 
     expect($result->get('reqsn'))->toBe('order-1001');
 });
-
-trait AllinpayTestHelpers
-{
-    private ?RequestInterface $capturedRequest = null;
-    
-    private function signedResponse(array $data): array
-    {
-        $data = array_filter($data, static fn ($v) => null !== $v);
-        $content = AllinpayTraitHelper::getAllinpaySignContent($data);
-    
-        $sign = '';
-        openssl_sign($content, $sign, file_get_contents(__DIR__.'/../Cert/allinpayPlatformPrivateKey.pem'), OPENSSL_ALGO_SHA1);
-    
-        $data['sign'] = base64_encode($sign);
-    
-        return $data;
-    }
-    
-    private function mockHttp(array $data): void
-    {
-        $this->capturedRequest = null;
-    
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturnUsing(function (RequestInterface $request) use ($data) {
-            $this->capturedRequest = $request;
-    
-            return new Response(200, ['Content-Type' => 'application/json'], json_encode($data));
-        });
-        Pay::set(HttpClientInterface::class, $http);
-    }
-    
-    private function capturedBody(): array
-    {
-        $fields = [];
-        parse_str((string) ($this->capturedRequest?->getBody() ?? ''), $fields);
-    
-        return $fields;
-    }
-}

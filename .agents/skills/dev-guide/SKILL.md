@@ -20,9 +20,12 @@ composer test              # Pest 3.x（底层 PHPUnit 11）+ Mockery 1.6
 ./vendor/bin/pest tests/Plugin/Alipay   # 按目录运行
 ```
 - 测试写法为 Pest 函数式：`it('...', function () { expect($actual)->toBe($expected); })`
-- 断言映射：`assertSame/assertTrue/assertNull` → `toBe/toBeTrue/toBeNull`；`assertEquals` → `toEqual`
-- 异常断言可继续使用 `$this->expectException()/expectExceptionCode()/expectExceptionMessage()`（Pest 闭包绑定 TestCase）
-- 测试基类 `tests/TestCase.php` 由 `tests/Pest.php` 的 `uses(TestCase::class)->in(__DIR__)` 绑定，勿删
+- 断言只用 Pest：`assertSame/assertTrue/assertNull` → `toBe/toBeTrue/toBeNull`；`assertEquals` → `toEqual`；异常统一 `->throws(...)`（测试体与 helper 内均禁止 `$this->assert*` / `PHPUnit\Framework\*`）
+- 无自建 TestCase：`tests/Pest.php` 通过全局 `beforeEach/afterEach` 注入配置与清理状态，勿在此文件外重复配置
+- **测试文件（`*Test.php`）禁止声明 class/trait/const**：
+  - 复用被测 Trait 的桩类 → `tests/Stubs/{Name}Stub.php`
+  - 签名/请求/响应构造等 helper → `tests/Support/Traits/{Provider}{Scene}Helpers.php`（通过 `uses(...)` 绑定）
+  - 证书 fixture 路径统一用 `tests/Pest.php` 的 `cert_path('xxx.pem')`，勿写 `__DIR__` 相对路径
 - 测试前需安装 `hyperf/pimple`
 - Mock HTTP 客户端避免真实请求
 

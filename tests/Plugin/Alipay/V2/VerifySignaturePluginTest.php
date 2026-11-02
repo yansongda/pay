@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
-
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidConfigException;
@@ -11,11 +9,11 @@ use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\AlipayV2VerifySignatureHelpers;
 
-uses(VerifySignaturePluginTestHelpers::class);
+uses(AlipayV2VerifySignatureHelpers::class);
 
 it('签名正常', function () {
     $plugin = new VerifySignaturePlugin();
@@ -67,11 +65,12 @@ it('待签名内容错误', function () {
 })->throws(InvalidParamsException::class, null, Exception::RESPONSE_EMPTY);
 
 it('单字段字符串的明文响应', function () {
+    // 明文响应拆包后即使恰好单键且值为 string（如响应仅含 code 字段），签名源也必须按明文形态组串，不得误判为密文.
     $plugin = new VerifySignaturePlugin();
     $this->reRegisterAlipayTenant();
 
     // 签名源 = 明文形态 `{"code":"10000"}`
-    openssl_sign('{"code":"10000"}', $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipayAppSecretCert.pem')), OPENSSL_ALGO_SHA256);
+    openssl_sign('{"code":"10000"}', $sign, openssl_pkey_get_private(file_get_contents(cert_path('alipayAppSecretCert.pem'))), OPENSSL_ALGO_SHA256);
 
     $rocket = (new Rocket())
         ->mergePayload(['method' => 'xxx'])
@@ -86,13 +85,14 @@ it('单字段字符串的明文响应', function () {
 });
 
 it('加密响应签名来源错误', function () {
+    // 加密响应场景下若按旧版对象形态组串签名（签名源错误），必须验签失败.
     $plugin = new VerifySignaturePlugin();
     $this->reRegisterAlipayTenant();
 
     $encrypted = 'hJK2YhT7G0AcpjkDL1dn7HJK6Mrr1WAfD/1ZcX680wSReEE9r2ybkHq3tMLn7KaZp/uYavEYYXc1rP7n1lV/iVjPz2q16VIU5Bx0MWLQWdGPSYdlXggHNoBe1RnobIcCGOVe9HlzCBtWzGpCZvMlqRbCuWAdp14aCkaJqpRxG4PY9Kd/NzELvhnCd9k8e7G2qcwx6g==';
 
     // 以旧版逻辑组串方式（json_encode 整个 result，`/` 会被转义为 `\/`）签名，签名源与密文形态不匹配
-    openssl_sign(json_encode(['xxx_response' => $encrypted], JSON_UNESCAPED_UNICODE), $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipayAppSecretCert.pem')), OPENSSL_ALGO_SHA256);
+    openssl_sign(json_encode(['xxx_response' => $encrypted], JSON_UNESCAPED_UNICODE), $sign, openssl_pkey_get_private(file_get_contents(cert_path('alipayAppSecretCert.pem'))), OPENSSL_ALGO_SHA256);
 
     $rocket = (new Rocket())
         ->mergePayload(['method' => 'xxx'])
@@ -105,6 +105,8 @@ it('加密响应签名来源错误', function () {
 })->throws(InvalidSignException::class, null, \Yansongda\Pay\Exception\Exception::SIGN_ERROR);
 
 it('加密响应解密', function () {
+    // 加密响应：签名源为带双引号的密文原文（与官方 SDK 取串行为一致），
+    // 验签通过后自动解密拆包，交付明文业务字段并保留 _sign.
     $plugin = new VerifySignaturePlugin();
     $key = random_bytes(16);
     $cipher = base64_encode(
@@ -131,6 +133,7 @@ it('加密响应解密', function () {
 });
 
 it('加密响应签名错误跳过解密', function () {
+    // 安全回归：验签失败时解密不可达，destination 保持密文形态（encrypt-then-MAC，解密原语门控于验签之后）.
     $plugin = new VerifySignaturePlugin();
     $key = random_bytes(16);
     $cipher = base64_encode(
@@ -156,6 +159,7 @@ it('加密响应签名错误跳过解密', function () {
 });
 
 it('配置 AES 密钥的明文响应', function () {
+    // 明文响应即使已配置 aes_key，也不进入解密分支.
     $plugin = new VerifySignaturePlugin();
     $this->reRegisterAlipayTenant(base64_encode(random_bytes(16)));
 
@@ -173,6 +177,7 @@ it('配置 AES 密钥的明文响应', function () {
 });
 
 it('加密响应缺少 AES 密钥', function () {
+    // 加密响应验签通过但未配置 aes_key → InvalidConfigException（仅在验签通过后抛出）.
     $plugin = new VerifySignaturePlugin();
     $this->reRegisterAlipayTenant();
 
@@ -190,6 +195,7 @@ it('加密响应缺少 AES 密钥', function () {
 })->throws(InvalidConfigException::class, null, \Yansongda\Pay\Exception\Exception::DECRYPT_ALIPAY_AES_KEY_INVALID);
 
 it('加密响应 JSON 非法', function () {
+    // 验签通过但密文解密后不是合法 JSON → DecryptException.
     $plugin = new VerifySignaturePlugin();
     $key = random_bytes(16);
     $cipher = base64_encode(
@@ -211,6 +217,7 @@ it('加密响应 JSON 非法', function () {
 })->throws(DecryptException::class, '加密解密异常: 支付宝密文解密后不是合法的 JSON 响应', \Yansongda\Pay\Exception\Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
 
 it('无 HTTP 请求方向时不操作', function () {
+    // 非 HTTP 请求方向（如回调链路复用）不验签不解密.
     $plugin = new VerifySignaturePlugin();
     $destination = [
         '_sign' => 'x',
@@ -226,31 +233,3 @@ it('无 HTTP 请求方向时不操作', function () {
 
     expect($result)->toBe($rocket);
 });
-
-trait VerifySignaturePluginTestHelpers
-{
-    private function reRegisterAlipayTenant(?string $aesKey = null): void
-    {
-        Pay::config([
-            'alipay' => [
-                'default' => array_filter([
-                    'app_id' => '9021000122682882',
-                    'app_secret_cert' => 'MIIEpAIBAAKCAQEApSA9oxvcqfbgpgkxXvyCpnxaR6TPaEMh/ij+PhF8180zL82ic4whkrRlcu1Y179AKEZNar71Ugi37fKcXWLerjPOeb8WHnZgNG19gkAcOIqZPRPpJ1eRtwKEclIzt+j3H/wgXWkD7BTr61RjuAcviyvDVbAJ/TPlMqXdJFIuJwZblN2WblIv+4Dm1iPOB+fVCU3rsgg4eajf3HrZ7sq6fBhQhO5krDmIIYGsFZ+fohEgnLkBaF0gqNUb5Yb4PBfaEcu8Hcwq+XyBSMOVOIABRPQVDedW2sE/2NsLkR62DaEe/Ri9VUDJe0pE39P+X22DicJ3E3yrxvdioMnLtDqEuwIDAQABAoIBAQCSHZ1tH9J7c8IGKkxNyROzToZ0rxn5IK6LwKp5MfBO5X1N56DArldnAcpjkDL1dn7HJK6Mrr1WAfD/1ZcX680wSReEE9r2ybkHq3tMLn7KaZp/uYavEYYXc1rP7n1lV/iVjPz2q16VIU5Bx0MWLQWdGPSYdlXggHNoBe1RnobIcCGOVe9HlzCBtWzGpCZvMlqRbCuWAdp14aCkaJqpRxG4PY9Kd/NzELvhnCd9k8e7G2qcwx6gAoXN8OXO8jmZg/6fOvFnrGl6CBp8sioe5F3R023fDum546IqS8EZdCl5T0gW/boTbSV8luitab65xBO3PmUI+V2OEFCL6WcJxawBAoGBAOZoft6/LatdoXzr8vh+rKzacUHw246fpacbgx0B5DDymM7hbhXbY/NoCWPgBJtV3XI3DtMJ5yvlEVDQvPfbSHRPx2XQknwrM7ly2SLbaC+tuhcvoG6F1RLWFx+y/583seSlVNuWC9KdpLTKzo8wl8Z4/kheLTBxTxL20NZu79XBAoGBALd3fNoXk5V+T16hnSinPtt2NEsZpn+4w07DikzcpdyjCL5PYjp/BppmX3xly96fCZh3MO3Vkuya1xgauMzxVKQlR/aD5yVmsqK7wxNTY1ZQM74B44/4Mks/8MG2r7o3DElA4/qIeMP4CwkWmYcuij7npm2bgIqFzS+4aGZfDRF7AoGAKMO2Jpy2bMo9BwgLzdFDpbVkMmF1xu8R9NXWRayO/eX+CSQzQOS281qlxqjcx8rSSiHZmpb28notrRmxRTzjvchbo/TZ5eQS262pIxSkg0L+WJnRjZxaDWIZZz9ZIIdPDv/9WnhakSHZAS+cihLz12aSvqUC4744WkeWvUmVX0ECgYAGLDoCKHrps7c96tgbzwy5W4/E2xcUAwZnNwMHNQFLnBymMouOhkmVlk4uJEqosdcjzxbRWbc4yLjl8bg4BQKhBzQVojh7tKnb+c9Fbi/QbqBfCzc519LxXzRdgCUHceSy7kD9Y+wUQ9szMhR2TOWP2kFqPKolfvz5Vw4EK7yH0wKBgQDerq9Pthbii7lNt528/q0cH9vOMn9z76o6jMMea9EibclVHtdcQBWLOn8Yw97k+WSXYGuUrQUWWQbyabZqWkkS4cEjJf5/DiwOuYdNVXg7FK56ucTczBA7lR4dnunPW6U1HbSWf0Cn4Y/cl/z7B5QBSQt0W38IYHSaf6/sqsV6SA==',
-                    'app_auth_token' => '',
-                    'app_public_cert_path' => __DIR__.'/../../../Cert/alipayAppPublicCert.crt',
-                    'alipay_public_cert_path' => __DIR__.'/../../../Cert/alipayAppPublicCert.crt',
-                    'alipay_root_cert_path' => __DIR__.'/../../../Cert/alipayRootCert.crt',
-                    'notify_url' => 'https://pay.yansongda.cn',
-                    'return_url' => 'https://pay.yansongda.cn',
-                    'aes_key' => $aesKey,
-                ], static fn ($v) => null !== $v),
-            ],
-            '_force' => true,
-        ]);
-    }
-    
-    private function getTestPrivateKey()
-    {
-        return openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipayAppSecretCert.pem'));
-    }
-}

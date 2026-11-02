@@ -2,10 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Traits;
-
-use ReflectionMethod;
-use RuntimeException;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\AppleConfig;
@@ -15,28 +11,12 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Tests\Support\Apple\AppleJwsFactory;
 use Yansongda\Pay\Tests\Support\Apple\AppleTokenFactory;
-use Yansongda\Pay\Traits\AppleTrait;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\AppleTraitHelpers;
+use Yansongda\Pay\Tests\Stubs\AppleTraitStub;
+use Yansongda\Pay\Tests\Support\Apple\PaymentData;
 
-class AppleTraitStub
-{
-use AppleTrait;
-}
-
-const PAYMENT_DATA = [
-    'applicationPrimaryAccountNumber' => '378282246310005',
-    'applicationExpirationDate' => '290101',
-    'currencyCode' => '156',
-    'transactionAmount' => 100,
-    'cardholderName' => 'Yansongda Pay',
-    'deviceManufacturerIdentifier' => '050103030300',
-    'paymentDataType' => '3DSecure',
-    'paymentData' => [
-        'onlinePaymentCryptogram' => 'AgAAAAAACcm3BAYGAgIIAw==',
-        'eciIndicator' => '05',
-    ],
-];
-uses(AppleTraitTestHelpers::class);
+uses(AppleTraitHelpers::class);
 
 it('获取 Apple URL', function () {
     $normal = new AppleConfig(['mode' => PayMode::NORMAL]);
@@ -58,7 +38,7 @@ it('获取 Apple URL 缺少配置抛出异常', function () {
 })->throws(InvalidParamsException::class, null, Exception::PARAMS_APPLE_URL_MISSING);
 
 it('验证 Apple token', function () {
-    $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
+    $token = AppleTokenFactory::makeToken(PaymentData::PAYMENT_DATA);
 
     // array 形态
     $result = AppleTraitStub::verifyAppleToken($token, []);
@@ -94,13 +74,14 @@ it('Apple token 携带 applicationData', function () {
 });
 
 it('Apple token 数据被篡改', function () {
-    $token = AppleTokenFactory::makeToken(PAYMENT_DATA, ['tamperData' => true]);
+    $token = AppleTokenFactory::makeToken(PaymentData::PAYMENT_DATA, ['tamperData' => true]);
 
     AppleTraitStub::verifyAppleToken($token, []);
 })->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple token 商户不匹配', function () {
-    $token = AppleTokenFactory::makeToken(PAYMENT_DATA, [
+    // 用非配置商户证书（untrusted-root）参与 KDF/pubkeyHash → 商户证书哈希不匹配
+    $token = AppleTokenFactory::makeToken(PaymentData::PAYMENT_DATA, [
         'merchantCert' => $this->certPath('untrusted-root.crt'),
     ]);
 
@@ -108,7 +89,8 @@ it('Apple token 商户不匹配', function () {
 })->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple token 证书链不受信任', function () {
-    $token = AppleTokenFactory::makeToken(PAYMENT_DATA, [
+    // untrusted 链签名（leaf/intermediate 自洽，但 intermediate 不由 token-root 签发）
+    $token = AppleTokenFactory::makeToken(PaymentData::PAYMENT_DATA, [
         'signerCert' => $this->certPath('untrusted-leaf.crt'),
         'signerKey' => $this->certPath('untrusted-leaf.key'),
         'intermediateCert' => $this->certPath('untrusted-intermediate.crt'),
@@ -118,7 +100,7 @@ it('Apple token 证书链不受信任', function () {
 })->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple token 结构非法', function () {
-    $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
+    $token = AppleTokenFactory::makeToken(PaymentData::PAYMENT_DATA);
 
     // 缺 data
     $missingData = $token;
@@ -132,28 +114,27 @@ it('Apple token 结构非法', function () {
     $badAppData = $token;
     $badAppData['header']['applicationData'] = 'not-hex!!';
 
-    $this->assertTokenInvalidParams($missingData);
-    $this->assertTokenInvalidParams($badHexTransactionId);
-    $this->assertTokenInvalidParams($badAppData);
-    $this->assertTokenInvalidParams('this is not json');
-    $this->assertTokenInvalidParams(new Collection(['data' => 'x', 'signature' => 'x', 'version' => 'EC_v1']));
+    $this->expectTokenInvalidParams($missingData);
+    $this->expectTokenInvalidParams($badHexTransactionId);
+    $this->expectTokenInvalidParams($badAppData);
+    $this->expectTokenInvalidParams('this is not json');
+    $this->expectTokenInvalidParams(new Collection(['data' => 'x', 'signature' => 'x', 'version' => 'EC_v1']));
 });
 
 it('Apple token 签名时间过期', function () {
-    $this->markTestSkipped(
-        'signingTime 超时反路径不可测：fixture 由 openssl_pkcs7_sign 实时生成且不支持签名时间参数；'
-        .'Trait 中缺失/超时均按 SIGN_ERROR 处理（真实 token 必含该属性，见 evidence）'
-    );
-});
+})->skip('signingTime 超时反路径不可测：fixture 由 openssl_pkcs7_sign 实时生成且不支持签名时间参数；'
+    .'Trait 中缺失/超时均按 SIGN_ERROR 处理（真实 token 必含该属性，见 evidence）');
 
 it('Apple token 使用默认根证书', function () {
-    $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
+    // 未配置 apple_root_ca：默认使用内置 AppleRootCA-G3.pem 参与链验证，
+    // fixture 的 token-root 不在内置信任链内 → 验签失败（而非配置缺失异常）
+    $token = AppleTokenFactory::makeToken(PaymentData::PAYMENT_DATA);
 
     AppleTraitStub::verifyAppleToken($token, ['_config' => 'no_root_ca']);
 })->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple token ASN.1 深度超限', function () {
-    $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
+    $token = AppleTokenFactory::makeToken(PaymentData::PAYMENT_DATA);
 
     // 70 层嵌套 SEQUENCE（超过 64 层上限），防恶意深嵌套 DER 栈溢出
     $der = "\x41";
@@ -170,7 +151,7 @@ it('Apple token ASN.1 深度超限', function () {
 })->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple token 签名过长', function () {
-    $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
+    $token = AppleTokenFactory::makeToken(PaymentData::PAYMENT_DATA);
 
     // 超过 64KB 上限（真实 Apple token 约 3-4KB）
     $token['signature'] = base64_encode(str_repeat("\x30", 65537));
@@ -242,6 +223,7 @@ it('Apple JWS 被篡改', function () {
 })->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple JWS 证书链过短', function () {
+    // x5c 仅 1 元素（leaf），链不完整
     $header = ['alg' => 'ES256', 'x5c' => [base64_encode($this->certDer('jws-leaf.crt'))]];
     $shortChain = $this->signWithJwsLeaf($header, ['notificationType' => 'SUBSCRIBED']);
 
@@ -249,6 +231,7 @@ it('Apple JWS 证书链过短', function () {
 })->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple JWS 归属 bundle 不匹配', function () {
+    // 归属校验：真实签名但 bundleId 与配置不匹配（防跨 App 伪造）
     $jws = AppleJwsFactory::makeJws([
         'notificationType' => 'SUBSCRIBED',
         'data' => [
@@ -261,6 +244,7 @@ it('Apple JWS 归属 bundle 不匹配', function () {
 })->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple JWS 归属环境不匹配', function () {
+    // 归属校验：environment 与配置模式不匹配（防沙盒/生产串扰）
     $jws = AppleJwsFactory::makeJws([
         'notificationType' => 'SUBSCRIBED',
         'data' => [
@@ -273,6 +257,7 @@ it('Apple JWS 归属环境不匹配', function () {
 })->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('未配置时 Apple JWS 归属校验跳过 bundle id', function () {
+    // no_api_key 租户未配置 bundle_id：跳过 bundleId 校验，environment 仍须匹配
     $jws = AppleJwsFactory::makeJws([
         'notificationType' => 'SUBSCRIBED',
         'data' => [
@@ -287,6 +272,7 @@ it('未配置时 Apple JWS 归属校验跳过 bundle id', function () {
 });
 
 it('Apple JWS 内层缺少 x5c 被拒绝', function () {
+    // 对齐官方库：二级 JWS 也须自带 x5c，无 x5c 一律拒绝（原「回退已信任 leaf 公钥」已移除）
     $inner = $this->signWithJwsLeaf(['alg' => 'ES256'], ['transactionId' => '1000001234567890']);
     $jws = AppleJwsFactory::makeJws([
         'notificationType' => 'SUBSCRIBED',
@@ -341,6 +327,7 @@ it('生成 Apple JWT 缺少 API 配置', function () {
 })->throws(InvalidConfigException::class, null, Exception::CONFIG_APPLE_INVALID);
 
 it('PKCS7 验签交叉校验', function () {
+    // Fetch token 后重拼签名内容，用 openssl_pkcs7_verify 对拍（双方实现一致性）
     $token = AppleTokenFactory::makeToken(['transactionAmount' => 100, 'currencyCode' => '156']);
     $header = $token['header'];
 
@@ -374,10 +361,6 @@ it('PKCS7 验签交叉校验', function () {
 });
 
 it('PHP 8.5 以下不支持 RSA v1', function () {
-    if (PHP_VERSION_ID >= 80500) {
-        $this->markTestSkipped('PHP 8.5 容器无法覆盖 RSA_v1 的 PHP < 8.5 版本检查分支（见 evidence）');
-    }
-
     // PHP < 8.5 环境：openssl_private_decrypt 无 digest_algo 参数，Trait 应在入口（版本解析）拒绝，
     // 早于结构/签名/证书校验；故此处只需结构合法的最小令牌（字段非 base64 会被前置校验提前拦下）
     $token = [
@@ -392,7 +375,8 @@ it('PHP 8.5 以下不支持 RSA v1', function () {
     ];
 
     AppleTraitStub::verifyAppleToken($token, []);
-})->throws(InvalidConfigException::class, null, Exception::DECRYPT_APPLE_FAILED);
+})->skip(PHP_VERSION_ID >= 80500, 'PHP 8.5 容器无法覆盖 RSA_v1 的 PHP < 8.5 版本检查分支（见 evidence）')
+    ->throws(InvalidConfigException::class, null, Exception::DECRYPT_APPLE_FAILED);
 
 it('验证 RSA token', function () {
     $token = AppleTokenFactory::makeRsaToken([
@@ -408,164 +392,3 @@ it('验证 RSA token', function () {
     expect($result->get('currencyCode'))->toBe('156');
     expect($result->get('_token_header')['transactionId'])->toBe($token['header']['transactionId']);
 })->skip(!version_compare(PHP_VERSION, '8.5', '>='));
-
-trait AppleTraitTestHelpers
-{
-    private function assertTokenInvalidParams(mixed $token): void
-    {
-        try {
-            AppleTraitStub::verifyAppleToken($token, []);
-            \PHPUnit\Framework\Assert::fail('期望抛出 InvalidParamsException');
-        } catch (InvalidParamsException $e) {
-            self::assertSame(Exception::PARAMS_APPLE_TOKEN_INVALID, $e->getCode());
-        }
-    }
-    
-    private static function signWithJwsLeaf(array $header, array $payload): string
-    {
-        $headerB64 = self::b64UrlEncode((string) json_encode($header));
-        $payloadB64 = self::b64UrlEncode((string) json_encode($payload));
-    
-        $privateKey = openssl_pkey_get_private((string) file_get_contents(self::certPath('jws-leaf.key')));
-    
-        if (false === $privateKey) {
-            throw new RuntimeException('读取 jws-leaf 私钥失败');
-        }
-    
-        $derSignature = '';
-    
-        if (!openssl_sign($headerB64.'.'.$payloadB64, $derSignature, $privateKey, OPENSSL_ALGO_SHA256)) {
-            throw new RuntimeException('ES256 签名失败');
-        }
-    
-        return $headerB64.'.'.$payloadB64.'.'.self::b64UrlEncode(self::derToRaw($derSignature));
-    }
-    
-    private static function derToRaw(string $der): string
-    {
-        $offset = 0;
-    
-        if ("\x30" !== ($der[$offset++] ?? '')) {
-            throw new RuntimeException('ECDSA DER 签名结构非法');
-        }
-    
-        $sequenceLength = self::readDerLength($der, $offset);
-        $sequenceEnd = $offset + $sequenceLength;
-        $r = self::readDerInteger($der, $offset);
-        $s = self::readDerInteger($der, $offset);
-    
-        if ($sequenceEnd !== $offset) {
-            throw new RuntimeException('ECDSA DER 签名结构非法');
-        }
-    
-        return str_pad($r, 32, "\x00", STR_PAD_LEFT).str_pad($s, 32, "\x00", STR_PAD_LEFT);
-    }
-    
-    private static function readDerInteger(string $der, int &$offset): string
-    {
-        if ("\x02" !== ($der[$offset++] ?? '')) {
-            throw new RuntimeException('ECDSA DER INTEGER 非法');
-        }
-    
-        $length = self::readDerLength($der, $offset);
-        $value = substr($der, $offset, $length);
-        $offset += $length;
-    
-        // 剥前导 0x00（符号位填充，仅当下一字节高位为 1）
-        if (1 < strlen($value) && "\x00" === $value[0] && 0 !== (ord($value[1]) & 0x80)) {
-            $value = substr($value, 1);
-        }
-    
-        return $value;
-    }
-    
-    private static function readDerLength(string $der, int &$offset): int
-    {
-        $length = ord($der[$offset++] ?? '');
-    
-        if (0 !== ($length & 0x80)) {
-            $count = $length & 0x7F;
-            $length = 0;
-    
-            for ($i = 0; $i < $count; ++$i) {
-                $length = ($length << 8) | ord($der[$offset++] ?? '');
-            }
-        }
-    
-        return $length;
-    }
-    
-    private static function rawToDer(string $raw): string
-    {
-        $r = self::padInteger(substr($raw, 0, 32));
-        $s = self::padInteger(substr($raw, 32, 32));
-    
-        $sequence = "\x02".chr(strlen($r)).$r."\x02".chr(strlen($s)).$s;
-    
-        return "\x30".chr(strlen($sequence)).$sequence;
-    }
-    
-    private static function padInteger(string $value): string
-    {
-        $value = ltrim($value, "\x00");
-    
-        if ('' === $value) {
-            $value = "\x00";
-        }
-    
-        // 最高位为 1 时补 0x00 防符号位
-        if (0 !== (ord($value[0]) & 0x80)) {
-            $value = "\x00".$value;
-        }
-    
-        return $value;
-    }
-    
-    private static function b64UrlEncode(string $data): string
-    {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
-    }
-    
-    private static function b64UrlDecode(string $data): string
-    {
-        $padding = (4 - strlen($data) % 4) % 4;
-    
-        return (string) base64_decode(strtr($data, '-_', '+/').str_repeat('=', $padding), true);
-    }
-    
-    private static function certDer(string $name): string
-    {
-        $pem = (string) file_get_contents(self::certPath($name));
-        $lines = preg_split('/\r?\n/', $pem);
-    
-        if (false === $lines) {
-            throw new RuntimeException('解析证书 PEM 失败');
-        }
-    
-        $base64 = '';
-        $inBlock = false;
-    
-        foreach ($lines as $line) {
-            if ('-----BEGIN CERTIFICATE-----' === $line) {
-                $inBlock = true;
-    
-                continue;
-            }
-    
-            if ('-----END CERTIFICATE-----' === $line) {
-                break;
-            }
-    
-            if ($inBlock) {
-                $base64 .= trim($line);
-            }
-        }
-    
-        return (string) base64_decode($base64, true);
-    }
-    
-    private static function certPath(string $name): string
-    {
-        return dirname(__DIR__).'/Cert/apple/'.$name;
-    }
-}

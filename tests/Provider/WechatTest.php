@@ -15,7 +15,6 @@ use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin as VirtualAddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\CallbackPlugin as VirtualCallbackPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\CurrencyPayPlugin;
@@ -26,7 +25,6 @@ use Yansongda\Pay\Plugin\Wechat\Openapi\ResponsePlugin as VirtualCheckResponsePl
 use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\CallbackPluginStub;
-use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Pay\Tests\Stubs\Plugin\VirtualCallbackPluginStub;
 use Yansongda\Pay\Tests\Stubs\Plugin\VirtualCheckResponsePluginStub;
 use Yansongda\Pay\Tests\Stubs\Plugin\VerifySignaturePluginStub;

@@ -2,19 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Stripe\V1;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Plugin\StartPlugin;
-use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Plugin\Stripe\V1\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\CancelPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\PayPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\QueryPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\QueryRefundPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\RefundPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\WebPlugin;
+use Yansongda\Pay\Tests\Support\Traits\StripeRadarPipelineHelpers;
 
 /**
  * 全管道（StartPlugin → 业务插件 → AddRadarPlugin）级别断言。
@@ -22,7 +18,7 @@ use Yansongda\Pay\Plugin\Stripe\V1\Pay\WebPlugin;
  * 重点验证最终发出的 HTTP 请求（URI/query string/body）不残留内部参数，
  * 防止 `payment_intent_id`/`refund_id` 等参数泄漏导致 Stripe 返回 `parameter_unknown` 错误。
  */
-uses(RadarPipelineTestHelpers::class);
+uses(StripeRadarPipelineHelpers::class);
 
 it('查询 payment intent 不泄漏内部参数', function () {
     $rocket = $this->runPipeline(['payment_intent_id' => 'pi_3PqXXX'], [QueryPlugin::class]);
@@ -105,18 +101,3 @@ it('网页支付缺少 success_url 抛出异常', function () {
 
     $this->runPipeline(['_config' => 'no_success_url'], [WebPlugin::class]);
 })->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-trait RadarPipelineTestHelpers
-{
-    protected function runPipeline(array $params, array $businessPlugins): Rocket
-    {
-        $rocket = new Rocket();
-        $rocket->setParams($params);
-    
-        foreach ([StartPlugin::class, ...$businessPlugins, AddRadarPlugin::class] as $plugin) {
-            $rocket = (new $plugin())->assembly($rocket, static fn ($rocket) => $rocket);
-        }
-    
-        return $rocket;
-    }
-}

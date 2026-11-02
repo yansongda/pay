@@ -44,10 +44,10 @@ it('使用配置中的 notify_url', function () {
         'alipay' => [
             'alipay-v3-notify' => [
                 'app_id' => 'alipay_v3_test_app_id',
-                'app_secret_cert' => __DIR__.'/../../../../Cert/alipay-v3/app_secret_test.pem',
+                'app_secret_cert' => cert_path('alipay-v3/app_secret_test.pem'),
 
-                'app_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
-                'alipay_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
+                'app_public_cert_path' => cert_path('alipay-v3/alipay_public_cert_test.crt'),
+                'alipay_public_cert_path' => cert_path('alipay-v3/alipay_public_cert_test.crt'),
                 'notify_url' => 'https://pay.yansongda.cn/v3/notify',
             ],
         ],
@@ -75,10 +75,10 @@ it('参数覆盖 notify_url', function () {
         'alipay' => [
             'alipay-v3-notify' => [
                 'app_id' => 'alipay_v3_test_app_id',
-                'app_secret_cert' => __DIR__.'/../../../../Cert/alipay-v3/app_secret_test.pem',
+                'app_secret_cert' => cert_path('alipay-v3/app_secret_test.pem'),
 
-                'app_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
-                'alipay_public_cert_path' => __DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt',
+                'app_public_cert_path' => cert_path('alipay-v3/alipay_public_cert_test.crt'),
+                'alipay_public_cert_path' => cert_path('alipay-v3/alipay_public_cert_test.crt'),
                 'notify_url' => 'https://pay.yansongda.cn/v3/notify',
             ],
         ],

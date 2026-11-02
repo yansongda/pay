@@ -53,7 +53,7 @@ class VerifySignaturePlugin implements PluginInterface
 
         self::verifyUnipaySign(
             $config,
-            $destination->except('signature')->sortKeys()->toString(),
+            $destination->except('signature')->sortKeys()->toQueryString(),
             $destination->get('signature', ''),
             $destination->get('signPubKeyCert')
         );

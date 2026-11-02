@@ -9,6 +9,17 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
 
 /**
+ * 证书 fixture 绝对路径。
+ *
+ * helper（tests/Stubs、tests/Support）外置后 `__DIR__` 语义改变，统一由此函数拼接，
+ * 避免各 helper 重复推导相对层级。
+ */
+function cert_path(string $path = ''): string
+{
+    return __DIR__.'/Cert/'.ltrim($path, '/');
+}
+
+/**
  * Pest 引导文件（不可删除）。
  *
  * - beforeEach：注入全量多租户测试配置、初始化 Hyperf 容器、重置抖音 client_token 静态缓存
@@ -24,19 +35,19 @@ uses()
                     'app_id' => '9021000122682882',
                     'app_secret_cert' => 'MIIEpAIBAAKCAQEApSA9oxvcqfbgpgkxXvyCpnxaR6TPaEMh/ij+PhF8180zL82ic4whkrRlcu1Y179AKEZNar71Ugi37fKcXWLerjPOeb8WHnZgNG19gkAcOIqZPRPpJ1eRtwKEclIzt+j3H/wgXWkD7BTr61RjuAcviyvDVbAJ/TPlMqXdJFIuJwZblN2WblIv+4Dm1iPOB+fVCU3rsgg4eajf3HrZ7sq6fBhQhO5krDmIIYGsFZ+fohEgnLkBaF0gqNUb5Yb4PBfaEcu8Hcwq+XyBSMOVOIABRPQVDedW2sE/2NsLkR62DaEe/Ri9VUDJe0pE39P+X22DicJ3E3yrxvdioMnLtDqEuwIDAQABAoIBAQCSHZ1tH9J7c8IGKkxNyROzToZ0rxn5IK6LwKp5MfBO5X1N56DArldnAcpjkDL1dn7HJK6Mrr1WAfD/1ZcX680wSReEE9r2ybkHq3tMLn7KaZp/uYavEYYXc1rP7n1lV/iVjPz2q16VIU5Bx0MWLQWdGPSYdlXggHNoBe1RnobIcCGOVe9HlzCBtWzGpCZvMlqRbCuWAdp14aCkaJqpRxG4PY9Kd/NzELvhnCd9k8e7G2qcwx6gAoXN8OXO8jmZg/6fOvFnrGl6CBp8sioe5F3R023fDum546IqS8EZdCl5T0gW/boTbSV8luitab65xBO3PmUI+V2OEFCL6WcJxawBAoGBAOZoft6/LatdoXzr8vh+rKzacUHw246fpacbgx0B5DDymM7hbhXbY/NoCWPgBJtV3XI3DtMJ5yvlEVDQvPfbSHRPx2XQknwrM7ly2SLbaC+tuhcvoG6F1RLWFx+y/583seSlVNuWC9KdpLTKzo8wl8Z4/kheLTBxTxL20NZu79XBAoGBALd3fNoXk5V+T16hnSinPtt2NEsZpn+4w07DikzcpdyjCL5PYjp/BppmX3xly96fCZh3MO3Vkuya1xgauMzxVKQlR/aD5yVmsqK7wxNTY1ZQM74B44/4Mks/8MG2r7o3DElA4/qIeMP4CwkWmYcuij7npm2bgIqFzS+4aGZfDRF7AoGAKMO2Jpy2bMo9BwgLzdFDpbVkMmF1xu8R9NXWRayO/eX+CSQzQOS281qlxqjcx8rSSiHZmpb28notrRmxRTzjvchbo/TZ5eQS262pIxSkg0L+WJnRjZxaDWIZZz9ZIIdPDv/9WnhakSHZAS+cihLz12aSvqUC4744WkeWvUmVX0ECgYAGLDoCKHrps7c96tgbzwy5W4/E2xcUAwZnNwMHNQFLnBymMouOhkmVlk4uJEqosdcjzxbRWbc4yLjl8bg4BQKhBzQVojh7tKnb+c9Fbi/QbqBfCzc519LxXzRdgCUHceSy7kD9Y+wUQ9szMhR2TOWP2kFqPKolfvz5Vw4EK7yH0wKBgQDerq9Pthbii7lNt528/q0cH9vOMn9z76o6jMMea9EibclVHtdcQBWLOn8Yw97k+WSXYGuUrQUWWQbyabZqWkkS4cEjJf5/DiwOuYdNVXg7FK56ucTczBA7lR4dnunPW6U1HbSWf0Cn4Y/cl/z7B5QBSQt0W38IYHSaf6/sqsV6SA==',
                     'app_auth_token' => '',
-                    'app_public_cert_path' => __DIR__.'/Cert/alipayAppPublicCert.crt',
-                    'alipay_public_cert_path' => __DIR__.'/Cert/alipayPublicCert.crt',
-                    'alipay_root_cert_path' => __DIR__.'/Cert/alipayRootCert.crt',
+                    'app_public_cert_path' => cert_path('alipayAppPublicCert.crt'),
+                    'alipay_public_cert_path' => cert_path('alipayPublicCert.crt'),
+                    'alipay_root_cert_path' => cert_path('alipayRootCert.crt'),
                     'notify_url' => 'https://pay.yansongda.cn',
                     'return_url' => 'https://pay.yansongda.cn',
                 ],
                 // Alipay V3 测试租户（证书模式）
                 'alipay-v3' => [
                     'app_id' => 'alipay_v3_test_app_id',
-                    'app_secret_cert' => __DIR__.'/Cert/alipay-v3/app_secret_test.pem',
-                    'app_public_cert_path' => __DIR__.'/Cert/alipay-v3/alipay_public_cert_test.crt',
-                    'alipay_public_cert_path' => __DIR__.'/Cert/alipay-v3/alipay_public_cert_test.crt',
-                    'alipay_root_cert_path' => __DIR__.'/Cert/alipay-v3/alipay_public_cert_test.crt',
+                    'app_secret_cert' => cert_path('alipay-v3/app_secret_test.pem'),
+                    'app_public_cert_path' => cert_path('alipay-v3/alipay_public_cert_test.crt'),
+                    'alipay_public_cert_path' => cert_path('alipay-v3/alipay_public_cert_test.crt'),
+                    'alipay_root_cert_path' => cert_path('alipay-v3/alipay_public_cert_test.crt'),
                 ],
             ],
             'airwallex' => [
@@ -72,16 +83,16 @@ uses()
                     'mini_app_secret' => 'mini_app_secret_for_test',
                     'mch_secret_key_v2' => 'yansongda',
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                    'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                     'notify_url' => 'https://pay.yansongda.cn',
                     'service_id' => '12345678901234567890123456789012',
                     'wechat_public_cert_path' => [
                         // 注意：正常情况下此处应配置微信官方公钥（wechatPublicKey.crt），但由于单元测试中的签名
                         // 均使用 wechatAppPrivateKey.pem 生成，而 wechatPublicKey.crt 对应的私钥我们并不持有，
                         // 因此测试环境特殊地将 serial 映射到 wechatAppPublicKey.pem，以保证验签可以通过。
-                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatAppPublicKey.pem',
-                        'yansongda' => __DIR__.'/Cert/wechatPublicKey.crt',
+                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => cert_path('wechatAppPublicKey.pem'),
+                        'yansongda' => cert_path('wechatPublicKey.crt'),
                     ],
                     'mode' => PayMode::NORMAL,
                     'virtual_pay' => [
@@ -99,11 +110,11 @@ uses()
                     'mini_app_id' => 'wx55955316af4ef14',
                     'mch_secret_key_v2' => 'yansongda',
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                    'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                     'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [
-                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
+                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => cert_path('wechatPublicKey.crt'),
                     ],
                     'sub_mp_app_id' => 'wx55955316af4ef15',
                     'sub_app_id' => 'wx55955316af4ef16',
@@ -116,11 +127,11 @@ uses()
                     'mch_id' => '1600314071',
                     'mch_secret_key_v2' => 'yansongda',
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                    'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                     'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [
-                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
+                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => cert_path('wechatPublicKey.crt'),
                     ],
                     'sub_mp_app_id' => 'wx55955316af4ef19',
                     'sub_app_id' => 'wx55955316af4ef20',
@@ -133,11 +144,11 @@ uses()
                     'mch_id' => '1600314071',
                     'mch_secret_key_v2' => 'yansongda',
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                    'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                     'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [
-                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
+                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => cert_path('wechatPublicKey.crt'),
                     ],
                     'sub_mp_app_id' => 'wx55955316af4ef19',
                     'sub_app_id' => 'wx55955316af4ef20',
@@ -151,11 +162,11 @@ uses()
                     'mini_app_id' => 'wx55955316af4ef14',
                     'mch_secret_key_v2' => 'yansongda',
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                    'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                     'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [
-                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/Cert/wechatPublicKey.crt',
+                        '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => cert_path('wechatPublicKey.crt'),
                     ],
                     'sub_mp_app_id' => '',
                     'sub_app_id' => 'wx55955316af4ef16',
@@ -170,8 +181,8 @@ uses()
                     'mini_app_id' => 'wx55955316af4ef14',
                     'mch_secret_key_v2' => 'yansongda',
                     'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                    'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                    'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                    'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                     'notify_url' => 'https://pay.yansongda.cn',
                     'wechat_public_cert_path' => [],
                     'mode' => PayMode::NORMAL,
@@ -180,17 +191,17 @@ uses()
             'unipay' => [
                 'default' => [
                     'mch_id' => '777290058167151',
-                    'mch_cert_path' => __DIR__.'/Cert/unipayAppCert.pfx',
+                    'mch_cert_path' => cert_path('unipayAppCert.pfx'),
                     'mch_cert_password' => '000000',
-                    'unipay_public_cert_path' => __DIR__.'/Cert/unipayCertPublicKey.cer',
+                    'unipay_public_cert_path' => cert_path('unipayCertPublicKey.cer'),
                     'return_url' => 'https://pay.yansongda.cn',
                     'notify_url' => 'https://pay.yansongda.cn',
                 ],
                 'sandbox' => [
                     'mch_id' => '777290058167151',
-                    'mch_cert_path' => __DIR__.'/Cert/unipayAppCert.pfx',
+                    'mch_cert_path' => cert_path('unipayAppCert.pfx'),
                     'mch_cert_password' => '000000',
-                    'unipay_public_cert_path' => __DIR__.'/Cert/unipayCertPublicKey.cer',
+                    'unipay_public_cert_path' => cert_path('unipayCertPublicKey.cer'),
                     'return_url' => 'http://127.0.0.1:8000/unipay/return',
                     'notify_url' => 'https://yansongda.cn/unipay/notify',
                     'mode' => PayMode::SANDBOX,
@@ -210,11 +221,11 @@ uses()
                     // 必填-公私钥对编号
                     'public_key_code' => '00',
                     // 必填-商户私钥(加密签名)
-                    'mch_secret_cert_path' => __DIR__.'/Cert/EpayKey.pem',
+                    'mch_secret_cert_path' => cert_path('EpayKey.pem'),
                     // 必填-商户公钥证书路径(提供江苏银行进行验证签名用)
-                    'mch_public_cert_path' => __DIR__.'/Cert/EpayCert.cer',
+                    'mch_public_cert_path' => cert_path('EpayCert.cer'),
                     // 必填-江苏银行的公钥(用于解密江苏银行返回的数据)
-                    'jsb_public_cert_path' => __DIR__.'/Cert/jschina.cer',
+                    'jsb_public_cert_path' => cert_path('jschina.cer'),
                     'notify_url' => 'http://127.0.0.1:8000/epay/return',
                     // 选填-默认为正常模式。可选为： PayMode::NORMAL:正式环境, PayMode::SANDBOX:test环境,
                     'mode' => PayMode::SANDBOX,
@@ -229,9 +240,9 @@ uses()
                     // 抖音开放平台 --> 应用详情 --> 开发配置 --> 客户端密钥
                     'app_secret' => 'douyin_app_secret',
                     // 必填-应用私钥（商户侧用于签名）
-                    'app_private_key' => file_get_contents(__DIR__.'/Cert/douyinAppPrivateKey.pem'),
+                    'app_private_key' => file_get_contents(cert_path('douyinAppPrivateKey.pem')),
                     // 必填-平台公钥（用于验证抖音开放平台回调签名）
-                    'douyin_public_key' => file_get_contents(__DIR__.'/Cert/douyinPlatformPublicKey.pem'),
+                    'douyin_public_key' => file_get_contents(cert_path('douyinPlatformPublicKey.pem')),
                     // 选填-支付回调地址
                     'notify_url' => 'https://yansongda.cn/douyin/notify',
                     // 选填-默认为正常模式。可选为： PayMode::NORMAL:正式环境, PayMode::SANDBOX:test环境,
@@ -275,8 +286,8 @@ uses()
                     'cusid' => '9900000',
                     'appid' => '000000',
                     'orgid' => '999999',
-                    'mch_secret_key' => __DIR__.'/Cert/allinpayAppPrivateKey.pem',
-                    'allinpay_public_key' => __DIR__.'/Cert/allinpayPlatformPublicKey.pem',
+                    'mch_secret_key' => cert_path('allinpayAppPrivateKey.pem'),
+                    'allinpay_public_key' => cert_path('allinpayPlatformPublicKey.pem'),
                     'notify_url' => 'https://pay.yansongda.cn/allinpay/notify',
                     'mode' => PayMode::SANDBOX,
                 ],
@@ -286,9 +297,9 @@ uses()
                     'merchant_no' => '3178033925245778',
                     'institution_code' => '3178033925245778',
                     'institution_type' => 'MERCHANT',
-                    'mch_secret_cert_path' => __DIR__.'/Cert/bestpay/bestpay.p12',
+                    'mch_secret_cert_path' => cert_path('bestpay/bestpay.p12'),
                     'mch_secret_cert_password' => 'test123456',
-                    'bestpay_public_cert_path' => __DIR__.'/Cert/bestpay/bestpay.cer',
+                    'bestpay_public_cert_path' => cert_path('bestpay/bestpay.cer'),
                     'api_version' => '1.0.3',
                     'notify_url' => 'https://pay.yansongda.cn/bestpay/notify',
                     'return_url' => 'https://pay.yansongda.cn/bestpay/return',
@@ -298,9 +309,9 @@ uses()
                     'merchant_no' => '3178033925245779',
                     'institution_code' => '3178033925245779',
                     'institution_type' => 'MERCHANT',
-                    'mch_secret_cert_path' => __DIR__.'/Cert/bestpay/second.p12',
+                    'mch_secret_cert_path' => cert_path('bestpay/second.p12'),
                     'mch_secret_cert_password' => 'test123456',
-                    'bestpay_public_cert_path' => __DIR__.'/Cert/bestpay/second.cer',
+                    'bestpay_public_cert_path' => cert_path('bestpay/second.cer'),
                     'api_version' => '1.0.3',
                     'mode' => PayMode::NORMAL,
                 ],
@@ -308,29 +319,29 @@ uses()
             'apple' => [
                 'default' => [
                     'merchant_id' => 'merchant.com.yansongda.pay',
-                    'payment_processing_cert' => __DIR__.'/Cert/apple/merchant.pem',
-                    'apple_root_ca' => __DIR__.'/Cert/apple/token-root.crt',
+                    'payment_processing_cert' => cert_path('apple/merchant.pem'),
+                    'apple_root_ca' => cert_path('apple/token-root.crt'),
                     'issuer_id' => '69a6de87-test-issuer-id',
                     'bundle_id' => 'com.yansongda.pay.test',
                     'api_key_id' => 'X5D4K9J2Q1',
-                    'api_private_key' => __DIR__.'/Cert/apple/api.key',
+                    'api_private_key' => cert_path('apple/api.key'),
                     'mode' => PayMode::SANDBOX,
                 ],
                 'rsa' => [   // RSA_v1 测试租户（商户为 RSA 证书）
                     'merchant_id' => 'merchant.com.yansongda.pay',
-                    'payment_processing_cert' => __DIR__.'/Cert/apple/merchant-rsa.pem',
-                    'apple_root_ca' => __DIR__.'/Cert/apple/token-root.crt',
+                    'payment_processing_cert' => cert_path('apple/merchant-rsa.pem'),
+                    'apple_root_ca' => cert_path('apple/token-root.crt'),
                     'mode' => PayMode::SANDBOX,
                 ],
                 'no_api_key' => [   // 仅验签解密租户（API 四字段未配置）
                     'merchant_id' => 'merchant.com.yansongda.pay',
-                    'payment_processing_cert' => __DIR__.'/Cert/apple/merchant.pem',
-                    'apple_root_ca' => __DIR__.'/Cert/apple/token-root.crt',
+                    'payment_processing_cert' => cert_path('apple/merchant.pem'),
+                    'apple_root_ca' => cert_path('apple/token-root.crt'),
                     'mode' => PayMode::SANDBOX,
                 ],
                 'no_root_ca' => [   // 不配置 apple_root_ca（验证内置证书默认生效）
                     'merchant_id' => 'merchant.com.yansongda.pay',
-                    'payment_processing_cert' => __DIR__.'/Cert/apple/merchant.pem',
+                    'payment_processing_cert' => cert_path('apple/merchant.pem'),
                     'mode' => PayMode::SANDBOX,
                 ],
             ],

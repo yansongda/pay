@@ -9,14 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
-use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
-use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 
 it('快捷方式不存在', function () {
 

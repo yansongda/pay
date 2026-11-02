@@ -2,13 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Alipay\V3;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
-use Mockery;
-use Yansongda\Pay\CertManager;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
@@ -21,8 +16,9 @@ use Yansongda\Pay\Plugin\Alipay\V3\Pay\QueryPlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\V3\QueryShortcut;
+use Yansongda\Pay\Tests\Support\Traits\AlipayV3SignedResponseHelpers;
 
-uses(QueryShortcutTestHelpers::class);
+uses(AlipayV3SignedResponseHelpers::class);
 
 it('正常', function () {
     $shortcut = new QueryShortcut();
@@ -72,20 +68,3 @@ it('HTTP 查询', function () {
     expect($result->get('out_trade_no'))->toEqual('yansongda-2026');
     expect($result->get('trade_status'))->toEqual('TRADE_SUCCESS');
 });
-
-trait QueryShortcutTestHelpers
-{
-    private function makeSignedResponse(int $status, string $body): Response
-    {
-        $timestamp = (string) (int) (microtime(true) * 1000);
-        $nonce = 'yansongda-nonce';
-        openssl_sign($timestamp."\n".$nonce."\n".$body."\n", $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
-    
-        return new Response($status, [
-            'alipay-timestamp' => $timestamp,
-            'alipay-nonce' => $nonce,
-            'alipay-signature' => base64_encode($sign),
-            'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'),
-        ], $body);
-    }
-}

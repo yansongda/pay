@@ -48,8 +48,8 @@ it('容器已存在且未强制时返回 false', function () {
             'default' => [
                 'mch_id' => '1600314069',
                 'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                 'notify_url' => 'https://pay.yansongda.cn/original',
                 'mp_app_id' => 'wx-original',
             ],
@@ -80,8 +80,8 @@ it('强制替换运行时配置', function () {
             'default' => [
                 'mch_id' => '1600314069',
                 'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                 'notify_url' => 'https://pay.yansongda.cn/original',
                 'mp_app_id' => 'wx-original',
             ],
@@ -96,8 +96,8 @@ it('强制替换运行时配置', function () {
                 'mp_app_id' => 'wx-updated',
                 'mch_id' => '1600314069',
                 'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
             ],
         ],
     ]);
@@ -148,8 +148,8 @@ it('运行时配置存储类型化对象', function () {
             'default' => [
                 'mch_id' => '1600314069',
                 'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                'mch_secret_cert' => __DIR__.'/Cert/wechatAppPrivateKey.pem',
-                'mch_public_cert_path' => __DIR__.'/Cert/wechatAppPublicKey.pem',
+                'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                 'notify_url' => 'https://pay.yansongda.cn/notify',
                 'mp_app_id' => 'wx-test',
             ],

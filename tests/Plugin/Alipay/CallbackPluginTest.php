@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay;
-
 use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Rocket;
@@ -12,8 +10,9 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Alipay\CallbackPlugin;
 
 use function Yansongda\Artful\filter_params;
+use Yansongda\Pay\Tests\Support\Traits\AlipayCallbackHelpers;
 
-uses(CallbackPluginTestHelpers::class);
+uses(AlipayCallbackHelpers::class);
 
 it('同步回调', function () {
     $plugin = new CallbackPlugin();
@@ -82,6 +81,7 @@ it('回调包含加号', function () {
 });
 
 it('V3 证书租户的回调通知', function () {
+    // V3 租户（证书模式）异步通知验签：报文与 V2 同构，同一插件统一处理.
     $plugin = new CallbackPlugin();
     $form = $this->makeSignedForm();
 
@@ -112,26 +112,3 @@ it('V3 证书租户回调缺少签名', function () {
 
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 })->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
-
-trait CallbackPluginTestHelpers
-{
-    private function makeSignedForm(): array
-    {
-        $form = [
-            'app_id' => 'alipay_v3_test_app_id',
-            'trade_no' => '2023122122001499160501589436',
-            'out_trade_no' => '1703147160',
-            'total_amount' => '0.01',
-            'trade_status' => 'TRADE_SUCCESS',
-            'sign_type' => 'RSA2',
-        ];
-    
-        $value = filter_params($form, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k)->sortKeys()->toString();
-    
-        openssl_sign($value, $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
-    
-        $form['sign'] = base64_encode($sign);
-    
-        return $form;
-    }
-}

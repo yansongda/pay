@@ -9,7 +9,6 @@ use Yansongda\Pay\Config\WechatConfigVirtualPay;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Pay;
 
 it('构造合法配置', function () {
     $validConfig = [
@@ -69,6 +68,7 @@ it('整数形式的模式', function () {
         'mch_public_cert_path' => 'test_path',
         'notify_url' => 'https://test.com',
     ];
+    // 兼容历史 int 写法：0/1/2
     $config = new WechatConfig(array_merge($validConfig, [
         'mode' => 1,
     ]));
@@ -464,6 +464,7 @@ it('部分微信支付凭证在虚拟支付下仍校验', function () {
 })->group('VirtualPay')->throws(InvalidConfigException::class, '配置异常: 缺少微信配置 -- [mch_secret_key]');
 
 it('非法模式抛出异常', function () {
+    // 未覆盖 supportedModes 的 Provider 默认支持三种 mode，其余取值应被校验拦截
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',

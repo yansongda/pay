@@ -78,7 +78,7 @@ it('body 排除下划线键', function () {
 
     expect($bodyJson)->toEqual(['out_trade_no' => 'yansongda', 'total_amount' => '0.01']);
     foreach (array_keys($bodyJson) as $key) {
-        $this->assertStringStartsNotWith('_', (string) $key);
+        expect((string) $key)->not->toStartWith('_');
     }
 });
 

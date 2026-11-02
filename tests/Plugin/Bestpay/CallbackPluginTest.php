@@ -2,17 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Bestpay;
-
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\BestpayConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Bestpay\V1\CallbackPlugin;
 use Yansongda\Pay\Traits\BestpayTrait;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\BestpayCallbackHelpers;
 
 uses(BestpayTrait::class);
-uses(CallbackPluginTestHelpers::class);
+uses(BestpayCallbackHelpers::class);
 
 it('有效回调', function () {
     $data = [
@@ -119,28 +117,3 @@ it('缺少请求对象', function () {
 
     (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
 })->throws(\Yansongda\Artful\Exception\InvalidParamsException::class);
-
-trait CallbackPluginTestHelpers
-{
-    private function defaultConfig(): BestpayConfig
-    {
-        return new BestpayConfig([
-            'merchant_no' => '3178033925245778',
-            'institution_code' => '3178033925245778',
-            'mch_secret_cert_path' => __DIR__.'/../../Cert/bestpay/bestpay.p12',
-            'mch_secret_cert_password' => 'test123456',
-            'bestpay_public_cert_path' => __DIR__.'/../../Cert/bestpay/bestpay.cer',
-        ]);
-    }
-    
-    private function secondConfig(): BestpayConfig
-    {
-        return new BestpayConfig([
-            'merchant_no' => '3178033925245779',
-            'institution_code' => '3178033925245779',
-            'mch_secret_cert_path' => __DIR__.'/../../Cert/bestpay/second.p12',
-            'mch_secret_cert_password' => 'test123456',
-            'bestpay_public_cert_path' => __DIR__.'/../../Cert/bestpay/second.cer',
-        ]);
-    }
-}

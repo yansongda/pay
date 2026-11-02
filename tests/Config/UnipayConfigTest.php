@@ -8,7 +8,7 @@ use Yansongda\Pay\Enum\PayMode;
 
 it('构造合法配置', function () {
     $validConfig = [
-        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_path' => cert_path('unipayAppPublicCert.crt'),
         'mch_cert_password' => 'test_password',
     ];
     $config = new UnipayConfig($validConfig);
@@ -19,7 +19,7 @@ it('构造合法配置', function () {
 
 it('指定租户构造', function () {
     $validConfig = [
-        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_path' => cert_path('unipayAppPublicCert.crt'),
         'mch_cert_password' => 'test_password',
     ];
     $config = new UnipayConfig($validConfig, 'custom_tenant');
@@ -38,7 +38,7 @@ it('缺少必填项构造', function () {
 
 it('可选 getter', function () {
     $validConfig = [
-        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_path' => cert_path('unipayAppPublicCert.crt'),
         'mch_cert_password' => 'test_password',
     ];
     $config = new UnipayConfig(array_merge($validConfig, [
@@ -58,7 +58,7 @@ it('可选 getter', function () {
 
 it('可选 getter 返回 null', function () {
     $validConfig = [
-        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_path' => cert_path('unipayAppPublicCert.crt'),
         'mch_cert_password' => 'test_password',
     ];
     $config = new UnipayConfig($validConfig);
@@ -72,7 +72,7 @@ it('可选 getter 返回 null', function () {
 
 it('沙箱模式', function () {
     $validConfig = [
-        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_path' => cert_path('unipayAppPublicCert.crt'),
         'mch_cert_password' => 'test_password',
     ];
     $config = new UnipayConfig(array_merge($validConfig, [
@@ -85,7 +85,7 @@ it('沙箱模式', function () {
 
 it('使用 PayMode 枚举的模式', function () {
     $validConfig = [
-        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_path' => cert_path('unipayAppPublicCert.crt'),
         'mch_cert_password' => 'test_password',
     ];
     $config = new UnipayConfig(array_merge($validConfig, [

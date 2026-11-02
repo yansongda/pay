@@ -50,7 +50,7 @@ class GatewayCallbackPlugin implements PluginInterface
 
         $content = filter_params($params, fn ($k, $v) => '' !== $v && 'sign' != $k)
             ->sortKeys()
-            ->toString();
+            ->toQueryString();
 
         try {
             self::verifyAlipaySign($config, $content, $params['sign'] ?? '');

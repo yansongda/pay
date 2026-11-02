@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Support\Apple;
 
-use OpenSSLAsymmetricKey;
 use RuntimeException;
+use OpenSSLAsymmetricKey;
 
 /**
  * Apple 支付令牌测试 Factory。
@@ -341,6 +341,6 @@ final class AppleTokenFactory
 
     private static function certPath(string $name): string
     {
-        return dirname(__DIR__, 2).'/Cert/apple/'.$name;
+        return cert_path('apple/'.$name);
     }
 }

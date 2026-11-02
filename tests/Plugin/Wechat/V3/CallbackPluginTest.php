@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\CallbackPluginStub;
 use Yansongda\Supports\Collection;
 

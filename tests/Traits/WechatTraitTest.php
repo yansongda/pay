@@ -9,7 +9,6 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Enum\PayMode;
@@ -17,17 +16,8 @@ use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
-
-class WechatTraitStub
-{
-use WechatTrait;
-
-protected static function verifyWechatTimestamp(int $timestamp): void
-{
-}
-}
+use Yansongda\Pay\Tests\Stubs\WechatTraitStub;
 
 it('获取微信 URL', function () {
     $config = WechatTraitStub::getProviderConfig('wechat');
@@ -40,12 +30,12 @@ it('获取微信 URL', function () {
         'mini_app_id' => 'wx55955316af4ef14',
         'mch_secret_key_v2' => 'yansongda',
         'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-        'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
-        'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+        'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+        'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
         'notify_url' => 'https://pay.yansongda.cn',
         'wechat_public_cert_path' => [
-            '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
-            'yansongda' => __DIR__.'/../Cert/wechatPublicKey.crt',
+            '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => cert_path('wechatAppPublicKey.pem'),
+            'yansongda' => cert_path('wechatPublicKey.crt'),
         ],
         'sub_mch_id' => '1600314070',
         'mode' => PayMode::SERVICE,
@@ -108,12 +98,12 @@ it('获取微信 V2 签名', function () {
                 'mini_app_id' => 'wx55955316af4ef14',
                 'mch_secret_key_v2' => 'yansongda',
                 'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
-                'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+                'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                 'notify_url' => 'https://pay.yansongda.cn',
                 'wechat_public_cert_path' => [
-                    '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
-                    'yansongda' => __DIR__.'/../Cert/wechatPublicKey.crt',
+                    '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => cert_path('wechatAppPublicKey.pem'),
+                    'yansongda' => cert_path('wechatPublicKey.crt'),
                 ],
                 'mode' => PayMode::NORMAL,
             ]))->toArray(), ['mch_secret_key_v2' => '']),
@@ -296,7 +286,7 @@ it('类型化配置获取微信平台证书', function () {
 
     expect($config)->toBeInstanceOf(WechatConfig::class);
 
-    expect(realpath(CertManager::wechatGetCertBySerial($config->getTenant(), '45F59D4DABF31918AFCEC556D5D2C6E376675D57') ?? ''))->toEqual(realpath(__DIR__.'/../Cert/wechatAppPublicKey.pem'));
+    expect(realpath(CertManager::wechatGetCertBySerial($config->getTenant(), '45F59D4DABF31918AFCEC556D5D2C6E376675D57') ?? ''))->toEqual(realpath(cert_path('wechatAppPublicKey.pem')));
 });
 
 it('解密微信资源（AES-256-GCM）', function () {
@@ -319,6 +309,7 @@ it('解密微信资源（AES-256-GCM）', function () {
 })->throws(DecryptException::class, null, Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID);
 
 it('获取微信证书序列号', function () {
+    // 不传证书
     $params = [];
     $result = WechatTraitStub::getWechatSerialNo($params);
     expect(in_array($result, ['45F59D4DABF31918AFCEC556D5D2C6E376675D57', 'yansongda']))->toBeTrue();
@@ -371,11 +362,11 @@ it('获取微信虚拟支付签名', function () {
         ],
         'mch_secret_key_v2' => 'yansongda',
         'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-        'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
-        'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+        'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+        'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
         'notify_url' => 'https://pay.yansongda.cn',
         'wechat_public_cert_path' => [
-            '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+            '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => cert_path('wechatAppPublicKey.pem'),
         ],
         'mode' => PayMode::NORMAL,
     ]);

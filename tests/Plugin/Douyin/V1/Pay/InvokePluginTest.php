@@ -73,7 +73,7 @@ it('从输出验签', function () {
     [, $nonce, $timestamp, $signature] = $matches;
 
     $contents = "POST\n/requestOrder\n".$timestamp."\n".$nonce."\n".$data."\n";
-    $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../../Cert/douyinAppPublicKey.pem'));
+    $publicKey = openssl_pkey_get_public(file_get_contents(cert_path('douyinAppPublicKey.pem')));
 
     expect($publicKey)->not->toBeFalse();
     expect(openssl_verify($contents, base64_decode($signature), $publicKey, OPENSSL_ALGO_SHA256))->toBe(1);

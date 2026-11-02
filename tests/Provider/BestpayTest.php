@@ -2,23 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Provider;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
-use Mockery;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
-use Yansongda\Pay\Config\BestpayConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Bestpay;
 use Yansongda\Pay\Traits\BestpayTrait;
+use Yansongda\Pay\Tests\Support\Traits\BestpayProviderHelpers;
 
 uses(BestpayTrait::class);
-uses(BestpayTestHelpers::class);
+uses(BestpayProviderHelpers::class);
 
 it('快捷方式不存在', function () {
 
@@ -208,44 +205,3 @@ it('Provider 类', function () {
     expect(Pay::bestpay())->toBeInstanceOf(Bestpay::class);
     expect('https://mapi.bestpay.com.cn/mapi')->toEqual(Bestpay::URL[PayMode::NORMAL->value]);
 });
-
-trait BestpayTestHelpers
-{
-    private function mockResponse(array $body): void
-    {
-        $body['sign'] = $this->signResponseBody($body);
-    
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode($body)));
-        Pay::set(HttpClientInterface::class, $http);
-    }
-    
-    private function mockResponseWithUriCheck(string $expectedBodyFragment, array $body): void
-    {
-        $body['sign'] = $this->signResponseBody($body);
-    
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->andReturnUsing(function ($request) use ($body, $expectedBodyFragment) {
-            self::assertStringContainsString($expectedBodyFragment, (string) $request->getBody());
-    
-            return new Response(200, [], json_encode($body));
-        });
-        Pay::set(HttpClientInterface::class, $http);
-    }
-    
-    private function signResponseBody(array $body): string
-    {
-        return self::signBestpayContent($this->defaultConfig(), self::getBestpaySignContent($body));
-    }
-    
-    private function defaultConfig(): BestpayConfig
-    {
-        return new BestpayConfig([
-            'merchant_no' => '3178033925245778',
-            'institution_code' => '3178033925245778',
-            'mch_secret_cert_path' => __DIR__.'/../Cert/bestpay/bestpay.p12',
-            'mch_secret_cert_password' => 'test123456',
-            'bestpay_public_cert_path' => __DIR__.'/../Cert/bestpay/bestpay.cer',
-        ]);
-    }
-}

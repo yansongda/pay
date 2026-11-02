@@ -43,7 +43,7 @@ class CallbackPlugin implements PluginInterface
 
         $value = filter_params($params, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k);
 
-        self::verifyAlipaySign($config, $value->sortKeys()->toString(), $params['sign'] ?? '');
+        self::verifyAlipaySign($config, $value->sortKeys()->toQueryString(), $params['sign'] ?? '');
 
         $rocket->setPayload($params)
             ->setDirection(NoHttpRequestDirection::class)

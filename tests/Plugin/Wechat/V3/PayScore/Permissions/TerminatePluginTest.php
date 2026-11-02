@@ -118,6 +118,8 @@ it('授权码分支', function () {
 });
 
 it('204 响应沿原始响应方向', function () {
+    // 204 无包体回归断言：TerminatePlugin 两分支均设置 OriginResponseDirection，
+    // 响应链（ResponsePlugin -> ParserPlugin）遇到 204 空 body 不应抛异常，destination 原样为 ResponseInterface.
     $response = new Response(204);
     $rocket = new Rocket();
     $rocket->setDirection(OriginResponseDirection::class)

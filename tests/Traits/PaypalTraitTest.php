@@ -2,12 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Traits;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
-use Mockery;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
@@ -17,15 +14,11 @@ use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Traits\PaypalTrait;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\PaypalTraitHelpers;
+use Yansongda\Pay\Tests\Stubs\PaypalTraitStub;
 
-class PaypalTraitStub
-{
-use PaypalTrait;
-}
-
-uses(PaypalTraitTestHelpers::class);
+uses(PaypalTraitHelpers::class);
 
 it('获取 PayPal URL', function () {
     expect(PaypalTraitStub::getPaypalUrl(new PaypalConfig([
@@ -150,6 +143,7 @@ it('PayPal webhook 验签签名为空', function () {
 })->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('PayPal webhook 验签缺少请求头', function () {
+    // 仅保留部分请求头（缺少 PAYPAL-CERT-URL / PAYPAL-AUTH-ALGO），验签应前置拦截
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
         'PAYPAL-TRANSMISSION-ID' => 'test-id',
         'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
@@ -210,15 +204,3 @@ it('PayPal webhook 验签失败', function () {
 
     PaypalTraitStub::verifyPaypalWebhookSign($request, []);
 })->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
-
-trait PaypalTraitTestHelpers
-{
-    private function getPaypalConfig(): PaypalConfig
-    {
-        $config = PaypalTraitStub::getProviderConfig('paypal', []);
-    
-        self::assertInstanceOf(PaypalConfig::class, $config);
-    
-        return $config;
-    }
-}

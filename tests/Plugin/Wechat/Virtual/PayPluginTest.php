@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
@@ -104,11 +103,11 @@ it('缺少 offer_id 抛出异常', function () {
                 'mini_app_id' => 'wx55955316af4ef14',
                 'mch_secret_key_v2' => 'yansongda',
                 'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                'mch_secret_cert' => __DIR__.'/../../../Cert/wechatAppPrivateKey.pem',
-                'mch_public_cert_path' => __DIR__.'/../../../Cert/wechatAppPublicKey.pem',
+                'mch_secret_cert' => cert_path('wechatAppPrivateKey.pem'),
+                'mch_public_cert_path' => cert_path('wechatAppPublicKey.pem'),
                 'notify_url' => 'https://pay.yansongda.cn',
                 'wechat_public_cert_path' => [
-                    '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../../../Cert/wechatAppPublicKey.pem',
+                    '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => cert_path('wechatAppPublicKey.pem'),
                 ],
                 'mode' => PayMode::NORMAL,
                 'virtual_pay' => [

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V3;
-
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Rocket;
@@ -11,8 +9,9 @@ use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin;
+use Yansongda\Pay\Tests\Support\Traits\AlipayV3VerifySignatureHelpers;
 
-uses(VerifySignaturePluginTestHelpers::class);
+uses(AlipayV3VerifySignatureHelpers::class);
 
 it('不应发起请求', function () {
     $plugin = new VerifySignaturePlugin();
@@ -77,7 +76,7 @@ it('非 200 无签名但时间戳过期通过', function () {
 it('无签名强制验签', function () {
     $plugin = new VerifySignaturePlugin();
     // HTTP 200 强制验签：无签名也必须验签（空签抛异常）
-    $response = new Response(200, ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')], '{}');
+    $response = new Response(200, ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-sn' => CertManager::alipayGetAppCertSn(cert_path('alipay-v3/alipay_public_cert_test.crt'))], '{}');
 
     $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
 
@@ -88,7 +87,7 @@ it('签名无效', function () {
     $plugin = new VerifySignaturePlugin();
     $response = new Response(
         200,
-        ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-signature' => 'invalid-sign', 'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')],
+        ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-signature' => 'invalid-sign', 'alipay-sn' => CertManager::alipayGetAppCertSn(cert_path('alipay-v3/alipay_public_cert_test.crt'))],
         '{}'
     );
 
@@ -107,7 +106,7 @@ it('时间戳过期', function () {
 
     $response = new Response(
         200,
-        ['alipay-timestamp' => $timestamp, 'alipay-nonce' => $nonce, 'alipay-signature' => base64_encode($sign), 'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')],
+        ['alipay-timestamp' => $timestamp, 'alipay-nonce' => $nonce, 'alipay-signature' => base64_encode($sign), 'alipay-sn' => CertManager::alipayGetAppCertSn(cert_path('alipay-v3/alipay_public_cert_test.crt'))],
         $body
     );
 
@@ -160,30 +159,3 @@ it('支付宝 V3 时间戳过期', function () {
 
     $stub->exposeVerifyTimestamp('1735689600123');
 })->throws(InvalidSignException::class, '签名异常: 支付宝 V3 时间戳已过期', Exception::SIGN_ERROR);
-
-trait VerifySignaturePluginTestHelpers
-{
-    private function makeSignedResponse(int $status, string $body, ?string $alipaySn = 'valid'): Response
-    {
-        $timestamp = (string) (int) (microtime(true) * 1000);
-        $nonce = 'yansongda-nonce';
-        $sign = $this->sign($timestamp."\n".$nonce."\n".$body."\n");
-    
-        $headers = ['alipay-timestamp' => $timestamp, 'alipay-nonce' => $nonce, 'alipay-signature' => base64_encode($sign)];
-    
-        if (null !== $alipaySn) {
-            $headers['alipay-sn'] = 'valid' === $alipaySn
-                ? CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')
-                : $alipaySn;
-        }
-    
-        return new Response($status, $headers, $body);
-    }
-    
-    private function sign(string $content): string
-    {
-        openssl_sign($content, $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
-    
-        return $sign;
-    }
-}

@@ -39,6 +39,7 @@ it('构造合法配置', function () {
 });
 
 it('默认 Apple 根证书与中间证书', function () {
+    // 未配置时回退内置证书（BUG 修复：文档宣称的「默认内置」此前为死代码）
     $validConfig = [
         'merchant_id' => 'merchant.com.example.app',
         'payment_processing_cert' => '/path/to/payment-processing-cert.pem',

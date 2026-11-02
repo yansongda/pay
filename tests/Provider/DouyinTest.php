@@ -2,12 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Provider;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\ServerRequest;
-use Mockery;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
@@ -17,8 +13,9 @@ use Yansongda\Pay\Exception\Exception as PayException;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\DouyinHelpers;
 
-uses(DouyinTestHelpers::class);
+uses(DouyinHelpers::class);
 
 it('快捷方式不存在', function () {
 
@@ -55,7 +52,7 @@ it('调用小程序', function () {
 
     [, $nonce, $timestamp, $signature] = $matches;
 
-    $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../Cert/douyinAppPublicKey.pem'));
+    $publicKey = openssl_pkey_get_public(file_get_contents(cert_path('douyinAppPublicKey.pem')));
     expect($publicKey)->not->toBeFalse();
     expect(openssl_verify(
         "POST\n/requestOrder\n".$timestamp."\n".$nonce."\n".$data."\n",
@@ -194,27 +191,3 @@ it('成功', function () {
     expect($result)->toBeInstanceOf(ResponseInterface::class);
     expect((string) $result->getBody())->toBe('{"err_no":0,"err_tips":"success"}');
 });
-
-trait DouyinTestHelpers
-{
-    private function getDouyinCallbackRequest(string $body, array $overrideHeaders = []): ServerRequest
-    {
-        $headers = [
-            'Byte-Timestamp' => '1700000000',
-            'Byte-Nonce-Str' => 'abcdef1234567890',
-            'Byte-Signature' => base64_encode($this->signDouyinContents("1700000000\nabcdef1234567890\n".$body."\n")),
-        ];
-    
-        return new ServerRequest('POST', 'https://yansongda.cn/douyin/notify', array_merge($headers, $overrideHeaders), $body);
-    }
-    
-    private function signDouyinContents(string $contents): string
-    {
-        $privateKey = openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/douyinPlatformPrivateKey.pem'));
-        self::assertNotFalse($privateKey);
-    
-        self::assertTrue(openssl_sign($contents, $signature, $privateKey, OPENSSL_ALGO_SHA256));
-    
-        return $signature;
-    }
-}
