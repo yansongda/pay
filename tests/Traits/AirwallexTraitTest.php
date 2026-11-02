@@ -11,13 +11,8 @@ use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Traits\AirwallexTrait;
 use Yansongda\Supports\Collection;
-
-class AirwallexTraitStub
-{
-use AirwallexTrait;
-}
+use Yansongda\Pay\Tests\Stubs\AirwallexTraitStub;
 
 it('获取 Airwallex 请求 ID', function () {
     expect(AirwallexTraitStub::getAirwallexRequestId())->toMatch('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/');

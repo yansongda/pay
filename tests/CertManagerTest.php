@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\Assert;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\CertManager;
 

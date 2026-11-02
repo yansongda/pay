@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Traits;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Enum\PayMode;
@@ -12,15 +10,11 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Alipay;
-use Yansongda\Pay\Traits\AlipayTrait;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\AlipayTraitHelpers;
+use Yansongda\Pay\Tests\Stubs\AlipayTraitStub;
 
-class AlipayTraitStub
-{
-use AlipayTrait;
-}
-
-uses(AlipayTraitTestHelpers::class);
+uses(AlipayTraitHelpers::class);
 
 it('支付宝验签成功', function () {
     AlipayTraitStub::getProviderConfig('alipay');
@@ -235,30 +229,3 @@ it('解密支付宝内容密钥不匹配', function () {
         $config
     );
 })->throws(DecryptException::class, '加密解密异常: 支付宝密文解密失败，请检查 AES 密钥是否与开放平台控制台一致（重新生成密钥后旧密钥立即失效）', Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
-
-trait AlipayTraitTestHelpers
-{
-    protected function getAlipayConfig(PayMode|int $mode = PayMode::NORMAL): AlipayConfig
-    {
-        return new AlipayConfig([
-            'app_id' => 'app_id',
-            'app_secret_cert' => 'app_secret_cert',
-            'app_public_cert_path' => 'app_public_cert_path',
-            'alipay_public_cert_path' => 'alipay_public_cert_path',
-            'alipay_root_cert_path' => 'alipay_root_cert_path',
-            'mode' => $mode,
-        ], 'default');
-    }
-    
-    private static function getAuthString(string $authorization): string
-    {
-        $rest = substr($authorization, strlen('ALIPAY-SHA256withRSA '));
-    
-        return substr($rest, 0, (int) strrpos($rest, ',sign='));
-    }
-    
-    private static function getSign(string $authorization): string
-    {
-        return substr($authorization, (int) strrpos($authorization, ',sign=') + strlen(',sign='));
-    }
-}

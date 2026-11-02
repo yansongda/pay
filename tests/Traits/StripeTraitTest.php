@@ -9,13 +9,8 @@ use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Traits\StripeTrait;
 use Yansongda\Supports\Collection;
-
-class StripeTraitStub
-{
-use StripeTrait;
-}
+use Yansongda\Pay\Tests\Stubs\StripeTraitStub;
 
 it('获取 Stripe URL', function () {
     $config = new StripeConfig([

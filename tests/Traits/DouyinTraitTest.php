@@ -2,24 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Traits;
-
-use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Traits\DouyinTrait;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\DouyinTraitHelpers;
+use Yansongda\Pay\Tests\Stubs\DouyinTraitStub;
 
-class DouyinTraitStub
-{
-use DouyinTrait;
-}
-
-uses(DouyinTraitTestHelpers::class);
+uses(DouyinTraitHelpers::class);
 
 it('获取抖音 URL', function () {
     $normalConfig = new DouyinConfig([
@@ -159,41 +152,3 @@ it('抖音交易验签：平台公钥无效', function () {
 
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
 })->throws(InvalidConfigException::class, null, Exception::CONFIG_DOUYIN_INVALID);
-
-trait DouyinTraitTestHelpers
-{
-    private function getDouyinConfig(): DouyinConfig
-    {
-        return new DouyinConfig([
-            'app_id' => 'tt226e54d3bd581bf801',
-            'app_secret' => 'douyin_app_secret',
-            'app_private_key' => file_get_contents(__DIR__.'/../Cert/douyinAppPrivateKey.pem'),
-            'douyin_public_key' => file_get_contents(__DIR__.'/../Cert/douyinPlatformPublicKey.pem'),
-        ]);
-    }
-    
-    private function getDouyinCallbackRequest(string $body, array $overrideHeaders = [], ?string $signBody = null): ServerRequest
-    {
-        $signBody = $signBody ?? $body;
-    
-        $headers = [
-            'Byte-Timestamp' => '1700000000',
-            'Byte-Nonce-Str' => 'abcdef1234567890',
-            'Byte-Signature' => base64_encode(
-                $this->signDouyinContents("1700000000\nabcdef1234567890\n".$signBody."\n", file_get_contents(__DIR__.'/../Cert/douyinPlatformPrivateKey.pem'))
-            ),
-        ];
-    
-        return new ServerRequest('POST', 'https://yansongda.cn/douyin/notify', array_merge($headers, $overrideHeaders), $body);
-    }
-    
-    private function signDouyinContents(string $contents, string $privateKeyContents): string
-    {
-        $privateKey = openssl_pkey_get_private($privateKeyContents);
-        self::assertNotFalse($privateKey);
-    
-        self::assertTrue(openssl_sign($contents, $signature, $privateKey, OPENSSL_ALGO_SHA256));
-    
-        return $signature;
-    }
-}

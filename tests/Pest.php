@@ -9,6 +9,17 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
 
 /**
+ * 证书 fixture 绝对路径。
+ *
+ * helper（tests/Stubs、tests/Support）外置后 `__DIR__` 语义改变，统一由此函数拼接，
+ * 避免各 helper 重复推导相对层级。
+ */
+function cert_path(string $path = ''): string
+{
+    return __DIR__.'/Cert/'.ltrim($path, '/');
+}
+
+/**
  * Pest 引导文件（不可删除）。
  *
  * - beforeEach：注入全量多租户测试配置、初始化 Hyperf 容器、重置抖音 client_token 静态缓存

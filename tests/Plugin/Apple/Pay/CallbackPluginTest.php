@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Apple\Pay;
-
 use GuzzleHttp\Psr7\ServerRequest;
-use RuntimeException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
@@ -14,8 +11,9 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Apple\Pay\CallbackPlugin;
 use Yansongda\Pay\Tests\Support\Apple\AppleJwsFactory;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\AppleCallbackHelpers;
 
-uses(CallbackPluginTestHelpers::class);
+uses(AppleCallbackHelpers::class);
 
 it('回调成功', function () {
     $plugin = new CallbackPlugin();
@@ -184,65 +182,3 @@ it('Provider 回调链接', function () {
     expect($result->get('data.signedTransactionInfo'))->toBeArray();
     expect($result->get('data.signedTransactionInfo.transactionId'))->toEqual('1000001234567890');
 });
-
-trait CallbackPluginTestHelpers
-{
-    private static function makeInnerJws(array $payload): string
-    {
-        $headerB64 = self::base64UrlEncode((string) json_encode(['alg' => 'ES256']));
-        $payloadB64 = self::base64UrlEncode((string) json_encode($payload));
-    
-        $privateKey = openssl_pkey_get_private((string) file_get_contents(dirname(__DIR__, 3).'/Cert/apple/jws-leaf.key'));
-    
-        if (false === $privateKey) {
-            throw new RuntimeException('读取 jws-leaf 私钥失败');
-        }
-    
-        $derSignature = '';
-    
-        if (!openssl_sign($headerB64.'.'.$payloadB64, $derSignature, $privateKey, OPENSSL_ALGO_SHA256)) {
-            throw new RuntimeException('ES256 签名失败');
-        }
-    
-        return $headerB64.'.'.$payloadB64.'.'.self::base64UrlEncode(self::derToRaw($derSignature));
-    }
-    
-    private static function tamperJwsPayload(string $jws, array $payload): string
-    {
-        $parts = explode('.', $jws);
-        $parts[1] = self::base64UrlEncode((string) json_encode($payload));
-    
-        return implode('.', $parts);
-    }
-    
-    private static function derToRaw(string $der): string
-    {
-        $offset = 2;
-        $parts = [];
-    
-        for ($i = 0; $i < 2; ++$i) {
-            if ("\x02" !== ($der[$offset] ?? '')) {
-                throw new RuntimeException('ECDSA DER 签名结构非法');
-            }
-    
-            $length = ord($der[++$offset]);
-            ++$offset;
-            $value = substr($der, $offset, $length);
-            $offset += $length;
-    
-            // 剥前导 0x00（符号位填充，仅当下一字节高位为 1，DER 最小编码保证可安全剥除）
-            if (1 < strlen($value) && "\x00" === $value[0]) {
-                $value = substr($value, 1);
-            }
-    
-            $parts[] = $value;
-        }
-    
-        return str_pad((string) $parts[0], 32, "\x00", STR_PAD_LEFT).str_pad((string) $parts[1], 32, "\x00", STR_PAD_LEFT);
-    }
-    
-    private static function base64UrlEncode(string $data): string
-    {
-        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
-    }
-}

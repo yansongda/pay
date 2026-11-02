@@ -2,22 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Traits;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Traits\JsbTrait;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\JsbTraitHelpers;
+use Yansongda\Pay\Tests\Stubs\JsbTraitStub;
 
-class JsbTraitStub
-{
-use JsbTrait;
-}
-
-uses(JsbTraitTestHelpers::class);
+uses(JsbTraitHelpers::class);
 
 it('获取江苏银行 URL', function () {
     expect(JsbTraitStub::getJsbUrl(new JsbConfig([
@@ -55,15 +49,3 @@ it('江苏银行验签缺少配置', function () {
 
     JsbTraitStub::verifyJsbSign($config, 'content', 'sign');
 })->throws(InvalidConfigException::class, null, Exception::CONFIG_JSB_INVALID);
-
-trait JsbTraitTestHelpers
-{
-    private function getJsbConfig(): JsbConfig
-    {
-        $config = JsbTraitStub::getProviderConfig('jsb', []);
-    
-        self::assertInstanceOf(JsbConfig::class, $config);
-    
-        return $config;
-    }
-}

@@ -9,6 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 
 it('解析 ASN.1 并重建 DER', function () {
+    // SEQUENCE { INTEGER 1, OCTET STRING "hello" }
     $der = "\x30\x0a\x02\x01\x01\x04\x05hello";
 
     $node = Cryptor::parseAsn1($der);
@@ -25,6 +26,7 @@ it('解析 ASN.1 并重建 DER', function () {
 });
 
 it('解析 ASN.1 长格式长度', function () {
+    // 覆盖 1 字节长形式（0x81）与多字节长形式（0x82）的长度解析与重建
     $cases = [
         200 => "\x30\x81\xcb\x04\x81\xc8".str_repeat('a', 200),
         300 => "\x30\x82\x01\x30\x04\x82\x01\x2c".str_repeat('a', 300),
@@ -59,6 +61,7 @@ it('解析 ASN.1 截断抛出异常', function (string $der) {
     ])->throws(InvalidSignException::class, '签名异常: Apple ASN.1 数据截断', Exception::SIGN_ERROR);
 
 it('编码 ASN.1 OID', function () {
+    // 1.2.840.113549.1.9.4 → 2A 86 48 86 F7 0D 01 09 04
     expect(Cryptor::encodeAsn1Oid('1.2.840.113549.1.9.4'))->toBe("\x2a\x86\x48\x86\xf7\x0d\x01\x09\x04");
 
     // 含 >127 的分量（16384 → 81 80 00）
@@ -113,6 +116,7 @@ it('非法十六进制转二进制抛出异常', function (string $hex) {
     ])->throws(InvalidParamsException::class, null, Exception::PARAMS_APPLE_TOKEN_INVALID);
 
 it('DER 转 raw 签名去除整数前缀', function () {
+    // r = 00 FF FF FF FF（最高位为 1，DER 内补 0x00），s = 01
     $der = "\x30\x0a\x02\x05\x00\xff\xff\xff\xff\x02\x01\x01";
 
     $expected = str_pad("\xff\xff\xff\xff", 32, "\x00", STR_PAD_LEFT).str_pad("\x01", 32, "\x00", STR_PAD_LEFT);

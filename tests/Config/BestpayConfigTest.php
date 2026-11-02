@@ -108,6 +108,7 @@ it('使用 PayMode 枚举的模式', function () {
 });
 
 it('服务商模式抛出异常', function () {
+    // 翼支付一期无服务商模式，mode = SERVICE 应被校验拦截
     $validConfig = [
         'merchant_no' => '1234567890',
         'institution_code' => 'INS001',

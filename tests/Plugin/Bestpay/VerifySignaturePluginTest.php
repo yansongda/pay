@@ -2,18 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Bestpay;
-
 use Yansongda\Artful\Direction\CollectionDirection;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Config\BestpayConfig;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Bestpay\V1\VerifySignaturePlugin;
 use Yansongda\Pay\Traits\BestpayTrait;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\BestpayVerifySignatureHelpers;
 
 uses(BestpayTrait::class);
-uses(VerifySignaturePluginTestHelpers::class);
+uses(BestpayVerifySignatureHelpers::class);
 
 it('响应签名有效', function () {
     $body = [
@@ -112,17 +110,3 @@ it('待签名内容保留空值', function () {
 
     expect($content)->toEqual('bool=false&empty=&null=null&path=/pay/tradeCreate');
 });
-
-trait VerifySignaturePluginTestHelpers
-{
-    private function makeConfig(): BestpayConfig
-    {
-        return new BestpayConfig([
-            'merchant_no' => '3178033925245778',
-            'institution_code' => '3178033925245778',
-            'mch_secret_cert_path' => __DIR__.'/../../Cert/bestpay/bestpay.p12',
-            'mch_secret_cert_password' => 'test123456',
-            'bestpay_public_cert_path' => __DIR__.'/../../Cert/bestpay/bestpay.cer',
-        ]);
-    }
-}

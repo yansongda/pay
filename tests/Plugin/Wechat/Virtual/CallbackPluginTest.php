@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual;
-
 use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Wechat\Virtual\CallbackPlugin;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\WechatVirtualCallbackHelpers;
 
-uses(CallbackPluginTestHelpers::class);
+uses(WechatVirtualCallbackHelpers::class);
 
 it('XML 发货回调', function () {
     $plugin = new CallbackPlugin();
@@ -190,36 +189,3 @@ it('空签名', function () {
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 })->throws(InvalidSignException::class, '签名异常: 微信虚拟支付回调签名为空');
-
-trait CallbackPluginTestHelpers
-{
-    protected string $encodingAesKey = 'MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY';
-    
-    protected string $callbackToken = 'test_callback_token';
-    
-    private function encryptMessage(string $message, string $encodingAesKey, string $appId): string
-    {
-        $key = base64_decode($encodingAesKey.'=');
-        $iv = substr($key, 0, 16);
-    
-        $random = str_repeat("\x00", 16);
-        $content = $random.pack('N', strlen($message)).$message.$appId;
-    
-        // PKCS7 padding with 32-byte block size
-        $blockSize = 32;
-        $pad = $blockSize - (strlen($content) % $blockSize);
-        $content .= str_repeat(chr($pad), $pad);
-    
-        $encrypted = openssl_encrypt($content, 'aes-256-cbc', $key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
-    
-        return base64_encode($encrypted);
-    }
-    
-    private function createSignature(string $token, string $timestamp, string $nonce, string $encrypt): string
-    {
-        $arr = [$token, $timestamp, $nonce, $encrypt];
-        sort($arr, SORT_STRING);
-    
-        return sha1(implode('', $arr));
-    }
-}

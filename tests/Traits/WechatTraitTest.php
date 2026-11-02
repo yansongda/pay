@@ -9,7 +9,6 @@ use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Enum\PayMode;
@@ -17,17 +16,8 @@ use Yansongda\Pay\Exception\DecryptException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Traits\WechatTrait;
 use Yansongda\Supports\Collection;
-
-class WechatTraitStub
-{
-use WechatTrait;
-
-protected static function verifyWechatTimestamp(int $timestamp): void
-{
-}
-}
+use Yansongda\Pay\Tests\Stubs\WechatTraitStub;
 
 it('获取微信 URL', function () {
     $config = WechatTraitStub::getProviderConfig('wechat');
@@ -319,6 +309,7 @@ it('解密微信资源（AES-256-GCM）', function () {
 })->throws(DecryptException::class, null, Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID);
 
 it('获取微信证书序列号', function () {
+    // 不传证书
     $params = [];
     $result = WechatTraitStub::getWechatSerialNo($params);
     expect(in_array($result, ['45F59D4DABF31918AFCEC556D5D2C6E376675D57', 'yansongda']))->toBeTrue();

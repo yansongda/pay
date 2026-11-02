@@ -109,6 +109,7 @@ it('使用 PayMode 枚举的模式', function () {
 });
 
 it('服务商模式抛出异常', function () {
+    // 江苏银行无服务商模式，mode = SERVICE 应被校验拦截
     $validConfig = [
         'partner_id' => 'partner_123',
         'public_key_code' => '00',

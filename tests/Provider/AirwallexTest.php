@@ -9,15 +9,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Airwallex\V1\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Airwallex\V1\ObtainAccessTokenPlugin;
-use Yansongda\Pay\Plugin\Airwallex\V1\ResponsePlugin;
-use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Supports\Collection;
 
 it('快捷方式不存在', function () {

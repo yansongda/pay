@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Yansongda\Pay\Tests\Support\Apple;
 
-use OpenSSLAsymmetricKey;
 use RuntimeException;
+use OpenSSLAsymmetricKey;
 
 /**
  * Apple 支付令牌测试 Factory。

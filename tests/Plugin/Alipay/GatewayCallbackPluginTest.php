@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay;
-
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
@@ -14,8 +12,9 @@ use Yansongda\Pay\Plugin\Alipay\GatewayCallbackPlugin;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
+use Yansongda\Pay\Tests\Support\Traits\AlipayGatewayCallbackHelpers;
 
-uses(GatewayCallbackPluginTestHelpers::class);
+uses(AlipayGatewayCallbackHelpers::class);
 
 it('网关验签成功', function () {
     $plugin = new GatewayCallbackPlugin();
@@ -65,6 +64,7 @@ it('验签失败', function () {
 });
 
 it('sign_type 参与验签', function () {
+    // 组串保留 `sign_type`：签名基于 `sign_type=RSA2` 生成，请求篡改后验签必须失败（走 VERIFY_FAILED 分支）.
     $plugin = new GatewayCallbackPlugin();
     $form = $this->makeSignedForm();
     $form['sign_type'] = 'XXX';
@@ -80,6 +80,7 @@ it('sign_type 参与验签', function () {
 });
 
 it('不校验网关事件类型', function () {
+    // 非 verifygw 网关消息：验签通过后原样透传（payload 即 destination），ack 由业务侧处理.
     $plugin = new GatewayCallbackPlugin();
     $form = $this->makeSignedForm(overrides: [
         'biz_content' => '<XML><MsgType>event</MsgType><EventType>follow</EventType></XML>',
@@ -100,38 +101,3 @@ it('biz_content 非法 XML', function () {
 
     $plugin->assembly((new Rocket())->setParams($form), fn ($rocket) => $rocket);
 })->throws(InvalidParamsException::class, null, Exception::PARAMS_ALIPAY_GW_BIZ_CONTENT_INVALID);
-
-trait GatewayCallbackPluginTestHelpers
-{
-    private function makeSignedForm(array $overrides = [], array $extra = ['_config' => 'alipay-v3']): array
-    {
-        $form = array_merge([
-            'service' => 'alipay.service.check',
-            'charset' => 'utf-8',
-            'sign_type' => 'RSA2',
-            'biz_content' => '<XML><AppId>alipay_v3_test_app_id</AppId><MsgType>event</MsgType><EventType>verifygw</EventType></XML>',
-        ], $overrides);
-    
-        $value = filter_params(array_merge($form, $extra), fn ($k, $v) => '' !== $v && 'sign' != $k)
-            ->sortKeys()
-            ->toString();
-    
-        openssl_sign($value, $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
-    
-        $form['sign'] = base64_encode($sign);
-    
-        return array_merge($form, $extra);
-    }
-    
-    private function appPublicKey(): string
-    {
-        $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../Cert/alipay-v3/alipay_public_cert_test.crt'));
-        self::assertNotFalse($publicKey);
-    
-        $details = openssl_pkey_get_details($publicKey);
-        self::assertIsArray($details);
-        self::assertArrayHasKey('key', $details);
-    
-        return str_replace(['-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----', "\r", "\n"], '', $details['key']);
-    }
-}

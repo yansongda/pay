@@ -9,14 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
-use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Paypal\V2\ObtainAccessTokenPlugin;
-use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
-use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Supports\Collection;
 
 it('快捷方式不存在', function () {

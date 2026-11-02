@@ -2,33 +2,23 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Provider;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
-use Mockery;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
-use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
-use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Supports\Collection;
 
 use function Yansongda\Artful\filter_params;
+use Yansongda\Pay\Tests\Support\Traits\AlipayProviderHelpers;
 
-uses(AlipayTestHelpers::class);
+uses(AlipayProviderHelpers::class);
 
 it('快捷方式不存在', function () {
 
@@ -235,6 +225,7 @@ it('成功', function () {
 });
 
 it('V3 扫码', function () {
+    // V3 scan 正向链路：mock HTTP 返回带 V3 header 签名的响应，全链路（预下单 → 验签 → 解析）断言。
     $responseData = [
         'out_trade_no' => 'v3scan1704093802',
         'qr_code' => 'https://qr.alipay.com/bax07651xvtprxfkmxyf00a9',
@@ -288,6 +279,7 @@ it('V3 回调（ServerRequest）', function () {
 });
 
 it('V3 回调（纯数组）', function () {
+    // 普通数组（通知 form 参数）构造为 parsedBody 的模拟回调请求
     $form = $this->makeV3CallbackForm();
 
     $result = Pay::alipay()->callback($form, ['_config' => 'alipay-v3']);
@@ -317,6 +309,7 @@ it('V3 回调参数被篡改', function () {
 })->throws(InvalidSignException::class);
 
 it('网关动作回调', function () {
+    // 拍板入口形态：`_action` 位于第一参数 contents
     $form = $this->makeGwVerifyForm();
 
     $result = Pay::alipay()->callback(array_merge($form, ['_action' => 'gw']), ['_config' => 'alipay-v3']);
@@ -328,6 +321,7 @@ it('网关动作回调', function () {
 });
 
 it('webhook 表单方式网关动作回调', function () {
+    // webhook 转发形态：`body`/`headers` 结构，`_action` 位于第二实参
     $form = $this->makeGwVerifyForm();
 
     $result = Pay::alipay()->callback(
@@ -344,44 +338,3 @@ it('未知动作回调', function () {
 
     Pay::alipay()->callback(['_action' => 'foo']);
 })->throws(InvalidParamsException::class, '参数异常: 不支持的回调 _action [foo]', \Yansongda\Pay\Exception\Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-trait AlipayTestHelpers
-{
-    private function makeV3CallbackForm(): array
-    {
-        $form = [
-            'app_id' => 'alipay_v3_test_app_id',
-            'trade_no' => '2023122122001499160501589436',
-            'out_trade_no' => 'v3callback'.time(),
-            'total_amount' => '0.01',
-            'trade_status' => 'TRADE_SUCCESS',
-            'sign_type' => 'RSA2',
-        ];
-    
-        $value = filter_params($form, fn ($k, $v) => '' !== $v && 'sign' != $k && 'sign_type' != $k)->sortKeys()->toString();
-    
-        openssl_sign($value, $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
-    
-        $form['sign'] = base64_encode($sign);
-    
-        return $form;
-    }
-    
-    private function makeGwVerifyForm(): array
-    {
-        $form = [
-            'service' => 'alipay.service.check',
-            'charset' => 'utf-8',
-            'sign_type' => 'RSA2',
-            'biz_content' => '<XML><AppId>alipay_v3_test_app_id</AppId><MsgType>event</MsgType><EventType>verifygw</EventType></XML>',
-        ];
-    
-        $value = filter_params($form, fn ($k, $v) => '' !== $v && 'sign' != $k)->sortKeys()->toString();
-    
-        openssl_sign($value, $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
-    
-        $form['sign'] = base64_encode($sign);
-    
-        return $form;
-    }
-}

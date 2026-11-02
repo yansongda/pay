@@ -10,13 +10,8 @@ use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Pay as PayFacade;
-use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Supports\Collection;
-
-class ProviderConfigTraitStub
-{
-use ProviderConfigTrait;
-}
+use Yansongda\Pay\Tests\Stubs\ProviderConfigTraitStub;
 
 it('获取默认租户', function () {
     expect(ProviderConfigTraitStub::getTenant())->toBe('default');

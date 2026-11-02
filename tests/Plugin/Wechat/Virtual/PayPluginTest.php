@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Yansongda\Artful\Exception\InvalidConfigException;
-use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;

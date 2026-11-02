@@ -87,6 +87,7 @@ it('provider 配置缺少租户', function () {
 })->throws(InvalidConfigException::class, '配置异常: alipay.missing_tenant 配置不存在', Exception::CONFIG_PROVIDER_INVALID);
 
 it('配置对象不被转换', function () {
+    // 如果已经是 Config 对象，不应该再次转换
     $existingConfig = new WechatConfig([
         'app_id' => 'existing_app_id',
         'mch_id' => 'existing_mch_id',
@@ -126,6 +127,7 @@ it('配置转数组使用蛇形外部键', function () {
 });
 
 it('未使用 provider 配置不完整时构造', function () {
+    // issue #1186: 构造时不应校验未使用的 provider 配置
     $config = new Config([
         'wechat' => [
             'default' => [

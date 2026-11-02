@@ -10,14 +10,7 @@ use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Exception\Exception;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
-use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Jsb\AddPayloadSignPlugin;
-use Yansongda\Pay\Plugin\Jsb\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Jsb\ResponsePlugin;
-use Yansongda\Pay\Plugin\Jsb\StartPlugin;
-use Yansongda\Pay\Plugin\Jsb\VerifySignaturePlugin;
-use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 
 it('快捷方式不存在', function () {
 
@@ -56,6 +49,7 @@ it('查询', function () {
 });
 
 it('退款金额错误', function () {
+    // 单元测试检测异常是否正确
     $response = 'field1=&field2=&field3=&partnerId=6a13eab71c4f4b0aa4757eda6fc59710&respBizDate=20240617&respCode=027111&respMsg=退款金额错误&signType=RSA&sign=hzreuJgx+iYz71W8HKyQEH4+XqE7c2Ad6NLa8lSJcVEmjc2nZPZl2s+mBVmZX3PYSlysqq5rlXysGMzQxf4CWkuoUK9wGsCDUIssCBOPcRjdsC2/uFaLavs/jagkKE/tLt45D6h4kibgaHIZabN5NgUkP0p0TAFHISsPPdqjKLY=';
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], $response));
@@ -68,6 +62,7 @@ it('退款金额错误', function () {
 })->throws(InvalidResponseException::class);
 
 it('退款', function () {
+    // 单元测试检测异常是否正确
     $response = 'fee=0&field1=2&field2=&field3=&orderStatus=3&outRefundNo=RK-YC202406170004&partnerId=6a13eab71c4f4b0aa4757eda6fc59710&refundAmt=0.01&refundNo=20240617151229401202589&respBizDate=20240617&respCode=000000&respMsg=交易成功&signType=RSA&sign=VJi8vD3ZkcPZXkgkJ3RX9oREKxeNoUAi9+SZoiBHNlNc87QN0NRngmLthHbzJUV6Fz8hQX5jumZQnhTpEqlTgEZsHRCIm7ZsqhingBNVKItq/sAqzlpIeogU/jVE4zueqInYIMbVOj6+3AQyZ1+Tblz6d0JrGals3exmBUt/03U=';
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], $response));

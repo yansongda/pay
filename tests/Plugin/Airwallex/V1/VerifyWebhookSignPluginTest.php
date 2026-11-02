@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Airwallex\V1;
-
 use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
@@ -11,9 +9,9 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Airwallex\V1\VerifyWebhookSignPlugin;
-use Yansongda\Pay\Traits\AirwallexTrait;
+use Yansongda\Pay\Tests\Support\Traits\AirwallexWebhookSignHelpers;
 
-uses(VerifyWebhookSignPluginTestHelpers::class);
+uses(AirwallexWebhookSignHelpers::class);
 
 it('缺少 webhook 密钥抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [], '{}');
@@ -100,15 +98,3 @@ it('插件缺少请求对象抛出异常', function () {
 
     (new VerifyWebhookSignPlugin())->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
 })->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
-
-trait VerifyWebhookSignPluginTestHelpers
-{
-    protected static function verifyWebhookSign(ServerRequest $request, array $params = []): void
-    {
-        $verifier = new class() {
-            use AirwallexTrait;
-        };
-    
-        $verifier::verifyAirwallexWebhookSign($request, $params);
-    }
-}

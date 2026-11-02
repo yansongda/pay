@@ -2,22 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Traits;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AllinpayConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
-use Yansongda\Pay\Traits\AllinpayTrait;
 use Yansongda\Supports\Collection;
+use Yansongda\Pay\Tests\Support\Traits\AllinpayTraitHelpers;
+use Yansongda\Pay\Tests\Stubs\AllinpayTraitStub;
 
-class AllinpayTraitStub
-{
-use AllinpayTrait;
-}
-
-uses(AllinpayTraitTestHelpers::class);
+uses(AllinpayTraitHelpers::class);
 
 it('获取通联 URL', function () {
     $config = $this->getConfig();
@@ -107,15 +101,3 @@ it('获取通联 URL 缺少参数', function () {
 
     AllinpayTraitStub::getAllinpayUrl($this->getConfig(), new Collection());
 })->throws(\Yansongda\Artful\Exception\InvalidParamsException::class, null, Exception::PARAMS_ALLINPAY_URL_MISSING);
-
-trait AllinpayTraitTestHelpers
-{
-    private function getConfig(): AllinpayConfig
-    {
-        $config = AllinpayTraitStub::getProviderConfig('allinpay', []);
-    
-        self::assertInstanceOf(AllinpayConfig::class, $config);
-    
-        return $config;
-    }
-}

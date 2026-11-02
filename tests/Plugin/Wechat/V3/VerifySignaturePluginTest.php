@@ -5,7 +5,6 @@ declare(strict_types=1);
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Rocket;
-use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\VerifySignaturePluginStub;
 
 it('不应发起请求', function () {

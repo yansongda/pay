@@ -5,13 +5,8 @@ declare(strict_types=1);
 use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
-use Yansongda\Artful\Plugin\ParserPlugin;
-use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Plugin\Stripe\V1\AddRadarPlugin;
-use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
-use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Supports\Collection;
 
 it('快捷方式不存在', function () {
