@@ -2,57 +2,47 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Provider;
-
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Apple;
-use Yansongda\Pay\Tests\TestCase;
 
-class AppleTest extends TestCase
-{
-    public function testPay()
-    {
-        $apple = Pay::apple();
+it('pay', function () {
+    $apple = Pay::apple();
 
-        self::assertInstanceOf(Apple::class, $apple);
-        self::assertInstanceOf(Apple::class, Pay::get('apple'));
-        self::assertInstanceOf(Apple::class, Pay::get(Apple::class));
-    }
+    expect($apple)->toBeInstanceOf(Apple::class);
+    expect(Pay::get('apple'))->toBeInstanceOf(Apple::class);
+    expect(Pay::get(Apple::class))->toBeInstanceOf(Apple::class);
+});
 
-    public function testCancel()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
+it('cancel', function () {
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
-        Pay::apple()->cancel([]);
-    }
+    Pay::apple()->cancel([]);
+});
 
-    public function testClose()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
+it('close', function () {
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
-        Pay::apple()->close([]);
-    }
+    Pay::apple()->close([]);
+});
 
-    public function testSuccess()
-    {
-        $result = Pay::apple()->success();
+it('success', function () {
+    $result = Pay::apple()->success();
 
-        self::assertInstanceOf(ResponseInterface::class, $result);
-        self::assertEquals(200, $result->getStatusCode());
-        self::assertEquals('{"result":"success"}', (string) $result->getBody());
-        self::assertStringContainsString('application/json', $result->getHeaderLine('Content-Type'));
-    }
+    expect($result)->toBeInstanceOf(ResponseInterface::class);
+    expect($result->getStatusCode())->toEqual(200);
+    expect((string) $result->getBody())->toEqual('{"result":"success"}');
+    expect($result->getHeaderLine('Content-Type'))->toContain('application/json');
+});
 
-    public function testUrl()
-    {
-        self::assertEquals('https://api.storekit.apple.com', Apple::URL[PayMode::NORMAL->value]);
-        self::assertEquals('https://api.storekit-sandbox.apple.com', Apple::URL[PayMode::SANDBOX->value]);
-        self::assertEquals('https://api.storekit.apple.com', Apple::URL[PayMode::SERVICE->value]);
-    }
-}
+it('url', function () {
+    expect(Apple::URL[PayMode::NORMAL->value])->toEqual('https://api.storekit.apple.com');
+    expect(Apple::URL[PayMode::SANDBOX->value])->toEqual('https://api.storekit-sandbox.apple.com');
+    expect(Apple::URL[PayMode::SERVICE->value])->toEqual('https://api.storekit.apple.com');
+});
+
