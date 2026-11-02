@@ -2,39 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Enum\Alipay;
-
 use Yansongda\Pay\Enum\Alipay\BizCode;
-use Yansongda\Pay\Tests\TestCase;
 
-class BizCodeTest extends TestCase
-{
-    public function testValues(): void
-    {
-        self::assertSame('DATA_DIGITAL_BIZ_CODE_FACE_VERIFICATION', BizCode::DATA_DIGITAL_BIZ_CODE_FACE_VERIFICATION->value);
-        self::assertSame('DATA_DIGITAL_BIZ_CODE_FACE_CHECK_LIVE', BizCode::DATA_DIGITAL_BIZ_CODE_FACE_CHECK_LIVE->value);
-        self::assertSame('DATA_DIGITAL_BIZ_CODE_OCR', BizCode::DATA_DIGITAL_BIZ_CODE_OCR->value);
-        self::assertSame('FUTURE_TECH_BIZ_FACE_SDK', BizCode::FUTURE_TECH_BIZ_FACE_SDK->value);
-    }
+it('exposes business code values', function () {
+    expect(BizCode::DATA_DIGITAL_BIZ_CODE_FACE_VERIFICATION->value)->toBe('DATA_DIGITAL_BIZ_CODE_FACE_VERIFICATION');
+    expect(BizCode::DATA_DIGITAL_BIZ_CODE_FACE_CHECK_LIVE->value)->toBe('DATA_DIGITAL_BIZ_CODE_FACE_CHECK_LIVE');
+    expect(BizCode::DATA_DIGITAL_BIZ_CODE_OCR->value)->toBe('DATA_DIGITAL_BIZ_CODE_OCR');
+    expect(BizCode::FUTURE_TECH_BIZ_FACE_SDK->value)->toBe('FUTURE_TECH_BIZ_FACE_SDK');
+});
 
-    public function testCases(): void
-    {
-        self::assertSame(
-            [
-                BizCode::DATA_DIGITAL_BIZ_CODE_FACE_VERIFICATION,
-                BizCode::DATA_DIGITAL_BIZ_CODE_FACE_CHECK_LIVE,
-                BizCode::DATA_DIGITAL_BIZ_CODE_OCR,
-                BizCode::FUTURE_TECH_BIZ_FACE_SDK,
-            ],
-            BizCode::cases()
-        );
-    }
+it('keeps declaration order of cases', function () {
+    expect(BizCode::cases())->toBe([
+        BizCode::DATA_DIGITAL_BIZ_CODE_FACE_VERIFICATION,
+        BizCode::DATA_DIGITAL_BIZ_CODE_FACE_CHECK_LIVE,
+        BizCode::DATA_DIGITAL_BIZ_CODE_OCR,
+        BizCode::FUTURE_TECH_BIZ_FACE_SDK,
+    ]);
+});
 
-    public function testTryFrom(): void
-    {
-        self::assertSame(BizCode::DATA_DIGITAL_BIZ_CODE_FACE_VERIFICATION, BizCode::tryFrom('DATA_DIGITAL_BIZ_CODE_FACE_VERIFICATION'));
-        self::assertSame(BizCode::FUTURE_TECH_BIZ_FACE_SDK, BizCode::tryFrom('FUTURE_TECH_BIZ_FACE_SDK'));
-        self::assertNull(BizCode::tryFrom('NOT_EXIST'));
-        self::assertNull(BizCode::tryFrom(''));
-    }
-}
+it('tries from string value', function () {
+    expect(BizCode::tryFrom('DATA_DIGITAL_BIZ_CODE_FACE_VERIFICATION'))->toBe(BizCode::DATA_DIGITAL_BIZ_CODE_FACE_VERIFICATION);
+    expect(BizCode::tryFrom('FUTURE_TECH_BIZ_FACE_SDK'))->toBe(BizCode::FUTURE_TECH_BIZ_FACE_SDK);
+    expect(BizCode::tryFrom('NOT_EXIST'))->toBeNull();
+    expect(BizCode::tryFrom(''))->toBeNull();
+});

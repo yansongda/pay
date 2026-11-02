@@ -2,79 +2,62 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Enum\Wechat;
-
 use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Enum\Wechat\PapayScene;
-use Yansongda\Pay\Tests\TestCase;
 
-class PapaySceneTest extends TestCase
-{
-    public function testValues(): void
-    {
-        self::assertSame('mp', PapayScene::MP->value);
-        self::assertSame('mini', PapayScene::MINI->value);
-        self::assertSame('app', PapayScene::APP->value);
-        self::assertSame('scan', PapayScene::SCAN->value);
-        self::assertSame('h5', PapayScene::H5->value);
-    }
+it('exposes scene values', function () {
+    expect(PapayScene::MP->value)->toBe('mp');
+    expect(PapayScene::MINI->value)->toBe('mini');
+    expect(PapayScene::APP->value)->toBe('app');
+    expect(PapayScene::SCAN->value)->toBe('scan');
+    expect(PapayScene::H5->value)->toBe('h5');
+});
 
-    public function testCases(): void
-    {
-        self::assertSame(
-            [
-                PapayScene::MP,
-                PapayScene::MINI,
-                PapayScene::APP,
-                PapayScene::SCAN,
-                PapayScene::H5,
-            ],
-            PapayScene::cases()
-        );
-    }
+it('keeps declaration order of cases', function () {
+    expect(PapayScene::cases())->toBe([
+        PapayScene::MP,
+        PapayScene::MINI,
+        PapayScene::APP,
+        PapayScene::SCAN,
+        PapayScene::H5,
+    ]);
+});
 
-    public function testTryFrom(): void
-    {
-        self::assertSame(PapayScene::MP, PapayScene::tryFrom('mp'));
-        self::assertSame(PapayScene::SCAN, PapayScene::tryFrom('scan'));
-        self::assertSame(PapayScene::H5, PapayScene::tryFrom('h5'));
-        self::assertNull(PapayScene::tryFrom('foo'));
-        self::assertNull(PapayScene::tryFrom(''));
-    }
+it('tries from string value', function () {
+    expect(PapayScene::tryFrom('mp'))->toBe(PapayScene::MP);
+    expect(PapayScene::tryFrom('scan'))->toBe(PapayScene::SCAN);
+    expect(PapayScene::tryFrom('h5'))->toBe(PapayScene::H5);
+    expect(PapayScene::tryFrom('foo'))->toBeNull();
+    expect(PapayScene::tryFrom(''))->toBeNull();
+});
 
-    public function testFromLooseReturnsNullForUnknown(): void
-    {
-        self::assertNull(PapayScene::fromLoose('foo'));
-        self::assertNull(PapayScene::fromLoose(''));
-        self::assertNull(PapayScene::fromLoose(null));
-    }
+it('returns null for unknown loose input', function () {
+    expect(PapayScene::fromLoose('foo'))->toBeNull();
+    expect(PapayScene::fromLoose(''))->toBeNull();
+    expect(PapayScene::fromLoose(null))->toBeNull();
+});
 
-    public function testFromLooseKnown(): void
-    {
-        self::assertSame(PapayScene::MINI, PapayScene::fromLoose('mini'));
-        self::assertSame(PapayScene::SCAN, PapayScene::fromLoose('scan'));
-    }
+it('builds known loose input', function () {
+    expect(PapayScene::fromLoose('mini'))->toBe(PapayScene::MINI);
+    expect(PapayScene::fromLoose('scan'))->toBe(PapayScene::SCAN);
+});
 
-    public function testFromLooseWithEnumInstance(): void
-    {
-        self::assertSame(PapayScene::H5, PapayScene::fromLoose(PapayScene::H5));
-    }
+it('builds from loose enum instance', function () {
+    expect(PapayScene::fromLoose(PapayScene::H5))->toBe(PapayScene::H5);
+});
 
-    public function testAppType(): void
-    {
-        self::assertSame(AppType::MINI, PapayScene::MINI->appType());
-        self::assertSame(AppType::APP, PapayScene::APP->appType());
-        self::assertSame(AppType::MP, PapayScene::MP->appType());
-        self::assertSame(AppType::MP, PapayScene::SCAN->appType());
-        self::assertSame(AppType::MP, PapayScene::H5->appType());
-    }
+it('maps scene to app type', function () {
+    expect(PapayScene::MINI->appType())->toBe(AppType::MINI);
+    expect(PapayScene::APP->appType())->toBe(AppType::APP);
+    expect(PapayScene::MP->appType())->toBe(AppType::MP);
+    expect(PapayScene::SCAN->appType())->toBe(AppType::MP);
+    expect(PapayScene::H5->appType())->toBe(AppType::MP);
+});
 
-    public function testRequiresInvoke(): void
-    {
-        self::assertTrue(PapayScene::MP->requiresInvoke());
-        self::assertTrue(PapayScene::MINI->requiresInvoke());
-        self::assertTrue(PapayScene::APP->requiresInvoke());
-        self::assertFalse(PapayScene::SCAN->requiresInvoke());
-        self::assertFalse(PapayScene::H5->requiresInvoke());
-    }
-}
+it('declares whether invocation is required', function () {
+    expect(PapayScene::MP->requiresInvoke())->toBeTrue();
+    expect(PapayScene::MINI->requiresInvoke())->toBeTrue();
+    expect(PapayScene::APP->requiresInvoke())->toBeTrue();
+    expect(PapayScene::SCAN->requiresInvoke())->toBeFalse();
+    expect(PapayScene::H5->requiresInvoke())->toBeFalse();
+});

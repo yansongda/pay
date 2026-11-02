@@ -2,58 +2,43 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Enum\Wechat;
-
 use Yansongda\Pay\Enum\Wechat\AppType;
-use Yansongda\Pay\Tests\TestCase;
 
-class AppTypeTest extends TestCase
-{
-    public function testValues(): void
-    {
-        self::assertSame('mp', AppType::MP->value);
-        self::assertSame('mini', AppType::MINI->value);
-        self::assertSame('app', AppType::APP->value);
-    }
+it('exposes app type values', function () {
+    expect(AppType::MP->value)->toBe('mp');
+    expect(AppType::MINI->value)->toBe('mini');
+    expect(AppType::APP->value)->toBe('app');
+});
 
-    public function testCases(): void
-    {
-        self::assertSame(
-            [
-                AppType::MP,
-                AppType::MINI,
-                AppType::APP,
-            ],
-            AppType::cases()
-        );
-    }
+it('keeps declaration order of cases', function () {
+    expect(AppType::cases())->toBe([
+        AppType::MP,
+        AppType::MINI,
+        AppType::APP,
+    ]);
+});
 
-    public function testNil(): void
-    {
-        self::assertSame(AppType::MP, AppType::tryFrom('mp'));
-        self::assertSame(AppType::MINI, AppType::tryFrom('mini'));
-        self::assertSame(AppType::APP, AppType::tryFrom('app'));
-        self::assertNull(AppType::tryFrom('foo'));
-        self::assertNull(AppType::tryFrom(''));
-    }
+it('tries from string value', function () {
+    expect(AppType::tryFrom('mp'))->toBe(AppType::MP);
+    expect(AppType::tryFrom('mini'))->toBe(AppType::MINI);
+    expect(AppType::tryFrom('app'))->toBe(AppType::APP);
+    expect(AppType::tryFrom('foo'))->toBeNull();
+    expect(AppType::tryFrom(''))->toBeNull();
+});
 
-    public function testFromLoose(): void
-    {
-        self::assertSame(AppType::MP, AppType::fromLoose('mp'));
-        self::assertSame(AppType::MINI, AppType::fromLoose('mini'));
-        self::assertSame(AppType::APP, AppType::fromLoose('app'));
-    }
+it('builds from loose input', function () {
+    expect(AppType::fromLoose('mp'))->toBe(AppType::MP);
+    expect(AppType::fromLoose('mini'))->toBe(AppType::MINI);
+    expect(AppType::fromLoose('app'))->toBe(AppType::APP);
+});
 
-    public function testFromLooseUnknownFallsBackToMp(): void
-    {
-        self::assertSame(AppType::MP, AppType::fromLoose('foo'));
-        self::assertSame(AppType::MP, AppType::fromLoose(''));
-        self::assertSame(AppType::MP, AppType::fromLoose(null));
-    }
+it('falls back to mp for unknown loose input', function () {
+    expect(AppType::fromLoose('foo'))->toBe(AppType::MP);
+    expect(AppType::fromLoose(''))->toBe(AppType::MP);
+    expect(AppType::fromLoose(null))->toBe(AppType::MP);
+});
 
-    public function testFromLooseWithEnumInstance(): void
-    {
-        self::assertSame(AppType::MINI, AppType::fromLoose(AppType::MINI));
-        self::assertSame(AppType::MP, AppType::fromLoose(AppType::MP));
-    }
-}
+it('builds from loose enum instance', function () {
+    expect(AppType::fromLoose(AppType::MINI))->toBe(AppType::MINI);
+    expect(AppType::fromLoose(AppType::MP))->toBe(AppType::MP);
+});
