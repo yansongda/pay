@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Wechat;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -23,175 +21,163 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\QueryPlugin as MiniQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryPlugin as NativeQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\QueryShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class QueryShortcutTest extends TestCase
-{
-    protected QueryShortcut $plugin;
+it('default', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        JsapiQueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('app', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'app']))->toEqual([
+        StartPlugin::class,
+        AppQueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->plugin = new QueryShortcut();
-    }
+it('combine', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'combine']))->toEqual([
+        StartPlugin::class,
+        CombineQueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            JsapiQueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
+it('combine params', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['combine_out_trade_no' => '123abc']))->toEqual([
+        StartPlugin::class,
+        CombineQueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testApp()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            AppQueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'app']));
-    }
+it('h5', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'h5']))->toEqual([
+        StartPlugin::class,
+        H5QueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testCombine()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CombineQueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'combine']));
-    }
+it('jsapi', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'jsapi']))->toEqual([
+        StartPlugin::class,
+        JsapiQueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testCombineParams()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CombineQueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['combine_out_trade_no' => '123abc']));
-    }
+it('mini', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'mini']))->toEqual([
+        StartPlugin::class,
+        MiniQueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testH5()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            H5QueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'h5']));
-    }
+it('native', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'native']))->toEqual([
+        StartPlugin::class,
+        NativeQueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testJsapi()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            JsapiQueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'jsapi']));
-    }
+it('refund', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'refund']))->toEqual([
+        StartPlugin::class,
+        JsapiQueryRefundPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testMini()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            MiniQueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'mini']));
-    }
+it('transfer', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'transfer']))->toEqual([
+        StartPlugin::class,
+        QueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
 
-    public function testNative()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            NativeQueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'native']));
-    }
+    expect($plugin->getPlugins(['_action' => 'transfer', 'transfer_bill_no' => '123']))->toEqual([
+        StartPlugin::class,
+        QueryByWxPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testRefund()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            JsapiQueryRefundPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'refund']));
-    }
+it('foo', function () {
+    $plugin = new QueryShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    public function testTransfer()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            QueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'transfer']));
+    $plugin->getPlugins(['_action' => 'foo']);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            QueryByWxPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'transfer', 'transfer_bill_no' => '123']));
-    }
-
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'foo']);
-    }
-}

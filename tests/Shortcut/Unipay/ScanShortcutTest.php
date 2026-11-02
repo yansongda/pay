@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Unipay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -17,76 +15,64 @@ use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\ScanPreOrderPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\ScanShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class ScanShortcutTest extends TestCase
-{
-    protected ScanShortcut $plugin;
+it('default', function () {
+    $plugin = new ScanShortcut();
+    expect($plugin->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        ScanPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('pre auth', function () {
+    $plugin = new ScanShortcut();
+    expect($plugin->getPlugins(['_action' => 'pre_auth']))->toEqual([
+        StartPlugin::class,
+        ScanPreAuthPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->plugin = new ScanShortcut();
-    }
+it('pre order', function () {
+    $plugin = new ScanShortcut();
+    expect($plugin->getPlugins(['_action' => 'pre_order']))->toEqual([
+        StartPlugin::class,
+        ScanPreOrderPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ScanPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
+it('fee', function () {
+    $plugin = new ScanShortcut();
+    expect($plugin->getPlugins(['_action' => 'fee']))->toEqual([
+        StartPlugin::class,
+        ScanFeePlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testPreAuth()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ScanPreAuthPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'pre_auth']));
-    }
+it('foo', function () {
+    $plugin = new ScanShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    public function testPreOrder()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ScanPreOrderPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'pre_order']));
-    }
+    $plugin->getPlugins(['_action' => 'foo']);
+});
 
-    public function testFee()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            ScanFeePlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'fee']));
-    }
-
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'foo']);
-    }
-}

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Wechat;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -15,38 +13,26 @@ use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CreatePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\TransferShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class TransferShortcutTest extends TestCase
-{
-    protected TransferShortcut $plugin;
+it('default', function () {
+    $plugin = new TransferShortcut();
+    expect($plugin->getPlugins(['_action' => 'transfer']))->toEqual([
+        StartPlugin::class,
+        CreatePlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('foo', function () {
+    $plugin = new TransferShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-        $this->plugin = new TransferShortcut();
-    }
+    $plugin->getPlugins(['_action' => 'foo']);
+});
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CreatePlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'transfer']));
-    }
-
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'foo']);
-    }
-}

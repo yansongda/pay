@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Douyin;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -16,76 +14,64 @@ use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryPlugin as RefundQueryPlugin;
 use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Douyin\QueryShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class QueryShortcutTest extends TestCase
-{
-    protected QueryShortcut $plugin;
+it('foo', function () {
+    $plugin = new QueryShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $plugin->getPlugins(['_action' => 'foo']);
+});
 
-        $this->plugin = new QueryShortcut();
-    }
+it('default', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins([]))->toBe([
+        StartPlugin::class,
+        ObtainClientTokenPlugin::class,
+        QueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+it('order', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'order']))->toBe([
+        StartPlugin::class,
+        ObtainClientTokenPlugin::class,
+        QueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->plugin->getPlugins(['_action' => 'foo']);
-    }
+it('cps', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'cps']))->toBe([
+        StartPlugin::class,
+        ObtainClientTokenPlugin::class,
+        QueryCpsPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testDefault()
-    {
-        self::assertSame([
-            StartPlugin::class,
-            ObtainClientTokenPlugin::class,
-            QueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
+it('refund', function () {
+    $plugin = new QueryShortcut();
+    expect($plugin->getPlugins(['_action' => 'refund']))->toBe([
+        StartPlugin::class,
+        ObtainClientTokenPlugin::class,
+        RefundQueryPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    public function testOrder()
-    {
-        self::assertSame([
-            StartPlugin::class,
-            ObtainClientTokenPlugin::class,
-            QueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'order']));
-    }
-
-    public function testCps()
-    {
-        self::assertSame([
-            StartPlugin::class,
-            ObtainClientTokenPlugin::class,
-            QueryCpsPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'cps']));
-    }
-
-    public function testRefund()
-    {
-        self::assertSame([
-            StartPlugin::class,
-            ObtainClientTokenPlugin::class,
-            RefundQueryPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins(['_action' => 'refund']));
-    }
-}

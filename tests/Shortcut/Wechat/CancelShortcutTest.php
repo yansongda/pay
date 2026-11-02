@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Wechat;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -15,38 +13,26 @@ use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CancelPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\CancelShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class CancelShortcutTest extends TestCase
-{
-    protected CancelShortcut $plugin;
+it('default', function () {
+    $plugin = new CancelShortcut();
+    expect($plugin->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        CancelPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('foo', function () {
+    $plugin = new CancelShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-        $this->plugin = new CancelShortcut();
-    }
+    $plugin->getPlugins(['_action' => 'foo']);
+});
 
-    public function testDefault()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            CancelPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
-
-    public function testFoo()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'foo']);
-    }
-}

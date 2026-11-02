@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Wechat;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\AddPayloadBodyPlugin;
 use Yansongda\Artful\Plugin\ParserPlugin;
@@ -35,287 +33,275 @@ use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\CreateWithdrawOrderPlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryBizBalancePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryWithdrawOrderPlugin;
 use Yansongda\Pay\Shortcut\Wechat\VirtualShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class VirtualShortcutTest extends TestCase
-{
-    protected VirtualShortcut $plugin;
+it('default', function () {
+    $plugin = new VirtualShortcut();
+    expect($plugin->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        PayPlugin::class,
+        AddPayloadBodyPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('order query', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'order_query']);
 
-        $this->plugin = new VirtualShortcut();
-    }
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(QueryOrderPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-    public function testDefault(): void
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            PayPlugin::class,
-            AddPayloadBodyPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            ParserPlugin::class,
-        ], $this->plugin->getPlugins([]));
-    }
+it('order refund', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'order_refund']);
 
-    public function testOrderQuery(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'order_query']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(RefundOrderPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(QueryOrderPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('order start download', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'order_start_download']);
 
-    public function testOrderRefund(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'order_refund']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(StartDownloadOrderPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(RefundOrderPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('order query download', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'order_query_download']);
 
-    public function testOrderStartDownload(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'order_start_download']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(QueryDownloadOrderPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(StartDownloadOrderPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('order download bill', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'order_download_bill']);
 
-    public function testOrderQueryDownload(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'order_query_download']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(DownloadBillPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(QueryDownloadOrderPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('order notify provide goods', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'order_notify_provide_goods']);
 
-    public function testOrderDownloadBill(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'order_download_bill']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(NotifyProvideGoodsPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(DownloadBillPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('currency pay', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'currency_pay']);
 
-    public function testOrderNotifyProvideGoods(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'order_notify_provide_goods']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(CurrencyPayPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(NotifyProvideGoodsPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('currency cancel', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'currency_cancel']);
 
-    public function testCurrencyPay(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'currency_pay']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(CancelCurrencyPayPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(CurrencyPayPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('currency query balance', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'currency_query_balance']);
 
-    public function testCurrencyCancel(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'currency_cancel']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(QueryBalancePlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(CancelCurrencyPayPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('currency present', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'currency_present']);
 
-    public function testCurrencyQueryBalance(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'currency_query_balance']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(PresentCurrencyPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(QueryBalancePlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('goods start upload', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'goods_start_upload']);
 
-    public function testCurrencyPresent(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'currency_present']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(StartUploadGoodsPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(PresentCurrencyPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('goods query upload', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'goods_query_upload']);
 
-    public function testGoodsStartUpload(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'goods_start_upload']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(QueryUploadGoodsPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(StartUploadGoodsPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('goods start publish', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'goods_start_publish']);
 
-    public function testGoodsQueryUpload(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'goods_query_upload']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(StartPublishGoodsPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(QueryUploadGoodsPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('goods query publish', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'goods_query_publish']);
 
-    public function testGoodsStartPublish(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'goods_start_publish']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(QueryPublishGoodsPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(StartPublishGoodsPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('withdraw create', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'withdraw_create']);
 
-    public function testGoodsQueryPublish(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'goods_query_publish']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(CreateWithdrawOrderPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(QueryPublishGoodsPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('withdraw query', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'withdraw_query']);
 
-    public function testWithdrawCreate(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'withdraw_create']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(QueryWithdrawOrderPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(CreateWithdrawOrderPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('withdraw query balance', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'withdraw_query_balance']);
 
-    public function testWithdrawQuery(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'withdraw_query']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(QueryBizBalancePlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(QueryWithdrawOrderPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('subscribe send pre payment', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'subscribe_send_pre_payment']);
 
-    public function testWithdrawQueryBalance(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'withdraw_query_balance']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(SendSubscribePrePaymentPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(QueryBizBalancePlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('subscribe submit pay order', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'subscribe_submit_pay_order']);
 
-    public function testSubscribeSendPrePayment(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'subscribe_send_pre_payment']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(SubmitSubscribePayOrderPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(SendSubscribePrePaymentPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('subscribe query contract', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'subscribe_query_contract']);
 
-    public function testSubscribeSubmitPayOrder(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'subscribe_submit_pay_order']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(QuerySubscribeContractPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(SubmitSubscribePayOrderPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('subscribe cancel contract', function () {
+    $plugin = new VirtualShortcut();
+    $plugins = $plugin->getPlugins(['_action' => 'subscribe_cancel_contract']);
 
-    public function testSubscribeQueryContract(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'subscribe_query_contract']);
+    expect($plugins)->toBeArray();
+    expect($plugins[0])->toBe(StartPlugin::class);
+    expect($plugins[1])->toBe(CancelSubscribeContractPlugin::class);
+    expect($plugins[4])->toBe(AddRadarPlugin::class);
+    expect($plugins[5])->toBe(ResponsePlugin::class);
+    expect($plugins[6])->toBe(ParserPlugin::class);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(QuerySubscribeContractPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
+it('invalid action', function () {
+    $plugin = new VirtualShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    public function testSubscribeCancelContract(): void
-    {
-        $plugins = $this->plugin->getPlugins(['_action' => 'subscribe_cancel_contract']);
+    $plugin->getPlugins(['_action' => 'invalid_action']);
+});
 
-        self::assertIsArray($plugins);
-        self::assertSame(StartPlugin::class, $plugins[0]);
-        self::assertSame(CancelSubscribeContractPlugin::class, $plugins[1]);
-        self::assertSame(AddRadarPlugin::class, $plugins[4]);
-        self::assertSame(ResponsePlugin::class, $plugins[5]);
-        self::assertSame(ParserPlugin::class, $plugins[6]);
-    }
-
-    public function testInvalidAction(): void
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-
-        $this->plugin->getPlugins(['_action' => 'invalid_action']);
-    }
-}

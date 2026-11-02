@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Apple;
-
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Artful\Plugin\StartPlugin;
 use Yansongda\Artful\Rocket;
@@ -11,98 +9,83 @@ use Yansongda\Pay\Plugin\Apple\AddRadarPlugin;
 use Yansongda\Pay\Plugin\Apple\Pay\MerchantSessionPlugin;
 use Yansongda\Pay\Plugin\Apple\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Apple\MerchantSessionShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class MerchantSessionShortcutTest extends TestCase
-{
-    protected MerchantSessionShortcut $shortcut;
+it('get plugins', function () {
+    $shortcut = new MerchantSessionShortcut();
+    expect($shortcut->getPlugins([]))->toEqual([
+        StartPlugin::class,
+        MerchantSessionPlugin::class,
+        AddRadarPlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('rocket direct install with add radar plugin', function () {
+    $url = 'https://apple-pay-gateway.apple.com/paymentservices/startSession';
 
-        $this->shortcut = new MerchantSessionShortcut();
-    }
+    $rocket = (new Rocket())->setParams([
+        'validation_url' => $url,
+        'display_name' => 'Yansongda Store',
+        'initiative_context' => 'https://shop.yansongda.cn',
+    ]);
 
-    public function testGetPlugins()
-    {
-        self::assertEquals([
-            StartPlugin::class,
-            MerchantSessionPlugin::class,
-            AddRadarPlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $this->shortcut->getPlugins([]));
-    }
+    $result = (new MerchantSessionPlugin())->assembly(
+        $rocket,
+        fn ($rocket) => (new AddRadarPlugin())->assembly($rocket, fn ($rocket) => $rocket)
+    );
 
-    public function testRocketDirectInstallWithAddRadarPlugin(): void
-    {
-        $url = 'https://apple-pay-gateway.apple.com/paymentservices/startSession';
+    $request = $result->getRadar();
 
-        $rocket = (new Rocket())->setParams([
-            'validation_url' => $url,
-            'display_name' => 'Yansongda Store',
-            'initiative_context' => 'https://shop.yansongda.cn',
-        ]);
+    expect($request->getMethod())->toEqual('POST');
+    expect((string) $request->getUri())->toEqual($url);
+    expect($request->hasHeader('Authorization'))->toBeFalse();
+    expect($request->getHeaderLine('Content-Type'))->toEqual('application/json');
 
-        $result = (new MerchantSessionPlugin())->assembly(
-            $rocket,
-            fn ($rocket) => (new AddRadarPlugin())->assembly($rocket, fn ($rocket) => $rocket)
-        );
+    $body = json_decode((string) $request->getBody(), true);
+    expect($body['merchantIdentifier'])->toEqual('merchant.com.yansongda.pay');
+    expect($body['displayName'])->toEqual('Yansongda Store');
+    expect($body['initiative'])->toEqual('web');
+    expect($body['initiativeContext'])->toEqual('https://shop.yansongda.cn');
+});
+it('merchant session end to end with http mock', function () {
+    $http = \Mockery::mock(\GuzzleHttp\Client::class);
+    $captured = null;
+    $http->shouldReceive('sendRequest')->once()->with(\Mockery::on(function ($request) use (&$captured) {
+        $captured = $request;
 
-        $request = $result->getRadar();
+        return true;
+    }))->andReturn(new \GuzzleHttp\Psr7\Response(200, [], (string) json_encode([
+        'merchantSessionIdentifier' => 'mock-session',
+        'nonce' => 'mock-nonce',
+        'epochTimestamp' => 1,
+        'expiresAt' => 2,
+        'merchantIdentifier' => 'merchant.com.yansongda.pay',
+        'domainName' => 'example.com',
+        'signature' => 'mock-signature',
+    ])));
 
-        self::assertEquals('POST', $request->getMethod());
-        self::assertEquals($url, (string) $request->getUri());
-        self::assertFalse($request->hasHeader('Authorization'));
-        self::assertEquals('application/json', $request->getHeaderLine('Content-Type'));
+    \Yansongda\Pay\Pay::set(\Yansongda\Artful\Contract\HttpClientInterface::class, $http);
 
-        $body = json_decode((string) $request->getBody(), true);
-        self::assertEquals('merchant.com.yansongda.pay', $body['merchantIdentifier']);
-        self::assertEquals('Yansongda Store', $body['displayName']);
-        self::assertEquals('web', $body['initiative']);
-        self::assertEquals('https://shop.yansongda.cn', $body['initiativeContext']);
-    }
-    public function testMerchantSessionEndToEndWithHttpMock(): void
-    {
-        $http = \Mockery::mock(\GuzzleHttp\Client::class);
-        $captured = null;
-        $http->shouldReceive('sendRequest')->once()->with(\Mockery::on(function ($request) use (&$captured) {
-            $captured = $request;
+    $result = \Yansongda\Pay\Pay::apple()->merchantSession([
+        'validation_url' => 'https://apple-pay-gateway-cert.apple.com/paymentSession',
+        'display_name' => '示例商户',
+        'initiative_context' => 'https://example.com',
+    ]);
 
-            return true;
-        }))->andReturn(new \GuzzleHttp\Psr7\Response(200, [], (string) json_encode([
-            'merchantSessionIdentifier' => 'mock-session',
-            'nonce' => 'mock-nonce',
-            'epochTimestamp' => 1,
-            'expiresAt' => 2,
-            'merchantIdentifier' => 'merchant.com.yansongda.pay',
-            'domainName' => 'example.com',
-            'signature' => 'mock-signature',
-        ])));
+    expect((string) $captured->getUri())->toBe('https://apple-pay-gateway-cert.apple.com/paymentSession');
+    expect($captured->getHeaderLine('Authorization'))->toBe('');
+    expect($captured->getHeaderLine('Content-Type'))->toBe('application/json');
 
-        \Yansongda\Pay\Pay::set(\Yansongda\Artful\Contract\HttpClientInterface::class, $http);
+    $body = (array) json_decode((string) $captured->getBody(), true);
+    expect($body['merchantIdentifier'])->toBe('merchant.com.yansongda.pay');
+    expect($body['displayName'])->toBe('示例商户');
+    expect($body['initiative'])->toBe('web');
+    expect($body['initiativeContext'])->toBe('https://example.com');
 
-        $result = \Yansongda\Pay\Pay::apple()->merchantSession([
-            'validation_url' => 'https://apple-pay-gateway-cert.apple.com/paymentSession',
-            'display_name' => '示例商户',
-            'initiative_context' => 'https://example.com',
-        ]);
+    expect($result)->toBeInstanceOf(\Yansongda\Supports\Collection::class);
+    expect($result->get('merchantSessionIdentifier'))->toBe('mock-session');
 
-        self::assertSame('https://apple-pay-gateway-cert.apple.com/paymentSession', (string) $captured->getUri());
-        self::assertSame('', $captured->getHeaderLine('Authorization'));
-        self::assertSame('application/json', $captured->getHeaderLine('Content-Type'));
+    \Mockery::close();
+});
 
-        $body = (array) json_decode((string) $captured->getBody(), true);
-        self::assertSame('merchant.com.yansongda.pay', $body['merchantIdentifier']);
-        self::assertSame('示例商户', $body['displayName']);
-        self::assertSame('web', $body['initiative']);
-        self::assertSame('https://example.com', $body['initiativeContext']);
-
-        self::assertInstanceOf(\Yansongda\Supports\Collection::class, $result);
-        self::assertSame('mock-session', $result->get('merchantSessionIdentifier'));
-
-        \Mockery::close();
-    }
-
-}

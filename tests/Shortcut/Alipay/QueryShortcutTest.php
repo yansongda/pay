@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Shortcut\Alipay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Plugin\ParserPlugin;
 use Yansongda\Pay\Exception\Exception;
@@ -31,328 +29,316 @@ use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\QueryShortcut;
-use Yansongda\Pay\Tests\TestCase;
 
-class QueryShortcutTest extends TestCase
-{
-    protected QueryShortcut $shortcut;
+it('foo param', function () {
+    $shortcut = new QueryShortcut();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $shortcut->getPlugins(['_action' => 'foo']);
+});
 
-        $this->shortcut = new QueryShortcut();
-    }
+it('default', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins([]);
 
-    public function testFooParam()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        WebQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        $this->shortcut->getPlugins(['_action' => 'foo']);
-    }
+it('agreement', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'agreement']);
 
-    public function testDefault()
-    {
-        $result = $this->shortcut->getPlugins([]);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        AgreementQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            WebQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('app', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'app']);
 
-    public function testAgreement()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'agreement']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        AppQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            AgreementQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('authorization', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'authorization']);
 
-    public function testApp()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'app']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        AuthorizationQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            AppQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('face', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'face']);
 
-    public function testAuthorization()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'authorization']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        FaceQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            AuthorizationQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('mini', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'mini']);
 
-    public function testFace()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'face']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        MiniQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            FaceQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('pos', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'pos']);
 
-    public function testMini()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'mini']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        PosQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            MiniQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('scan', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'scan']);
 
-    public function testPos()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'pos']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        ScanQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            PosQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('h5', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'h5']);
 
-    public function testScan()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'scan']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        WapQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            ScanQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('web', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'web']);
 
-    public function testH5()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'h5']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        WebQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            WapQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('transfer', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'transfer']);
 
-    public function testWeb()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'web']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        TransferQueryPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            WebQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('refund', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'refund']);
 
-    public function testTransfer()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'transfer']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        WebQueryRefundPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            TransferQueryPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('refund app', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'refund_app']);
 
-    public function testRefund()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'refund']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        AppQueryRefundPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            WebQueryRefundPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('refund authorization', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'refund_authorization']);
 
-    public function testRefundApp()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'refund_app']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        AuthorizationQueryRefundPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            AppQueryRefundPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('refund mini', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'refund_mini']);
 
-    public function testRefundAuthorization()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'refund_authorization']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        MiniQueryRefundPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            AuthorizationQueryRefundPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('refund pos', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'refund_pos']);
 
-    public function testRefundMini()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'refund_mini']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        PosQueryRefundPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            MiniQueryRefundPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('refund scan', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'refund_scan']);
 
-    public function testRefundPos()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'refund_pos']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        ScanQueryRefundPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            PosQueryRefundPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('refund h5', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'refund_h5']);
 
-    public function testRefundScan()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'refund_scan']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        WapQueryRefundPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            ScanQueryRefundPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
+it('refund web', function () {
+    $shortcut = new QueryShortcut();
+    $result = $shortcut->getPlugins(['_action' => 'refund_web']);
 
-    public function testRefundH5()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'refund_h5']);
+    expect($result)->toEqual([
+        StartPlugin::class,
+        WebQueryRefundPlugin::class,
+        FormatPayloadBizContentPlugin::class,
+        AddPayloadSignaturePlugin::class,
+        AddRadarPlugin::class,
+        VerifySignaturePlugin::class,
+        ResponsePlugin::class,
+        ParserPlugin::class,
+    ]);
+});
 
-        self::assertEquals([
-            StartPlugin::class,
-            WapQueryRefundPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
-
-    public function testRefundWeb()
-    {
-        $result = $this->shortcut->getPlugins(['_action' => 'refund_web']);
-
-        self::assertEquals([
-            StartPlugin::class,
-            WebQueryRefundPlugin::class,
-            FormatPayloadBizContentPlugin::class,
-            AddPayloadSignaturePlugin::class,
-            AddRadarPlugin::class,
-            VerifySignaturePlugin::class,
-            ResponsePlugin::class,
-            ParserPlugin::class,
-        ], $result);
-    }
-}
