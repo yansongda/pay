@@ -2,34 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\Royalty\Relation;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Fund\Royalty\Relation\BindPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class BindPluginTest extends TestCase
-{
-    protected BindPlugin $plugin;
+it('normal', function () {
+    $plugin = new BindPlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new BindPlugin();
-    }
+    $payload = $result->getPayload()->toJson();
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
+    expect($result->getDirection())->not->toEqual(ResponseDirection::class);
+    expect($payload)->toContain('alipay.trade.royalty.relation.bind');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload()->toJson();
-
-        self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.trade.royalty.relation.bind', $payload);
-    }
-}

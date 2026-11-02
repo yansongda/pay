@@ -2,34 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\Transfer\Bill;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\Bill\QueryUrlPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class QueryUrlPluginTest extends TestCase
-{
-    protected QueryUrlPlugin $plugin;
+it('normal', function () {
+    $plugin = new QueryUrlPlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new QueryUrlPlugin();
-    }
+    $payload = $result->getPayload()->toJson();
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
+    expect($result->getDirection())->not->toEqual(ResponseDirection::class);
+    expect($payload)->toContain('alipay.data.dataservice.bill.downloadurl.query');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload()->toJson();
-
-        self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.data.dataservice.bill.downloadurl.query', $payload);
-    }
-}

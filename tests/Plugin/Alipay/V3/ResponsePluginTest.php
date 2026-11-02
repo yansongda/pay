@@ -2,57 +2,43 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V3;
-
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class ResponsePluginTest extends TestCase
-{
-    protected ResponsePlugin $plugin;
+it('2xx pass', function () {
+    $plugin = new ResponsePlugin();
+    foreach ([200, 201, 299] as $statusCode) {
+        $rocket = (new Rocket())->setDestinationOrigin(new Response($statusCode, [], json_encode(['code' => '10000'])));
+        $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->plugin = new ResponsePlugin();
+        expect($result)->toBe($rocket);
     }
+});
 
-    public function test2xxPass(): void
-    {
-        foreach ([200, 201, 299] as $statusCode) {
-            $rocket = (new Rocket())->setDestinationOrigin(new Response($statusCode, [], json_encode(['code' => '10000'])));
-            $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+it('non2xx throws', function () {
+    $plugin = new ResponsePlugin();
+    $rocket = (new Rocket())->setDestinationOrigin(
+        new Response(400, [], json_encode(['code' => 'INVALID_PARAMETER', 'message' => '参数错误', 'links' => 'https://example.com/solution']))
+    );
 
-            self::assertSame($rocket, $result);
-        }
-    }
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
+    $this->expectExceptionMessage('支付宝返回状态码异常: [INVALID_PARAMETER] 参数错误，请检查参数是否错误');
 
-    public function testNon2xxThrows(): void
-    {
-        $rocket = (new Rocket())->setDestinationOrigin(
-            new Response(400, [], json_encode(['code' => 'INVALID_PARAMETER', 'message' => '参数错误', 'links' => 'https://example.com/solution']))
-        );
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-        self::expectExceptionMessage('支付宝返回状态码异常: [INVALID_PARAMETER] 参数错误，请检查参数是否错误');
+it('non2xx without error body throws', function () {
+    $plugin = new ResponsePlugin();
+    $rocket = (new Rocket())->setDestinationOrigin(new Response(500, [], ''));
 
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
+    $this->expectExceptionMessage('支付宝返回状态码异常，请检查参数是否错误');
 
-    public function testNon2xxWithoutErrorBodyThrows(): void
-    {
-        $rocket = (new Rocket())->setDestinationOrigin(new Response(500, [], ''));
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-        self::expectExceptionMessage('支付宝返回状态码异常，请检查参数是否错误');
-
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
-}

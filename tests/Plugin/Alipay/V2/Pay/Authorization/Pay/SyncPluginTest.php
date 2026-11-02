@@ -2,32 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Authorization\Pay;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Pay\SyncPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class SyncPluginTest extends TestCase
-{
-    protected SyncPlugin $plugin;
+it('normal', function () {
+    $plugin = new SyncPlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new SyncPlugin();
-    }
+    expect($result->getDirection())->not->toEqual(ResponseDirection::class);
+    expect($result->getPayload()->toJson())->toContain('alipay.trade.orderinfo.sync');
+});
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.trade.orderinfo.sync', $result->getPayload()->toJson());
-    }
-}

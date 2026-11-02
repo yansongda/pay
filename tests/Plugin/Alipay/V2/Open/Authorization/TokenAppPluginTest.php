@@ -2,40 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Open\Authorization;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Open\Authorization\TokenAppPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class TokenAppPluginTest extends TestCase
-{
-    protected TokenAppPlugin $plugin;
+it('normal', function () {
+    $plugin = new TokenAppPlugin();
+    $params = ['grant_type' => 'authorization_code', 'code' => '123456'];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = (new Rocket())
+        ->setParams($params)
+        ->setPayload(new Collection(['app_auth_token' => 'xxx']));
 
-        $this->plugin = new TokenAppPlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testNormal()
-    {
-        $params = ['grant_type' => 'authorization_code', 'code' => '123456'];
+    $payload = $result->getPayload();
 
-        $rocket = (new Rocket())
-            ->setParams($params)
-            ->setPayload(new Collection(['app_auth_token' => 'xxx']));
+    expect($result->getDirection())->not->toEqual(ResponseDirection::class);
+    expect($payload->get('method'))->toEqual('alipay.open.auth.token.app');
+    expect($payload->get('biz_content'))->toEqual($params);
+    expect($payload->has('app_auth_token'))->toBeFalse();
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertEquals('alipay.open.auth.token.app', $payload->get('method'));
-        self::assertEquals($params, $payload->get('biz_content'));
-        self::assertFalse($payload->has('app_auth_token'));
-    }
-}

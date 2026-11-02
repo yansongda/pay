@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
-
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Rocket;
@@ -11,187 +9,175 @@ use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class StartPluginTest extends TestCase
-{
-    protected StartPlugin $plugin;
+it('normal', function () {
+    $plugin = new StartPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new StartPlugin();
-    }
+    expect($payload->get('app_cert_sn'))->toEqual('e90dd23a37c5c7b616e003970817ff82');
+    expect($payload->get('alipay_root_cert_sn'))->toEqual('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
+it('global bcscale', function () {
+    $plugin = new StartPlugin();
+    bcscale(2);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
 
-        self::assertEquals('e90dd23a37c5c7b616e003970817ff82', $payload->get('app_cert_sn'));
-        self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testGlobalBcscale()
-    {
-        bcscale(2);
+    expect($result->getPayload()->get('alipay_root_cert_sn'))->toEqual('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6');
+});
 
-        $rocket = new Rocket();
-        $rocket->setParams([]);
+it('customized return url', function () {
+    $plugin = new StartPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([
+        '_return_url' => 'https://yansongda.cna',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $result->getPayload()->get('alipay_root_cert_sn'));
-    }
+    expect($result->getPayload()->get('return_url'))->toEqual('https://yansongda.cna');
+});
 
-    public function testCustomizedReturnUrl()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            '_return_url' => 'https://yansongda.cna',
-        ]);
+it('customized notify url', function () {
+    $plugin = new StartPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([
+        '_notify_url' => 'https://yansongda.cna',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('https://yansongda.cna', $result->getPayload()->get('return_url'));
-    }
+    expect($result->getPayload()->get('notify_url'))->toEqual('https://yansongda.cna');
+});
 
-    public function testCustomizedNotifyUrl()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            '_notify_url' => 'https://yansongda.cna',
-        ]);
+it('customized return notify url', function () {
+    $plugin = new StartPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([
+        '_return_url' => 'https://yansongda.cn',
+        '_notify_url' => 'https://yansongda.cn',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('https://yansongda.cna', $result->getPayload()->get('notify_url'));
-    }
+    expect($result->getPayload()->get('return_url'))->toEqual('https://yansongda.cn');
+    expect($result->getPayload()->get('notify_url'))->toEqual('https://yansongda.cn');
+});
 
-    public function testCustomizedReturnNotifyUrl()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            '_return_url' => 'https://yansongda.cn',
-            '_notify_url' => 'https://yansongda.cn',
-        ]);
+it('customized app auth token', function () {
+    $plugin = new StartPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([
+        '_app_auth_token' => 'yansongda.cn',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('https://yansongda.cn', $result->getPayload()->get('return_url'));
-        self::assertEquals('https://yansongda.cn', $result->getPayload()->get('notify_url'));
-    }
+    expect($result->getPayload()->get('app_auth_token'))->toEqual('yansongda.cn');
+});
 
-    public function testCustomizedAppAuthToken()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            '_app_auth_token' => 'yansongda.cn',
-        ]);
+it('missing app public cert path', function () {
+    $plugin = new StartPlugin();
+    $rocket = new Rocket();
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    // 证书路径不存在时，CertManager 解析失败抛出异常
+    /** @var AlipayConfig $alipayConfig */
+    $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+    $alipayConfig->setAppPublicCertPath('/nonexistent/path/cert.crt');
 
-        self::assertEquals('yansongda.cn', $result->getPayload()->get('app_auth_token'));
-    }
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
+    $this->expectExceptionMessage('配置异常: 解析证书失败');
 
-    public function testMissingAppPublicCertPath()
-    {
-        $rocket = new Rocket();
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-        // 证书路径不存在时，CertManager 解析失败抛出异常
-        /** @var AlipayConfig $alipayConfig */
-        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
-        $alipayConfig->setAppPublicCertPath('/nonexistent/path/cert.crt');
+it('wrong app public cert path', function () {
+    $plugin = new StartPlugin();
+    $rocket = new Rocket();
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
-        self::expectExceptionMessage('配置异常: 解析证书失败');
+    /** @var AlipayConfig $alipayConfig */
+    $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+    $alipayConfig->setAppPublicCertPath(__DIR__.'/../../Cert/foo');
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
+    $this->expectExceptionMessage('配置异常: 解析证书失败');
 
-    public function testWrongAppPublicCertPath()
-    {
-        $rocket = new Rocket();
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-        /** @var AlipayConfig $alipayConfig */
-        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
-        $alipayConfig->setAppPublicCertPath(__DIR__.'/../../Cert/foo');
+it('missing alipay root path', function () {
+    $plugin = new StartPlugin();
+    $rocket = new Rocket();
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
-        self::expectExceptionMessage('配置异常: 解析证书失败');
+    /** @var AlipayConfig $alipayConfig */
+    $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+    $alipayConfig->setAlipayRootCertPath('');
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
+    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [alipay_root_cert_path]');
 
-    public function testMissingAlipayRootPath()
-    {
-        $rocket = new Rocket();
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-        /** @var AlipayConfig $alipayConfig */
-        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
-        $alipayConfig->setAlipayRootCertPath('');
+it('wrong alipay root path', function () {
+    $plugin = new StartPlugin();
+    $rocket = new Rocket();
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-        self::expectExceptionMessage('配置异常: 缺少支付宝配置 -- [alipay_root_cert_path]');
+    /** @var AlipayConfig $alipayConfig */
+    $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+    $alipayConfig->setAlipayRootCertPath(__DIR__.'/../../../Cert/foo');
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
+    $this->expectExceptionMessage('配置异常: 解析 `alipay_root_cert` 失败');
 
-    public function testWrongAlipayRootPath()
-    {
-        $rocket = new Rocket();
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-        /** @var AlipayConfig $alipayConfig */
-        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
-        $alipayConfig->setAlipayRootCertPath(__DIR__.'/../../../Cert/foo');
+it('app cert sn cached', function () {
+    $plugin = new StartPlugin();
+    $result = $plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
-        self::expectExceptionMessage('配置异常: 解析 `alipay_root_cert` 失败');
+    expect($payload->get('app_cert_sn'))->toEqual('e90dd23a37c5c7b616e003970817ff82');
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    // CertManager 内部按路径缓存，相同路径再次调用返回相同 SN
+    $result = $plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-    public function testAppCertSnCached()
-    {
-        $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    expect($payload->get('app_cert_sn'))->toEqual('e90dd23a37c5c7b616e003970817ff82');
+});
 
-        self::assertEquals('e90dd23a37c5c7b616e003970817ff82', $payload->get('app_cert_sn'));
+it('alipay root cert sn cached', function () {
+    $plugin = new StartPlugin();
+    $result = $plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        // CertManager 内部按路径缓存，相同路径再次调用返回相同 SN
-        $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    expect($payload->get('alipay_root_cert_sn'))->toEqual('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6');
 
-        self::assertEquals('e90dd23a37c5c7b616e003970817ff82', $payload->get('app_cert_sn'));
-    }
+    // CertManager 内部按路径缓存，相同路径再次调用返回相同 SN
+    $result = $plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-    public function testAlipayRootCertSnCached()
-    {
-        $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    expect($payload->get('alipay_root_cert_sn'))->toEqual('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6');
+});
 
-        self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
-
-        // CertManager 内部按路径缓存，相同路径再次调用返回相同 SN
-        $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
-
-        self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
-    }
-
-    public function testAlipayRootCertSnString()
-    {
-        /** @var AlipayConfig $alipayConfig */
-        $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
-        $alipayConfig->setAlipayRootCertPath('-----BEGIN CERTIFICATE-----
+it('alipay root cert sn string', function () {
+    $plugin = new StartPlugin();
+    /** @var AlipayConfig $alipayConfig */
+    $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
+    $alipayConfig->setAlipayRootCertPath('-----BEGIN CERTIFICATE-----
 MIIBszCCAVegAwIBAgIIaeL+wBcKxnswDAYIKoEcz1UBg3UFADAuMQswCQYDVQQG
 EwJDTjEOMAwGA1UECgwFTlJDQUMxDzANBgNVBAMMBlJPT1RDQTAeFw0xMjA3MTQw
 MzExNTlaFw00MjA3MDcwMzExNTlaMC4xCzAJBgNVBAYTAkNOMQ4wDAYDVQQKDAVO
@@ -280,9 +266,9 @@ DJN3ftSFvNMYwRuILKuqUYSHc2GPYiHVflDh5nDymCMOQFcFG3WsEuB+EYQPFgIU
 Yf4Zr0fJsGuv
 -----END CERTIFICATE-----');
 
-        $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertEquals('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6', $payload->get('alipay_root_cert_sn'));
-    }
-}
+    expect($payload->get('alipay_root_cert_sn'))->toEqual('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6');
+});
+
