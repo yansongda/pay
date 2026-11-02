@@ -2,54 +2,40 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Open;
-
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\ResponseHtmlPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class ResponseHtmlPluginTest extends TestCase
-{
-    protected ResponseHtmlPlugin $plugin;
+it('html', function () {
+    $plugin = new ResponseHtmlPlugin();
+    $rocket = new Rocket();
+    $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))
+        ->setPayload(new Collection(['name' => 'yansongda']));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new ResponseHtmlPlugin();
-    }
+    $contents = (string) $result->getDestination()->getBody();
 
-    public function testHtml()
-    {
-        $rocket = new Rocket();
-        $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))
-            ->setPayload(new Collection(['name' => 'yansongda']));
+    expect($result->getDestination())->toBeInstanceOf(ResponseInterface::class);
+    expect($contents)->toContain('pay_form');
+    expect($contents)->toContain('yansongda');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+it('payload underline', function () {
+    $plugin = new ResponseHtmlPlugin();
+    $rocket = new Rocket();
+    $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))
+        ->setPayload(new Collection(['name' => 'yansongda', '_age' => 'aaaa']));
 
-        $contents = (string) $result->getDestination()->getBody();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
-        self::assertStringContainsString('pay_form', $contents);
-        self::assertStringContainsString('yansongda', $contents);
-    }
+    $contents = (string) $result->getDestination()->getBody();
 
-    public function testPayloadUnderline()
-    {
-        $rocket = new Rocket();
-        $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))
-            ->setPayload(new Collection(['name' => 'yansongda', '_age' => 'aaaa']));
+    expect($result->getDestination())->toBeInstanceOf(ResponseInterface::class);
+    expect($contents)->toContain('pay_form');
+    expect($contents)->toContain('yansongda');
+    expect($contents)->not->toContain('_age');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $contents = (string) $result->getDestination()->getBody();
-
-        self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
-        self::assertStringContainsString('pay_form', $contents);
-        self::assertStringContainsString('yansongda', $contents);
-        self::assertStringNotContainsString('_age', $contents);
-    }
-}

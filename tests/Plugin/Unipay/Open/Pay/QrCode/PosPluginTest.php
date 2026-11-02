@@ -2,81 +2,67 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Open\Pay\QrCode;
-
 use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\PosPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class PosPluginTest extends TestCase
-{
-    protected PosPlugin $plugin;
+it('normal params', function () {
+    $plugin = new PosPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload([
+        'accessType' => '1',
+        'bizType' => '2',
+        'txnType' => '3',
+        'txnSubType' => '4',
+        'channelType' => '5',
+    ]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new PosPlugin();
-    }
+    $payload = $result->getPayload();
 
-    public function testNormalParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload([
-            'accessType' => '1',
-            'bizType' => '2',
-            'txnType' => '3',
-            'txnSubType' => '4',
-            'channelType' => '5',
-        ]);
+    expect($result->getPacker())->toEqual(QueryPacker::class);
+    expect($payload->all())->toEqual([
+        '_url' => '/gateway/api/backTransReq.do',
+        'encoding' => 'utf-8',
+        'signature' => '',
+        'bizType' => '2',
+        'accessType' => '1',
+        'currencyCode' => '156',
+        'merId' => '777290058167151',
+        'channelType' => '5',
+        'signMethod' => '01',
+        'txnType' => '3',
+        'txnSubType' => '4',
+        'backUrl' => 'https://pay.yansongda.cn',
+        'version' => '5.1.0',
+    ]);
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+it('normal', function () {
+    $plugin = new PosPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
 
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals(QueryPacker::class, $result->getPacker());
-        self::assertEquals([
-            '_url' => '/gateway/api/backTransReq.do',
-            'encoding' => 'utf-8',
-            'signature' => '',
-            'bizType' => '2',
-            'accessType' => '1',
-            'currencyCode' => '156',
-            'merId' => '777290058167151',
-            'channelType' => '5',
-            'signMethod' => '01',
-            'txnType' => '3',
-            'txnSubType' => '4',
-            'backUrl' => 'https://pay.yansongda.cn',
-            'version' => '5.1.0',
-        ], $payload->all());
-    }
+    $payload = $result->getPayload();
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
+    expect($result->getPacker())->toEqual(QueryPacker::class);
+    expect($payload->all())->toEqual([
+        '_url' => '/gateway/api/backTransReq.do',
+        'encoding' => 'utf-8',
+        'signature' => '',
+        'bizType' => '000000',
+        'accessType' => '0',
+        'currencyCode' => '156',
+        'merId' => '777290058167151',
+        'channelType' => '08',
+        'signMethod' => '01',
+        'txnType' => '01',
+        'txnSubType' => '06',
+        'backUrl' => 'https://pay.yansongda.cn',
+        'version' => '5.1.0',
+    ]);
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertEquals(QueryPacker::class, $result->getPacker());
-        self::assertEquals([
-            '_url' => '/gateway/api/backTransReq.do',
-            'encoding' => 'utf-8',
-            'signature' => '',
-            'bizType' => '000000',
-            'accessType' => '0',
-            'currencyCode' => '156',
-            'merId' => '777290058167151',
-            'channelType' => '08',
-            'signMethod' => '01',
-            'txnType' => '01',
-            'txnSubType' => '06',
-            'backUrl' => 'https://pay.yansongda.cn',
-            'version' => '5.1.0',
-        ], $payload->all());
-    }
-}

@@ -2,58 +2,44 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra;
-
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class VerifySignaturePluginTest extends TestCase
-{
-    protected VerifySignaturePlugin $plugin;
+it('should not do request', function () {
+    $plugin = new VerifySignaturePlugin();
+    $rocket = new Rocket();
+    $rocket->setDirection(NoHttpRequestDirection::class);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new VerifySignaturePlugin();
-    }
+    expect($result)->toBe($rocket);
+});
 
-    public function testShouldNotDoRequest()
-    {
-        $rocket = new Rocket();
-        $rocket->setDirection(NoHttpRequestDirection::class);
+it('normal', function () {
+    $plugin = new VerifySignaturePlugin();
+    $response = [
+        'charset' => 'UTF-8',
+        'code' => '9999999',
+        'err_code' => 'NOAUTH',
+        'err_msg' => '此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。',
+        'mch_id' => 'QRA29045311KKR1',
+        'need_query' => 'N',
+        'nonce_str' => 'UhxOr4kzerPGku9wCaVQyfd1zisoAnAm',
+        'result_code' => '1',
+        'sign' => '4B9B2AA73A05CBC32CFDCB4456E12EBA',
+        'sign_type' => 'MD5',
+        'status' => '0',
+        'transaction_id' => '95516000379952690603566602920171',
+        'version' => '2.0',
+    ];
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'qra'])->setDestination(new Collection($response));
 
-        self::assertSame($rocket, $result);
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testNormal()
-    {
-        $response = [
-            'charset' => 'UTF-8',
-            'code' => '9999999',
-            'err_code' => 'NOAUTH',
-            'err_msg' => '此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。',
-            'mch_id' => 'QRA29045311KKR1',
-            'need_query' => 'N',
-            'nonce_str' => 'UhxOr4kzerPGku9wCaVQyfd1zisoAnAm',
-            'result_code' => '1',
-            'sign' => '4B9B2AA73A05CBC32CFDCB4456E12EBA',
-            'sign_type' => 'MD5',
-            'status' => '0',
-            'transaction_id' => '95516000379952690603566602920171',
-            'version' => '2.0',
-        ];
+    expect($result->getDestination()->toArray())->toEqualCanonicalizing($response);
+});
 
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'qra'])->setDestination(new Collection($response));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEqualsCanonicalizing($response, $result->getDestination()->toArray());
-    }
-}

@@ -2,63 +2,49 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Open;
-
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class VerifySignaturePluginTest extends TestCase
-{
-    protected VerifySignaturePlugin $plugin;
+it('should not do request', function () {
+    $plugin = new VerifySignaturePlugin();
+    $rocket = new Rocket();
+    $rocket->setDirection(NoHttpRequestDirection::class);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new VerifySignaturePlugin();
-    }
+    expect($result)->toBe($rocket);
+});
 
-    public function testShouldNotDoRequest()
-    {
-        $rocket = new Rocket();
-        $rocket->setDirection(NoHttpRequestDirection::class);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertSame($rocket, $result);
-    }
-
-    public function testNormal()
-    {
-        $response = Collection::wrap([
-            'accNo' => 'dZRvehtDtCcBPbPBVJk+ezkyeXkF07UnbKwr8/012R5XSsDLE4RqpHSLis7WCItKIf6SYUcXCLHYpV9deIfnJfziDGpUdQXnlPfejrw5pKglzjKI/pRYg0ApNomryVBIoUIdTwlpELh048ITEojRgJwzaazWdLaB5iZPeN22E2KP7JkfwsYHEclVpLY4tYEc35IjMpWCs0i8U5KY4qAJ3zXpCFIur4x+9z4gyK89Mwf+csowScvfDbFBsqTpClQlNRJ6lLWOrISNnlCdc1ONK4QVhabDTTWsemM7PSuya2e3imeZFfRYDmSv6W1eMIs0gbRo8BxOr3suUhb2ukPL7w==',
-            'accessType' => '0',
-            'bizType' => '000000',
-            'currencyCode' => '156',
-            'encoding' => 'utf-8',
-            'issuerIdentifyMode' => '0',
-            'merId' => '777290058167151',
-            'orderId' => 'pay20220911041647',
-            'origRespCode' => '00',
-            'origRespMsg' => '成功[0000000]',
-            'queryId' => '512209110416475616528',
-            'respCode' => '00',
-            'respMsg' => '成功[0000000]',
-            'settleAmt' => '1',
-            'settleCurrencyCode' => '156',
-            'settleDate' => '0911',
-            'signMethod' => '01',
-            'traceNo' => '561652',
-            'traceTime' => '0911041647',
-            'txnAmt' => '1',
-            'txnSubType' => '01',
-            'txnTime' => '20220911041647',
-            'txnType' => '01',
-            'version' => '5.1.0',
-            'signPubKeyCert' => "-----BEGIN CERTIFICATE-----\r
+it('normal', function () {
+    $plugin = new VerifySignaturePlugin();
+    $response = Collection::wrap([
+        'accNo' => 'dZRvehtDtCcBPbPBVJk+ezkyeXkF07UnbKwr8/012R5XSsDLE4RqpHSLis7WCItKIf6SYUcXCLHYpV9deIfnJfziDGpUdQXnlPfejrw5pKglzjKI/pRYg0ApNomryVBIoUIdTwlpELh048ITEojRgJwzaazWdLaB5iZPeN22E2KP7JkfwsYHEclVpLY4tYEc35IjMpWCs0i8U5KY4qAJ3zXpCFIur4x+9z4gyK89Mwf+csowScvfDbFBsqTpClQlNRJ6lLWOrISNnlCdc1ONK4QVhabDTTWsemM7PSuya2e3imeZFfRYDmSv6W1eMIs0gbRo8BxOr3suUhb2ukPL7w==',
+        'accessType' => '0',
+        'bizType' => '000000',
+        'currencyCode' => '156',
+        'encoding' => 'utf-8',
+        'issuerIdentifyMode' => '0',
+        'merId' => '777290058167151',
+        'orderId' => 'pay20220911041647',
+        'origRespCode' => '00',
+        'origRespMsg' => '成功[0000000]',
+        'queryId' => '512209110416475616528',
+        'respCode' => '00',
+        'respMsg' => '成功[0000000]',
+        'settleAmt' => '1',
+        'settleCurrencyCode' => '156',
+        'settleDate' => '0911',
+        'signMethod' => '01',
+        'traceNo' => '561652',
+        'traceTime' => '0911041647',
+        'txnAmt' => '1',
+        'txnSubType' => '01',
+        'txnTime' => '20220911041647',
+        'txnType' => '01',
+        'version' => '5.1.0',
+        'signPubKeyCert' => "-----BEGIN CERTIFICATE-----\r
 MIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r
 Q04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r
 cml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMjAwNzMxMDExOTE2WhcN\r
@@ -84,16 +70,16 @@ vzOwPKd8R7iGFotuF4/8GGhBKR4k46EYnKCodyIhNpPdQfpaN5AKeS7xeLSbFvPJ\r
 HYrtBsI48jUK/WKtWBJWhFH+Gty+GWX0e5n2QHXHW6qH62M0lDo7OYeyBvG1mh9u\r
 Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 -----END CERTIFICATE-----",
-            'signature' => 'b59zh7aztBFNDNmCBOR4189VeG3Vypvuf7H3izqA4etA0AtsjtzV7RXigEFlNXaIHSTSkbAUfPXevY3nX18umwQSFsSphF5C+DiMzBmEJNo9vNiX1kpaeQPlXQfXTDQqmDjdQ4lyeNw/aDx6MHww2D8wpkUem+50cyWOeO1/brHDxwt8N/R2LMRC8QTFIg48N+9UZu6QDIUybQYBAoVS6F0emMxFTpAhVi85RVqIDofStiGhHZw7UocW0hw96+JSExyhc6WXEvmLW41DI3PqRxVu+HacjZqeU+siH7V9pdTPV7Yi3ATznzRhmufvN7r1LJmf/4GkGI1ayM3WLubZjg==',
-        ]);
+        'signature' => 'b59zh7aztBFNDNmCBOR4189VeG3Vypvuf7H3izqA4etA0AtsjtzV7RXigEFlNXaIHSTSkbAUfPXevY3nX18umwQSFsSphF5C+DiMzBmEJNo9vNiX1kpaeQPlXQfXTDQqmDjdQ4lyeNw/aDx6MHww2D8wpkUem+50cyWOeO1/brHDxwt8N/R2LMRC8QTFIg48N+9UZu6QDIUybQYBAoVS6F0emMxFTpAhVi85RVqIDofStiGhHZw7UocW0hw96+JSExyhc6WXEvmLW41DI3PqRxVu+HacjZqeU+siH7V9pdTPV7Yi3ATznzRhmufvN7r1LJmf/4GkGI1ayM3WLubZjg==',
+    ]);
 
-        $rocket = new Rocket();
-        $rocket->setDestination($response);
+    $rocket = new Rocket();
+    $rocket->setDestination($response);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        unset($response['signature']);
+    unset($response['signature']);
 
-        self::assertEqualsCanonicalizing($response->toArray(), $result->getDestination()->toArray());
-    }
-}
+    expect($result->getDestination()->toArray())->toEqualCanonicalizing($response->toArray());
+});
+

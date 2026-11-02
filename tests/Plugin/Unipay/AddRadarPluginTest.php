@@ -2,39 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\AddRadarPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddRadarPluginTest extends TestCase
-{
-    protected AddRadarPlugin $plugin;
+it('normal', function () {
+    $plugin = new AddRadarPlugin();
+    $params = [];
+    $payload = new Collection([
+        '_url' => 'https://pay.yansongda.cn',
+        '_body' => '123',
+    ]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = (new Rocket())->setParams($params)->setPayload($payload);
 
-        $this->plugin = new AddRadarPlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $radar = $result->getRadar();
 
-    public function testNormal()
-    {
-        $params = [];
-        $payload = new Collection([
-            '_url' => 'https://pay.yansongda.cn',
-            '_body' => '123',
-        ]);
+    expect((string) $radar->getBody())->toEqual('123');
+    expect($radar->getMethod())->toEqual('POST');
+    expect((string) $radar->getUri())->toEqual('https://pay.yansongda.cn');
+});
 
-        $rocket = (new Rocket())->setParams($params)->setPayload($payload);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
-
-        self::assertEquals('123', (string) $radar->getBody());
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals('https://pay.yansongda.cn', (string) $radar->getUri());
-    }
-}

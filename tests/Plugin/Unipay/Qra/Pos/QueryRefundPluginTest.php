@@ -2,40 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra\Pos;
-
 use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Qra\Pos\QueryRefundPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Str;
 
-class QueryRefundPluginTest extends TestCase
-{
-    protected QueryRefundPlugin $plugin;
+it('normal', function () {
+    $plugin = new QueryRefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'qra']);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new QueryRefundPlugin();
-    }
+    $payload = $result->getPayload();
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'qra']);
+    expect($result->getPacker())->toEqual(XmlPacker::class);
+    expect($payload->get('_url'))->toEqual('https://qra.95516.com/pay/gateway');
+    expect($payload->get('service'))->toEqual('unified.trade.refundquery');
+    expect($payload->get('charset'))->toEqual('UTF-8');
+    expect($payload->get('sign_type'))->toEqual('MD5');
+    expect($payload->get('mch_id'))->toEqual('QRA29045311KKR1');
+    expect(Str::length($payload->get('nonce_str')))->toEqual(32);
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertEquals(XmlPacker::class, $result->getPacker());
-        self::assertEquals('https://qra.95516.com/pay/gateway', $payload->get('_url'));
-        self::assertEquals('unified.trade.refundquery', $payload->get('service'));
-        self::assertEquals('UTF-8', $payload->get('charset'));
-        self::assertEquals('MD5', $payload->get('sign_type'));
-        self::assertEquals('QRA29045311KKR1', $payload->get('mch_id'));
-        self::assertEquals(32, Str::length($payload->get('nonce_str')));
-    }
-}
