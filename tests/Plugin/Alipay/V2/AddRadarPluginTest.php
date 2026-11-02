@@ -2,65 +2,51 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddRadarPluginTest extends TestCase
-{
-    protected AddRadarPlugin $plugin;
+it('radar post normal', function () {
+    $plugin = new AddRadarPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection(['name' => 'yansongda']));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new AddRadarPlugin();
-    }
+    expect((string) $result->getRadar()->getUri())->toEqual('https://openapi.alipay.com/gateway.do?charset=utf-8');
+    expect((string) $result->getRadar()->getBody())->toContain('name=yansongda');
+    expect($result->getRadar()->getMethod())->toEqual('POST');
+});
 
-    public function testRadarPostNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection(['name' => 'yansongda']));
+it('radar get normal', function () {
+    $plugin = new AddRadarPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_method' => 'get'])->setPayload(new Collection(['name' => 'yansongda']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('https://openapi.alipay.com/gateway.do?charset=utf-8', (string) $result->getRadar()->getUri());
-        self::assertStringContainsString('name=yansongda', (string) $result->getRadar()->getBody());
-        self::assertEquals('POST', $result->getRadar()->getMethod());
-    }
+    expect((string) $result->getRadar()->getUri())->toEqual('https://openapi.alipay.com/gateway.do?charset=utf-8');
+    expect($result->getRadar()->getMethod())->toEqual('GET');
+});
 
-    public function testRadarGetNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_method' => 'get'])->setPayload(new Collection(['name' => 'yansongda']));
+it('radar headers', function () {
+    $plugin = new AddRadarPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection(['name' => 'yansongda']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('https://openapi.alipay.com/gateway.do?charset=utf-8', (string) $result->getRadar()->getUri());
-        self::assertEquals('GET', $result->getRadar()->getMethod());
-    }
+    expect($result->getRadar()->getHeaderLine('Content-Type'))->toEqual('application/x-www-form-urlencoded');
+    expect($result->getRadar()->getHeaderLine('User-Agent'))->toEqual('yansongda/pay-v3');
+});
 
-    public function testRadarHeaders()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection(['name' => 'yansongda']));
+it('radar multipart', function () {
+    $plugin = new AddRadarPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_multipart' => [['name' => 'yansongda', 'contents' => 'yansongda']]])->setPayload(new Collection(['name' => 'yansongda']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('application/x-www-form-urlencoded', $result->getRadar()->getHeaderLine('Content-Type'));
-        self::assertEquals('yansongda/pay-v3', $result->getRadar()->getHeaderLine('User-Agent'));
-    }
+    expect($result->getRadar()->getHeaderLine('Content-Type'))->toBeEmpty();
+});
 
-    public function testRadarMultipart()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_multipart' => [['name' => 'yansongda', 'contents' => 'yansongda']]])->setPayload(new Collection(['name' => 'yansongda']));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEmpty($result->getRadar()->getHeaderLine('Content-Type'));
-    }
-}

@@ -2,33 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Member\FaceVerification;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Member\FaceVerification\H5InitPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class H5InitPluginTest extends TestCase
-{
-    protected H5InitPlugin $plugin;
+it('normal', function () {
+    $plugin = new H5InitPlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new H5InitPlugin();
-    }
+    expect($result->getDirection())->not->toEqual(ResponseDirection::class);
+    expect($result->getPayload()->toJson())->toContain('datadigital.fincloud.generalsaas.face.certify.initialize');
+    expect($result->getPayload()->toJson())->toContain('FUTURE_TECH_BIZ_FACE_SDK');
+});
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('datadigital.fincloud.generalsaas.face.certify.initialize', $result->getPayload()->toJson());
-        self::assertStringContainsString('FUTURE_TECH_BIZ_FACE_SDK', $result->getPayload()->toJson());
-    }
-}

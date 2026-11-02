@@ -2,64 +2,50 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
-
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class ResponseHtmlPluginTest extends TestCase
-{
-    private ResponseHtmlPlugin $plugin;
+it('redirect', function () {
+    $plugin = new ResponseHtmlPlugin();
+    $rocket = new Rocket();
+    $rocket->setRadar(new Request('GET', 'https://yansongda.cn'))
+        ->setPayload(new Collection(['name' => 'yansongda']));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new ResponseHtmlPlugin();
-    }
+    expect($result->getDestination())->toBeInstanceOf(ResponseInterface::class);
+    expect($result->getDestination()->getHeaders())->toHaveKey('Location');
+    expect($result->getDestination()->getHeaderLine('Location'))->toEqual('https://yansongda.cn?name=yansongda');
+});
 
-    public function testRedirect()
-    {
-        $rocket = new Rocket();
-        $rocket->setRadar(new Request('GET', 'https://yansongda.cn'))
-            ->setPayload(new Collection(['name' => 'yansongda']));
+it('redirect include mark', function () {
+    $plugin = new ResponseHtmlPlugin();
+    $rocket = new Rocket();
+    $rocket->setRadar(new Request('GET', 'https://yansongda.cn?charset=utf8'))
+        ->setPayload(new Collection(['name' => 'yansongda']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
-        self::assertArrayHasKey('Location', $result->getDestination()->getHeaders());
-        self::assertEquals('https://yansongda.cn?name=yansongda', $result->getDestination()->getHeaderLine('Location'));
-    }
+    expect($result->getDestination())->toBeInstanceOf(ResponseInterface::class);
+    expect($result->getDestination()->getHeaders())->toHaveKey('Location');
+    expect($result->getDestination()->getHeaderLine('Location'))->toEqual('https://yansongda.cn?charset=utf8&name=yansongda');
+});
 
-    public function testRedirectIncludeMark()
-    {
-        $rocket = new Rocket();
-        $rocket->setRadar(new Request('GET', 'https://yansongda.cn?charset=utf8'))
-            ->setPayload(new Collection(['name' => 'yansongda']));
+it('html', function () {
+    $plugin = new ResponseHtmlPlugin();
+    $rocket = new Rocket();
+    $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))
+        ->setPayload(new Collection(['name' => 'yansongda']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
-        self::assertArrayHasKey('Location', $result->getDestination()->getHeaders());
-        self::assertEquals('https://yansongda.cn?charset=utf8&name=yansongda', $result->getDestination()->getHeaderLine('Location'));
-    }
+    $contents = (string) $result->getDestination()->getBody();
 
-    public function testHtml()
-    {
-        $rocket = new Rocket();
-        $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))
-            ->setPayload(new Collection(['name' => 'yansongda']));
+    expect($result->getDestination())->toBeInstanceOf(ResponseInterface::class);
+    expect($contents)->toContain('alipay_submit');
+    expect($contents)->toContain('yansongda');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $contents = (string) $result->getDestination()->getBody();
-
-        self::assertInstanceOf(ResponseInterface::class, $result->getDestination());
-        self::assertStringContainsString('alipay_submit', $contents);
-        self::assertStringContainsString('yansongda', $contents);
-    }
-}

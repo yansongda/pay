@@ -2,34 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\Transfer;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Fund\Transfer\QueryReceiptPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class QueryReceiptPluginTest extends TestCase
-{
-    protected QueryReceiptPlugin $plugin;
+it('normal', function () {
+    $plugin = new QueryReceiptPlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new QueryReceiptPlugin();
-    }
+    $payload = $result->getPayload()->toJson();
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
+    expect($result->getDirection())->not->toEqual(ResponseDirection::class);
+    expect($payload)->toContain('alipay.data.bill.ereceipt.query');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload()->toJson();
-
-        self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.data.bill.ereceipt.query', $payload);
-    }
-}

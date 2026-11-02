@@ -2,32 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Agreement\Pay;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Agreement\Pay\CancelPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class CancelPluginTest extends TestCase
-{
-    protected CancelPlugin $plugin;
+it('normal', function () {
+    $plugin = new CancelPlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new CancelPlugin();
-    }
+    expect($result->getDirection())->not->toEqual(ResponseDirection::class);
+    expect($result->getPayload()->toJson())->toContain('alipay.trade.cancel');
+});
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.trade.cancel', $result->getPayload()->toJson());
-    }
-}

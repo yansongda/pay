@@ -2,33 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Marketing\Redpack;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Marketing\Redpack\WebPayPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class WebPayPluginTest extends TestCase
-{
-    protected WebPayPlugin $plugin;
+it('normal', function () {
+    $plugin = new WebPayPlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new WebPayPlugin();
-    }
+    expect($result->getDirection())->toEqual(ResponseDirection::class);
+    expect($result->getPayload()->toJson())->toContain('alipay.fund.trans.page.pay');
+    expect($result->getPayload()->toJson())->toContain('STD_APP_TRANSFER');
+});
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.fund.trans.page.pay', $result->getPayload()->toJson());
-        self::assertStringContainsString('STD_APP_TRANSFER', $result->getPayload()->toJson());
-    }
-}

@@ -2,149 +2,129 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
-
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class ResponsePluginTest extends TestCase
-{
-    private ResponsePlugin $plugin;
+it('normal', function () {
+    $plugin = new ResponsePlugin();
+    $destination = [
+        'alipay_trade_query_response' => [
+            'code' => '10000',
+            'msg' => 'Success',
+            'buyer_logon_id' => 'ghd***@sandbox.com',
+            'buyer_pay_amount' => '0.00',
+            'buyer_user_id' => '2088102174698127',
+            'buyer_user_type' => 'PRIVATE',
+            'invoice_amount' => '0.00',
+            'out_trade_no' => 'yansongda-1622986519',
+            'point_amount' => '0.00',
+            'receipt_amount' => '0.00',
+            'send_pay_date' => '2021-06-06 21:35:40',
+            'total_amount' => '0.01',
+            'trade_no' => '2021060622001498120501382075',
+            'trade_status' => 'TRADE_SUCCESS',
+        ],
+        'sign' => '123',
+    ];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = (new Rocket())
+        ->mergePayload(['method' => 'alipay.trade.query'])
+        ->setDestination(new Collection($destination));
 
-        $this->plugin = new ResponsePlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
-    public function testNormal()
-    {
-        $destination = [
-            'alipay_trade_query_response' => [
-                'code' => '10000',
-                'msg' => 'Success',
-                'buyer_logon_id' => 'ghd***@sandbox.com',
-                'buyer_pay_amount' => '0.00',
-                'buyer_user_id' => '2088102174698127',
-                'buyer_user_type' => 'PRIVATE',
-                'invoice_amount' => '0.00',
-                'out_trade_no' => 'yansongda-1622986519',
-                'point_amount' => '0.00',
-                'receipt_amount' => '0.00',
-                'send_pay_date' => '2021-06-06 21:35:40',
-                'total_amount' => '0.01',
-                'trade_no' => '2021060622001498120501382075',
-                'trade_status' => 'TRADE_SUCCESS',
-            ],
-            'sign' => '123',
-        ];
+    expect($result->getDestination()->all())->toEqual(array_merge(['_sign' => '123'], $destination['alipay_trade_query_response']));
+});
 
-        $rocket = (new Rocket())
-            ->mergePayload(['method' => 'alipay.trade.query'])
-            ->setDestination(new Collection($destination));
+it('error response with no method key', function () {
+    $plugin = new ResponsePlugin();
+    $destination = [
+        'alipay_trade_query_response' => [
+            'code' => '10000',
+            'msg' => 'Success',
+            'buyer_logon_id' => 'ghd***@sandbox.com',
+            'buyer_pay_amount' => '0.00',
+            'buyer_user_id' => '2088102174698127',
+            'buyer_user_type' => 'PRIVATE',
+            'invoice_amount' => '0.00',
+            'out_trade_no' => 'yansongda-1622986519',
+            'point_amount' => '0.00',
+            'receipt_amount' => '0.00',
+            'send_pay_date' => '2021-06-06 21:35:40',
+            'total_amount' => '0.01',
+            'trade_no' => '2021060622001498120501382075',
+            'trade_status' => 'TRADE_SUCCESS',
+        ],
+        'sign' => '123',
+    ];
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+    $rocket = (new Rocket())
+        ->mergePayload(['method' => 'not.exist'])
+        ->setDestination(new Collection($destination));
 
-        self::assertEquals(
-            array_merge(['_sign' => '123'], $destination['alipay_trade_query_response']),
-            $result->getDestination()->all()
-        );
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
-    public function testErrorResponseWithNoMethodKey()
-    {
-        $destination = [
-            'alipay_trade_query_response' => [
-                'code' => '10000',
-                'msg' => 'Success',
-                'buyer_logon_id' => 'ghd***@sandbox.com',
-                'buyer_pay_amount' => '0.00',
-                'buyer_user_id' => '2088102174698127',
-                'buyer_user_type' => 'PRIVATE',
-                'invoice_amount' => '0.00',
-                'out_trade_no' => 'yansongda-1622986519',
-                'point_amount' => '0.00',
-                'receipt_amount' => '0.00',
-                'send_pay_date' => '2021-06-06 21:35:40',
-                'total_amount' => '0.01',
-                'trade_no' => '2021060622001498120501382075',
-                'trade_status' => 'TRADE_SUCCESS',
-            ],
-            'sign' => '123',
-        ];
+    expect($result->getDestination()->all())->toEqual(array_merge(['_sign' => '123'], $destination));
+});
 
-        $rocket = (new Rocket())
-            ->mergePayload(['method' => 'not.exist'])
-            ->setDestination(new Collection($destination));
+it('error response with empty sign key', function () {
+    $plugin = new ResponsePlugin();
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
+    $this->expectExceptionMessage('支付宝网关响应异常: 无效的AppID参数');
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+    $destination = [
+        'alipay_fund_trans_uni_transfer_response' => [
+            'code' => '40002',
+            'msg' => 'Invalid Arguments',
+            'sub_code' => 'isv.invalid-app-id',
+            'sub_msg' => '无效的AppID参数',
+        ],
+        'sign' => '',
+    ];
 
-        self::assertEquals(array_merge(['_sign' => '123'], $destination), $result->getDestination()->all());
-    }
+    $rocket = (new Rocket())
+        ->mergePayload(['method' => 'alipay_fund_trans_uni_transfer'])
+        ->setDestination(new Collection($destination));
 
-    public function testErrorResponseWithEmptySignKey()
-    {
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
-        self::expectExceptionMessage('支付宝网关响应异常: 无效的AppID参数');
+    $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+});
 
-        $destination = [
-            'alipay_fund_trans_uni_transfer_response' => [
-                'code' => '40002',
-                'msg' => 'Invalid Arguments',
-                'sub_code' => 'isv.invalid-app-id',
-                'sub_msg' => '无效的AppID参数',
-            ],
-            'sign' => '',
-        ];
+it('encrypted response params', function () {
+    $plugin = new ResponsePlugin();
+    $destination = [
+        'alipay_user_info_share_response' => 'base64密文串',
+        'sign' => 'x',
+        'sign_type' => 'RSA2',
+    ];
 
-        $rocket = (new Rocket())
-            ->mergePayload(['method' => 'alipay_fund_trans_uni_transfer'])
-            ->setDestination(new Collection($destination));
+    $rocket = (new Rocket())
+        ->mergePayload(['method' => 'alipay.user.info.share'])
+        ->setDestination(new Collection($destination));
 
-        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
-    public function testEncryptedResponseParams()
-    {
-        $destination = [
-            'alipay_user_info_share_response' => 'base64密文串',
-            'sign' => 'x',
-            'sign_type' => 'RSA2',
-        ];
+    expect($result->getDestination()->all())->toEqual(['_sign' => 'x', '_cipher' => 'base64密文串']);
+});
 
-        $rocket = (new Rocket())
-            ->mergePayload(['method' => 'alipay.user.info.share'])
-            ->setDestination(new Collection($destination));
+it('encrypted response without sign', function () {
+    $plugin = new ResponsePlugin();
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
+    $this->expectExceptionMessage('支付宝网关响应异常: 响应为加密密文但未包含签名');
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
+    $destination = [
+        'alipay_user_info_share_response' => 'base64密文串',
+        'sign' => '',
+    ];
 
-        self::assertEquals(
-            ['_sign' => 'x', '_cipher' => 'base64密文串'],
-            $result->getDestination()->all()
-        );
-    }
+    $rocket = (new Rocket())
+        ->mergePayload(['method' => 'alipay.user.info.share'])
+        ->setDestination(new Collection($destination));
 
-    public function testEncryptedResponseWithoutSign()
-    {
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
-        self::expectExceptionMessage('支付宝网关响应异常: 响应为加密密文但未包含签名');
+    $plugin->assembly($rocket, function ($rocket) {return $rocket; });
+});
 
-        $destination = [
-            'alipay_user_info_share_response' => 'base64密文串',
-            'sign' => '',
-        ];
-
-        $rocket = (new Rocket())
-            ->mergePayload(['method' => 'alipay.user.info.share'])
-            ->setDestination(new Collection($destination));
-
-        $this->plugin->assembly($rocket, function ($rocket) {return $rocket; });
-    }
-}

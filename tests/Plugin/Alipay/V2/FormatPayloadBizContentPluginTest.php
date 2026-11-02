@@ -2,49 +2,35 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class FormatPayloadBizContentPluginTest extends TestCase
-{
-    protected FormatPayloadBizContentPlugin $plugin;
+it('sign normal', function () {
+    $plugin = new FormatPayloadBizContentPlugin();
+    $payload = [
+        'biz_content' => ['out_trade_no' => 'yansongda-1622986519'],
+    ];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection($payload));
 
-        $this->plugin = new FormatPayloadBizContentPlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testSignNormal()
-    {
-        $payload = [
-            'biz_content' => ['out_trade_no' => 'yansongda-1622986519'],
-        ];
+    expect($result->getPayload()->get('biz_content'))->toEqual('{"out_trade_no":"yansongda-1622986519"}');
+});
 
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection($payload));
+it('sign underline params', function () {
+    $plugin = new FormatPayloadBizContentPlugin();
+    $payload = [
+        'biz_content' => ['out_trade_no' => 'yansongda-1622986519', '_method' => 'get', '_ignore' => true],
+    ];
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection($payload));
 
-        self::assertEquals('{"out_trade_no":"yansongda-1622986519"}', $result->getPayload()->get('biz_content'));
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testSignUnderlineParams()
-    {
-        $payload = [
-            'biz_content' => ['out_trade_no' => 'yansongda-1622986519', '_method' => 'get', '_ignore' => true],
-        ];
+    expect($result->getPayload()->get('biz_content'))->toEqual('{"out_trade_no":"yansongda-1622986519"}');
+});
 
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection($payload));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('{"out_trade_no":"yansongda-1622986519"}', $result->getPayload()->get('biz_content'));
-    }
-}

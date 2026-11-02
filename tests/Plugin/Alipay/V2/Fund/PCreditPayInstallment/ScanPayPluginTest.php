@@ -2,34 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Fund\PCreditPayInstallment;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Fund\PCreditPayInstallment\ScanPayPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class ScanPayPluginTest extends TestCase
-{
-    protected ScanPayPlugin $plugin;
+it('normal', function () {
+    $plugin = new ScanPayPlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new ScanPayPlugin();
-    }
+    $payload = $result->getPayload()->toJson();
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
+    expect($result->getDirection())->not->toEqual(ResponseDirection::class);
+    expect($payload)->toContain('alipay.trade.precreate');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload()->toJson();
-
-        self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.trade.precreate', $payload);
-    }
-}

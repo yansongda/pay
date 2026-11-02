@@ -2,33 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Pay\Authorization\Auth;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Auth\AppFreezePlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class AppFreezePluginTest extends TestCase
-{
-    protected AppFreezePlugin $plugin;
+it('normal', function () {
+    $plugin = new AppFreezePlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new AppFreezePlugin();
-    }
+    expect($result->getDirection())->toEqual(ResponseDirection::class);
+    expect($result->getPayload()->toJson())->toContain('alipay.fund.auth.order.app.freeze');
+    expect($result->getPayload()->toJson())->toContain('PREAUTH_PAY');
+});
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('alipay.fund.auth.order.app.freeze', $result->getPayload()->toJson());
-        self::assertStringContainsString('PREAUTH_PAY', $result->getPayload()->toJson());
-    }
-}

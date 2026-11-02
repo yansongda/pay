@@ -2,32 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Alipay\V2\Member\Ocr;
-
 use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Member\Ocr\DetectPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class DetectPluginTest extends TestCase
-{
-    protected DetectPlugin $plugin;
+it('normal', function () {
+    $plugin = new DetectPlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new DetectPlugin();
-    }
+    expect($result->getDirection())->not->toEqual(ResponseDirection::class);
+    expect($result->getPayload()->toJson())->toContain('datadigital.fincloud.generalsaas.ocr.common.detect');
+});
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertNotEquals(ResponseDirection::class, $result->getDirection());
-        self::assertStringContainsString('datadigital.fincloud.generalsaas.ocr.common.detect', $result->getPayload()->toJson());
-    }
-}
