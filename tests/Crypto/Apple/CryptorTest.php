@@ -156,7 +156,7 @@ it('证书链缺少叶证书抛出异常', function () {
 })->throws(InvalidSignException::class, '签名异常: Apple 证书链缺少 leaf 证书', Exception::SIGN_ERROR);
 
 it('证书链缺少中间证书抛出异常', function () {
-    $leafPem = (string) file_get_contents(__DIR__.'/../../Cert/apple/token-leaf.crt');
+    $leafPem = (string) file_get_contents(cert_path('apple/token-leaf.crt'));
 
     Cryptor::verifyChain([$leafPem], 'root-pem', '1.2.840.113635.100.6.2.14', '1.2.840.113635.100.6.29');
 })->throws(InvalidSignException::class, '签名异常: Apple 证书链缺少 intermediate 证书', Exception::SIGN_ERROR);

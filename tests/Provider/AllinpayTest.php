@@ -83,7 +83,7 @@ it('签名缺少密钥', function () {
             'default' => [
                 'cusid' => '9900000',
                 'appid' => '000000',
-                'allinpay_public_key' => __DIR__.'/../Cert/allinpayPlatformPublicKey.pem',
+                'allinpay_public_key' => cert_path('allinpayPlatformPublicKey.pem'),
                 'mode' => PayMode::SANDBOX,
             ],
         ],

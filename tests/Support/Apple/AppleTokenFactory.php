@@ -341,6 +341,6 @@ final class AppleTokenFactory
 
     private static function certPath(string $name): string
     {
-        return dirname(__DIR__, 2).'/Cert/apple/'.$name;
+        return cert_path('apple/'.$name);
     }
 }

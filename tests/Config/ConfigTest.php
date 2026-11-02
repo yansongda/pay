@@ -33,9 +33,9 @@ it('获取 provider 配置', function () {
             'default' => [
                 'app_id' => 'test_app_id',
                 'app_secret_cert' => 'test_secret',
-                'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
-                'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-                'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+                'app_public_cert_path' => cert_path('alipayAppPublicCert.crt'),
+                'alipay_public_cert_path' => cert_path('alipayPublicCert.crt'),
+                'alipay_root_cert_path' => cert_path('alipayRootCert.crt'),
             ],
         ],
     ]);
@@ -52,9 +52,9 @@ it('按租户获取 provider 配置', function () {
             'tenant1' => [
                 'app_id' => 'tenant1_app_id',
                 'app_secret_cert' => 'test_secret',
-                'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
-                'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-                'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+                'app_public_cert_path' => cert_path('alipayAppPublicCert.crt'),
+                'alipay_public_cert_path' => cert_path('alipayPublicCert.crt'),
+                'alipay_root_cert_path' => cert_path('alipayRootCert.crt'),
             ],
         ],
     ]);
@@ -76,9 +76,9 @@ it('provider 配置缺少租户', function () {
             'default' => [
                 'app_id' => 'test_app_id',
                 'app_secret_cert' => 'test_secret',
-                'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
-                'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-                'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+                'app_public_cert_path' => cert_path('alipayAppPublicCert.crt'),
+                'alipay_public_cert_path' => cert_path('alipayPublicCert.crt'),
+                'alipay_root_cert_path' => cert_path('alipayRootCert.crt'),
             ],
         ],
     ]);
@@ -113,9 +113,9 @@ it('配置转数组使用蛇形外部键', function () {
             'default' => [
                 'app_id' => 'test_app_id',
                 'app_secret_cert' => 'test_secret',
-                'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
-                'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-                'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+                'app_public_cert_path' => cert_path('alipayAppPublicCert.crt'),
+                'alipay_public_cert_path' => cert_path('alipayPublicCert.crt'),
+                'alipay_root_cert_path' => cert_path('alipayRootCert.crt'),
             ],
         ],
     ]);

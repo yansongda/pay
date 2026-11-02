@@ -51,7 +51,7 @@ it('端到端', function () {
     openssl_sign(
         $timestamp."\n".$nonce."\n".$body."\n",
         $sign,
-        openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/app_secret_test.pem')),
+        openssl_pkey_get_private(file_get_contents(cert_path('alipay-v3/app_secret_test.pem'))),
         OPENSSL_ALGO_SHA256
     );
 
@@ -60,7 +60,7 @@ it('端到端', function () {
         'alipay-timestamp' => $timestamp,
         'alipay-nonce' => $nonce,
         'alipay-signature' => base64_encode($sign),
-        'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'),
+        'alipay-sn' => CertManager::alipayGetAppCertSn(cert_path('alipay-v3/alipay_public_cert_test.crt')),
     ], $body));
     Pay::set(HttpClientInterface::class, $http);
 
@@ -98,7 +98,7 @@ it('证书模式端到端', function () {
     openssl_sign(
         $timestamp."\n".$nonce."\n".$body."\n",
         $sign,
-        openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipay-v3/app_secret_test.pem')),
+        openssl_pkey_get_private(file_get_contents(cert_path('alipay-v3/app_secret_test.pem'))),
         OPENSSL_ALGO_SHA256
     );
 
@@ -107,7 +107,7 @@ it('证书模式端到端', function () {
         'alipay-timestamp' => $timestamp,
         'alipay-nonce' => $nonce,
         'alipay-signature' => base64_encode($sign),
-        'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt'),
+        'alipay-sn' => CertManager::alipayGetAppCertSn(cert_path('alipay-v3/alipay_public_cert_test.crt')),
     ], $body));
     Pay::set(HttpClientInterface::class, $http);
 

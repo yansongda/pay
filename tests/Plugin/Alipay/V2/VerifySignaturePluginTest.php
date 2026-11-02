@@ -70,7 +70,7 @@ it('单字段字符串的明文响应', function () {
     $this->reRegisterAlipayTenant();
 
     // 签名源 = 明文形态 `{"code":"10000"}`
-    openssl_sign('{"code":"10000"}', $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipayAppSecretCert.pem')), OPENSSL_ALGO_SHA256);
+    openssl_sign('{"code":"10000"}', $sign, openssl_pkey_get_private(file_get_contents(cert_path('alipayAppSecretCert.pem'))), OPENSSL_ALGO_SHA256);
 
     $rocket = (new Rocket())
         ->mergePayload(['method' => 'xxx'])
@@ -92,7 +92,7 @@ it('加密响应签名来源错误', function () {
     $encrypted = 'hJK2YhT7G0AcpjkDL1dn7HJK6Mrr1WAfD/1ZcX680wSReEE9r2ybkHq3tMLn7KaZp/uYavEYYXc1rP7n1lV/iVjPz2q16VIU5Bx0MWLQWdGPSYdlXggHNoBe1RnobIcCGOVe9HlzCBtWzGpCZvMlqRbCuWAdp14aCkaJqpRxG4PY9Kd/NzELvhnCd9k8e7G2qcwx6g==';
 
     // 以旧版逻辑组串方式（json_encode 整个 result，`/` 会被转义为 `\/`）签名，签名源与密文形态不匹配
-    openssl_sign(json_encode(['xxx_response' => $encrypted], JSON_UNESCAPED_UNICODE), $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../../../Cert/alipayAppSecretCert.pem')), OPENSSL_ALGO_SHA256);
+    openssl_sign(json_encode(['xxx_response' => $encrypted], JSON_UNESCAPED_UNICODE), $sign, openssl_pkey_get_private(file_get_contents(cert_path('alipayAppSecretCert.pem'))), OPENSSL_ALGO_SHA256);
 
     $rocket = (new Rocket())
         ->mergePayload(['method' => 'xxx'])

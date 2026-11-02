@@ -76,7 +76,7 @@ it('非 200 无签名但时间戳过期通过', function () {
 it('无签名强制验签', function () {
     $plugin = new VerifySignaturePlugin();
     // HTTP 200 强制验签：无签名也必须验签（空签抛异常）
-    $response = new Response(200, ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')], '{}');
+    $response = new Response(200, ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-sn' => CertManager::alipayGetAppCertSn(cert_path('alipay-v3/alipay_public_cert_test.crt'))], '{}');
 
     $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
 
@@ -87,7 +87,7 @@ it('签名无效', function () {
     $plugin = new VerifySignaturePlugin();
     $response = new Response(
         200,
-        ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-signature' => 'invalid-sign', 'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')],
+        ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-signature' => 'invalid-sign', 'alipay-sn' => CertManager::alipayGetAppCertSn(cert_path('alipay-v3/alipay_public_cert_test.crt'))],
         '{}'
     );
 
@@ -106,7 +106,7 @@ it('时间戳过期', function () {
 
     $response = new Response(
         200,
-        ['alipay-timestamp' => $timestamp, 'alipay-nonce' => $nonce, 'alipay-signature' => base64_encode($sign), 'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')],
+        ['alipay-timestamp' => $timestamp, 'alipay-nonce' => $nonce, 'alipay-signature' => base64_encode($sign), 'alipay-sn' => CertManager::alipayGetAppCertSn(cert_path('alipay-v3/alipay_public_cert_test.crt'))],
         $body
     );
 

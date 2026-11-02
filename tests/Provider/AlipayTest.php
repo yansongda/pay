@@ -234,14 +234,14 @@ it('V3 扫码', function () {
     $timestamp = (string) (int) (microtime(true) * 1000);
     $nonce = 'yansongda-nonce';
 
-    openssl_sign($timestamp."\n".$nonce."\n".$body."\n", $sign, openssl_pkey_get_private(file_get_contents(__DIR__.'/../Cert/alipay-v3/app_secret_test.pem')), OPENSSL_ALGO_SHA256);
+    openssl_sign($timestamp."\n".$nonce."\n".$body."\n", $sign, openssl_pkey_get_private(file_get_contents(cert_path('alipay-v3/app_secret_test.pem'))), OPENSSL_ALGO_SHA256);
 
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->andReturn(new Response(200, [
         'alipay-timestamp' => $timestamp,
         'alipay-nonce' => $nonce,
         'alipay-signature' => base64_encode($sign),
-        'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../Cert/alipay-v3/alipay_public_cert_test.crt'),
+        'alipay-sn' => CertManager::alipayGetAppCertSn(cert_path('alipay-v3/alipay_public_cert_test.crt')),
     ], $body));
     Pay::set(HttpClientInterface::class, $http);
 

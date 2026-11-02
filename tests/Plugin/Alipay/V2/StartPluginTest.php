@@ -102,7 +102,7 @@ it('应用公钥证书路径错误', function () {
 
     /** @var AlipayConfig $alipayConfig */
     $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
-    $alipayConfig->setAppPublicCertPath(__DIR__.'/../../Cert/foo');
+    $alipayConfig->setAppPublicCertPath(cert_path('foo'));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 })->throws(InvalidConfigException::class, '配置异常: 解析证书失败', Exception::CONFIG_CERT_PARSE_FAILED);
@@ -124,7 +124,7 @@ it('支付宝根证书路径错误', function () {
 
     /** @var AlipayConfig $alipayConfig */
     $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
-    $alipayConfig->setAlipayRootCertPath(__DIR__.'/../../../Cert/foo');
+    $alipayConfig->setAlipayRootCertPath(cert_path('foo'));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 })->throws(InvalidConfigException::class, '配置异常: 解析 `alipay_root_cert` 失败', Exception::CONFIG_CERT_PARSE_FAILED);

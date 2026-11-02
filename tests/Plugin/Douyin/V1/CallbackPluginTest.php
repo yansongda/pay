@@ -8,9 +8,9 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Douyin\V1\CallbackPlugin;
-use Yansongda\Pay\Tests\Support\Traits\DouyinCallbackHelpers;
+use Yansongda\Pay\Tests\Support\Traits\DouyinHelpers;
 
-uses(DouyinCallbackHelpers::class);
+uses(DouyinHelpers::class);
 
 it('支付回调', function () {
     $plugin = new CallbackPlugin();

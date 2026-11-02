@@ -13,9 +13,9 @@ use Yansongda\Pay\Exception\Exception as PayException;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
-use Yansongda\Pay\Tests\Support\Traits\DouyinProviderHelpers;
+use Yansongda\Pay\Tests\Support\Traits\DouyinHelpers;
 
-uses(DouyinProviderHelpers::class);
+uses(DouyinHelpers::class);
 
 it('快捷方式不存在', function () {
 
@@ -52,7 +52,7 @@ it('调用小程序', function () {
 
     [, $nonce, $timestamp, $signature] = $matches;
 
-    $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../Cert/douyinAppPublicKey.pem'));
+    $publicKey = openssl_pkey_get_public(file_get_contents(cert_path('douyinAppPublicKey.pem')));
     expect($publicKey)->not->toBeFalse();
     expect(openssl_verify(
         "POST\n/requestOrder\n".$timestamp."\n".$nonce."\n".$data."\n",

@@ -115,7 +115,7 @@ it('使用错误商户公钥证书获取签名', function () {
     $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\/\/127.0.0.1:8000\/wechat\/notify\"}\n";
 
     $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', $params);
-    $config->setMchPublicCertPath(__DIR__.'/../../Cert/foo');
+    $config->setMchPublicCertPath(cert_path('foo'));
 
     $class = new ReflectionClass($plugin);
     $method = $class->getMethod('getSignature');

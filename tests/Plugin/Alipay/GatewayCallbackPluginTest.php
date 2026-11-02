@@ -44,7 +44,7 @@ it('网关验签成功', function () {
     expect($matches)->toHaveKey(1);
     $sign = base64_decode($matches[1], true);
     expect($sign)->not->toBeFalse();
-    expect(openssl_verify($inner, $sign, openssl_pkey_get_public(file_get_contents(__DIR__.'/../../Cert/alipay-v3/alipay_public_cert_test.crt')), OPENSSL_ALGO_SHA256))->toBe(1);
+    expect(openssl_verify($inner, $sign, openssl_pkey_get_public(file_get_contents(cert_path('alipay-v3/alipay_public_cert_test.crt'))), OPENSSL_ALGO_SHA256))->toBe(1);
 });
 
 it('验签失败', function () {

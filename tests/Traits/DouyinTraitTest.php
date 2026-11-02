@@ -9,10 +9,10 @@ use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Supports\Collection;
-use Yansongda\Pay\Tests\Support\Traits\DouyinTraitHelpers;
+use Yansongda\Pay\Tests\Support\Traits\DouyinHelpers;
 use Yansongda\Pay\Tests\Stubs\DouyinTraitStub;
 
-uses(DouyinTraitHelpers::class);
+uses(DouyinHelpers::class);
 
 it('获取抖音 URL', function () {
     $normalConfig = new DouyinConfig([
@@ -46,7 +46,7 @@ it('获取抖音交易签名', function () {
     $header = DouyinTraitStub::getDouyinTradeSign($config, 'POST', '/api/v1/trade/create', $body, $timestamp, $nonce);
 
     expect($header)->toBe('SHA256-RSA2048 appid="tt226e54d3bd581bf801",nonce_str="abcdef1234567890",timestamp="1700000000",key_version=1,signature="'
-        .base64_encode($this->signDouyinContents("POST\n/api/v1/trade/create\n1700000000\nabcdef1234567890\n".$body."\n", file_get_contents(__DIR__.'/../Cert/douyinAppPrivateKey.pem')))
+        .base64_encode($this->signDouyinContents("POST\n/api/v1/trade/create\n1700000000\nabcdef1234567890\n".$body."\n", file_get_contents(cert_path('douyinAppPrivateKey.pem'))))
         .'"');
 });
 
@@ -61,7 +61,7 @@ it('抖音交易签名往返', function () {
     preg_match('/signature="([^"]+)"$/', $header, $matches);
     expect($matches)->not->toBeEmpty();
 
-    $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../Cert/douyinAppPublicKey.pem'));
+    $publicKey = openssl_pkey_get_public(file_get_contents(cert_path('douyinAppPublicKey.pem')));
     expect($publicKey)->not->toBeFalse();
 
     expect(openssl_verify("POST\n/api/v1/trade/create\n1700000000\nabcdef1234567890\n".$body."\n", base64_decode($matches[1]), $publicKey, OPENSSL_ALGO_SHA256))->toBe(1);

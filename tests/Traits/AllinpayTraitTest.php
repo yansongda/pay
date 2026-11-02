@@ -52,8 +52,8 @@ it('通联签名与验签', function () {
     $config = new AllinpayConfig([
         'cusid' => '9900000',
         'appid' => '000000',
-        'mch_secret_key' => __DIR__.'/../Cert/allinpayPlatformPrivateKey.pem',
-        'allinpay_public_key' => __DIR__.'/../Cert/allinpayPlatformPublicKey.pem',
+        'mch_secret_key' => cert_path('allinpayPlatformPrivateKey.pem'),
+        'allinpay_public_key' => cert_path('allinpayPlatformPublicKey.pem'),
     ]);
 
     $sign = AllinpayTraitStub::getAllinpaySign($config, $payload);
@@ -73,7 +73,7 @@ it('通联签名缺少密钥', function () {
     $config = new AllinpayConfig([
         'cusid' => '9900000',
         'appid' => '000000',
-        'allinpay_public_key' => __DIR__.'/../Cert/allinpayPlatformPublicKey.pem',
+        'allinpay_public_key' => cert_path('allinpayPlatformPublicKey.pem'),
     ]);
 
     AllinpayTraitStub::getAllinpaySign($config, ['reqsn' => 'order-1']);
