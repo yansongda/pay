@@ -70,11 +70,8 @@ it('非法 body 抛出异常', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $request, '_params' => []]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_APPLE_TOKEN_INVALID);
 
 it('缺少待签名 payload 抛出异常', function () {
     $plugin = new CallbackPlugin();
@@ -83,11 +80,8 @@ it('缺少待签名 payload 抛出异常', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $request, '_params' => []]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('payload 被篡改抛出异常', function () {
     $plugin = new CallbackPlugin();
@@ -99,11 +93,8 @@ it('payload 被篡改抛出异常', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $request, '_params' => []]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('嵌套 JWS 被篡改抛出异常', function () {
     $plugin = new CallbackPlugin();
@@ -124,11 +115,8 @@ it('嵌套 JWS 被篡改抛出异常', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $request, '_params' => []]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('内层 JWS 缺少 x5c 被拒绝', function () {
     $plugin = new CallbackPlugin();
@@ -148,22 +136,16 @@ it('内层 JWS 缺少 x5c 被拒绝', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $request, '_params' => []]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('非法请求抛出异常', function () {
     $plugin = new CallbackPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_request' => ['foo' => 'bar'], '_params' => []]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('Provider 回调链接', function () {
     $jws = AppleJwsFactory::makeJws([

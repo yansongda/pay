@@ -80,11 +80,8 @@ it('签名被篡改', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $this->getDouyinCallbackRequest($body, ['Byte-Signature' => base64_encode('tampered-signature')])]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('缺少 type', function () {
     $plugin = new CallbackPlugin();
@@ -94,11 +91,8 @@ it('缺少 type', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $this->getDouyinCallbackRequest($body)]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('空类型', function () {
     $plugin = new CallbackPlugin();
@@ -108,11 +102,8 @@ it('空类型', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $this->getDouyinCallbackRequest($body)]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('非字符串类型', function () {
     $plugin = new CallbackPlugin();
@@ -121,11 +112,8 @@ it('非字符串类型', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $this->getDouyinCallbackRequest($body)]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('msg 非法', function () {
     $plugin = new CallbackPlugin();
@@ -134,11 +122,8 @@ it('msg 非法', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $this->getDouyinCallbackRequest($body)]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('body 非法', function () {
     $plugin = new CallbackPlugin();
@@ -147,22 +132,16 @@ it('body 非法', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_request' => $this->getDouyinCallbackRequest($body)]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('缺少请求对象', function () {
     $plugin = new CallbackPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 trait CallbackPluginTestHelpers
 {

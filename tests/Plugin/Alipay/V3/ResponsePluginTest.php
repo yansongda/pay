@@ -24,21 +24,13 @@ it('非 2xx 抛出异常', function () {
         new Response(400, [], json_encode(['code' => 'INVALID_PARAMETER', 'message' => '参数错误', 'links' => 'https://example.com/solution']))
     );
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-    $this->expectExceptionMessage('支付宝返回状态码异常: [INVALID_PARAMETER] 参数错误，请检查参数是否错误');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidResponseException::class, '支付宝返回状态码异常: [INVALID_PARAMETER] 参数错误，请检查参数是否错误', Exception::RESPONSE_CODE_WRONG);
 
 it('非 2xx 且无错误 body 抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = (new Rocket())->setDestinationOrigin(new Response(500, [], ''));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-    $this->expectExceptionMessage('支付宝返回状态码异常，请检查参数是否错误');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidResponseException::class, '支付宝返回状态码异常，请检查参数是否错误', Exception::RESPONSE_CODE_WRONG);
 

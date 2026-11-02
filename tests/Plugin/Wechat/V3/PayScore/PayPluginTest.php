@@ -12,24 +12,16 @@ it('空 payload', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 支付分订单催收，参数缺少 `out_order_no`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 支付分订单催收，参数缺少 `out_order_no`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少商户订单号', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['appid' => 'payload_app_id']));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 支付分订单催收，参数缺少 `out_order_no`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 支付分订单催收，参数缺少 `out_order_no`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少服务商 ID', function () {
     $plugin = new PayPlugin();
@@ -38,12 +30,8 @@ it('缺少服务商 ID', function () {
         'out_order_no' => '202609100005',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
-    $this->expectExceptionMessage('参数异常: 支付分订单催收，参数缺少 `service_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 支付分订单催收，参数缺少 `service_id`', Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
 
 it('正常', function () {
     $plugin = new PayPlugin();

@@ -36,8 +36,6 @@ it('指定租户构造', function () {
 });
 
 it('缺少必填项构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_id]');
 
     $config = new AlipayConfig([
         // missing app_id
@@ -47,11 +45,9 @@ it('缺少必填项构造', function () {
         'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少支付宝配置 -- [app_id]');
 
 it('缺少应用公钥证书路径构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
 
     $config = new AlipayConfig([
         'app_id' => 'test_app_id',
@@ -59,7 +55,7 @@ it('缺少应用公钥证书路径构造', function () {
         'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
 
 it('可选 getter', function () {
     $validConfig = [

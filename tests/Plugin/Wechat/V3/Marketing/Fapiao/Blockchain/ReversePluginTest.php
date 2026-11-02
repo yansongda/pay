@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new ReversePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 冲红电子发票，参数缺少 `fapiao_apply_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 冲红电子发票，参数缺少 `fapiao_apply_id`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('正常', function () {
     $plugin = new ReversePlugin();

@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new GetTitleUrlPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 获取抬头填写链接，缺少必要参数');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 获取抬头填写链接，缺少必要参数', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('普通参数', function () {
     $plugin = new GetTitleUrlPlugin();

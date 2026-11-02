@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new DownloadPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 下载发票文件，缺少 `download_url` 参数');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 下载发票文件，缺少 `download_url` 参数', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('普通参数', function () {
     $plugin = new DownloadPlugin();

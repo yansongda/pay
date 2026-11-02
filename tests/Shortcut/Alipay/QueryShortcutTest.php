@@ -32,11 +32,9 @@ use Yansongda\Pay\Shortcut\Alipay\QueryShortcut;
 
 it('foo 参数', function () {
     $shortcut = new QueryShortcut();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
     $shortcut->getPlugins(['_action' => 'foo']);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
 it('默认', function () {
     $shortcut = new QueryShortcut();

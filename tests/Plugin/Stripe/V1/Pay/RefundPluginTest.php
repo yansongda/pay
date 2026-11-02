@@ -46,12 +46,10 @@ it('payload 中携带 payment intent', function () {
 
 it('缺少 payment intent 与 charge', function () {
     $plugin = new RefundPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection([]));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 

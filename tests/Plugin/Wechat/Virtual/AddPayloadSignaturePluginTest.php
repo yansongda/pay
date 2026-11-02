@@ -86,12 +86,8 @@ it('组装缺少 app_key', function () {
 
     $rocket = (new Rocket())->setPayload($payload);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少微信虚拟支付配置 -- [virtual_pay.app_key]');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少微信虚拟支付配置 -- [virtual_pay.app_key]', Exception::CONFIG_WECHAT_INVALID);
 
 it('沙箱环境组装', function () {
     $plugin = new AddPayloadSignaturePlugin();
@@ -170,12 +166,9 @@ it('服务端组装缺少 access token', function () {
     $rocket = (new Rocket())->setPayload($payload);
 
     // 服务端 API 场景缺少 access_token 且未配置 app_secret 应抛异常
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 微信虚拟支付缺少 access_token，请配置 [virtual_pay.app_secret] 以自动获取，或在参数中手动传入 access_token');
 
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, '参数异常: 微信虚拟支付缺少 access_token，请配置 [virtual_pay.app_secret] 以自动获取，或在参数中手动传入 access_token', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('服务端组装自动获取 access token', function () {
     $plugin = new AddPayloadSignaturePlugin();

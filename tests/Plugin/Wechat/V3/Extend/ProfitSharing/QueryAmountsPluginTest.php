@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new QueryAmountsPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 查询剩余待分金额，参数缺少 `transaction_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 查询剩余待分金额，参数缺少 `transaction_id`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('正常', function () {
     $plugin = new QueryAmountsPlugin();

@@ -41,10 +41,8 @@ it('获取抖音 URL', function () {
     expect(DouyinTraitStub::getDouyinUrl($serviceConfig, new Collection(['_service_url' => '/api/v1/service/yansongda'])))->toEqual('https://open.douyin.com/api/v1/service/yansongda');
     expect(DouyinTraitStub::getDouyinUrl($serviceConfig, new Collection(['_url' => '/foo', '_service_url' => '/api/v1/service/yansongda'])))->toEqual('https://open.douyin.com/api/v1/service/yansongda');
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_DOUYIN_URL_MISSING);
     DouyinTraitStub::getDouyinUrl($normalConfig, new Collection([]));
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_DOUYIN_URL_MISSING);
 
 it('获取抖音交易签名', function () {
     $config = $this->getDouyinConfig();
@@ -83,11 +81,8 @@ it('抖音交易签名私钥非法', function () {
         'app_private_key' => 'invalid_private_key',
     ]);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
-
     DouyinTraitStub::getDouyinTradeSign($config, 'POST', '/api/v1/trade/create', '{}', '1700000000', 'abcdef1234567890');
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_DOUYIN_INVALID);
 
 it('抖音交易验签', function () {
     $config = $this->getDouyinConfig();
@@ -106,11 +101,8 @@ it('抖音交易验签：body 被篡改', function () {
     // 用原始 body 签名，但请求体被篡改
     $request = $this->getDouyinCallbackRequest('{"out_trade_no":"yansongda","total_amount":100}', [], '{"out_trade_no":"yansongda","total_amount":1}');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('抖音交易验签：签名被篡改', function () {
     $config = $this->getDouyinConfig();
@@ -118,11 +110,8 @@ it('抖音交易验签：签名被篡改', function () {
 
     $request = $this->getDouyinCallbackRequest($body, ['Byte-Signature' => base64_encode('tampered-signature')]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('抖音交易验签：时间戳为空', function () {
     $config = $this->getDouyinConfig();
@@ -130,11 +119,8 @@ it('抖音交易验签：时间戳为空', function () {
 
     $request = $this->getDouyinCallbackRequest($body, ['Byte-Timestamp' => '']);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('抖音交易验签：随机串为空', function () {
     $config = $this->getDouyinConfig();
@@ -142,11 +128,8 @@ it('抖音交易验签：随机串为空', function () {
 
     $request = $this->getDouyinCallbackRequest($body, ['Byte-Nonce-Str' => '']);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('抖音交易验签：签名为空', function () {
     $config = $this->getDouyinConfig();
@@ -154,22 +137,16 @@ it('抖音交易验签：签名为空', function () {
 
     $request = $this->getDouyinCallbackRequest($body, ['Byte-Signature' => '']);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('抖音交易验签：body 为空', function () {
     $config = $this->getDouyinConfig();
 
     $request = $this->getDouyinCallbackRequest('');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('抖音交易验签：平台公钥无效', function () {
     $config = new DouyinConfig([
@@ -180,11 +157,8 @@ it('抖音交易验签：平台公钥无效', function () {
 
     $request = $this->getDouyinCallbackRequest('{"out_trade_no":"yansongda","total_amount":1}');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
-
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_DOUYIN_INVALID);
 
 trait DouyinTraitTestHelpers
 {

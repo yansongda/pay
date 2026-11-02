@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new PausePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 暂停代金券批次，参数缺少 `stock_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 暂停代金券批次，参数缺少 `stock_id`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('普通参数', function () {
     $plugin = new PausePlugin();

@@ -13,23 +13,15 @@ it('模式错误', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider']);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
-    $this->expectExceptionMessage('参数异常: 撤销转账，只支持普通商户模式，当前配置为服务商模式');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 撤销转账，只支持普通商户模式，当前配置为服务商模式', Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
 
 it('空 payload', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 撤销转账，参数缺少 `out_bill_no`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 撤销转账，参数缺少 `out_bill_no`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('普通参数', function () {
     $plugin = new CancelPlugin();

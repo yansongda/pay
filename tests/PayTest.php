@@ -138,10 +138,9 @@ it('设置与获取', function () {
 });
 
 it('魔术调用找不到服务', function () {
-    $this->expectException(ServiceNotFoundException::class);
 
     Pay::foo1([]);
-});
+})->throws(ServiceNotFoundException::class);
 
 it('运行时配置存储类型化对象', function () {
     Pay::config([

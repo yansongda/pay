@@ -18,20 +18,14 @@ uses(VerifyWebhookSignPluginTestHelpers::class);
 it('缺少 webhook 密钥抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [], '{}');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_AIRWALLEX_INVALID);
-
     $this->verifyWebhookSign($request, ['_config' => 'no_webhook_secret']);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_AIRWALLEX_INVALID);
 
 it('缺少签名抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [], '{}');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     $this->verifyWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('签名错误抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [
@@ -39,11 +33,8 @@ it('签名错误抛出异常', function () {
         'x-signature' => 'wrong-signature',
     ], '{"id":"evt_test"}');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     $this->verifyWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('时间戳过期抛出异常', function () {
     $body = '{"id":"evt_test"}';
@@ -54,11 +45,8 @@ it('时间戳过期抛出异常', function () {
         'x-signature' => $signature,
     ], $body);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     $this->verifyWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('签名有效通过', function () {
     $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
@@ -109,11 +97,9 @@ it('插件使用租户配置', function () {
 });
 
 it('插件缺少请求对象抛出异常', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
     (new VerifyWebhookSignPlugin())->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 trait VerifyWebhookSignPluginTestHelpers
 {

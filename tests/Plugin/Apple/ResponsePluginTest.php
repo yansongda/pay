@@ -46,15 +46,12 @@ it('HTTP 状态码错误抛出对应错误码', function () {
 
     $rocket = (new Rocket())->setRadar(new Request('GET', 'https://api.storekit-sandbox.apple.com/inApps/v1/transactions/123'));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     Artful::make(Pipeline::class)
         ->send($rocket)
         ->through([ResponsePlugin::class])
         ->via('assembly')
         ->then(static fn (Rocket $rocket) => Artful::ignite($rocket));
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 
 it('无 HTTP 请求方向时跳过', function () {
     $plugin = new ResponsePlugin();

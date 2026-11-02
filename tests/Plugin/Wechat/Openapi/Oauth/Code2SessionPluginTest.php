@@ -40,11 +40,8 @@ it('缺少 js code 抛出异常', function () {
     $rocket = new Rocket();
     $rocket->setParams(['appid' => 'wx1234567890', 'secret' => 'test_secret']);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('参数密钥覆盖配置', function () {
     $plugin = new Code2SessionPlugin();

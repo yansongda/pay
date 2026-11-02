@@ -60,12 +60,10 @@ it('自定义模式', function () {
 
 it('缺少 success_url 抛出异常', function () {
     $plugin = new WebPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'no_success_url'])->setPayload(new Collection([]));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 

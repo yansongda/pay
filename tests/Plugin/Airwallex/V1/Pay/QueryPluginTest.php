@@ -9,11 +9,9 @@ use Yansongda\Pay\Plugin\Airwallex\V1\Pay\QueryPlugin;
 use Yansongda\Supports\Collection;
 
 it('缺少 ID', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     (new QueryPlugin())->assembly((new Rocket())->setPayload(new Collection([])), fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('正常', function () {
     $result = (new QueryPlugin())->assembly(

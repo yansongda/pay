@@ -61,7 +61,6 @@ it('嵌套结果含斜杠与 Unicode 的响应签名有效', function () {
 });
 
 it('响应签名非法', function () {
-    $this->expectException(InvalidSignException::class);
 
     $body = [
         'success' => true,
@@ -75,7 +74,7 @@ it('响应签名非法', function () {
     $rocket->setDestination(new Collection($body));
 
     (new VerifySignaturePlugin())->assembly($rocket, fn ($r) => $r);
-});
+})->throws(InvalidSignException::class);
 
 it('响应待签名内容为嵌套 JSON', function () {
     $content = self::getBestpaySignContent([

@@ -136,8 +136,6 @@ it('不传 notify_url 构造', function () {
 });
 
 it('缺少必填项构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
 
     $config = new WechatConfig([
         // missing mch_id
@@ -147,11 +145,9 @@ it('缺少必填项构造', function () {
         'notify_url' => 'https://test.com',
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少微信配置 -- [mch_id]');
 
 it('密钥长度非法构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: mch_secret_key 长度应为 32 字节');
 
     $config = new WechatConfig([
         'mch_id' => 'test_mch_id',
@@ -161,11 +157,9 @@ it('密钥长度非法构造', function () {
         'notify_url' => 'https://test.com',
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: mch_secret_key 长度应为 32 字节');
 
 it('服务商模式缺少子商户号构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 服务商模式下缺少 [sub_mch_id]');
 
     $config = new WechatConfig([
         'mch_id' => 'test_mch_id',
@@ -177,7 +171,7 @@ it('服务商模式缺少子商户号构造', function () {
         // missing sub_mch_id
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 服务商模式下缺少 [sub_mch_id]');
 
 it('服务商模式带子商户号构造', function () {
     $config = new WechatConfig([
@@ -447,8 +441,6 @@ it('服务商模式下仅虚拟支付配置跳过子商户号校验', function (
 })->group('VirtualPay');
 
 it('虚拟支付未配 app_secret 时仍需微信支付凭证', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
 
     $config = new WechatConfig([
         'virtual_pay' => [
@@ -457,11 +449,9 @@ it('虚拟支付未配 app_secret 时仍需微信支付凭证', function () {
         ],
     ]);
     $config->validate();
-})->group('VirtualPay');
+})->group('VirtualPay')->throws(InvalidConfigException::class, '配置异常: 缺少微信配置 -- [mch_id]');
 
 it('部分微信支付凭证在虚拟支付下仍校验', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_secret_key]');
 
     $config = new WechatConfig([
         'mch_id' => 'test_mch_id',
@@ -471,7 +461,7 @@ it('部分微信支付凭证在虚拟支付下仍校验', function () {
         ],
     ]);
     $config->validate();
-})->group('VirtualPay');
+})->group('VirtualPay')->throws(InvalidConfigException::class, '配置异常: 缺少微信配置 -- [mch_secret_key]');
 
 it('非法模式抛出异常', function () {
     $validConfig = [
@@ -481,13 +471,10 @@ it('非法模式抛出异常', function () {
         'mch_public_cert_path' => 'test_path',
         'notify_url' => 'https://test.com',
     ];
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-    $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
     $config = new WechatConfig(array_merge($validConfig, [
         'mode' => 99999,
     ]));
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: [mode] 配置不合法', Exception::CONFIG_PROVIDER_INVALID);
 

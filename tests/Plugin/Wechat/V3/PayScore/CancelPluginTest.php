@@ -12,24 +12,16 @@ it('空 payload', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 取消支付分订单，参数缺少 `out_order_no`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 取消支付分订单，参数缺少 `out_order_no`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少商户订单号', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['reason' => '测试取消']));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 取消支付分订单，参数缺少 `out_order_no`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 取消支付分订单，参数缺少 `out_order_no`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少服务商 ID', function () {
     $plugin = new CancelPlugin();
@@ -39,12 +31,8 @@ it('缺少服务商 ID', function () {
         'reason' => '测试取消',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
-    $this->expectExceptionMessage('参数异常: 取消支付分订单，参数缺少 `service_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 取消支付分订单，参数缺少 `service_id`', Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
 
 it('正常', function () {
     $plugin = new CancelPlugin();

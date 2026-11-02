@@ -141,11 +141,8 @@ it('请求非法', function () {
     $plugin = new CallbackPlugin();
     $rocket = (new Rocket())->setParams([]);
 
-    $this->expectException(\Yansongda\Artful\Exception\InvalidParamsException::class);
-    $this->expectExceptionMessage('参数异常: 微信虚拟支付回调参数不正确');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(\Yansongda\Artful\Exception\InvalidParamsException::class, '参数异常: 微信虚拟支付回调参数不正确');
 
 it('签名无效', function () {
     $plugin = new CallbackPlugin();
@@ -168,11 +165,8 @@ it('签名无效', function () {
 
     $rocket = (new Rocket())->setParams(['_request' => $request]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionMessage('签名异常: 验证微信虚拟支付回调签名失败');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidSignException::class, '签名异常: 验证微信虚拟支付回调签名失败');
 
 it('空签名', function () {
     $plugin = new CallbackPlugin();
@@ -194,11 +188,8 @@ it('空签名', function () {
 
     $rocket = (new Rocket())->setParams(['_request' => $request]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionMessage('签名异常: 微信虚拟支付回调签名为空');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidSignException::class, '签名异常: 微信虚拟支付回调签名为空');
 
 trait CallbackPluginTestHelpers
 {

@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new SendPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 发放指定批次的代金券，参数缺少 `openid`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 发放指定批次的代金券，参数缺少 `openid`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('普通参数', function () {
     $plugin = new SendPlugin();

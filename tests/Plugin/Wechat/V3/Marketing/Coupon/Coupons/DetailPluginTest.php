@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new DetailPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 查询代金券详情，参数缺少 `openid` 或 `coupon_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 查询代金券详情，参数缺少 `openid` 或 `coupon_id`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('普通参数', function () {
     $plugin = new DetailPlugin();

@@ -38,21 +38,14 @@ it('业务错误响应抛出异常', function () {
         'log_id' => '20240101123456000000000000',
     ]));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
-    $this->expectExceptionMessage('抖音返回业务异常: err_no=10000, err_msg=参数错误');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidResponseException::class, '抖音返回业务异常: err_no=10000, err_msg=参数错误', Exception::RESPONSE_BUSINESS_CODE_WRONG);
 
 it('服务端错误抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(500));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 

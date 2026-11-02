@@ -16,12 +16,8 @@ it('空 payload', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少请求分账参数');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少请求分账参数', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('无名称的正常场景', function () {
     $plugin = new CreatePlugin();

@@ -61,7 +61,6 @@ it('含空字段的有效回调', function () {
 });
 
 it('签名非法', function () {
-    $this->expectException(InvalidSignException::class);
 
     $data = [
         'outTradeNo' => 'ORDER001',
@@ -73,7 +72,7 @@ it('签名非法', function () {
     $rocket->setParams(['_request' => new Collection($data), '_params' => []]);
 
     (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
-});
+})->throws(InvalidSignException::class);
 
 it('租户配置回调', function () {
     $data = [
@@ -98,7 +97,6 @@ it('租户配置回调', function () {
 
 it('回调租户隔离', function () {
     // 用 default 证书加签，但路由到 second 租户（不同平台公钥）→ 验签必须失败
-    $this->expectException(InvalidSignException::class);
 
     $data = [
         'merchantNo' => '3178033925245778',
@@ -112,16 +110,15 @@ it('回调租户隔离', function () {
     $rocket->setParams(['_request' => new Collection($data), '_params' => ['_config' => 'second']]);
 
     (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
-});
+})->throws(InvalidSignException::class);
 
 it('缺少请求对象', function () {
-    $this->expectException(\Yansongda\Artful\Exception\InvalidParamsException::class);
 
     $rocket = new Rocket();
     $rocket->setParams([]);
 
     (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
-});
+})->throws(\Yansongda\Artful\Exception\InvalidParamsException::class);
 
 trait CallbackPluginTestHelpers
 {

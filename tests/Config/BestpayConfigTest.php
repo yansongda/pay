@@ -44,8 +44,6 @@ it('指定租户构造', function () {
 });
 
 it('缺少必填项构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_BESTPAY_INVALID);
 
     $config = new BestpayConfig([
         'merchant_no' => '1234567890',
@@ -55,7 +53,7 @@ it('缺少必填项构造', function () {
         // missing bestpay_public_cert_path
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_BESTPAY_INVALID);
 
 it('可选 getter', function () {
     $validConfig = [
@@ -117,13 +115,10 @@ it('服务商模式抛出异常', function () {
         'mch_secret_cert_password' => 'secret-password',
         'bestpay_public_cert_path' => '/path/to/bestpay.pem',
     ];
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-    $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
     $config = new BestpayConfig(array_merge($validConfig, [
         'mode' => PayMode::SERVICE,
     ]));
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: [mode] 配置不合法', Exception::CONFIG_PROVIDER_INVALID);
 

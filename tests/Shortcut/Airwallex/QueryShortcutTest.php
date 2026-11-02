@@ -15,11 +15,9 @@ use Yansongda\Pay\Plugin\Airwallex\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Airwallex\QueryShortcut;
 
 it('foo', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
     (new QueryShortcut())->getPlugins(['_action' => 'foo']);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
 it('默认', function () {
     expect((new QueryShortcut())->getPlugins([]))->toEqual([

@@ -72,9 +72,6 @@ it('错误响应无 method 键', function () {
 
 it('错误响应 sign 键为空', function () {
     $plugin = new ResponsePlugin();
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
-    $this->expectExceptionMessage('支付宝网关响应异常: 无效的AppID参数');
 
     $destination = [
         'alipay_fund_trans_uni_transfer_response' => [
@@ -91,7 +88,7 @@ it('错误响应 sign 键为空', function () {
         ->setDestination(new Collection($destination));
 
     $plugin->assembly($rocket, function ($rocket) {return $rocket; });
-});
+})->throws(InvalidResponseException::class, '支付宝网关响应异常: 无效的AppID参数', Exception::RESPONSE_BUSINESS_CODE_WRONG);
 
 it('加密响应参数', function () {
     $plugin = new ResponsePlugin();
@@ -112,9 +109,6 @@ it('加密响应参数', function () {
 
 it('加密响应无签名', function () {
     $plugin = new ResponsePlugin();
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
-    $this->expectExceptionMessage('支付宝网关响应异常: 响应为加密密文但未包含签名');
 
     $destination = [
         'alipay_user_info_share_response' => 'base64密文串',
@@ -126,5 +120,5 @@ it('加密响应无签名', function () {
         ->setDestination(new Collection($destination));
 
     $plugin->assembly($rocket, function ($rocket) {return $rocket; });
-});
+})->throws(InvalidResponseException::class, '支付宝网关响应异常: 响应为加密密文但未包含签名', Exception::RESPONSE_BUSINESS_CODE_WRONG);
 

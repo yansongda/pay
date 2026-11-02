@@ -54,22 +54,14 @@ it('缺少 access token 抛出异常', function () {
     $rocket = new Rocket();
     $rocket->setParams(['openid' => 'the_wechat_openid']);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少微信网页授权参数 -- [access_token]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少微信网页授权参数 -- [access_token]', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少 openid 抛出异常', function () {
     $plugin = new UserInfoPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['access_token' => 'the_wechat_access_token']);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少微信网页授权参数 -- [openid]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少微信网页授权参数 -- [openid]', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 

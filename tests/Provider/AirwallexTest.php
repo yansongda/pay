@@ -21,18 +21,14 @@ use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Supports\Collection;
 
 it('快捷方式不存在', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(\Yansongda\Artful\Exception\Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::airwallex()->foo();
-});
+})->throws(InvalidParamsException::class, null, \Yansongda\Artful\Exception\Exception::PARAMS_SHORTCUT_INVALID);
 
 it('关单', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::airwallex()->close([]);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
 it('回调', function () {
     $body = json_encode([

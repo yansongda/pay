@@ -98,11 +98,8 @@ it('biz_content 非法 XML', function () {
     $plugin = new GatewayCallbackPlugin();
     $form = $this->makeSignedForm(overrides: ['biz_content' => 'not-xml']);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_ALIPAY_GW_BIZ_CONTENT_INVALID);
-
     $plugin->assembly((new Rocket())->setParams($form), fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_ALIPAY_GW_BIZ_CONTENT_INVALID);
 
 trait GatewayCallbackPluginTestHelpers
 {

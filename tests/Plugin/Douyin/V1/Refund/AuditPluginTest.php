@@ -49,10 +49,6 @@ it('空 payload', function () {
     $plugin = new AuditPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 抖音退款审核，缺少必要的业务参数');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, '参数异常: 抖音退款审核，缺少必要的业务参数', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 

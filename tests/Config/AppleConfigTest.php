@@ -59,41 +59,32 @@ it('默认 Apple 根证书与中间证书', function () {
 });
 
 it('缺少商户号构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_APPLE_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少 Apple 配置 -- [merchant_id]');
 
     $config = new AppleConfig([
         'payment_processing_cert' => '/path/to/payment-processing-cert.pem',
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少 Apple 配置 -- [merchant_id]', Exception::CONFIG_APPLE_INVALID);
 
 it('缺少支付处理证书构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_APPLE_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少 Apple 配置 -- [payment_processing_cert]');
 
     $config = new AppleConfig([
         'merchant_id' => 'merchant.com.example.app',
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少 Apple 配置 -- [payment_processing_cert]', Exception::CONFIG_APPLE_INVALID);
 
 it('部分 API 配置构造', function () {
     $validConfig = [
         'merchant_id' => 'merchant.com.example.app',
         'payment_processing_cert' => '/path/to/payment-processing-cert.pem',
     ];
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_APPLE_INVALID);
-    $this->expectExceptionMessage('配置异常: Apple App Store Server API 配置不完整 -- [issuer_id]/[bundle_id]/[api_key_id]/[api_private_key] 需同时配置');
 
     $config = new AppleConfig(array_merge($validConfig, [
         'issuer_id' => 'issuer-id-123',
     ]));
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: Apple App Store Server API 配置不完整 -- [issuer_id]/[bundle_id]/[api_key_id]/[api_private_key] 需同时配置', Exception::CONFIG_APPLE_INVALID);
 
 it('不传 API 配置构造', function () {
     $validConfig = [
@@ -132,12 +123,10 @@ it('非法模式抛出异常', function () {
         'merchant_id' => 'merchant.com.example.app',
         'payment_processing_cert' => '/path/to/payment-processing-cert.pem',
     ];
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
 
     $config = new AppleConfig(array_merge($validConfig, [
         'mode' => 999999,
     ]));
     $config->validate();
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_PROVIDER_INVALID);
 

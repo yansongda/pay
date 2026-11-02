@@ -56,21 +56,15 @@ it('签名错误', function () {
     $rocket = (new Rocket())
         ->setDestination(new Collection($destination));
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::SIGN_ERROR);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidSignException::class, null, \Yansongda\Pay\Exception\Exception::SIGN_ERROR);
 
 it('待签名内容错误', function () {
     $plugin = new VerifySignaturePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_EMPTY);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::RESPONSE_EMPTY);
 
 it('单字段字符串的明文响应', function () {
     $plugin = new VerifySignaturePlugin();
@@ -107,11 +101,8 @@ it('加密响应签名来源错误', function () {
             '_cipher' => $encrypted,
         ]));
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::SIGN_ERROR);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidSignException::class, null, \Yansongda\Pay\Exception\Exception::SIGN_ERROR);
 
 it('加密响应解密', function () {
     $plugin = new VerifySignaturePlugin();
@@ -188,9 +179,6 @@ it('加密响应缺少 AES 密钥', function () {
     $cipher = base64_encode('fake-cipher');
     openssl_sign('"'.$cipher.'"', $sign, $this->getTestPrivateKey(), OPENSSL_ALGO_SHA256);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::DECRYPT_ALIPAY_AES_KEY_INVALID);
-
     $rocket = (new Rocket())
         ->mergePayload(['method' => 'alipay.user.info.share'])
         ->setDestination(new Collection([
@@ -199,7 +187,7 @@ it('加密响应缺少 AES 密钥', function () {
         ]));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidConfigException::class, null, \Yansongda\Pay\Exception\Exception::DECRYPT_ALIPAY_AES_KEY_INVALID);
 
 it('加密响应 JSON 非法', function () {
     $plugin = new VerifySignaturePlugin();
@@ -212,10 +200,6 @@ it('加密响应 JSON 非法', function () {
 
     openssl_sign('"'.$cipher.'"', $sign, $this->getTestPrivateKey(), OPENSSL_ALGO_SHA256);
 
-    $this->expectException(DecryptException::class);
-    $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
-    $this->expectExceptionMessage('加密解密异常: 支付宝密文解密后不是合法的 JSON 响应');
-
     $rocket = (new Rocket())
         ->mergePayload(['method' => 'alipay.user.info.share'])
         ->setDestination(new Collection([
@@ -224,7 +208,7 @@ it('加密响应 JSON 非法', function () {
         ]));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(DecryptException::class, '加密解密异常: 支付宝密文解密后不是合法的 JSON 响应', \Yansongda\Pay\Exception\Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
 
 it('无 HTTP 请求方向时不操作', function () {
     $plugin = new VerifySignaturePlugin();

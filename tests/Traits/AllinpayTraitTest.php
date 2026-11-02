@@ -71,11 +71,9 @@ it('通联签名与验签', function () {
 });
 
 it('通联验签为空', function () {
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
 
     AllinpayTraitStub::verifyAllinpaySign($this->getConfig(), ['retcode' => 'SUCCESS']);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('通联签名缺少密钥', function () {
     $config = new AllinpayConfig([
@@ -84,41 +82,31 @@ it('通联签名缺少密钥', function () {
         'allinpay_public_key' => __DIR__.'/../Cert/allinpayPlatformPublicKey.pem',
     ]);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_ALLINPAY_INVALID);
-
     AllinpayTraitStub::getAllinpaySign($config, ['reqsn' => 'order-1']);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_ALLINPAY_INVALID);
 
 it('通联验签无效', function () {
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
 
     AllinpayTraitStub::verifyAllinpaySign($this->getConfig(), [
         'retcode' => 'SUCCESS',
         'sign' => base64_encode('not-a-valid-signature'),
     ]);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('通联验签缺少公钥', function () {
     $config = $this->getConfig();
     $config->setAllinpayPublicKey('');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_ALLINPAY_INVALID);
-
     AllinpayTraitStub::verifyAllinpaySign($config, [
         'retcode' => 'SUCCESS',
         'sign' => 'abc',
     ]);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_ALLINPAY_INVALID);
 
 it('获取通联 URL 缺少参数', function () {
-    $this->expectException(\Yansongda\Artful\Exception\InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_ALLINPAY_URL_MISSING);
 
     AllinpayTraitStub::getAllinpayUrl($this->getConfig(), new Collection());
-});
+})->throws(\Yansongda\Artful\Exception\InvalidParamsException::class, null, Exception::PARAMS_ALLINPAY_URL_MISSING);
 
 trait AllinpayTraitTestHelpers
 {

@@ -81,11 +81,8 @@ it('无签名强制验签', function () {
 
     $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('签名无效', function () {
     $plugin = new VerifySignaturePlugin();
@@ -97,11 +94,8 @@ it('签名无效', function () {
 
     $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('时间戳过期', function () {
     $plugin = new VerifySignaturePlugin();
@@ -119,12 +113,8 @@ it('时间戳过期', function () {
 
     $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-    $this->expectExceptionMessage('签名异常: 支付宝 V3 时间戳已过期');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidSignException::class, '签名异常: 支付宝 V3 时间戳已过期', Exception::SIGN_ERROR);
 
 it('sn 不匹配', function () {
     $plugin = new VerifySignaturePlugin();
@@ -133,12 +123,8 @@ it('sn 不匹配', function () {
 
     $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-    $this->expectExceptionMessage('签名异常: 支付宝公钥证书已过期/不匹配，请重新下载最新支付宝公钥证书并替换');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidSignException::class, '签名异常: 支付宝公钥证书已过期/不匹配，请重新下载最新支付宝公钥证书并替换', Exception::SIGN_ERROR);
 
 it('缺少 sn', function () {
     $plugin = new VerifySignaturePlugin();
@@ -148,12 +134,8 @@ it('缺少 sn', function () {
 
     $rocket = (new Rocket())->setParams(['_config' => 'alipay-v3'])->setDestinationOrigin($response);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-    $this->expectExceptionMessage('签名异常: 支付宝公钥证书已过期/不匹配，请重新下载最新支付宝公钥证书并替换');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidSignException::class, '签名异常: 支付宝公钥证书已过期/不匹配，请重新下载最新支付宝公钥证书并替换', Exception::SIGN_ERROR);
 
 it('支付宝 V3 时间戳有效', function () {
     $stub = new class extends VerifySignaturePlugin {
@@ -176,12 +158,8 @@ it('支付宝 V3 时间戳过期', function () {
         }
     };
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-    $this->expectExceptionMessage('签名异常: 支付宝 V3 时间戳已过期');
-
     $stub->exposeVerifyTimestamp('1735689600123');
-});
+})->throws(InvalidSignException::class, '签名异常: 支付宝 V3 时间戳已过期', Exception::SIGN_ERROR);
 
 trait VerifySignaturePluginTestHelpers
 {

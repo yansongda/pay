@@ -13,12 +13,8 @@ it('空 payload', function () {
     $plugin = new DownloadBillPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: Jsapi 下载交易对账单，参数缺少 `download_url`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: Jsapi 下载交易对账单，参数缺少 `download_url`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('正常', function () {
     $plugin = new DownloadBillPlugin();

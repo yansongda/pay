@@ -60,10 +60,8 @@ it('获取微信 URL', function () {
     expect(WechatTraitStub::getWechatUrl($config, new Collection(['_url' => '/cgi-bin/stable_token'])))->toEqual('https://api.weixin.qq.com/cgi-bin/stable_token');
     expect(WechatTraitStub::getWechatUrl($config, new Collection(['_url' => '/sns/jscode2session'])))->toEqual('https://api.weixin.qq.com/sns/jscode2session');
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_URL_MISSING);
     WechatTraitStub::getWechatUrl($config, new Collection([]));
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_WECHAT_URL_MISSING);
 
 it('获取微信请求方法', function () {
     expect(WechatTraitStub::getWechatMethod(null))->toEqual('POST');
@@ -74,10 +72,8 @@ it('获取微信请求方法', function () {
 it('获取微信请求 body', function () {
     expect(WechatTraitStub::getWechatBody(new Collection(['_body' => 'https://yansongda.cn'])))->toEqual('https://yansongda.cn');
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_BODY_MISSING);
     WechatTraitStub::getWechatBody(new Collection([]));
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_WECHAT_BODY_MISSING);
 
 it('获取微信签名', function () {
     $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\/\/127.0.0.1:8000\/wechat\/notify\"}\n";
@@ -95,11 +91,8 @@ it('获取微信签名', function () {
 
     Pay::config(array_merge($config1, ['_force' => true]));
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-
     WechatTraitStub::getProviderConfig('wechat');
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_WECHAT_INVALID);
 
 it('获取微信 V2 签名', function () {
     $params = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
@@ -128,10 +121,8 @@ it('获取微信 V2 签名', function () {
     ];
     Pay::config(array_merge($config1, ['_force' => true]));
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
     WechatTraitStub::getWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), []);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_WECHAT_INVALID);
 
 it('微信验签', function () {
     $response = new Response(
@@ -168,10 +159,8 @@ it('微信 V2 验签', function () {
     expect(true)->toBeTrue();
 
     $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
     WechatTraitStub::verifyWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), $destination);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('微信 V2 验签密钥为空', function () {
     $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => 'aaa'];
@@ -180,20 +169,14 @@ it('微信 V2 验签密钥为空', function () {
     expect($config)->toBeInstanceOf(WechatConfig::class);
     $config->setMchSecretKeyV2('');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-
     WechatTraitStub::verifyWechatSignV2($config, $destination);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_WECHAT_INVALID);
 
 it('微信 V2 验签失败', function () {
     $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => 'foo'];
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     WechatTraitStub::verifyWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), $destination);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('加密微信内容', function () {
     $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
@@ -332,10 +315,8 @@ it('解密微信资源（AES-256-GCM）', function () {
         'ciphertext' => 'kbbHAUhBwdjYZkHPW149MW/8WNpxQo1Gyp4kVNVjd+zrXnyOFhgZic2U2+tobFAgfdr93zr0JZF3FdbxgkaOAV2NAeCfU8jsUYXSfn7fM8487jXMVXKKEneGiiv1/bDLkz7KFsTfu2y5Rv+igWQ+bvCUQAwoNzjupTXnnDR5hBiofZcFLHL45govyYE2o0qD5SLiJHcFS4pg/IOx8SIqUFNepr3piKXUxKowU8/kNxXyRzL8yp7XnhrzAzclupvjveNwZyiw3TqlLZdR5TbEFLCogWaRHZRqz3vKEfgRaUYUtXCtQVrm+adbSDBFIq34v+XfeIHMz9pKhH/m80N5Hx69hPzbvIdBhzwaEDyN3h8gaeYKFyW9xIAs5jCrzzUEkKyMzOKzx7XA+1HRakSyvs6RlkRTa/ztBy6aZL0nxK6XMZ9tA7zdf2VnBX/7WPQYRzoky0cVyH1KRZxI7In2hfvpjSvl6P7Adzp+EZXYM/dINTrrg+RQRe60tPy7vgE8PZZf+SAWzSZPWIm7Lx6GksJX0vnT4gOeTAPw6EeFsYU/ZD7fYslJOEbA14yHBrJFkwDpSI8aSHp2nZYbruM0y8IKr0p3vjN80Ko3jiRPxj4uNdJliR9WDCV22b9JeadAaJhO9+oSNbbtFnFTCZjXbf8rMz5KCGVrGRvUyB70zhRxYIOdTYKAEkmbU7jcMLd0aufuQqIw0WviQHB+ztrkjBCFwPu5/hlRVj9opNFnzYNltfVGrA1XW3NQ4FaMNah95ahomAG/+S7zJqq4Gvk1O/PgQ9kMP0adY3GlrHUNqr2zC709IervMQ1pEdcuNEln3V5TSDiE0x7BjoMoN2m+MKAIhw59VxzHGNmJELbkKsZUhKKXFFyEXFsw143/9IYOyanmHQxujdIBKI0rxYkVz9QgaajisCzdnRf0ymnkceGGnYsP7VTYBnuCncjgHxbEn3emlTRygEjgj/epupsQL2tfW+snxnafEM+Pc079pUYmKeCUEUoX/FUmdFIf8hlSHBTjEVMGsNUI/u2W781RBDfk2X/2QQQm3NOjgZ3le6hxEQqc12yANTvdq7cFVllWqMHBsXPCjpHWIHcS5BMkImoD7s6WItq60yJA8ioGJf3Rba+Yb/YeBBNxjDnXtAmX/2hJIsxEFLTYGUvdmFC5jeb5ifrOuxnLciKM8y4nLZ28dDsvVsaBBAMAFYfWb5NymKUDhhngR5bDuW4sKccZ6DmYQeStHT1fn2yoSneGA70HctQSWZ2roTdNihPTCs7rYD0dFeQ+SfLOJzMN4c5GbJ6n5tdCjERcLGIaXEKacfySo7e4VZtHeHowvlvBclS9pooZqzHd+EFlJEYywEs9jURgsJY2yHJt2zTZeIdsvM8KK5v0NkH8FiPbWqFG8LaRmUrqhJGLuLLRTcJnt6YVYESxUVTb3pmriUbXfg/ThHF/y0THyrM6bVDNOwNWZOpMYPPNaVmOTX39JdYayWl2HX0n8AsIRmevXzD4N9iDh2HGwie4gh92Qdcogwua++uhkhSsLFuWBpJiaPdxVtzz3E3jHfy+yryfh6msaXc/jmhwqBm/ii3j76lDP5YaRv4+JWZmom72+pmZuKD8qPKrPRxI2/aGiKEqgs25knpLLnbAhWAEYeIzVK1sQkjc5JFss1Std8FdDrHeM6agAB+MWncK1LloXZmiwz/6WmlwSDepnGHqLEciXThAZq6FwunJZTcHY9LamJgIY81c9t/KHlSFqlc/9mW4OZHM4BOZQ5sTj5PWE+OP2Aq9CKdJqoK3OmphBg2ewjrZt5/tSn9jpk6NlVrHD7MsJcKi5a0he4qvNPh1cHqUqWcF4rBFmfPptdHIBV77LXnizJZMUAwf16KsmJpwJg==',
         'nonce' => '4196a5b75276',
     ];
-    $this->expectException(DecryptException::class);
-    $this->expectExceptionCode(Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID);
     WechatTraitStub::decryptWechatResourceAes256Gcm(base64_decode($resource['ciphertext']), 'foo', $resource['nonce'], $resource['associated_data']);
-});
+})->throws(DecryptException::class, null, Exception::DECRYPT_WECHAT_ENCRYPTED_DATA_INVALID);
 
 it('获取微信证书序列号', function () {
     $params = [];
@@ -418,10 +399,8 @@ it('获取微信公钥', function () {
     expect($result)->toBeString();
 
     $serialNo = 'non-exist';
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND);
     WechatTraitStub::getWechatPublicKey(WechatTraitStub::getProviderConfig('wechat'), $serialNo);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_WECHAT_SERIAL_NOT_FOUND);
 
 it('获取微信虚拟支付 access token（缓存）', function () {
     $config = WechatTraitStub::getProviderConfig('wechat');
@@ -436,11 +415,9 @@ it('获取微信虚拟支付 access token（缓存）', function () {
 });
 
 it('获取微信虚拟支付 access token 缺少配置', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
 
     WechatTraitStub::getWechatVirtualAccessToken([]);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_WECHAT_INVALID);
 
 it('获取微信虚拟支付 access token（新取）', function () {
     $config = WechatTraitStub::getProviderConfig('wechat');

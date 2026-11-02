@@ -13,12 +13,8 @@ it('空投诉单号', function () {
     $plugin = new QueryDetailPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 查询投诉单详情，参数缺少 `complaint_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 查询投诉单详情，参数缺少 `complaint_id`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('正常', function () {
     $plugin = new QueryDetailPlugin();
@@ -72,9 +68,6 @@ it('加密内容错误的正常场景', function () {
     $rocket = new Rocket();
     $rocket->setPayload(new Collection($payload));
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID);
-
     $plugin->assembly($rocket, function ($rocket) {
         $rocket->setDestination(new Collection([
             'payer_phone' => 'invalid',
@@ -82,5 +75,5 @@ it('加密内容错误的正常场景', function () {
 
         return $rocket;
     });
-});
+})->throws(InvalidConfigException::class, null, Exception::DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID);
 

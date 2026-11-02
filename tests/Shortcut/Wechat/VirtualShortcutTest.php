@@ -299,9 +299,7 @@ it('订阅撤销合约', function () {
 
 it('动作非法', function () {
     $plugin = new VirtualShortcut();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
     $plugin->getPlugins(['_action' => 'invalid_action']);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 

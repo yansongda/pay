@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new QueryReturnPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 查询分账结果, 缺少必要参数 `out_order_no`, `out_return_no`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 查询分账结果, 缺少必要参数 `out_order_no`, `out_return_no`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('正常', function () {
     $plugin = new QueryReturnPlugin();

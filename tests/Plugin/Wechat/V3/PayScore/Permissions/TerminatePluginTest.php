@@ -17,12 +17,8 @@ it('空 payload', function () {
     $plugin = new TerminatePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 解除支付分预授权（签约），参数为空');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 解除支付分预授权（签约），参数为空', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少服务商 ID', function () {
     $plugin = new TerminatePlugin();
@@ -31,12 +27,8 @@ it('缺少服务商 ID', function () {
         'openid' => 'oXopenid123',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少支付分服务ID -- [service_id]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少支付分服务ID -- [service_id]', Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
 
 it('缺少 openid 与授权码', function () {
     $plugin = new TerminatePlugin();
@@ -45,12 +37,8 @@ it('缺少 openid 与授权码', function () {
         'reason' => 'test',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 解除支付分预授权（签约），参数缺少 `openid` 或 `authorization_code`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 解除支付分预授权（签约），参数缺少 `openid` 或 `authorization_code`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('openid 与授权码同时填写', function () {
     $plugin = new TerminatePlugin();
@@ -61,12 +49,8 @@ it('openid 与授权码同时填写', function () {
         'reason' => 'test',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 解除支付分预授权（签约），`openid` 与 `authorization_code` 不允许同时填写');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 解除支付分预授权（签约），`openid` 与 `authorization_code` 不允许同时填写', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('服务商模式被拒绝', function () {
     $plugin = new TerminatePlugin();
@@ -76,11 +60,8 @@ it('服务商模式被拒绝', function () {
         'reason' => 'test',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
 
 it('openid 分支', function () {
     $plugin = new TerminatePlugin();

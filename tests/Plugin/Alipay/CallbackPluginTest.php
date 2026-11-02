@@ -100,11 +100,8 @@ it('V3 证书租户回调参数被篡改', function () {
 
     $rocket = (new Rocket())->setParams(array_merge($form, ['_config' => 'alipay-v3']));
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('V3 证书租户回调缺少签名', function () {
     $plugin = new CallbackPlugin();
@@ -113,11 +110,8 @@ it('V3 证书租户回调缺少签名', function () {
 
     $rocket = (new Rocket())->setParams(array_merge($form, ['_config' => 'alipay-v3']));
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 trait CallbackPluginTestHelpers
 {

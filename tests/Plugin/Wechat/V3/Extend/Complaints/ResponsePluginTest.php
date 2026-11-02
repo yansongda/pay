@@ -12,12 +12,8 @@ it('空投诉单号', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 回复用户，参数缺少 `complaint_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 回复用户，参数缺少 `complaint_id`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('payload 中商户号为空', function () {
     $plugin = new ResponsePlugin();

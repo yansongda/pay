@@ -59,12 +59,8 @@ it('errcode 非 0 抛出异常', function () {
     $rocket->setDestinationOrigin($response);
     $rocket->setDestination(new Collection(['errcode' => 43001, 'errmsg' => 'invalid credential, access_token is invalid or not expired']));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
-    $this->expectExceptionMessage('微信开放接口返回业务异常: invalid credential, access_token is invalid or not expired');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidResponseException::class, '微信开放接口返回业务异常: invalid credential, access_token is invalid or not expired', Exception::RESPONSE_BUSINESS_CODE_WRONG);
 
 it('无 destination 原始请求时返回 rocket', function () {
     $plugin = new ResponsePlugin();
@@ -87,12 +83,8 @@ it('HTTP 状态码错误抛出对应错误码', function () {
     $rocket->setDestinationOrigin($response);
     $rocket->setDestination(new Collection(['errcode' => -1, 'errmsg' => 'system error']));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-    $this->expectExceptionMessage('微信开放接口返回状态码异常，请检查参数是否错误');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidResponseException::class, '微信开放接口返回状态码异常，请检查参数是否错误', Exception::RESPONSE_CODE_WRONG);
 
 it('状态码 200 但带 errcode 抛出业务码', function () {
     $plugin = new ResponsePlugin();
@@ -106,12 +98,8 @@ it('状态码 200 但带 errcode 抛出业务码', function () {
     $rocket->setDestinationOrigin($response);
     $rocket->setDestination(new Collection(['errcode' => 43001, 'errmsg' => 'require POST']));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
-    $this->expectExceptionMessage('微信开放接口返回业务异常: require POST');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidResponseException::class, '微信开放接口返回业务异常: require POST', Exception::RESPONSE_BUSINESS_CODE_WRONG);
 
 it('管道 HTTP 错误抛出对应错误码', function () {
     // 依赖 artful 契约（防 artful 升级静默失效）：
@@ -133,14 +121,10 @@ it('管道 HTTP 错误抛出对应错误码', function () {
 
     $rocket = (new Rocket())->setRadar(new Request('POST', 'https://api.weixin.qq.com/sns/jscode2session'));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-    $this->expectExceptionMessage('微信开放接口返回状态码异常，请检查参数是否错误');
-
     Artful::make(Pipeline::class)
         ->send($rocket)
         ->through([ResponsePlugin::class])
         ->via('assembly')
         ->then(static fn (Rocket $rocket) => Artful::ignite($rocket));
-});
+})->throws(InvalidResponseException::class, '微信开放接口返回状态码异常，请检查参数是否错误', Exception::RESPONSE_CODE_WRONG);
 

@@ -23,14 +23,11 @@ it('签名正常', function () {
 
 it('空 payload', function () {
     $plugin = new AddPayloadSignPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少支付必要参数。可能插件用错顺序，应该先使用 `业务插件`');
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection());
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少支付必要参数。可能插件用错顺序，应该先使用 `业务插件`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少商户私钥证书路径', function () {
     $plugin = new AddPayloadSignPlugin();
@@ -43,10 +40,7 @@ it('缺少商户私钥证书路径', function () {
     $config = AddPayloadSignPlugin::getProviderConfig('jsb');
     expect($config)->toBeInstanceOf(JsbConfig::class);
     $config->setMchSecretCertPath('');
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_JSB_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少江苏银行配置 -- [mch_secret_cert_path]');
     $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
     expect($result->getPayload()->get('sign'))->toBe($sign);
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少江苏银行配置 -- [mch_secret_cert_path]', Exception::CONFIG_JSB_INVALID);
 

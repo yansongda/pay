@@ -22,10 +22,8 @@ it('HTTP 超时', function () {
 
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-
     Pay::alipay()->query(['out_trade_no' => '123456']);
-});
+})->throws(InvalidResponseException::class);
 
 it('HTTP 连接失败', function () {
     $http = Mockery::mock(Client::class);
@@ -37,10 +35,8 @@ it('HTTP 连接失败', function () {
 
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-
     Pay::alipay()->query(['out_trade_no' => '123456']);
-});
+})->throws(InvalidResponseException::class);
 
 it('空响应 body', function () {
     $response = new Response(200, [], '');
@@ -50,10 +46,8 @@ it('空响应 body', function () {
 
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-
     Pay::alipay()->query(['out_trade_no' => '123456']);
-});
+})->throws(InvalidResponseException::class);
 
 it('响应 JSON 格式错误', function () {
     $response = new Response(200, [], 'not a valid json {{{');
@@ -63,10 +57,8 @@ it('响应 JSON 格式错误', function () {
 
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-
     Pay::alipay()->query(['out_trade_no' => '123456']);
-});
+})->throws(InvalidResponseException::class);
 
 it('微信 HTTP 401 未授权', function () {
     $response = new Response(
@@ -80,11 +72,8 @@ it('微信 HTTP 401 未授权', function () {
 
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     Pay::wechat()->query(['out_trade_no' => '123456']);
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 
 it('微信 HTTP 403 禁止访问', function () {
     $response = new Response(
@@ -98,11 +87,8 @@ it('微信 HTTP 403 禁止访问', function () {
 
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     Pay::wechat()->query(['out_trade_no' => '123456']);
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 
 it('DNS 解析失败', function () {
     $http = Mockery::mock(Client::class);
@@ -114,10 +100,8 @@ it('DNS 解析失败', function () {
 
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-
     Pay::alipay()->query(['out_trade_no' => '123456']);
-});
+})->throws(InvalidResponseException::class);
 
 it('SSL 证书错误', function () {
     $http = Mockery::mock(Client::class);
@@ -129,10 +113,8 @@ it('SSL 证书错误', function () {
 
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-
     Pay::alipay()->query(['out_trade_no' => '123456']);
-});
+})->throws(InvalidResponseException::class);
 
 it('网络重置', function () {
     $http = Mockery::mock(Client::class);
@@ -144,10 +126,8 @@ it('网络重置', function () {
 
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-
     Pay::alipay()->query(['out_trade_no' => '123456']);
-});
+})->throws(InvalidResponseException::class);
 
 afterEach(function () {
     Mockery::close();

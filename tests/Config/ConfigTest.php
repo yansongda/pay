@@ -67,12 +67,8 @@ it('按租户获取 provider 配置', function () {
 it('获取未知 provider 配置', function () {
     $config = new Config([]);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-    $this->expectExceptionMessage('配置异常: 未知的 Provider - unknown');
-
     $config->getProviderConfig('unknown');
-});
+})->throws(InvalidConfigException::class, '配置异常: 未知的 Provider - unknown', Exception::CONFIG_PROVIDER_INVALID);
 
 it('provider 配置缺少租户', function () {
     $config = new Config([
@@ -87,12 +83,8 @@ it('provider 配置缺少租户', function () {
         ],
     ]);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-    $this->expectExceptionMessage('配置异常: alipay.missing_tenant 配置不存在');
-
     $config->getProviderConfig('alipay', 'missing_tenant');
-});
+})->throws(InvalidConfigException::class, '配置异常: alipay.missing_tenant 配置不存在', Exception::CONFIG_PROVIDER_INVALID);
 
 it('配置对象不被转换', function () {
     $existingConfig = new WechatConfig([
@@ -155,9 +147,7 @@ it('未使用 provider 配置不完整时构造', function () {
     expect($wechatConfig)->toBeInstanceOf(WechatConfig::class);
 
     // 访问不完整的支付宝配置时才抛异常
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_id]');
 
     $config->getProviderConfig('alipay');
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少支付宝配置 -- [app_id]');
 

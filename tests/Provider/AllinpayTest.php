@@ -29,10 +29,9 @@ use AllinpayTrait;
 uses(AllinpayTestHelpers::class);
 
 it('快捷方式不存在', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->foo();
-});
+})->throws(InvalidParamsException::class);
 
 it('支付', function () {
     $this->mockHttp($this->signedResponse([
@@ -67,28 +66,24 @@ it('支付', function () {
 });
 
 it('支付缺少参数', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->unified([
         'trxamt' => 1,
     ]);
-});
+})->throws(InvalidParamsException::class);
 
 it('支付缺少 trxamt', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->unified([
         'reqsn' => 'order-1001',
         'paytype' => 'W02',
     ]);
-});
+})->throws(InvalidParamsException::class);
 
 it('无 payload 签名', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     Pay::allinpay()->pay([AddPayloadSignPlugin::class], []);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('签名缺少密钥', function () {
     Pay::config([
@@ -103,77 +98,65 @@ it('签名缺少密钥', function () {
         ],
     ]);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_ALLINPAY_INVALID);
-
     Pay::allinpay()->pay([AddPayloadSignPlugin::class], ['reqsn' => 'order-1001']);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_ALLINPAY_INVALID);
 
 it('扫码缺少参数', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->scan([
         'reqsn' => 'order-1002',
     ]);
-});
+})->throws(InvalidParamsException::class);
 
 it('Native 缺少参数', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->native([
         'reqsn' => 'order-1003',
         'trxamt' => 1,
     ]);
-});
+})->throws(InvalidParamsException::class);
 
 it('查询缺少参数', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->query([]);
-});
+})->throws(InvalidParamsException::class);
 
 it('查询确认缺少参数', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->queryConfirm([]);
-});
+})->throws(InvalidParamsException::class);
 
 it('退款缺少参数', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->refund([
         'oldreqsn' => 'order-1001',
     ]);
-});
+})->throws(InvalidParamsException::class);
 
 it('撤销缺少参数', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->cancel([
         'oldtrxid' => '240101120000000001',
     ]);
-});
+})->throws(InvalidParamsException::class);
 
 it('撤销缺少原订单', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->cancel([
         'reqsn' => 'cancel-1',
         'trxamt' => 1,
     ]);
-});
+})->throws(InvalidParamsException::class);
 
 it('关单缺少参数', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->close([]);
-});
+})->throws(InvalidParamsException::class);
 
 it('Native 关单缺少参数', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->nativeClose([]);
-});
+})->throws(InvalidParamsException::class);
 
 it('HTTP 状态码错误', function () {
     $http = Mockery::mock(Client::class);
@@ -182,18 +165,13 @@ it('HTTP 状态码错误', function () {
     );
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     Pay::allinpay()->query(['reqsn' => 'order-x']);
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 
 it('非法请求回调', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
     Pay::allinpay()->pay([CallbackPlugin::class], ['_request' => 'invalid', '_params' => []]);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('从全局变量回调', function () {
     $payload = $this->signedResponse([
@@ -367,13 +345,12 @@ it('退款', function () {
 });
 
 it('退款缺少原订单', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->refund([
         'reqsn' => 'refund-1',
         'trxamt' => 1,
     ]);
-});
+})->throws(InvalidParamsException::class);
 
 it('撤销', function () {
     $this->mockHttp($this->signedResponse([
@@ -452,10 +429,8 @@ it('业务错误', function () {
         'randomstr' => 'abc',
     ]));
 
-    $this->expectException(InvalidResponseException::class);
-
     Pay::allinpay()->query(['reqsn' => 'order-x']);
-});
+})->throws(InvalidResponseException::class);
 
 it('回调', function () {
     $payload = $this->signedResponse([
@@ -474,7 +449,6 @@ it('回调', function () {
 });
 
 it('回调签名非法', function () {
-    $this->expectException(InvalidSignException::class);
 
     Pay::allinpay()->callback([
         'cusid' => '9900000',
@@ -482,7 +456,7 @@ it('回调签名非法', function () {
         'trxstatus' => 'SUCCESS',
         'sign' => base64_encode('bad-sign'),
     ]);
-});
+})->throws(InvalidSignException::class);
 
 it('成功', function () {
     $response = Pay::allinpay()->success();

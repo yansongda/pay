@@ -82,17 +82,13 @@ it('退款错误响应', function () {
     ));
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-    $this->expectExceptionMessage('支付宝返回状态码异常: [INVALID_PARAMETER] 参数错误，请检查参数是否错误');
-
     Artful::artful($shortcut->getPlugins([]), [
         '_config' => 'alipay-v3',
         'out_trade_no' => 'yansongda-2026',
         'out_request_no' => 'yansongda-2026-refund',
         'refund_amount' => '-1.00',
     ]);
-});
+})->throws(InvalidResponseException::class, '支付宝返回状态码异常: [INVALID_PARAMETER] 参数错误，请检查参数是否错误', Exception::RESPONSE_CODE_WRONG);
 
 trait RefundShortcutTestHelpers
 {

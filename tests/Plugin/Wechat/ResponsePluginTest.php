@@ -29,9 +29,6 @@ it('原始响应码错误 destination', function () {
     $rocket = new Rocket();
     $rocket->setDestinationOrigin($destination);
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 

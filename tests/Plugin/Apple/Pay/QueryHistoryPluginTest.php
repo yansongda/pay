@@ -47,23 +47,18 @@ it('过滤 payload 后保留其它字段', function () {
 
 it('缺少交易号', function () {
     $plugin = new QueryHistoryPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: Apple 查询交易历史，缺少 transaction_id 参数');
 
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([]));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: Apple 查询交易历史，缺少 transaction_id 参数', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('空 payload 抛出异常', function () {
     $plugin = new QueryHistoryPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $rocket = new Rocket();
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 

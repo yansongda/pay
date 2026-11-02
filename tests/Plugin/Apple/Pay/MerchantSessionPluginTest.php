@@ -65,41 +65,33 @@ it('域名大小写不敏感', function () {
 
 it('缺少 initiative context 抛出异常', function () {
     $plugin = new MerchantSessionPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $rocket = (new Rocket())->setParams(['validation_url' => 'https://apple-pay-gateway.apple.com/paymentservices/startSession']);
 
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少 validation_url 抛出异常', function () {
     $plugin = new MerchantSessionPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $rocket = (new Rocket())->setParams([]);
 
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('http 协议抛出异常', function () {
     $plugin = new MerchantSessionPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_APPLE_URL_MISSING);
 
     $rocket = (new Rocket())->setParams(['validation_url' => 'http://apple-pay-gateway.apple.com/paymentservices/startSession']);
 
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_APPLE_URL_MISSING);
 
 it('非 Apple 域名抛出异常', function () {
     $plugin = new MerchantSessionPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_APPLE_URL_MISSING);
 
     $rocket = (new Rocket())->setParams(['validation_url' => 'https://evil.com/paymentservices/startSession']);
 
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_APPLE_URL_MISSING);
 

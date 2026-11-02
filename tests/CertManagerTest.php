@@ -100,11 +100,9 @@ it('清空缓存后获取公钥证书信息', function () {
 });
 
 it('证书非法时获取公钥证书信息抛出异常', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 解析证书失败');
 
     CertManager::getPublicCertInfo('invalid-cert-content');
-});
+})->throws(InvalidConfigException::class, '配置异常: 解析证书失败');
 
 it('从文件获取支付宝应用证书序列号', function () {
     $path = __DIR__.'/Cert/alipayAppPublicCert.crt';
@@ -277,11 +275,9 @@ it('清空缓存使支付宝与银联缓存失效', function () {
 });
 
 it('PKCS12 证书密码错误抛出异常', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 读取证书失败，确认参数是否正确');
 
     CertManager::unipayGetPkcs12Certs(__DIR__.'/Cert/unipayAppCert.pfx', 'wrong_password');
-});
+})->throws(InvalidConfigException::class, '配置异常: 读取证书失败，确认参数是否正确');
 
 it('从文件获取银联证书 ID', function () {
     $path = __DIR__.'/Cert/unipayAppCert.pfx';
@@ -299,9 +295,7 @@ it('银联证书 ID 缓存命中', function () {
 });
 
 it('银联证书 ID：非法证书抛出异常', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 读取证书失败，确认参数是否正确');
 
     CertManager::unipayGetCertId('not-a-real-pkcs12-content', '000000');
-});
+})->throws(InvalidConfigException::class, '配置异常: 读取证书失败，确认参数是否正确');
 

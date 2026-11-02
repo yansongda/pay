@@ -31,8 +31,6 @@ it('多渠道签名', function () {
 
 it('空签名', function () {
     $plugin = new VerifySignaturePlugin();
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
 
     $body = 'errCode=1&field1=&field2=&field3=&orderNo=20240617144526400259379&orderStatus=1&outTradeNo=YC202406170003&partnerId=6a13eab71c4f4b0aa4757eda6fc59710&payUrl=http://weixintest.jsbchina.cn/epcs/qr/login.htm?qrCode=2018060611052793473720240617144526688568&respBizDate=20240617&respCode=000000&respMsg=交易成功&totalFee=0.01&validTime=2';
 
@@ -40,19 +38,17 @@ it('空签名', function () {
 
     $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
     expect($result)->toBe($rocket);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('签名错误', function () {
     $plugin = new VerifySignaturePlugin();
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
     $body = 'errCode=1&field1=&field2=&field3=&orderNo=20240617144526400259379&orderStatus=1&outTradeNo=YC202406170003&partnerId=6a13eab71c4f4b0aa4757eda6fc59710&payUrl=http://weixintest.jsbchina.cn/epcs/qr/login.htm?qrCode=2018060611052793473720240617144526688568&respBizDate=20240617&respCode=000000&respMsg=交易成功&totalFee=0.01&validTime=2&signType=RSA&sign=jN3Ha6J9UUIe9M0L/XeexEdaRL9GB6nMV12wNC7LQvTS6V4nKHj4Qzw6M8cNsA9L0Tb3QFT83B0qO3FJnruDrcHKqBLZb4FkoKKN/WiDBuA2UZQjG4+CBejoGJWfpkWSsei9tXUk36TB27lc2ZlYXSEwuuDwM7M9yvlYysc3fjg=';
 
     $rocket = (new Rocket())->setDestinationOrigin(new Response(200, [], $body));
 
     $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
     expect($result)->toBe($rocket);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('缺少 epay 公钥证书路径', function () {
     $plugin = new VerifySignaturePlugin();
@@ -64,11 +60,8 @@ it('缺少 epay 公钥证书路径', function () {
     $config = VerifySignaturePlugin::getProviderConfig('jsb');
     expect($config)->toBeInstanceOf(JsbConfig::class);
     $config->setJsbPublicCertPath('');
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_JSB_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少江苏银行配置 -- [jsb_public_cert_path]');
 
     $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
     expect($result)->toBe($rocket);
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少江苏银行配置 -- [jsb_public_cert_path]', Exception::CONFIG_JSB_INVALID);
 

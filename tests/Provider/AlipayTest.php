@@ -31,18 +31,14 @@ use function Yansongda\Artful\filter_params;
 uses(AlipayTestHelpers::class);
 
 it('快捷方式不存在', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::alipay()->foo();
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_INVALID);
 
 it('快捷方式不兼容', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::alipay()->foo();
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_INVALID);
 
 it('网页', function () {
     $result = Pay::alipay()->web([
@@ -228,10 +224,8 @@ it('应用回调', function () {
     $result = Pay::alipay()->appCallback($appCallbackParams, ['_config' => 'default']);
     expect($result->all())->not->toBeEmpty();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_CALLBACK_REQUEST_INVALID);
     Pay::alipay()->appCallback([]);
-});
+})->throws(InvalidParamsException::class, null, \Yansongda\Pay\Exception\Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('成功', function () {
     $result = Pay::alipay()->success();
@@ -319,10 +313,8 @@ it('V3 回调参数被篡改', function () {
     $form = $this->makeV3CallbackForm();
     $form['total_amount'] = '999.00';
 
-    $this->expectException(InvalidSignException::class);
-
     Pay::alipay()->callback($form, ['_config' => 'alipay-v3']);
-});
+})->throws(InvalidSignException::class);
 
 it('网关动作回调', function () {
     $form = $this->makeGwVerifyForm();
@@ -349,12 +341,9 @@ it('webhook 表单方式网关动作回调', function () {
 });
 
 it('未知动作回调', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-    $this->expectExceptionMessage('参数异常: 不支持的回调 _action [foo]');
 
     Pay::alipay()->callback(['_action' => 'foo']);
-});
+})->throws(InvalidParamsException::class, '参数异常: 不支持的回调 _action [foo]', \Yansongda\Pay\Exception\Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
 trait AlipayTestHelpers
 {

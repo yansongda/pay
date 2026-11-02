@@ -53,12 +53,8 @@ it('缺少 code 抛出异常', function () {
     $rocket = new Rocket();
     $rocket->setParams([]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少微信网页授权参数 -- [code]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少微信网页授权参数 -- [code]', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少配置密钥抛出异常', function () {
     $plugin = new WebAccessTokenPlugin();
@@ -68,10 +64,6 @@ it('缺少配置密钥抛出异常', function () {
         'code' => 'the_wechat_oauth_code',
     ]);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mp_app_secret] 或 [mp_app_id]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少微信配置 -- [mp_app_secret] 或 [mp_app_id]', Exception::CONFIG_WECHAT_INVALID);
 

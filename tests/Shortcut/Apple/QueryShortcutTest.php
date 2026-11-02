@@ -59,12 +59,9 @@ it('订阅动作', function () {
 
 it('未知动作', function () {
     $shortcut = new QueryShortcut();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
-    $this->expectExceptionMessage('不支持的 _action [foo]');
 
     $shortcut->getPlugins(['_action' => 'foo']);
-});
+})->throws(InvalidParamsException::class, '不支持的 _action [foo]', Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 it('HTTP mock 下的查询端到端', function () {
     $http = \Mockery::mock(\GuzzleHttp\Client::class);
     $captured = null;

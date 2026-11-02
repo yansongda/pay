@@ -12,24 +12,16 @@ it('模式错误', function () {
     $plugin = new ReturnAdvancePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
-    $this->expectExceptionMessage('参数异常: 平台收付通（退款）-垫付退款回补，只支持服务商模式，当前配置为普通商户模式');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 平台收付通（退款）-垫付退款回补，只支持服务商模式，当前配置为普通商户模式', Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
 
 it('空 payload', function () {
     $plugin = new ReturnAdvancePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider']);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 平台收付通（退款）-垫付退款回补，缺少必要参数 `refund_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 平台收付通（退款）-垫付退款回补，缺少必要参数 `refund_id`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('普通参数', function () {
     $plugin = new ReturnAdvancePlugin();

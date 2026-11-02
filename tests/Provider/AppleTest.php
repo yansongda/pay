@@ -18,18 +18,14 @@ it('支付', function () {
 });
 
 it('撤销', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::apple()->cancel([]);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
 it('关单', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::apple()->close([]);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
 it('成功', function () {
     $result = Pay::apple()->success();
