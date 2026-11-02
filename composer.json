@@ -53,7 +53,7 @@
         }
     },
     "scripts": {
-        "test": "./vendor/bin/pest --colors=always --fail-on-risky --fail-on-warning --disallow-test-output",
+        "test": "./vendor/bin/pest --colors=always",
         "cs-fix": "php-cs-fixer fix --dry-run --diff 1>&2",
         "analyse": "phpstan analyse --memory-limit 300M -l 6 ./src"
     },

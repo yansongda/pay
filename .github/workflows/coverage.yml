@@ -21,7 +21,7 @@ jobs:
       - name: Install Dependencies
         run: composer require hyperf/pimple
       - name: Run Coverage
-        run: vendor/bin/pest --coverage-clover coverage.xml --coverage-filter src
+        run: vendor/bin/pest --coverage-clover coverage.xml
       - name: Upload Coverage
         uses: codecov/codecov-action@v4
         with:
