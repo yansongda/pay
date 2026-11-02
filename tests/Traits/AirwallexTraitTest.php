@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Traits;
-
 use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
@@ -13,106 +11,91 @@ use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Pay;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\AirwallexTrait;
 use Yansongda\Supports\Collection;
 
 class AirwallexTraitStub
 {
-    use AirwallexTrait;
+use AirwallexTrait;
 }
 
-class AirwallexTraitTest extends TestCase
-{
-    public function testGetAirwallexRequestId(): void
-    {
-        self::assertMatchesRegularExpression(
-            '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
-            AirwallexTraitStub::getAirwallexRequestId()
-        );
-    }
+it('get airwallex request id', function () {
+    expect(AirwallexTraitStub::getAirwallexRequestId())->toMatch('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/');
+});
 
-    public function testGetAirwallexUrl(): void
-    {
-        $config = new AirwallexConfig([
-            'client_id' => 'airwallex_client_id',
-            'api_key' => 'airwallex_api_key',
-        ]);
-        $sandboxConfig = new AirwallexConfig([
-            'client_id' => 'airwallex_client_id',
-            'api_key' => 'airwallex_api_key',
-            'mode' => PayMode::SANDBOX,
-        ]);
+it('get airwallex url', function () {
+    $config = new AirwallexConfig([
+        'client_id' => 'airwallex_client_id',
+        'api_key' => 'airwallex_api_key',
+    ]);
+    $sandboxConfig = new AirwallexConfig([
+        'client_id' => 'airwallex_client_id',
+        'api_key' => 'airwallex_api_key',
+        'mode' => PayMode::SANDBOX,
+    ]);
 
-        self::assertSame('https://yansongda.cn', AirwallexTraitStub::getAirwallexUrl($config, new Collection(['_url' => 'https://yansongda.cn'])));
-        self::assertSame('https://api.airwallex.com/api/v1/authentication/login', AirwallexTraitStub::getAirwallexUrl($config, new Collection(['_url' => '/api/v1/authentication/login'])));
-        self::assertSame('https://api-demo.airwallex.com/api/v1/authentication/login', AirwallexTraitStub::getAirwallexUrl($sandboxConfig, new Collection(['_url' => '/api/v1/authentication/login'])));
+    expect(AirwallexTraitStub::getAirwallexUrl($config, new Collection(['_url' => 'https://yansongda.cn'])))->toBe('https://yansongda.cn');
+    expect(AirwallexTraitStub::getAirwallexUrl($config, new Collection(['_url' => '/api/v1/authentication/login'])))->toBe('https://api.airwallex.com/api/v1/authentication/login');
+    expect(AirwallexTraitStub::getAirwallexUrl($sandboxConfig, new Collection(['_url' => '/api/v1/authentication/login'])))->toBe('https://api-demo.airwallex.com/api/v1/authentication/login');
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_AIRWALLEX_URL_MISSING);
-        AirwallexTraitStub::getAirwallexUrl($config, new Collection([]));
-    }
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_AIRWALLEX_URL_MISSING);
+    AirwallexTraitStub::getAirwallexUrl($config, new Collection([]));
+});
 
-    public function testGetAirwallexAccessTokenFromCache(): void
-    {
-        /** @var AirwallexConfig $config */
-        $config = Pay::get(ConfigInterface::class)->get('airwallex.default');
-        $config->setAccessToken('cached_airwallex_token');
-        $config->setAccessTokenExpiry(time() + 3600);
+it('get airwallex access token from cache', function () {
+    $config = Pay::get(ConfigInterface::class)->get('airwallex.default');
+    $config->setAccessToken('cached_airwallex_token');
+    $config->setAccessTokenExpiry(time() + 3600);
 
-        self::assertSame('cached_airwallex_token', AirwallexTraitStub::getAirwallexAccessToken([]));
-    }
+    expect(AirwallexTraitStub::getAirwallexAccessToken([]))->toBe('cached_airwallex_token');
+});
 
-    public function testGetAirwallexAccessTokenMissingCredentials(): void
-    {
-        /** @var AirwallexConfig $config */
-        $config = Pay::get(ConfigInterface::class)->get('airwallex.default');
-        $config->setClientId('');
+it('get airwallex access token missing credentials', function () {
+    $config = Pay::get(ConfigInterface::class)->get('airwallex.default');
+    $config->setClientId('');
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_AIRWALLEX_INVALID);
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_AIRWALLEX_INVALID);
 
-        AirwallexTraitStub::getAirwallexAccessToken([]);
-    }
+    AirwallexTraitStub::getAirwallexAccessToken([]);
+});
 
-    public function testVerifyAirwallexWebhookSignEmptySignature(): void
-    {
-        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/airwallex/notify', [], '{}');
+it('verify airwallex webhook sign empty signature', function () {
+    $request = new ServerRequest('POST', 'https://pay.yansongda.cn/airwallex/notify', [], '{}');
 
-        self::expectException(InvalidSignException::class);
-        self::expectExceptionCode(Exception::SIGN_EMPTY);
+    $this->expectException(InvalidSignException::class);
+    $this->expectExceptionCode(Exception::SIGN_EMPTY);
 
-        AirwallexTraitStub::verifyAirwallexWebhookSign($request, []);
-    }
+    AirwallexTraitStub::verifyAirwallexWebhookSign($request, []);
+});
 
-    public function testVerifyAirwallexWebhookSign(): void
-    {
-        $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
-        $timestamp = (string) ((int) (microtime(true) * 1000));
-        $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
-        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/airwallex/notify', [
-            'x-timestamp' => $timestamp,
-            'x-signature' => $signature,
-        ], $body);
+it('verify airwallex webhook sign', function () {
+    $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
+    $timestamp = (string) ((int) (microtime(true) * 1000));
+    $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
+    $request = new ServerRequest('POST', 'https://pay.yansongda.cn/airwallex/notify', [
+        'x-timestamp' => $timestamp,
+        'x-signature' => $signature,
+    ], $body);
 
-        AirwallexTraitStub::verifyAirwallexWebhookSign($request, []);
+    AirwallexTraitStub::verifyAirwallexWebhookSign($request, []);
 
-        self::assertTrue(true);
-    }
+    expect(true)->toBeTrue();
+});
 
-    public function testVerifyAirwallexWebhookSignExpiredTimestamp(): void
-    {
-        $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
-        $timestamp = (string) (((int) (microtime(true) * 1000)) - 301000);
-        $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
-        $request = new ServerRequest('POST', 'https://pay.yansongda.cn/airwallex/notify', [
-            'x-timestamp' => $timestamp,
-            'x-signature' => $signature,
-        ], $body);
+it('verify airwallex webhook sign expired timestamp', function () {
+    $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
+    $timestamp = (string) (((int) (microtime(true) * 1000)) - 301000);
+    $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
+    $request = new ServerRequest('POST', 'https://pay.yansongda.cn/airwallex/notify', [
+        'x-timestamp' => $timestamp,
+        'x-signature' => $signature,
+    ], $body);
 
-        self::expectException(InvalidSignException::class);
-        self::expectExceptionCode(Exception::SIGN_ERROR);
+    $this->expectException(InvalidSignException::class);
+    $this->expectExceptionCode(Exception::SIGN_ERROR);
 
-        AirwallexTraitStub::verifyAirwallexWebhookSign($request, []);
-    }
-}
+    AirwallexTraitStub::verifyAirwallexWebhookSign($request, []);
+});
+

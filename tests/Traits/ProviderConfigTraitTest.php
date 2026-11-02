@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Traits;
-
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
@@ -12,258 +10,231 @@ use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Pay as PayFacade;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Pay\Traits\ProviderConfigTrait;
 use Yansongda\Supports\Collection;
 
 class ProviderConfigTraitStub
 {
-    use ProviderConfigTrait;
+use ProviderConfigTrait;
 }
 
-class ProviderConfigTraitTest extends TestCase
-{
-    public function testGetTenantDefault(): void
-    {
-        self::assertSame('default', ProviderConfigTraitStub::getTenant());
-    }
+it('get tenant default', function () {
+    expect(ProviderConfigTraitStub::getTenant())->toBe('default');
+});
 
-    public function testGetTenantCustom(): void
-    {
-        self::assertSame('yansongda', ProviderConfigTraitStub::getTenant(['_config' => 'yansongda']));
-    }
+it('get tenant custom', function () {
+    expect(ProviderConfigTraitStub::getTenant(['_config' => 'yansongda']))->toBe('yansongda');
+});
 
-    public function testGetProviderConfigDefault(): void
-    {
-        self::assertSame(
-            PayFacade::get(ConfigInterface::class)->get('alipay.'.ProviderConfigTraitStub::getTenant()),
-            ProviderConfigTraitStub::getProviderConfig('alipay')
-        );
-    }
+it('get provider config default', function () {
+    expect(ProviderConfigTraitStub::getProviderConfig('alipay'))->toBe(PayFacade::get(ConfigInterface::class)->get('alipay.'.ProviderConfigTraitStub::getTenant()));
+});
 
-    public function testGetProviderConfigAlipay(): void
-    {
-        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('alipay');
-        self::assertInstanceOf(AlipayConfig::class, $defaultConfig);
+it('get provider config alipay', function () {
+    $defaultConfig = ProviderConfigTraitStub::getProviderConfig('alipay');
+    expect($defaultConfig)->toBeInstanceOf(AlipayConfig::class);
 
-        PayFacade::clear();
+    PayFacade::clear();
 
-        $config2 = [
-            'alipay' => [
-                'default' => [
-                    'app_id' => 'yansongda',
-                    'app_secret_cert' => 'secret',
-                    'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
-                    'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-                    'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
-                ],
-                'c1' => [
-                    'app_id' => 'yansongda-c1',
-                    'app_secret_cert' => 'secret',
-                    'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
-                    'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
-                    'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
-                ],
+    $config2 = [
+        'alipay' => [
+            'default' => [
+                'app_id' => 'yansongda',
+                'app_secret_cert' => 'secret',
+                'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+                'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+                'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
             ],
-        ];
-        PayFacade::config($config2);
-        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('alipay');
-        if (!$defaultConfig instanceof AlipayConfig) {
-            self::fail('Expected alipay config to be '.AlipayConfig::class);
+            'c1' => [
+                'app_id' => 'yansongda-c1',
+                'app_secret_cert' => 'secret',
+                'app_public_cert_path' => __DIR__.'/../Cert/alipayAppPublicCert.crt',
+                'alipay_public_cert_path' => __DIR__.'/../Cert/alipayPublicCert.crt',
+                'alipay_root_cert_path' => __DIR__.'/../Cert/alipayRootCert.crt',
+            ],
+        ],
+    ];
+    PayFacade::config($config2);
+    $defaultConfig = ProviderConfigTraitStub::getProviderConfig('alipay');
+    if (!$defaultConfig instanceof AlipayConfig) {
+        $this->fail('Expected alipay config to be '.AlipayConfig::class);
+    }
+
+    expect($defaultConfig->getAppId())->toBe('yansongda');
+
+    $customConfig = ProviderConfigTraitStub::getProviderConfig('alipay', ['_config' => 'c1']);
+    if (!$customConfig instanceof AlipayConfig) {
+        $this->fail('Expected alipay tenant config to be '.AlipayConfig::class);
+    }
+
+    expect($customConfig->getAppId())->toBe('yansongda-c1');
+});
+
+it('get provider config wechat', function () {
+    $defaultConfig = ProviderConfigTraitStub::getProviderConfig('wechat', []);
+    expect($defaultConfig)->toBeInstanceOf(WechatConfig::class);
+
+    $config2 = [
+        'wechat' => [
+            'default' => [
+                'mch_id' => '1600314069',
+                'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
+                'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
+                'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+                'notify_url' => 'https://pay.yansongda.cn',
+                'mp_app_id' => 'wx-default',
+            ],
+            'c1' => [
+                'mch_id' => '1600314070',
+                'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
+                'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
+                'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+                'notify_url' => 'https://pay.yansongda.cn',
+                'mp_app_id' => 'wx-c1',
+            ],
+        ],
+    ];
+    PayFacade::config(array_merge($config2, ['_force' => true]));
+    $defaultConfig = ProviderConfigTraitStub::getProviderConfig('wechat', []);
+    if (!$defaultConfig instanceof WechatConfig) {
+        $this->fail('Expected wechat config to be '.WechatConfig::class);
+    }
+
+    expect($defaultConfig->getMpAppId())->toBe('wx-default');
+
+    $customConfig = ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'c1']);
+    if (!$customConfig instanceof WechatConfig) {
+        $this->fail('Expected wechat tenant config to be '.WechatConfig::class);
+    }
+
+    expect($customConfig->getMpAppId())->toBe('wx-c1');
+});
+
+it('get provider config unipay', function () {
+    $defaultConfig = ProviderConfigTraitStub::getProviderConfig('unipay');
+    expect($defaultConfig)->toBeInstanceOf(UnipayConfig::class);
+
+    PayFacade::clear();
+
+    $config2 = [
+        'unipay' => [
+            'default' => [
+                'mch_cert_path' => __DIR__.'/../Cert/unipayAppCert.pfx',
+                'mch_cert_password' => '000000',
+                'mch_id' => 'yansongda',
+            ],
+            'c1' => [
+                'mch_cert_path' => __DIR__.'/../Cert/unipayAppCert.pfx',
+                'mch_cert_password' => '000000',
+                'mch_id' => 'yansongda-c1',
+            ],
+        ],
+    ];
+    PayFacade::config($config2);
+    $defaultConfig = ProviderConfigTraitStub::getProviderConfig('unipay');
+    if (!$defaultConfig instanceof UnipayConfig) {
+        $this->fail('Expected unipay config to be '.UnipayConfig::class);
+    }
+
+    expect($defaultConfig->getMchId())->toBe('yansongda');
+
+    $customConfig = ProviderConfigTraitStub::getProviderConfig('unipay', ['_config' => 'c1']);
+    if (!$customConfig instanceof UnipayConfig) {
+        $this->fail('Expected unipay tenant config to be '.UnipayConfig::class);
+    }
+
+    expect($customConfig->getMchId())->toBe('yansongda-c1');
+});
+
+it('get provider config custom tenant', function () {
+    expect(ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'service_provider']))->toBe(PayFacade::get(ConfigInterface::class)->get('wechat.service_provider'));
+});
+
+it('get provider config returns provider config object', function () {
+    $config = new class implements ProviderConfigInterface {
+        public function getTenant(): string
+        {
+            return 'default';
         }
 
-        self::assertSame('yansongda', $defaultConfig->getAppId());
-
-        $customConfig = ProviderConfigTraitStub::getProviderConfig('alipay', ['_config' => 'c1']);
-        if (!$customConfig instanceof AlipayConfig) {
-            self::fail('Expected alipay tenant config to be '.AlipayConfig::class);
+        public function getMode(): PayMode
+        {
+            return PayMode::NORMAL;
         }
 
-        self::assertSame('yansongda-c1', $customConfig->getAppId());
-    }
-
-    public function testGetProviderConfigWechat(): void
-    {
-        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('wechat', []);
-        self::assertInstanceOf(WechatConfig::class, $defaultConfig);
-
-        $config2 = [
-            'wechat' => [
-                'default' => [
-                    'mch_id' => '1600314069',
-                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                    'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
-                    'notify_url' => 'https://pay.yansongda.cn',
-                    'mp_app_id' => 'wx-default',
-                ],
-                'c1' => [
-                    'mch_id' => '1600314070',
-                    'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-                    'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
-                    'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
-                    'notify_url' => 'https://pay.yansongda.cn',
-                    'mp_app_id' => 'wx-c1',
-                ],
-            ],
-        ];
-        PayFacade::config(array_merge($config2, ['_force' => true]));
-        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('wechat', []);
-        if (!$defaultConfig instanceof WechatConfig) {
-            self::fail('Expected wechat config to be '.WechatConfig::class);
+        public function get(?string $key = null, mixed $default = null): mixed
+        {
+            return $default;
         }
 
-        self::assertSame('wx-default', $defaultConfig->getMpAppId());
-
-        $customConfig = ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'c1']);
-        if (!$customConfig instanceof WechatConfig) {
-            self::fail('Expected wechat tenant config to be '.WechatConfig::class);
+        public function validate(): void
+        {
         }
 
-        self::assertSame('wx-c1', $customConfig->getMpAppId());
-    }
-
-    public function testGetProviderConfigUnipay(): void
-    {
-        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('unipay');
-        self::assertInstanceOf(UnipayConfig::class, $defaultConfig);
-
-        PayFacade::clear();
-
-        $config2 = [
-            'unipay' => [
-                'default' => [
-                    'mch_cert_path' => __DIR__.'/../Cert/unipayAppCert.pfx',
-                    'mch_cert_password' => '000000',
-                    'mch_id' => 'yansongda',
-                ],
-                'c1' => [
-                    'mch_cert_path' => __DIR__.'/../Cert/unipayAppCert.pfx',
-                    'mch_cert_password' => '000000',
-                    'mch_id' => 'yansongda-c1',
-                ],
-            ],
-        ];
-        PayFacade::config($config2);
-        $defaultConfig = ProviderConfigTraitStub::getProviderConfig('unipay');
-        if (!$defaultConfig instanceof UnipayConfig) {
-            self::fail('Expected unipay config to be '.UnipayConfig::class);
+        public function toArray(): array
+        {
+            return ['foo' => 'bar'];
         }
+    };
 
-        self::assertSame('yansongda', $defaultConfig->getMchId());
+    PayFacade::config([
+        '_force' => true,
+        'custom' => [
+            'default' => $config,
+        ],
+    ]);
 
-        $customConfig = ProviderConfigTraitStub::getProviderConfig('unipay', ['_config' => 'c1']);
-        if (!$customConfig instanceof UnipayConfig) {
-            self::fail('Expected unipay tenant config to be '.UnipayConfig::class);
-        }
+    expect(ProviderConfigTraitStub::getProviderConfig('custom'))->toBe($config);
+});
 
-        self::assertSame('yansongda-c1', $customConfig->getMchId());
-    }
+it('get radar url null', function () {
+    $config = ProviderConfigTraitStub::getProviderConfig('wechat');
+    expect(ProviderConfigTraitStub::getRadarUrl($config, null))->toBeNull();
+    expect(ProviderConfigTraitStub::getRadarUrl($config, new Collection()))->toBeNull();
+});
 
-    public function testGetProviderConfigCustomTenant(): void
-    {
-        self::assertSame(
-            PayFacade::get(ConfigInterface::class)->get('wechat.service_provider'),
-            ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'service_provider'])
-        );
-    }
+it('get radar url normal', function () {
+    $config = ProviderConfigTraitStub::getProviderConfig('wechat');
+    expect(ProviderConfigTraitStub::getRadarUrl($config, new Collection(['_url' => 'https://yansongda.cn'])))->toBe('https://yansongda.cn');
+});
 
-    public function testGetProviderConfigReturnsProviderConfigObject(): void
-    {
-        $config = new class implements ProviderConfigInterface {
-            public function getTenant(): string
-            {
-                return 'default';
-            }
+it('get radar url service', function () {
+    $serviceConfig = new WechatConfig([
+        'app_id' => 'yansongda',
+        'mp_app_id' => 'wx55955316af4ef13',
+        'mch_id' => '1600314069',
+        'mini_app_id' => 'wx55955316af4ef14',
+        'mch_secret_key_v2' => 'yansongda',
+        'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
+        'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
+        'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+        'notify_url' => 'https://pay.yansongda.cn',
+        'wechat_public_cert_path' => [
+            '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
+            'yansongda' => __DIR__.'/../Cert/wechatPublicKey.crt',
+        ],
+        'sub_mch_id' => '1600314070',
+        'mode' => PayMode::SERVICE,
+    ]);
+    expect(ProviderConfigTraitStub::getRadarUrl(
+            $serviceConfig,
+            new Collection(['_url' => 'https://yansongda.cn', '_service_url' => 'https://yansongda.cnaaa'])
+        ))->toBe('https://yansongda.cnaaa');
+});
 
-            public function getMode(): PayMode
-            {
-                return PayMode::NORMAL;
-            }
-
-            public function get(?string $key = null, mixed $default = null): mixed
-            {
-                return $default;
-            }
-
-            public function validate(): void
-            {
-            }
-
-            public function toArray(): array
-            {
-                return ['foo' => 'bar'];
-            }
-        };
-
-        PayFacade::config([
-            '_force' => true,
-            'custom' => [
-                'default' => $config,
+it('get provider config validates on access', function () {
+    PayFacade::config([
+        'alipay' => [
+            'default' => [
+                'app_id' => 'x',
             ],
-        ]);
+        ],
+        '_force' => true,
+    ]);
 
-        self::assertSame($config, ProviderConfigTraitStub::getProviderConfig('custom'));
-    }
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_secret_cert]');
 
-    public function testGetRadarUrlNull(): void
-    {
-        $config = ProviderConfigTraitStub::getProviderConfig('wechat');
-        self::assertNull(ProviderConfigTraitStub::getRadarUrl($config, null));
-        self::assertNull(ProviderConfigTraitStub::getRadarUrl($config, new Collection()));
-    }
+    ProviderConfigTraitStub::getProviderConfig('alipay', []);
+});
 
-    public function testGetRadarUrlNormal(): void
-    {
-        $config = ProviderConfigTraitStub::getProviderConfig('wechat');
-        self::assertSame(
-            'https://yansongda.cn',
-            ProviderConfigTraitStub::getRadarUrl($config, new Collection(['_url' => 'https://yansongda.cn']))
-        );
-    }
-
-    public function testGetRadarUrlService(): void
-    {
-        $serviceConfig = new WechatConfig([
-            'app_id' => 'yansongda',
-            'mp_app_id' => 'wx55955316af4ef13',
-            'mch_id' => '1600314069',
-            'mini_app_id' => 'wx55955316af4ef14',
-            'mch_secret_key_v2' => 'yansongda',
-            'mch_secret_key' => '53D67FCB97E68F9998CBD17ED7A8D1E2',
-            'mch_secret_cert' => __DIR__.'/../Cert/wechatAppPrivateKey.pem',
-            'mch_public_cert_path' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
-            'notify_url' => 'https://pay.yansongda.cn',
-            'wechat_public_cert_path' => [
-                '45F59D4DABF31918AFCEC556D5D2C6E376675D57' => __DIR__.'/../Cert/wechatAppPublicKey.pem',
-                'yansongda' => __DIR__.'/../Cert/wechatPublicKey.crt',
-            ],
-            'sub_mch_id' => '1600314070',
-            'mode' => PayMode::SERVICE,
-        ]);
-        self::assertSame(
-            'https://yansongda.cnaaa',
-            ProviderConfigTraitStub::getRadarUrl(
-                $serviceConfig,
-                new Collection(['_url' => 'https://yansongda.cn', '_service_url' => 'https://yansongda.cnaaa'])
-            )
-        );
-    }
-
-    public function testGetProviderConfigValidatesOnAccess(): void
-    {
-        PayFacade::config([
-            'alipay' => [
-                'default' => [
-                    'app_id' => 'x',
-                ],
-            ],
-            '_force' => true,
-        ]);
-
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_secret_cert]');
-
-        ProviderConfigTraitStub::getProviderConfig('alipay', []);
-    }
-}
