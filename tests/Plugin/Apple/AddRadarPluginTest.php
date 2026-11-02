@@ -2,186 +2,163 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Apple;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Apple\AddRadarPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddRadarPluginTest extends TestCase
-{
-    protected AddRadarPlugin $plugin;
+it('normal get with sandbox url', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'GET',
+        '_url' => '/inApps/v1/transactions/123',
+        '_no_jwt' => true,
+    ]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        $this->plugin = new AddRadarPlugin();
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-    public function testNormalGetWithSandboxUrl(): void
-    {
-        $payload = new Collection([
-            '_method' => 'GET',
-            '_url' => '/inApps/v1/transactions/123',
-            '_no_jwt' => true,
-        ]);
+    expect($radar->getMethod())->toEqual('GET');
+    expect((string) $radar->getUri())->toEqual('https://api.storekit-sandbox.apple.com/inApps/v1/transactions/123');
+    expect($radar->getHeaderLine('Content-Type'))->toEqual('application/json');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('authorization with jwt', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'GET',
+        '_url' => '/inApps/v1/transactions/123',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertEquals('GET', $radar->getMethod());
-        self::assertEquals('https://api.storekit-sandbox.apple.com/inApps/v1/transactions/123', (string) $radar->getUri());
-        self::assertEquals('application/json', $radar->getHeaderLine('Content-Type'));
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-    public function testAuthorizationWithJwt(): void
-    {
-        $payload = new Collection([
-            '_method' => 'GET',
-            '_url' => '/inApps/v1/transactions/123',
-        ]);
+    $authorization = $radar->getHeaderLine('Authorization');
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+    expect($authorization)->toStartWith('Bearer ');
+    expect(explode('.', substr($authorization, 7)))->toHaveCount(3);
+});
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
+it('no jwt when no jwt flag', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'GET',
+        '_url' => '/inApps/v1/transactions/123',
+        '_no_jwt' => true,
+    ]);
 
-        $authorization = $radar->getHeaderLine('Authorization');
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertStringStartsWith('Bearer ', $authorization);
-        self::assertCount(3, explode('.', substr($authorization, 7)));
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-    public function testNoJwtWhenNoJwtFlag(): void
-    {
-        $payload = new Collection([
-            '_method' => 'GET',
-            '_url' => '/inApps/v1/transactions/123',
-            '_no_jwt' => true,
-        ]);
+    expect($radar->hasHeader('Authorization'))->toBeFalse();
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('custom headers override content type', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'GET',
+        '_url' => '/inApps/v1/transactions/123',
+        '_no_jwt' => true,
+        '_headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+    ]);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertFalse($radar->hasHeader('Authorization'));
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-    public function testCustomHeadersOverrideContentType(): void
-    {
-        $payload = new Collection([
-            '_method' => 'GET',
-            '_url' => '/inApps/v1/transactions/123',
-            '_no_jwt' => true,
-            '_headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-        ]);
+    expect($radar->getHeaderLine('Content-Type'))->toEqual('application/x-www-form-urlencoded');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('method and body passthrough', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/inApps/v1/subscriptions/123',
+        '_body' => '{"foo":"bar"}',
+        '_no_jwt' => true,
+    ]);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertEquals('application/x-www-form-urlencoded', $radar->getHeaderLine('Content-Type'));
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-    public function testMethodAndBodyPassthrough(): void
-    {
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/inApps/v1/subscriptions/123',
-            '_body' => '{"foo":"bar"}',
-            '_no_jwt' => true,
-        ]);
+    expect($radar->getMethod())->toEqual('POST');
+    expect((string) $radar->getBody())->toEqual('{"foo":"bar"}');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('http url passthrough', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => 'https://apple-pay-gateway.apple.com/paymentservices/startSession',
+        '_body' => '{"merchantIdentifier":"merchant.com.yansongda.pay"}',
+        '_no_jwt' => true,
+    ]);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals('{"foo":"bar"}', (string) $radar->getBody());
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-    public function testHttpUrlPassthrough(): void
-    {
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => 'https://apple-pay-gateway.apple.com/paymentservices/startSession',
-            '_body' => '{"merchantIdentifier":"merchant.com.yansongda.pay"}',
-            '_no_jwt' => true,
-        ]);
+    expect((string) $radar->getUri())->toEqual('https://apple-pay-gateway.apple.com/paymentservices/startSession');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('query appended with ampersand when url has query', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'GET',
+        '_url' => '/inApps/v1/subscriptions/123?status=1&status=4',
+        '_query' => ['revision' => 'abc'],
+        '_no_jwt' => true,
+    ]);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertEquals('https://apple-pay-gateway.apple.com/paymentservices/startSession', (string) $radar->getUri());
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-    public function testQueryAppendedWithAmpersandWhenUrlHasQuery(): void
-    {
-        $payload = new Collection([
-            '_method' => 'GET',
-            '_url' => '/inApps/v1/subscriptions/123?status=1&status=4',
-            '_query' => ['revision' => 'abc'],
-            '_no_jwt' => true,
-        ]);
+    expect((string) $radar->getUri())->toEqual('https://api.storekit-sandbox.apple.com/inApps/v1/subscriptions/123?status=1&status=4&revision=abc');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('query appended with question mark when url has no query', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'GET',
+        '_url' => '/inApps/v1/transactions/123',
+        '_query' => ['revision' => 'abc'],
+        '_no_jwt' => true,
+    ]);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertEquals(
-            'https://api.storekit-sandbox.apple.com/inApps/v1/subscriptions/123?status=1&status=4&revision=abc',
-            (string) $radar->getUri()
-        );
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-    public function testQueryAppendedWithQuestionMarkWhenUrlHasNoQuery(): void
-    {
-        $payload = new Collection([
-            '_method' => 'GET',
-            '_url' => '/inApps/v1/transactions/123',
-            '_query' => ['revision' => 'abc'],
-            '_no_jwt' => true,
-        ]);
+    expect((string) $radar->getUri())->toEqual('https://api.storekit-sandbox.apple.com/inApps/v1/transactions/123?revision=abc');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('query filters null values', function () {
+    $plugin = new AddRadarPlugin();
+    // filter_params 对齐 Stripe：null 值不进入最终 query string
+    $payload = new Collection([
+        '_method' => 'GET',
+        '_url' => '/inApps/v2/history/123',
+        '_query' => ['revision' => 'abc', 'startDate' => null, 'endDate' => null],
+        '_no_jwt' => true,
+    ]);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertEquals(
-            'https://api.storekit-sandbox.apple.com/inApps/v1/transactions/123?revision=abc',
-            (string) $radar->getUri()
-        );
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-    public function testQueryFiltersNullValues(): void
-    {
-        // filter_params 对齐 Stripe：null 值不进入最终 query string
-        $payload = new Collection([
-            '_method' => 'GET',
-            '_url' => '/inApps/v2/history/123',
-            '_query' => ['revision' => 'abc', 'startDate' => null, 'endDate' => null],
-            '_no_jwt' => true,
-        ]);
+    expect((string) $radar->getUri())->toEqual('https://api.storekit-sandbox.apple.com/inApps/v2/history/123?revision=abc');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
-
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
-
-        self::assertEquals(
-            'https://api.storekit-sandbox.apple.com/inApps/v2/history/123?revision=abc',
-            (string) $radar->getUri()
-        );
-    }
-}

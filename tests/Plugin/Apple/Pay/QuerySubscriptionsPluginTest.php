@@ -2,175 +2,161 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Apple\Pay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Enum\Apple\SubscriptionStatus;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Apple\Pay\QuerySubscriptionsPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QuerySubscriptionsPluginTest extends TestCase
-{
-    protected QuerySubscriptionsPlugin $plugin;
+it('normal', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456']));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
+    $url = $payload->get('_url');
 
-        $this->plugin = new QuerySubscriptionsPlugin();
-    }
+    expect($payload->get('_method'))->toEqual('GET');
+    expect($url)->toContain('/inApps/v1/subscriptions/');
+    expect($url)->toContain('tx_test_456');
+    // Apple 需要重复参数形式，禁止 http_build_query 数组生成的 %5B0%5D 形式
+    expect($url)->toContain('status=1&status=4');
+    expect($url)->not->toContain('%5B');
+    expect($payload->has('transaction_id'))->toBeFalse();
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456']));
+it('status override', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [3]]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
-        $url = $payload->get('_url');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
+    $url = $payload->get('_url');
 
-        self::assertEquals('GET', $payload->get('_method'));
-        self::assertStringContainsString('/inApps/v1/subscriptions/', $url);
-        self::assertStringContainsString('tx_test_456', $url);
-        // Apple 需要重复参数形式，禁止 http_build_query 数组生成的 %5B0%5D 形式
-        self::assertStringContainsString('status=1&status=4', $url);
-        self::assertStringNotContainsString('%5B', $url);
-        self::assertFalse($payload->has('transaction_id'));
-    }
+    expect($url)->toContain('status=3');
+    expect($url)->not->toContain('status=1');
+    expect($url)->not->toContain('%5B');
+});
 
-    public function testStatusOverride()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [3]]));
+it('status override scalar', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => 2]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
-        $url = $payload->get('_url');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertStringContainsString('status=3', $url);
-        self::assertStringNotContainsString('status=1', $url);
-        self::assertStringNotContainsString('%5B', $url);
-    }
+    expect($payload->get('_url'))->toContain('status=2');
+    expect($payload->get('_url'))->not->toContain('%5B');
+});
 
-    public function testStatusOverrideScalar()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => 2]));
+it('status override enum', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'transaction_id' => 'tx_test_456',
+        '_status' => [SubscriptionStatus::EXPIRED, SubscriptionStatus::REVOKED],
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $url = $result->getPayload()->get('_url');
 
-        self::assertStringContainsString('status=2', $payload->get('_url'));
-        self::assertStringNotContainsString('%5B', $payload->get('_url'));
-    }
+    expect($url)->toContain('status=2&status=5');
+    expect($url)->not->toContain('status=1');
+});
 
-    public function testStatusOverrideEnum()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'transaction_id' => 'tx_test_456',
-            '_status' => [SubscriptionStatus::EXPIRED, SubscriptionStatus::REVOKED],
-        ]));
+it('status override scalar enum', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'transaction_id' => 'tx_test_456',
+        '_status' => SubscriptionStatus::BILLING_RETRY,
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $url = $result->getPayload()->get('_url');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertStringContainsString('status=2&status=5', $url);
-        self::assertStringNotContainsString('status=1', $url);
-    }
+    expect($result->getPayload()->get('_url'))->toContain('status=3');
+});
 
-    public function testStatusOverrideScalarEnum()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'transaction_id' => 'tx_test_456',
-            '_status' => SubscriptionStatus::BILLING_RETRY,
-        ]));
+it('url encoded transaction id', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx id/with 特殊字符']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertStringContainsString('status=3', $result->getPayload()->get('_url'));
-    }
+    expect($payload->get('_url'))->toContain('/inApps/v1/subscriptions/'.urlencode('tx id/with 特殊字符'));
+});
 
-    public function testUrlEncodedTransactionId()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx id/with 特殊字符']));
+it('except payload keeps other fields', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', 'other' => 'keep_me']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertStringContainsString('/inApps/v1/subscriptions/'.urlencode('tx id/with 特殊字符'), $payload->get('_url'));
-    }
+    expect($payload->has('transaction_id'))->toBeFalse();
+    expect($payload->get('other'))->toEqual('keep_me');
+});
 
-    public function testExceptPayloadKeepsOtherFields()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', 'other' => 'keep_me']));
+it('invalid status throws exception', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [0]]));
 
-        self::assertFalse($payload->has('transaction_id'));
-        self::assertEquals('keep_me', $payload->get('other'));
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testInvalidStatusThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+it('non int status throws exception', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [0]]));
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => ['abc']]));
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testNonIntStatusThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+it('out of range status throws exception', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: Apple 查询订阅状态，_status 仅允许 SubscriptionStatus 枚举或 1-5 的整数');
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => ['abc']]));
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [6]]));
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testOutOfRangeStatusThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: Apple 查询订阅状态，_status 仅允许 SubscriptionStatus 枚举或 1-5 的整数');
+it('missing transaction id', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: Apple 查询订阅状态，缺少 transaction_id 参数');
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [6]]));
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([]));
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingTransactionId()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: Apple 查询订阅状态，缺少 transaction_id 参数');
+it('null payload throws exception', function () {
+    $plugin = new QuerySubscriptionsPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([]));
+    $rocket = new Rocket();
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testNullPayloadThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-        $rocket = new Rocket();
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}

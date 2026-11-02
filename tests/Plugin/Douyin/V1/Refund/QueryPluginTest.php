@@ -2,84 +2,70 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Douyin\V1\Refund;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryPluginTest extends TestCase
-{
-    protected QueryPlugin $plugin;
+it('normal', function () {
+    $plugin = new QueryPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'refund_id' => '7016089888760043861',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $payload = $result->getPayload();
 
-        $this->plugin = new QueryPlugin();
-    }
+    expect($payload->get('_method'))->toBe('POST');
+    expect($payload->get('_url'))->toBe('/api/trade_basic/v1/developer/refund_query/');
+    // 透传字段保留
+    expect($payload->get('refund_id'))->toBe('7016089888760043861');
+    // 无注入键：业务接口均无 app_id/notify_url 字段，不得注入
+    expect(array_keys($payload->all()))->toBe(['refund_id', '_method', '_url']);
+});
 
-    public function testNormal(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'refund_id' => '7016089888760043861',
-        ]));
+it('out refund no and order id', function () {
+    $plugin = new QueryPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'out_refund_no' => '202408040747147327',
+        'order_id' => '7016089888760043860',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $payload = $result->getPayload();
 
-        self::assertSame('POST', $payload->get('_method'));
-        self::assertSame('/api/trade_basic/v1/developer/refund_query/', $payload->get('_url'));
-        // 透传字段保留
-        self::assertSame('7016089888760043861', $payload->get('refund_id'));
-        // 无注入键：业务接口均无 app_id/notify_url 字段，不得注入
-        self::assertSame(['refund_id', '_method', '_url'], array_keys($payload->all()));
-    }
+    expect($payload->get('out_refund_no'))->toBe('202408040747147327');
+    expect($payload->get('order_id'))->toBe('7016089888760043860');
+    expect($payload->all())->not->toHaveKey('app_id');
+    expect($payload->all())->not->toHaveKey('notify_url');
+});
 
-    public function testOutRefundNoAndOrderId(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'out_refund_no' => '202408040747147327',
-            'order_id' => '7016089888760043860',
-        ]));
+it('empty payload', function () {
+    $plugin = new QueryPlugin();
+    $rocket = new Rocket();
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $payload = $result->getPayload();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 抖音查询退款，缺少必要的业务参数');
 
-        self::assertSame('202408040747147327', $payload->get('out_refund_no'));
-        self::assertSame('7016089888760043860', $payload->get('order_id'));
-        self::assertArrayNotHasKey('app_id', $payload->all());
-        self::assertArrayNotHasKey('notify_url', $payload->all());
-    }
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-    public function testEmptyPayload(): void
-    {
-        $rocket = new Rocket();
+it('only filtered params payload', function () {
+    $plugin = new QueryPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        '_foo' => 'bar',
+        'refund_id' => null,
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 抖音查询退款，缺少必要的业务参数');
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 抖音查询退款，缺少必要的业务参数');
 
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-    public function testOnlyFilteredParamsPayload(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            '_foo' => 'bar',
-            'refund_id' => null,
-        ]));
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 抖音查询退款，缺少必要的业务参数');
-
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
-}

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Douyin\V1;
-
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Artful\Contract\ConfigInterface;
 use Yansongda\Artful\Exception\InvalidConfigException;
@@ -14,122 +12,110 @@ use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\GetClientTokenPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class GetClientTokenPluginTest extends TestCase
-{
-    protected GetClientTokenPlugin $plugin;
+it('normal', function () {
+    $plugin = new GetClientTokenPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $payload = $result->getPayload();
 
-        $this->plugin = new GetClientTokenPlugin();
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/oauth/client_token/');
+    expect($payload->get('grant_type'))->toEqual('client_credential');
+    expect($payload->get('client_key'))->toEqual('tt226e54d3bd581bf801');
+    expect($payload->get('client_secret'))->toEqual('douyin_app_secret');
+});
 
-    public function testNormal(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
+it('missing app id', function () {
+    $plugin = new GetClientTokenPlugin();
+    $config = new DouyinConfig([
+        'app_id' => 'tt226e54d3bd581bf801',
+        'app_secret' => 'douyin_app_secret',
+    ]);
+    $config->setAppId('');
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $payload = $result->getPayload();
+    Pay::set(ConfigInterface::class, new Config([
+        'douyin' => ['default' => $config],
+    ]));
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/oauth/client_token/', $payload->get('_url'));
-        self::assertEquals('client_credential', $payload->get('grant_type'));
-        self::assertEquals('tt226e54d3bd581bf801', $payload->get('client_key'));
-        self::assertEquals('douyin_app_secret', $payload->get('client_secret'));
-    }
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
 
-    public function testMissingAppId(): void
-    {
-        $config = new DouyinConfig([
-            'app_id' => 'tt226e54d3bd581bf801',
-            'app_secret' => 'douyin_app_secret',
-        ]);
-        $config->setAppId('');
+    $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
+});
 
-        Pay::set(ConfigInterface::class, new Config([
-            'douyin' => ['default' => $config],
-        ]));
+it('missing app secret', function () {
+    $plugin = new GetClientTokenPlugin();
+    $config = new DouyinConfig([
+        'app_id' => 'tt226e54d3bd581bf801',
+        'app_secret' => 'douyin_app_secret',
+    ]);
+    $config->setAppSecret('');
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
+    Pay::set(ConfigInterface::class, new Config([
+        'douyin' => ['default' => $config],
+    ]));
 
-        $this->plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
-    }
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
 
-    public function testMissingAppSecret(): void
-    {
-        $config = new DouyinConfig([
-            'app_id' => 'tt226e54d3bd581bf801',
-            'app_secret' => 'douyin_app_secret',
-        ]);
-        $config->setAppSecret('');
+    $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
+});
 
-        Pay::set(ConfigInterface::class, new Config([
-            'douyin' => ['default' => $config],
-        ]));
+it('success response', function () {
+    $plugin = new GetClientTokenPlugin();
+    $destination = [
+        'data' => [
+            'access_token' => 'clt.9f2c8a1e',
+            'expires_in' => 7200,
+            'error_code' => 0,
+            'description' => '',
+        ],
+        'message' => 'success',
+    ];
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(200));
+    $rocket->setDestination(new Collection($destination));
 
-        $this->plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-    public function testSuccessResponse(): void
-    {
-        $destination = [
-            'data' => [
-                'access_token' => 'clt.9f2c8a1e',
-                'expires_in' => 7200,
-                'error_code' => 0,
-                'description' => '',
-            ],
-            'message' => 'success',
-        ];
+    expect($result->getDestination())->toBeInstanceOf(Collection::class);
+    expect($result->getDestination()->all())->toEqual($destination);
+});
 
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(200));
-        $rocket->setDestination(new Collection($destination));
+it('business error response throws exception', function () {
+    $plugin = new GetClientTokenPlugin();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(200));
+    $rocket->setDestination(new Collection([
+        'data' => [
+            'access_token' => '',
+            'expires_in' => 0,
+            'error_code' => 10013,
+            'description' => 'client_key 无效',
+        ],
+        'message' => 'error',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
+    $this->expectExceptionMessage('获取抖音 client_token 失败: error_code=10013, description=client_key 无效');
 
-        self::assertInstanceOf(Collection::class, $result->getDestination());
-        self::assertEquals($destination, $result->getDestination()->all());
-    }
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-    public function testBusinessErrorResponseThrowsException(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(200));
-        $rocket->setDestination(new Collection([
-            'data' => [
-                'access_token' => '',
-                'expires_in' => 0,
-                'error_code' => 10013,
-                'description' => 'client_key 无效',
-            ],
-            'message' => 'error',
-        ]));
+it('server error throws exception', function () {
+    $plugin = new GetClientTokenPlugin();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(500));
 
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
-        self::expectExceptionMessage('获取抖音 client_token 失败: error_code=10013, description=client_key 无效');
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-    public function testServerErrorThrowsException(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(500));
-
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
-}

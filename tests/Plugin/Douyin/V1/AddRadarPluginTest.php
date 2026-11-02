@@ -2,82 +2,68 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Douyin\V1;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddRadarPluginTest extends TestCase
-{
-    protected AddRadarPlugin $plugin;
+it('normal without access token', function () {
+    $plugin = new AddRadarPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
+    $rocket->setPayload(new Collection([
+        '_url' => '/api/trade/v2/create/order',
+        'out_order_no' => '20240101123456',
+        'total_amount' => 1,
+        'subject' => '测试商品',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-        $this->plugin = new AddRadarPlugin();
-    }
+    expect($radar->getMethod())->toEqual('POST');
+    expect((string) $radar->getUri())->toEqual('https://open-sandbox.douyin.com/api/trade/v2/create/order');
+    expect($radar->getHeaderLine('Content-Type'))->toEqual('application/json');
+    expect($radar->getHeaderLine('User-Agent'))->toEqual('yansongda/pay-v3');
+    expect($radar->hasHeader('access-token'))->toBeFalse();
+    expect((string) $radar->getBody())->toEqual(json_encode([
+        'out_order_no' => '20240101123456',
+        'total_amount' => 1,
+        'subject' => '测试商品',
+    ], JSON_UNESCAPED_UNICODE));
+});
 
-    public function testNormalWithoutAccessToken(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
-        $rocket->setPayload(new Collection([
-            '_url' => '/api/trade/v2/create/order',
-            'out_order_no' => '20240101123456',
-            'total_amount' => 1,
-            'subject' => '测试商品',
-        ]));
+it('access token header and body priority', function () {
+    $plugin = new AddRadarPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
+    $rocket->setPayload(new Collection([
+        '_url' => '/api/trade/v2/refund/create/refund',
+        '_access_token' => 'clt.abc123',
+        '_body' => '{"out_order_no":"20240101123456","refund_amount":1}',
+        'ignored_field' => 'not_in_body',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals('https://open-sandbox.douyin.com/api/trade/v2/create/order', (string) $radar->getUri());
-        self::assertEquals('application/json', $radar->getHeaderLine('Content-Type'));
-        self::assertEquals('yansongda/pay-v3', $radar->getHeaderLine('User-Agent'));
-        self::assertFalse($radar->hasHeader('access-token'));
-        self::assertEquals(json_encode([
-            'out_order_no' => '20240101123456',
-            'total_amount' => 1,
-            'subject' => '测试商品',
-        ], JSON_UNESCAPED_UNICODE), (string) $radar->getBody());
-    }
+    expect($radar->getMethod())->toEqual('POST');
+    expect($radar->getHeaderLine('access-token'))->toEqual('clt.abc123');
+    // `_body` 优先，业务字段不再重复打包
+    expect((string) $radar->getBody())->toEqual('{"out_order_no":"20240101123456","refund_amount":1}');
+});
 
-    public function testAccessTokenHeaderAndBodyPriority(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
-        $rocket->setPayload(new Collection([
-            '_url' => '/api/trade/v2/refund/create/refund',
-            '_access_token' => 'clt.abc123',
-            '_body' => '{"out_order_no":"20240101123456","refund_amount":1}',
-            'ignored_field' => 'not_in_body',
-        ]));
+it('empty body when payload only underscore keys', function () {
+    $plugin = new AddRadarPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
+    $rocket->setPayload(new Collection(['_url' => '/api/trade/v2/query/order']));
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $radar = $result->getRadar();
 
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals('clt.abc123', $radar->getHeaderLine('access-token'));
-        // `_body` 优先，业务字段不再重复打包
-        self::assertEquals('{"out_order_no":"20240101123456","refund_amount":1}', (string) $radar->getBody());
-    }
+    expect($radar->getMethod())->toEqual('POST');
+    expect((string) $radar->getUri())->toEqual('https://open-sandbox.douyin.com/api/trade/v2/query/order');
+    expect($radar->hasHeader('access-token'))->toBeFalse();
+    expect((string) $radar->getBody())->toEqual('');
+});
 
-    public function testEmptyBodyWhenPayloadOnlyUnderscoreKeys(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
-        $rocket->setPayload(new Collection(['_url' => '/api/trade/v2/query/order']));
-
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-        $radar = $result->getRadar();
-
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals('https://open-sandbox.douyin.com/api/trade/v2/query/order', (string) $radar->getUri());
-        self::assertFalse($radar->hasHeader('access-token'));
-        self::assertEquals('', (string) $radar->getBody());
-    }
-}

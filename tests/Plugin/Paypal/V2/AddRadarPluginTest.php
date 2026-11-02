@@ -2,86 +2,67 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Paypal\V2;
-
 use Yansongda\Artful\Rocket;
-use PHPUnit\Framework\Attributes\DataProvider;
 use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddRadarPluginTest extends TestCase
-{
-    protected AddRadarPlugin $plugin;
+it('bearer auth', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/v2/checkout/orders',
+        '_body' => '{"intent":"CAPTURE"}',
+        '_access_token' => 'test_token_abc',
+    ]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        $this->plugin = new AddRadarPlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $radar = $result->getRadar();
 
-    public function testBearerAuth()
-    {
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/v2/checkout/orders',
-            '_body' => '{"intent":"CAPTURE"}',
-            '_access_token' => 'test_token_abc',
-        ]);
+    expect($radar->getHeaderLine('User-Agent'))->toEqual('yansongda/pay-v3');
+    expect($radar->getHeaderLine('Content-Type'))->toEqual('application/json; charset=utf-8');
+    expect($radar->getHeaderLine('Authorization'))->toStartWith('Bearer ');
+    expect($radar->getHeaderLine('Authorization'))->toContain('test_token_abc');
+    expect($radar->getMethod())->toEqual('POST');
+    expect((string) $radar->getUri())->toContain('v2/checkout/orders');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('basic auth', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/v1/oauth2/token',
+        '_auth_type' => 'basic',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertEquals('yansongda/pay-v3', $radar->getHeaderLine('User-Agent'));
-        self::assertEquals('application/json; charset=utf-8', $radar->getHeaderLine('Content-Type'));
-        self::assertStringStartsWith('Bearer ', $radar->getHeaderLine('Authorization'));
-        self::assertStringContainsString('test_token_abc', $radar->getHeaderLine('Authorization'));
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertStringContainsString('v2/checkout/orders', (string) $radar->getUri());
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $radar = $result->getRadar();
 
-    public function testBasicAuth()
-    {
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/v1/oauth2/token',
-            '_auth_type' => 'basic',
-        ]);
+    expect($radar->getHeaderLine('Authorization'))->toStartWith('Basic ');
+    expect($radar->getHeaderLine('Content-Type'))->toEqual('application/x-www-form-urlencoded');
+    expect((string) $radar->getBody())->toEqual('grant_type=client_credentials');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('empty body omitted', function (string $body) {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/v2/checkout/orders/ORDER_123/capture',
+        '_body' => $body,
+        '_access_token' => 'test_token_abc',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertStringStartsWith('Basic ', $radar->getHeaderLine('Authorization'));
-        self::assertEquals('application/x-www-form-urlencoded', $radar->getHeaderLine('Content-Type'));
-        self::assertEquals('grant_type=client_credentials', (string) $radar->getBody());
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    #[DataProvider('provideEmptyBodies')]
-    public function testEmptyBodyOmitted(string $body): void
-    {
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/v2/checkout/orders/ORDER_123/capture',
-            '_body' => $body,
-            '_access_token' => 'test_token_abc',
-        ]);
+    expect($result->getRadar()->getBody()->getContents())->toEqual('');
+})->with([
+        'empty string' => [''],
+        'empty json array' => ['[]'],
+        'empty json object' => ['{}']
+    ]);
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('', $result->getRadar()->getBody()->getContents());
-    }
-
-    public static function provideEmptyBodies(): iterable
-    {
-        yield 'empty string' => [''];
-        yield 'empty json array' => ['[]'];
-        yield 'empty json object' => ['{}'];
-    }
-}

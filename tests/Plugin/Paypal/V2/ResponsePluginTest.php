@@ -2,61 +2,47 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Paypal\V2;
-
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class ResponsePluginTest extends TestCase
-{
-    protected ResponsePlugin $plugin;
+it('success response', function () {
+    $plugin = new ResponsePlugin();
+    $destination = ['id' => 'ORDER_123', 'status' => 'CREATED'];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(201));
+    $rocket->setDestination(new Collection($destination));
 
-        $this->plugin = new ResponsePlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testSuccessResponse()
-    {
-        $destination = ['id' => 'ORDER_123', 'status' => 'CREATED'];
+    expect($result->getDestination())->toBeInstanceOf(Collection::class);
+    expect($result->getDestination()->all())->toEqual($destination);
+});
 
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(201));
-        $rocket->setDestination(new Collection($destination));
+it('non success response throws exception', function () {
+    $plugin = new ResponsePlugin();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(400));
+    $rocket->setDestination(new Collection(['error' => 'INVALID_REQUEST']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
-        self::assertInstanceOf(Collection::class, $result->getDestination());
-        self::assertEquals($destination, $result->getDestination()->all());
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testNonSuccessResponseThrowsException()
-    {
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(400));
-        $rocket->setDestination(new Collection(['error' => 'INVALID_REQUEST']));
+it('server error throws exception', function () {
+    $plugin = new ResponsePlugin();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(500));
 
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testServerErrorThrowsException()
-    {
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(500));
-
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}

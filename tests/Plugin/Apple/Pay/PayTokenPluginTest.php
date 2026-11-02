@@ -2,75 +2,61 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Apple\Pay;
-
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Apple\Pay\PayTokenPlugin;
 use Yansongda\Pay\Tests\Support\Apple\AppleTokenFactory;
-use Yansongda\Pay\Tests\TestCase;
 
-class PayTokenPluginTest extends TestCase
-{
-    protected PayTokenPlugin $plugin;
+it('normal', function () {
+    $plugin = new PayTokenPlugin();
+    $token = AppleTokenFactory::makeToken(['applicationPrimaryAccountID' => '123456', 'totalAmount' => '100']);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = new Rocket();
+    $rocket->setParams(['token' => $token]);
 
-        $this->plugin = new PayTokenPlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testNormal()
-    {
-        $token = AppleTokenFactory::makeToken(['applicationPrimaryAccountID' => '123456', 'totalAmount' => '100']);
+    expect($result->getDirection())->toEqual(NoHttpRequestDirection::class);
+    expect($result->getPayload()->get('applicationPrimaryAccountID'))->toEqual('123456');
+    expect($result->getPayload()->get('totalAmount'))->toEqual('100');
+    expect($result->getPayload()->get('_token_header'))->toEqual($token['header']);
+    expect($result->getPayload())->toBe($result->getDestination());
+});
 
-        $rocket = new Rocket();
-        $rocket->setParams(['token' => $token]);
+it('underscore token', function () {
+    $plugin = new PayTokenPlugin();
+    $token = AppleTokenFactory::makeToken(['applicationPrimaryAccountID' => '888888']);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setParams(['_token' => $token]);
 
-        self::assertEquals(NoHttpRequestDirection::class, $result->getDirection());
-        self::assertEquals('123456', $result->getPayload()->get('applicationPrimaryAccountID'));
-        self::assertEquals('100', $result->getPayload()->get('totalAmount'));
-        self::assertEquals($token['header'], $result->getPayload()->get('_token_header'));
-        self::assertSame($result->getDestination(), $result->getPayload());
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testUnderscoreToken()
-    {
-        $token = AppleTokenFactory::makeToken(['applicationPrimaryAccountID' => '888888']);
+    expect($result->getPayload()->get('applicationPrimaryAccountID'))->toEqual('888888');
+    expect($result->getPayload()->get('_token_header'))->toEqual($token['header']);
+});
 
-        $rocket = new Rocket();
-        $rocket->setParams(['_token' => $token]);
+it('missing token throws exception', function () {
+    $plugin = new PayTokenPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setParams([]);
 
-        self::assertEquals('888888', $result->getPayload()->get('applicationPrimaryAccountID'));
-        self::assertEquals($token['header'], $result->getPayload()->get('_token_header'));
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingTokenThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
+it('invalid token throws exception', function () {
+    $plugin = new PayTokenPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
 
-        $rocket = new Rocket();
-        $rocket->setParams([]);
+    $rocket = new Rocket();
+    $rocket->setParams(['token' => ['data' => 'invalid']]);
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testInvalidTokenThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
-
-        $rocket = new Rocket();
-        $rocket->setParams(['token' => ['data' => 'invalid']]);
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}

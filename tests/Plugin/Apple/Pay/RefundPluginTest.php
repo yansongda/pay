@@ -2,98 +2,84 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Apple\Pay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Apple\Pay\RefundPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class RefundPluginTest extends TestCase
-{
-    protected RefundPlugin $plugin;
+it('normal', function () {
+    $plugin = new RefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456']));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new RefundPlugin();
-    }
+    expect($payload->get('_method'))->toEqual('GET');
+    expect($payload->get('_url'))->toContain('inApps/v2/refund/lookup/');
+    expect($payload->get('_url'))->toContain('tx_test_456');
+    expect($payload->has('transaction_id'))->toBeFalse();
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456']));
+it('url encoded transaction id', function () {
+    $plugin = new RefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx id/with 特殊字符']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertEquals('GET', $payload->get('_method'));
-        self::assertStringContainsString('inApps/v2/refund/lookup/', $payload->get('_url'));
-        self::assertStringContainsString('tx_test_456', $payload->get('_url'));
-        self::assertFalse($payload->has('transaction_id'));
-    }
+    expect($payload->get('_url'))->toContain('/inApps/v2/refund/lookup/'.urlencode('tx id/with 特殊字符'));
+});
 
-    public function testUrlEncodedTransactionId()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx id/with 特殊字符']));
+it('except payload keeps other fields', function () {
+    $plugin = new RefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', 'other' => 'keep_me']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertStringContainsString('/inApps/v2/refund/lookup/'.urlencode('tx id/with 特殊字符'), $payload->get('_url'));
-    }
+    expect($payload->has('transaction_id'))->toBeFalse();
+    expect($payload->get('other'))->toEqual('keep_me');
+});
 
-    public function testExceptPayloadKeepsOtherFields()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', 'other' => 'keep_me']));
+it('signed transactions passed through untouched', function () {
+    $plugin = new RefundPlugin();
+    // 一期设计决策：退款历史响应中的 signedTransactions（内嵌 JWS）不做自动验签，数组原样透传给调用方
+    $signedTransactions = [
+        'eyJhbGciOiJFUzI1NiJ9.eyJ0cmFuc2FjdGlvbklkIjoidHhfc2lnbmVkXzEifQ.sig1',
+        'eyJhbGciOiJFUzI1NiJ9.eyJ0cmFuc2FjdGlvbklkIjoidHhfc2lnbmVkXzIifQ.sig2',
+    ];
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', 'signedTransactions' => $signedTransactions]));
 
-        self::assertFalse($payload->has('transaction_id'));
-        self::assertEquals('keep_me', $payload->get('other'));
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-    public function testSignedTransactionsPassedThroughUntouched()
-    {
-        // 一期设计决策：退款历史响应中的 signedTransactions（内嵌 JWS）不做自动验签，数组原样透传给调用方
-        $signedTransactions = [
-            'eyJhbGciOiJFUzI1NiJ9.eyJ0cmFuc2FjdGlvbklkIjoidHhfc2lnbmVkXzEifQ.sig1',
-            'eyJhbGciOiJFUzI1NiJ9.eyJ0cmFuc2FjdGlvbklkIjoidHhfc2lnbmVkXzIifQ.sig2',
-        ];
+    expect($payload->get('signedTransactions'))->toBe($signedTransactions);
+});
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', 'signedTransactions' => $signedTransactions]));
+it('missing transaction id', function () {
+    $plugin = new RefundPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([]));
 
-        self::assertSame($signedTransactions, $payload->get('signedTransactions'));
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingTransactionId()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+it('null payload throws exception', function () {
+    $plugin = new RefundPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([]));
+    $rocket = new Rocket();
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testNullPayloadThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-        $rocket = new Rocket();
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}
