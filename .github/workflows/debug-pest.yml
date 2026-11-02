@@ -1,0 +1,54 @@
+name: Debug Pest Args
+on:
+  push:
+    branches:
+      - chore/tests-pest-cleanup-2026-11-02
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: openssl
+          coverage: none
+      - name: Install
+        run: composer require hyperf/pimple
+      - name: Probe plugins
+        run: |
+          cat > /tmp/probe.php <<'PHP'
+          <?php
+          require 'vendor/autoload.php';
+
+          fwrite(STDERR, "cwd=" . getcwd() . "\n");
+          fwrite(STDERR, "temp realpath=" . var_export(realpath('vendor/pestphp/pest/.temp'), true) . "\n");
+          fwrite(STDERR, ".pest.xml exists=" . var_export(file_exists('.pest.xml'), true) . "\n");
+          fwrite(STDERR, "phpunit.xml exists=" . var_export(file_exists('phpunit.xml'), true) . "\n");
+          fwrite(STDERR, "pest version=" . \Composer\InstalledVersions::getPrettyVersion('pestphp/pest') . "\n");
+
+          $args = ['vendor/bin/pest', '--colors=always'];
+          $args = (new Pest\Plugins\Configuration())->handleArguments($args);
+          fwrite(STDERR, "after Configuration=" . json_encode(array_values($args), JSON_UNESCAPED_SLASHES) . "\n");
+          fwrite(STDERR, ".pest.xml realpath=" . var_export(realpath('.pest.xml'), true) . "\n");
+
+          $args = (new Pest\Plugins\Cache())->handleArguments($args);
+          fwrite(STDERR, "after Cache=" . json_encode(array_values($args), JSON_UNESCAPED_SLASHES) . "\n");
+
+          $args2 = ['vendor/bin/pest', '--colors=always'];
+          $args2 = (new Pest\Plugins\Cache())->handleArguments($args2);
+          fwrite(STDERR, "cache first=" . json_encode(array_values($args2), JSON_UNESCAPED_SLASHES) . "\n");
+          $args2 = (new Pest\Plugins\Configuration())->handleArguments($args2);
+          fwrite(STDERR, "then configuration=" . json_encode(array_values($args2), JSON_UNESCAPED_SLASHES) . "\n");
+          PHP
+          php /tmp/probe.php
+      - name: Probe real argv
+        run: |
+          cat > /tmp/argvdump.php <<'PHP'
+          <?php
+          require 'vendor/autoload.php';
+          fwrite(STDERR, 'ARGV=' . json_encode($_SERVER['argv']) . "\n");
+          PHP
+          php -d auto_prepend_file=/tmp/argvdump.php vendor/bin/pest --colors=never 2>&1 | head -20
