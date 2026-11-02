@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v3.8.0-beta.9] - 2026-11-02
+
+### Changed
+
+- 依赖 `yansongda/supports` 最低版本由 `~4.1.0` 提升至 `~4.1.2`；插件内 `Collection::toString()` 统一改用 `toQueryString()`（行为等价，`toString()` 自 4.1.2 起标记 deprecated，后续大版本移除）（#1237）
+- 测试框架由 PHPUnit 迁移至 Pest，`composer test` 入口不变；测试辅助方法外置至 `tests/Support/`（#1224~#1238）
+
 ## [v3.8.0-beta.8] - 2026-10-13
 
 ### Added
