@@ -2,51 +2,37 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Open;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class StartPluginTest extends TestCase
-{
-    protected StartPlugin $plugin;
+it('normal', function () {
+    $plugin = new StartPlugin();
+    $params = [
+        'txnTime' => '20220903065448',
+        'txnAmt' => 1,
+        'orderId' => 'yansongda20220903065448',
+    ];
+    $payload = array_merge($params, [
+        '_unpack_raw' => true,
+        'certId' => '69903319369',
+    ]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = (new Rocket())->setParams($params);
 
-        $this->plugin = new StartPlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testNormal()
-    {
-        $params = [
-            'txnTime' => '20220903065448',
-            'txnAmt' => 1,
-            'orderId' => 'yansongda20220903065448',
-        ];
-        $payload = array_merge($params, [
-            '_unpack_raw' => true,
-            'certId' => '69903319369',
-        ]);
+    expect($result->getPayload()->all())->toEqual($payload);
 
-        $rocket = (new Rocket())->setParams($params);
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    expect(true)->toBeTrue();
+});
 
-        self::assertEquals($payload, $result->getPayload()->all());
+it('certs cached', function () {
+    $plugin = new StartPlugin();
+    $result = $plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    expect($payload->get('certId'))->toEqual('69903319369');
+});
 
-        self::assertTrue(true);
-    }
-
-    public function testCertsCached()
-    {
-        $result = $this->plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
-
-        self::assertEquals('69903319369', $payload->get('certId'));
-    }
-}

@@ -2,35 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class StartPluginTest extends TestCase
-{
-    protected StartPlugin $plugin;
+it('normal', function () {
+    $plugin = new StartPlugin();
+    $params = [
+        'txnTime' => '20220903065448',
+        'txnAmt' => 1,
+        'orderId' => 'yansongda20220903065448',
+    ];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = (new Rocket())->setParams($params);
 
-        $this->plugin = new StartPlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testNormal()
-    {
-        $params = [
-            'txnTime' => '20220903065448',
-            'txnAmt' => 1,
-            'orderId' => 'yansongda20220903065448',
-        ];
+    expect($result->getPayload()->all())->toEqual($params);
+});
 
-        $rocket = (new Rocket())->setParams($params);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals($params, $result->getPayload()->all());
-    }
-}

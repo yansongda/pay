@@ -2,62 +2,48 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Unipay\Qra;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddPayloadSignaturePluginTest extends TestCase
-{
-    protected AddPayloadSignaturePlugin $plugin;
+it('normal', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $payload = [
+        'out_trade_no' => 'pos-qra-20240106163401',
+        'body' => '测试商品',
+        'total_fee' => 1,
+        'mch_create_ip' => '127.0.0.1',
+        'auth_code' => '131969896307360385',
+        'op_device_id' => '123',
+        'terminal_info' => json_encode([
+            'device_type' => '07',
+            'terminal_id' => '123',
+        ]),
+        'service' => 'unified.trade.micropay',
+        'charset' => 'UTF-8',
+        'sign_type' => 'MD5',
+        'mch_id' => 'QRA29045311KKR1',
+        'nonce_str' => 'UhxOr4kzerPGku9wCaVQyfd1zisoAnAm',
+        '_aaa' => 'bb',
+        'a' => null,
+    ];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = (new Rocket())->setParams(['_config' => 'qra'])->setPayload($payload);
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new AddPayloadSignaturePlugin();
-    }
+    expect($payload->get('sign'))->toEqual('DB571C2F75C657B42485CD07470F0FB9');
+});
 
-    public function testNormal()
-    {
-        $payload = [
-            'out_trade_no' => 'pos-qra-20240106163401',
-            'body' => '测试商品',
-            'total_fee' => 1,
-            'mch_create_ip' => '127.0.0.1',
-            'auth_code' => '131969896307360385',
-            'op_device_id' => '123',
-            'terminal_info' => json_encode([
-                'device_type' => '07',
-                'terminal_id' => '123',
-            ]),
-            'service' => 'unified.trade.micropay',
-            'charset' => 'UTF-8',
-            'sign_type' => 'MD5',
-            'mch_id' => 'QRA29045311KKR1',
-            'nonce_str' => 'UhxOr4kzerPGku9wCaVQyfd1zisoAnAm',
-            '_aaa' => 'bb',
-            'a' => null,
-        ];
+it('payload empty', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $rocket = (new Rocket())->setPayload(new Collection());
 
-        $rocket = (new Rocket())->setParams(['_config' => 'qra'])->setPayload($payload);
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        self::assertEquals('DB571C2F75C657B42485CD07470F0FB9', $payload->get('sign'));
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testPayloadEmpty()
-    {
-        $rocket = (new Rocket())->setPayload(new Collection());
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}
