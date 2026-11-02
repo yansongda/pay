@@ -79,11 +79,8 @@ it('默认', function () {
         ParserPlugin::class,
     ]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED);
-
     $plugin->getPlugins(['_type' => 'foo']);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED);
 
 it('订单', function () {
     $plugin = new PapayShortcut();
@@ -156,17 +153,12 @@ it('合约', function () {
         AddPayloadSignaturePlugin::class,
     ]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED);
-
     $plugin->getPlugins(['_action' => 'contract', '_type' => 'app']);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_WECHAT_PAPAY_TYPE_NOT_SUPPORTED);
 
 it('foo', function () {
     $plugin = new PapayShortcut();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
     $plugin->getPlugins(['_action' => 'foo']);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 

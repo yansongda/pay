@@ -93,12 +93,8 @@ it('缺少应用公钥证书路径', function () {
     $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
     $alipayConfig->setAppPublicCertPath('/nonexistent/path/cert.crt');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
-    $this->expectExceptionMessage('配置异常: 解析证书失败');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidConfigException::class, '配置异常: 解析证书失败', Exception::CONFIG_CERT_PARSE_FAILED);
 
 it('应用公钥证书路径错误', function () {
     $plugin = new StartPlugin();
@@ -108,12 +104,8 @@ it('应用公钥证书路径错误', function () {
     $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
     $alipayConfig->setAppPublicCertPath(__DIR__.'/../../Cert/foo');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
-    $this->expectExceptionMessage('配置异常: 解析证书失败');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidConfigException::class, '配置异常: 解析证书失败', Exception::CONFIG_CERT_PARSE_FAILED);
 
 it('缺少支付宝根证书路径', function () {
     $plugin = new StartPlugin();
@@ -123,12 +115,8 @@ it('缺少支付宝根证书路径', function () {
     $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
     $alipayConfig->setAlipayRootCertPath('');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [alipay_root_cert_path]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少支付宝配置 -- [alipay_root_cert_path]', Exception::CONFIG_ALIPAY_INVALID);
 
 it('支付宝根证书路径错误', function () {
     $plugin = new StartPlugin();
@@ -138,12 +126,8 @@ it('支付宝根证书路径错误', function () {
     $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');
     $alipayConfig->setAlipayRootCertPath(__DIR__.'/../../../Cert/foo');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
-    $this->expectExceptionMessage('配置异常: 解析 `alipay_root_cert` 失败');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidConfigException::class, '配置异常: 解析 `alipay_root_cert` 失败', Exception::CONFIG_CERT_PARSE_FAILED);
 
 it('应用证书序列号已缓存', function () {
     $plugin = new StartPlugin();

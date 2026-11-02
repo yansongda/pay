@@ -54,11 +54,8 @@ it('获取 Apple URL', function () {
 it('获取 Apple URL 缺少配置抛出异常', function () {
     $config = new AppleConfig(['mode' => PayMode::NORMAL]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_APPLE_URL_MISSING);
-
     AppleTraitStub::getAppleUrl($config, new Collection([]));
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_APPLE_URL_MISSING);
 
 it('验证 Apple token', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
@@ -99,22 +96,16 @@ it('Apple token 携带 applicationData', function () {
 it('Apple token 数据被篡改', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA, ['tamperData' => true]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AppleTraitStub::verifyAppleToken($token, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple token 商户不匹配', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA, [
         'merchantCert' => $this->certPath('untrusted-root.crt'),
     ]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AppleTraitStub::verifyAppleToken($token, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple token 证书链不受信任', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA, [
@@ -123,11 +114,8 @@ it('Apple token 证书链不受信任', function () {
         'intermediateCert' => $this->certPath('untrusted-intermediate.crt'),
     ]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AppleTraitStub::verifyAppleToken($token, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple token 结构非法', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
@@ -161,11 +149,8 @@ it('Apple token 签名时间过期', function () {
 it('Apple token 使用默认根证书', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AppleTraitStub::verifyAppleToken($token, ['_config' => 'no_root_ca']);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple token ASN.1 深度超限', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
@@ -181,11 +166,8 @@ it('Apple token ASN.1 深度超限', function () {
 
     $token['signature'] = base64_encode($der);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AppleTraitStub::verifyAppleToken($token, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple token 签名过长', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
@@ -193,11 +175,8 @@ it('Apple token 签名过长', function () {
     // 超过 64KB 上限（真实 Apple token 约 3-4KB）
     $token['signature'] = base64_encode(str_repeat("\x30", 65537));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
-
     AppleTraitStub::verifyAppleToken($token, []);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_APPLE_TOKEN_INVALID);
 
 it('断言 Apple 证书未过期', function () {
     $method = new ReflectionMethod(Cryptor::class, 'assertCertNotExpired');
@@ -259,21 +238,15 @@ it('Apple JWS 被篡改', function () {
     $payload['notificationType'] = 'TAMPERED';
     $tampered = $parts[0].'.'.$this->b64UrlEncode((string) json_encode($payload)).'.'.$parts[2];
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AppleTraitStub::verifyAppleJws($tampered, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple JWS 证书链过短', function () {
     $header = ['alg' => 'ES256', 'x5c' => [base64_encode($this->certDer('jws-leaf.crt'))]];
     $shortChain = $this->signWithJwsLeaf($header, ['notificationType' => 'SUBSCRIBED']);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AppleTraitStub::verifyAppleJws($shortChain, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple JWS 归属 bundle 不匹配', function () {
     $jws = AppleJwsFactory::makeJws([
@@ -284,11 +257,8 @@ it('Apple JWS 归属 bundle 不匹配', function () {
         ],
     ]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AppleTraitStub::verifyAppleJws($jws, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Apple JWS 归属环境不匹配', function () {
     $jws = AppleJwsFactory::makeJws([
@@ -299,11 +269,8 @@ it('Apple JWS 归属环境不匹配', function () {
         ],
     ]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AppleTraitStub::verifyAppleJws($jws, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('未配置时 Apple JWS 归属校验跳过 bundle id', function () {
     $jws = AppleJwsFactory::makeJws([
@@ -330,11 +297,8 @@ it('Apple JWS 内层缺少 x5c 被拒绝', function () {
         ],
     ]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AppleTraitStub::verifyAppleJws($jws, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('生成 Apple JWT', function () {
     $jwt = AppleTraitStub::generateAppleJwt([]);
@@ -372,11 +336,9 @@ it('生成 Apple JWT', function () {
 });
 
 it('生成 Apple JWT 缺少 API 配置', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_APPLE_INVALID);
 
     AppleTraitStub::generateAppleJwt(['_config' => 'no_api_key']);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_APPLE_INVALID);
 
 it('PKCS7 验签交叉校验', function () {
     $token = AppleTokenFactory::makeToken(['transactionAmount' => 100, 'currencyCode' => '156']);
@@ -429,11 +391,8 @@ it('PHP 8.5 以下不支持 RSA v1', function () {
         'version' => 'RSA_v1',
     ];
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::DECRYPT_APPLE_FAILED);
-
     AppleTraitStub::verifyAppleToken($token, []);
-});
+})->throws(InvalidConfigException::class, null, Exception::DECRYPT_APPLE_FAILED);
 
 it('验证 RSA token', function () {
     $token = AppleTokenFactory::makeRsaToken([

@@ -40,22 +40,16 @@ it('客户端错误抛出异常', function () {
     $rocket->setDestinationOrigin(new Response(400));
     $rocket->setDestination(new Collection(['error' => ['type' => 'invalid_request_error']]));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 
 it('服务端错误抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(500));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 
 it('未授权抛出异常', function () {
     $plugin = new ResponsePlugin();
@@ -63,9 +57,6 @@ it('未授权抛出异常', function () {
     $rocket->setDestinationOrigin(new Response(401));
     $rocket->setDestination(new Collection(['error' => ['type' => 'authentication_error']]));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 

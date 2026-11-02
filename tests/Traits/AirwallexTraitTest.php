@@ -38,10 +38,8 @@ it('获取 Airwallex URL', function () {
     expect(AirwallexTraitStub::getAirwallexUrl($config, new Collection(['_url' => '/api/v1/authentication/login'])))->toBe('https://api.airwallex.com/api/v1/authentication/login');
     expect(AirwallexTraitStub::getAirwallexUrl($sandboxConfig, new Collection(['_url' => '/api/v1/authentication/login'])))->toBe('https://api-demo.airwallex.com/api/v1/authentication/login');
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_AIRWALLEX_URL_MISSING);
     AirwallexTraitStub::getAirwallexUrl($config, new Collection([]));
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_AIRWALLEX_URL_MISSING);
 
 it('从缓存获取 Airwallex access token', function () {
     $config = Pay::get(ConfigInterface::class)->get('airwallex.default');
@@ -55,20 +53,14 @@ it('Airwallex access token 缺少凭证', function () {
     $config = Pay::get(ConfigInterface::class)->get('airwallex.default');
     $config->setClientId('');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_AIRWALLEX_INVALID);
-
     AirwallexTraitStub::getAirwallexAccessToken([]);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_AIRWALLEX_INVALID);
 
 it('Airwallex webhook 验签：签名为空', function () {
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/airwallex/notify', [], '{}');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     AirwallexTraitStub::verifyAirwallexWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('Airwallex webhook 验签', function () {
     $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
@@ -93,9 +85,6 @@ it('Airwallex webhook 验签：时间戳过期', function () {
         'x-signature' => $signature,
     ], $body);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AirwallexTraitStub::verifyAirwallexWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 

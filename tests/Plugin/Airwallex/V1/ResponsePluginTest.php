@@ -37,20 +37,14 @@ it('客户端错误抛出异常', function () {
     $rocket->setDestinationOrigin(new Response(400));
     $rocket->setDestination(new Collection(['code' => 'validation_error']));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 
 it('服务端错误抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(500));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 

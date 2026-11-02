@@ -20,32 +20,24 @@ use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Supports\Collection;
 
 it('快捷方式不存在', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::paypal()->foo();
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_INVALID);
 
 it('快捷方式不兼容', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::paypal()->foo();
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_INVALID);
 
 it('撤销', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::paypal()->cancel([]);
-});
+})->throws(InvalidParamsException::class, null, \Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
 it('关单', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::paypal()->close([]);
-});
+})->throws(InvalidParamsException::class, null, \Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
 it('回调', function () {
     $body = json_encode([

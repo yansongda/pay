@@ -30,20 +30,16 @@ it('指定租户构造', function () {
 });
 
 it('缺少 client_id 构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少 Airwallex 配置 -- [client_id]');
 
     $config = new AirwallexConfig(['api_key' => 'airwallex_api_key']);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少 Airwallex 配置 -- [client_id]');
 
 it('缺少 api key 构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少 Airwallex 配置 -- [api_key]');
 
     $config = new AirwallexConfig(['client_id' => 'airwallex_client_id']);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少 Airwallex 配置 -- [api_key]');
 
 it('可选 getter', function () {
     $validConfig = [

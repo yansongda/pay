@@ -46,11 +46,8 @@ it('payload 为空', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $rocket = (new Rocket())->setPayload(new Collection());
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('空证书', function () {
     $plugin = new AddPayloadSignaturePlugin();

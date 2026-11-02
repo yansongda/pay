@@ -64,9 +64,7 @@ it('会话', function () {
 
 it('非法动作抛出异常', function () {
     $plugin = new OauthShortcut();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
     $plugin->getPlugins(['_action' => 'invalid_action']);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 

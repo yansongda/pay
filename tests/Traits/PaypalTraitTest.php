@@ -42,13 +42,11 @@ it('获取 PayPal URL', function () {
         'mode' => PayMode::SANDBOX,
     ]), new Collection(['_url' => '/v2/checkout/orders'])))->toEqual('https://api-m.sandbox.paypal.com/v2/checkout/orders');
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_PAYPAL_URL_MISSING);
     PaypalTraitStub::getPaypalUrl(new PaypalConfig([
         'client_id' => 'paypal_client_id',
         'app_secret' => 'paypal_app_secret',
     ]), new Collection([]));
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_PAYPAL_URL_MISSING);
 
 it('缓存 PayPal access token', function () {
     $paypalConfig = $this->getPaypalConfig();
@@ -102,11 +100,8 @@ it('PayPal access token 缺少配置', function () {
     $paypalConfig->setClientId('');
     $paypalConfig->setAppSecret('');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_PAYPAL_INVALID);
-
     PaypalTraitStub::getPaypalAccessToken([]);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_PAYPAL_INVALID);
 
 it('新取 PayPal access token', function () {
     $response = new Response(
@@ -145,20 +140,14 @@ it('PayPal webhook 验签缺少 webhook id', function () {
         'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
     ], '{}');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_PAYPAL_INVALID);
-
     PaypalTraitStub::verifyPaypalWebhookSign($request, []);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_PAYPAL_INVALID);
 
 it('PayPal webhook 验签签名为空', function () {
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [], '{}');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     PaypalTraitStub::verifyPaypalWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('PayPal webhook 验签缺少请求头', function () {
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
@@ -166,11 +155,8 @@ it('PayPal webhook 验签缺少请求头', function () {
         'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
     ], '{}');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     PaypalTraitStub::verifyPaypalWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('PayPal webhook 验签成功', function () {
     $tokenResponse = new Response(200, [], json_encode([
@@ -222,11 +208,8 @@ it('PayPal webhook 验签失败', function () {
         'PAYPAL-AUTH-ALGO' => 'SHA256withRSA',
     ], json_encode(['event_type' => 'CHECKOUT.ORDER.APPROVED']));
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     PaypalTraitStub::verifyPaypalWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 trait PaypalTraitTestHelpers
 {

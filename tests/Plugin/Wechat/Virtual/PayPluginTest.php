@@ -129,11 +129,8 @@ it('缺少 offer_id 抛出异常', function () {
         'goodsPrice' => 10,
     ]));
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_WECHAT_INVALID);
 
 it('客户端签名 payload 按 key 排序', function () {
     $plugin = new PayPlugin();

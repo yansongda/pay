@@ -39,8 +39,6 @@ it('正常', function () {
 
 it('签名错误', function () {
     $plugin = new CallbackPlugin();
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
     $payload = [
         'partnerId' => '6a13eab71c4f4b0aa4757eda6fc59710',
         'orderStatus' => '1',
@@ -62,12 +60,10 @@ it('签名错误', function () {
     $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
     expect($result->getPayload()->all())->not->toBeEmpty();
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('空签名', function () {
     $plugin = new CallbackPlugin();
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
     $payload = [
         'partnerId' => '6a13eab71c4f4b0aa4757eda6fc59710',
         'orderStatus' => '1',
@@ -89,12 +85,10 @@ it('空签名', function () {
     $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
     expect($result->getPayload()->all())->not->toBeEmpty();
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('请求类型错误', function () {
     $plugin = new CallbackPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
     $payload = [];
     $request = new ServerRequest('POST', 'http://localhost');
     $request = $request->withParsedBody($payload);
@@ -105,12 +99,10 @@ it('请求类型错误', function () {
     $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
     expect($result->getPayload()->all())->not->toBeEmpty();
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('缺少 epay 公钥证书路径', function () {
     $plugin = new CallbackPlugin();
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_JSB_INVALID);
 
     /** @var JsbConfig $config */
     $config = CallbackPlugin::getProviderConfig('jsb');
@@ -137,5 +129,5 @@ it('缺少 epay 公钥证书路径', function () {
     $result = $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 
     expect($result->getPayload()->all())->not->toBeEmpty();
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_JSB_INVALID);
 

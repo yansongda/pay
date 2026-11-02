@@ -45,22 +45,16 @@ it('获取江苏银行 URL', function () {
 it('江苏银行验签为空', function () {
     $config = $this->getJsbConfig();
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     JsbTraitStub::verifyJsbSign($config, 'content', '');
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('江苏银行验签缺少配置', function () {
     $config = $this->getJsbConfig();
 
     $config->setJsbPublicCertPath('');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_JSB_INVALID);
-
     JsbTraitStub::verifyJsbSign($config, 'content', 'sign');
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_JSB_INVALID);
 
 trait JsbTraitTestHelpers
 {

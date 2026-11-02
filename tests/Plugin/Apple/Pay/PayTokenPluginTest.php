@@ -40,23 +40,19 @@ it('下划线 token', function () {
 
 it('缺少 token 抛出异常', function () {
     $plugin = new PayTokenPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
 
     $rocket = new Rocket();
     $rocket->setParams([]);
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_APPLE_TOKEN_INVALID);
 
 it('非法 token 抛出异常', function () {
     $plugin = new PayTokenPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
 
     $rocket = new Rocket();
     $rocket->setParams(['token' => ['data' => 'invalid']]);
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_APPLE_TOKEN_INVALID);
 

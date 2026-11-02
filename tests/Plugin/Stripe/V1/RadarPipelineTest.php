@@ -97,18 +97,14 @@ it('网页 body 包含收银台参数', function () {
 });
 
 it('支付缺少金额抛出异常', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $this->runPipeline(['currency' => 'usd'], [PayPlugin::class]);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('网页支付缺少 success_url 抛出异常', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $this->runPipeline(['_config' => 'no_success_url'], [WebPlugin::class]);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 trait RadarPipelineTestHelpers
 {

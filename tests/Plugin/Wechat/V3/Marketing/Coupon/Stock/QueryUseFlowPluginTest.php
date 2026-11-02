@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new QueryUseFlowPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 下载批次核销明细，参数缺少 `stock_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 下载批次核销明细，参数缺少 `stock_id`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('正常', function () {
     $plugin = new QueryUseFlowPlugin();

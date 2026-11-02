@@ -10,11 +10,9 @@ use Yansongda\Pay\Plugin\Airwallex\V1\Pay\CallbackPlugin;
 
 it('缺少请求对象抛出异常', function () {
     $plugin = new CallbackPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
     $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('非法 JSON body 抛出异常', function () {
     $plugin = new CallbackPlugin();
@@ -26,11 +24,8 @@ it('非法 JSON body 抛出异常', function () {
         'x-signature' => $signature,
     ], $body);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_AIRWALLEX_BODY_INVALID);
-
     $plugin->assembly((new Rocket())->setParams(['_request' => $request, '_params' => []]), fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_AIRWALLEX_BODY_INVALID);
 
 it('正常回调', function () {
     $plugin = new CallbackPlugin();

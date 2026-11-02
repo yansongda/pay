@@ -73,9 +73,7 @@ it('QRA POS 退款', function () {
 
 it('foo', function () {
     $plugin = new QueryShortcut();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
     $plugin->getPlugins(['_action' => 'foo']);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 

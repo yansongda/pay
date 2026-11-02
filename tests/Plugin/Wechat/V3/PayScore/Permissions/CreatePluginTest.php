@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 支付分预授权（签约），参数为空');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 支付分预授权（签约），参数为空', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少服务商 ID', function () {
     $plugin = new CreatePlugin();
@@ -26,12 +22,8 @@ it('缺少服务商 ID', function () {
         'authorization_code' => 'AUTH_CODE',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少支付分服务ID -- [service_id]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少支付分服务ID -- [service_id]', Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
 
 it('正常', function () {
     $plugin = new CreatePlugin();

@@ -15,12 +15,8 @@ it('缺少查询 ID', function () {
         'service_id' => '12345678901234567890123456789012',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 查询支付分订单，`out_order_no` 与 `query_id` 不允许都填写或都不填写');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 查询支付分订单，`out_order_no` 与 `query_id` 不允许都填写或都不填写', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('按商户订单号查询', function () {
     $plugin = new QueryPlugin();
@@ -60,12 +56,8 @@ it('同时提供两种参数', function () {
         'query_id' => '156439172635391389723423423',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 查询支付分订单，`out_order_no` 与 `query_id` 不允许都填写或都不填写');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 查询支付分订单，`out_order_no` 与 `query_id` 不允许都填写或都不填写', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少服务商 ID', function () {
     $plugin = new QueryPlugin();
@@ -74,10 +66,6 @@ it('缺少服务商 ID', function () {
         'out_order_no' => '202409101234567890',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少支付分服务ID -- [service_id]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少支付分服务ID -- [service_id]', Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
 

@@ -31,15 +31,13 @@ it('指定租户构造', function () {
 });
 
 it('缺少必填项构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少 PayPal 配置 -- [client_id]');
 
     $config = new PaypalConfig([
         // missing client_id
         'app_secret' => 'test_app_secret',
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少 PayPal 配置 -- [client_id]');
 
 it('可选 getter', function () {
     $validConfig = [
@@ -121,13 +119,10 @@ it('非法模式抛出异常', function () {
         'client_id' => 'test_client_id',
         'app_secret' => 'test_app_secret',
     ];
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-    $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
     $config = new PaypalConfig(array_merge($validConfig, [
         'mode' => 99999,
     ]));
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: [mode] 配置不合法', Exception::CONFIG_PROVIDER_INVALID);
 

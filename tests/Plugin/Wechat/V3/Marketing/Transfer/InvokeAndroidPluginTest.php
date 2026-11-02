@@ -14,23 +14,15 @@ it('模式错误', function () {
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider']);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
-    $this->expectExceptionMessage('参数异常: Android调起用户确认收款，只支持普通商户模式，当前配置为服务商模式');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: Android调起用户确认收款，只支持普通商户模式，当前配置为服务商模式', Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
 
 it('缺少 package', function () {
     $plugin = new InvokeAndroidPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
-    $this->expectExceptionMessage('Android调起用户确认收款失败：响应缺少 `package_info` 参数，请自行检查参数是否符合微信要求');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidResponseException::class, 'Android调起用户确认收款失败：响应缺少 `package_info` 参数，请自行检查参数是否符合微信要求', Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
 
 it('普通参数', function () {
     $plugin = new InvokeAndroidPlugin();

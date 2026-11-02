@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 创建支付分订单，参数为空');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 创建支付分订单，参数为空', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('正常', function () {
     $plugin = new CreatePlugin();
@@ -94,12 +90,8 @@ it('缺少服务商 ID', function () {
         'out_order_no' => '202409101234567890',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少支付分服务ID -- [service_id]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少支付分服务ID -- [service_id]', Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
 
 it('缺少 app_id', function () {
     $plugin = new CreatePlugin();
@@ -109,12 +101,8 @@ it('缺少 app_id', function () {
         'appid' => '',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_APPID_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少公众账号ID -- [appid]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少公众账号ID -- [appid]', Exception::PARAMS_WECHAT_APPID_MISSING);
 
 it('服务商模式被拒绝', function () {
     $plugin = new CreatePlugin();
@@ -123,9 +111,6 @@ it('服务商模式被拒绝', function () {
         'out_order_no' => '202409101234567890',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
 

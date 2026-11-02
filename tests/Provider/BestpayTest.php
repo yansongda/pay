@@ -21,16 +21,14 @@ uses(BestpayTrait::class);
 uses(BestpayTestHelpers::class);
 
 it('快捷方式不存在', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::bestpay()->foo();
-});
+})->throws(InvalidParamsException::class);
 
 it('不支持撤销', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::bestpay()->cancel(['outTradeNo' => 'test']);
-});
+})->throws(InvalidParamsException::class);
 
 it('成功响应 body', function () {
     $response = Pay::bestpay()->success();
@@ -165,7 +163,6 @@ it('关单', function () {
 });
 
 it('查询业务错误', function () {
-    $this->expectException(InvalidResponseException::class);
 
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode([
@@ -179,7 +176,7 @@ it('查询业务错误', function () {
     Pay::bestpay()->query([
         'outTradeNo' => 'ORDER001',
     ]);
-});
+})->throws(InvalidResponseException::class);
 
 it('查询聚合动作', function () {
     $this->mockResponseWithUriCheck(
@@ -200,13 +197,12 @@ it('查询聚合动作', function () {
 });
 
 it('查询动作非法', function () {
-    $this->expectException(InvalidParamsException::class);
 
     Pay::bestpay()->query([
         'outTradeNo' => 'ORDER001',
         '_action' => 'not-exists',
     ]);
-});
+})->throws(InvalidParamsException::class);
 
 it('Provider 类', function () {
     expect(Pay::bestpay())->toBeInstanceOf(Bestpay::class);

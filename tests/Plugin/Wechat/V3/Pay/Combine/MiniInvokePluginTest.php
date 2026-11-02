@@ -12,12 +12,8 @@ it('缺少 prepay_id', function () {
     $plugin = new MiniInvokePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
-    $this->expectExceptionMessage('预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidResponseException::class, '预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求', Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
 
 it('普通参数', function () {
     $plugin = new MiniInvokePlugin();

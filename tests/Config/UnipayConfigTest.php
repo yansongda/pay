@@ -28,15 +28,13 @@ it('指定租户构造', function () {
 });
 
 it('缺少必填项构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少银联配置 -- [mch_cert_path]');
 
     $config = new UnipayConfig([
         // missing mch_cert_path
         'mch_cert_password' => 'test_password',
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少银联配置 -- [mch_cert_path]');
 
 it('可选 getter', function () {
     $validConfig = [

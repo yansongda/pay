@@ -43,40 +43,28 @@ it('获取 Stripe URL 缺少参数抛出异常', function () {
         'webhook_secret' => 'whsec_stripe_webhook_secret',
     ]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_STRIPE_URL_MISSING);
-
     StripeTraitStub::getStripeUrl($config, new Collection([]));
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_STRIPE_URL_MISSING);
 
 it('Stripe webhook 验签：签名为空', function () {
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/stripe/notify', [], '{}');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     StripeTraitStub::verifyStripeWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('Stripe webhook 验签：缺少密钥抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [], '{}');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_STRIPE_INVALID);
-
     StripeTraitStub::verifyStripeWebhookSign($request, ['_config' => 'no_webhook_secret']);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_STRIPE_INVALID);
 
 it('Stripe webhook 验签：签名头格式错误抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [
         'Stripe-Signature' => 'no-equals-sign-here',
     ], '{}');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     StripeTraitStub::verifyStripeWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Stripe webhook 验签：时间戳过期抛出异常', function () {
     $oldTimestamp = time() - 400;
@@ -86,11 +74,8 @@ it('Stripe webhook 验签：时间戳过期抛出异常', function () {
         'Stripe-Signature' => $signatureHeader,
     ], '{}');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     StripeTraitStub::verifyStripeWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Stripe webhook 验签：签名错误抛出异常', function () {
     $timestamp = time();
@@ -100,11 +85,8 @@ it('Stripe webhook 验签：签名错误抛出异常', function () {
         'Stripe-Signature' => $signatureHeader,
     ], '{"id":"evt_test"}');
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     StripeTraitStub::verifyStripeWebhookSign($request, []);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('Stripe webhook 验签：签名有效通过', function () {
     $body = '{"id":"evt_test","type":"payment_intent.succeeded"}';

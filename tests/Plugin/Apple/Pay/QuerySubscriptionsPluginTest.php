@@ -106,57 +106,45 @@ it('过滤 payload 后保留其它字段', function () {
 
 it('非法状态抛出异常', function () {
     $plugin = new QuerySubscriptionsPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [0]]));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('非整数状态抛出异常', function () {
     $plugin = new QuerySubscriptionsPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => ['abc']]));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('状态越界抛出异常', function () {
     $plugin = new QuerySubscriptionsPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: Apple 查询订阅状态，_status 仅允许 SubscriptionStatus 枚举或 1-5 的整数');
 
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [6]]));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: Apple 查询订阅状态，_status 仅允许 SubscriptionStatus 枚举或 1-5 的整数', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少交易号', function () {
     $plugin = new QuerySubscriptionsPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: Apple 查询订阅状态，缺少 transaction_id 参数');
 
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([]));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: Apple 查询订阅状态，缺少 transaction_id 参数', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('空 payload 抛出异常', function () {
     $plugin = new QuerySubscriptionsPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $rocket = new Rocket();
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 

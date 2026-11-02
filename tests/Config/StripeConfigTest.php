@@ -27,12 +27,10 @@ it('指定租户构造', function () {
 });
 
 it('缺少必填项构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少 Stripe 配置 -- [secret_key]');
 
     $config = new StripeConfig([]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少 Stripe 配置 -- [secret_key]');
 
 it('可选 getter', function () {
     $validConfig = [

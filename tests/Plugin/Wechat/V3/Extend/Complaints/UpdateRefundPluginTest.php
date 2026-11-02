@@ -12,12 +12,8 @@ it('空投诉单号', function () {
     $plugin = new UpdateRefundPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 更新退款审批结果，参数缺少 `complaint_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 更新退款审批结果，参数缺少 `complaint_id`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('payload', function () {
     $plugin = new UpdateRefundPlugin();

@@ -20,11 +20,9 @@ use Yansongda\Pay\Shortcut\Alipay\CancelShortcut;
 
 it('foo 参数', function () {
     $shortcut = new CancelShortcut();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
     $shortcut->getPlugins(['_action' => 'foo']);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
 it('默认', function () {
     $shortcut = new CancelShortcut();

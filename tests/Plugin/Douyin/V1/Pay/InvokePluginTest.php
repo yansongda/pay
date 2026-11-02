@@ -103,11 +103,8 @@ it('空 payload', function () {
     $rocket = new Rocket();
     $rocket->setParams([]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('仅下划线 payload', function () {
     $plugin = new InvokePlugin();
@@ -115,9 +112,6 @@ it('仅下划线 payload', function () {
     $rocket->setParams([]);
     $rocket->setPayload(new Collection(['_method' => 'POST', '_url' => '/requestOrder']));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 

@@ -12,12 +12,8 @@ it('模式错误', function () {
     $plugin = new QueryMerchantConfigsPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
-    $this->expectExceptionMessage('参数异常: 查询最大分账比例，只支持服务商模式，当前配置为普通商户模式');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 查询最大分账比例，只支持服务商模式，当前配置为普通商户模式', Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
 
 it('正常', function () {
     $plugin = new QueryMerchantConfigsPlugin();

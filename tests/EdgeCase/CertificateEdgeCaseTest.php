@@ -19,10 +19,8 @@ it('支付宝回调缺少签名', function () {
         'trade_no=2023122122001499160501586202&trade_status=TRADE_SUCCESS'
     );
 
-    $this->expectException(InvalidSignException::class);
-
     Pay::alipay()->callback($request);
-});
+})->throws(InvalidSignException::class);
 
 it('微信回调缺少签名头', function () {
     $request = new ServerRequest(
@@ -44,12 +42,10 @@ it('微信回调缺少签名头', function () {
         ])
     );
 
-    $this->expectException(InvalidSignException::class);
-
     Pay::set(CallbackPlugin::class, new CallbackPluginStub());
 
     Pay::wechat()->callback($request);
-});
+})->throws(InvalidSignException::class);
 
 it('Stripe webhook 缺少签名头', function () {
     $payload = json_encode([
@@ -65,10 +61,8 @@ it('Stripe webhook 缺少签名头', function () {
         $payload
     );
 
-    $this->expectException(InvalidSignException::class);
-
     Pay::stripe()->callback($request);
-});
+})->throws(InvalidSignException::class);
 
 it('PayPal webhook 签名无效', function () {
     $payload = json_encode([
@@ -94,10 +88,8 @@ it('PayPal webhook 签名无效', function () {
     $http->shouldReceive('sendRequest')->andReturn($response);
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidSignException::class);
-
     Pay::paypal()->callback($request);
-});
+})->throws(InvalidSignException::class);
 
 afterEach(function () {
     Mockery::close();

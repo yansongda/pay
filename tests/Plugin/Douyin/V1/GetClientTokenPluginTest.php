@@ -41,11 +41,8 @@ it('缺少 app_id', function () {
         'douyin' => ['default' => $config],
     ]));
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
-
     $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_DOUYIN_INVALID);
 
 it('缺少 app_secret', function () {
     $plugin = new GetClientTokenPlugin();
@@ -59,11 +56,8 @@ it('缺少 app_secret', function () {
         'douyin' => ['default' => $config],
     ]));
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
-
     $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_DOUYIN_INVALID);
 
 it('成功响应', function () {
     $plugin = new GetClientTokenPlugin();
@@ -101,21 +95,14 @@ it('业务错误响应抛出异常', function () {
         'message' => 'error',
     ]));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
-    $this->expectExceptionMessage('获取抖音 client_token 失败: error_code=10013, description=client_key 无效');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidResponseException::class, '获取抖音 client_token 失败: error_code=10013, description=client_key 无效', Exception::RESPONSE_BUSINESS_CODE_WRONG);
 
 it('服务端错误抛出异常', function () {
     $plugin = new GetClientTokenPlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(500));
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidResponseException::class, null, Exception::RESPONSE_CODE_WRONG);
 

@@ -53,17 +53,12 @@ it('支付宝验签配置错误', function () {
 
     Pay::config(array_merge($config1, ['_force' => true]));
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-
     AlipayTraitStub::getProviderConfig('alipay');
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_ALIPAY_INVALID);
 
 it('支付宝验签为空', function () {
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
     AlipayTraitStub::verifyAlipaySign(AlipayTraitStub::getProviderConfig('alipay'), '', '');
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('支付宝默认 URL', function () {
     expect(AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(), null))->toBe(Alipay::URL[PayMode::NORMAL->value].'/gateway.do?charset=utf-8');
@@ -124,12 +119,8 @@ it('支付宝 V3 授权缺少应用公钥证书路径', function () {
         'alipay_public_cert_path' => 'alipay_public_cert_path',
     ], 'alipay-v3-no-app-cert');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
-
     AlipayTraitStub::getAlipayV3Authorization($config, 'POST', '/v3/alipay/trade/pay', '{}');
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]', Exception::CONFIG_ALIPAY_INVALID);
 
 it('获取支付宝应用公钥', function () {
     $certPath = __DIR__.'/../Cert/alipayAppPublicCert.crt';
@@ -167,12 +158,8 @@ it('未配置时获取支付宝应用公钥', function () {
         'alipay_root_cert_path' => 'alipay_root_cert_path',
     ]);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
-
     AlipayTraitStub::getAlipayAppPublicKey($config);
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少支付宝配置 -- [app_public_cert_path]', Exception::CONFIG_ALIPAY_INVALID);
 
 it('支付宝 V3 证书模式验签成功', function () {
     $config = AlipayTraitStub::getProviderConfig('alipay', ['_config' => 'alipay-v3']);
@@ -188,20 +175,14 @@ it('支付宝 V3 证书模式验签成功', function () {
 it('支付宝 V3 验签失败', function () {
     $config = AlipayTraitStub::getProviderConfig('alipay', ['_config' => 'alipay-v3']);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     AlipayTraitStub::verifyAlipaySign($config, "1666004496123\nyansongda-nonce\n{}\n", 'invalid-sign');
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('支付宝 V3 签名为空', function () {
     $config = AlipayTraitStub::getProviderConfig('alipay', ['_config' => 'alipay-v3']);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     AlipayTraitStub::verifyAlipaySign($config, "1666004496123\nyansongda-nonce\n{}\n", '');
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 
 it('支付宝验签缺少公钥证书路径', function () {
     $config = new AlipayConfig([
@@ -209,12 +190,8 @@ it('支付宝验签缺少公钥证书路径', function () {
         'app_secret_cert' => 'app_secret_cert',
     ], 'alipay-v3-no-public-cert');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_ALIPAY_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [alipay_public_cert_path]');
-
     AlipayTraitStub::verifyAlipaySign($config, "1666004496123\nyansongda-nonce\n{}\n", 'not-empty-sign');
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少支付宝配置 -- [alipay_public_cert_path]', Exception::CONFIG_ALIPAY_INVALID);
 
 it('解密支付宝内容', function () {
     $plaintext = '{"code":"10000","msg":"Success","订单号":"2023122022560000","金额":"0.01"}';
@@ -230,49 +207,34 @@ it('解密支付宝内容', function () {
 });
 
 it('解密支付宝内容缺少 AES 密钥', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::DECRYPT_ALIPAY_AES_KEY_INVALID);
-    $this->expectExceptionMessage('加密解密异常: 未配置支付宝 AES 密钥 [aes_key]');
 
     AlipayTraitStub::decryptAlipayContents('not-empty-contents', $this->getAlipayConfig());
-});
+})->throws(InvalidConfigException::class, '加密解密异常: 未配置支付宝 AES 密钥 [aes_key]', Exception::DECRYPT_ALIPAY_AES_KEY_INVALID);
 
 it('解密支付宝内容 AES 密钥非法', function () {
     $config = $this->getAlipayConfig();
     $config->setAesKey(base64_encode('12345678901234567890'));
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::DECRYPT_ALIPAY_AES_KEY_INVALID);
-    $this->expectExceptionMessage('加密解密异常: 支付宝 AES 密钥格式错误，须为 base64 编码的 16 字节密钥');
-
     AlipayTraitStub::decryptAlipayContents(base64_encode('ciphertext'), $config);
-});
+})->throws(InvalidConfigException::class, '加密解密异常: 支付宝 AES 密钥格式错误，须为 base64 编码的 16 字节密钥', Exception::DECRYPT_ALIPAY_AES_KEY_INVALID);
 
 it('解密支付宝内容内容非法', function () {
     $config = $this->getAlipayConfig();
     $config->setAesKey(base64_encode(random_bytes(16)));
 
-    $this->expectException(DecryptException::class);
-    $this->expectExceptionCode(Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
-    $this->expectExceptionMessage('加密解密异常: 支付宝密文不是合法的 base64 字符串');
-
     AlipayTraitStub::decryptAlipayContents('not-base64-contents!', $config);
-});
+})->throws(DecryptException::class, '加密解密异常: 支付宝密文不是合法的 base64 字符串', Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
 
 it('解密支付宝内容密钥不匹配', function () {
     $config = $this->getAlipayConfig();
     // 密钥与加密方不一致：下方固定密文由密钥 [1234567890123456] 加密生成（AES 确定性，勿改动密文与密钥的配对关系）
     $config->setAesKey(base64_encode('abcdefghijklmnop'));
 
-    $this->expectException(DecryptException::class);
-    $this->expectExceptionCode(Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
-    $this->expectExceptionMessage('加密解密异常: 支付宝密文解密失败，请检查 AES 密钥是否与开放平台控制台一致（重新生成密钥后旧密钥立即失效）');
-
     AlipayTraitStub::decryptAlipayContents(
         '2U09l1AOxvuTPJp5IW4MXGCxM0a6CtXGxvrSzawMfUeU9+aFGNC9KrCMZc1LLhrjoiguutmwwqS3WWETCMC6nA==',
         $config
     );
-});
+})->throws(DecryptException::class, '加密解密异常: 支付宝密文解密失败，请检查 AES 密钥是否与开放平台控制台一致（重新生成密钥后旧密钥立即失效）', Exception::DECRYPT_ALIPAY_ENCRYPTED_DATA_INVALID);
 
 trait AlipayTraitTestHelpers
 {

@@ -12,12 +12,8 @@ it('空 payload', function () {
     $plugin = new GetFundBillPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: Mini 申请资金账单，参数为空');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: Mini 申请资金账单，参数为空', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('正常', function () {
     $plugin = new GetFundBillPlugin();

@@ -51,19 +51,13 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
 
     expect(true)->toBeTrue();
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
-    $this->expectExceptionMessage('配置异常： 缺少银联配置 -- [unipay_public_cert_path]');
     Artful::get(ConfigInterface::class)->set('unipay.default.unipay_public_cert_path', null);
     UnipayTraitStub::verifyUnipaySign(new UnipayConfig(['mch_secret_key' => 'foo']), $contents, $sign);
-});
+})->throws(InvalidConfigException::class, '配置异常： 缺少银联配置 -- [unipay_public_cert_path]', Exception::CONFIG_UNIPAY_INVALID);
 
 it('银联验签为空', function () {
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-    $this->expectExceptionMessage('签名异常: 银联签名为空');
     UnipayTraitStub::verifyUnipaySign(new UnipayConfig(['mch_secret_key' => 'foo']), '', '');
-});
+})->throws(InvalidSignException::class, '签名异常: 银联签名为空', Exception::SIGN_EMPTY);
 
 it('获取银联 URL', function () {
     $config = new UnipayConfig(['mch_secret_key' => 'foo']);
@@ -73,18 +67,14 @@ it('获取银联 URL', function () {
     expect(UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => PayMode::SERVICE]), new Collection(['_service_url' => '/api/v1/service/yansongda'])))->toEqual('https://gateway.95516.com/api/v1/service/yansongda');
     expect(UnipayTraitStub::getUnipayUrl(new UnipayConfig(['mch_secret_key' => 'foo', 'mode' => PayMode::SERVICE]), new Collection(['_url' => '/foo', '_service_url' => '/api/v1/service/yansongda'])))->toEqual('https://gateway.95516.com/api/v1/service/yansongda');
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_UNIPAY_URL_MISSING);
     UnipayTraitStub::getUnipayUrl($config, new Collection([]));
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_UNIPAY_URL_MISSING);
 
 it('获取银联请求 body', function () {
     expect(UnipayTraitStub::getUnipayBody(new Collection(['_body' => 'https://yansongda.cn'])))->toEqual('https://yansongda.cn');
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_UNIPAY_BODY_MISSING);
     UnipayTraitStub::getUnipayBody(new Collection([]));
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_UNIPAY_BODY_MISSING);
 
 it('获取银联 QRA 签名', function () {
     $config = UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']);
@@ -109,10 +99,8 @@ it('获取银联 QRA 签名', function () {
 
     expect(UnipayTraitStub::getUnipaySignQra($config, $payload))->toEqual('DB571C2F75C657B42485CD07470F0FB9');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
     UnipayTraitStub::getUnipaySignQra(new UnipayConfig(['mch_cert_path' => 'foo', 'mch_cert_password' => 'bar']), $payload);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_UNIPAY_INVALID);
 
 it('银联 QRA 验签', function () {
     $payload = [
@@ -137,10 +125,8 @@ it('银联 QRA 验签', function () {
     UnipayTraitStub::verifyUnipaySignQra($config, $payload);
     expect(true)->toBeTrue();
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_UNIPAY_INVALID);
     UnipayTraitStub::verifyUnipaySignQra(new UnipayConfig(['mch_cert_path' => 'foo', 'mch_cert_password' => 'bar']), $payload);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_UNIPAY_INVALID);
 
 it('银联 QRA 验签失败', function () {
     $payload = [
@@ -159,14 +145,11 @@ it('银联 QRA 验签失败', function () {
         'version' => '2.0',
     ];
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_ERROR);
-
     /** @var UnipayConfig $config */
     $config = UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']);
 
     UnipayTraitStub::verifyUnipaySignQra($config, $payload);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_ERROR);
 
 it('银联 QRA 验签为空', function () {
     $payload = [
@@ -184,12 +167,9 @@ it('银联 QRA 验签为空', function () {
         'version' => '2.0',
     ];
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(Exception::SIGN_EMPTY);
-
     /** @var UnipayConfig $config */
     $config = UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']);
 
     UnipayTraitStub::verifyUnipaySignQra($config, $payload);
-});
+})->throws(InvalidSignException::class, null, Exception::SIGN_EMPTY);
 

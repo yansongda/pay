@@ -33,12 +33,10 @@ it('URL 包含撤销', function () {
 
 it('缺少 payment_intent_id', function () {
     $plugin = new CancelPlugin();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection([]));
 
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 

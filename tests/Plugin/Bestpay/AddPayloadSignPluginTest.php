@@ -85,8 +85,6 @@ it('组装 biz_content 不转义斜杠', function () {
 });
 
 it('缺少路径时组装抛出异常', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_BESTPAY_URL_MISSING);
 
     $rocket = new Rocket();
     $rocket->setParams(['outTradeNo' => 'ORDER001']);
@@ -94,5 +92,5 @@ it('缺少路径时组装抛出异常', function () {
     $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
 
     (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_BESTPAY_URL_MISSING);
 

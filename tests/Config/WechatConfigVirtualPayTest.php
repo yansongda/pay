@@ -94,18 +94,12 @@ it('环境为 1 且无沙箱 key 时抛出异常', function () {
     $vp = new WechatConfigVirtualPay();
     $vp->setAppKey('prod-key');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-
     $vp->getAppKey(1);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_WECHAT_INVALID);
 
 it('环境为 1 且均未配置时抛出异常', function () {
     $vp = new WechatConfigVirtualPay();
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-
     $vp->getAppKey(1);
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_WECHAT_INVALID);
 

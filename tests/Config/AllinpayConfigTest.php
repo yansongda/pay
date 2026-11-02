@@ -38,8 +38,6 @@ it('指定租户构造', function () {
 });
 
 it('缺少必填项构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_ALLINPAY_INVALID);
 
     $config = new AllinpayConfig([
         'appid' => '000000',
@@ -47,7 +45,7 @@ it('缺少必填项构造', function () {
         'allinpay_public_key' => '/path/to/allinpay.pem',
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_ALLINPAY_INVALID);
 
 it('可选 getter', function () {
     $validConfig = [
@@ -88,12 +86,10 @@ it('服务商模式抛出异常', function () {
         'mch_secret_key' => '/path/to/secret.pem',
         'allinpay_public_key' => '/path/to/allinpay.pem',
     ];
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
 
     $config = new AllinpayConfig(array_merge($validConfig, [
         'mode' => PayMode::SERVICE,
     ]));
     $config->validate();
-});
+})->throws(InvalidConfigException::class, null, Exception::CONFIG_PROVIDER_INVALID);
 

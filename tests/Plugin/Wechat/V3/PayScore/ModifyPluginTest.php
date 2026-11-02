@@ -12,24 +12,16 @@ it('空 payload', function () {
     $plugin = new ModifyPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 修改支付分订单金额，参数缺少 `out_order_no`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 修改支付分订单金额，参数缺少 `out_order_no`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少商户订单号', function () {
     $plugin = new ModifyPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['total_amount' => 200, 'reason' => '测试修改金额']));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 修改支付分订单金额，参数缺少 `out_order_no`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 修改支付分订单金额，参数缺少 `out_order_no`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少服务商 ID', function () {
     $plugin = new ModifyPlugin();
@@ -40,12 +32,8 @@ it('缺少服务商 ID', function () {
         'reason' => '测试修改金额',
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
-    $this->expectExceptionMessage('参数异常: 修改支付分订单金额，参数缺少 `service_id`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 修改支付分订单金额，参数缺少 `service_id`', Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
 
 it('正常', function () {
     $plugin = new ModifyPlugin();

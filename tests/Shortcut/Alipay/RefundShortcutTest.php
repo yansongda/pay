@@ -24,11 +24,9 @@ use Yansongda\Pay\Shortcut\Alipay\RefundShortcut;
 
 it('foo 参数', function () {
     $shortcut = new RefundShortcut();
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
     $shortcut->getPlugins(['_action' => 'foo']);
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_ACTION_INVALID);
 
 it('默认', function () {
     $shortcut = new RefundShortcut();

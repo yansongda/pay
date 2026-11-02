@@ -50,12 +50,8 @@ it('缺少 refresh token 抛出异常', function () {
     $rocket = new Rocket();
     $rocket->setParams([]);
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 缺少微信网页授权参数 -- [refresh_token]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: 缺少微信网页授权参数 -- [refresh_token]', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('缺少配置 app_id 抛出异常', function () {
     $plugin = new RefreshTokenPlugin();
@@ -65,10 +61,6 @@ it('缺少配置 app_id 抛出异常', function () {
         'refresh_token' => 'the_wechat_refresh_token',
     ]);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mp_app_id]');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少微信配置 -- [mp_app_id]', Exception::CONFIG_WECHAT_INVALID);
 

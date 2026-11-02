@@ -13,12 +13,8 @@ it('空 payload', function () {
     $plugin = new ClosePlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: Mini 关闭订单，参数缺少 `out_trade_no`');
-
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
-});
+})->throws(InvalidParamsException::class, '参数异常: Mini 关闭订单，参数缺少 `out_trade_no`', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('正常', function () {
     $plugin = new ClosePlugin();

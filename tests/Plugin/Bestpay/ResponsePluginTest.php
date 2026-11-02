@@ -22,7 +22,6 @@ it('成功', function () {
 });
 
 it('业务错误', function () {
-    $this->expectException(InvalidResponseException::class);
 
     $rocket = new Rocket();
     $rocket->setDestination(new Collection([
@@ -33,15 +32,14 @@ it('业务错误', function () {
     $rocket->setDestinationOrigin(new Response(200, [], '{}'));
 
     (new ResponsePlugin())->assembly($rocket, fn ($r) => $r);
-});
+})->throws(InvalidResponseException::class);
 
 it('HTTP 错误', function () {
-    $this->expectException(InvalidResponseException::class);
 
     $rocket = new Rocket();
     $rocket->setDestination(new Collection(['success' => true]));
     $rocket->setDestinationOrigin(new Response(500, [], '{}'));
 
     (new ResponsePlugin())->assembly($rocket, fn ($r) => $r);
-});
+})->throws(InvalidResponseException::class);
 

@@ -232,9 +232,6 @@ it('访问时校验 provider 配置', function () {
         '_force' => true,
     ]);
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_secret_cert]');
-
     ProviderConfigTraitStub::getProviderConfig('alipay', []);
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少支付宝配置 -- [app_secret_cert]');
 

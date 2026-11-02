@@ -91,14 +91,10 @@ it('获取签名缺少商户公钥证书', function () {
     $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', $params);
     $config->setMchPublicCertPath('');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_public_cert_path]');
-
     $class = new ReflectionClass($plugin);
     $method = $class->getMethod('getSignature');
     $method->invokeArgs($plugin, [$config, $timestamp, $random, $contents]);
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少微信配置 -- [mch_public_cert_path]', Exception::CONFIG_WECHAT_INVALID);
 
 it('使用错误商户公钥证书获取签名', function () {
     $plugin = new AddPayloadSignaturePlugin();
@@ -121,11 +117,8 @@ it('使用错误商户公钥证书获取签名', function () {
     $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', $params);
     $config->setMchPublicCertPath(__DIR__.'/../../Cert/foo');
 
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionMessage('配置异常: 解析证书失败');
-
     $class = new ReflectionClass($plugin);
     $method = $class->getMethod('getSignature');
     $method->invokeArgs($plugin, [$config, $timestamp, $random, $contents]);
-});
+})->throws(InvalidConfigException::class, '配置异常: 解析证书失败');
 

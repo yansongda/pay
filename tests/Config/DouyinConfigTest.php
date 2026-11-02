@@ -37,28 +37,22 @@ it('指定租户构造', function () {
 });
 
 it('缺少 app_id 构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [app_id]');
 
     $config = new DouyinConfig([
         // missing app_id
         'app_secret' => 'test_app_secret',
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少抖音配置 -- [app_id]', Exception::CONFIG_DOUYIN_INVALID);
 
 it('缺少 app_secret 构造', function () {
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
-    $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [app_secret]');
 
     $config = new DouyinConfig([
         'app_id' => 'tt123456',
         // missing app_secret
     ]);
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: 缺少抖音配置 -- [app_secret]', Exception::CONFIG_DOUYIN_INVALID);
 
 it('可选 getter', function () {
     $validConfig = [
@@ -122,13 +116,10 @@ it('非法模式抛出异常', function () {
         'app_private_key' => 'test_app_private_key',
         'douyin_public_key' => 'test_douyin_public_key',
     ];
-    $this->expectException(InvalidConfigException::class);
-    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-    $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
     $config = new DouyinConfig(array_merge($validConfig, [
         'mode' => 99999,
     ]));
     $config->validate();
-});
+})->throws(InvalidConfigException::class, '配置异常: [mode] 配置不合法', Exception::CONFIG_PROVIDER_INVALID);
 

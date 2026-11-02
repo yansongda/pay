@@ -47,12 +47,8 @@ it('空 payload', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 抖音查询退款，缺少必要的业务参数');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, '参数异常: 抖音查询退款，缺少必要的业务参数', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
 it('仅保留过滤后的参数', function () {
     $plugin = new QueryPlugin();
@@ -62,10 +58,6 @@ it('仅保留过滤后的参数', function () {
         'refund_id' => null,
     ]));
 
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-    $this->expectExceptionMessage('参数异常: 抖音查询退款，缺少必要的业务参数');
-
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
-});
+})->throws(InvalidParamsException::class, '参数异常: 抖音查询退款，缺少必要的业务参数', Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 

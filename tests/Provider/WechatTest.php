@@ -32,18 +32,14 @@ use Yansongda\Pay\Tests\Stubs\Plugin\VirtualCheckResponsePluginStub;
 use Yansongda\Pay\Tests\Stubs\Plugin\VerifySignaturePluginStub;
 
 it('快捷方式不存在', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::wechat()->foo();
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_INVALID);
 
 it('快捷方式不兼容', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::wechat()->foo();
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_INVALID);
 
 it('撤销', function () {
     $response = new Response(
@@ -78,11 +74,8 @@ it('撤销错误响应码', function () {
     $http->shouldReceive('sendRequest')->andReturn($response);
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::RESPONSE_CODE_WRONG);
-
     Pay::wechat()->cancel(['out_bill_no' => '123']);
-});
+})->throws(InvalidResponseException::class, null, \Yansongda\Pay\Exception\Exception::RESPONSE_CODE_WRONG);
 
 it('关单', function () {
     $response = new Response(
@@ -117,11 +110,8 @@ it('关单错误响应码', function () {
     $http->shouldReceive('sendRequest')->andReturn($response);
     Pay::set(HttpClientInterface::class, $http);
 
-    $this->expectException(InvalidResponseException::class);
-    $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::RESPONSE_CODE_WRONG);
-
     Pay::wechat()->close(['out_trade_no' => '123']);
-});
+})->throws(InvalidResponseException::class, null, \Yansongda\Pay\Exception\Exception::RESPONSE_CODE_WRONG);
 
 it('回调', function () {
     $request = new ServerRequest(

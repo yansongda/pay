@@ -21,11 +21,9 @@ use Yansongda\Supports\Collection;
 uses(DouyinTestHelpers::class);
 
 it('快捷方式不存在', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::douyin()->foo();
-});
+})->throws(InvalidParamsException::class, null, Exception::PARAMS_SHORTCUT_INVALID);
 
 it('调用小程序', function () {
     $fields = [
@@ -68,18 +66,14 @@ it('调用小程序', function () {
 });
 
 it('撤销', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(PayException::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::douyin()->cancel([]);
-});
+})->throws(InvalidParamsException::class, null, PayException::PARAMS_METHOD_NOT_SUPPORTED);
 
 it('关单', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(PayException::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::douyin()->close([]);
-});
+})->throws(InvalidParamsException::class, null, PayException::PARAMS_METHOD_NOT_SUPPORTED);
 
 it('查询', function () {
     $http = Mockery::mock(Client::class);
@@ -153,11 +147,9 @@ it('回调', function () {
 });
 
 it('数组内容回调', function () {
-    $this->expectException(InvalidParamsException::class);
-    $this->expectExceptionCode(PayException::PARAMS_CALLBACK_REQUEST_INVALID);
 
     Pay::douyin()->callback(['type' => 'payment', 'msg' => '{}']);
-});
+})->throws(InvalidParamsException::class, null, PayException::PARAMS_CALLBACK_REQUEST_INVALID);
 
 it('回调签名被篡改', function () {
     $msg = '{"order_id":"7398108028895054107","out_trade_no":"yansongda"}';
@@ -165,11 +157,8 @@ it('回调签名被篡改', function () {
 
     $request = $this->getDouyinCallbackRequest($body, ['Byte-Signature' => base64_encode('tampered-signature')]);
 
-    $this->expectException(InvalidSignException::class);
-    $this->expectExceptionCode(PayException::SIGN_ERROR);
-
     Pay::douyin()->callback($request);
-});
+})->throws(InvalidSignException::class, null, PayException::SIGN_ERROR);
 
 it('退款类型回调', function () {
     $msg = '{"refund_id":"7398108028895054107","out_refund_no":"yansongda-refund","refund_amount":1,"status":"SUCCESS"}';
