@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\AddRadarPlugin;
 use Yansongda\Supports\Collection;
 
-it('radar post normal', function () {
+it('radar POST 正常', function () {
     $plugin = new AddRadarPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection(['name' => 'yansongda']));
@@ -18,7 +18,7 @@ it('radar post normal', function () {
     expect($result->getRadar()->getMethod())->toEqual('POST');
 });
 
-it('radar get normal', function () {
+it('radar GET 正常', function () {
     $plugin = new AddRadarPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_method' => 'get'])->setPayload(new Collection(['name' => 'yansongda']));
@@ -29,7 +29,7 @@ it('radar get normal', function () {
     expect($result->getRadar()->getMethod())->toEqual('GET');
 });
 
-it('radar headers', function () {
+it('radar 请求头', function () {
     $plugin = new AddRadarPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection(['name' => 'yansongda']));

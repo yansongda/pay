@@ -21,7 +21,7 @@ use DouyinTrait;
 
 uses(DouyinTraitTestHelpers::class);
 
-it('get douyin url', function () {
+it('获取抖音 URL', function () {
     $normalConfig = new DouyinConfig([
         'app_id' => 'tt226e54d3bd581bf801',
         'app_secret' => 'douyin_app_secret',
@@ -46,7 +46,7 @@ it('get douyin url', function () {
     DouyinTraitStub::getDouyinUrl($normalConfig, new Collection([]));
 });
 
-it('get douyin trade sign', function () {
+it('获取抖音交易签名', function () {
     $config = $this->getDouyinConfig();
     $timestamp = '1700000000';
     $nonce = 'abcdef1234567890';
@@ -59,7 +59,7 @@ it('get douyin trade sign', function () {
         .'"');
 });
 
-it('get douyin trade sign round trip', function () {
+it('抖音交易签名往返', function () {
     $config = $this->getDouyinConfig();
     $timestamp = '1700000000';
     $nonce = 'abcdef1234567890';
@@ -76,7 +76,7 @@ it('get douyin trade sign round trip', function () {
     expect(openssl_verify("POST\n/api/v1/trade/create\n1700000000\nabcdef1234567890\n".$body."\n", base64_decode($matches[1]), $publicKey, OPENSSL_ALGO_SHA256))->toBe(1);
 });
 
-it('get douyin trade sign invalid private key', function () {
+it('抖音交易签名私钥非法', function () {
     $config = new DouyinConfig([
         'app_id' => 'tt226e54d3bd581bf801',
         'app_secret' => 'douyin_app_secret',
@@ -89,7 +89,7 @@ it('get douyin trade sign invalid private key', function () {
     DouyinTraitStub::getDouyinTradeSign($config, 'POST', '/api/v1/trade/create', '{}', '1700000000', 'abcdef1234567890');
 });
 
-it('verify douyin trade sign', function () {
+it('抖音交易验签', function () {
     $config = $this->getDouyinConfig();
     $body = '{"out_trade_no":"yansongda","total_amount":1}';
 
@@ -100,7 +100,7 @@ it('verify douyin trade sign', function () {
     expect(true)->toBeTrue();
 });
 
-it('verify douyin trade sign tampered body', function () {
+it('抖音交易验签：body 被篡改', function () {
     $config = $this->getDouyinConfig();
 
     // 用原始 body 签名，但请求体被篡改
@@ -112,7 +112,7 @@ it('verify douyin trade sign tampered body', function () {
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
 });
 
-it('verify douyin trade sign tampered sign', function () {
+it('抖音交易验签：签名被篡改', function () {
     $config = $this->getDouyinConfig();
     $body = '{"out_trade_no":"yansongda","total_amount":1}';
 
@@ -124,7 +124,7 @@ it('verify douyin trade sign tampered sign', function () {
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
 });
 
-it('verify douyin trade sign empty timestamp', function () {
+it('抖音交易验签：时间戳为空', function () {
     $config = $this->getDouyinConfig();
     $body = '{"out_trade_no":"yansongda","total_amount":1}';
 
@@ -136,7 +136,7 @@ it('verify douyin trade sign empty timestamp', function () {
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
 });
 
-it('verify douyin trade sign empty nonce', function () {
+it('抖音交易验签：随机串为空', function () {
     $config = $this->getDouyinConfig();
     $body = '{"out_trade_no":"yansongda","total_amount":1}';
 
@@ -148,7 +148,7 @@ it('verify douyin trade sign empty nonce', function () {
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
 });
 
-it('verify douyin trade sign empty sign', function () {
+it('抖音交易验签：签名为空', function () {
     $config = $this->getDouyinConfig();
     $body = '{"out_trade_no":"yansongda","total_amount":1}';
 
@@ -160,7 +160,7 @@ it('verify douyin trade sign empty sign', function () {
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
 });
 
-it('verify douyin trade sign empty body', function () {
+it('抖音交易验签：body 为空', function () {
     $config = $this->getDouyinConfig();
 
     $request = $this->getDouyinCallbackRequest('');
@@ -171,7 +171,7 @@ it('verify douyin trade sign empty body', function () {
     DouyinTraitStub::verifyDouyinTradeSign($request, $config);
 });
 
-it('verify douyin trade sign invalid platform public key', function () {
+it('抖音交易验签：平台公钥无效', function () {
     $config = new DouyinConfig([
         'app_id' => 'tt226e54d3bd581bf801',
         'app_secret' => 'douyin_app_secret',

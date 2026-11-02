@@ -8,7 +8,7 @@ use Yansongda\Pay\Crypto\Apple\Cryptor;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Exception\InvalidSignException;
 
-it('parse asn1 and re construct der', function () {
+it('解析 ASN.1 并重建 DER', function () {
     $der = "\x30\x0a\x02\x01\x01\x04\x05hello";
 
     $node = Cryptor::parseAsn1($der);
@@ -24,7 +24,7 @@ it('parse asn1 and re construct der', function () {
     expect(Cryptor::reConstructDer($node))->toBe($der);
 });
 
-it('parse asn1 long form length', function () {
+it('解析 ASN.1 长格式长度', function () {
     $cases = [
         200 => "\x30\x81\xcb\x04\x81\xc8".str_repeat('a', 200),
         300 => "\x30\x82\x01\x30\x04\x82\x01\x2c".str_repeat('a', 300),
@@ -38,7 +38,7 @@ it('parse asn1 long form length', function () {
     }
 });
 
-it('parse asn1 depth limit exceeded', function () {
+it('解析 ASN.1 深度超限', function () {
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_ERROR);
 
@@ -48,7 +48,7 @@ it('parse asn1 depth limit exceeded', function () {
     Cryptor::parseAsn1("\x02\x01\x01", $offset, 65);
 });
 
-it('parse asn1 truncated throws exception', function (string $der) {
+it('解析 ASN.1 截断抛出异常', function (string $der) {
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_ERROR);
     $this->expectExceptionMessage('签名异常: Apple ASN.1 数据截断');
@@ -63,14 +63,14 @@ it('parse asn1 truncated throws exception', function (string $der) {
         'nested child truncated' => ["\x30\x05\x04\x05abc"],
     ]);
 
-it('encode asn1 oid', function () {
+it('编码 ASN.1 OID', function () {
     expect(Cryptor::encodeAsn1Oid('1.2.840.113549.1.9.4'))->toBe("\x2a\x86\x48\x86\xf7\x0d\x01\x09\x04");
 
     // 含 >127 的分量（16384 → 81 80 00）
     expect(Cryptor::encodeAsn1Oid('1.2.16384'))->toBe("\x2a\x81\x80\x00");
 });
 
-it('pem wrap and pem to der round trip', function () {
+it('PEM 包装与 PEM 转 DER 往返', function () {
     $pem = Cryptor::pemWrap('body', 'PUBLIC KEY');
 
     expect($pem)->toStartWith("-----BEGIN PUBLIC KEY-----\n");
@@ -78,7 +78,7 @@ it('pem wrap and pem to der round trip', function () {
     expect(Cryptor::pemToDer($pem, '不应抛出异常', 'PUBLIC KEY'))->toBe('body');
 });
 
-it('pem to der with label mismatch throws exception', function () {
+it('PEM 转 DER 标签不匹配抛出异常', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
     $this->expectExceptionMessage('配置异常: 解析 Apple 根证书失败');
@@ -87,14 +87,14 @@ it('pem to der with label mismatch throws exception', function () {
     Cryptor::pemToDer(Cryptor::pemWrap('body', 'PUBLIC KEY'), '配置异常: 解析 Apple 根证书失败');
 });
 
-it('pem to der with invalid pem throws exception', function () {
+it('PEM 转 DER 非法 PEM 抛出异常', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::CONFIG_CERT_PARSE_FAILED);
 
     Cryptor::pemToDer('not a pem', '配置异常: 解析 Apple 支付处理证书失败', 'PUBLIC KEY');
 });
 
-it('base64 url round trip', function () {
+it('Base64 URL 往返', function () {
     $raw = random_bytes(48);
     $encoded = Cryptor::base64UrlEncode($raw);
 
@@ -104,18 +104,18 @@ it('base64 url round trip', function () {
     expect(Cryptor::base64UrlDecode($encoded))->toBe($raw);
 });
 
-it('base64 url decode invalid throws exception', function () {
+it('非法 Base64 URL 解码抛出异常', function () {
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_ERROR);
 
     Cryptor::base64UrlDecode('****');
 });
 
-it('hex to bin safe', function () {
+it('十六进制安全转二进制', function () {
     expect(Cryptor::hexToBinSafe('616263', Exception::PARAMS_APPLE_TOKEN_INVALID, 'msg'))->toBe('abc');
 });
 
-it('hex to bin safe invalid throws exception', function (string $hex) {
+it('非法十六进制转二进制抛出异常', function (string $hex) {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
 
@@ -126,7 +126,7 @@ it('hex to bin safe invalid throws exception', function (string $hex) {
         'non hex' => ['zz'],
     ]);
 
-it('der to raw signature strips integer prefix', function () {
+it('DER 转 raw 签名去除整数前缀', function () {
     $der = "\x30\x0a\x02\x05\x00\xff\xff\xff\xff\x02\x01\x01";
 
     $expected = str_pad("\xff\xff\xff\xff", 32, "\x00", STR_PAD_LEFT).str_pad("\x01", 32, "\x00", STR_PAD_LEFT);
@@ -134,21 +134,21 @@ it('der to raw signature strips integer prefix', function () {
     expect(Cryptor::derToRawSignature($der))->toBe($expected);
 });
 
-it('der to raw signature invalid structure throws exception', function () {
+it('DER 转 raw 签名结构非法抛出异常', function () {
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_ERROR);
 
     Cryptor::derToRawSignature("\x30\x00");
 });
 
-it('raw to der signature invalid length throws exception', function () {
+it('raw 转 DER 签名长度非法抛出异常', function () {
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_ERROR);
 
     Cryptor::rawToDerSignature(str_repeat("\x01", 63));
 });
 
-it('ecdsa signature raw der round trip', function () {
+it('ECDSA 签名 raw/DER 往返', function () {
     $privateKey = openssl_pkey_new(['private_key_type' => OPENSSL_KEYTYPE_EC, 'curve_name' => 'prime256v1']);
     expect($privateKey)->not->toBeFalse();
 
@@ -164,7 +164,7 @@ it('ecdsa signature raw der round trip', function () {
     expect(openssl_verify('apple', Cryptor::rawToDerSignature($raw), $details['key'], OPENSSL_ALGO_SHA256))->toBe(1);
 });
 
-it('verify chain missing leaf throws exception', function () {
+it('证书链缺少叶证书抛出异常', function () {
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_ERROR);
     $this->expectExceptionMessage('签名异常: Apple 证书链缺少 leaf 证书');
@@ -172,7 +172,7 @@ it('verify chain missing leaf throws exception', function () {
     Cryptor::verifyChain([], 'root-pem', '1.2.840.113635.100.6.2.14', '1.2.840.113635.100.6.29');
 });
 
-it('verify chain missing intermediate throws exception', function () {
+it('证书链缺少中间证书抛出异常', function () {
     $leafPem = (string) file_get_contents(__DIR__.'/../../Cert/apple/token-leaf.crt');
 
     $this->expectException(InvalidSignException::class);
@@ -182,7 +182,7 @@ it('verify chain missing intermediate throws exception', function () {
     Cryptor::verifyChain([$leafPem], 'root-pem', '1.2.840.113635.100.6.2.14', '1.2.840.113635.100.6.29');
 });
 
-it('class is final and not instantiable', function () {
+it('类为 final 且不可实例化', function () {
     $reflection = new ReflectionClass(Cryptor::class);
 
     expect($reflection->isFinal())->toBeTrue();

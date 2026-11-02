@@ -13,7 +13,7 @@ use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\TerminatePlugin;
 use Yansongda\Supports\Collection;
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new TerminatePlugin();
     $rocket = new Rocket();
 
@@ -24,7 +24,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('service id missing', function () {
+it('缺少服务商 ID', function () {
     $plugin = new TerminatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([
@@ -38,7 +38,7 @@ it('service id missing', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing openid and authorization code', function () {
+it('缺少 openid 与授权码', function () {
     $plugin = new TerminatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -52,7 +52,7 @@ it('missing openid and authorization code', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('openid and authorization code both filled', function () {
+it('openid 与授权码同时填写', function () {
     $plugin = new TerminatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -68,7 +68,7 @@ it('openid and authorization code both filled', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('service mode rejected', function () {
+it('服务商模式被拒绝', function () {
     $plugin = new TerminatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
@@ -82,7 +82,7 @@ it('service mode rejected', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('openid branch', function () {
+it('openid 分支', function () {
     $plugin = new TerminatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -102,7 +102,7 @@ it('openid branch', function () {
     expect($result->getPayload()->get('reason'))->toEqual('test');
 });
 
-it('openid branch app id from config', function () {
+it('openid 分支使用配置中的 app_id', function () {
     $plugin = new TerminatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -117,7 +117,7 @@ it('openid branch app id from config', function () {
     expect($result->getPayload()->has('openid'))->toBeFalse();
 });
 
-it('authorization code branch', function () {
+it('授权码分支', function () {
     $plugin = new TerminatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -136,7 +136,7 @@ it('authorization code branch', function () {
     expect($result->getPayload()->get('reason'))->toEqual('test');
 });
 
-it('response204 with origin response direction', function () {
+it('204 响应沿原始响应方向', function () {
     $response = new Response(204);
     $rocket = new Rocket();
     $rocket->setDirection(OriginResponseDirection::class)

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Jsb\Pay\Scan\QueryPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryPlugin();
     $rocket = (new Rocket())
         ->setParams([]);

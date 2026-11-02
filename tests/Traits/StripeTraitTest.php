@@ -17,7 +17,7 @@ class StripeTraitStub
 use StripeTrait;
 }
 
-it('get stripe url', function () {
+it('获取 Stripe URL', function () {
     $config = new StripeConfig([
         'secret_key' => 'sk_test_stripe_secret',
         'webhook_secret' => 'whsec_stripe_webhook_secret',
@@ -37,7 +37,7 @@ it('get stripe url', function () {
     expect(StripeTraitStub::getStripeUrl($sandboxConfig, new Collection(['_url' => '/v1/payment_intents'])))->toEqual('https://api.stripe.com/v1/payment_intents');
 });
 
-it('get stripe url missing throws exception', function () {
+it('获取 Stripe URL 缺少参数抛出异常', function () {
     $config = new StripeConfig([
         'secret_key' => 'sk_test_stripe_secret',
         'webhook_secret' => 'whsec_stripe_webhook_secret',
@@ -49,7 +49,7 @@ it('get stripe url missing throws exception', function () {
     StripeTraitStub::getStripeUrl($config, new Collection([]));
 });
 
-it('verify stripe webhook sign empty signature', function () {
+it('Stripe webhook 验签：签名为空', function () {
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/stripe/notify', [], '{}');
 
     $this->expectException(InvalidSignException::class);
@@ -58,7 +58,7 @@ it('verify stripe webhook sign empty signature', function () {
     StripeTraitStub::verifyStripeWebhookSign($request, []);
 });
 
-it('verify stripe webhook sign missing webhook secret throws exception', function () {
+it('Stripe webhook 验签：缺少密钥抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [], '{}');
 
     $this->expectException(InvalidConfigException::class);
@@ -67,7 +67,7 @@ it('verify stripe webhook sign missing webhook secret throws exception', functio
     StripeTraitStub::verifyStripeWebhookSign($request, ['_config' => 'no_webhook_secret']);
 });
 
-it('verify stripe webhook sign malformed signature header throws exception', function () {
+it('Stripe webhook 验签：签名头格式错误抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [
         'Stripe-Signature' => 'no-equals-sign-here',
     ], '{}');
@@ -78,7 +78,7 @@ it('verify stripe webhook sign malformed signature header throws exception', fun
     StripeTraitStub::verifyStripeWebhookSign($request, []);
 });
 
-it('verify stripe webhook sign expired timestamp throws exception', function () {
+it('Stripe webhook 验签：时间戳过期抛出异常', function () {
     $oldTimestamp = time() - 400;
     $signatureHeader = 't='.$oldTimestamp.',v1=fakesig';
 
@@ -92,7 +92,7 @@ it('verify stripe webhook sign expired timestamp throws exception', function () 
     StripeTraitStub::verifyStripeWebhookSign($request, []);
 });
 
-it('verify stripe webhook sign wrong signature throws exception', function () {
+it('Stripe webhook 验签：签名错误抛出异常', function () {
     $timestamp = time();
     $signatureHeader = 't='.$timestamp.',v1=invalidsignaturevalue';
 
@@ -106,7 +106,7 @@ it('verify stripe webhook sign wrong signature throws exception', function () {
     StripeTraitStub::verifyStripeWebhookSign($request, []);
 });
 
-it('verify stripe webhook sign valid signature passes', function () {
+it('Stripe webhook 验签：签名有效通过', function () {
     $body = '{"id":"evt_test","type":"payment_intent.succeeded"}';
     $webhookSecret = 'whsec_stripe_webhook_secret';
     $timestamp = time();
@@ -123,7 +123,7 @@ it('verify stripe webhook sign valid signature passes', function () {
     expect(true)->toBeTrue();
 });
 
-it('verify stripe webhook sign multiple signatures passes', function () {
+it('Stripe webhook 验签：多签名通过', function () {
     $body = '{"id":"evt_test","type":"payment_intent.succeeded"}';
     $webhookSecret = 'whsec_stripe_webhook_secret';
     $timestamp = time();

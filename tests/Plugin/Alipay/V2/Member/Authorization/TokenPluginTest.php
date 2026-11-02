@@ -6,7 +6,7 @@ use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Member\Authorization\TokenPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new TokenPlugin();
     $rocket = (new Rocket())
         ->setParams(['name' => 'yansongda']);

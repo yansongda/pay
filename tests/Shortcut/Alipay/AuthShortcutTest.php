@@ -15,7 +15,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\AuthShortcut;
 
-it('token app default', function () {
+it('默认 app 的 token', function () {
     $shortcut = new AuthShortcut();
     $result = $shortcut->getPlugins([]);
 
@@ -31,7 +31,7 @@ it('token app default', function () {
     ]);
 });
 
-it('token app explicit', function () {
+it('显式指定 app 的 token', function () {
     $shortcut = new AuthShortcut();
     $result = $shortcut->getPlugins(['_action' => 'token_app']);
 
@@ -47,7 +47,7 @@ it('token app explicit', function () {
     ]);
 });
 
-it('query', function () {
+it('查询', function () {
     $shortcut = new AuthShortcut();
     $result = $shortcut->getPlugins(['_action' => 'query']);
 
@@ -63,7 +63,7 @@ it('query', function () {
     ]);
 });
 
-it('foo param', function () {
+it('foo 参数', function () {
     $shortcut = new AuthShortcut();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);

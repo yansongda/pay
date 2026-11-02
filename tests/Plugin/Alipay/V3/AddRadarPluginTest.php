@@ -7,7 +7,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V3\AddRadarPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new AddRadarPlugin();
     $body = '{"out_trade_no":"yansongda","total_amount":"0.01"}';
     $rocket = (new Rocket())
@@ -39,7 +39,7 @@ it('normal', function () {
     expect($headers['alipay-request-id'][0])->toMatch('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i');
 });
 
-it('without app auth token', function () {
+it('不携带 app_auth_token', function () {
     $plugin = new AddRadarPlugin();
     $rocket = (new Rocket())
         ->setParams(['_config' => 'alipay-v3'])
@@ -57,7 +57,7 @@ it('without app auth token', function () {
     expect($headers)->not->toHaveKey('alipay-app-auth-token');
 });
 
-it('body exclude underscore keys', function () {
+it('body 排除下划线键', function () {
     $plugin = new AddRadarPlugin();
     // 模拟真实管道: AddPayloadBodyPlugin 通过 filter_params 生成 `_body`,`_` 前缀键不进 body
     $rocket = (new Rocket())

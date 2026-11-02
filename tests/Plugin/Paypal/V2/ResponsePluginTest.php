@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 use Yansongda\Supports\Collection;
 
-it('success response', function () {
+it('成功响应', function () {
     $plugin = new ResponsePlugin();
     $destination = ['id' => 'ORDER_123', 'status' => 'CREATED'];
 
@@ -23,7 +23,7 @@ it('success response', function () {
     expect($result->getDestination()->all())->toEqual($destination);
 });
 
-it('non success response throws exception', function () {
+it('非成功响应抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(400));
@@ -35,7 +35,7 @@ it('non success response throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('server error throws exception', function () {
+it('服务端错误抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(500));

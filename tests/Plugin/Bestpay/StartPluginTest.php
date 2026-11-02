@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Bestpay\V1\StartPlugin;
 
-it('assembly', function () {
+it('组装', function () {
     $rocket = new Rocket();
     $rocket->setParams(['outTradeNo' => 'ORDER001', '_config' => 'default']);
 
@@ -18,7 +18,7 @@ it('assembly', function () {
     expect($payload->get('institutionCode'))->toEqual('3178033925245778');
 });
 
-it('assembly merges merchant no from config', function () {
+it('组装合并配置中的商户号', function () {
     $rocket = new Rocket();
     $rocket->setParams(['outTradeNo' => 'ORDER001']);
 
@@ -27,7 +27,7 @@ it('assembly merges merchant no from config', function () {
     expect($rocket->getPayload()->get('merchantNo'))->toEqual('3178033925245778');
 });
 
-it('assembly user params override config', function () {
+it('用户参数覆盖配置组装', function () {
     $rocket = new Rocket();
     $rocket->setParams([
         'merchantNo' => 'CUSTOM_MCH',

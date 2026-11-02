@@ -25,7 +25,7 @@ use Yansongda\Pay\Shortcut\Alipay\V3\RefundShortcut;
 
 uses(RefundShortcutTestHelpers::class);
 
-it('normal', function () {
+it('正常', function () {
     $shortcut = new RefundShortcut();
     $plugins = $shortcut->getPlugins([]);
 
@@ -45,7 +45,7 @@ it('normal', function () {
     expect(array_search(VerifySignaturePlugin::class, $plugins, true))->toBeGreaterThan(array_search(ResponsePlugin::class, $plugins, true));
 });
 
-it('refund http', function () {
+it('HTTP 退款', function () {
     $shortcut = new RefundShortcut();
     $body = json_encode([
         'trade_no' => '2026090222001400001234567890',
@@ -72,7 +72,7 @@ it('refund http', function () {
     expect($result->get('fund_change'))->toEqual('Y');
 });
 
-it('refund error response', function () {
+it('退款错误响应', function () {
     $shortcut = new RefundShortcut();
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->andReturn(new Response(

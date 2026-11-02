@@ -30,21 +30,21 @@ use function Yansongda\Artful\filter_params;
 
 uses(AlipayTestHelpers::class);
 
-it('shortcut not found', function () {
+it('快捷方式不存在', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::alipay()->foo();
 });
 
-it('shortcut incompatible', function () {
+it('快捷方式不兼容', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::alipay()->foo();
 });
 
-it('web', function () {
+it('网页', function () {
     $result = Pay::alipay()->web([
         'out_trade_no' => 'web'.time(),
         'total_amount' => '0.01',
@@ -65,7 +65,7 @@ it('web', function () {
     expect($radar->getMethod())->toEqual('POST');
 });
 
-it('web get', function () {
+it('网页 GET', function () {
     $result = Pay::alipay()->web([
         '_method' => 'get',
         'out_trade_no' => 'web'.time(),
@@ -87,7 +87,7 @@ it('web get', function () {
     expect($radar->getMethod())->toEqual('GET');
 });
 
-it('h5', function () {
+it('H5', function () {
     $result = Pay::alipay()->h5([
         'out_trade_no' => 'web'.time(),
         'total_amount' => '0.01',
@@ -109,7 +109,7 @@ it('h5', function () {
     expect($radar->getMethod())->toEqual('POST');
 });
 
-it('h5 get', function () {
+it('H5 GET', function () {
     $result = Pay::alipay()->h5([
         '_method' => 'get',
         'out_trade_no' => 'web'.time(),
@@ -132,7 +132,7 @@ it('h5 get', function () {
     expect($radar->getMethod())->toEqual('GET');
 });
 
-it('app', function () {
+it('APP', function () {
     $result = Pay::alipay()->app([
         'out_trade_no' => 'web'.time(),
         'total_amount' => '0.01',
@@ -149,7 +149,7 @@ it('app', function () {
     expect((string) $result->getBody())->toContain($body3);
 });
 
-it('transfer', function () {
+it('转账', function () {
     $response = [
         'alipay_fund_trans_uni_transfer_response' => [
             'code' => '10000',
@@ -189,7 +189,7 @@ it('transfer', function () {
     expect($result->getDestination()->except('_sign')->all())->toEqualCanonicalizing($response['alipay_fund_trans_uni_transfer_response']);
 });
 
-it('callback', function () {
+it('回调', function () {
     $url = 'http://127.0.0.1:8000/alipay/verify?charset=utf-8&out_trade_no=1703141270&method=alipay.trade.page.pay.return&total_amount=0.01&sign=RJzbs5y7I41BO9UPnCdq7oWgoInyjELi9Qj6D%2BLAZXVpHTedemAHfVUowuF9iuznGZLxU6Xv1L3ZkzTGxmIfvzontCZNb0%2BRROqiT41lX91VYd6j4ZcOn8zsvlCdQSVHmYNJi%2Bw%2F40uHxo1ufRwHxBNtQKsoJCYk5VtZ92pQFvVyE5wPPT6Nolww5WlCAPxcWNby8VAiWT%2Bd2yxmFm8vZ6yj5rsLHTR72O76TkEXzOEex6e36Zf8M9YXww7RQbflMfk9eURPHW%2FoQq4hZr%2FlX7%2FO1nT5vdT4UVFai4V18Xm1KspBun8outJxqlWMIKVxGsYhIH1E79ORt4wQA7PG1g%3D%3D&trade_no=2023122122001499160501586202&auth_app_id=9021000122682882&version=1.0&app_id=9021000122682882&sign_type=RSA2&seller_id=2088721003899159&timestamp=2023-12-21+14%3A48%3A44';
     parse_str(parse_url($url)['query'], $query);
     $request = new ServerRequest('GET', $url);
@@ -202,7 +202,7 @@ it('callback', function () {
     expect($result->all())->not->toBeEmpty();
 });
 
-it('app callback', function () {
+it('应用回调', function () {
     $appCallbackParams = [
         'alipay_trade_app_pay_response' => [
             'code' => '10000',
@@ -233,14 +233,14 @@ it('app callback', function () {
     Pay::alipay()->appCallback([]);
 });
 
-it('success', function () {
+it('成功', function () {
     $result = Pay::alipay()->success();
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);
     expect((string) $result->getBody())->toEqual('success');
 });
 
-it('v3 scan', function () {
+it('V3 扫码', function () {
     $responseData = [
         'out_trade_no' => 'v3scan1704093802',
         'qr_code' => 'https://qr.alipay.com/bax07651xvtprxfkmxyf00a9',
@@ -281,7 +281,7 @@ it('v3 scan', function () {
     expect($result->getDestination()->all())->toEqualCanonicalizing($responseData);
 });
 
-it('v3 callback with server request', function () {
+it('V3 回调（ServerRequest）', function () {
     $form = $this->makeV3CallbackForm();
 
     $request = (new ServerRequest('POST', 'https://pay.yansongda.cn/alipay/notify'))->withParsedBody($form);
@@ -293,7 +293,7 @@ it('v3 callback with server request', function () {
     expect($result->get('trade_status'))->toBe('TRADE_SUCCESS');
 });
 
-it('v3 callback with plain array', function () {
+it('V3 回调（纯数组）', function () {
     $form = $this->makeV3CallbackForm();
 
     $result = Pay::alipay()->callback($form, ['_config' => 'alipay-v3']);
@@ -303,7 +303,7 @@ it('v3 callback with plain array', function () {
     expect($result->get('trade_status'))->toBe('TRADE_SUCCESS');
 });
 
-it('v3 callback with body and headers', function () {
+it('V3 回调（body + headers）', function () {
     $form = $this->makeV3CallbackForm();
 
     $result = Pay::alipay()->callback(
@@ -315,7 +315,7 @@ it('v3 callback with body and headers', function () {
     expect($result->except('_config')->all())->toBe($form);
 });
 
-it('v3 callback tampered params', function () {
+it('V3 回调参数被篡改', function () {
     $form = $this->makeV3CallbackForm();
     $form['total_amount'] = '999.00';
 
@@ -324,7 +324,7 @@ it('v3 callback tampered params', function () {
     Pay::alipay()->callback($form, ['_config' => 'alipay-v3']);
 });
 
-it('callback with gw action', function () {
+it('网关动作回调', function () {
     $form = $this->makeGwVerifyForm();
 
     $result = Pay::alipay()->callback(array_merge($form, ['_action' => 'gw']), ['_config' => 'alipay-v3']);
@@ -335,7 +335,7 @@ it('callback with gw action', function () {
     expect((string) $result->getBody())->toContain('<sign_type>RSA2</sign_type>');
 });
 
-it('callback with gw action via webhook form', function () {
+it('webhook 表单方式网关动作回调', function () {
     $form = $this->makeGwVerifyForm();
 
     $result = Pay::alipay()->callback(
@@ -348,7 +348,7 @@ it('callback with gw action via webhook form', function () {
     expect((string) $result->getBody())->toContain('<success>true</success>');
 });
 
-it('callback with unknown action', function () {
+it('未知动作回调', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_SHORTCUT_ACTION_INVALID);
     $this->expectExceptionMessage('参数异常: 不支持的回调 _action [foo]');

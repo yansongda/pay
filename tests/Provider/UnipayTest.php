@@ -18,21 +18,21 @@ use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 
-it('shortcut not found', function () {
+it('快捷方式不存在', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::unipay()->foo();
 });
 
-it('shortcut incompatible', function () {
+it('快捷方式不兼容', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::unipay()->foo();
 });
 
-it('web pay', function () {
+it('网页支付', function () {
     $response = Pay::unipay()->web([
         '_config' => 'sandbox',
         'txnTime' => '20240105145046',
@@ -45,7 +45,7 @@ it('web pay', function () {
     expect($response->getRadar()->getHeaderLine('Content-Type'))->toEqual('application/x-www-form-urlencoded;charset=utf-8');
 });
 
-it('pos qra', function () {
+it('POS QRA', function () {
     $response = '<xml><charset><![CDATA[UTF-8]]></charset> <code><![CDATA[9999999]]></code> <err_code><![CDATA[NOAUTH]]></err_code> <err_msg><![CDATA[此商家涉嫌违规，收款功能已被限制，暂无法支付。商家可以登录微信商户平台/微信支付商家助手小程序查看原因和解决方案。]]></err_msg> <mch_id><![CDATA[QRA29045311KKR1]]></mch_id> <need_query><![CDATA[N]]></need_query> <nonce_str><![CDATA[UhxOr4kzerPGku9wCaVQyfd1zisoAnAm]]></nonce_str> <result_code><![CDATA[1]]></result_code> <sign><![CDATA[4B9B2AA73A05CBC32CFDCB4456E12EBA]]></sign> <sign_type><![CDATA[MD5]]></sign_type> <status><![CDATA[0]]></status> <transaction_id><![CDATA[95516000379952690603566602920171]]></transaction_id> <version><![CDATA[2.0]]></version> </xml>';
 
     $http = Mockery::mock(Client::class);
@@ -74,7 +74,7 @@ it('pos qra', function () {
     expect($response->getRadar()->getHeaderLine('Content-Type'))->toEqual('application/x-www-form-urlencoded;charset=utf-8');
 });
 
-it('query', function () {
+it('查询', function () {
     $response = "accNo=cDg4jpD9tKxlI4si91lomXcSjQeOyOxEFLmMc9BLmsJrLPMqmN0JIUkJUD1MVYCfpXRsGKFGDwerpR0LylHiKXnB1ZX0zS4OleY2kSvgX6J2X24TPHkY+EKS7F2kfuYW8yHF+OgUEoUqPa/WO/qzigGci3sSGLiD/uCIljuDOfskQdgXYpsQANPmmgqCOC+TqtDSjYfPKZ3o6SbJJSn4lOvUy3FF/re7PFCShVghJVO1XRJFw0d0VNUkhWs2VzdUl1ZwkDVXcFWB39REEOWDHNEBoBgvkfVSb9j6KV7K3gUNXkfqHqk7zBTtg67jAi/kudAN4U1k9Y5UMGj5mVbu2g==&accessType=0&bizType=000000&currencyCode=156&encoding=utf-8&issuerIdentifyMode=0&merId=777290058167151&orderId=pay20240105145046&origRespCode=00&origRespMsg=成功[0000000]&queryId=442401051450467846498&respCode=00&respMsg=成功[0000000]&settleAmt=1&settleCurrencyCode=156&settleDate=0105&signMethod=01&traceNo=784649&traceTime=0105145046&txnAmt=1&txnSubType=01&txnTime=20240105145046&txnType=01&version=5.1.0&signPubKeyCert=-----BEGIN CERTIFICATE-----\r\nMIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r\nQ04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r\ncml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMjAwNzMxMDExOTE2WhcN\r\nMjUwNzMxMDExOTE2WjCBljELMAkGA1UEBhMCY24xEjAQBgNVBAoTCUNGQ0EgT0NB\r\nMTEWMBQGA1UECxMNTG9jYWwgUkEgT0NBMTEUMBIGA1UECxMLRW50ZXJwcmlzZXMx\r\nRTBDBgNVBAMMPDA0MUA4MzEwMDAwMDAwMDgzMDQwQOS4reWbvemTtuiBlOiCoeS7\r\nveaciemZkOWFrOWPuEAwMDAxNjQ5NTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC\r\nAQoCggEBAMHNa81t44KBfUWUgZhb1YTx3nO9DeagzBO5ZEE9UZkdK5+2IpuYi48w\r\neYisCaLpLuhrwTced19w2UR5hVrc29aa2TxMvQH9s74bsAy7mqUJX+mPd6KThmCr\r\nt5LriSQ7rDlD0MALq3yimLvkEdwYJnvyzA6CpHntP728HIGTXZH6zOL0OAvTnP8u\r\nRCHZ8sXJPFUkZcbG3oVpdXQTJVlISZUUUhsfSsNdvRDrcKYY+bDWTMEcG8ZuMZzL\r\ng0N+/spSwB8eWz+4P87nGFVlBMviBmJJX8u05oOXPyIcZu+CWybFQVcS2sMWDVZy\r\nsPeT3tPuBDbFWmKQYuu+gT83PM3G6zMCAwEAAaOB9DCB8TAfBgNVHSMEGDAWgBTP\r\ncJ1h6518Lrj3ywJA9wmd/jN0gDBIBgNVHSAEQTA/MD0GCGCBHIbvKgEBMDEwLwYI\r\nKwYBBQUHAgEWI2h0dHA6Ly93d3cuY2ZjYS5jb20uY24vdXMvdXMtMTQuaHRtMDkG\r\nA1UdHwQyMDAwLqAsoCqGKGh0dHA6Ly91Y3JsLmNmY2EuY29tLmNuL1JTQS9jcmw3\r\nNTAwMy5jcmwwCwYDVR0PBAQDAgPoMB0GA1UdDgQWBBTmzk7XEM/J/sd+wPrMils3\r\n9rJ2/DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQEF\r\nBQADggEBAJLbXxbJaFngROADdNmNUyVxPtbAvK32Ia0EjgDh/vjn1hpRNgvL4flH\r\nNsGNttCy8afLJcH8UnFJyGLas8v/P3UKXTJtgrOj1mtothv7CQa4LUYhzrVw3UhL\r\n4L1CTtmE6D1Kf3+c2Fj6TneK+MoK9AuckySjK5at6a2GQi18Y27gVF88Nk8bp1lJ\r\nvzOwPKd8R7iGFotuF4/8GGhBKR4k46EYnKCodyIhNpPdQfpaN5AKeS7xeLSbFvPJ\r\nHYrtBsI48jUK/WKtWBJWhFH+Gty+GWX0e5n2QHXHW6qH62M0lDo7OYeyBvG1mh9u\r\nQ0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r\n-----END CERTIFICATE-----&signature=sEJYCC94bvr5KJ12EVeid6kVoyviipkieSp5I9r7baINMZdTxJZlFLIpqI/58s/QMgQXO7I7W0d//YUYXgR2SxZy0n56df+oTUMiXEchwngF/ksiegh0HndsY9ZdYcfwqzD1repppuKGRhOmFL4oUZFPOdLZ8t6QJEcdpEKh21eZ1+fw+Fd2gAfBaIJTx1fg0ZNarvOh1AeeJu48c399p3DZKYxRX04sg5grr6By0GCE3h8UdmSWRRoEdiT/jMKB+xnSi+JL8x04NXfqbjSJcmMebw5uIZ3Bst93Aa2jR3GgK+52j78Al8AIy4nmI0WncAmxAToMrN6AJZaUpj1S5Q==";
 
     $http = Mockery::mock(Client::class);
@@ -92,7 +92,7 @@ it('query', function () {
     expect($result->getDestination()->all())->toHaveKey('origRespMsg');
 });
 
-it('cancel', function () {
+it('撤销', function () {
     $response = "accessType=0&bizType=000000&encoding=utf-8&merId=777290058167151&orderId=cancelpay20240105164725&origQryId=652401051647252574008&queryId=652401051647252421528&respCode=00&respMsg=成功[0000000]&signMethod=01&txnAmt=1&txnSubType=00&txnTime=20240105164725&txnType=31&version=5.1.0&signPubKeyCert=-----BEGIN CERTIFICATE-----\r\nMIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r\nQ04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r\ncml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMjAwNzMxMDExOTE2WhcN\r\nMjUwNzMxMDExOTE2WjCBljELMAkGA1UEBhMCY24xEjAQBgNVBAoTCUNGQ0EgT0NB\r\nMTEWMBQGA1UECxMNTG9jYWwgUkEgT0NBMTEUMBIGA1UECxMLRW50ZXJwcmlzZXMx\r\nRTBDBgNVBAMMPDA0MUA4MzEwMDAwMDAwMDgzMDQwQOS4reWbvemTtuiBlOiCoeS7\r\nveaciemZkOWFrOWPuEAwMDAxNjQ5NTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC\r\nAQoCggEBAMHNa81t44KBfUWUgZhb1YTx3nO9DeagzBO5ZEE9UZkdK5+2IpuYi48w\r\neYisCaLpLuhrwTced19w2UR5hVrc29aa2TxMvQH9s74bsAy7mqUJX+mPd6KThmCr\r\nt5LriSQ7rDlD0MALq3yimLvkEdwYJnvyzA6CpHntP728HIGTXZH6zOL0OAvTnP8u\r\nRCHZ8sXJPFUkZcbG3oVpdXQTJVlISZUUUhsfSsNdvRDrcKYY+bDWTMEcG8ZuMZzL\r\ng0N+/spSwB8eWz+4P87nGFVlBMviBmJJX8u05oOXPyIcZu+CWybFQVcS2sMWDVZy\r\nsPeT3tPuBDbFWmKQYuu+gT83PM3G6zMCAwEAAaOB9DCB8TAfBgNVHSMEGDAWgBTP\r\ncJ1h6518Lrj3ywJA9wmd/jN0gDBIBgNVHSAEQTA/MD0GCGCBHIbvKgEBMDEwLwYI\r\nKwYBBQUHAgEWI2h0dHA6Ly93d3cuY2ZjYS5jb20uY24vdXMvdXMtMTQuaHRtMDkG\r\nA1UdHwQyMDAwLqAsoCqGKGh0dHA6Ly91Y3JsLmNmY2EuY29tLmNuL1JTQS9jcmw3\r\nNTAwMy5jcmwwCwYDVR0PBAQDAgPoMB0GA1UdDgQWBBTmzk7XEM/J/sd+wPrMils3\r\n9rJ2/DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQEF\r\nBQADggEBAJLbXxbJaFngROADdNmNUyVxPtbAvK32Ia0EjgDh/vjn1hpRNgvL4flH\r\nNsGNttCy8afLJcH8UnFJyGLas8v/P3UKXTJtgrOj1mtothv7CQa4LUYhzrVw3UhL\r\n4L1CTtmE6D1Kf3+c2Fj6TneK+MoK9AuckySjK5at6a2GQi18Y27gVF88Nk8bp1lJ\r\nvzOwPKd8R7iGFotuF4/8GGhBKR4k46EYnKCodyIhNpPdQfpaN5AKeS7xeLSbFvPJ\r\nHYrtBsI48jUK/WKtWBJWhFH+Gty+GWX0e5n2QHXHW6qH62M0lDo7OYeyBvG1mh9u\r\nQ0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r\n-----END CERTIFICATE-----&signature=C3QoNG8pgA8Y8JRWPJBfnJCTI00ujWwNdA5dJC8Sq4oddIzc8E34jSJW9YLHTMkgB0AV6eZ7z7eGKCvq7UkOQf6mXM7agiCxPEAduYVAQ74z+HZbdMhYwqkEMb4WulRdossDz+qtSi28C/+WM0jlXeJe695dfl7SjnVl0d3Pk5Mg1Xxpc64VRtR8l4iJuNxzVaDRHvINMOrCa6NYg+W4hpyRJc3BM3Abg2O/9Zu+raTk9yjCEWl0t9C8K7Kym03wkXFhNBqUYG2OBIjqHMkTnUVQyRkARGv8uDcPAg7EYLk8T2U6NXqLIwEAvTc7yEik6YP3/27SqkwMquH4PXqo4w==";
 
     $http = Mockery::mock(Client::class);
@@ -112,14 +112,14 @@ it('cancel', function () {
     expect($result->getDestination()->all())->toHaveKey('respMsg');
 });
 
-it('close', function () {
+it('关单', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::unipay()->close(['foo']);
 });
 
-it('refund', function () {
+it('退款', function () {
     $response = "accessType=0&bizType=000000&encoding=utf-8&merId=777290058167151&orderId=refundpay20240105165842&origQryId=052401051658427862748&queryId=052401051658427863998&respCode=00&respMsg=成功[0000000]&signMethod=01&txnAmt=1&txnSubType=00&txnTime=20240105165842&txnType=04&version=5.1.0&signPubKeyCert=-----BEGIN CERTIFICATE-----\r\nMIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r\nQ04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r\ncml0eTEXMBUGA1UEAxMOQ0ZDQSBURVNUIE9DQTEwHhcNMjAwNzMxMDExOTE2WhcN\r\nMjUwNzMxMDExOTE2WjCBljELMAkGA1UEBhMCY24xEjAQBgNVBAoTCUNGQ0EgT0NB\r\nMTEWMBQGA1UECxMNTG9jYWwgUkEgT0NBMTEUMBIGA1UECxMLRW50ZXJwcmlzZXMx\r\nRTBDBgNVBAMMPDA0MUA4MzEwMDAwMDAwMDgzMDQwQOS4reWbvemTtuiBlOiCoeS7\r\nveaciemZkOWFrOWPuEAwMDAxNjQ5NTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC\r\nAQoCggEBAMHNa81t44KBfUWUgZhb1YTx3nO9DeagzBO5ZEE9UZkdK5+2IpuYi48w\r\neYisCaLpLuhrwTced19w2UR5hVrc29aa2TxMvQH9s74bsAy7mqUJX+mPd6KThmCr\r\nt5LriSQ7rDlD0MALq3yimLvkEdwYJnvyzA6CpHntP728HIGTXZH6zOL0OAvTnP8u\r\nRCHZ8sXJPFUkZcbG3oVpdXQTJVlISZUUUhsfSsNdvRDrcKYY+bDWTMEcG8ZuMZzL\r\ng0N+/spSwB8eWz+4P87nGFVlBMviBmJJX8u05oOXPyIcZu+CWybFQVcS2sMWDVZy\r\nsPeT3tPuBDbFWmKQYuu+gT83PM3G6zMCAwEAAaOB9DCB8TAfBgNVHSMEGDAWgBTP\r\ncJ1h6518Lrj3ywJA9wmd/jN0gDBIBgNVHSAEQTA/MD0GCGCBHIbvKgEBMDEwLwYI\r\nKwYBBQUHAgEWI2h0dHA6Ly93d3cuY2ZjYS5jb20uY24vdXMvdXMtMTQuaHRtMDkG\r\nA1UdHwQyMDAwLqAsoCqGKGh0dHA6Ly91Y3JsLmNmY2EuY29tLmNuL1JTQS9jcmw3\r\nNTAwMy5jcmwwCwYDVR0PBAQDAgPoMB0GA1UdDgQWBBTmzk7XEM/J/sd+wPrMils3\r\n9rJ2/DAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwDQYJKoZIhvcNAQEF\r\nBQADggEBAJLbXxbJaFngROADdNmNUyVxPtbAvK32Ia0EjgDh/vjn1hpRNgvL4flH\r\nNsGNttCy8afLJcH8UnFJyGLas8v/P3UKXTJtgrOj1mtothv7CQa4LUYhzrVw3UhL\r\n4L1CTtmE6D1Kf3+c2Fj6TneK+MoK9AuckySjK5at6a2GQi18Y27gVF88Nk8bp1lJ\r\nvzOwPKd8R7iGFotuF4/8GGhBKR4k46EYnKCodyIhNpPdQfpaN5AKeS7xeLSbFvPJ\r\nHYrtBsI48jUK/WKtWBJWhFH+Gty+GWX0e5n2QHXHW6qH62M0lDo7OYeyBvG1mh9u\r\nQ0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r\n-----END CERTIFICATE-----&signature=c++EAuubwRkvr2MVyM9zyjbdH3RMRK/L1ttftpJ4fkl4ZSY1BjyRbTj5fx/2+Z/eH4dqPNfFEQt8egVVWhF/k7PaD8tLTaueeUIPwyjnEIWmqNtVbJtzKexCouGc8wtYDHZYxTJTgo6BW7GEgO5xD6Qpxq801Bb9Zto8uhn4BUP4HI7UsxHHIzP9JYhL2cqz2B8gb3AJHpLMEBpYv+Kb3mwq8ZFgpGaieCAFFGGWImUx1+MgCzLFoe3SKlTF13nbr39Cd3AHuDJnbN+uG1N6AwUtLu12Zzq/6SM+/dqiE0v5SpvB/PeRj9KQeiGDRg/ho9larqB+D3y0FjU13EeHng==";
 
     $http = Mockery::mock(Client::class);
@@ -139,7 +139,7 @@ it('refund', function () {
     expect($result->getDestination()->all())->toHaveKey('respMsg');
 });
 
-it('callback', function () {
+it('回调', function () {
     $input = [
         'accNo' => 'ORRSXWY1kMr8UJNxGx9xKPuO0Uhm8JT8aQV3sWswJfIsj/grkjauH4soyAtiqB9XwQotZOwmUAs/pkMupUkfiX9npdFGGEUEc5gqq+lcEwyD7tLmd2WBzRvcEvvjAKMKwTCFDxmQbIrP48ocIVhPoZ87ZQtQM5MIyJYedrzPRlt6BzRddUPGU1gJwDA8APDx3iyNl8EAfenJw7DUDZimmhbE1VSRmQm/iqgJurI7juq/6ztDHZHv4ys1eN9JYkwhcKxCjsWpwXTSy0PGvDXhsAZsDuNXHsjI8JLhHXvTDaU2+gc289LZPiwpr4Ah/reIuPWrIHubchYm2XTqQlUAaw==',
         'accessType' => '0',
@@ -199,7 +199,7 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
     expect($result->all())->not->toBeEmpty();
 });
 
-it('success', function () {
+it('成功', function () {
     $result = Pay::unipay()->success();
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);

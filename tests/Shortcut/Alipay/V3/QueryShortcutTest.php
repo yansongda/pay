@@ -24,7 +24,7 @@ use Yansongda\Pay\Shortcut\Alipay\V3\QueryShortcut;
 
 uses(QueryShortcutTestHelpers::class);
 
-it('normal', function () {
+it('正常', function () {
     $shortcut = new QueryShortcut();
     $plugins = $shortcut->getPlugins([]);
 
@@ -44,7 +44,7 @@ it('normal', function () {
     expect(array_search(VerifySignaturePlugin::class, $plugins, true))->toBeGreaterThan(array_search(ResponsePlugin::class, $plugins, true));
 });
 
-it('query http', function () {
+it('HTTP 查询', function () {
     $shortcut = new QueryShortcut();
     $body = json_encode([
         'trade_no' => '2026090222001400001234567890',

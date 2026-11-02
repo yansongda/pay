@@ -11,7 +11,7 @@ use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
-it('construct valid config', function () {
+it('构造合法配置', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -30,7 +30,7 @@ it('construct valid config', function () {
     expect($config->getMode())->toBe(PayMode::NORMAL);
 });
 
-it('construct with tenant', function () {
+it('指定租户构造', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -43,7 +43,7 @@ it('construct with tenant', function () {
     expect($config->getTenant())->toBe('custom_tenant');
 });
 
-it('mode sandbox', function () {
+it('沙箱模式', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -61,7 +61,7 @@ it('mode sandbox', function () {
     $config->validate();
 });
 
-it('mode with int value', function () {
+it('整数形式的模式', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -76,7 +76,7 @@ it('mode with int value', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('get app id by type', function () {
+it('按类型获取 app_id', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -100,7 +100,7 @@ it('get app id by type', function () {
     expect($config->getAppIdByType('foo'))->toBe('mp_app_id');
 });
 
-it('get sub app id by type', function () {
+it('按类型获取子应用 ID', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -124,7 +124,7 @@ it('get sub app id by type', function () {
     expect($config->getSubAppIdByType('foo'))->toBe('sub_mp_app_id');
 });
 
-it('construct without notify url', function () {
+it('不传 notify_url 构造', function () {
     $config = new WechatConfig([
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -135,7 +135,7 @@ it('construct without notify url', function () {
     expect($config->getNotifyUrl())->toBe('');
 });
 
-it('construct missing required', function () {
+it('缺少必填项构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
 
@@ -149,7 +149,7 @@ it('construct missing required', function () {
     $config->validate();
 });
 
-it('construct invalid secret key length', function () {
+it('密钥长度非法构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: mch_secret_key 长度应为 32 字节');
 
@@ -163,7 +163,7 @@ it('construct invalid secret key length', function () {
     $config->validate();
 });
 
-it('construct service mode missing sub mch id', function () {
+it('服务商模式缺少子商户号构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 服务商模式下缺少 [sub_mch_id]');
 
@@ -179,7 +179,7 @@ it('construct service mode missing sub mch id', function () {
     $config->validate();
 });
 
-it('construct service mode with sub mch id', function () {
+it('服务商模式带子商户号构造', function () {
     $config = new WechatConfig([
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -194,7 +194,7 @@ it('construct service mode with sub mch id', function () {
     expect($config->getSubMchId())->toBe('sub_mch_id');
 });
 
-it('optional getters', function () {
+it('可选 getter', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -221,7 +221,7 @@ it('optional getters', function () {
     expect($config->getSubAppId())->toBe('sub_app_id');
 });
 
-it('optional getters null', function () {
+it('可选 getter 返回 null', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -241,7 +241,7 @@ it('optional getters null', function () {
     expect($config->getSubMchId())->toBeNull();
 });
 
-it('service id getter', function () {
+it('服务商 ID getter', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -256,7 +256,7 @@ it('service id getter', function () {
     expect($config->getServiceId())->toBe('12345678901234567890123456789012');
 });
 
-it('service id getter null', function () {
+it('服务商 ID getter 返回 null', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -269,7 +269,7 @@ it('service id getter null', function () {
     expect($config->getServiceId())->toBeNull();
 });
 
-it('wechat config init imports to cert manager', function () {
+it('微信配置初始化导入证书管理器', function () {
     CertManager::clearCache();
 
     $tenant = 'test-import';
@@ -288,7 +288,7 @@ it('wechat config init imports to cert manager', function () {
     expect(CertManager::wechatGetCertBySerial($tenant, 'SERIAL2'))->toEqual('cert-content-2');
 });
 
-it('virtual pay default is empty object', function () {
+it('虚拟支付默认空对象', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -305,7 +305,7 @@ it('virtual pay default is empty object', function () {
     expect($vp->getOfferId())->toBeNull();
 })->group('VirtualPay');
 
-it('virtual pay from array config', function () {
+it('数组配置构造虚拟支付', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -327,7 +327,7 @@ it('virtual pay from array config', function () {
     expect($vp->getOfferId())->toBe('vp-offer-123');
 })->group('VirtualPay');
 
-it('virtual pay sandbox fallback', function () {
+it('虚拟支付沙箱回退', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -346,7 +346,7 @@ it('virtual pay sandbox fallback', function () {
     expect($vp->getAppKey(1))->toBe('vp-sandbox-key');
 })->group('VirtualPay');
 
-it('virtual pay set via setter', function () {
+it('setter 设置虚拟支付', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -367,7 +367,7 @@ it('virtual pay set via setter', function () {
     expect($result->getOfferId())->toBe('direct-offer');
 })->group('VirtualPay');
 
-it('virtual pay set via array setter', function () {
+it('数组 setter 设置虚拟支付', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -387,7 +387,7 @@ it('virtual pay set via array setter', function () {
     expect($vp->getOfferId())->toBe('array-offer');
 })->group('VirtualPay');
 
-it('virtual pay is configured requires app key and app secret', function () {
+it('虚拟支付已配置需 app_key 与 app_secret', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',
@@ -412,7 +412,7 @@ it('virtual pay is configured requires app key and app secret', function () {
     expect($config->getVirtualPay()->isConfigured())->toBeTrue();
 })->group('VirtualPay');
 
-it('virtual pay only config skips wechat pay validation', function () {
+it('仅虚拟支付配置跳过微信支付校验', function () {
     $config = new WechatConfig([
         'mini_app_id' => 'wx1234567890abcdef',
         'virtual_pay' => [
@@ -432,7 +432,7 @@ it('virtual pay only config skips wechat pay validation', function () {
     expect($config->getMchPublicCertPath())->toBe('');
 })->group('VirtualPay');
 
-it('virtual pay only config skips sub mch id validation in service mode', function () {
+it('服务商模式下仅虚拟支付配置跳过子商户号校验', function () {
     $config = new WechatConfig([
         'mode' => PayMode::SERVICE,
         'virtual_pay' => [
@@ -446,7 +446,7 @@ it('virtual pay only config skips sub mch id validation in service mode', functi
     expect($config->getMode())->toBe(PayMode::SERVICE);
 })->group('VirtualPay');
 
-it('virtual pay without app secret still requires wechat pay credentials', function () {
+it('虚拟支付未配 app_secret 时仍需微信支付凭证', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
 
@@ -459,7 +459,7 @@ it('virtual pay without app secret still requires wechat pay credentials', funct
     $config->validate();
 })->group('VirtualPay');
 
-it('partial wechat pay credentials still validate with virtual pay', function () {
+it('部分微信支付凭证在虚拟支付下仍校验', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_secret_key]');
 
@@ -473,7 +473,7 @@ it('partial wechat pay credentials still validate with virtual pay', function ()
     $config->validate();
 })->group('VirtualPay');
 
-it('invalid mode throws exception', function () {
+it('非法模式抛出异常', function () {
     $validConfig = [
         'mch_id' => 'test_mch_id',
         'mch_secret_key' => '12345678901234567890123456789012',

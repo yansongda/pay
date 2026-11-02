@@ -24,7 +24,7 @@ use Yansongda\Pay\Plugin\Stripe\V1\Pay\WebPlugin;
  */
 uses(RadarPipelineTestHelpers::class);
 
-it('query payment intent does not leak internal params', function () {
+it('查询 payment intent 不泄漏内部参数', function () {
     $rocket = $this->runPipeline(['payment_intent_id' => 'pi_3PqXXX'], [QueryPlugin::class]);
     $radar = $rocket->getRadar();
     $uri = (string) $radar->getUri();
@@ -34,7 +34,7 @@ it('query payment intent does not leak internal params', function () {
     expect($uri)->not->toContain('payment_intent_id');
 });
 
-it('cancel does not leak internal params', function () {
+it('撤销不泄漏内部参数', function () {
     $rocket = $this->runPipeline(
         ['payment_intent_id' => 'pi_3PqXXX', 'cancellation_reason' => 'duplicate'],
         [CancelPlugin::class]
@@ -49,7 +49,7 @@ it('cancel does not leak internal params', function () {
     expect($uri.$body)->not->toContain('payment_intent_id');
 });
 
-it('query refund does not leak internal params', function () {
+it('查询退款不泄漏内部参数', function () {
     $rocket = $this->runPipeline(['refund_id' => 're_6PqXXX'], [QueryRefundPlugin::class]);
     $radar = $rocket->getRadar();
     $uri = (string) $radar->getUri();
@@ -59,7 +59,7 @@ it('query refund does not leak internal params', function () {
     expect($uri)->not->toContain('refund_id');
 });
 
-it('refund keeps business params', function () {
+it('退款保留业务参数', function () {
     $rocket = $this->runPipeline(['payment_intent' => 'pi_3PqXXX', 'amount' => 100], [RefundPlugin::class]);
     $radar = $rocket->getRadar();
     $body = (string) $radar->getBody();
@@ -70,7 +70,7 @@ it('refund keeps business params', function () {
     expect($body)->toContain('amount=100');
 });
 
-it('pay body contains required params only', function () {
+it('支付 body 仅包含必需参数', function () {
     $rocket = $this->runPipeline(['amount' => 1000, 'currency' => 'usd'], [PayPlugin::class]);
     $radar = $rocket->getRadar();
     $body = (string) $radar->getBody();
@@ -82,7 +82,7 @@ it('pay body contains required params only', function () {
     expect($body)->not->toContain('_url');
 });
 
-it('web body contains checkout params', function () {
+it('网页 body 包含收银台参数', function () {
     $rocket = $this->runPipeline(
         ['line_items' => [['price' => 'price_xxx', 'quantity' => 1]]],
         [WebPlugin::class]
@@ -96,14 +96,14 @@ it('web body contains checkout params', function () {
     expect($body)->not->toContain('_config');
 });
 
-it('pay missing amount throws exception', function () {
+it('支付缺少金额抛出异常', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     $this->runPipeline(['currency' => 'usd'], [PayPlugin::class]);
 });
 
-it('web missing success url throws exception', function () {
+it('网页支付缺少 success_url 抛出异常', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 

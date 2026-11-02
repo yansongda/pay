@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\QueryPlugin;
 use Yansongda\Supports\Collection;
 
-it('mode wrong', function () {
+it('模式错误', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
 
@@ -19,7 +19,7 @@ it('mode wrong', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider']);
@@ -31,7 +31,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])
@@ -48,7 +48,7 @@ it('normal params', function () {
     ]);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])

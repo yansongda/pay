@@ -13,7 +13,7 @@ use Yansongda\Pay\Plugin\Apple\Pay\QuerySubscriptionsPlugin;
 use Yansongda\Pay\Plugin\Apple\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Apple\QueryShortcut;
 
-it('default', function () {
+it('默认', function () {
     $shortcut = new QueryShortcut();
     expect($shortcut->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -24,7 +24,7 @@ it('default', function () {
     ]);
 });
 
-it('transaction action', function () {
+it('交易动作', function () {
     $shortcut = new QueryShortcut();
     expect($shortcut->getPlugins(['_action' => 'transaction']))->toEqual([
         StartPlugin::class,
@@ -35,7 +35,7 @@ it('transaction action', function () {
     ]);
 });
 
-it('history action', function () {
+it('历史动作', function () {
     $shortcut = new QueryShortcut();
     expect($shortcut->getPlugins(['_action' => 'history']))->toEqual([
         StartPlugin::class,
@@ -46,7 +46,7 @@ it('history action', function () {
     ]);
 });
 
-it('subscriptions action', function () {
+it('订阅动作', function () {
     $shortcut = new QueryShortcut();
     expect($shortcut->getPlugins(['_action' => 'subscriptions']))->toEqual([
         StartPlugin::class,
@@ -57,7 +57,7 @@ it('subscriptions action', function () {
     ]);
 });
 
-it('unknown action', function () {
+it('未知动作', function () {
     $shortcut = new QueryShortcut();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
@@ -65,7 +65,7 @@ it('unknown action', function () {
 
     $shortcut->getPlugins(['_action' => 'foo']);
 });
-it('query end to end with http mock', function () {
+it('HTTP mock 下的查询端到端', function () {
     $http = \Mockery::mock(\GuzzleHttp\Client::class);
     $captured = null;
     $http->shouldReceive('sendRequest')->once()->with(\Mockery::on(function ($request) use (&$captured) {

@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Airwallex\V1\ResponsePlugin;
 use Yansongda\Supports\Collection;
 
-it('success response', function () {
+it('成功响应', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(200));
@@ -20,7 +20,7 @@ it('success response', function () {
     expect($result->getDestination()->get('id'))->toEqual('int_test_123');
 });
 
-it('created response', function () {
+it('创建成功响应', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(201));
@@ -31,7 +31,7 @@ it('created response', function () {
     expect($result->getDestination()->get('id'))->toEqual('int_test_456');
 });
 
-it('client error throws exception', function () {
+it('客户端错误抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(400));
@@ -43,7 +43,7 @@ it('client error throws exception', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('server error throws exception', function () {
+it('服务端错误抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(500));

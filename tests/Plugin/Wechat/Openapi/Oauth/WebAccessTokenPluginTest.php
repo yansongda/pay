@@ -8,7 +8,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Openapi\Oauth\WebAccessTokenPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new WebAccessTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams([
@@ -30,7 +30,7 @@ it('normal', function () {
     expect($payload->get('_body'))->toEqual('');
 });
 
-it('with config defaults', function () {
+it('使用配置默认值', function () {
     $plugin = new WebAccessTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['code' => 'the_wechat_oauth_code']);
@@ -48,7 +48,7 @@ it('with config defaults', function () {
     expect($payload->get('_body'))->toEqual('');
 });
 
-it('missing code throws', function () {
+it('缺少 code 抛出异常', function () {
     $plugin = new WebAccessTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -60,7 +60,7 @@ it('missing code throws', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing config secret throws', function () {
+it('缺少配置密钥抛出异常', function () {
     $plugin = new WebAccessTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams([

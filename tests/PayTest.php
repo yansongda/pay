@@ -23,7 +23,7 @@ afterEach(function () {
     Pay::clear();
 });
 
-it('config', function () {
+it('配置', function () {
     $result = Pay::config(['name' => 'yansongda']);
     expect($result)->toBeTrue();
     expect(Pay::get(ConfigInterface::class)->get('name'))->toEqual('yansongda');
@@ -42,7 +42,7 @@ it('config', function () {
     expect(Pay::get(ConfigInterface::class)->get('name'))->toEqual('yansongda');
 });
 
-it('config returns false without force when container exists', function () {
+it('容器已存在且未强制时返回 false', function () {
     Pay::config([
         'wechat' => [
             'default' => [
@@ -74,7 +74,7 @@ it('config returns false without force when container exists', function () {
     expect($wechatConfig->getNotifyUrl())->toBe('https://pay.yansongda.cn/original');
 });
 
-it('config replaces runtime config with force', function () {
+it('强制替换运行时配置', function () {
     Pay::config([
         'wechat' => [
             'default' => [
@@ -111,7 +111,7 @@ it('config replaces runtime config with force', function () {
     expect($wechatConfig->getNotifyUrl())->toBe('');
 });
 
-it('direct call static', function () {
+it('直接调用静态方法', function () {
     Pay::config();
     $pay = Pay::alipay();
     expect($pay)->toBeInstanceOf(Alipay::class);
@@ -129,7 +129,7 @@ it('direct call static', function () {
     }
 });
 
-it('set and get', function () {
+it('设置与获取', function () {
     Pay::config(['name' => 'yansongda']);
 
     Pay::set('age', 28);
@@ -137,13 +137,13 @@ it('set and get', function () {
     expect(Pay::get('age'))->toEqual(28);
 });
 
-it('magic call not found service', function () {
+it('魔术调用找不到服务', function () {
     $this->expectException(ServiceNotFoundException::class);
 
     Pay::foo1([]);
 });
 
-it('config stores typed objects in runtime config', function () {
+it('运行时配置存储类型化对象', function () {
     Pay::config([
         'wechat' => [
             'default' => [
@@ -181,7 +181,7 @@ it('config stores typed objects in runtime config', function () {
     expect($httpConfig['timeout'])->toBe(5.0);
 });
 
-it('clear cleans cert manager cache', function () {
+it('clear 清理证书管理器缓存', function () {
     CertManager::wechatSetCertBySerial('test', 'serial123', 'cert-content');
     expect(CertManager::wechatGetCertBySerial('test', 'serial123'))->not->toBeNull();
 

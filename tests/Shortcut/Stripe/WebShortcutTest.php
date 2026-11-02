@@ -9,7 +9,7 @@ use Yansongda\Pay\Plugin\Stripe\V1\Pay\WebPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Stripe\WebShortcut;
 
-it('get plugins', function () {
+it('获取插件列表', function () {
     $shortcut = new WebShortcut();
     expect($shortcut->getPlugins([]))->toEqual([
         StartPlugin::class,

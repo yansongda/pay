@@ -29,7 +29,7 @@ protected static function verifyWechatTimestamp(int $timestamp): void
 }
 }
 
-it('get wechat url', function () {
+it('获取微信 URL', function () {
     $config = WechatTraitStub::getProviderConfig('wechat');
     expect($config)->toBeInstanceOf(WechatConfig::class);
 
@@ -65,13 +65,13 @@ it('get wechat url', function () {
     WechatTraitStub::getWechatUrl($config, new Collection([]));
 });
 
-it('get wechat method', function () {
+it('获取微信请求方法', function () {
     expect(WechatTraitStub::getWechatMethod(null))->toEqual('POST');
     expect(WechatTraitStub::getWechatMethod(new Collection(['_method' => 'get'])))->toEqual('GET');
     expect(WechatTraitStub::getWechatMethod(new Collection(['_method' => 'post'])))->toEqual('POST');
 });
 
-it('get wechat body', function () {
+it('获取微信请求 body', function () {
     expect(WechatTraitStub::getWechatBody(new Collection(['_body' => 'https://yansongda.cn'])))->toEqual('https://yansongda.cn');
 
     $this->expectException(InvalidParamsException::class);
@@ -79,7 +79,7 @@ it('get wechat body', function () {
     WechatTraitStub::getWechatBody(new Collection([]));
 });
 
-it('get wechat sign', function () {
+it('获取微信签名', function () {
     $contents = "POST\n/v3/pay/transactions/h5\n1626493236\nQqtzdVzxavZeXag9G5mtfzbfzFMf89p6\n{\"out_trade_no\":1626493236,\"description\":\"yansongda 测试 - 1626493236\",\"amount\":{\"total\":1},\"scene_info\":{\"payer_client_ip\":\"127.0.0.1\",\"h5_info\":{\"type\":\"Wap\"}},\"appid\":\"wx55955316af4ef13\",\"mchid\":\"1600314069\",\"notify_url\":\"http:\/\/127.0.0.1:8000\/wechat\/notify\"}\n";
 
     expect(WechatTraitStub::getWechatSign(WechatTraitStub::getProviderConfig('wechat', []), $contents))->toEqual('KzIgMgiop3nQJNdBVR2Xah/JUwVBLDFFajyXPiSN8b8YAYEA4FuWfaCgFJ52+WFed+PhOYWx/ZPih4RaEuuSdYB8eZwYUx7RZGMQZk0bKCctAjjPuf4pJN+f/WsXKjPIy3diqF5x7gyxwSCaKWP4/KjsHNqgQpiC8q1uC5xmElzuhzSwj88LIoLtkAuSmtUVvdAt0Nz41ECHZgHWSGR32TfBo902r8afdaVKkFde8IoqcEJJcp6sMxdDO5l9R5KEWxrJ1SjsXVrb0IPH8Nj7e6hfhq7pucxojPpzsC+ZWAYvufZkAQx3kTiFmY87T+QhkP9FesOfWvkIRL4E6MP6ug==');
@@ -101,7 +101,7 @@ it('get wechat sign', function () {
     WechatTraitStub::getProviderConfig('wechat');
 });
 
-it('get wechat sign v2', function () {
+it('获取微信 V2 签名', function () {
     $params = ['name' => 'yansongda', 'age' => 29, 'foo' => ''];
     expect(WechatTraitStub::getWechatSignV2(WechatTraitStub::getProviderConfig('wechat', $params), $params))->toEqual('3213848AED2C380749FD1D559555881D');
 
@@ -133,7 +133,7 @@ it('get wechat sign v2', function () {
     WechatTraitStub::getWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), []);
 });
 
-it('verify wechat sign', function () {
+it('微信验签', function () {
     $response = new Response(
         200,
         [
@@ -162,7 +162,7 @@ it('verify wechat sign', function () {
     expect(true)->toBeTrue();
 });
 
-it('verify wechat sign v2', function () {
+it('微信 V2 验签', function () {
     $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => '3213848AED2C380749FD1D559555881D'];
     WechatTraitStub::verifyWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), $destination);
     expect(true)->toBeTrue();
@@ -173,7 +173,7 @@ it('verify wechat sign v2', function () {
     WechatTraitStub::verifyWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), $destination);
 });
 
-it('verify wechat sign v2 empty secret', function () {
+it('微信 V2 验签密钥为空', function () {
     $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => 'aaa'];
 
     $config = WechatTraitStub::getProviderConfig('wechat');
@@ -186,7 +186,7 @@ it('verify wechat sign v2 empty secret', function () {
     WechatTraitStub::verifyWechatSignV2($config, $destination);
 });
 
-it('verify wechat sign v2 wrong', function () {
+it('微信 V2 验签失败', function () {
     $destination = ['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => 'foo'];
 
     $this->expectException(InvalidSignException::class);
@@ -195,7 +195,7 @@ it('verify wechat sign v2 wrong', function () {
     WechatTraitStub::verifyWechatSignV2(WechatTraitStub::getProviderConfig('wechat'), $destination);
 });
 
-it('encrypt wechat contents', function () {
+it('加密微信内容', function () {
     $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
     $contents = 'yansongda';
     $config = WechatTraitStub::getProviderConfig('wechat');
@@ -205,7 +205,7 @@ it('encrypt wechat contents', function () {
     expect($result)->toBeString();
 });
 
-it('decrypt wechat contents', function () {
+it('解密微信内容', function () {
     $encrypted = 'WIesmK+dSJycwdhTTkNmv0Lk2wb9o7NGODovccjhyotNnRkEeh+sxRK1gNSRNMJJgkQ30m4HwcuweSO24mehFeXVNTVAKFVef/3FlHnYDZfE1c3mCLToEef7e8J/Z8TwFH1ecn3t+Jk9ZaBpQKNHdQ0Q8jcL7AnL48h0D9BcZxDekPqX6hNnKfISoKSv4TXFcgvBLFeAe4Q3KM0Snq0N5IvI86D9xZqVg6mY+Gfz0782ymQFxflau6Qxx3mJ+0etHMocNuCdgctVH390XYYMc0u+V2FCJ5cU5h/M/AxzP9ayrEO4l0ftaxL6lP0HjifNrkPcAAb+q9I67UepKO9iGw==';
 
     $config = WechatTraitStub::getProviderConfig('wechat');
@@ -214,7 +214,7 @@ it('decrypt wechat contents', function () {
     expect(WechatTraitStub::decryptWechatContents('invalid', $config))->toBeNull();
 });
 
-it('reload wechat public certs', function () {
+it('重新加载微信平台证书', function () {
     $config = WechatTraitStub::getProviderConfig('wechat', []);
 
     expect($config)->toBeInstanceOf(WechatConfig::class);
@@ -256,7 +256,7 @@ it('reload wechat public certs', function () {
     expect(CertManager::wechatGetCertBySerial('default', 'test-45F59D4DABF31918AFCEC556D5D2C6E376675D57'))->not->toBeNull();
 });
 
-it('get wechat public certs', function () {
+it('获取微信平台证书', function () {
     $response = new Response(
         200,
         [],
@@ -295,7 +295,7 @@ it('get wechat public certs', function () {
     WechatTraitStub::getWechatPublicCerts();
 });
 
-it('decrypt wechat resource', function () {
+it('解密微信资源', function () {
     $resource = [
         'algorithm' => 'AEAD_AES_256_GCM',
         'associated_data' => 'certificate',
@@ -308,7 +308,7 @@ it('decrypt wechat resource', function () {
     expect(false !== strpos($result['ciphertext'], '-----BEGIN CERTIFICATE-----'))->toBeTrue();
 });
 
-it('get wechat public certs with typed config', function () {
+it('类型化配置获取微信平台证书', function () {
     $config = WechatTraitStub::getProviderConfig('wechat');
 
     expect($config)->toBeInstanceOf(WechatConfig::class);
@@ -316,7 +316,7 @@ it('get wechat public certs with typed config', function () {
     expect(realpath(CertManager::wechatGetCertBySerial($config->getTenant(), '45F59D4DABF31918AFCEC556D5D2C6E376675D57') ?? ''))->toEqual(realpath(__DIR__.'/../Cert/wechatAppPublicKey.pem'));
 });
 
-it('decrypt wechat resource aes256 gcm', function () {
+it('解密微信资源（AES-256-GCM）', function () {
     $resource = [
         'algorithm' => 'AEAD_AES_256_GCM',
         'associated_data' => 'certificate',
@@ -337,7 +337,7 @@ it('decrypt wechat resource aes256 gcm', function () {
     WechatTraitStub::decryptWechatResourceAes256Gcm(base64_decode($resource['ciphertext']), 'foo', $resource['nonce'], $resource['associated_data']);
 });
 
-it('get wechat serial no', function () {
+it('获取微信证书序列号', function () {
     $params = [];
     $result = WechatTraitStub::getWechatSerialNo($params);
     expect(in_array($result, ['45F59D4DABF31918AFCEC556D5D2C6E376675D57', 'yansongda']))->toBeTrue();
@@ -348,7 +348,7 @@ it('get wechat serial no', function () {
     expect($result)->toEqual('yansongda');
 });
 
-it('get wechat serial no with request wechat', function () {
+it('从微信请求获取序列号', function () {
     $response = new Response(
         200,
         [],
@@ -379,7 +379,7 @@ it('get wechat serial no with request wechat', function () {
     expect($result)->toEqual('test-45F59D4DABF31918AFCEC556D5D2C6E376675D57');
 });
 
-it('get wechat virtual pay signature', function () {
+it('获取微信虚拟支付签名', function () {
     $config = new WechatConfig([
         'app_id' => 'yansongda',
         'mp_app_id' => 'wx55955316af4ef13',
@@ -405,14 +405,14 @@ it('get wechat virtual pay signature', function () {
     expect(WechatTraitStub::getWechatVirtualPaySignature($config, $uri, $body))->toEqual('c37809f27c6d7fd1837ad2500a04512b66b34fd793a39a385fade56dca89a4b5');
 });
 
-it('get wechat virtual session signature', function () {
+it('获取微信虚拟支付会话签名', function () {
     $body = '{"openid": "xxx", "user_ip": "127.0.0.1", "env": 0}';
     $sessionKey = '9hAb/NEYUlkaMBEsmFgzig==';
 
     expect(WechatTraitStub::getWechatVirtualSessionSignature($sessionKey, $body))->toEqual('089d9e8dc5d308977360c4b79ec600a93d736802802a807d634192328032f6c7');
 });
 
-it('get wechat public key', function () {
+it('获取微信公钥', function () {
     $serialNo = '45F59D4DABF31918AFCEC556D5D2C6E376675D57';
     $result = WechatTraitStub::getWechatPublicKey(WechatTraitStub::getProviderConfig('wechat'), $serialNo);
     expect($result)->toBeString();
@@ -423,7 +423,7 @@ it('get wechat public key', function () {
     WechatTraitStub::getWechatPublicKey(WechatTraitStub::getProviderConfig('wechat'), $serialNo);
 });
 
-it('get wechat virtual access token cached', function () {
+it('获取微信虚拟支付 access token（缓存）', function () {
     $config = WechatTraitStub::getProviderConfig('wechat');
     expect($config)->toBeInstanceOf(WechatConfig::class);
 
@@ -435,14 +435,14 @@ it('get wechat virtual access token cached', function () {
     expect($token)->toEqual('cached_token_123');
 });
 
-it('get wechat virtual access token missing config', function () {
+it('获取微信虚拟支付 access token 缺少配置', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
 
     WechatTraitStub::getWechatVirtualAccessToken([]);
 });
 
-it('get wechat virtual access token fresh', function () {
+it('获取微信虚拟支付 access token（新取）', function () {
     $config = WechatTraitStub::getProviderConfig('wechat');
     expect($config)->toBeInstanceOf(WechatConfig::class);
 

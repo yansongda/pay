@@ -21,7 +21,7 @@ it('foo', function () {
     (new QueryShortcut())->getPlugins(['_action' => 'foo']);
 });
 
-it('default', function () {
+it('默认', function () {
     expect((new QueryShortcut())->getPlugins([]))->toEqual([
         StartPlugin::class,
         ObtainAccessTokenPlugin::class,
@@ -33,7 +33,7 @@ it('default', function () {
     ]);
 });
 
-it('refund', function () {
+it('退款', function () {
     expect((new QueryShortcut())->getPlugins(['_action' => 'refund']))->toEqual([
         StartPlugin::class,
         ObtainAccessTokenPlugin::class,

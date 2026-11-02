@@ -6,7 +6,7 @@ use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\QrCode\ScanPreOrderPlugin;
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new ScanPreOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload([
@@ -40,7 +40,7 @@ it('normal params', function () {
     ]);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new ScanPreOrderPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);

@@ -14,7 +14,7 @@ use Yansongda\Supports\Collection;
 uses(BestpayTrait::class);
 uses(CallbackPluginTestHelpers::class);
 
-it('valid callback', function () {
+it('有效回调', function () {
     $data = [
         'institutionCode' => '3178033925245778',
         'merchantNo' => '3178033925245778',
@@ -36,7 +36,7 @@ it('valid callback', function () {
     expect($result->getDestination()->get('outTradeNo'))->toEqual('ORDER001');
 });
 
-it('valid callback with empty fields', function () {
+it('含空字段的有效回调', function () {
     // 回调报文含 null / 空串字段时，拼串为 k=null / k=（对齐官方 AssembleSignatureData）
     $data = [
         'institutionCode' => '3178033925245778',
@@ -60,7 +60,7 @@ it('valid callback with empty fields', function () {
     expect($result->getDestination()->get('tradeStatus'))->toEqual('SUCCESS');
 });
 
-it('invalid sign', function () {
+it('签名非法', function () {
     $this->expectException(InvalidSignException::class);
 
     $data = [
@@ -75,7 +75,7 @@ it('invalid sign', function () {
     (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
 });
 
-it('callback with tenant config', function () {
+it('租户配置回调', function () {
     $data = [
         'institutionCode' => '3178033925245779',
         'merchantNo' => '3178033925245779',
@@ -96,7 +96,7 @@ it('callback with tenant config', function () {
     expect($result->getDestination()->get('outTradeNo'))->toEqual('ORDER002');
 });
 
-it('callback tenant isolation', function () {
+it('回调租户隔离', function () {
     // 用 default 证书加签，但路由到 second 租户（不同平台公钥）→ 验签必须失败
     $this->expectException(InvalidSignException::class);
 
@@ -114,7 +114,7 @@ it('callback tenant isolation', function () {
     (new CallbackPlugin())->assembly($rocket, fn ($r) => $r);
 });
 
-it('missing request', function () {
+it('缺少请求对象', function () {
     $this->expectException(\Yansongda\Artful\Exception\InvalidParamsException::class);
 
     $rocket = new Rocket();

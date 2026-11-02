@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Callback\QueryPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -22,7 +22,7 @@ it('normal params', function () {
     ]);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([]));

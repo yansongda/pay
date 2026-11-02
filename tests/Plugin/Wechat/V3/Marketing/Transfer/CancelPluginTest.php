@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CancelPlugin;
 use Yansongda\Supports\Collection;
 
-it('mode wrong', function () {
+it('模式错误', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider']);
@@ -20,7 +20,7 @@ it('mode wrong', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
 
@@ -31,7 +31,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

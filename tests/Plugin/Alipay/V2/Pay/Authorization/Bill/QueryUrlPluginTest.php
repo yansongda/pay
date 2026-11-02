@@ -6,7 +6,7 @@ use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Authorization\Bill\QueryUrlPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryUrlPlugin();
     $rocket = (new Rocket())
         ->setParams([]);

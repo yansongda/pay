@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\PayPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection([
@@ -25,7 +25,7 @@ it('normal', function () {
     expect($payload->get('currency'))->toEqual('usd');
 });
 
-it('method and url are set', function () {
+it('方法与 URL 已设置', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection(['amount' => 500, 'currency' => 'eur']));
@@ -36,7 +36,7 @@ it('method and url are set', function () {
     expect($result->getPayload()->get('_url'))->toEqual('/v1/payment_intents');
 });
 
-it('missing amount throws exception', function () {
+it('缺少金额抛出异常', function () {
     $plugin = new PayPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
@@ -47,7 +47,7 @@ it('missing amount throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing currency throws exception', function () {
+it('缺少币种抛出异常', function () {
     $plugin = new PayPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

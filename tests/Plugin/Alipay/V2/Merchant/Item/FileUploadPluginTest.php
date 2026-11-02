@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Merchant\Item\FileUploadPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new FileUploadPlugin();
     $picUrl = 'https://cdn.jsdelivr.net/gh/yansongda/pay/web/public/images/pay.jpg';
     $fileContent = file_get_contents($picUrl);

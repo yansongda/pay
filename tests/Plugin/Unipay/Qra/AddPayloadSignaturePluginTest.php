@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Unipay\Qra\AddPayloadSignaturePlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $payload = [
         'out_trade_no' => 'pos-qra-20240106163401',
@@ -37,7 +37,7 @@ it('normal', function () {
     expect($payload->get('sign'))->toEqual('DB571C2F75C657B42485CD07470F0FB9');
 });
 
-it('payload empty', function () {
+it('payload 为空', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $rocket = (new Rocket())->setPayload(new Collection());
 

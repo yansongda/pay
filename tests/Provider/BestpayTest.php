@@ -20,19 +20,19 @@ use Yansongda\Pay\Traits\BestpayTrait;
 uses(BestpayTrait::class);
 uses(BestpayTestHelpers::class);
 
-it('shortcut not found', function () {
+it('快捷方式不存在', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::bestpay()->foo();
 });
 
-it('cancel not supported', function () {
+it('不支持撤销', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::bestpay()->cancel(['outTradeNo' => 'test']);
 });
 
-it('success body', function () {
+it('成功响应 body', function () {
     $response = Pay::bestpay()->success();
 
     expect($response)->toBeInstanceOf(ResponseInterface::class);
@@ -40,7 +40,7 @@ it('success body', function () {
     expect($response->getHeaderLine('Content-Type'))->toEqual('application/json');
 });
 
-it('sign content sorted', function () {
+it('待签名内容排序', function () {
     $content = self::getBestpaySignContent([
         'path' => '/pay/tradeCreate',
         'sign' => 'should-be-removed',
@@ -51,7 +51,7 @@ it('sign content sorted', function () {
     expect($content)->toEqual('bizContent={"a":1}&commonParams={"institutionType":"MERCHANT"}&path=/pay/tradeCreate');
 });
 
-it('sign and verify round trip', function () {
+it('签名与验签往返', function () {
     $bestpayConfig = $this->defaultConfig();
 
     $content = self::getBestpaySignContent([
@@ -75,7 +75,7 @@ it('sign and verify round trip', function () {
     expect(true)->toBeTrue();
 });
 
-it('web pay', function () {
+it('网页支付', function () {
     $this->mockResponse([
         'success' => true,
         'errorCode' => null,
@@ -102,7 +102,7 @@ it('web pay', function () {
     expect($result->get('result.tradeStatus'))->toEqual('WAITFORPAY');
 });
 
-it('h5 pay', function () {
+it('H5 支付', function () {
     $this->mockResponse([
         'success' => true,
         'result' => ['outTradeNo' => 'ORDER002', 'tradeStatus' => 'WAITFORPAY'],
@@ -118,7 +118,7 @@ it('h5 pay', function () {
     expect($result->get('result.outTradeNo'))->toEqual('ORDER002');
 });
 
-it('scan pay', function () {
+it('扫码支付', function () {
     $this->mockResponse([
         'success' => true,
         'result' => ['outTradeNo' => 'ORDER003', 'codeUrl' => 'https://qr.bestpay.com.cn/xxx'],
@@ -134,7 +134,7 @@ it('scan pay', function () {
     expect($result->get('result.outTradeNo'))->toEqual('ORDER003');
 });
 
-it('refund', function () {
+it('退款', function () {
     $this->mockResponse([
         'success' => true,
         'result' => ['outRefundNo' => 'REFUND001', 'refundStatus' => 'SUCCESS'],
@@ -151,7 +151,7 @@ it('refund', function () {
     expect($result->get('result.outRefundNo'))->toEqual('REFUND001');
 });
 
-it('close', function () {
+it('关单', function () {
     $this->mockResponse([
         'success' => true,
         'result' => ['outTradeNo' => 'ORDER001'],
@@ -164,7 +164,7 @@ it('close', function () {
     expect((bool) $result->get('success'))->toBeTrue();
 });
 
-it('query business error', function () {
+it('查询业务错误', function () {
     $this->expectException(InvalidResponseException::class);
 
     $http = Mockery::mock(Client::class);
@@ -181,7 +181,7 @@ it('query business error', function () {
     ]);
 });
 
-it('query aggregate action', function () {
+it('查询聚合动作', function () {
     $this->mockResponseWithUriCheck(
         'path=%2Faggregate%2Faggregatepay%2FtradeQuery',
         [
@@ -199,7 +199,7 @@ it('query aggregate action', function () {
     expect($result->get('result.tradeStatus'))->toEqual('SUCCESS');
 });
 
-it('query invalid action', function () {
+it('查询动作非法', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::bestpay()->query([
@@ -208,7 +208,7 @@ it('query invalid action', function () {
     ]);
 });
 
-it('provider class', function () {
+it('Provider 类', function () {
     expect(Pay::bestpay())->toBeInstanceOf(Bestpay::class);
     expect('https://mapi.bestpay.com.cn/mapi')->toEqual(Bestpay::URL[PayMode::NORMAL->value]);
 });

@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\UpdateRefundPlugin;
 use Yansongda\Supports\Collection;
 
-it('empty complaint id', function () {
+it('空投诉单号', function () {
     $plugin = new UpdateRefundPlugin();
     $rocket = new Rocket();
 

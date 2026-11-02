@@ -28,13 +28,13 @@ use AllinpayTrait;
 
 uses(AllinpayTestHelpers::class);
 
-it('shortcut not found', function () {
+it('快捷方式不存在', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->foo();
 });
 
-it('pay', function () {
+it('支付', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'SUCCESS',
         'retmsg' => '交易成功',
@@ -66,7 +66,7 @@ it('pay', function () {
     expect($fields)->not->toHaveKey('notifyurl');
 });
 
-it('pay missing params', function () {
+it('支付缺少参数', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->unified([
@@ -74,7 +74,7 @@ it('pay missing params', function () {
     ]);
 });
 
-it('pay missing trxamt', function () {
+it('支付缺少 trxamt', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->unified([
@@ -83,14 +83,14 @@ it('pay missing trxamt', function () {
     ]);
 });
 
-it('sign without payload', function () {
+it('无 payload 签名', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     Pay::allinpay()->pay([AddPayloadSignPlugin::class], []);
 });
 
-it('sign missing secret key', function () {
+it('签名缺少密钥', function () {
     Pay::config([
         '_force' => true,
         'allinpay' => [
@@ -109,7 +109,7 @@ it('sign missing secret key', function () {
     Pay::allinpay()->pay([AddPayloadSignPlugin::class], ['reqsn' => 'order-1001']);
 });
 
-it('scan missing params', function () {
+it('扫码缺少参数', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->scan([
@@ -117,7 +117,7 @@ it('scan missing params', function () {
     ]);
 });
 
-it('native missing params', function () {
+it('Native 缺少参数', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->native([
@@ -126,19 +126,19 @@ it('native missing params', function () {
     ]);
 });
 
-it('query missing params', function () {
+it('查询缺少参数', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->query([]);
 });
 
-it('query confirm missing params', function () {
+it('查询确认缺少参数', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->queryConfirm([]);
 });
 
-it('refund missing params', function () {
+it('退款缺少参数', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->refund([
@@ -146,7 +146,7 @@ it('refund missing params', function () {
     ]);
 });
 
-it('cancel missing params', function () {
+it('撤销缺少参数', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->cancel([
@@ -154,7 +154,7 @@ it('cancel missing params', function () {
     ]);
 });
 
-it('cancel missing old order', function () {
+it('撤销缺少原订单', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->cancel([
@@ -163,19 +163,19 @@ it('cancel missing old order', function () {
     ]);
 });
 
-it('close missing params', function () {
+it('关单缺少参数', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->close([]);
 });
 
-it('native close missing params', function () {
+it('Native 关单缺少参数', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->nativeClose([]);
 });
 
-it('http status code error', function () {
+it('HTTP 状态码错误', function () {
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->andReturn(
         new Response(500, ['Content-Type' => 'application/json'], json_encode(['retcode' => 'SUCCESS', 'retmsg' => 'ok']))
@@ -188,14 +188,14 @@ it('http status code error', function () {
     Pay::allinpay()->query(['reqsn' => 'order-x']);
 });
 
-it('callback with invalid request', function () {
+it('非法请求回调', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
     Pay::allinpay()->pay([CallbackPlugin::class], ['_request' => 'invalid', '_params' => []]);
 });
 
-it('callback from globals', function () {
+it('从全局变量回调', function () {
     $payload = $this->signedResponse([
         'cusid' => '9900000',
         'appid' => '000000',
@@ -221,7 +221,7 @@ it('callback from globals', function () {
     }
 });
 
-it('array params normalized to json string', function () {
+it('数组参数归一化为 JSON 字符串', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'SUCCESS',
         'retmsg' => '交易成功',
@@ -246,7 +246,7 @@ it('array params normalized to json string', function () {
     expect($fields['extendparams'] ?? null)->toBe('{"activity":"x1"}');
 });
 
-it('scan', function () {
+it('扫码', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'SUCCESS',
         'retmsg' => '交易成功',
@@ -272,7 +272,7 @@ it('scan', function () {
     expect($fields['terminfo'] ?? null)->toBe('{"devicetype":"11","termno":"T001"}');
 });
 
-it('native', function () {
+it('Native', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'SUCCESS',
         'retmsg' => '交易成功',
@@ -298,7 +298,7 @@ it('native', function () {
     expect($fields['expiretime'] ?? null)->toBe('20991231235959');
 });
 
-it('query', function () {
+it('查询', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'SUCCESS',
         'retmsg' => '交易成功',
@@ -321,7 +321,7 @@ it('query', function () {
     expect($fields['version'] ?? null)->toBe('12');
 });
 
-it('query confirm', function () {
+it('查询确认', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'SUCCESS',
         'retmsg' => '交易成功',
@@ -341,7 +341,7 @@ it('query confirm', function () {
     expect($fields['version'] ?? null)->toBe('12');
 });
 
-it('refund', function () {
+it('退款', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'SUCCESS',
         'retmsg' => '交易成功',
@@ -366,7 +366,7 @@ it('refund', function () {
     expect($fields['notify_url'] ?? null)->toBe('https://pay.yansongda.cn/allinpay/notify');
 });
 
-it('refund missing old order', function () {
+it('退款缺少原订单', function () {
     $this->expectException(InvalidParamsException::class);
 
     Pay::allinpay()->refund([
@@ -375,7 +375,7 @@ it('refund missing old order', function () {
     ]);
 });
 
-it('cancel', function () {
+it('撤销', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'SUCCESS',
         'retmsg' => '交易成功',
@@ -399,7 +399,7 @@ it('cancel', function () {
     expect($fields['version'] ?? null)->toBe('11');
 });
 
-it('close', function () {
+it('关单', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'SUCCESS',
         'retmsg' => '交易成功',
@@ -421,7 +421,7 @@ it('close', function () {
     expect((string) $this->capturedRequest?->getUri())->toContain('/tranx/close');
 });
 
-it('native close', function () {
+it('Native 关单', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'SUCCESS',
         'retmsg' => '交易成功',
@@ -443,7 +443,7 @@ it('native close', function () {
     expect((string) $this->capturedRequest?->getUri())->toContain('/unitorder/closenative');
 });
 
-it('business error', function () {
+it('业务错误', function () {
     $this->mockHttp($this->signedResponse([
         'retcode' => 'FAIL',
         'retmsg' => '商户不存在',
@@ -457,7 +457,7 @@ it('business error', function () {
     Pay::allinpay()->query(['reqsn' => 'order-x']);
 });
 
-it('callback', function () {
+it('回调', function () {
     $payload = $this->signedResponse([
         'cusid' => '9900000',
         'appid' => '000000',
@@ -473,7 +473,7 @@ it('callback', function () {
     expect($result->get('trxstatus'))->toBe('SUCCESS');
 });
 
-it('callback invalid sign', function () {
+it('回调签名非法', function () {
     $this->expectException(InvalidSignException::class);
 
     Pay::allinpay()->callback([
@@ -484,14 +484,14 @@ it('callback invalid sign', function () {
     ]);
 });
 
-it('success', function () {
+it('成功', function () {
     $response = Pay::allinpay()->success();
 
     expect($response->getStatusCode())->toBe(200);
     expect((string) $response->getBody())->toBe('success');
 });
 
-it('callback from server request', function () {
+it('从 ServerRequest 回调', function () {
     $payload = $this->signedResponse([
         'cusid' => '9900000',
         'appid' => '000000',

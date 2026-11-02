@@ -7,7 +7,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V2\Pay\Pos\CancelPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

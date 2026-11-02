@@ -8,7 +8,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin;
 use Yansongda\Supports\Collection;
 
-it('redirect', function () {
+it('重定向', function () {
     $plugin = new ResponseHtmlPlugin();
     $rocket = new Rocket();
     $rocket->setRadar(new Request('GET', 'https://yansongda.cn'))
@@ -21,7 +21,7 @@ it('redirect', function () {
     expect($result->getDestination()->getHeaderLine('Location'))->toEqual('https://yansongda.cn?name=yansongda');
 });
 
-it('redirect include mark', function () {
+it('重定向包含标记', function () {
     $plugin = new ResponseHtmlPlugin();
     $rocket = new Rocket();
     $rocket->setRadar(new Request('GET', 'https://yansongda.cn?charset=utf8'))
@@ -34,7 +34,7 @@ it('redirect include mark', function () {
     expect($result->getDestination()->getHeaderLine('Location'))->toEqual('https://yansongda.cn?charset=utf8&name=yansongda');
 });
 
-it('html', function () {
+it('HTML', function () {
     $plugin = new ResponseHtmlPlugin();
     $rocket = new Rocket();
     $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))

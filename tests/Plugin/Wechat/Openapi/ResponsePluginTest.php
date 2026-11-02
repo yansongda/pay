@@ -16,7 +16,7 @@ use Yansongda\Pay\Plugin\Wechat\Openapi\ResponsePlugin;
 use Yansongda\Supports\Pipeline;
 use Yansongda\Supports\Collection;
 
-it('should not do request', function () {
+it('不应发起请求', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDirection(NoHttpRequestDirection::class)->setDestinationOrigin(new Response());
@@ -29,7 +29,7 @@ it('should not do request', function () {
     expect($result)->toBe($rocket);
 });
 
-it('errcode zero passes through', function () {
+it('errcode 为 0 透传', function () {
     $plugin = new ResponsePlugin();
     $response = new Response(
         200,
@@ -47,7 +47,7 @@ it('errcode zero passes through', function () {
     expect($result->getDestination()->get('errcode'))->toBe(0);
 });
 
-it('errcode non zero throws exception', function () {
+it('errcode 非 0 抛出异常', function () {
     $plugin = new ResponsePlugin();
     $response = new Response(
         200,
@@ -66,7 +66,7 @@ it('errcode non zero throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('no destination origin returns rocket', function () {
+it('无 destination 原始请求时返回 rocket', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
 
@@ -75,7 +75,7 @@ it('no destination origin returns rocket', function () {
     expect($result)->toBe($rocket);
 });
 
-it('http status code error throws code wrong', function () {
+it('HTTP 状态码错误抛出对应错误码', function () {
     $plugin = new ResponsePlugin();
     $response = new Response(
         500,
@@ -94,7 +94,7 @@ it('http status code error throws code wrong', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('http status code ok with errcode throws business code', function () {
+it('状态码 200 但带 errcode 抛出业务码', function () {
     $plugin = new ResponsePlugin();
     $response = new Response(
         200,
@@ -113,7 +113,7 @@ it('http status code ok with errcode throws business code', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('pipeline http error throws code wrong', function () {
+it('管道 HTTP 错误抛出对应错误码', function () {
     // 依赖 artful 契约（防 artful 升级静默失效）：
     // 1. Rocket 默认 direction 为 DirectionInterface::class，should_do_http_request() 返回 true
     //    （vendor/yansongda/artful/src/Rocket.php:35 + Functions.php:18-21）；

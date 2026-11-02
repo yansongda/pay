@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Paypal\V2\ObtainAccessTokenPlugin;
 
-it('external access token', function () {
+it('外部 access token', function () {
     $plugin = new ObtainAccessTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_access_token' => 'external_token_123']);

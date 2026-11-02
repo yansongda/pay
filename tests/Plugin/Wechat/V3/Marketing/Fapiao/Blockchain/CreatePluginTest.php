@@ -10,7 +10,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\CreatePlugin;
 use Yansongda\Supports\Collection;
 
-it('normal without name', function () {
+it('无名称的正常场景', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -26,7 +26,7 @@ it('normal without name', function () {
     expect($payload)->toHaveKey('_serial_no');
 });
 
-it('normal with sensitive data', function () {
+it('携带敏感数据的正常场景', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -48,7 +48,7 @@ it('normal with sensitive data', function () {
     expect($payload['buyer_information']['email'])->not->toEqual('456');
 });
 
-it('normal with sensitive data empty wechat cert', function () {
+it('携带敏感数据且微信证书为空', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([

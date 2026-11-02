@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\CapturePlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CapturePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['order_id' => 'TEST_ORDER_123'])->setPayload(new Collection([]));
@@ -21,7 +21,7 @@ it('normal', function () {
     expect($payload->get('_url'))->toContain('capture');
 });
 
-it('normal without residual params', function () {
+it('无冗余参数的正常场景', function () {
     $plugin = new CapturePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['order_id' => 'TEST_ORDER_123', 'extra' => 'should_not_stay'])->setPayload(new Collection([]));
@@ -35,7 +35,7 @@ it('normal without residual params', function () {
     ]);
 });
 
-it('missing order id', function () {
+it('缺少订单号', function () {
     $plugin = new CapturePlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

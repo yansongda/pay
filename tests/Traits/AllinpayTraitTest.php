@@ -19,7 +19,7 @@ use AllinpayTrait;
 
 uses(AllinpayTraitTestHelpers::class);
 
-it('get allinpay url', function () {
+it('获取通联 URL', function () {
     $config = $this->getConfig();
 
     expect(AllinpayTraitStub::getAllinpayUrl($config, new Collection(['_url' => 'https://yansongda.cn'])))->toEqual('https://yansongda.cn');
@@ -31,7 +31,7 @@ it('get allinpay url', function () {
     expect(AllinpayTraitStub::getAllinpayUrl($config, new Collection(['_url' => '/tranx/query'])))->toEqual('https://vsp.allinpay.com/apiweb/tranx/query');
 });
 
-it('get allinpay sign content skips empty and internal keys', function () {
+it('通联待签名内容跳过空值与内部键', function () {
     $content = AllinpayTraitStub::getAllinpaySignContent([
         'b' => '2',
         'a' => '1',
@@ -45,7 +45,7 @@ it('get allinpay sign content skips empty and internal keys', function () {
     expect($content)->toBe('a=1&b=2');
 });
 
-it('get allinpay sign and verify', function () {
+it('通联签名与验签', function () {
     $payload = [
         'appid' => '000000',
         'cusid' => '9900000',
@@ -70,14 +70,14 @@ it('get allinpay sign and verify', function () {
     $this->addToAssertionCount(1);
 });
 
-it('verify allinpay sign empty', function () {
+it('通联验签为空', function () {
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_EMPTY);
 
     AllinpayTraitStub::verifyAllinpaySign($this->getConfig(), ['retcode' => 'SUCCESS']);
 });
 
-it('get allinpay sign missing secret key', function () {
+it('通联签名缺少密钥', function () {
     $config = new AllinpayConfig([
         'cusid' => '9900000',
         'appid' => '000000',
@@ -90,7 +90,7 @@ it('get allinpay sign missing secret key', function () {
     AllinpayTraitStub::getAllinpaySign($config, ['reqsn' => 'order-1']);
 });
 
-it('verify allinpay sign invalid', function () {
+it('通联验签无效', function () {
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_ERROR);
 
@@ -100,7 +100,7 @@ it('verify allinpay sign invalid', function () {
     ]);
 });
 
-it('verify allinpay sign missing public key', function () {
+it('通联验签缺少公钥', function () {
     $config = $this->getConfig();
     $config->setAllinpayPublicKey('');
 
@@ -113,7 +113,7 @@ it('verify allinpay sign missing public key', function () {
     ]);
 });
 
-it('get allinpay url missing', function () {
+it('获取通联 URL 缺少参数', function () {
     $this->expectException(\Yansongda\Artful\Exception\InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_ALLINPAY_URL_MISSING);
 

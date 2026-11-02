@@ -8,7 +8,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Bestpay\V1\ResponsePlugin;
 use Yansongda\Supports\Collection;
 
-it('success', function () {
+it('成功', function () {
     $rocket = new Rocket();
     $rocket->setDestination(new Collection([
         'success' => true,
@@ -21,7 +21,7 @@ it('success', function () {
     expect($result->getDestination()->get('success'))->toBeTrue();
 });
 
-it('business error', function () {
+it('业务错误', function () {
     $this->expectException(InvalidResponseException::class);
 
     $rocket = new Rocket();
@@ -35,7 +35,7 @@ it('business error', function () {
     (new ResponsePlugin())->assembly($rocket, fn ($r) => $r);
 });
 
-it('http error', function () {
+it('HTTP 错误', function () {
     $this->expectException(InvalidResponseException::class);
 
     $rocket = new Rocket();

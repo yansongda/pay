@@ -17,7 +17,7 @@ use function Yansongda\Artful\filter_params;
 
 uses(GatewayCallbackPluginTestHelpers::class);
 
-it('verify gw success', function () {
+it('网关验签成功', function () {
     $plugin = new GatewayCallbackPlugin();
     $form = $this->makeSignedForm(extra: ['_config' => 'alipay-v3', '_action' => 'gw']);
 
@@ -48,7 +48,7 @@ it('verify gw success', function () {
     expect(openssl_verify($inner, $sign, openssl_pkey_get_public(file_get_contents(__DIR__.'/../../Cert/alipay-v3/alipay_public_cert_test.crt')), OPENSSL_ALGO_SHA256))->toBe(1);
 });
 
-it('verify sign failed', function () {
+it('验签失败', function () {
     $plugin = new GatewayCallbackPlugin();
     $form = $this->makeSignedForm();
     $form['sign'] = 'invalid-sign';
@@ -64,7 +64,7 @@ it('verify sign failed', function () {
     expect($body)->toContain('VERIFY_FAILED');
 });
 
-it('sign type participates in verify', function () {
+it('sign_type 参与验签', function () {
     $plugin = new GatewayCallbackPlugin();
     $form = $this->makeSignedForm();
     $form['sign_type'] = 'XXX';
@@ -79,7 +79,7 @@ it('sign type participates in verify', function () {
     expect($body)->toContain('VERIFY_FAILED');
 });
 
-it('non verify gw event type', function () {
+it('不校验网关事件类型', function () {
     $plugin = new GatewayCallbackPlugin();
     $form = $this->makeSignedForm(overrides: [
         'biz_content' => '<XML><MsgType>event</MsgType><EventType>follow</EventType></XML>',
@@ -94,7 +94,7 @@ it('non verify gw event type', function () {
     expect($destination)->toBe($result->getPayload());
 });
 
-it('biz content invalid xml', function () {
+it('biz_content 非法 XML', function () {
     $plugin = new GatewayCallbackPlugin();
     $form = $this->makeSignedForm(overrides: ['biz_content' => 'not-xml']);
 

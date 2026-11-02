@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 use Yansongda\Supports\Collection;
 
-it('success response', function () {
+it('成功响应', function () {
     $plugin = new ResponsePlugin();
     $destination = ['id' => 'pi_test123', 'status' => 'requires_payment_method'];
 
@@ -23,7 +23,7 @@ it('success response', function () {
     expect($result->getDestination()->all())->toEqual($destination);
 });
 
-it('created response', function () {
+it('创建成功响应', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(201));
@@ -34,7 +34,7 @@ it('created response', function () {
     expect($result->getDestination())->toBeInstanceOf(Collection::class);
 });
 
-it('client error throws exception', function () {
+it('客户端错误抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(400));
@@ -46,7 +46,7 @@ it('client error throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('server error throws exception', function () {
+it('服务端错误抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(500));
@@ -57,7 +57,7 @@ it('server error throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('unauthorized throws exception', function () {
+it('未授权抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(401));

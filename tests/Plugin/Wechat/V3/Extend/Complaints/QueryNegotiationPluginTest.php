@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryNegotiationPlugin;
 use Yansongda\Supports\Collection;
 
-it('empty complaint id', function () {
+it('空投诉单号', function () {
     $plugin = new QueryNegotiationPlugin();
     $rocket = new Rocket();
 
@@ -19,7 +19,7 @@ it('empty complaint id', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('query empty', function () {
+it('查询参数为空', function () {
     $plugin = new QueryNegotiationPlugin();
     $payload = [
         'complaint_id' => 'yansongda',
@@ -38,7 +38,7 @@ it('query empty', function () {
     ]);
 });
 
-it('query not empty', function () {
+it('查询参数非空', function () {
     $plugin = new QueryNegotiationPlugin();
     $payload = [
         'complaint_id' => 'yansongda',

@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V3\Pay\RefundPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new RefundPlugin();
     $params = [
         '_config' => 'alipay-v3',

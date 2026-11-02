@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Apple\Pay\QuerySubscriptionsPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456']));
@@ -27,7 +27,7 @@ it('normal', function () {
     expect($payload->has('transaction_id'))->toBeFalse();
 });
 
-it('status override', function () {
+it('状态覆盖', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => [3]]));
@@ -41,7 +41,7 @@ it('status override', function () {
     expect($url)->not->toContain('%5B');
 });
 
-it('status override scalar', function () {
+it('状态覆盖（标量）', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', '_status' => 2]));
@@ -53,7 +53,7 @@ it('status override scalar', function () {
     expect($payload->get('_url'))->not->toContain('%5B');
 });
 
-it('status override enum', function () {
+it('状态覆盖（枚举）', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -68,7 +68,7 @@ it('status override enum', function () {
     expect($url)->not->toContain('status=1');
 });
 
-it('status override scalar enum', function () {
+it('状态覆盖（标量枚举）', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -81,7 +81,7 @@ it('status override scalar enum', function () {
     expect($result->getPayload()->get('_url'))->toContain('status=3');
 });
 
-it('url encoded transaction id', function () {
+it('URL 编码的交易号', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx id/with 特殊字符']));
@@ -92,7 +92,7 @@ it('url encoded transaction id', function () {
     expect($payload->get('_url'))->toContain('/inApps/v1/subscriptions/'.urlencode('tx id/with 特殊字符'));
 });
 
-it('except payload keeps other fields', function () {
+it('过滤 payload 后保留其它字段', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', 'other' => 'keep_me']));
@@ -104,7 +104,7 @@ it('except payload keeps other fields', function () {
     expect($payload->get('other'))->toEqual('keep_me');
 });
 
-it('invalid status throws exception', function () {
+it('非法状态抛出异常', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
@@ -115,7 +115,7 @@ it('invalid status throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('non int status throws exception', function () {
+it('非整数状态抛出异常', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
@@ -126,7 +126,7 @@ it('non int status throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('out of range status throws exception', function () {
+it('状态越界抛出异常', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
@@ -138,7 +138,7 @@ it('out of range status throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing transaction id', function () {
+it('缺少交易号', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
@@ -150,7 +150,7 @@ it('missing transaction id', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('null payload throws exception', function () {
+it('空 payload 抛出异常', function () {
     $plugin = new QuerySubscriptionsPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

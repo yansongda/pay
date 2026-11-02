@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryImagePlugin;
 use Yansongda\Supports\Collection;
 
-it('empty media id', function () {
+it('空 media_id', function () {
     $plugin = new QueryImagePlugin();
     $rocket = new Rocket();
 
@@ -19,7 +19,7 @@ it('empty media id', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryImagePlugin();
     $payload = [
         'media_id' => 'yansongda',

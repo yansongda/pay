@@ -8,7 +8,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Supports\Collection;
 
-it('should not do request', function () {
+it('不应发起请求', function () {
     $plugin = new VerifySignaturePlugin();
     $rocket = new Rocket();
     $rocket->setDirection(NoHttpRequestDirection::class)->setDestinationOrigin(new Response());
@@ -16,7 +16,7 @@ it('should not do request', function () {
     expect($result)->toBe($rocket);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new VerifySignaturePlugin();
     $rocket = new Rocket();
     $rocket->setDestination(new Collection(['name' => 'yansongda', 'age' => 29, 'foo' => '', 'sign' => '3213848AED2C380749FD1D559555881D']));

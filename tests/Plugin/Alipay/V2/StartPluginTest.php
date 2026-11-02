@@ -10,7 +10,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new StartPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -22,7 +22,7 @@ it('normal', function () {
     expect($payload->get('alipay_root_cert_sn'))->toEqual('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6');
 });
 
-it('global bcscale', function () {
+it('全局 bcscale', function () {
     $plugin = new StartPlugin();
     bcscale(2);
 
@@ -34,7 +34,7 @@ it('global bcscale', function () {
     expect($result->getPayload()->get('alipay_root_cert_sn'))->toEqual('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6');
 });
 
-it('customized return url', function () {
+it('自定义同步回跳 URL', function () {
     $plugin = new StartPlugin();
     $rocket = new Rocket();
     $rocket->setParams([
@@ -46,7 +46,7 @@ it('customized return url', function () {
     expect($result->getPayload()->get('return_url'))->toEqual('https://yansongda.cna');
 });
 
-it('customized notify url', function () {
+it('自定义异步通知 URL', function () {
     $plugin = new StartPlugin();
     $rocket = new Rocket();
     $rocket->setParams([
@@ -58,7 +58,7 @@ it('customized notify url', function () {
     expect($result->getPayload()->get('notify_url'))->toEqual('https://yansongda.cna');
 });
 
-it('customized return notify url', function () {
+it('自定义同步与异步通知 URL', function () {
     $plugin = new StartPlugin();
     $rocket = new Rocket();
     $rocket->setParams([
@@ -72,7 +72,7 @@ it('customized return notify url', function () {
     expect($result->getPayload()->get('notify_url'))->toEqual('https://yansongda.cn');
 });
 
-it('customized app auth token', function () {
+it('自定义 app_auth_token', function () {
     $plugin = new StartPlugin();
     $rocket = new Rocket();
     $rocket->setParams([
@@ -84,7 +84,7 @@ it('customized app auth token', function () {
     expect($result->getPayload()->get('app_auth_token'))->toEqual('yansongda.cn');
 });
 
-it('missing app public cert path', function () {
+it('缺少应用公钥证书路径', function () {
     $plugin = new StartPlugin();
     $rocket = new Rocket();
 
@@ -100,7 +100,7 @@ it('missing app public cert path', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('wrong app public cert path', function () {
+it('应用公钥证书路径错误', function () {
     $plugin = new StartPlugin();
     $rocket = new Rocket();
 
@@ -115,7 +115,7 @@ it('wrong app public cert path', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing alipay root path', function () {
+it('缺少支付宝根证书路径', function () {
     $plugin = new StartPlugin();
     $rocket = new Rocket();
 
@@ -130,7 +130,7 @@ it('missing alipay root path', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('wrong alipay root path', function () {
+it('支付宝根证书路径错误', function () {
     $plugin = new StartPlugin();
     $rocket = new Rocket();
 
@@ -145,7 +145,7 @@ it('wrong alipay root path', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('app cert sn cached', function () {
+it('应用证书序列号已缓存', function () {
     $plugin = new StartPlugin();
     $result = $plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
     $payload = $result->getPayload();
@@ -159,7 +159,7 @@ it('app cert sn cached', function () {
     expect($payload->get('app_cert_sn'))->toEqual('e90dd23a37c5c7b616e003970817ff82');
 });
 
-it('alipay root cert sn cached', function () {
+it('支付宝根证书序列号（缓存）', function () {
     $plugin = new StartPlugin();
     $result = $plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
     $payload = $result->getPayload();
@@ -173,7 +173,7 @@ it('alipay root cert sn cached', function () {
     expect($payload->get('alipay_root_cert_sn'))->toEqual('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6');
 });
 
-it('alipay root cert sn string', function () {
+it('支付宝根证书序列号（字符串）', function () {
     $plugin = new StartPlugin();
     /** @var AlipayConfig $alipayConfig */
     $alipayConfig = Pay::get(ConfigInterface::class)->get('alipay.default');

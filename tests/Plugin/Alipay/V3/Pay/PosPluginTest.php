@@ -9,7 +9,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V3\Pay\PosPlugin;
 use Yansongda\Supports\Collection;
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new PosPlugin();
     $rocket = new Rocket();
 
@@ -20,7 +20,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new PosPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'alipay-v3'])->setPayload(new Collection([
@@ -45,7 +45,7 @@ it('normal', function () {
     ]);
 });
 
-it('notify url from config', function () {
+it('使用配置中的 notify_url', function () {
     $plugin = new PosPlugin();
     // 注册带 notify_url 的临时 v3 租户（公钥模式）
     Pay::config([
@@ -76,7 +76,7 @@ it('notify url from config', function () {
     expect($result->getPayload()->get('notify_url'))->toBe('https://pay.yansongda.cn/v3/notify');
 });
 
-it('notify url override from params', function () {
+it('参数覆盖 notify_url', function () {
     $plugin = new PosPlugin();
     // 注册带 notify_url 的临时 v3 租户（公钥模式）
     Pay::config([

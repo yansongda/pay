@@ -9,7 +9,7 @@ use Yansongda\Pay\Plugin\Apple\Pay\RefundPlugin;
 use Yansongda\Pay\Plugin\Apple\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Apple\RefundShortcut;
 
-it('get plugins', function () {
+it('获取插件列表', function () {
     $shortcut = new RefundShortcut();
     expect($shortcut->getPlugins([]))->toEqual([
         StartPlugin::class,

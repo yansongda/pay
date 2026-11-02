@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Goods\QueryUploadGoodsPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryUploadGoodsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -25,7 +25,7 @@ it('normal', function () {
     expect($payload->get('upload_task_id'))->toEqual('task_123456');
 });
 
-it('sandbox env', function () {
+it('沙箱环境', function () {
     $plugin = new QueryUploadGoodsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

@@ -19,35 +19,35 @@ use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Supports\Collection;
 
-it('shortcut not found', function () {
+it('快捷方式不存在', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::paypal()->foo();
 });
 
-it('shortcut incompatible', function () {
+it('快捷方式不兼容', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::paypal()->foo();
 });
 
-it('cancel', function () {
+it('撤销', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::paypal()->cancel([]);
 });
 
-it('close', function () {
+it('关单', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(\Yansongda\Pay\Exception\Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::paypal()->close([]);
 });
 
-it('callback', function () {
+it('回调', function () {
     $body = json_encode([
         'event_type' => 'CHECKOUT.ORDER.APPROVED',
         'resource' => ['id' => 'ORDER_123', 'status' => 'APPROVED'],
@@ -81,7 +81,7 @@ it('callback', function () {
     expect($result->get('resource.id'))->toEqual('ORDER_123');
 });
 
-it('callback with array', function () {
+it('数组形式回调', function () {
     $body = json_encode([
         'event_type' => 'PAYMENT.CAPTURE.COMPLETED',
         'resource' => ['id' => 'CAPTURE_456', 'status' => 'COMPLETED'],
@@ -116,7 +116,7 @@ it('callback with array', function () {
     expect($result->get('resource.id'))->toEqual('CAPTURE_456');
 });
 
-it('success', function () {
+it('成功', function () {
     $result = Pay::paypal()->success();
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);

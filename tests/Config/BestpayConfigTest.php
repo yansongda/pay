@@ -7,7 +7,7 @@ use Yansongda\Pay\Config\BestpayConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 
-it('construct valid config', function () {
+it('构造合法配置', function () {
     $validConfig = [
         'merchant_no' => '1234567890',
         'institution_code' => 'INS001',
@@ -30,7 +30,7 @@ it('construct valid config', function () {
     expect($config->getMode())->toBe(PayMode::NORMAL);
 });
 
-it('construct with tenant', function () {
+it('指定租户构造', function () {
     $validConfig = [
         'merchant_no' => '1234567890',
         'institution_code' => 'INS001',
@@ -43,7 +43,7 @@ it('construct with tenant', function () {
     expect($config->getTenant())->toBe('custom_tenant');
 });
 
-it('construct missing required', function () {
+it('缺少必填项构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::CONFIG_BESTPAY_INVALID);
 
@@ -57,7 +57,7 @@ it('construct missing required', function () {
     $config->validate();
 });
 
-it('optional getters', function () {
+it('可选 getter', function () {
     $validConfig = [
         'merchant_no' => '1234567890',
         'institution_code' => 'INS001',
@@ -78,7 +78,7 @@ it('optional getters', function () {
     expect($config->getReturnUrl())->toBe('https://return.com');
 });
 
-it('mode sandbox', function () {
+it('沙箱模式', function () {
     $validConfig = [
         'merchant_no' => '1234567890',
         'institution_code' => 'INS001',
@@ -94,7 +94,7 @@ it('mode sandbox', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('mode with pay mode enum', function () {
+it('使用 PayMode 枚举的模式', function () {
     $validConfig = [
         'merchant_no' => '1234567890',
         'institution_code' => 'INS001',
@@ -109,7 +109,7 @@ it('mode with pay mode enum', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('service mode throws exception', function () {
+it('服务商模式抛出异常', function () {
     $validConfig = [
         'merchant_no' => '1234567890',
         'institution_code' => 'INS001',

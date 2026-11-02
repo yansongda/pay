@@ -18,7 +18,7 @@ use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\V3\PosShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new PosShortcut();
     $plugins = $plugin->getPlugins([]);
 
@@ -38,7 +38,7 @@ it('default', function () {
     expect(array_search(ResponsePlugin::class, $plugins, true))->toBeLessThan(array_search(VerifySignaturePlugin::class, $plugins, true));
 });
 
-it('end to end', function () {
+it('端到端', function () {
     $plugin = new PosShortcut();
     $responseData = [
         'trade_no' => '2023122122001499160501589436',

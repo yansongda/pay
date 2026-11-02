@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Goods\StartUploadGoodsPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new StartUploadGoodsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -31,7 +31,7 @@ it('normal', function () {
     ]);
 });
 
-it('sandbox env', function () {
+it('沙箱环境', function () {
     $plugin = new StartUploadGoodsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -50,7 +50,7 @@ it('sandbox env', function () {
     expect($payload->get('_url'))->toEqual('/xpay/start_upload_goods');
 });
 
-it('access token passed through', function () {
+it('access token 透传', function () {
     $plugin = new StartUploadGoodsPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

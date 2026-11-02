@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\QueryPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -25,7 +25,7 @@ it('normal', function () {
     ]);
 });
 
-it('null payload', function () {
+it('空 payload', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);

@@ -11,7 +11,7 @@ use Yansongda\Pay\Plugin\Airwallex\V1\Pay\CancelPlugin;
 use Yansongda\Pay\Plugin\Airwallex\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Airwallex\CancelShortcut;
 
-it('normal', function () {
+it('正常', function () {
     expect((new CancelShortcut())->getPlugins([]))->toEqual([
         StartPlugin::class,
         ObtainAccessTokenPlugin::class,

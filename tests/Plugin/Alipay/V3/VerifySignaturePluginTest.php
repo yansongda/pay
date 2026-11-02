@@ -14,7 +14,7 @@ use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin;
 
 uses(VerifySignaturePluginTestHelpers::class);
 
-it('should not do request', function () {
+it('不应发起请求', function () {
     $plugin = new VerifySignaturePlugin();
     $rocket = (new Rocket())->setDirection(NoHttpRequestDirection::class)->setDestinationOrigin(new Response());
     $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
@@ -25,7 +25,7 @@ it('should not do request', function () {
     expect($result)->toBe($rocket);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new VerifySignaturePlugin();
     $body = json_encode(['code' => '10000', 'msg' => 'Success']);
     $response = $this->makeSignedResponse(200, $body);
@@ -37,7 +37,7 @@ it('normal', function () {
     expect($result)->toBe($rocket);
 });
 
-it('non200 with sign verify ok', function () {
+it('非 200 签名验签通过', function () {
     $plugin = new VerifySignaturePlugin();
     // 非 200 有签：同样验签，通过后放行进入错误处理
     $body = json_encode(['code' => 'INVALID_PARAMETER', 'message' => '参数错误']);
@@ -50,7 +50,7 @@ it('non200 with sign verify ok', function () {
     expect($result)->toBe($rocket);
 });
 
-it('non200 without sign pass', function () {
+it('非 200 无签名通过', function () {
     $plugin = new VerifySignaturePlugin();
     // 非 200 无签：直接放行进入错误处理（不做时间戳校验，对齐官方「有签才验」）
     $response = new Response(400, [], json_encode(['code' => 'INVALID_PARAMETER', 'message' => '参数错误']));
@@ -62,7 +62,7 @@ it('non200 without sign pass', function () {
     expect($result)->toBe($rocket);
 });
 
-it('non200 without sign but expired timestamp pass', function () {
+it('非 200 无签名但时间戳过期通过', function () {
     $plugin = new VerifySignaturePlugin();
     // 非 200 无签且时间戳过期：仍应放行（不能被时间戳异常拦截而无法进入业务错误处理）
     $response = new Response(400, ['alipay-timestamp' => '1735689600123', 'alipay-nonce' => 'yansongda-nonce'], '{}');
@@ -74,7 +74,7 @@ it('non200 without sign but expired timestamp pass', function () {
     expect($result)->toBe($rocket);
 });
 
-it('force verify without sign', function () {
+it('无签名强制验签', function () {
     $plugin = new VerifySignaturePlugin();
     // HTTP 200 强制验签：无签名也必须验签（空签抛异常）
     $response = new Response(200, ['alipay-timestamp' => (string) (int) (microtime(true) * 1000), 'alipay-nonce' => 'yansongda-nonce', 'alipay-sn' => CertManager::alipayGetAppCertSn(__DIR__.'/../../../Cert/alipay-v3/alipay_public_cert_test.crt')], '{}');
@@ -87,7 +87,7 @@ it('force verify without sign', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('invalid signature', function () {
+it('签名无效', function () {
     $plugin = new VerifySignaturePlugin();
     $response = new Response(
         200,
@@ -103,7 +103,7 @@ it('invalid signature', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('timestamp expired', function () {
+it('时间戳过期', function () {
     $plugin = new VerifySignaturePlugin();
     // 毫秒时间戳超过 ±300 秒（换算后）：抛 InvalidSignException
     $timestamp = '1735689600123';
@@ -126,7 +126,7 @@ it('timestamp expired', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('sn mismatch', function () {
+it('sn 不匹配', function () {
     $plugin = new VerifySignaturePlugin();
     $body = json_encode(['code' => '10000']);
     $response = $this->makeSignedResponse(200, $body, 'invalid-alipay-sn');
@@ -140,7 +140,7 @@ it('sn mismatch', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('sn missing', function () {
+it('缺少 sn', function () {
     $plugin = new VerifySignaturePlugin();
     // 有意偏差：alipay-sn 缺失一律抛异常（官方会回落缓存第一个公钥，此处更严格）
     $body = json_encode(['code' => '10000']);
@@ -155,7 +155,7 @@ it('sn missing', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('verify alipay v3 timestamp valid', function () {
+it('支付宝 V3 时间戳有效', function () {
     $stub = new class extends VerifySignaturePlugin {
         public function exposeVerifyTimestamp(string $timestamp): void
         {
@@ -168,7 +168,7 @@ it('verify alipay v3 timestamp valid', function () {
     expect(true)->toBeTrue();
 });
 
-it('verify alipay v3 timestamp expired', function () {
+it('支付宝 V3 时间戳过期', function () {
     $stub = new class extends VerifySignaturePlugin {
         public function exposeVerifyTimestamp(string $timestamp): void
         {

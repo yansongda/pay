@@ -7,7 +7,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
 use Yansongda\Supports\Collection;
 
-it('should not do request', function () {
+it('不应发起请求', function () {
     $plugin = new VerifySignaturePlugin();
     $rocket = new Rocket();
     $rocket->setDirection(NoHttpRequestDirection::class);
@@ -17,7 +17,7 @@ it('should not do request', function () {
     expect($result)->toBe($rocket);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new VerifySignaturePlugin();
     $response = Collection::wrap([
         'accNo' => 'dZRvehtDtCcBPbPBVJk+ezkyeXkF07UnbKwr8/012R5XSsDLE4RqpHSLis7WCItKIf6SYUcXCLHYpV9deIfnJfziDGpUdQXnlPfejrw5pKglzjKI/pRYg0ApNomryVBIoUIdTwlpELh048ITEojRgJwzaazWdLaB5iZPeN22E2KP7JkfwsYHEclVpLY4tYEc35IjMpWCs0i8U5KY4qAJ3zXpCFIur4x+9z4gyK89Mwf+csowScvfDbFBsqTpClQlNRJ6lLWOrISNnlCdc1ONK4QVhabDTTWsemM7PSuya2e3imeZFfRYDmSv6W1eMIs0gbRo8BxOr3suUhb2ukPL7w==',

@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\AddPayloadSignaturePlugin;
 use Yansongda\Supports\Collection;
 
-it('sign normal', function () {
+it('签名正常', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $payload = [
         'app_id' => '9021000122682882',

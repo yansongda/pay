@@ -7,7 +7,7 @@ use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 
-it('construct valid config', function () {
+it('构造合法配置', function () {
     $validConfig = [
         'app_id' => 'tt123456',
         'app_secret' => 'test_app_secret',
@@ -24,7 +24,7 @@ it('construct valid config', function () {
     expect($config->getMode())->toBe(PayMode::NORMAL);
 });
 
-it('construct with tenant', function () {
+it('指定租户构造', function () {
     $validConfig = [
         'app_id' => 'tt123456',
         'app_secret' => 'test_app_secret',
@@ -36,7 +36,7 @@ it('construct with tenant', function () {
     expect($config->getTenant())->toBe('custom_tenant');
 });
 
-it('construct missing app id', function () {
+it('缺少 app_id 构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
     $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [app_id]');
@@ -48,7 +48,7 @@ it('construct missing app id', function () {
     $config->validate();
 });
 
-it('construct missing app secret', function () {
+it('缺少 app_secret 构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
     $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [app_secret]');
@@ -60,7 +60,7 @@ it('construct missing app secret', function () {
     $config->validate();
 });
 
-it('optional getters', function () {
+it('可选 getter', function () {
     $validConfig = [
         'app_id' => 'tt123456',
         'app_secret' => 'test_app_secret',
@@ -74,7 +74,7 @@ it('optional getters', function () {
     expect($config->getNotifyUrl())->toBe('https://notify.com');
 });
 
-it('optional getters null', function () {
+it('可选 getter 返回 null', function () {
     $validConfig = [
         'app_id' => 'tt123456',
         'app_secret' => 'test_app_secret',
@@ -86,7 +86,7 @@ it('optional getters null', function () {
     expect($config->getNotifyUrl())->toBeNull();
 });
 
-it('mode sandbox', function () {
+it('沙箱模式', function () {
     $validConfig = [
         'app_id' => 'tt123456',
         'app_secret' => 'test_app_secret',
@@ -101,7 +101,7 @@ it('mode sandbox', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('mode with pay mode enum', function () {
+it('使用 PayMode 枚举的模式', function () {
     $validConfig = [
         'app_id' => 'tt123456',
         'app_secret' => 'test_app_secret',
@@ -115,7 +115,7 @@ it('mode with pay mode enum', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('invalid mode throws exception', function () {
+it('非法模式抛出异常', function () {
     $validConfig = [
         'app_id' => 'tt123456',
         'app_secret' => 'test_app_secret',

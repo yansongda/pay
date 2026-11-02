@@ -13,7 +13,7 @@ use Yansongda\Supports\Collection;
 
 uses(CallbackPluginTestHelpers::class);
 
-it('xml callback goods deliver notify', function () {
+it('XML 发货回调', function () {
     $plugin = new CallbackPlugin();
     $appId = 'wx55955316af4ef14';
     $message = '<xml><MsgType>event</MsgType><Event>xpay_goods_deliver_notify</Event></xml>';
@@ -46,7 +46,7 @@ it('xml callback goods deliver notify', function () {
     expect($result->getDirection())->toEqual(NoHttpRequestDirection::class);
 });
 
-it('xml callback coin pay notify', function () {
+it('XML 金币支付回调', function () {
     $plugin = new CallbackPlugin();
     $appId = 'wx55955316af4ef14';
     $message = '<xml><MsgType>event</MsgType><Event>xpay_coin_pay_notify</Event></xml>';
@@ -76,7 +76,7 @@ it('xml callback coin pay notify', function () {
     expect($result->getDestination()->get('Event'))->toEqual('xpay_coin_pay_notify');
 });
 
-it('xml callback refund notify', function () {
+it('XML 退款回调', function () {
     $plugin = new CallbackPlugin();
     $appId = 'wx55955316af4ef14';
     $message = '<xml><MsgType>event</MsgType><Event>xpay_refund_notify</Event></xml>';
@@ -106,7 +106,7 @@ it('xml callback refund notify', function () {
     expect($result->getDestination()->get('Event'))->toEqual('xpay_refund_notify');
 });
 
-it('json callback', function () {
+it('JSON 回调', function () {
     $plugin = new CallbackPlugin();
     $appId = 'wx55955316af4ef14';
     $message = '<xml><MsgType>event</MsgType><Event>xpay_goods_deliver_notify</Event></xml>';
@@ -137,7 +137,7 @@ it('json callback', function () {
     expect($result->getDestination()->get('Event'))->toEqual('xpay_goods_deliver_notify');
 });
 
-it('invalid request', function () {
+it('请求非法', function () {
     $plugin = new CallbackPlugin();
     $rocket = (new Rocket())->setParams([]);
 
@@ -147,7 +147,7 @@ it('invalid request', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('invalid signature', function () {
+it('签名无效', function () {
     $plugin = new CallbackPlugin();
     $appId = 'wx55955316af4ef14';
     $message = '<xml><MsgType>event</MsgType><Event>xpay_goods_deliver_notify</Event></xml>';
@@ -174,7 +174,7 @@ it('invalid signature', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('empty signature', function () {
+it('空签名', function () {
     $plugin = new CallbackPlugin();
     $appId = 'wx55955316af4ef14';
     $message = '<xml><MsgType>event</MsgType><Event>xpay_goods_deliver_notify</Event></xml>';

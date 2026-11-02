@@ -11,7 +11,7 @@ use Yansongda\Pay\Plugin\Paypal\V2\Pay\RefundPlugin;
 use Yansongda\Pay\Plugin\Paypal\V2\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Paypal\RefundShortcut;
 
-it('default', function () {
+it('默认', function () {
     $shortcut = new RefundShortcut();
     expect($shortcut->getPlugins([]))->toEqual([
         StartPlugin::class,

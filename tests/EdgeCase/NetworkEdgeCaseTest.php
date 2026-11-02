@@ -12,7 +12,7 @@ use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 
-it('http timeout', function () {
+it('HTTP 超时', function () {
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')
         ->andThrow(new RequestException(
@@ -27,7 +27,7 @@ it('http timeout', function () {
     Pay::alipay()->query(['out_trade_no' => '123456']);
 });
 
-it('http connection failed', function () {
+it('HTTP 连接失败', function () {
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')
         ->andThrow(new ConnectException(
@@ -42,7 +42,7 @@ it('http connection failed', function () {
     Pay::alipay()->query(['out_trade_no' => '123456']);
 });
 
-it('empty response body', function () {
+it('空响应 body', function () {
     $response = new Response(200, [], '');
 
     $http = Mockery::mock(Client::class);
@@ -55,7 +55,7 @@ it('empty response body', function () {
     Pay::alipay()->query(['out_trade_no' => '123456']);
 });
 
-it('malformed json response', function () {
+it('响应 JSON 格式错误', function () {
     $response = new Response(200, [], 'not a valid json {{{');
 
     $http = Mockery::mock(Client::class);
@@ -68,7 +68,7 @@ it('malformed json response', function () {
     Pay::alipay()->query(['out_trade_no' => '123456']);
 });
 
-it('wechat http401 unauthorized', function () {
+it('微信 HTTP 401 未授权', function () {
     $response = new Response(
         401,
         [],
@@ -86,7 +86,7 @@ it('wechat http401 unauthorized', function () {
     Pay::wechat()->query(['out_trade_no' => '123456']);
 });
 
-it('wechat http403 forbidden', function () {
+it('微信 HTTP 403 禁止访问', function () {
     $response = new Response(
         403,
         [],
@@ -104,7 +104,7 @@ it('wechat http403 forbidden', function () {
     Pay::wechat()->query(['out_trade_no' => '123456']);
 });
 
-it('dns resolution failure', function () {
+it('DNS 解析失败', function () {
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')
         ->andThrow(new ConnectException(
@@ -119,7 +119,7 @@ it('dns resolution failure', function () {
     Pay::alipay()->query(['out_trade_no' => '123456']);
 });
 
-it('ssl certificate error', function () {
+it('SSL 证书错误', function () {
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')
         ->andThrow(new RequestException(
@@ -134,7 +134,7 @@ it('ssl certificate error', function () {
     Pay::alipay()->query(['out_trade_no' => '123456']);
 });
 
-it('network reset', function () {
+it('网络重置', function () {
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')
         ->andThrow(new ConnectException(

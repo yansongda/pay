@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Airwallex\V1\Pay\PayPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
         'amount' => 100,
         'currency' => 'USD',

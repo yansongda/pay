@@ -11,7 +11,7 @@ use Yansongda\Pay\Plugin\Jsb\StartPlugin;
 use Yansongda\Pay\Plugin\Jsb\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Jsb\RefundShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new RefundShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,

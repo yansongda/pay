@@ -11,7 +11,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\Virtual\PayPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -41,7 +41,7 @@ it('normal', function () {
     expect($result->getDestination())->toBe($payload);
 });
 
-it('sandbox env', function () {
+it('沙箱环境', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -59,7 +59,7 @@ it('sandbox env', function () {
     expect($payload->get('_url'))->toEqual('requestVirtualPayment');
 });
 
-it('custom url overrides default', function () {
+it('自定义 URL 覆盖默认值', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -74,7 +74,7 @@ it('custom url overrides default', function () {
     expect($result->getPayload()->get('_url'))->toEqual('/xpay/pay_deposit');
 });
 
-it('default values', function () {
+it('默认值', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -93,7 +93,7 @@ it('default values', function () {
     expect($payload->get('attach'))->toBeEmpty();
 });
 
-it('missing offer id throws exception', function () {
+it('缺少 offer_id 抛出异常', function () {
     Pay::clear();
     Pay::config([
         'wechat' => [
@@ -135,7 +135,7 @@ it('missing offer id throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('client signing payload sorted by key', function () {
+it('客户端签名 payload 按 key 排序', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -165,7 +165,7 @@ it('client signing payload sorted by key', function () {
     expect($businessKeys)->toBe($expected);
 });
 
-it('nested array sorted recursively', function () {
+it('嵌套数组递归排序', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

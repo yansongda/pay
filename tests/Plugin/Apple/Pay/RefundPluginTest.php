@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Apple\Pay\RefundPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new RefundPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456']));
@@ -22,7 +22,7 @@ it('normal', function () {
     expect($payload->has('transaction_id'))->toBeFalse();
 });
 
-it('url encoded transaction id', function () {
+it('URL 编码的交易号', function () {
     $plugin = new RefundPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx id/with 特殊字符']));
@@ -33,7 +33,7 @@ it('url encoded transaction id', function () {
     expect($payload->get('_url'))->toContain('/inApps/v2/refund/lookup/'.urlencode('tx id/with 特殊字符'));
 });
 
-it('except payload keeps other fields', function () {
+it('过滤 payload 后保留其它字段', function () {
     $plugin = new RefundPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['transaction_id' => 'tx_test_456', 'other' => 'keep_me']));
@@ -45,7 +45,7 @@ it('except payload keeps other fields', function () {
     expect($payload->get('other'))->toEqual('keep_me');
 });
 
-it('signed transactions passed through untouched', function () {
+it('已签名交易原样透传', function () {
     $plugin = new RefundPlugin();
     // 一期设计决策：退款历史响应中的 signedTransactions（内嵌 JWS）不做自动验签，数组原样透传给调用方
     $signedTransactions = [
@@ -62,7 +62,7 @@ it('signed transactions passed through untouched', function () {
     expect($payload->get('signedTransactions'))->toBe($signedTransactions);
 });
 
-it('missing transaction id', function () {
+it('缺少交易号', function () {
     $plugin = new RefundPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
@@ -73,7 +73,7 @@ it('missing transaction id', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('null payload throws exception', function () {
+it('空 payload 抛出异常', function () {
     $plugin = new RefundPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

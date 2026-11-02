@@ -18,7 +18,7 @@ use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\CancelShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new CancelShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -31,7 +31,7 @@ it('default', function () {
     ]);
 });
 
-it('qr code', function () {
+it('二维码', function () {
     $plugin = new CancelShortcut();
     expect($plugin->getPlugins(['_action' => 'qr_code']))->toEqual([
         StartPlugin::class,
@@ -44,7 +44,7 @@ it('qr code', function () {
     ]);
 });
 
-it('qra pos', function () {
+it('QRA POS', function () {
     $plugin = new CancelShortcut();
     expect($plugin->getPlugins(['_action' => 'qra_pos']))->toEqual([
         QraStartPlugin::class,

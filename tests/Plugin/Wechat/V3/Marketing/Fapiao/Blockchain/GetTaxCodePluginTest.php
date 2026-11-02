@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\Blockchain\GetTaxCodePlugin;
 use Yansongda\Supports\Collection;
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new GetTaxCodePlugin();
     $rocket = new Rocket();
 
@@ -19,7 +19,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new GetTaxCodePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

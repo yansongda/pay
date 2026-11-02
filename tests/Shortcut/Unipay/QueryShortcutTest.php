@@ -19,7 +19,7 @@ use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\QueryShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -32,7 +32,7 @@ it('default', function () {
     ]);
 });
 
-it('qr code', function () {
+it('二维码', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'qr_code']))->toEqual([
         StartPlugin::class,
@@ -45,7 +45,7 @@ it('qr code', function () {
     ]);
 });
 
-it('qra pos', function () {
+it('QRA POS', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'qra_pos']))->toEqual([
         QraStartPlugin::class,
@@ -58,7 +58,7 @@ it('qra pos', function () {
     ]);
 });
 
-it('qra pos refund', function () {
+it('QRA POS 退款', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'qra_pos_refund']))->toEqual([
         QraStartPlugin::class,

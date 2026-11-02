@@ -18,7 +18,7 @@ class UnipayTraitStub
 use UnipayTrait;
 }
 
-it('verify unipay sign', function () {
+it('银联验签', function () {
     $contents = "accNo=ORRSXWY1kMr8UJNxGx9xKPuO0Uhm8JT8aQV3sWswJfIsj/grkjauH4soyAtiqB9XwQotZOwmUAs/pkMupUkfiX9npdFGGEUEc5gqq+lcEwyD7tLmd2WBzRvcEvvjAKMKwTCFDxmQbIrP48ocIVhPoZ87ZQtQM5MIyJYedrzPRlt6BzRddUPGU1gJwDA8APDx3iyNl8EAfenJw7DUDZimmhbE1VSRmQm/iqgJurI7juq/6ztDHZHv4ys1eN9JYkwhcKxCjsWpwXTSy0PGvDXhsAZsDuNXHsjI8JLhHXvTDaU2+gc289LZPiwpr4Ah/reIuPWrIHubchYm2XTqQlUAaw==&accessType=0&bizType=000201&currencyCode=156&encoding=utf-8&exchangeRate=0&merId=777290058167151&orderId=yansongda20220908132206&queryId=782209081322060674028&respCode=00&respMsg=success&settleAmt=1&settleCurrencyCode=156&settleDate=0908&signMethod=01&signPubKeyCert=-----BEGIN CERTIFICATE-----\r
 MIIEYzCCA0ugAwIBAgIFEDkwhTQwDQYJKoZIhvcNAQEFBQAwWDELMAkGA1UEBhMC\r
 Q04xMDAuBgNVBAoTJ0NoaW5hIEZpbmFuY2lhbCBDZXJ0aWZpY2F0aW9uIEF1dGhv\r
@@ -58,14 +58,14 @@ Q0C300Eo+XOoO4M1WvsRBAF13g9RPSw=\r
     UnipayTraitStub::verifyUnipaySign(new UnipayConfig(['mch_secret_key' => 'foo']), $contents, $sign);
 });
 
-it('verify unipay sign empty', function () {
+it('银联验签为空', function () {
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_EMPTY);
     $this->expectExceptionMessage('签名异常: 银联签名为空');
     UnipayTraitStub::verifyUnipaySign(new UnipayConfig(['mch_secret_key' => 'foo']), '', '');
 });
 
-it('get unipay url', function () {
+it('获取银联 URL', function () {
     $config = new UnipayConfig(['mch_secret_key' => 'foo']);
 
     expect(UnipayTraitStub::getUnipayUrl($config, new Collection(['_url' => 'https://yansongda.cn'])))->toEqual('https://yansongda.cn');
@@ -78,7 +78,7 @@ it('get unipay url', function () {
     UnipayTraitStub::getUnipayUrl($config, new Collection([]));
 });
 
-it('get unipay body', function () {
+it('获取银联请求 body', function () {
     expect(UnipayTraitStub::getUnipayBody(new Collection(['_body' => 'https://yansongda.cn'])))->toEqual('https://yansongda.cn');
 
     $this->expectException(InvalidParamsException::class);
@@ -86,7 +86,7 @@ it('get unipay body', function () {
     UnipayTraitStub::getUnipayBody(new Collection([]));
 });
 
-it('get unipay sign qra', function () {
+it('获取银联 QRA 签名', function () {
     $config = UnipayTraitStub::getProviderConfig('unipay', ['_config' => 'qra']);
 
     $payload = [
@@ -114,7 +114,7 @@ it('get unipay sign qra', function () {
     UnipayTraitStub::getUnipaySignQra(new UnipayConfig(['mch_cert_path' => 'foo', 'mch_cert_password' => 'bar']), $payload);
 });
 
-it('verify unipay sign qra', function () {
+it('银联 QRA 验签', function () {
     $payload = [
         'charset' => 'UTF-8',
         'code' => '9999999',
@@ -142,7 +142,7 @@ it('verify unipay sign qra', function () {
     UnipayTraitStub::verifyUnipaySignQra(new UnipayConfig(['mch_cert_path' => 'foo', 'mch_cert_password' => 'bar']), $payload);
 });
 
-it('verify unipay sign qra wrong', function () {
+it('银联 QRA 验签失败', function () {
     $payload = [
         'charset' => 'UTF-8',
         'code' => '9999999',
@@ -168,7 +168,7 @@ it('verify unipay sign qra wrong', function () {
     UnipayTraitStub::verifyUnipaySignQra($config, $payload);
 });
 
-it('verify unipay sign qra empty', function () {
+it('银联 QRA 验签为空', function () {
     $payload = [
         'charset' => 'UTF-8',
         'code' => '9999999',

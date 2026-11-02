@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\QueryOrderPlugin;
 use Yansongda\Supports\Collection;
 
-it('with order id', function () {
+it('携带订单号', function () {
     $plugin = new QueryOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -26,7 +26,7 @@ it('with order id', function () {
     expect($result->getPayload()->get('wx_order_id'))->toBeNull();
 });
 
-it('with wx order id', function () {
+it('携带微信订单号', function () {
     $plugin = new QueryOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -44,7 +44,7 @@ it('with wx order id', function () {
     expect($result->getPayload()->get('wx_order_id'))->toEqual('wx_123456');
 });
 
-it('with both order ids', function () {
+it('同时携带两个订单号', function () {
     $plugin = new QueryOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -60,7 +60,7 @@ it('with both order ids', function () {
     expect($result->getPayload()->get('wx_order_id'))->toEqual('wx_123456');
 });
 
-it('env as string', function () {
+it('字符串形式的环境', function () {
     $plugin = new QueryOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -74,7 +74,7 @@ it('env as string', function () {
     expect($result->getPayload()->get('order_id'))->toEqual('123456');
 });
 
-it('with access token', function () {
+it('携带 access token', function () {
     $plugin = new QueryOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

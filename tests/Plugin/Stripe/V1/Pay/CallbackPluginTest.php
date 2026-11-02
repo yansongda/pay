@@ -8,7 +8,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\CallbackPlugin;
 
-it('missing request throws exception', function () {
+it('缺少请求对象抛出异常', function () {
     $plugin = new CallbackPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -19,7 +19,7 @@ it('missing request throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('invalid json body throws exception', function () {
+it('非法 JSON body 抛出异常', function () {
     $plugin = new CallbackPlugin();
     $body = 'not-valid-json';
     $timestamp = time();
@@ -40,7 +40,7 @@ it('invalid json body throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal callback', function () {
+it('正常回调', function () {
     $plugin = new CallbackPlugin();
     $body = json_encode([
         'id' => 'evt_test123',

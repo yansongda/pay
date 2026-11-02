@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\CreatePlugin;
 use Yansongda\Supports\Collection;
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
 
@@ -19,7 +19,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('service id missing', function () {
+it('缺少服务商 ID', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([
@@ -33,7 +33,7 @@ it('service id missing', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -52,7 +52,7 @@ it('normal', function () {
     ]);
 });
 
-it('payload params override config', function () {
+it('payload 参数覆盖配置', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\QueryRefundPlugin;
 use Yansongda\Supports\Collection;
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new QueryRefundPlugin();
     $rocket = new Rocket();
 
@@ -19,7 +19,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryRefundPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -32,7 +32,7 @@ it('normal', function () {
     expect($result->getPayload()->get('_url'))->toEqual('/v3/refund/domestic/refunds/111');
 });
 
-it('service params', function () {
+it('服务商参数', function () {
     $plugin = new QueryRefundPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -46,7 +46,7 @@ it('service params', function () {
     expect($result->getPayload()->get('_service_url'))->toEqual('/v3/refund/domestic/refunds/111?sub_mchid=333');
 });
 
-it('service', function () {
+it('服务商', function () {
     $plugin = new QueryRefundPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([

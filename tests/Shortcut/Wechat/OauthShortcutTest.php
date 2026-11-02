@@ -14,7 +14,7 @@ use Yansongda\Pay\Plugin\Wechat\Openapi\Oauth\WebAccessTokenPlugin;
 use Yansongda\Pay\Plugin\Wechat\Openapi\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Wechat\OauthShortcut;
 
-it('web token', function () {
+it('网页授权 token', function () {
     $plugin = new OauthShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'web_token', 'code' => 'mock-code']);
 
@@ -26,7 +26,7 @@ it('web token', function () {
     expect($plugins[4])->toBe(ParserPlugin::class);
 });
 
-it('refresh', function () {
+it('刷新', function () {
     $plugin = new OauthShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'refresh', 'refresh_token' => 'mock-refresh-token']);
 
@@ -38,7 +38,7 @@ it('refresh', function () {
     expect($plugins[4])->toBe(ParserPlugin::class);
 });
 
-it('userinfo', function () {
+it('用户信息', function () {
     $plugin = new OauthShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'userinfo', 'access_token' => 'mock-access-token', 'openid' => 'mock-openid']);
 
@@ -50,7 +50,7 @@ it('userinfo', function () {
     expect($plugins[4])->toBe(ParserPlugin::class);
 });
 
-it('session', function () {
+it('会话', function () {
     $plugin = new OauthShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'session', 'js_code' => 'mock-js-code']);
 
@@ -62,7 +62,7 @@ it('session', function () {
     expect($plugins[4])->toBe(ParserPlugin::class);
 });
 
-it('invalid action throws', function () {
+it('非法动作抛出异常', function () {
     $plugin = new OauthShortcut();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);

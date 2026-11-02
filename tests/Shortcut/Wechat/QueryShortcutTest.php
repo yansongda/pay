@@ -22,7 +22,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\QueryPlugin as NativeQueryPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\QueryShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -36,7 +36,7 @@ it('default', function () {
     ]);
 });
 
-it('app', function () {
+it('APP', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'app']))->toEqual([
         StartPlugin::class,
@@ -50,7 +50,7 @@ it('app', function () {
     ]);
 });
 
-it('combine', function () {
+it('合单', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'combine']))->toEqual([
         StartPlugin::class,
@@ -64,7 +64,7 @@ it('combine', function () {
     ]);
 });
 
-it('combine params', function () {
+it('合单参数', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['combine_out_trade_no' => '123abc']))->toEqual([
         StartPlugin::class,
@@ -78,7 +78,7 @@ it('combine params', function () {
     ]);
 });
 
-it('h5', function () {
+it('H5', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'h5']))->toEqual([
         StartPlugin::class,
@@ -92,7 +92,7 @@ it('h5', function () {
     ]);
 });
 
-it('jsapi', function () {
+it('JSAPI', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'jsapi']))->toEqual([
         StartPlugin::class,
@@ -106,7 +106,7 @@ it('jsapi', function () {
     ]);
 });
 
-it('mini', function () {
+it('小程序', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'mini']))->toEqual([
         StartPlugin::class,
@@ -120,7 +120,7 @@ it('mini', function () {
     ]);
 });
 
-it('native', function () {
+it('Native', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'native']))->toEqual([
         StartPlugin::class,
@@ -134,7 +134,7 @@ it('native', function () {
     ]);
 });
 
-it('refund', function () {
+it('退款', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'refund']))->toEqual([
         StartPlugin::class,
@@ -148,7 +148,7 @@ it('refund', function () {
     ]);
 });
 
-it('transfer', function () {
+it('转账', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'transfer']))->toEqual([
         StartPlugin::class,

@@ -16,7 +16,7 @@ use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\ScanShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new ScanShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -29,7 +29,7 @@ it('default', function () {
     ]);
 });
 
-it('pre auth', function () {
+it('预授权', function () {
     $plugin = new ScanShortcut();
     expect($plugin->getPlugins(['_action' => 'pre_auth']))->toEqual([
         StartPlugin::class,
@@ -42,7 +42,7 @@ it('pre auth', function () {
     ]);
 });
 
-it('pre order', function () {
+it('预下单', function () {
     $plugin = new ScanShortcut();
     expect($plugin->getPlugins(['_action' => 'pre_order']))->toEqual([
         StartPlugin::class,
@@ -55,7 +55,7 @@ it('pre order', function () {
     ]);
 });
 
-it('fee', function () {
+it('手续费', function () {
     $plugin = new ScanShortcut();
     expect($plugin->getPlugins(['_action' => 'fee']))->toEqual([
         StartPlugin::class,

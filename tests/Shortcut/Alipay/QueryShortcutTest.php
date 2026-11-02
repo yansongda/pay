@@ -30,7 +30,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\QueryShortcut;
 
-it('foo param', function () {
+it('foo 参数', function () {
     $shortcut = new QueryShortcut();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
@@ -38,7 +38,7 @@ it('foo param', function () {
     $shortcut->getPlugins(['_action' => 'foo']);
 });
 
-it('default', function () {
+it('默认', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins([]);
 
@@ -54,7 +54,7 @@ it('default', function () {
     ]);
 });
 
-it('agreement', function () {
+it('协议', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'agreement']);
 
@@ -70,7 +70,7 @@ it('agreement', function () {
     ]);
 });
 
-it('app', function () {
+it('APP', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'app']);
 
@@ -86,7 +86,7 @@ it('app', function () {
     ]);
 });
 
-it('authorization', function () {
+it('授权', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'authorization']);
 
@@ -102,7 +102,7 @@ it('authorization', function () {
     ]);
 });
 
-it('face', function () {
+it('人脸', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'face']);
 
@@ -118,7 +118,7 @@ it('face', function () {
     ]);
 });
 
-it('mini', function () {
+it('小程序', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'mini']);
 
@@ -134,7 +134,7 @@ it('mini', function () {
     ]);
 });
 
-it('pos', function () {
+it('POS', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'pos']);
 
@@ -150,7 +150,7 @@ it('pos', function () {
     ]);
 });
 
-it('scan', function () {
+it('扫码', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'scan']);
 
@@ -166,7 +166,7 @@ it('scan', function () {
     ]);
 });
 
-it('h5', function () {
+it('H5', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'h5']);
 
@@ -182,7 +182,7 @@ it('h5', function () {
     ]);
 });
 
-it('web', function () {
+it('网页', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'web']);
 
@@ -198,7 +198,7 @@ it('web', function () {
     ]);
 });
 
-it('transfer', function () {
+it('转账', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'transfer']);
 
@@ -214,7 +214,7 @@ it('transfer', function () {
     ]);
 });
 
-it('refund', function () {
+it('退款', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'refund']);
 
@@ -230,7 +230,7 @@ it('refund', function () {
     ]);
 });
 
-it('refund app', function () {
+it('APP 退款', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'refund_app']);
 
@@ -246,7 +246,7 @@ it('refund app', function () {
     ]);
 });
 
-it('refund authorization', function () {
+it('授权退款', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'refund_authorization']);
 
@@ -262,7 +262,7 @@ it('refund authorization', function () {
     ]);
 });
 
-it('refund mini', function () {
+it('小程序退款', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'refund_mini']);
 
@@ -278,7 +278,7 @@ it('refund mini', function () {
     ]);
 });
 
-it('refund pos', function () {
+it('POS 退款', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'refund_pos']);
 
@@ -294,7 +294,7 @@ it('refund pos', function () {
     ]);
 });
 
-it('refund scan', function () {
+it('扫码退款', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'refund_scan']);
 
@@ -310,7 +310,7 @@ it('refund scan', function () {
     ]);
 });
 
-it('refund h5', function () {
+it('H5 退款', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'refund_h5']);
 
@@ -326,7 +326,7 @@ it('refund h5', function () {
     ]);
 });
 
-it('refund web', function () {
+it('网页退款', function () {
     $shortcut = new QueryShortcut();
     $result = $shortcut->getPlugins(['_action' => 'refund_web']);
 

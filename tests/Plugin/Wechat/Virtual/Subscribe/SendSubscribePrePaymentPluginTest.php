@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\SendSubscribePrePaymentPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new SendSubscribePrePaymentPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -29,7 +29,7 @@ it('normal', function () {
     expect($payload->get('pre_payment_amount'))->toEqual(100);
 });
 
-it('sandbox env', function () {
+it('沙箱环境', function () {
     $plugin = new SendSubscribePrePaymentPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -46,7 +46,7 @@ it('sandbox env', function () {
     expect($payload->get('env'))->toEqual(1);
 });
 
-it('default values', function () {
+it('默认值', function () {
     $plugin = new SendSubscribePrePaymentPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

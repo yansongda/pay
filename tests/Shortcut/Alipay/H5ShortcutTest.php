@@ -11,7 +11,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\ResponseHtmlPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Shortcut\Alipay\H5Shortcut;
 
-it('normal', function () {
+it('正常', function () {
     $shortcut = new H5Shortcut();
     $result = $shortcut->getPlugins([]);
 

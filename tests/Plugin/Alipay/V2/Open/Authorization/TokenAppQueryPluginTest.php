@@ -7,7 +7,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Open\Authorization\TokenAppQueryPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new TokenAppQueryPlugin();
     $params = ['grant_type' => 'authorization_code', 'code' => '123456'];
 
@@ -25,7 +25,7 @@ it('normal', function () {
     expect($payload->has('app_auth_token'))->toBeFalse();
 });
 
-it('normal with action', function () {
+it('携带 action 的正常场景', function () {
     $plugin = new TokenAppQueryPlugin();
     $params = ['grant_type' => 'authorization_code', 'code' => '123456', '_action' => 'query'];
 

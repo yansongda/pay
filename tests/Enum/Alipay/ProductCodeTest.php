@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Yansongda\Pay\Enum\Alipay\ProductCode;
 
-it('exposes product code values', function () {
+it('暴露产品码值', function () {
     expect(ProductCode::FAST_INSTANT_TRADE_PAY->value)->toBe('FAST_INSTANT_TRADE_PAY');
     expect(ProductCode::QUICK_WAP_WAY->value)->toBe('QUICK_WAP_WAY');
     expect(ProductCode::JSAPI_PAY->value)->toBe('JSAPI_PAY');
@@ -17,7 +17,7 @@ it('exposes product code values', function () {
     expect(ProductCode::FACE->value)->toBe('FACE');
 });
 
-it('keeps declaration order of cases', function () {
+it('保持枚举声明顺序', function () {
     expect(ProductCode::cases())->toBe([
         ProductCode::FAST_INSTANT_TRADE_PAY,
         ProductCode::QUICK_WAP_WAY,
@@ -32,7 +32,7 @@ it('keeps declaration order of cases', function () {
     ]);
 });
 
-it('tries from string value', function () {
+it('按字符串值 tryFrom', function () {
     expect(ProductCode::tryFrom('FAST_INSTANT_TRADE_PAY'))->toBe(ProductCode::FAST_INSTANT_TRADE_PAY);
     expect(ProductCode::tryFrom('FACE'))->toBe(ProductCode::FACE);
     expect(ProductCode::tryFrom('NOT_EXIST'))->toBeNull();

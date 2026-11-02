@@ -12,7 +12,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CreatePlugin;
 use Yansongda\Supports\Collection;
 
-it('mode wrong', function () {
+it('模式错误', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider']);
@@ -24,7 +24,7 @@ it('mode wrong', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
 
@@ -35,7 +35,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -54,7 +54,7 @@ it('normal params', function () {
     ]);
 });
 
-it('normal without name', function () {
+it('无名称的正常场景', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -72,7 +72,7 @@ it('normal without name', function () {
     ]);
 });
 
-it('normal with name', function () {
+it('带名称的正常场景', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -97,7 +97,7 @@ it('normal with name', function () {
     expect($payload['user_name'])->not->toEqual('yansongda');
 });
 
-it('normal with name empty wechat cer', function () {
+it('指定名称且微信证书为空', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([
@@ -146,7 +146,7 @@ it('normal with name empty wechat cer', function () {
     expect($payload['user_name'])->not->toEqual('yansongda');
 });
 
-it('normal params with notify url', function () {
+it('携带 notify_url 的普通参数', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

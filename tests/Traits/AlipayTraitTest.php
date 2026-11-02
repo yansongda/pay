@@ -22,7 +22,7 @@ use AlipayTrait;
 
 uses(AlipayTraitTestHelpers::class);
 
-it('verify alipay sign success', function () {
+it('支付宝验签成功', function () {
     AlipayTraitStub::getProviderConfig('alipay');
 
     AlipayTraitStub::verifyAlipaySign(
@@ -42,7 +42,7 @@ it('verify alipay sign success', function () {
     expect(true)->toBeTrue();
 });
 
-it('verify alipay sign config error', function () {
+it('支付宝验签配置错误', function () {
     $config1 = [
         'alipay' => [
             'default' => [
@@ -59,41 +59,41 @@ it('verify alipay sign config error', function () {
     AlipayTraitStub::getProviderConfig('alipay');
 });
 
-it('verify alipay sign empty', function () {
+it('支付宝验签为空', function () {
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_EMPTY);
     AlipayTraitStub::verifyAlipaySign(AlipayTraitStub::getProviderConfig('alipay'), '', '');
 });
 
-it('get alipay url default', function () {
+it('支付宝默认 URL', function () {
     expect(AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(), null))->toBe(Alipay::URL[PayMode::NORMAL->value].'/gateway.do?charset=utf-8');
 });
 
-it('get alipay url sandbox', function () {
+it('支付宝沙箱 URL', function () {
     expect(AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(PayMode::SANDBOX), null))->toBe(Alipay::URL[PayMode::SANDBOX->value].'/gateway.do?charset=utf-8');
 });
 
-it('get alipay url with payload', function () {
+it('payload 拼接支付宝 URL', function () {
     expect(AlipayTraitStub::getAlipayUrl($this->getAlipayConfig(), new Collection(['_url' => 'https://example.com/alipay'])))->toBe('https://example.com/alipay');
 });
 
-it('get alipay v3 url default', function () {
+it('支付宝 V3 默认 URL', function () {
     expect(AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(), null))->toBe(Alipay::URL[PayMode::NORMAL->value]);
 });
 
-it('get alipay v3 url sandbox', function () {
+it('支付宝 V3 沙箱 URL', function () {
     expect(AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(PayMode::SANDBOX), null))->toBe(Alipay::V3_SANDBOX_URL);
 });
 
-it('get alipay v3 url with payload full url', function () {
+it('payload 完整 URL 拼接支付宝 V3 URL', function () {
     expect(AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(), new Collection(['_url' => 'https://example.com/v3/alipay/trade/pay'])))->toBe('https://example.com/v3/alipay/trade/pay');
 });
 
-it('get alipay v3 url with payload path', function () {
+it('payload 路径拼接支付宝 V3 URL', function () {
     expect(AlipayTraitStub::getAlipayV3Url($this->getAlipayConfig(), new Collection(['_url' => '/v3/alipay/trade/pay'])))->toBe(Alipay::URL[PayMode::NORMAL->value].'/v3/alipay/trade/pay');
 });
 
-it('get alipay v3 authorization cert mode', function () {
+it('支付宝 V3 证书模式授权', function () {
     $config = AlipayTraitStub::getProviderConfig('alipay', ['_config' => 'alipay-v3']);
 
     $authorization = AlipayTraitStub::getAlipayV3Authorization($config, 'POST', '/v3/alipay/trade/query', '', 'test_app_auth_token');
@@ -117,7 +117,7 @@ it('get alipay v3 authorization cert mode', function () {
     expect(openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256))->toBe(1);
 });
 
-it('get alipay v3 authorization missing app public cert path', function () {
+it('支付宝 V3 授权缺少应用公钥证书路径', function () {
     $config = new AlipayConfig([
         'app_id' => 'app_id',
         'app_secret_cert' => 'app_secret_cert',
@@ -131,7 +131,7 @@ it('get alipay v3 authorization missing app public cert path', function () {
     AlipayTraitStub::getAlipayV3Authorization($config, 'POST', '/v3/alipay/trade/pay', '{}');
 });
 
-it('get alipay app public key', function () {
+it('获取支付宝应用公钥', function () {
     $certPath = __DIR__.'/../Cert/alipayAppPublicCert.crt';
     $config = new AlipayConfig([
         'app_id' => 'app_id',
@@ -158,7 +158,7 @@ it('get alipay app public key', function () {
     expect($appPublicKey)->toBe(str_replace(['-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----', "\r", "\n"], '', $details['key']));
 });
 
-it('get alipay app public key without config', function () {
+it('未配置时获取支付宝应用公钥', function () {
     $config = new AlipayConfig([
         'app_id' => 'app_id',
         'app_secret_cert' => 'app_secret_cert',
@@ -174,7 +174,7 @@ it('get alipay app public key without config', function () {
     AlipayTraitStub::getAlipayAppPublicKey($config);
 });
 
-it('verify alipay v3 sign cert mode success', function () {
+it('支付宝 V3 证书模式验签成功', function () {
     $config = AlipayTraitStub::getProviderConfig('alipay', ['_config' => 'alipay-v3']);
     $contents = "1666004496123\nyansongda-nonce\n{\"code\":\"10000\"}\n";
 
@@ -185,7 +185,7 @@ it('verify alipay v3 sign cert mode success', function () {
     expect(true)->toBeTrue();
 });
 
-it('verify alipay v3 sign error', function () {
+it('支付宝 V3 验签失败', function () {
     $config = AlipayTraitStub::getProviderConfig('alipay', ['_config' => 'alipay-v3']);
 
     $this->expectException(InvalidSignException::class);
@@ -194,7 +194,7 @@ it('verify alipay v3 sign error', function () {
     AlipayTraitStub::verifyAlipaySign($config, "1666004496123\nyansongda-nonce\n{}\n", 'invalid-sign');
 });
 
-it('verify alipay v3 sign empty', function () {
+it('支付宝 V3 签名为空', function () {
     $config = AlipayTraitStub::getProviderConfig('alipay', ['_config' => 'alipay-v3']);
 
     $this->expectException(InvalidSignException::class);
@@ -203,7 +203,7 @@ it('verify alipay v3 sign empty', function () {
     AlipayTraitStub::verifyAlipaySign($config, "1666004496123\nyansongda-nonce\n{}\n", '');
 });
 
-it('verify alipay sign missing alipay public cert path', function () {
+it('支付宝验签缺少公钥证书路径', function () {
     $config = new AlipayConfig([
         'app_id' => 'app_id',
         'app_secret_cert' => 'app_secret_cert',
@@ -216,7 +216,7 @@ it('verify alipay sign missing alipay public cert path', function () {
     AlipayTraitStub::verifyAlipaySign($config, "1666004496123\nyansongda-nonce\n{}\n", 'not-empty-sign');
 });
 
-it('decrypt alipay contents', function () {
+it('解密支付宝内容', function () {
     $plaintext = '{"code":"10000","msg":"Success","订单号":"2023122022560000","金额":"0.01"}';
     $key = base64_encode(random_bytes(16));
 
@@ -229,7 +229,7 @@ it('decrypt alipay contents', function () {
     expect(AlipayTraitStub::decryptAlipayContents(base64_encode($ciphertext), $config))->toBe($plaintext);
 });
 
-it('decrypt alipay contents without aes key', function () {
+it('解密支付宝内容缺少 AES 密钥', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::DECRYPT_ALIPAY_AES_KEY_INVALID);
     $this->expectExceptionMessage('加密解密异常: 未配置支付宝 AES 密钥 [aes_key]');
@@ -237,7 +237,7 @@ it('decrypt alipay contents without aes key', function () {
     AlipayTraitStub::decryptAlipayContents('not-empty-contents', $this->getAlipayConfig());
 });
 
-it('decrypt alipay contents with invalid aes key', function () {
+it('解密支付宝内容 AES 密钥非法', function () {
     $config = $this->getAlipayConfig();
     $config->setAesKey(base64_encode('12345678901234567890'));
 
@@ -248,7 +248,7 @@ it('decrypt alipay contents with invalid aes key', function () {
     AlipayTraitStub::decryptAlipayContents(base64_encode('ciphertext'), $config);
 });
 
-it('decrypt alipay contents with invalid contents', function () {
+it('解密支付宝内容内容非法', function () {
     $config = $this->getAlipayConfig();
     $config->setAesKey(base64_encode(random_bytes(16)));
 
@@ -259,7 +259,7 @@ it('decrypt alipay contents with invalid contents', function () {
     AlipayTraitStub::decryptAlipayContents('not-base64-contents!', $config);
 });
 
-it('decrypt alipay contents with mismatched key', function () {
+it('解密支付宝内容密钥不匹配', function () {
     $config = $this->getAlipayConfig();
     // 密钥与加密方不一致：下方固定密文由密钥 [1234567890123456] 加密生成（AES 确定性，勿改动密文与密钥的配对关系）
     $config->setAesKey(base64_encode('abcdefghijklmnop'));

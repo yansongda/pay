@@ -34,7 +34,7 @@ use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryBizBalancePlugin;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryWithdrawOrderPlugin;
 use Yansongda\Pay\Shortcut\Wechat\VirtualShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new VirtualShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -45,7 +45,7 @@ it('default', function () {
     ]);
 });
 
-it('order query', function () {
+it('订单查询', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'order_query']);
 
@@ -57,7 +57,7 @@ it('order query', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('order refund', function () {
+it('订单退款', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'order_refund']);
 
@@ -69,7 +69,7 @@ it('order refund', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('order start download', function () {
+it('订单发起下载', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'order_start_download']);
 
@@ -81,7 +81,7 @@ it('order start download', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('order query download', function () {
+it('订单查询下载', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'order_query_download']);
 
@@ -93,7 +93,7 @@ it('order query download', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('order download bill', function () {
+it('订单下载账单', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'order_download_bill']);
 
@@ -105,7 +105,7 @@ it('order download bill', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('order notify provide goods', function () {
+it('订单发货通知', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'order_notify_provide_goods']);
 
@@ -117,7 +117,7 @@ it('order notify provide goods', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('currency pay', function () {
+it('虚拟币支付', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'currency_pay']);
 
@@ -129,7 +129,7 @@ it('currency pay', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('currency cancel', function () {
+it('虚拟币撤销', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'currency_cancel']);
 
@@ -141,7 +141,7 @@ it('currency cancel', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('currency query balance', function () {
+it('虚拟币余额查询', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'currency_query_balance']);
 
@@ -153,7 +153,7 @@ it('currency query balance', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('currency present', function () {
+it('携带虚拟币', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'currency_present']);
 
@@ -165,7 +165,7 @@ it('currency present', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('goods start upload', function () {
+it('商品发起上传', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'goods_start_upload']);
 
@@ -177,7 +177,7 @@ it('goods start upload', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('goods query upload', function () {
+it('商品查询上传', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'goods_query_upload']);
 
@@ -189,7 +189,7 @@ it('goods query upload', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('goods start publish', function () {
+it('商品发起发布', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'goods_start_publish']);
 
@@ -201,7 +201,7 @@ it('goods start publish', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('goods query publish', function () {
+it('商品查询发布', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'goods_query_publish']);
 
@@ -213,7 +213,7 @@ it('goods query publish', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('withdraw create', function () {
+it('创建提现', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'withdraw_create']);
 
@@ -225,7 +225,7 @@ it('withdraw create', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('withdraw query', function () {
+it('提现查询', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'withdraw_query']);
 
@@ -237,7 +237,7 @@ it('withdraw query', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('withdraw query balance', function () {
+it('提现余额查询', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'withdraw_query_balance']);
 
@@ -249,7 +249,7 @@ it('withdraw query balance', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('subscribe send pre payment', function () {
+it('订阅发送预支付', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'subscribe_send_pre_payment']);
 
@@ -261,7 +261,7 @@ it('subscribe send pre payment', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('subscribe submit pay order', function () {
+it('订阅提交支付订单', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'subscribe_submit_pay_order']);
 
@@ -273,7 +273,7 @@ it('subscribe submit pay order', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('subscribe query contract', function () {
+it('订阅查询合约', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'subscribe_query_contract']);
 
@@ -285,7 +285,7 @@ it('subscribe query contract', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('subscribe cancel contract', function () {
+it('订阅撤销合约', function () {
     $plugin = new VirtualShortcut();
     $plugins = $plugin->getPlugins(['_action' => 'subscribe_cancel_contract']);
 
@@ -297,7 +297,7 @@ it('subscribe cancel contract', function () {
     expect($plugins[6])->toBe(ParserPlugin::class);
 });
 
-it('invalid action', function () {
+it('动作非法', function () {
     $plugin = new VirtualShortcut();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);

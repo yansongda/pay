@@ -15,7 +15,7 @@ beforeEach(function () {
     $property->setValue(null, []);
 });
 
-it('external access token', function () {
+it('外部 access token', function () {
     $plugin = new ObtainClientTokenPlugin();
     // params 注入 `_access_token` 优先，不应触发任何 HTTP 子调用
     $http = Mockery::mock(Client::class);
@@ -32,7 +32,7 @@ it('external access token', function () {
     Mockery::close();
 });
 
-it('sub call fetches token', function () {
+it('子调用获取 token', function () {
     $plugin = new ObtainClientTokenPlugin();
     $capturedBody = '';
     $response = new Response(200, [], json_encode([
@@ -68,7 +68,7 @@ it('sub call fetches token', function () {
     Mockery::close();
 });
 
-it('static cache prevents second sub call', function () {
+it('静态缓存避免二次子调用', function () {
     // 进程内静态缓存：同 app_id 第二次调用直接命中缓存，不再触发 HTTP 子调用
     $response = new Response(200, [], json_encode([
         'data' => [
@@ -96,7 +96,7 @@ it('static cache prevents second sub call', function () {
     Mockery::close();
 });
 
-it('return rocket and business params do not pollute sub call', function () {
+it('返回 rocket 与业务参数不污染子调用', function () {
     $plugin = new ObtainClientTokenPlugin();
     // 回归 #1196 模式问题：外层 `_return_rocket` + 业务字段不应影响 token 子调用
     $capturedBody = '';

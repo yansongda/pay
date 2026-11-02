@@ -10,7 +10,7 @@ use Yansongda\Pay\Plugin\Apple\Pay\MerchantSessionPlugin;
 use Yansongda\Pay\Plugin\Apple\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Apple\MerchantSessionShortcut;
 
-it('get plugins', function () {
+it('获取插件列表', function () {
     $shortcut = new MerchantSessionShortcut();
     expect($shortcut->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -21,7 +21,7 @@ it('get plugins', function () {
     ]);
 });
 
-it('rocket direct install with add radar plugin', function () {
+it('rocket 直连安装配合 AddRadar 插件', function () {
     $url = 'https://apple-pay-gateway.apple.com/paymentservices/startSession';
 
     $rocket = (new Rocket())->setParams([
@@ -48,7 +48,7 @@ it('rocket direct install with add radar plugin', function () {
     expect($body['initiative'])->toEqual('web');
     expect($body['initiativeContext'])->toEqual('https://shop.yansongda.cn');
 });
-it('merchant session end to end with http mock', function () {
+it('HTTP mock 下的商户会话端到端', function () {
     $http = \Mockery::mock(\GuzzleHttp\Client::class);
     $captured = null;
     $http->shouldReceive('sendRequest')->once()->with(\Mockery::on(function ($request) use (&$captured) {

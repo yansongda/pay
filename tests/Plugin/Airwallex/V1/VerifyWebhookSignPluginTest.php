@@ -15,7 +15,7 @@ use Yansongda\Pay\Traits\AirwallexTrait;
 
 uses(VerifyWebhookSignPluginTestHelpers::class);
 
-it('missing webhook secret throws exception', function () {
+it('缺少 webhook 密钥抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [], '{}');
 
     $this->expectException(InvalidConfigException::class);
@@ -24,7 +24,7 @@ it('missing webhook secret throws exception', function () {
     $this->verifyWebhookSign($request, ['_config' => 'no_webhook_secret']);
 });
 
-it('missing signature throws exception', function () {
+it('缺少签名抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [], '{}');
 
     $this->expectException(InvalidSignException::class);
@@ -33,7 +33,7 @@ it('missing signature throws exception', function () {
     $this->verifyWebhookSign($request, []);
 });
 
-it('wrong signature throws exception', function () {
+it('签名错误抛出异常', function () {
     $request = new ServerRequest('POST', 'https://example.com', [
         'x-timestamp' => '1710000000000',
         'x-signature' => 'wrong-signature',
@@ -45,7 +45,7 @@ it('wrong signature throws exception', function () {
     $this->verifyWebhookSign($request, []);
 });
 
-it('expired timestamp throws exception', function () {
+it('时间戳过期抛出异常', function () {
     $body = '{"id":"evt_test"}';
     $timestamp = (string) (((int) (microtime(true) * 1000)) - 301000);
     $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
@@ -60,7 +60,7 @@ it('expired timestamp throws exception', function () {
     $this->verifyWebhookSign($request, []);
 });
 
-it('valid signature passes', function () {
+it('签名有效通过', function () {
     $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
     $timestamp = (string) ((int) (microtime(true) * 1000));
     $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
@@ -74,7 +74,7 @@ it('valid signature passes', function () {
     expect(true)->toBeTrue();
 });
 
-it('plugin uses destination origin request', function () {
+it('插件使用 destination 原始请求', function () {
     $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
     $timestamp = (string) ((int) (microtime(true) * 1000));
     $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
@@ -91,7 +91,7 @@ it('plugin uses destination origin request', function () {
     expect($result)->toBeInstanceOf(Rocket::class);
 });
 
-it('plugin uses tenant config', function () {
+it('插件使用租户配置', function () {
     $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
     $timestamp = (string) ((int) (microtime(true) * 1000));
     $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_secondary_webhook_secret');
@@ -108,7 +108,7 @@ it('plugin uses tenant config', function () {
     expect($result)->toBeInstanceOf(Rocket::class);
 });
 
-it('plugin missing request throws exception', function () {
+it('插件缺少请求对象抛出异常', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 

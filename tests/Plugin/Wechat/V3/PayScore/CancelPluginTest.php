@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\PayScore\CancelPlugin;
 use Yansongda\Supports\Collection;
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
 
@@ -19,7 +19,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing out order no', function () {
+it('缺少商户订单号', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection(['reason' => '测试取消']));
@@ -31,7 +31,7 @@ it('missing out order no', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing service id', function () {
+it('缺少服务商 ID', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([
@@ -46,7 +46,7 @@ it('missing service id', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -67,7 +67,7 @@ it('normal', function () {
     expect($result->getPayload()->has('mchid'))->toBeFalse();
 });
 
-it('normal with payload app id and service id', function () {
+it('携带 payload app_id 与服务商 ID', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

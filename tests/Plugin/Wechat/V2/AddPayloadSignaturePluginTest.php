@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V2\AddPayloadSignaturePlugin;
 use Yansongda\Supports\Collection;
 
-it('get signature content', function () {
+it('获取待签名内容', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $payload1 = new Collection([
         '_method' => 'POST',

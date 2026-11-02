@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\InvokePlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new InvokePlugin();
     $fields = [
         'outOrderNo' => '20260905123456',
@@ -44,7 +44,7 @@ it('normal', function () {
     expect($byteAuthorization)->toContain('key_version=1');
 });
 
-it('verify signature from output', function () {
+it('从输出验签', function () {
     $plugin = new InvokePlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -79,7 +79,7 @@ it('verify signature from output', function () {
     expect(openssl_verify($contents, base64_decode($signature), $publicKey, OPENSSL_ALGO_SHA256))->toBe(1);
 });
 
-it('underscore keys excluded', function () {
+it('排除下划线开头的键', function () {
     $plugin = new InvokePlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -98,7 +98,7 @@ it('underscore keys excluded', function () {
     expect(json_decode($data, true))->toBe(['outOrderNo' => '20260905123456']);
 });
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new InvokePlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -109,7 +109,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('only underscore payload', function () {
+it('仅下划线 payload', function () {
     $plugin = new InvokePlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);

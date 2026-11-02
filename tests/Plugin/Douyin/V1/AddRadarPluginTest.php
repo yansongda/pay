@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Douyin\V1\AddRadarPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal without access token', function () {
+it('不带 access token 的正常场景', function () {
     $plugin = new AddRadarPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -32,7 +32,7 @@ it('normal without access token', function () {
     ], JSON_UNESCAPED_UNICODE));
 });
 
-it('access token header and body priority', function () {
+it('access token 请求头与 body 优先级', function () {
     $plugin = new AddRadarPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -52,7 +52,7 @@ it('access token header and body priority', function () {
     expect((string) $radar->getBody())->toEqual('{"out_order_no":"20240101123456","refund_amount":1}');
 });
 
-it('empty body when payload only underscore keys', function () {
+it('payload 仅含下划线键时 body 为空', function () {
     $plugin = new AddRadarPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);

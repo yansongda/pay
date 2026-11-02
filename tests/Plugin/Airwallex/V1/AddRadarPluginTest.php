@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Airwallex\V1\AddRadarPlugin;
 use Yansongda\Supports\Collection;
 
-it('login request', function () {
+it('登录请求', function () {
     $plugin = new AddRadarPlugin();
     $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
         '_method' => 'POST',
@@ -22,7 +22,7 @@ it('login request', function () {
     expect($radar->getHeaderLine('x-api-version'))->toEqual('2024-06-14');
 });
 
-it('bearer request', function () {
+it('Bearer 请求', function () {
     $plugin = new AddRadarPlugin();
     $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
         '_method' => 'GET',
@@ -37,7 +37,7 @@ it('bearer request', function () {
     expect((string) $radar->getUri())->toContain('api-demo.airwallex.com');
 });
 
-it('on behalf of and body', function () {
+it('代调用与 body', function () {
     $plugin = new AddRadarPlugin();
     $rocket = (new Rocket())->setParams([])->setPayload(new Collection([
         '_method' => 'POST',

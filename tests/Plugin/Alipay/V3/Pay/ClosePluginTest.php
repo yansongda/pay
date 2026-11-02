@@ -7,7 +7,7 @@ use Yansongda\Pay\Plugin\Alipay\V3\Pay\ClosePlugin;
 use Yansongda\Pay\Pay;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new ClosePlugin();
     $params = [
         '_config' => 'alipay-v3',
@@ -26,7 +26,7 @@ it('normal', function () {
     expect($result->getPayload()->get('out_trade_no'))->toEqual('yansongda-2026');
 });
 
-it('notify url fallback to config', function () {
+it('notify_url 回退到配置', function () {
     $plugin = new ClosePlugin();
     // 调用方未传 notify_url 时回落租户配置（官方 AlipayTradeCloseModel 独有 notify_url 字段）
     Pay::config([
@@ -51,7 +51,7 @@ it('notify url fallback to config', function () {
     expect($result->getPayload()->get('notify_url'))->toEqual('https://pay.yansongda.cn/alipay/close-notify');
 });
 
-it('notify url missing', function () {
+it('缺少 notify_url', function () {
     $plugin = new ClosePlugin();
     // 调用方未传且租户未配置：notify_url 为 null（alipay-v3 测试租户无 notify_url 配置）
     $params = ['_config' => 'alipay-v3', 'out_trade_no' => 'yansongda-2026'];

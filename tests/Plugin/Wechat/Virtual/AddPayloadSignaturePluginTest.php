@@ -11,7 +11,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin;
 use Yansongda\Supports\Collection;
 
-it('assembly normal', function () {
+it('正常组装', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $body = '{"openid":"oUpF8muMJAaName"}';
     $payload = new Collection([
@@ -41,7 +41,7 @@ it('assembly normal', function () {
     expect($resultPayload->get('signature'))->toBeNull();
 });
 
-it('assembly with session key', function () {
+it('携带会话密钥组装', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $body = '{"openid":"oUpF8muMJAaName"}';
     $sessionKey = 'test_session_key_value';
@@ -72,7 +72,7 @@ it('assembly with session key', function () {
     expect($resultPayload->get('signature'))->toEqual($expectedSignature);
 });
 
-it('assembly missing app key', function () {
+it('组装缺少 app_key', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -93,7 +93,7 @@ it('assembly missing app key', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('assembly sandbox env', function () {
+it('沙箱环境组装', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $body = '{"openid":"oUpF8muMJAaName"}';
     $payload = new Collection([
@@ -116,7 +116,7 @@ it('assembly sandbox env', function () {
     expect($url)->toContain('pay_sig='.$expectedPaySig);
 });
 
-it('assembly url already has query params', function () {
+it('URL 已有查询参数时组装', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $body = '{"openid":"oUpF8muMJAaName"}';
     $payload = new Collection([
@@ -137,7 +137,7 @@ it('assembly url already has query params', function () {
     expect($url)->toContain('pay_sig=');
 });
 
-it('assembly client signing without access token', function () {
+it('客户端签名无 access token 组装', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $body = '{"buyQuantity":1,"productId":"test_product","goodsPrice":10,"offerId":"1234567890","currencyType":"CNY"}';
     $payload = new Collection([
@@ -160,7 +160,7 @@ it('assembly client signing without access token', function () {
     expect($resultPayload->get('paySig'))->not->toBeNull();
 });
 
-it('assembly server side missing access token', function () {
+it('服务端组装缺少 access token', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -177,7 +177,7 @@ it('assembly server side missing access token', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('assembly server side auto fetch access token', function () {
+it('服务端组装自动获取 access token', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
     expect($config)->toBeInstanceOf(WechatConfig::class);
@@ -213,7 +213,7 @@ it('assembly server side auto fetch access token', function () {
     expect($resultPayload->get('paySig'))->not->toBeNull();
 });
 
-it('assembly client signing returns sign data string', function () {
+it('客户端签名返回 sign_data 字符串', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $body = '{"buyQuantity":1,"productId":"test_product","goodsPrice":10,"offerId":"1234567890","currencyType":"CNY"}';
     $payload = new Collection([
@@ -234,7 +234,7 @@ it('assembly client signing returns sign data string', function () {
     expect($resultPayload->get('_body'))->toBe($body);
 });
 
-it('assembly server side no sign data field', function () {
+it('服务端组装无 sign_data 字段', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $body = '{"openid":"oUpF8muMJAaName"}';
     $payload = new Collection([

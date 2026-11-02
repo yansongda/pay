@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Jsb\AddRadarPlugin;
 use Yansongda\Supports\Collection;
 
-it('radar post normal', function () {
+it('radar POST 正常', function () {
     $plugin = new AddRadarPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection(['name' => 'yansongda']));

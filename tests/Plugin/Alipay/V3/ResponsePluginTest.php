@@ -8,7 +8,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
 
-it('2xx pass', function () {
+it('2xx 通过', function () {
     $plugin = new ResponsePlugin();
     foreach ([200, 201, 299] as $statusCode) {
         $rocket = (new Rocket())->setDestinationOrigin(new Response($statusCode, [], json_encode(['code' => '10000'])));
@@ -18,7 +18,7 @@ it('2xx pass', function () {
     }
 });
 
-it('non2xx throws', function () {
+it('非 2xx 抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = (new Rocket())->setDestinationOrigin(
         new Response(400, [], json_encode(['code' => 'INVALID_PARAMETER', 'message' => '参数错误', 'links' => 'https://example.com/solution']))
@@ -31,7 +31,7 @@ it('non2xx throws', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('non2xx without error body throws', function () {
+it('非 2xx 且无错误 body 抛出异常', function () {
     $plugin = new ResponsePlugin();
     $rocket = (new Rocket())->setDestinationOrigin(new Response(500, [], ''));
 

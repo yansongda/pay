@@ -13,7 +13,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\App\PayPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\AppShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new AppShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,

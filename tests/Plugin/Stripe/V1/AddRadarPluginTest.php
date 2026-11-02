@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Stripe\V1\AddRadarPlugin;
 use Yansongda\Supports\Collection;
 
-it('post request', function () {
+it('POST 请求', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -27,7 +27,7 @@ it('post request', function () {
     expect((string) $radar->getUri())->toContain('v1/payment_intents');
 });
 
-it('get request', function () {
+it('获取请求', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'GET',
@@ -45,7 +45,7 @@ it('get request', function () {
     expect((string) $radar->getBody())->toEqual('');
 });
 
-it('get request with query params', function () {
+it('获取带查询参数的请求', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'GET',
@@ -62,7 +62,7 @@ it('get request with query params', function () {
     expect((string) $radar->getUri())->toContain('expand');
 });
 
-it('post body is form encoded', function () {
+it('POST body 为表单编码', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -79,7 +79,7 @@ it('post body is form encoded', function () {
     expect($body)->toContain('payment_intent=pi_test123');
 });
 
-it('custom headers', function () {
+it('自定义请求头', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -106,7 +106,7 @@ it('custom headers', function () {
     expect((string) $radar->getUri())->not->toContain('_headers');
 });
 
-it('custom headers not array ignored', function () {
+it('非数组自定义请求头被忽略', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',

@@ -8,14 +8,14 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Airwallex\V1\Pay\RefundPlugin;
 use Yansongda\Supports\Collection;
 
-it('missing payment intent id', function () {
+it('缺少 payment_intent_id', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     (new RefundPlugin())->assembly((new Rocket())->setPayload(new Collection([])), fn ($rocket) => $rocket);
 });
 
-it('normal', function () {
+it('正常', function () {
     $result = (new RefundPlugin())->assembly(
         (new Rocket())->setPayload(new Collection([
             'payment_intent_id' => 'int_test123',
@@ -29,7 +29,7 @@ it('normal', function () {
     expect($result->getPayload()->get('payment_intent_id'))->toEqual('int_test123');
 });
 
-it('use id and optional fields', function () {
+it('使用 id 与可选字段', function () {
     $result = (new RefundPlugin())->assembly(
         (new Rocket())->setPayload(new Collection([
             'id' => 'int_test456',

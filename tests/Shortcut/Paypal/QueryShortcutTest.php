@@ -22,7 +22,7 @@ it('foo', function () {
     $shortcut->getPlugins(['_action' => 'foo']);
 });
 
-it('default', function () {
+it('默认', function () {
     $shortcut = new QueryShortcut();
     expect($shortcut->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -35,7 +35,7 @@ it('default', function () {
     ]);
 });
 
-it('order', function () {
+it('订单', function () {
     $shortcut = new QueryShortcut();
     expect($shortcut->getPlugins(['_action' => 'order']))->toEqual([
         StartPlugin::class,
@@ -48,7 +48,7 @@ it('order', function () {
     ]);
 });
 
-it('refund', function () {
+it('退款', function () {
     $shortcut = new QueryShortcut();
     expect($shortcut->getPlugins(['_action' => 'refund']))->toEqual([
         StartPlugin::class,

@@ -22,7 +22,7 @@ it('foo', function () {
     $plugin->getPlugins(['_action' => 'foo']);
 });
 
-it('default', function () {
+it('默认', function () {
     $plugin = new RefundShortcut();
     expect($plugin->getPlugins([]))->toBe([
         StartPlugin::class,
@@ -35,7 +35,7 @@ it('default', function () {
     ]);
 });
 
-it('audit', function () {
+it('审核', function () {
     $plugin = new RefundShortcut();
     expect($plugin->getPlugins(['_action' => 'audit']))->toBe([
         StartPlugin::class,

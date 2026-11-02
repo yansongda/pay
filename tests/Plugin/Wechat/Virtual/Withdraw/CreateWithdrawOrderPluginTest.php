@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\CreateWithdrawOrderPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CreateWithdrawOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -27,7 +27,7 @@ it('normal', function () {
     expect($payload->get('withdraw_amount'))->toEqual('0.01');
 });
 
-it('without withdraw amount', function () {
+it('不携带提现金额', function () {
     $plugin = new CreateWithdrawOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -42,7 +42,7 @@ it('without withdraw amount', function () {
     expect($payload->get('withdraw_amount'))->toBeNull();
 });
 
-it('sandbox env', function () {
+it('沙箱环境', function () {
     $plugin = new CreateWithdrawOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

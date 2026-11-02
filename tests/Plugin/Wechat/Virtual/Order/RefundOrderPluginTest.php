@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\RefundOrderPlugin;
 use Yansongda\Supports\Collection;
 
-it('with order id', function () {
+it('携带订单号', function () {
     $plugin = new RefundOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -37,7 +37,7 @@ it('with order id', function () {
     expect($result->getPayload()->get('req_from'))->toEqual('2');
 });
 
-it('with wx order id', function () {
+it('携带微信订单号', function () {
     $plugin = new RefundOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -56,7 +56,7 @@ it('with wx order id', function () {
     expect($result->getPayload()->get('wx_order_id'))->toEqual('wx_123456');
 });
 
-it('with access token', function () {
+it('携带 access token', function () {
     $plugin = new RefundOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

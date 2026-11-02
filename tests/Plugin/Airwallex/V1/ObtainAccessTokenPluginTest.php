@@ -8,7 +8,7 @@ use Yansongda\Pay\Config\AirwallexConfig;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Airwallex\V1\ObtainAccessTokenPlugin;
 
-it('normal', function () {
+it('正常', function () {
     /** @var AirwallexConfig $config */
     $config = Pay::get(ConfigInterface::class)->get('airwallex.default');
     $config->setAccessToken('cached_airwallex_token');

@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Supports\Collection;
 
-it('original response destination', function () {
+it('原始响应 destination', function () {
     $plugin = new ResponsePlugin();
     $destination = new Response();
 
@@ -22,7 +22,7 @@ it('original response destination', function () {
     expect($result->getDestination())->toBeInstanceOf(Collection::class);
 });
 
-it('original response code error destination', function () {
+it('原始响应码错误 destination', function () {
     $plugin = new ResponsePlugin();
     $destination = new Response(500);
 

@@ -12,7 +12,7 @@ use Yansongda\Pay\Plugin\Wechat\V2\Pay\Redpack\SendPlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\RedpackShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new RedpackShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,

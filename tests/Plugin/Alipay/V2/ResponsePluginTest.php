@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Alipay\V2\ResponsePlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new ResponsePlugin();
     $destination = [
         'alipay_trade_query_response' => [
@@ -39,7 +39,7 @@ it('normal', function () {
     expect($result->getDestination()->all())->toEqual(array_merge(['_sign' => '123'], $destination['alipay_trade_query_response']));
 });
 
-it('error response with no method key', function () {
+it('错误响应无 method 键', function () {
     $plugin = new ResponsePlugin();
     $destination = [
         'alipay_trade_query_response' => [
@@ -70,7 +70,7 @@ it('error response with no method key', function () {
     expect($result->getDestination()->all())->toEqual(array_merge(['_sign' => '123'], $destination));
 });
 
-it('error response with empty sign key', function () {
+it('错误响应 sign 键为空', function () {
     $plugin = new ResponsePlugin();
     $this->expectException(InvalidResponseException::class);
     $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
@@ -93,7 +93,7 @@ it('error response with empty sign key', function () {
     $plugin->assembly($rocket, function ($rocket) {return $rocket; });
 });
 
-it('encrypted response params', function () {
+it('加密响应参数', function () {
     $plugin = new ResponsePlugin();
     $destination = [
         'alipay_user_info_share_response' => 'base64密文串',
@@ -110,7 +110,7 @@ it('encrypted response params', function () {
     expect($result->getDestination()->all())->toEqual(['_sign' => 'x', '_cipher' => 'base64密文串']);
 });
 
-it('encrypted response without sign', function () {
+it('加密响应无签名', function () {
     $plugin = new ResponsePlugin();
     $this->expectException(InvalidResponseException::class);
     $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);

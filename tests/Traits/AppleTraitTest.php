@@ -38,7 +38,7 @@ const PAYMENT_DATA = [
 ];
 uses(AppleTraitTestHelpers::class);
 
-it('get apple url', function () {
+it('获取 Apple URL', function () {
     $normal = new AppleConfig(['mode' => PayMode::NORMAL]);
     $sandbox = new AppleConfig(['mode' => PayMode::SANDBOX]);
     $service = new AppleConfig(['mode' => PayMode::SERVICE]);
@@ -51,7 +51,7 @@ it('get apple url', function () {
     expect(AppleTraitStub::getAppleUrl($normal, new Collection(['_url' => 'https://apple-pay-gateway.apple.com/paymentSession'])))->toBe('https://apple-pay-gateway.apple.com/paymentSession');
 });
 
-it('get apple url missing throws exception', function () {
+it('获取 Apple URL 缺少配置抛出异常', function () {
     $config = new AppleConfig(['mode' => PayMode::NORMAL]);
 
     $this->expectException(InvalidParamsException::class);
@@ -60,7 +60,7 @@ it('get apple url missing throws exception', function () {
     AppleTraitStub::getAppleUrl($config, new Collection([]));
 });
 
-it('verify apple token', function () {
+it('验证 Apple token', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
 
     // array 形态
@@ -83,7 +83,7 @@ it('verify apple token', function () {
     expect($resultFromCollection->get('applicationPrimaryAccountNumber'))->toBe('378282246310005');
 });
 
-it('verify apple token with application data', function () {
+it('Apple token 携带 applicationData', function () {
     $applicationData = bin2hex(random_bytes(32));
     $token = AppleTokenFactory::makeToken(
         ['applicationPrimaryAccountNumber' => '378282246310005', 'transactionAmount' => 100],
@@ -96,7 +96,7 @@ it('verify apple token with application data', function () {
     expect($result->get('_token_header')['applicationData'])->toBe($applicationData);
 });
 
-it('verify apple token tampered data', function () {
+it('Apple token 数据被篡改', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA, ['tamperData' => true]);
 
     $this->expectException(InvalidSignException::class);
@@ -105,7 +105,7 @@ it('verify apple token tampered data', function () {
     AppleTraitStub::verifyAppleToken($token, []);
 });
 
-it('verify apple token wrong merchant', function () {
+it('Apple token 商户不匹配', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA, [
         'merchantCert' => $this->certPath('untrusted-root.crt'),
     ]);
@@ -116,7 +116,7 @@ it('verify apple token wrong merchant', function () {
     AppleTraitStub::verifyAppleToken($token, []);
 });
 
-it('verify apple token untrusted chain', function () {
+it('Apple token 证书链不受信任', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA, [
         'signerCert' => $this->certPath('untrusted-leaf.crt'),
         'signerKey' => $this->certPath('untrusted-leaf.key'),
@@ -129,7 +129,7 @@ it('verify apple token untrusted chain', function () {
     AppleTraitStub::verifyAppleToken($token, []);
 });
 
-it('verify apple token invalid structure', function () {
+it('Apple token 结构非法', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
 
     // 缺 data
@@ -151,14 +151,14 @@ it('verify apple token invalid structure', function () {
     $this->assertTokenInvalidParams(new Collection(['data' => 'x', 'signature' => 'x', 'version' => 'EC_v1']));
 });
 
-it('verify apple token signing time expired', function () {
+it('Apple token 签名时间过期', function () {
     $this->markTestSkipped(
         'signingTime 超时反路径不可测：fixture 由 openssl_pkcs7_sign 实时生成且不支持签名时间参数；'
         .'Trait 中缺失/超时均按 SIGN_ERROR 处理（真实 token 必含该属性，见 evidence）'
     );
 });
 
-it('verify apple token with default root ca', function () {
+it('Apple token 使用默认根证书', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
 
     $this->expectException(InvalidSignException::class);
@@ -167,7 +167,7 @@ it('verify apple token with default root ca', function () {
     AppleTraitStub::verifyAppleToken($token, ['_config' => 'no_root_ca']);
 });
 
-it('verify apple token asn1 depth exceeded', function () {
+it('Apple token ASN.1 深度超限', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
 
     // 70 层嵌套 SEQUENCE（超过 64 层上限），防恶意深嵌套 DER 栈溢出
@@ -187,7 +187,7 @@ it('verify apple token asn1 depth exceeded', function () {
     AppleTraitStub::verifyAppleToken($token, []);
 });
 
-it('verify apple token signature too long', function () {
+it('Apple token 签名过长', function () {
     $token = AppleTokenFactory::makeToken(PAYMENT_DATA);
 
     // 超过 64KB 上限（真实 Apple token 约 3-4KB）
@@ -199,7 +199,7 @@ it('verify apple token signature too long', function () {
     AppleTraitStub::verifyAppleToken($token, []);
 });
 
-it('assert apple cert not expired', function () {
+it('断言 Apple 证书未过期', function () {
     $method = new ReflectionMethod(Cryptor::class, 'assertCertNotExpired');
 
     // 有效期内：不抛异常
@@ -222,7 +222,7 @@ it('assert apple cert not expired', function () {
     }
 });
 
-it('verify apple jws', function () {
+it('验证 Apple JWS', function () {
     $signedTransactionInfo = AppleJwsFactory::makeJws([
         'transactionId' => '1000000047447934749',
         'originalTransactionId' => '1000000047447934749',
@@ -251,7 +251,7 @@ it('verify apple jws', function () {
     expect($result['data']['signedTransactionInfo']['transactionId'])->toBe('1000000047447934749');
 });
 
-it('verify apple jws tampered', function () {
+it('Apple JWS 被篡改', function () {
     $jws = AppleJwsFactory::makeJws(['notificationType' => 'SUBSCRIBED']);
     $parts = explode('.', $jws);
 
@@ -265,7 +265,7 @@ it('verify apple jws tampered', function () {
     AppleTraitStub::verifyAppleJws($tampered, []);
 });
 
-it('verify apple jws short chain', function () {
+it('Apple JWS 证书链过短', function () {
     $header = ['alg' => 'ES256', 'x5c' => [base64_encode($this->certDer('jws-leaf.crt'))]];
     $shortChain = $this->signWithJwsLeaf($header, ['notificationType' => 'SUBSCRIBED']);
 
@@ -275,7 +275,7 @@ it('verify apple jws short chain', function () {
     AppleTraitStub::verifyAppleJws($shortChain, []);
 });
 
-it('verify apple jws ownership bundle mismatch', function () {
+it('Apple JWS 归属 bundle 不匹配', function () {
     $jws = AppleJwsFactory::makeJws([
         'notificationType' => 'SUBSCRIBED',
         'data' => [
@@ -290,7 +290,7 @@ it('verify apple jws ownership bundle mismatch', function () {
     AppleTraitStub::verifyAppleJws($jws, []);
 });
 
-it('verify apple jws ownership environment mismatch', function () {
+it('Apple JWS 归属环境不匹配', function () {
     $jws = AppleJwsFactory::makeJws([
         'notificationType' => 'SUBSCRIBED',
         'data' => [
@@ -305,7 +305,7 @@ it('verify apple jws ownership environment mismatch', function () {
     AppleTraitStub::verifyAppleJws($jws, []);
 });
 
-it('verify apple jws ownership skips bundle id without config', function () {
+it('未配置时 Apple JWS 归属校验跳过 bundle id', function () {
     $jws = AppleJwsFactory::makeJws([
         'notificationType' => 'SUBSCRIBED',
         'data' => [
@@ -319,7 +319,7 @@ it('verify apple jws ownership skips bundle id without config', function () {
     expect($result['notificationType'])->toBe('SUBSCRIBED');
 });
 
-it('verify apple jws inner jws without x5c rejected', function () {
+it('Apple JWS 内层缺少 x5c 被拒绝', function () {
     $inner = $this->signWithJwsLeaf(['alg' => 'ES256'], ['transactionId' => '1000001234567890']);
     $jws = AppleJwsFactory::makeJws([
         'notificationType' => 'SUBSCRIBED',
@@ -336,7 +336,7 @@ it('verify apple jws inner jws without x5c rejected', function () {
     AppleTraitStub::verifyAppleJws($jws, []);
 });
 
-it('generate apple jwt', function () {
+it('生成 Apple JWT', function () {
     $jwt = AppleTraitStub::generateAppleJwt([]);
     $parts = explode('.', $jwt);
 
@@ -371,14 +371,14 @@ it('generate apple jwt', function () {
         ))->toBe(1);
 });
 
-it('generate apple jwt missing api config', function () {
+it('生成 Apple JWT 缺少 API 配置', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::CONFIG_APPLE_INVALID);
 
     AppleTraitStub::generateAppleJwt(['_config' => 'no_api_key']);
 });
 
-it('pkcs7 verify cross check', function () {
+it('PKCS7 验签交叉校验', function () {
     $token = AppleTokenFactory::makeToken(['transactionAmount' => 100, 'currencyCode' => '156']);
     $header = $token['header'];
 
@@ -411,7 +411,7 @@ it('pkcs7 verify cross check', function () {
     }
 });
 
-it('rsa v1 unsupported on php below85', function () {
+it('PHP 8.5 以下不支持 RSA v1', function () {
     if (PHP_VERSION_ID >= 80500) {
         $this->markTestSkipped('PHP 8.5 容器无法覆盖 RSA_v1 的 PHP < 8.5 版本检查分支（见 evidence）');
     }
@@ -435,7 +435,7 @@ it('rsa v1 unsupported on php below85', function () {
     AppleTraitStub::verifyAppleToken($token, []);
 });
 
-it('verify rsa token', function () {
+it('验证 RSA token', function () {
     $token = AppleTokenFactory::makeRsaToken([
         'applicationPrimaryAccountNumber' => '378282246310005',
         'currencyCode' => '156',

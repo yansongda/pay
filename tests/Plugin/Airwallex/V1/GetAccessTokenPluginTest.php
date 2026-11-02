@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Airwallex\V1\GetAccessTokenPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $result = (new GetAccessTokenPlugin())->assembly(new Rocket(), fn ($rocket) => $rocket);
 
     expect($result->getPayload()->get('_method'))->toEqual('POST');

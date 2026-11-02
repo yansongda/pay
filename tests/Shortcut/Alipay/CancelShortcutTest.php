@@ -18,7 +18,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\CancelShortcut;
 
-it('foo param', function () {
+it('foo 参数', function () {
     $shortcut = new CancelShortcut();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);
@@ -26,7 +26,7 @@ it('foo param', function () {
     $shortcut->getPlugins(['_action' => 'foo']);
 });
 
-it('default', function () {
+it('默认', function () {
     $shortcut = new CancelShortcut();
     $result = $shortcut->getPlugins([]);
 
@@ -42,7 +42,7 @@ it('default', function () {
     ]);
 });
 
-it('agreement', function () {
+it('协议', function () {
     $shortcut = new CancelShortcut();
     $result = $shortcut->getPlugins(['_action' => 'agreement']);
 
@@ -58,7 +58,7 @@ it('agreement', function () {
     ]);
 });
 
-it('authorization', function () {
+it('授权', function () {
     $shortcut = new CancelShortcut();
     $result = $shortcut->getPlugins(['_action' => 'authorization']);
 
@@ -74,7 +74,7 @@ it('authorization', function () {
     ]);
 });
 
-it('mini', function () {
+it('小程序', function () {
     $shortcut = new CancelShortcut();
     $result = $shortcut->getPlugins(['_action' => 'mini']);
 
@@ -90,7 +90,7 @@ it('mini', function () {
     ]);
 });
 
-it('pos', function () {
+it('POS', function () {
     $shortcut = new CancelShortcut();
     $result = $shortcut->getPlugins(['_action' => 'pos']);
 
@@ -106,7 +106,7 @@ it('pos', function () {
     ]);
 });
 
-it('scan', function () {
+it('扫码', function () {
     $shortcut = new CancelShortcut();
     $result = $shortcut->getPlugins(['_action' => 'scan']);
 

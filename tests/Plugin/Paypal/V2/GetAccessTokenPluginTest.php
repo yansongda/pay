@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Paypal\V2\GetAccessTokenPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new GetAccessTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);

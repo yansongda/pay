@@ -23,7 +23,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\PayScore\SyncPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\PayScoreShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -37,7 +37,7 @@ it('default', function () {
     ]);
 });
 
-it('query', function () {
+it('查询', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins(['_action' => 'query']))->toEqual([
         StartPlugin::class,
@@ -51,7 +51,7 @@ it('query', function () {
     ]);
 });
 
-it('cancel', function () {
+it('撤销', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins(['_action' => 'cancel']))->toEqual([
         StartPlugin::class,
@@ -65,7 +65,7 @@ it('cancel', function () {
     ]);
 });
 
-it('complete', function () {
+it('完成', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins(['_action' => 'complete']))->toEqual([
         StartPlugin::class,
@@ -79,7 +79,7 @@ it('complete', function () {
     ]);
 });
 
-it('modify', function () {
+it('修改', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins(['_action' => 'modify']))->toEqual([
         StartPlugin::class,
@@ -93,7 +93,7 @@ it('modify', function () {
     ]);
 });
 
-it('sync', function () {
+it('同步', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins(['_action' => 'sync']))->toEqual([
         StartPlugin::class,
@@ -107,7 +107,7 @@ it('sync', function () {
     ]);
 });
 
-it('pay', function () {
+it('支付', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins(['_action' => 'pay']))->toEqual([
         StartPlugin::class,
@@ -121,7 +121,7 @@ it('pay', function () {
     ]);
 });
 
-it('permissions', function () {
+it('权限', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins(['_action' => 'permissions']))->toEqual([
         StartPlugin::class,
@@ -135,7 +135,7 @@ it('permissions', function () {
     ]);
 });
 
-it('permissions query', function () {
+it('权限查询', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins(['_action' => 'permissions_query']))->toEqual([
         StartPlugin::class,
@@ -149,7 +149,7 @@ it('permissions query', function () {
     ]);
 });
 
-it('permissions terminate', function () {
+it('权限终止', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins(['_action' => 'permissions_terminate']))->toEqual([
         StartPlugin::class,
@@ -163,7 +163,7 @@ it('permissions terminate', function () {
     ]);
 });
 
-it('default action', function () {
+it('默认动作', function () {
     $plugin = new PayScoreShortcut();
     expect($plugin->getPlugins(['_action' => 'default']))->toEqual([
         StartPlugin::class,

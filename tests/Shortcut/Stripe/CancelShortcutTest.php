@@ -9,7 +9,7 @@ use Yansongda\Pay\Plugin\Stripe\V1\Pay\CancelPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Stripe\CancelShortcut;
 
-it('get plugins', function () {
+it('获取插件列表', function () {
     $shortcut = new CancelShortcut();
     expect($shortcut->getPlugins([]))->toEqual([
         StartPlugin::class,
