@@ -8,7 +8,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Airwallex\V1\Pay\CallbackPlugin;
 
-it('missing request throws exception', function () {
+it('缺少请求对象抛出异常', function () {
     $plugin = new CallbackPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
@@ -16,7 +16,7 @@ it('missing request throws exception', function () {
     $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
 });
 
-it('invalid json body throws exception', function () {
+it('非法 JSON body 抛出异常', function () {
     $plugin = new CallbackPlugin();
     $body = 'not-valid-json';
     $timestamp = (string) ((int) (microtime(true) * 1000));
@@ -32,7 +32,7 @@ it('invalid json body throws exception', function () {
     $plugin->assembly((new Rocket())->setParams(['_request' => $request, '_params' => []]), fn ($rocket) => $rocket);
 });
 
-it('normal callback', function () {
+it('正常回调', function () {
     $plugin = new CallbackPlugin();
     $body = json_encode([
         'id' => 'evt_test123',
@@ -51,7 +51,7 @@ it('normal callback', function () {
     expect($result->getDestination()->get('name'))->toEqual('payment_intent.succeeded');
 });
 
-it('callback uses tenant config', function () {
+it('回调使用租户配置', function () {
     $plugin = new CallbackPlugin();
     $body = json_encode([
         'id' => 'evt_secondary',

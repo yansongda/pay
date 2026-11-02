@@ -8,7 +8,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\CallbackPluginStub;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CallbackPluginStub();
     $request = new ServerRequest(
         'POST',

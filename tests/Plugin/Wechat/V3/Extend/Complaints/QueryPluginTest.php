@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryPlugin;
 use Yansongda\Supports\Collection;
 
-it('empty complaint id', function () {
+it('空投诉单号', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
 
@@ -19,7 +19,7 @@ it('empty complaint id', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryPlugin();
     $payload = [
         'limit' => 2,

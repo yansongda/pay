@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\CreatePlugin;
 use Yansongda\Supports\Collection;
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -25,7 +25,7 @@ it('normal params', function () {
     ]);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

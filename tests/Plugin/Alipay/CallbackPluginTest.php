@@ -15,7 +15,7 @@ use function Yansongda\Artful\filter_params;
 
 uses(CallbackPluginTestHelpers::class);
 
-it('return callback', function () {
+it('同步回调', function () {
     $plugin = new CallbackPlugin();
     $url = 'http://127.0.0.1:8000/alipay/verify?charset=utf-8&out_trade_no=1703141270&method=alipay.trade.page.pay.return&total_amount=0.01&sign=RJzbs5y7I41BO9UPnCdq7oWgoInyjELi9Qj6D%2BLAZXVpHTedemAHfVUowuF9iuznGZLxU6Xv1L3ZkzTGxmIfvzontCZNb0%2BRROqiT41lX91VYd6j4ZcOn8zsvlCdQSVHmYNJi%2Bw%2F40uHxo1ufRwHxBNtQKsoJCYk5VtZ92pQFvVyE5wPPT6Nolww5WlCAPxcWNby8VAiWT%2Bd2yxmFm8vZ6yj5rsLHTR72O76TkEXzOEex6e36Zf8M9YXww7RQbflMfk9eURPHW%2FoQq4hZr%2FlX7%2FO1nT5vdT4UVFai4V18Xm1KspBun8outJxqlWMIKVxGsYhIH1E79ORt4wQA7PG1g%3D%3D&trade_no=2023122122001499160501586202&auth_app_id=9021000122682882&version=1.0&app_id=9021000122682882&sign_type=RSA2&seller_id=2088721003899159&timestamp=2023-12-21+14%3A48%3A44';
     parse_str(parse_url($url)['query'], $query);
@@ -30,7 +30,7 @@ it('return callback', function () {
     expect($result->getPayload()->all())->not->toBeEmpty();
 });
 
-it('return callback multi config', function () {
+it('多租户同步回调', function () {
     $plugin = new CallbackPlugin();
     $url = 'http://127.0.0.1:8000/alipay/verify?_config=default&charset=utf-8&out_trade_no=1703141270&method=alipay.trade.page.pay.return&total_amount=0.01&sign=RJzbs5y7I41BO9UPnCdq7oWgoInyjELi9Qj6D%2BLAZXVpHTedemAHfVUowuF9iuznGZLxU6Xv1L3ZkzTGxmIfvzontCZNb0%2BRROqiT41lX91VYd6j4ZcOn8zsvlCdQSVHmYNJi%2Bw%2F40uHxo1ufRwHxBNtQKsoJCYk5VtZ92pQFvVyE5wPPT6Nolww5WlCAPxcWNby8VAiWT%2Bd2yxmFm8vZ6yj5rsLHTR72O76TkEXzOEex6e36Zf8M9YXww7RQbflMfk9eURPHW%2FoQq4hZr%2FlX7%2FO1nT5vdT4UVFai4V18Xm1KspBun8outJxqlWMIKVxGsYhIH1E79ORt4wQA7PG1g%3D%3D&trade_no=2023122122001499160501586202&auth_app_id=9021000122682882&version=1.0&app_id=9021000122682882&sign_type=RSA2&seller_id=2088721003899159&timestamp=2023-12-21+14%3A48%3A44';
     parse_str(parse_url($url)['query'], $query);
@@ -45,7 +45,7 @@ it('return callback multi config', function () {
     expect($result->getPayload()->all())->not->toBeEmpty();
 });
 
-it('notify callback include plus', function () {
+it('回调包含加号', function () {
     $plugin = new CallbackPlugin();
     $post = [
         'gmt_create' => '2023-12-21 16:26:32',
@@ -81,7 +81,7 @@ it('notify callback include plus', function () {
     expect($result->getPayload()->all())->not->toBeEmpty();
 });
 
-it('notify callback with v3 cert tenant', function () {
+it('V3 证书租户的回调通知', function () {
     $plugin = new CallbackPlugin();
     $form = $this->makeSignedForm();
 
@@ -93,7 +93,7 @@ it('notify callback with v3 cert tenant', function () {
     expect($result->getPayload()->except('_config')->all())->toBe($form);
 });
 
-it('notify callback with v3 cert tenant tampered params', function () {
+it('V3 证书租户回调参数被篡改', function () {
     $plugin = new CallbackPlugin();
     $form = $this->makeSignedForm();
     $form['total_amount'] = '999.00';
@@ -106,7 +106,7 @@ it('notify callback with v3 cert tenant tampered params', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('notify callback with v3 cert tenant missing sign', function () {
+it('V3 证书租户回调缺少签名', function () {
     $plugin = new CallbackPlugin();
     $form = $this->makeSignedForm();
     $form['sign'] = '';

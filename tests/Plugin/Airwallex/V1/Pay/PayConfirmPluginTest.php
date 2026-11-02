@@ -11,7 +11,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Airwallex\V1\Pay\PayConfirmPlugin;
 use Yansongda\Supports\Collection;
 
-it('skip confirm when native api disabled', function () {
+it('未启用 native api 时跳过确认', function () {
     $rocket = (new Rocket())
         ->setPayload(new Collection([
             'amount' => 100,
@@ -30,7 +30,7 @@ it('skip confirm when native api disabled', function () {
     expect($result->getDestination()->get('pay_url'))->toEqual('');
 });
 
-it('normalize pay url from redirect', function () {
+it('重定向归一化支付 URL', function () {
     $rocket = (new Rocket())
         ->setPayload(new Collection([
             '_native_api' => false,
@@ -49,7 +49,7 @@ it('normalize pay url from redirect', function () {
     expect($result->getDestination()->get('pay_url'))->toEqual('https://pay.example.com/redirect');
 });
 
-it('normalize pay url from render qrcode', function () {
+it('渲染二维码归一化支付 URL', function () {
     $rocket = (new Rocket())
         ->setPayload(new Collection([
             '_native_api' => false,
@@ -68,7 +68,7 @@ it('normalize pay url from render qrcode', function () {
     expect($result->getDestination()->get('pay_url'))->toEqual('weixin://wxpay/bizpayurl?pr=test');
 });
 
-it('normalize pay url from unknown action', function () {
+it('未知动作归一化支付 URL', function () {
     $rocket = (new Rocket())
         ->setPayload(new Collection([
             '_native_api' => false,
@@ -86,7 +86,7 @@ it('normalize pay url from unknown action', function () {
     expect($result->getDestination()->get('pay_url'))->toEqual('');
 });
 
-it('confirm with native api keeps create payload fields', function () {
+it('native api 确认保留创建时的 payload 字段', function () {
     $tokenResponse = new Response(201, [], json_encode([
         'token' => 'native_airwallex_token',
         'expires_at' => gmdate('Y-m-d\\TH:i:sO', time() + 1800),
@@ -135,7 +135,7 @@ it('confirm with native api keeps create payload fields', function () {
     expect($result->getDestination()->get('return_url'))->toEqual('https://pay.yansongda.cn/native-return');
 });
 
-it('confirm with native api uses tenant config', function () {
+it('native api 确认使用租户配置', function () {
     $tokenResponse = new Response(201, [], json_encode([
         'token' => 'secondary_airwallex_token',
         'expires_at' => gmdate('Y-m-d\\TH:i:sO', time() + 1800),
@@ -193,7 +193,7 @@ it('confirm with native api uses tenant config', function () {
     expect($result->getDestination()->get('pay_url'))->toBe('https://pay.example.com/secondary-redirect');
 });
 
-it('skip when destination is not collection', function () {
+it('destination 非 Collection 时跳过', function () {
     $rocket = (new Rocket())
         ->setPayload(new Collection([
             '_native_api' => true,
@@ -205,7 +205,7 @@ it('skip when destination is not collection', function () {
     expect($result->getDestination())->toBeInstanceOf(Response::class);
 });
 
-it('skip normalize when destination is not collection', function () {
+it('destination 非 Collection 时跳过归一化', function () {
     $rocket = (new Rocket())
         ->setPayload(new Collection([
             '_native_api' => false,

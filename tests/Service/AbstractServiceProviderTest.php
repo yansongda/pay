@@ -12,7 +12,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Service\AbstractServiceProvider;
 use Yansongda\Supports\Collection;
 
-it('register', function () {
+it('注册', function () {
     $provider = new ConcreteServiceProvider();
     $provider->register();
 

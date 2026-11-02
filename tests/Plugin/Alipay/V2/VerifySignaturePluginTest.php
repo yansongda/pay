@@ -17,7 +17,7 @@ use Yansongda\Supports\Collection;
 
 uses(VerifySignaturePluginTestHelpers::class);
 
-it('sign normal', function () {
+it('签名正常', function () {
     $plugin = new VerifySignaturePlugin();
     $destination = [
         '_sign' => 'eITxP5fZiJPB2+vZb90IRkv2iARxeNx/6Omxk7FStqflhG5lMoCvGjo2FZ6Szo1bGBMBReazZuqLaqsgomWAUO9onMVurB3enLbRvwUlpE7XEZaxk/sJYjgc2Y7pIAenvnLL9PEAiXmvUvuinUlvS9J2r1XysC0p/2wu7kEJ/GgZpFDIIYY9mdM6U1rGbi+RvirQXtQHmaEuuJWLA75NR1bvfG3L8znzW9xz1kOQqOWsQmD/bF1CDWbozNLwLCUmClRJz0Fj4mUYRF0zbW2VP8ZgHu1YvVKJ2+dWC9b+0o94URk7psIpc5NjiOM9Jsn6aoC2CfrJ/sqFMRCkYWzw6A==',
@@ -39,7 +39,7 @@ it('sign normal', function () {
     expect($result)->toBe($rocket);
 });
 
-it('sign wrong', function () {
+it('签名错误', function () {
     $plugin = new VerifySignaturePlugin();
     $destination = [
         '_sign' => 'AeITxP5fZiJPB2+vZb90IRkv2iARxeNx/6Omxk7FStqflhG5lMoCvGjo2FZ6Szo1bGBMBReazZuqLaqsgomWAUO9onMVurB3enLbRvwUlpE7XEZaxk/sJYjgc2Y7pIAenvnLL9PEAiXmvUvuinUlvS9J2r1XysC0p/2wu7kEJ/GgZpFDIIYY9mdM6U1rGbi+RvirQXtQHmaEuuJWLA75NR1bvfG3L8znzW9xz1kOQqOWsQmD/bF1CDWbozNLwLCUmClRJz0Fj4mUYRF0zbW2VP8ZgHu1YvVKJ2+dWC9b+0o94URk7psIpc5NjiOM9Jsn6aoC2CfrJ/sqFMRCkYWzw6A==',
@@ -62,7 +62,7 @@ it('sign wrong', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('sign content wrong', function () {
+it('待签名内容错误', function () {
     $plugin = new VerifySignaturePlugin();
     $rocket = new Rocket();
 
@@ -72,7 +72,7 @@ it('sign content wrong', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('plain response with single string field', function () {
+it('单字段字符串的明文响应', function () {
     $plugin = new VerifySignaturePlugin();
     $this->reRegisterAlipayTenant();
 
@@ -91,7 +91,7 @@ it('plain response with single string field', function () {
     expect($result)->toBe($rocket);
 });
 
-it('encrypted response signature wrong source', function () {
+it('加密响应签名来源错误', function () {
     $plugin = new VerifySignaturePlugin();
     $this->reRegisterAlipayTenant();
 
@@ -113,7 +113,7 @@ it('encrypted response signature wrong source', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('encrypted response decrypted', function () {
+it('加密响应解密', function () {
     $plugin = new VerifySignaturePlugin();
     $key = random_bytes(16);
     $cipher = base64_encode(
@@ -139,7 +139,7 @@ it('encrypted response decrypted', function () {
     expect($result->getDestination()->get('_sign'))->toBe(base64_encode($sign));
 });
 
-it('encrypted response sign wrong skips decrypt', function () {
+it('加密响应签名错误跳过解密', function () {
     $plugin = new VerifySignaturePlugin();
     $key = random_bytes(16);
     $cipher = base64_encode(
@@ -164,7 +164,7 @@ it('encrypted response sign wrong skips decrypt', function () {
     }
 });
 
-it('plain response with aes key configured', function () {
+it('配置 AES 密钥的明文响应', function () {
     $plugin = new VerifySignaturePlugin();
     $this->reRegisterAlipayTenant(base64_encode(random_bytes(16)));
 
@@ -181,7 +181,7 @@ it('plain response with aes key configured', function () {
     expect($result->getDestination()->get('mobile'))->toBe('13800000000');
 });
 
-it('encrypted response without aes key', function () {
+it('加密响应缺少 AES 密钥', function () {
     $plugin = new VerifySignaturePlugin();
     $this->reRegisterAlipayTenant();
 
@@ -201,7 +201,7 @@ it('encrypted response without aes key', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('encrypted response bad json', function () {
+it('加密响应 JSON 非法', function () {
     $plugin = new VerifySignaturePlugin();
     $key = random_bytes(16);
     $cipher = base64_encode(
@@ -226,7 +226,7 @@ it('encrypted response bad json', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('no http request direction noop', function () {
+it('无 HTTP 请求方向时不操作', function () {
     $plugin = new VerifySignaturePlugin();
     $destination = [
         '_sign' => 'x',

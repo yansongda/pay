@@ -6,7 +6,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Enum\PayMode;
 
-it('construct valid config', function () {
+it('构造合法配置', function () {
     $validConfig = [
         'app_id' => 'test_app_id',
         'app_secret_cert' => 'test_secret',
@@ -22,7 +22,7 @@ it('construct valid config', function () {
     expect($config->getMode())->toBe(PayMode::NORMAL);
 });
 
-it('construct with tenant', function () {
+it('指定租户构造', function () {
     $validConfig = [
         'app_id' => 'test_app_id',
         'app_secret_cert' => 'test_secret',
@@ -35,7 +35,7 @@ it('construct with tenant', function () {
     expect($config->getTenant())->toBe('custom_tenant');
 });
 
-it('construct missing required', function () {
+it('缺少必填项构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_id]');
 
@@ -49,7 +49,7 @@ it('construct missing required', function () {
     $config->validate();
 });
 
-it('construct missing app public cert path', function () {
+it('缺少应用公钥证书路径构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 缺少支付宝配置 -- [app_public_cert_path]');
 
@@ -61,7 +61,7 @@ it('construct missing app public cert path', function () {
     $config->validate();
 });
 
-it('optional getters', function () {
+it('可选 getter', function () {
     $validConfig = [
         'app_id' => 'test_app_id',
         'app_secret_cert' => 'test_secret',
@@ -82,7 +82,7 @@ it('optional getters', function () {
     expect($config->getServiceProviderId())->toBe('sp_id');
 });
 
-it('optional getters null', function () {
+it('可选 getter 返回 null', function () {
     $validConfig = [
         'app_id' => 'test_app_id',
         'app_secret_cert' => 'test_secret',
@@ -98,7 +98,7 @@ it('optional getters null', function () {
     expect($config->getServiceProviderId())->toBeNull();
 });
 
-it('cert getters', function () {
+it('证书 getter', function () {
     $validConfig = [
         'app_id' => 'test_app_id',
         'app_secret_cert' => 'test_secret',
@@ -113,7 +113,7 @@ it('cert getters', function () {
     expect($config->getAlipayRootCertPath())->toBe(__DIR__.'/../Cert/alipayRootCert.crt');
 });
 
-it('to array keeps backward compatible snake case keys', function () {
+it('转数组保留向后兼容的蛇形键', function () {
     $validConfig = [
         'app_id' => 'test_app_id',
         'app_secret_cert' => 'test_secret',
@@ -150,7 +150,7 @@ it('to array keeps backward compatible snake case keys', function () {
     expect($array)->toBe($expected);
 });
 
-it('mode sandbox', function () {
+it('沙箱模式', function () {
     $validConfig = [
         'app_id' => 'test_app_id',
         'app_secret_cert' => 'test_secret',
@@ -166,7 +166,7 @@ it('mode sandbox', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('mode sandbox enum', function () {
+it('沙箱模式（枚举）', function () {
     $validConfig = [
         'app_id' => 'test_app_id',
         'app_secret_cert' => 'test_secret',
@@ -181,7 +181,7 @@ it('mode sandbox enum', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('config dispatch', function () {
+it('配置分发', function () {
     $validConfig = [
         'app_id' => 'test_app_id',
         'app_secret_cert' => 'test_secret',

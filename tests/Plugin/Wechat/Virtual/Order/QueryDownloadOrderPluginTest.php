@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\QueryDownloadOrderPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryDownloadOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -25,7 +25,7 @@ it('normal', function () {
     expect($payload->get('download_task_id'))->toEqual('1234567890');
 });
 
-it('sandbox env', function () {
+it('沙箱环境', function () {
     $plugin = new QueryDownloadOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -40,7 +40,7 @@ it('sandbox env', function () {
     expect($payload->get('env'))->toEqual(1);
 });
 
-it('with access token', function () {
+it('携带 access token', function () {
     $plugin = new QueryDownloadOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

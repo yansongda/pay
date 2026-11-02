@@ -9,7 +9,7 @@ use Yansongda\Pay\Plugin\Unipay\Open\AddPayloadSignaturePlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new AddPayloadSignaturePlugin();
     // 要注入 certs
     (new StartPlugin())->assembly(new Rocket(), function ($rocket) { return $rocket; });
@@ -42,7 +42,7 @@ it('normal', function () {
     expect($payload->get('signature'))->toEqual('CJ0Hh6WC0YldYMi2cIi7rjOvV4IJyzhqgj8KKNeRWZz+2csPVlDcnP1f4YfykVww6NDimsl2zE+oQAm7lH8qiU5f8ojVH+P62uMe1yqb2WoNlIM45REg6bhfUPvATgecVplnKIPdFUGdRZ97va+ZVbla75HwtskZnDykmr9rkYaSg7PcGuilEwHcb2rV+BNkCi3bi4fYELjYlE1a7Imv/cSLRyXkPS1jzF0HUIUiVA6P98DYh0GbsgqRZqPYsGocFJs9jZoAlu44RygzDKjK/n8iwhHNH61IFaADdGp+uLQsol6kR/DRpF1pZgO7lsuK0YuaL6pfN6dtkJO9prbu6Q==');
 });
 
-it('payload empty', function () {
+it('payload 为空', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $rocket = (new Rocket())->setPayload(new Collection());
 
@@ -52,7 +52,7 @@ it('payload empty', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('empty certs', function () {
+it('空证书', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $params = [
         'txnTime' => '20220903065448',

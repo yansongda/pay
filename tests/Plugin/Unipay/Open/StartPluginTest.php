@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new StartPlugin();
     $params = [
         'txnTime' => '20220903065448',
@@ -28,7 +28,7 @@ it('normal', function () {
     expect(true)->toBeTrue();
 });
 
-it('certs cached', function () {
+it('证书已缓存', function () {
     $plugin = new StartPlugin();
     $result = $plugin->assembly(new Rocket(), function ($rocket) { return $rocket; });
     $payload = $result->getPayload();

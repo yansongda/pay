@@ -19,7 +19,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Native\RefundPlugin as NativeRefundPlugin
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\RefundShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new RefundShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -33,7 +33,7 @@ it('default', function () {
     ]);
 });
 
-it('app', function () {
+it('APP', function () {
     $plugin = new RefundShortcut();
     expect($plugin->getPlugins(['_action' => 'app']))->toEqual([
         StartPlugin::class,
@@ -47,7 +47,7 @@ it('app', function () {
     ]);
 });
 
-it('combine', function () {
+it('合单', function () {
     $plugin = new RefundShortcut();
     expect($plugin->getPlugins(['_action' => 'combine']))->toEqual([
         StartPlugin::class,
@@ -61,7 +61,7 @@ it('combine', function () {
     ]);
 });
 
-it('h5', function () {
+it('H5', function () {
     $plugin = new RefundShortcut();
     expect($plugin->getPlugins(['_action' => 'h5']))->toEqual([
         StartPlugin::class,
@@ -75,7 +75,7 @@ it('h5', function () {
     ]);
 });
 
-it('jsapi', function () {
+it('JSAPI', function () {
     $plugin = new RefundShortcut();
     expect($plugin->getPlugins(['_action' => 'jsapi']))->toEqual([
         StartPlugin::class,
@@ -89,7 +89,7 @@ it('jsapi', function () {
     ]);
 });
 
-it('mini', function () {
+it('小程序', function () {
     $plugin = new RefundShortcut();
     expect($plugin->getPlugins(['_action' => 'mini']))->toEqual([
         StartPlugin::class,
@@ -103,7 +103,7 @@ it('mini', function () {
     ]);
 });
 
-it('native', function () {
+it('Native', function () {
     $plugin = new RefundShortcut();
     expect($plugin->getPlugins(['_action' => 'native']))->toEqual([
         StartPlugin::class,

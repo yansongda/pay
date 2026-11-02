@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\QuerySubscribeContractPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QuerySubscribeContractPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -25,7 +25,7 @@ it('normal', function () {
     expect($payload->get('env'))->toBeNull();
 });
 
-it('sandbox env', function () {
+it('沙箱环境', function () {
     $plugin = new QuerySubscribeContractPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -41,7 +41,7 @@ it('sandbox env', function () {
     expect($payload->get('_url'))->toEqual('/xpay/query_subscribe_contract');
 });
 
-it('default env', function () {
+it('默认环境', function () {
     $plugin = new QuerySubscribeContractPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

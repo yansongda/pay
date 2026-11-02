@@ -23,7 +23,7 @@ use Yansongda\Pay\Shortcut\Alipay\V3\CancelShortcut;
 
 uses(CancelShortcutTestHelpers::class);
 
-it('normal', function () {
+it('正常', function () {
     $shortcut = new CancelShortcut();
     $plugins = $shortcut->getPlugins([]);
 
@@ -43,7 +43,7 @@ it('normal', function () {
     expect(array_search(VerifySignaturePlugin::class, $plugins, true))->toBeGreaterThan(array_search(ResponsePlugin::class, $plugins, true));
 });
 
-it('cancel http', function () {
+it('HTTP 撤销', function () {
     $shortcut = new CancelShortcut();
     $body = json_encode([
         'trade_no' => '2026090222001400001234567890',

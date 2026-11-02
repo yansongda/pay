@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Provider\Apple;
 
-it('pay', function () {
+it('支付', function () {
     $apple = Pay::apple();
 
     expect($apple)->toBeInstanceOf(Apple::class);
@@ -17,21 +17,21 @@ it('pay', function () {
     expect(Pay::get(Apple::class))->toBeInstanceOf(Apple::class);
 });
 
-it('cancel', function () {
+it('撤销', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::apple()->cancel([]);
 });
 
-it('close', function () {
+it('关单', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::apple()->close([]);
 });
 
-it('success', function () {
+it('成功', function () {
     $result = Pay::apple()->success();
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);
@@ -40,7 +40,7 @@ it('success', function () {
     expect($result->getHeaderLine('Content-Type'))->toContain('application/json');
 });
 
-it('url', function () {
+it('URL', function () {
     expect(Apple::URL[PayMode::NORMAL->value])->toEqual('https://api.storekit.apple.com');
     expect(Apple::URL[PayMode::SANDBOX->value])->toEqual('https://api.storekit-sandbox.apple.com');
     expect(Apple::URL[PayMode::SERVICE->value])->toEqual('https://api.storekit.apple.com');

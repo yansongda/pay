@@ -7,7 +7,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Alipay\V3\AddPayloadSignaturePlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $body = '{"out_trade_no":"yansongda","total_amount":"0.01"}';
     $rocket = (new Rocket())
@@ -42,7 +42,7 @@ it('normal', function () {
     expect(openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256))->toEqual(1);
 });
 
-it('normal without body', function () {
+it('无 body 的正常场景', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $rocket = (new Rocket())
         ->setParams(['_config' => 'alipay-v3'])
@@ -66,7 +66,7 @@ it('normal without body', function () {
     expect(openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256))->toEqual(1);
 });
 
-it('app auth token override', function () {
+it('app_auth_token 覆盖', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $body = '{"out_trade_no":"yansongda"}';
     $rocket = (new Rocket())
@@ -95,7 +95,7 @@ it('app auth token override', function () {
     expect(openssl_verify($content, base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256))->toEqual(1);
 });
 
-it('app auth token fallback', function () {
+it('app_auth_token 回退', function () {
     $plugin = new AddPayloadSignaturePlugin();
     Pay::config([
         'alipay' => [
@@ -124,7 +124,7 @@ it('app auth token fallback', function () {
     expect($result->getPayload()->get('_app_auth_token'))->toEqual('config_fallback_token');
 });
 
-it('without app auth token', function () {
+it('不携带 app_auth_token', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $rocket = (new Rocket())
         ->setParams(['_config' => 'alipay-v3'])

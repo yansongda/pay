@@ -9,7 +9,7 @@ use Yansongda\Pay\Shortcut\Apple\PayTokenShortcut;
 use Yansongda\Pay\Tests\Support\Apple\AppleTokenFactory;
 use Yansongda\Supports\Collection;
 
-it('get plugins', function () {
+it('获取插件列表', function () {
     $shortcut = new PayTokenShortcut();
     expect($shortcut->getPlugins([]))->toEqual([
         StartPlugin::class,

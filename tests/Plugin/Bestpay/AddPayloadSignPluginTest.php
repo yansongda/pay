@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Bestpay\V1\AddPayloadSignPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\StartPlugin;
 
-it('assembly', function () {
+it('组装', function () {
     $rocket = new Rocket();
     $rocket->setParams([
         'outTradeNo' => 'ORDER001',
@@ -41,7 +41,7 @@ it('assembly', function () {
     expect($common['institutionCode'])->toEqual('3178033925245778');
 });
 
-it('assembly filters null fields from biz content', function () {
+it('组装过滤 biz_content 中的空字段', function () {
     $rocket = new Rocket();
     $rocket->setParams([
         'outTradeNo' => 'ORDER001',
@@ -63,7 +63,7 @@ it('assembly filters null fields from biz content', function () {
     expect($biz['remark'])->toBe('');
 });
 
-it('assembly biz content does not escape slash', function () {
+it('组装 biz_content 不转义斜杠', function () {
     // 对齐官方 fastjson 默认序列化：URL 中的 `/` 不转义为 `\/`（JSON_UNESCAPED_SLASHES）
     $rocket = new Rocket();
     $rocket->setParams([
@@ -84,7 +84,7 @@ it('assembly biz content does not escape slash', function () {
     expect($bizContent)->toContain('"subject":"测试"');
 });
 
-it('assembly throws when path missing', function () {
+it('缺少路径时组装抛出异常', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_BESTPAY_URL_MISSING);
 

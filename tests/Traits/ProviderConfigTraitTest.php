@@ -18,19 +18,19 @@ class ProviderConfigTraitStub
 use ProviderConfigTrait;
 }
 
-it('get tenant default', function () {
+it('获取默认租户', function () {
     expect(ProviderConfigTraitStub::getTenant())->toBe('default');
 });
 
-it('get tenant custom', function () {
+it('获取自定义租户', function () {
     expect(ProviderConfigTraitStub::getTenant(['_config' => 'yansongda']))->toBe('yansongda');
 });
 
-it('get provider config default', function () {
+it('获取默认 provider 配置', function () {
     expect(ProviderConfigTraitStub::getProviderConfig('alipay'))->toBe(PayFacade::get(ConfigInterface::class)->get('alipay.'.ProviderConfigTraitStub::getTenant()));
 });
 
-it('get provider config alipay', function () {
+it('获取支付宝 provider 配置', function () {
     $defaultConfig = ProviderConfigTraitStub::getProviderConfig('alipay');
     expect($defaultConfig)->toBeInstanceOf(AlipayConfig::class);
 
@@ -70,7 +70,7 @@ it('get provider config alipay', function () {
     expect($customConfig->getAppId())->toBe('yansongda-c1');
 });
 
-it('get provider config wechat', function () {
+it('获取微信 provider 配置', function () {
     $defaultConfig = ProviderConfigTraitStub::getProviderConfig('wechat', []);
     expect($defaultConfig)->toBeInstanceOf(WechatConfig::class);
 
@@ -110,7 +110,7 @@ it('get provider config wechat', function () {
     expect($customConfig->getMpAppId())->toBe('wx-c1');
 });
 
-it('get provider config unipay', function () {
+it('获取银联 provider 配置', function () {
     $defaultConfig = ProviderConfigTraitStub::getProviderConfig('unipay');
     expect($defaultConfig)->toBeInstanceOf(UnipayConfig::class);
 
@@ -146,11 +146,11 @@ it('get provider config unipay', function () {
     expect($customConfig->getMchId())->toBe('yansongda-c1');
 });
 
-it('get provider config custom tenant', function () {
+it('获取自定义租户 provider 配置', function () {
     expect(ProviderConfigTraitStub::getProviderConfig('wechat', ['_config' => 'service_provider']))->toBe(PayFacade::get(ConfigInterface::class)->get('wechat.service_provider'));
 });
 
-it('get provider config returns provider config object', function () {
+it('获取 provider 配置返回配置对象', function () {
     $config = new class implements ProviderConfigInterface {
         public function getTenant(): string
         {
@@ -187,18 +187,18 @@ it('get provider config returns provider config object', function () {
     expect(ProviderConfigTraitStub::getProviderConfig('custom'))->toBe($config);
 });
 
-it('get radar url null', function () {
+it('radar URL 为 null', function () {
     $config = ProviderConfigTraitStub::getProviderConfig('wechat');
     expect(ProviderConfigTraitStub::getRadarUrl($config, null))->toBeNull();
     expect(ProviderConfigTraitStub::getRadarUrl($config, new Collection()))->toBeNull();
 });
 
-it('get radar url normal', function () {
+it('获取普通 radar URL', function () {
     $config = ProviderConfigTraitStub::getProviderConfig('wechat');
     expect(ProviderConfigTraitStub::getRadarUrl($config, new Collection(['_url' => 'https://yansongda.cn'])))->toBe('https://yansongda.cn');
 });
 
-it('get radar url service', function () {
+it('获取服务商 radar URL', function () {
     $serviceConfig = new WechatConfig([
         'app_id' => 'yansongda',
         'mp_app_id' => 'wx55955316af4ef13',
@@ -222,7 +222,7 @@ it('get radar url service', function () {
         ))->toBe('https://yansongda.cnaaa');
 });
 
-it('get provider config validates on access', function () {
+it('访问时校验 provider 配置', function () {
     PayFacade::config([
         'alipay' => [
             'default' => [

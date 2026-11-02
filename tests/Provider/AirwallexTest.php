@@ -20,21 +20,21 @@ use Yansongda\Pay\Plugin\Airwallex\V1\ResponsePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Supports\Collection;
 
-it('shortcut not found', function () {
+it('快捷方式不存在', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(\Yansongda\Artful\Exception\Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::airwallex()->foo();
 });
 
-it('close', function () {
+it('关单', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::airwallex()->close([]);
 });
 
-it('callback', function () {
+it('回调', function () {
     $body = json_encode([
         'id' => 'evt_test123',
         'name' => 'payment_intent.succeeded',
@@ -60,7 +60,7 @@ it('callback', function () {
     expect($result->get('name'))->toEqual('payment_intent.succeeded');
 });
 
-it('callback with array', function () {
+it('数组形式回调', function () {
     $body = json_encode([
         'id' => 'evt_test456',
         'name' => 'payment_intent.failed',
@@ -82,7 +82,7 @@ it('callback with array', function () {
     expect($result->get('name'))->toEqual('payment_intent.failed');
 });
 
-it('get callback params with plain array payload', function () {
+it('纯数组 payload 提取回调参数', function () {
     $provider = Pay::airwallex();
     $method = new \ReflectionMethod($provider, 'getCallbackParams');
 
@@ -95,7 +95,7 @@ it('get callback params with plain array payload', function () {
     expect((string) $request->getBody())->toContain('payment_intent.created');
 });
 
-it('get callback params from globals', function () {
+it('从全局变量提取回调参数', function () {
     $provider = Pay::airwallex();
     $method = new \ReflectionMethod($provider, 'getCallbackParams');
 
@@ -104,7 +104,7 @@ it('get callback params from globals', function () {
     expect($request)->toBeInstanceOf(ServerRequestInterface::class);
 });
 
-it('query', function () {
+it('查询', function () {
     $tokenResponse = new Response(201, [], json_encode([
         'token' => 'airwallex_query_token',
         'expires_at' => gmdate('Y-m-d\\TH:i:sO', time() + 1800),
@@ -124,7 +124,7 @@ it('query', function () {
     expect($result->get('id'))->toEqual('int_query_123');
 });
 
-it('cancel', function () {
+it('撤销', function () {
     $tokenResponse = new Response(201, [], json_encode([
         'token' => 'airwallex_cancel_token',
         'expires_at' => gmdate('Y-m-d\\TH:i:sO', time() + 1800),
@@ -144,7 +144,7 @@ it('cancel', function () {
     expect($result->get('status'))->toEqual('CANCELLED');
 });
 
-it('refund', function () {
+it('退款', function () {
     $tokenResponse = new Response(201, [], json_encode([
         'token' => 'airwallex_refund_token',
         'expires_at' => gmdate('Y-m-d\\TH:i:sO', time() + 1800),
@@ -167,7 +167,7 @@ it('refund', function () {
     expect($result->get('id'))->toEqual('ref_123');
 });
 
-it('success', function () {
+it('成功', function () {
     $result = Pay::airwallex()->success();
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);

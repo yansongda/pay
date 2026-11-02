@@ -14,21 +14,21 @@ use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\FooPluginStub;
 use Yansongda\Supports\Collection;
 
-it('shortcut not found', function () {
+it('快捷方式不存在', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(\Yansongda\Artful\Exception\Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::stripe()->foo();
 });
 
-it('close', function () {
+it('关单', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::stripe()->close([]);
 });
 
-it('callback', function () {
+it('回调', function () {
     $body = json_encode([
         'id' => 'evt_test123',
         'type' => 'payment_intent.succeeded',
@@ -56,7 +56,7 @@ it('callback', function () {
     expect($result->get('type'))->toEqual('payment_intent.succeeded');
 });
 
-it('callback with array', function () {
+it('数组形式回调', function () {
     $body = json_encode([
         'id' => 'evt_test456',
         'type' => 'charge.succeeded',
@@ -83,7 +83,7 @@ it('callback with array', function () {
     expect($result->get('type'))->toEqual('charge.succeeded');
 });
 
-it('success', function () {
+it('成功', function () {
     $result = Pay::stripe()->success();
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);

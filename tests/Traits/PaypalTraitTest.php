@@ -27,7 +27,7 @@ use PaypalTrait;
 
 uses(PaypalTraitTestHelpers::class);
 
-it('get paypal url', function () {
+it('获取 PayPal URL', function () {
     expect(PaypalTraitStub::getPaypalUrl(new PaypalConfig([
         'client_id' => 'paypal_client_id',
         'app_secret' => 'paypal_app_secret',
@@ -50,7 +50,7 @@ it('get paypal url', function () {
     ]), new Collection([]));
 });
 
-it('get paypal access token cached', function () {
+it('缓存 PayPal access token', function () {
     $paypalConfig = $this->getPaypalConfig();
 
     $paypalConfig->setAccessToken('cached_token_123');
@@ -61,7 +61,7 @@ it('get paypal access token cached', function () {
     expect($token)->toEqual('cached_token_123');
 });
 
-it('get paypal access token cached with return rocket param', function () {
+it('带 _return_rocket 参数缓存 PayPal access token', function () {
     $paypalConfig = $this->getPaypalConfig();
 
     $paypalConfig->setAccessToken('cached_token_123');
@@ -73,7 +73,7 @@ it('get paypal access token cached with return rocket param', function () {
     expect($token)->toEqual('cached_token_123');
 });
 
-it('get paypal access token refreshed with return rocket param', function () {
+it('带 _return_rocket 参数刷新 PayPal access token', function () {
     $tokenResponse = new Response(200, [], json_encode([
         'access_token' => 'fresh_paypal_token_789',
         'token_type' => 'Bearer',
@@ -97,7 +97,7 @@ it('get paypal access token refreshed with return rocket param', function () {
     expect($paypalConfig->getAccessTokenExpiry())->not->toBeEmpty();
 });
 
-it('get paypal access token missing config', function () {
+it('PayPal access token 缺少配置', function () {
     $paypalConfig = $this->getPaypalConfig();
     $paypalConfig->setClientId('');
     $paypalConfig->setAppSecret('');
@@ -108,7 +108,7 @@ it('get paypal access token missing config', function () {
     PaypalTraitStub::getPaypalAccessToken([]);
 });
 
-it('get paypal access token fresh', function () {
+it('新取 PayPal access token', function () {
     $response = new Response(
         200,
         [],
@@ -135,7 +135,7 @@ it('get paypal access token fresh', function () {
     expect($paypalConfig->getAccessTokenExpiry())->not->toBeEmpty();
 });
 
-it('verify paypal webhook sign missing webhook id', function () {
+it('PayPal webhook 验签缺少 webhook id', function () {
     $paypalConfig = $this->getPaypalConfig();
 
     $paypalConfig->setWebhookId('');
@@ -151,7 +151,7 @@ it('verify paypal webhook sign missing webhook id', function () {
     PaypalTraitStub::verifyPaypalWebhookSign($request, []);
 });
 
-it('verify paypal webhook sign empty signature', function () {
+it('PayPal webhook 验签签名为空', function () {
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [], '{}');
 
     $this->expectException(InvalidSignException::class);
@@ -160,7 +160,7 @@ it('verify paypal webhook sign empty signature', function () {
     PaypalTraitStub::verifyPaypalWebhookSign($request, []);
 });
 
-it('verify paypal webhook sign missing headers', function () {
+it('PayPal webhook 验签缺少请求头', function () {
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/paypal/notify', [
         'PAYPAL-TRANSMISSION-ID' => 'test-id',
         'PAYPAL-TRANSMISSION-SIG' => 'test-sig',
@@ -172,7 +172,7 @@ it('verify paypal webhook sign missing headers', function () {
     PaypalTraitStub::verifyPaypalWebhookSign($request, []);
 });
 
-it('verify paypal webhook sign success', function () {
+it('PayPal webhook 验签成功', function () {
     $tokenResponse = new Response(200, [], json_encode([
         'access_token' => 'verify_token_123',
         'token_type' => 'Bearer',
@@ -199,7 +199,7 @@ it('verify paypal webhook sign success', function () {
     expect(true)->toBeTrue();
 });
 
-it('verify paypal webhook sign failure', function () {
+it('PayPal webhook 验签失败', function () {
     $tokenResponse = new Response(200, [], json_encode([
         'access_token' => 'verify_token_123',
         'token_type' => 'Bearer',

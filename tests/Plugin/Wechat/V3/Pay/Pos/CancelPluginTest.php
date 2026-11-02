@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Pos\CancelPlugin;
 use Yansongda\Supports\Collection;
 
-it('missing out', function () {
+it('缺少 out', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -22,7 +22,7 @@ it('missing out', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -39,7 +39,7 @@ it('normal', function () {
     expect($payload->get('mchid'))->toEqual('1600314069');
 });
 
-it('service', function () {
+it('服务商', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
@@ -57,7 +57,7 @@ it('service', function () {
     expect($payload->get('sub_mchid'))->toEqual('1600314070');
 });
 
-it('service params', function () {
+it('服务商参数', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([

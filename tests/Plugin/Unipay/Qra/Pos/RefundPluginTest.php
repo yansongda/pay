@@ -7,7 +7,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Qra\Pos\RefundPlugin;
 use Yansongda\Supports\Str;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new RefundPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'qra']);

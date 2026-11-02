@@ -14,7 +14,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\GetClientTokenPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new GetClientTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -29,7 +29,7 @@ it('normal', function () {
     expect($payload->get('client_secret'))->toEqual('douyin_app_secret');
 });
 
-it('missing app id', function () {
+it('缺少 app_id', function () {
     $plugin = new GetClientTokenPlugin();
     $config = new DouyinConfig([
         'app_id' => 'tt226e54d3bd581bf801',
@@ -47,7 +47,7 @@ it('missing app id', function () {
     $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
 });
 
-it('missing app secret', function () {
+it('缺少 app_secret', function () {
     $plugin = new GetClientTokenPlugin();
     $config = new DouyinConfig([
         'app_id' => 'tt226e54d3bd581bf801',
@@ -65,7 +65,7 @@ it('missing app secret', function () {
     $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
 });
 
-it('success response', function () {
+it('成功响应', function () {
     $plugin = new GetClientTokenPlugin();
     $destination = [
         'data' => [
@@ -87,7 +87,7 @@ it('success response', function () {
     expect($result->getDestination()->all())->toEqual($destination);
 });
 
-it('business error response throws exception', function () {
+it('业务错误响应抛出异常', function () {
     $plugin = new GetClientTokenPlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(200));
@@ -108,7 +108,7 @@ it('business error response throws exception', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('server error throws exception', function () {
+it('服务端错误抛出异常', function () {
     $plugin = new GetClientTokenPlugin();
     $rocket = new Rocket();
     $rocket->setDestinationOrigin(new Response(500));

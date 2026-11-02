@@ -15,7 +15,7 @@ use Yansongda\Supports\Collection;
 uses(BestpayTrait::class);
 uses(VerifySignaturePluginTestHelpers::class);
 
-it('valid response sign', function () {
+it('响应签名有效', function () {
     $body = [
         'success' => true,
         'errorCode' => null,
@@ -34,7 +34,7 @@ it('valid response sign', function () {
     expect((bool) $result->getDestination()->get('success'))->toBeTrue();
 });
 
-it('valid response sign with slash and unicode in nested result', function () {
+it('嵌套结果含斜杠与 Unicode 的响应签名有效', function () {
     // 嵌套 result 含 URL（`/`）与中文：对齐官方 fastjson 序列化（`/` 与中文均不转义），
     // 回归验证 JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE 拼串语义。
     $body = [
@@ -60,7 +60,7 @@ it('valid response sign with slash and unicode in nested result', function () {
     expect($result->getDestination()->get('result.codeUrl'))->toEqual('https://qr.bestpay.com.cn/aggpay/1001');
 });
 
-it('invalid response sign', function () {
+it('响应签名非法', function () {
     $this->expectException(InvalidSignException::class);
 
     $body = [
@@ -77,7 +77,7 @@ it('invalid response sign', function () {
     (new VerifySignaturePlugin())->assembly($rocket, fn ($r) => $r);
 });
 
-it('response sign content nested json', function () {
+it('响应待签名内容为嵌套 JSON', function () {
     $content = self::getBestpaySignContent([
         'result' => ['b' => 1, 'a' => 2],
         'success' => true,
@@ -88,7 +88,7 @@ it('response sign content nested json', function () {
     expect($content)->toEqual('errorCode=null&result={"a":2,"b":1}&success=true');
 });
 
-it('response sign content nested json slash not escaped', function () {
+it('嵌套 JSON 中斜杠不转义', function () {
     // fastjson 默认不转义 `/` 与中文；回归验证 JSON_UNESCAPED_SLASHES。
     $content = self::getBestpaySignContent([
         'result' => [
@@ -101,7 +101,7 @@ it('response sign content nested json slash not escaped', function () {
     expect($content)->toEqual('result={"codeUrl":"https://qr.bestpay.com.cn/aggpay/1001","subject":"测试订单"}&success=true');
 });
 
-it('sign content keeps empty values', function () {
+it('待签名内容保留空值', function () {
     // 对齐官方 AssembleSignatureData：null → k=null，空串 → k=
     $content = self::getBestpaySignContent([
         'empty' => '',

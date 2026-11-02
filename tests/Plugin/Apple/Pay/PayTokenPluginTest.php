@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Apple\Pay\PayTokenPlugin;
 use Yansongda\Pay\Tests\Support\Apple\AppleTokenFactory;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new PayTokenPlugin();
     $token = AppleTokenFactory::makeToken(['applicationPrimaryAccountID' => '123456', 'totalAmount' => '100']);
 
@@ -25,7 +25,7 @@ it('normal', function () {
     expect($result->getPayload())->toBe($result->getDestination());
 });
 
-it('underscore token', function () {
+it('下划线 token', function () {
     $plugin = new PayTokenPlugin();
     $token = AppleTokenFactory::makeToken(['applicationPrimaryAccountID' => '888888']);
 
@@ -38,7 +38,7 @@ it('underscore token', function () {
     expect($result->getPayload()->get('_token_header'))->toEqual($token['header']);
 });
 
-it('missing token throws exception', function () {
+it('缺少 token 抛出异常', function () {
     $plugin = new PayTokenPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);
@@ -49,7 +49,7 @@ it('missing token throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('invalid token throws exception', function () {
+it('非法 token 抛出异常', function () {
     $plugin = new PayTokenPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_APPLE_TOKEN_INVALID);

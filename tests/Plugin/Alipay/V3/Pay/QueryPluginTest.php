@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V3\Pay\QueryPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryPlugin();
     $rocket = (new Rocket())
         ->setParams(['_config' => 'alipay-v3', 'out_trade_no' => 'yansongda-2026'])
@@ -22,7 +22,7 @@ it('normal', function () {
     expect($result->getPayload()->get('notify_url'))->toBeNull();
 });
 
-it('normal with trade no', function () {
+it('携带交易号的正常场景', function () {
     $plugin = new QueryPlugin();
     $rocket = (new Rocket())
         ->setParams(['_config' => 'alipay-v3', 'trade_no' => '2026090222001400001234567890'])

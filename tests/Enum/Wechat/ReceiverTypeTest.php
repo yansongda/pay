@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 use Yansongda\Pay\Enum\Wechat\ReceiverType;
 
-it('exposes receiver type values', function () {
+it('暴露收款方类型值', function () {
     expect(ReceiverType::MERCHANT_ID->value)->toBe('MERCHANT_ID');
     expect(ReceiverType::PERSONAL_OPENID->value)->toBe('PERSONAL_OPENID');
     expect(ReceiverType::PERSONAL_SUB_OPENID->value)->toBe('PERSONAL_SUB_OPENID');
 });
 
-it('keeps declaration order of cases', function () {
+it('保持枚举声明顺序', function () {
     expect(ReceiverType::cases())->toBe([
         ReceiverType::MERCHANT_ID,
         ReceiverType::PERSONAL_OPENID,
@@ -18,7 +18,7 @@ it('keeps declaration order of cases', function () {
     ]);
 });
 
-it('tries from string value', function () {
+it('按字符串值 tryFrom', function () {
     expect(ReceiverType::tryFrom('MERCHANT_ID'))->toBe(ReceiverType::MERCHANT_ID);
     expect(ReceiverType::tryFrom('PERSONAL_OPENID'))->toBe(ReceiverType::PERSONAL_OPENID);
     expect(ReceiverType::tryFrom('PERSONAL_SUB_OPENID'))->toBe(ReceiverType::PERSONAL_SUB_OPENID);
@@ -26,22 +26,22 @@ it('tries from string value', function () {
     expect(ReceiverType::tryFrom(''))->toBeNull();
 });
 
-it('builds from loose input', function () {
+it('从宽松输入构造', function () {
     expect(ReceiverType::fromLoose('MERCHANT_ID'))->toBe(ReceiverType::MERCHANT_ID);
     expect(ReceiverType::fromLoose('PERSONAL_OPENID'))->toBe(ReceiverType::PERSONAL_OPENID);
 });
 
-it('returns null for unknown loose input', function () {
+it('未知宽松输入返回 null', function () {
     expect(ReceiverType::fromLoose('FOO'))->toBeNull();
     expect(ReceiverType::fromLoose(''))->toBeNull();
     expect(ReceiverType::fromLoose(null))->toBeNull();
 });
 
-it('builds from loose enum instance', function () {
+it('从枚举实例构造', function () {
     expect(ReceiverType::fromLoose(ReceiverType::PERSONAL_SUB_OPENID))->toBe(ReceiverType::PERSONAL_SUB_OPENID);
 });
 
-it('detects sub openid receiver', function () {
+it('识别子 openid 收款方', function () {
     expect(ReceiverType::PERSONAL_SUB_OPENID->isSubOpenid())->toBeTrue();
     expect(ReceiverType::MERCHANT_ID->isSubOpenid())->toBeFalse();
     expect(ReceiverType::PERSONAL_OPENID->isSubOpenid())->toBeFalse();

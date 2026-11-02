@@ -15,7 +15,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\ClosePlugin as JsapiClosePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\CloseShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new CloseShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -29,7 +29,7 @@ it('default', function () {
     ]);
 });
 
-it('combine', function () {
+it('合单', function () {
     $plugin = new CloseShortcut();
     expect($plugin->getPlugins(['_action' => 'combine']))->toEqual([
         StartPlugin::class,
@@ -43,7 +43,7 @@ it('combine', function () {
     ]);
 });
 
-it('combine params', function () {
+it('合单参数', function () {
     $plugin = new CloseShortcut();
     expect($plugin->getPlugins(['combine_out_trade_no' => '123abc']))->toEqual([
         StartPlugin::class,
@@ -68,7 +68,7 @@ it('combine params', function () {
     ]);
 });
 
-it('virtual', function () {
+it('虚拟支付', function () {
     $plugin = new CloseShortcut();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_ACTION_INVALID);

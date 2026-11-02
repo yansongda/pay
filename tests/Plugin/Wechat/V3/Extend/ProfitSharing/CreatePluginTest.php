@@ -12,7 +12,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\CreatePlugin;
 use Yansongda\Supports\Collection;
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
 
@@ -23,7 +23,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal without name', function () {
+it('无名称的正常场景', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -57,7 +57,7 @@ it('normal without name', function () {
     ]);
 });
 
-it('normal with name', function () {
+it('带名称的正常场景', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -90,7 +90,7 @@ it('normal with name', function () {
     expect($payload['receivers'][0]['name'])->not->toEqual('yansongda');
 });
 
-it('service params', function () {
+it('服务商参数', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
@@ -110,7 +110,7 @@ it('service params', function () {
     ]);
 });
 
-it('service without name', function () {
+it('未指定名称的服务商', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
@@ -129,7 +129,7 @@ it('service without name', function () {
     ]);
 });
 
-it('service with name', function () {
+it('指定名称的服务商', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
@@ -162,7 +162,7 @@ it('service with name', function () {
     expect($payload['receivers'][0]['name'])->not->toEqual('yansongda');
 });
 
-it('with sub app id', function () {
+it('携带子应用 ID', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
@@ -192,7 +192,7 @@ it('with sub app id', function () {
     ]);
 });
 
-it('service with name empty wechat cert', function () {
+it('指定名称且微信证书为空', function () {
     $plugin = new CreatePlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([

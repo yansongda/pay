@@ -22,7 +22,7 @@ it('foo', function () {
     $shortcut->getPlugins(['_action' => 'foo']);
 });
 
-it('default', function () {
+it('默认', function () {
     $shortcut = new WebShortcut();
     expect($shortcut->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -35,7 +35,7 @@ it('default', function () {
     ]);
 });
 
-it('pay', function () {
+it('支付', function () {
     $shortcut = new WebShortcut();
     expect($shortcut->getPlugins(['_action' => 'pay']))->toEqual([
         StartPlugin::class,
@@ -48,7 +48,7 @@ it('pay', function () {
     ]);
 });
 
-it('capture', function () {
+it('捕获', function () {
     $shortcut = new WebShortcut();
     expect($shortcut->getPlugins(['_action' => 'capture']))->toEqual([
         StartPlugin::class,

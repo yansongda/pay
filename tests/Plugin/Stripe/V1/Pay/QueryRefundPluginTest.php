@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\QueryRefundPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryRefundPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['refund_id' => 're_test456'])->setPayload(new Collection([]));
@@ -21,7 +21,7 @@ it('normal', function () {
     expect($payload->get('_url'))->toContain('v1/refunds/');
 });
 
-it('missing refund id', function () {
+it('缺少退款单号', function () {
     $plugin = new QueryRefundPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

@@ -11,7 +11,7 @@ use Yansongda\Pay\Plugin\Unipay\Open\ResponseHtmlPlugin;
 use Yansongda\Pay\Plugin\Unipay\Open\StartPlugin;
 use Yansongda\Pay\Shortcut\Unipay\WebShortcut;
 
-it('builds plugin pipeline', function () {
+it('构建插件管道', function () {
     $shortcut = new WebShortcut();
 
     expect($shortcut->getPlugins([]))->toEqual([

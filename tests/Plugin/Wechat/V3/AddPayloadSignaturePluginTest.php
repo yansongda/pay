@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\AddPayloadSignaturePlugin;
 use Yansongda\Supports\Collection;
 
-it('get signature content', function () {
+it('获取待签名内容', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $timestamp = 1626493236;
     $random = 'QqtzdVzxavZeXag9G5mtfzbfzFMf89p6';
@@ -43,7 +43,7 @@ it('get signature content', function () {
     expect($result)->toEqual($contents);
 });
 
-it('get signature normal', function () {
+it('获取签名（正常）', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $params = [
         'out_trade_no' => 1626493236,
@@ -70,7 +70,7 @@ it('get signature normal', function () {
     expect($result)->toEqual('WECHATPAY2-SHA256-RSA2048 mchid="1600314069",nonce_str="QqtzdVzxavZeXag9G5mtfzbfzFMf89p6",timestamp="1626493236",serial_no="25F8AA5452D55497C24BA57DC81B1E5915DC2E77",signature="KzIgMgiop3nQJNdBVR2Xah/JUwVBLDFFajyXPiSN8b8YAYEA4FuWfaCgFJ52+WFed+PhOYWx/ZPih4RaEuuSdYB8eZwYUx7RZGMQZk0bKCctAjjPuf4pJN+f/WsXKjPIy3diqF5x7gyxwSCaKWP4/KjsHNqgQpiC8q1uC5xmElzuhzSwj88LIoLtkAuSmtUVvdAt0Nz41ECHZgHWSGR32TfBo902r8afdaVKkFde8IoqcEJJcp6sMxdDO5l9R5KEWxrJ1SjsXVrb0IPH8Nj7e6hfhq7pucxojPpzsC+ZWAYvufZkAQx3kTiFmY87T+QhkP9FesOfWvkIRL4E6MP6ug=="');
 });
 
-it('get signature missing mch public cert', function () {
+it('获取签名缺少商户公钥证书', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $params = [
         'out_trade_no' => 1626493236,
@@ -100,7 +100,7 @@ it('get signature missing mch public cert', function () {
     $method->invokeArgs($plugin, [$config, $timestamp, $random, $contents]);
 });
 
-it('get signature wrong mch public cert', function () {
+it('使用错误商户公钥证书获取签名', function () {
     $plugin = new AddPayloadSignaturePlugin();
     $params = [
         'out_trade_no' => 1626493236,

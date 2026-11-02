@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\FormatPayloadBizContentPlugin;
 use Yansongda\Supports\Collection;
 
-it('sign normal', function () {
+it('签名正常', function () {
     $plugin = new FormatPayloadBizContentPlugin();
     $payload = [
         'biz_content' => ['out_trade_no' => 'yansongda-1622986519'],
@@ -20,7 +20,7 @@ it('sign normal', function () {
     expect($result->getPayload()->get('biz_content'))->toEqual('{"out_trade_no":"yansongda-1622986519"}');
 });
 
-it('sign underline params', function () {
+it('下划线参数签名', function () {
     $plugin = new FormatPayloadBizContentPlugin();
     $payload = [
         'biz_content' => ['out_trade_no' => 'yansongda-1622986519', '_method' => 'get', '_ignore' => true],

@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\QueryRefundPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryRefundPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['refund_id' => 'REF_789'])->setPayload(new Collection([]));
@@ -20,7 +20,7 @@ it('normal', function () {
     expect($payload->get('_url'))->toContain('REF_789');
 });
 
-it('normal without residual params', function () {
+it('无冗余参数的正常场景', function () {
     $plugin = new QueryRefundPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['refund_id' => 'REF_789', 'extra' => 'should_not_stay'])->setPayload(new Collection([]));
@@ -34,7 +34,7 @@ it('normal without residual params', function () {
     ]);
 });
 
-it('missing refund id', function () {
+it('缺少退款单号', function () {
     $plugin = new QueryRefundPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

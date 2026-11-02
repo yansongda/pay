@@ -8,14 +8,14 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Airwallex\V1\Pay\CancelPlugin;
 use Yansongda\Supports\Collection;
 
-it('missing id', function () {
+it('缺少 ID', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     (new CancelPlugin())->assembly((new Rocket())->setPayload(new Collection([])), fn ($rocket) => $rocket);
 });
 
-it('normal', function () {
+it('正常', function () {
     $result = (new CancelPlugin())->assembly(
         (new Rocket())->setPayload(new Collection(['payment_intent_id' => 'int_test123'])),
         fn ($rocket) => $rocket
@@ -27,7 +27,7 @@ it('normal', function () {
     expect($result->getPayload()->has('cancellation_reason'))->toBeFalse();
 });
 
-it('use id and cancellation reason', function () {
+it('使用 id 与撤销原因', function () {
     $result = (new CancelPlugin())->assembly(
         (new Rocket())->setPayload(new Collection([
             'id' => 'int_test456',

@@ -17,7 +17,7 @@ use Yansongda\Supports\Collection;
 
 uses(CallbackPluginTestHelpers::class);
 
-it('callback success', function () {
+it('回调成功', function () {
     $plugin = new CallbackPlugin();
     $signedTransactionInfo = AppleJwsFactory::makeJws([
         'transactionId' => '1000001234567890',
@@ -63,7 +63,7 @@ it('callback success', function () {
     expect($result->getPayload()->get('data.signedTransactionInfo.transactionId'))->toEqual('1000001234567890');
 });
 
-it('invalid body throws exception', function () {
+it('非法 body 抛出异常', function () {
     $plugin = new CallbackPlugin();
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/apple/notify', [], 'not-valid-json');
 
@@ -76,7 +76,7 @@ it('invalid body throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing signed payload throws exception', function () {
+it('缺少待签名 payload 抛出异常', function () {
     $plugin = new CallbackPlugin();
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/apple/notify', [], json_encode(['foo' => 'bar']));
 
@@ -89,7 +89,7 @@ it('missing signed payload throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('tampered payload throws exception', function () {
+it('payload 被篡改抛出异常', function () {
     $plugin = new CallbackPlugin();
     $jws = AppleJwsFactory::makeJws(['notificationType' => 'SUBSCRIBED']);
     $tampered = $this->tamperJwsPayload($jws, ['notificationType' => 'EVIL']);
@@ -105,7 +105,7 @@ it('tampered payload throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('tampered nested jws throws exception', function () {
+it('嵌套 JWS 被篡改抛出异常', function () {
     $plugin = new CallbackPlugin();
     $inner = AppleJwsFactory::makeJws(['transactionId' => '1000001234567890']);
     $payload = [
@@ -130,7 +130,7 @@ it('tampered nested jws throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('inner jws without x5c rejected', function () {
+it('内层 JWS 缺少 x5c 被拒绝', function () {
     $plugin = new CallbackPlugin();
     // 对齐官方库：二级 JWS 须自带 x5c，无 x5c 一律拒绝
     $inner = $this->makeInnerJws(['transactionId' => '1000001234567890']);
@@ -154,7 +154,7 @@ it('inner jws without x5c rejected', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('invalid request throws exception', function () {
+it('非法请求抛出异常', function () {
     $plugin = new CallbackPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_request' => ['foo' => 'bar'], '_params' => []]);
@@ -165,7 +165,7 @@ it('invalid request throws exception', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('provider callback links', function () {
+it('Provider 回调链接', function () {
     $jws = AppleJwsFactory::makeJws([
         'notificationType' => 'DID_RENEW',
         'subtype' => 'RESUBSCRIBE',

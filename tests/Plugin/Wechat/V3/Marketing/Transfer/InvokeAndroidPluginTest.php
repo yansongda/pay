@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\InvokeAndroidPlugin;
 use Yansongda\Supports\Collection;
 
-it('mode wrong', function () {
+it('模式错误', function () {
     $plugin = new InvokeAndroidPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider']);
@@ -21,7 +21,7 @@ it('mode wrong', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing package', function () {
+it('缺少 package', function () {
     $plugin = new InvokeAndroidPlugin();
     $rocket = new Rocket();
 
@@ -32,7 +32,7 @@ it('missing package', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new InvokeAndroidPlugin();
     $rocket = (new Rocket())
         ->setDestination(new Collection(['package_info' => 'affffddafdfafddffda==']))
@@ -46,7 +46,7 @@ it('normal params', function () {
     expect($contents->get('query'))->toEqual('appId=111&mchId=1600314069&package=affffddafdfafddffda%3D%3D');
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new InvokeAndroidPlugin();
     $rocket = (new Rocket())->setDestination(new Collection(['package_info' => 'affffddafdfafddffda==']));
 

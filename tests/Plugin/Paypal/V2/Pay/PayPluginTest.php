@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\PayPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection([
@@ -21,7 +21,7 @@ it('normal', function () {
     expect($payload->get('intent'))->toEqual('CAPTURE');
 });
 
-it('defaults from config', function () {
+it('配置默认值', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection([]));
@@ -35,7 +35,7 @@ it('defaults from config', function () {
     expect($context['cancel_url'])->toEqual('https://pay.yansongda.cn/paypal/cancel');
 });
 
-it('custom intent', function () {
+it('自定义 intent', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection(['intent' => 'AUTHORIZE']));
@@ -45,7 +45,7 @@ it('custom intent', function () {
     expect($result->getPayload()->get('intent'))->toEqual('AUTHORIZE');
 });
 
-it('application context params not residual', function () {
+it('application context 参数不留存', function () {
     $plugin = new PayPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection([

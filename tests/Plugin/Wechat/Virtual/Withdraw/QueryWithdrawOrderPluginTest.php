@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryWithdrawOrderPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryWithdrawOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -24,7 +24,7 @@ it('normal', function () {
     expect($payload->get('withdraw_no'))->toEqual('WITHDRAW_001');
 });
 
-it('with access token', function () {
+it('携带 access token', function () {
     $plugin = new QueryWithdrawOrderPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

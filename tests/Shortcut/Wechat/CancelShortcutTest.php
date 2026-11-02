@@ -14,7 +14,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CancelPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\CancelShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new CancelShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,

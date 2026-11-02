@@ -11,7 +11,7 @@ use Yansongda\Pay\Plugin\Jsb\StartPlugin;
 use Yansongda\Pay\Plugin\Jsb\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Jsb\QueryShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,

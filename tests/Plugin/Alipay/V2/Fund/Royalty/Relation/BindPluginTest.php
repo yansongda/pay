@@ -6,7 +6,7 @@ use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Fund\Royalty\Relation\BindPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new BindPlugin();
     $rocket = (new Rocket())
         ->setParams([]);

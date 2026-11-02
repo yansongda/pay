@@ -6,7 +6,7 @@ use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Pay\Mini\CancelPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CancelPlugin();
     $rocket = (new Rocket())
         ->setParams([]);

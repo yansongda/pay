@@ -6,7 +6,7 @@ use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\Pay\Web\QueryPlugin;
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setPayload([
@@ -37,7 +37,7 @@ it('normal params', function () {
     ]);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);

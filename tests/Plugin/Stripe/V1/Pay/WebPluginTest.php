@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\WebPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new WebPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection([]));
@@ -21,7 +21,7 @@ it('normal', function () {
     expect($payload->get('mode'))->toEqual('payment');
 });
 
-it('default urls from config', function () {
+it('配置默认 URL', function () {
     $plugin = new WebPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection([]));
@@ -33,7 +33,7 @@ it('default urls from config', function () {
     expect($payload->get('cancel_url'))->toEqual('https://pay.yansongda.cn/stripe/cancel');
 });
 
-it('custom urls', function () {
+it('自定义 URL', function () {
     $plugin = new WebPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection([
@@ -48,7 +48,7 @@ it('custom urls', function () {
     expect($payload->get('cancel_url'))->toEqual('https://example.com/cancel');
 });
 
-it('custom mode', function () {
+it('自定义模式', function () {
     $plugin = new WebPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection(['mode' => 'subscription']));
@@ -58,7 +58,7 @@ it('custom mode', function () {
     expect($result->getPayload()->get('mode'))->toEqual('subscription');
 });
 
-it('missing success url throws exception', function () {
+it('缺少 success_url 抛出异常', function () {
     $plugin = new WebPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\Refund\AuditPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new AuditPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -28,7 +28,7 @@ it('normal', function () {
     expect(array_keys($payload->all()))->toBe(['refund_id', 'refund_audit_status', '_method', '_url']);
 });
 
-it('deny message pass through', function () {
+it('拒绝消息透传', function () {
     $plugin = new AuditPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -45,7 +45,7 @@ it('deny message pass through', function () {
     expect($payload->get('refund_audit_status'))->toBe(2);
 });
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new AuditPlugin();
     $rocket = new Rocket();
 

@@ -11,7 +11,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\V3\CallbackPlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\CallbackPluginStub;
 
-it('alipay callback with missing sign', function () {
+it('支付宝回调缺少签名', function () {
     $request = new ServerRequest(
         'POST',
         'https://pay.yansongda.cn/alipay/notify',
@@ -24,7 +24,7 @@ it('alipay callback with missing sign', function () {
     Pay::alipay()->callback($request);
 });
 
-it('wechat callback with missing signature header', function () {
+it('微信回调缺少签名头', function () {
     $request = new ServerRequest(
         'POST',
         'https://pay.yansongda.cn/wechat/notify',
@@ -51,7 +51,7 @@ it('wechat callback with missing signature header', function () {
     Pay::wechat()->callback($request);
 });
 
-it('stripe webhook with missing signature header', function () {
+it('Stripe webhook 缺少签名头', function () {
     $payload = json_encode([
         'id' => 'evt_test',
         'object' => 'event',
@@ -70,7 +70,7 @@ it('stripe webhook with missing signature header', function () {
     Pay::stripe()->callback($request);
 });
 
-it('paypal webhook with invalid signature', function () {
+it('PayPal webhook 签名无效', function () {
     $payload = json_encode([
         'id' => 'WH-123',
         'event_type' => 'PAYMENT.CAPTURE.COMPLETED',

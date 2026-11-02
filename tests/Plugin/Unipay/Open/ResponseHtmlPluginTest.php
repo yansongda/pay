@@ -8,7 +8,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Open\ResponseHtmlPlugin;
 use Yansongda\Supports\Collection;
 
-it('html', function () {
+it('HTML', function () {
     $plugin = new ResponseHtmlPlugin();
     $rocket = new Rocket();
     $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))
@@ -23,7 +23,7 @@ it('html', function () {
     expect($contents)->toContain('yansongda');
 });
 
-it('payload underline', function () {
+it('下划线 payload', function () {
     $plugin = new ResponseHtmlPlugin();
     $rocket = new Rocket();
     $rocket->setRadar(new Request('POST', 'https://yansongda.cn'))

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\Openapi\GetStableTokenPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new GetStableTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);

@@ -6,7 +6,7 @@ use Yansongda\Artful\Direction\ResponseDirection;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V2\Member\FaceVerification\H5InitPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new H5InitPlugin();
     $rocket = (new Rocket())
         ->setParams([]);

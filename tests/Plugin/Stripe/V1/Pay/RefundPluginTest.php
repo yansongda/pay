@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\RefundPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal with payment intent', function () {
+it('携带 payment intent 的正常场景', function () {
     $plugin = new RefundPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['payment_intent' => 'pi_test123'])->setPayload(new Collection([]));
@@ -20,7 +20,7 @@ it('normal with payment intent', function () {
     expect($payload->get('_url'))->toEqual('/v1/refunds');
 });
 
-it('normal with charge', function () {
+it('携带 charge 的正常场景', function () {
     $plugin = new RefundPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['charge' => 'ch_test789'])->setPayload(new Collection([]));
@@ -32,7 +32,7 @@ it('normal with charge', function () {
     expect($payload->get('_url'))->toEqual('/v1/refunds');
 });
 
-it('normal with payment intent in payload', function () {
+it('payload 中携带 payment intent', function () {
     $plugin = new RefundPlugin();
     $rocket = new Rocket();
     $rocket->setParams([])->setPayload(new Collection(['payment_intent' => 'pi_test123']));
@@ -44,7 +44,7 @@ it('normal with payment intent in payload', function () {
     expect($payload->get('_url'))->toEqual('/v1/refunds');
 });
 
-it('missing payment intent and charge', function () {
+it('缺少 payment intent 与 charge', function () {
     $plugin = new RefundPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

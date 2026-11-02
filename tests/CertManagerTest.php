@@ -10,19 +10,19 @@ beforeEach(function () {
     CertManager::clearCache();
 });
 
-it('get public cert from file', function () {
+it('从文件获取公钥证书', function () {
     $path = __DIR__.'/Cert/alipayPublicCert.crt';
 
     expect(CertManager::getPublicCert($path))->toBe(file_get_contents($path));
 });
 
-it('get public cert from string', function () {
+it('从字符串获取公钥证书', function () {
     $content = file_get_contents(__DIR__.'/Cert/alipayPublicCert.crt');
 
     expect(CertManager::getPublicCert($content))->toBe($content);
 });
 
-it('get public cert cache hit', function () {
+it('公钥证书缓存命中', function () {
     $source = __DIR__.'/Cert/alipayPublicCert.crt';
     $path = sys_get_temp_dir().'/'.uniqid('cert-manager-public-', true).'.crt';
 
@@ -40,7 +40,7 @@ it('get public cert cache hit', function () {
     }
 });
 
-it('get public cert info from file', function () {
+it('从文件获取公钥证书信息', function () {
     $path = __DIR__.'/Cert/alipayAppPublicCert.crt';
     $expected = openssl_x509_parse(file_get_contents($path));
 
@@ -48,7 +48,7 @@ it('get public cert info from file', function () {
     expect(CertManager::getPublicCertInfo($path))->toBe($expected);
 });
 
-it('get public cert info from string', function () {
+it('从字符串获取公钥证书信息', function () {
     $content = file_get_contents(__DIR__.'/Cert/alipayAppPublicCert.crt');
     $expected = openssl_x509_parse($content);
 
@@ -56,7 +56,7 @@ it('get public cert info from string', function () {
     expect(CertManager::getPublicCertInfo($content))->toBe($expected);
 });
 
-it('get public cert info cache hit', function () {
+it('公钥证书信息缓存命中', function () {
     $source = __DIR__.'/Cert/alipayAppPublicCert.crt';
     $changed = file_get_contents(__DIR__.'/Cert/wechatPublicKey.crt');
     $path = sys_get_temp_dir().'/'.uniqid('cert-manager-public-info-', true).'.crt';
@@ -75,7 +75,7 @@ it('get public cert info cache hit', function () {
     }
 });
 
-it('get public cert info after clear cache', function () {
+it('清空缓存后获取公钥证书信息', function () {
     $source = __DIR__.'/Cert/alipayAppPublicCert.crt';
     $changed = file_get_contents(__DIR__.'/Cert/wechatPublicKey.crt');
     $path = sys_get_temp_dir().'/'.uniqid('cert-manager-public-info-clear-', true).'.crt';
@@ -99,26 +99,26 @@ it('get public cert info after clear cache', function () {
     }
 });
 
-it('get public cert info throws exception when cert invalid', function () {
+it('证书非法时获取公钥证书信息抛出异常', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 解析证书失败');
 
     CertManager::getPublicCertInfo('invalid-cert-content');
 });
 
-it('get alipay app cert sn from file', function () {
+it('从文件获取支付宝应用证书序列号', function () {
     $path = __DIR__.'/Cert/alipayAppPublicCert.crt';
 
     expect(CertManager::alipayGetAppCertSn($path))->toBe('e90dd23a37c5c7b616e003970817ff82');
 });
 
-it('get alipay app cert sn from string', function () {
+it('从字符串获取支付宝应用证书序列号', function () {
     $content = file_get_contents(__DIR__.'/Cert/alipayAppPublicCert.crt');
 
     expect(CertManager::alipayGetAppCertSn($content))->toBe('e90dd23a37c5c7b616e003970817ff82');
 });
 
-it('get alipay app cert sn cache hit', function () {
+it('支付宝应用证书序列号缓存命中', function () {
     $source = __DIR__.'/Cert/alipayAppPublicCert.crt';
     $path = sys_get_temp_dir().'/'.uniqid('cert-manager-alipay-app-sn-', true).'.crt';
 
@@ -136,7 +136,7 @@ it('get alipay app cert sn cache hit', function () {
     }
 });
 
-it('multi tenant alipay cert sn isolation', function () {
+it('多租户支付宝证书序列号隔离', function () {
     $path1 = __DIR__.'/Cert/alipayAppPublicCert.crt';
     $path2 = __DIR__.'/Cert/alipayPublicCert.crt';
 
@@ -148,19 +148,19 @@ it('multi tenant alipay cert sn isolation', function () {
     expect(CertManager::alipayGetAppCertSn($path2))->toBe($sn2);
 });
 
-it('get alipay root cert sn from file', function () {
+it('从文件获取支付宝根证书序列号', function () {
     $path = __DIR__.'/Cert/alipayRootCert.crt';
 
     expect(CertManager::alipayGetRootCertSn($path))->toBe('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6');
 });
 
-it('get alipay root cert sn from string', function () {
+it('从字符串获取支付宝根证书序列号', function () {
     $content = file_get_contents(__DIR__.'/Cert/alipayRootCert.crt');
 
     expect(CertManager::alipayGetRootCertSn($content))->toBe('687b59193f3f462dd5336e5abf83c5d8_02941eef3187dddf3d3b83462e1dfcf6');
 });
 
-it('get alipay root cert sn cache hit', function () {
+it('支付宝根证书序列号缓存命中', function () {
     $source = __DIR__.'/Cert/alipayRootCert.crt';
     $path = sys_get_temp_dir().'/'.uniqid('cert-manager-alipay-root-sn-', true).'.crt';
 
@@ -178,13 +178,13 @@ it('get alipay root cert sn cache hit', function () {
     }
 });
 
-it('get private cert from file', function () {
+it('从文件获取私钥证书', function () {
     $path = __DIR__.'/Cert/wechatAppPrivateKey.pem';
 
     expect(CertManager::getPrivateCert($path))->toBe(file_get_contents($path));
 });
 
-it('get private cert from string', function () {
+it('从字符串获取私钥证书', function () {
     $key = file_get_contents(__DIR__.'/Cert/wechatAppPrivateKey.pem');
     $key = preg_replace('/-----BEGIN PRIVATE KEY-----|-----END PRIVATE KEY-----|\s+/', '', $key);
 
@@ -195,7 +195,7 @@ it('get private cert from string', function () {
     expect(CertManager::getPrivateCert($key))->toBe($expected);
 });
 
-it('clear cache', function () {
+it('清空缓存', function () {
     $source = __DIR__.'/Cert/alipayPublicCert.crt';
     $path = sys_get_temp_dir().'/'.uniqid('cert-manager-clear-', true).'.crt';
 
@@ -216,7 +216,7 @@ it('clear cache', function () {
     }
 });
 
-it('clear cache clears wechat certs', function () {
+it('清空缓存清除微信证书', function () {
     CertManager::wechatSetCertBySerial('default', 'serial-1', 'cert-content');
 
     expect(CertManager::wechatGetCertBySerial('default', 'serial-1'))->not->toBeNull();
@@ -226,7 +226,7 @@ it('clear cache clears wechat certs', function () {
     expect(CertManager::wechatGetCertBySerial('default', 'serial-1'))->toBeNull();
 });
 
-it('get pkcs12 certs from file', function () {
+it('从文件获取 PKCS12 证书', function () {
     $path = __DIR__.'/Cert/unipayAppCert.pfx';
     $certs = CertManager::unipayGetPkcs12Certs($path, '000000');
 
@@ -234,7 +234,7 @@ it('get pkcs12 certs from file', function () {
     expect($certs)->toHaveKey('pkey');
 });
 
-it('get pkcs12 certs cache hit', function () {
+it('PKCS12 证书缓存命中', function () {
     $path = __DIR__.'/Cert/unipayAppCert.pfx';
 
     $first = CertManager::unipayGetPkcs12Certs($path, '000000');
@@ -243,7 +243,7 @@ it('get pkcs12 certs cache hit', function () {
     expect($second)->toBe($first);
 });
 
-it('clear cache invalidates alipay and unipay caches', function () {
+it('清空缓存使支付宝与银联缓存失效', function () {
     $path = __DIR__.'/Cert/alipayAppPublicCert.crt';
 
     $sn1 = CertManager::alipayGetAppCertSn($path);
@@ -276,20 +276,20 @@ it('clear cache invalidates alipay and unipay caches', function () {
     }
 });
 
-it('get pkcs12 certs wrong password throws exception', function () {
+it('PKCS12 证书密码错误抛出异常', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 读取证书失败，确认参数是否正确');
 
     CertManager::unipayGetPkcs12Certs(__DIR__.'/Cert/unipayAppCert.pfx', 'wrong_password');
 });
 
-it('get unipay cert id from file', function () {
+it('从文件获取银联证书 ID', function () {
     $path = __DIR__.'/Cert/unipayAppCert.pfx';
 
     expect(CertManager::unipayGetCertId($path, '000000'))->toBe('69903319369');
 });
 
-it('get unipay cert id cache hit', function () {
+it('银联证书 ID 缓存命中', function () {
     $path = __DIR__.'/Cert/unipayAppCert.pfx';
 
     $first = CertManager::unipayGetCertId($path, '000000');
@@ -298,7 +298,7 @@ it('get unipay cert id cache hit', function () {
     expect($second)->toBe($first);
 });
 
-it('get unipay cert id invalid cert throws exception', function () {
+it('银联证书 ID：非法证书抛出异常', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 读取证书失败，确认参数是否正确');
 

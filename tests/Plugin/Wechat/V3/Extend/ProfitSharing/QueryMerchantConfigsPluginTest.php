@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\QueryMerchantConfigsPlugin;
 use Yansongda\Supports\Collection;
 
-it('mode wrong', function () {
+it('模式错误', function () {
     $plugin = new QueryMerchantConfigsPlugin();
     $rocket = new Rocket();
 
@@ -19,7 +19,7 @@ it('mode wrong', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryMerchantConfigsPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider']);
@@ -32,7 +32,7 @@ it('normal', function () {
     ]);
 });
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new QueryMerchantConfigsPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])

@@ -7,7 +7,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Apple\Pay\MerchantSessionPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new MerchantSessionPlugin();
     $url = 'https://apple-pay-gateway.apple.com/paymentservices/startSession';
 
@@ -32,7 +32,7 @@ it('normal', function () {
     ]);
 });
 
-it('display name and initiative context from params', function () {
+it('参数中的 display_name 与 initiative_context', function () {
     $plugin = new MerchantSessionPlugin();
     $rocket = (new Rocket())->setParams([
         'validation_url' => 'https://cn-apple-pay-gateway.apple.com/paymentservices/startSession',
@@ -49,7 +49,7 @@ it('display name and initiative context from params', function () {
     expect($body['initiativeContext'])->toEqual('https://shop.yansongda.cn');
 });
 
-it('host case insensitive', function () {
+it('域名大小写不敏感', function () {
     $plugin = new MerchantSessionPlugin();
     $url = 'https://Apple-Pay-Gateway.APPLE.COM/paymentservices/startSession';
 
@@ -63,7 +63,7 @@ it('host case insensitive', function () {
     expect($result->getPayload()->get('_url'))->toEqual($url);
 });
 
-it('missing initiative context throws exception', function () {
+it('缺少 initiative context 抛出异常', function () {
     $plugin = new MerchantSessionPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
@@ -73,7 +73,7 @@ it('missing initiative context throws exception', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('missing validation url throws exception', function () {
+it('缺少 validation_url 抛出异常', function () {
     $plugin = new MerchantSessionPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
@@ -83,7 +83,7 @@ it('missing validation url throws exception', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('http scheme throws exception', function () {
+it('http 协议抛出异常', function () {
     $plugin = new MerchantSessionPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_APPLE_URL_MISSING);
@@ -93,7 +93,7 @@ it('http scheme throws exception', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('non apple host throws exception', function () {
+it('非 Apple 域名抛出异常', function () {
     $plugin = new MerchantSessionPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_APPLE_URL_MISSING);

@@ -19,11 +19,11 @@ class AirwallexTraitStub
 use AirwallexTrait;
 }
 
-it('get airwallex request id', function () {
+it('获取 Airwallex 请求 ID', function () {
     expect(AirwallexTraitStub::getAirwallexRequestId())->toMatch('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/');
 });
 
-it('get airwallex url', function () {
+it('获取 Airwallex URL', function () {
     $config = new AirwallexConfig([
         'client_id' => 'airwallex_client_id',
         'api_key' => 'airwallex_api_key',
@@ -43,7 +43,7 @@ it('get airwallex url', function () {
     AirwallexTraitStub::getAirwallexUrl($config, new Collection([]));
 });
 
-it('get airwallex access token from cache', function () {
+it('从缓存获取 Airwallex access token', function () {
     $config = Pay::get(ConfigInterface::class)->get('airwallex.default');
     $config->setAccessToken('cached_airwallex_token');
     $config->setAccessTokenExpiry(time() + 3600);
@@ -51,7 +51,7 @@ it('get airwallex access token from cache', function () {
     expect(AirwallexTraitStub::getAirwallexAccessToken([]))->toBe('cached_airwallex_token');
 });
 
-it('get airwallex access token missing credentials', function () {
+it('Airwallex access token 缺少凭证', function () {
     $config = Pay::get(ConfigInterface::class)->get('airwallex.default');
     $config->setClientId('');
 
@@ -61,7 +61,7 @@ it('get airwallex access token missing credentials', function () {
     AirwallexTraitStub::getAirwallexAccessToken([]);
 });
 
-it('verify airwallex webhook sign empty signature', function () {
+it('Airwallex webhook 验签：签名为空', function () {
     $request = new ServerRequest('POST', 'https://pay.yansongda.cn/airwallex/notify', [], '{}');
 
     $this->expectException(InvalidSignException::class);
@@ -70,7 +70,7 @@ it('verify airwallex webhook sign empty signature', function () {
     AirwallexTraitStub::verifyAirwallexWebhookSign($request, []);
 });
 
-it('verify airwallex webhook sign', function () {
+it('Airwallex webhook 验签', function () {
     $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
     $timestamp = (string) ((int) (microtime(true) * 1000));
     $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
@@ -84,7 +84,7 @@ it('verify airwallex webhook sign', function () {
     expect(true)->toBeTrue();
 });
 
-it('verify airwallex webhook sign expired timestamp', function () {
+it('Airwallex webhook 验签：时间戳过期', function () {
     $body = '{"id":"evt_test","name":"payment_intent.succeeded"}';
     $timestamp = (string) (((int) (microtime(true) * 1000)) - 301000);
     $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');

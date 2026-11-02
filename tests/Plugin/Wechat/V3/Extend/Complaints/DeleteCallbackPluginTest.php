@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\DeleteCallbackPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new DeleteCallbackPlugin();
     $rocket = new Rocket();
 

@@ -12,7 +12,7 @@ use Yansongda\Pay\Plugin\Airwallex\V1\Pay\PayPlugin;
 use Yansongda\Pay\Plugin\Airwallex\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Airwallex\IntentShortcut;
 
-it('normal', function () {
+it('正常', function () {
     expect((new IntentShortcut())->getPlugins([]))->toEqual([
         StartPlugin::class,
         ObtainAccessTokenPlugin::class,

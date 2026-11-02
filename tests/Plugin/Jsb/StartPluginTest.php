@@ -6,7 +6,7 @@ use Yansongda\Artful\Packer\QueryPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Jsb\StartPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new StartPlugin();
     $rocket = new Rocket();
 

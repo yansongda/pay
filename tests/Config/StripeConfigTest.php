@@ -6,7 +6,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\StripeConfig;
 use Yansongda\Pay\Enum\PayMode;
 
-it('construct valid config', function () {
+it('构造合法配置', function () {
     $validConfig = [
         'secret_key' => 'sk_test_123',
     ];
@@ -17,7 +17,7 @@ it('construct valid config', function () {
     expect($config->getMode())->toBe(PayMode::NORMAL);
 });
 
-it('construct with tenant', function () {
+it('指定租户构造', function () {
     $validConfig = [
         'secret_key' => 'sk_test_123',
     ];
@@ -26,7 +26,7 @@ it('construct with tenant', function () {
     expect($config->getTenant())->toBe('custom_tenant');
 });
 
-it('construct missing required', function () {
+it('缺少必填项构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 缺少 Stripe 配置 -- [secret_key]');
 
@@ -34,7 +34,7 @@ it('construct missing required', function () {
     $config->validate();
 });
 
-it('optional getters', function () {
+it('可选 getter', function () {
     $validConfig = [
         'secret_key' => 'sk_test_123',
     ];
@@ -51,7 +51,7 @@ it('optional getters', function () {
     expect($config->getCancelUrl())->toBe('https://cancel.com');
 });
 
-it('optional getters null', function () {
+it('可选 getter 返回 null', function () {
     $validConfig = [
         'secret_key' => 'sk_test_123',
     ];
@@ -63,7 +63,7 @@ it('optional getters null', function () {
     expect($config->getCancelUrl())->toBeNull();
 });
 
-it('mode sandbox', function () {
+it('沙箱模式', function () {
     $validConfig = [
         'secret_key' => 'sk_test_123',
     ];
@@ -75,7 +75,7 @@ it('mode sandbox', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('mode with pay mode enum', function () {
+it('使用 PayMode 枚举的模式', function () {
     $validConfig = [
         'secret_key' => 'sk_test_123',
     ];

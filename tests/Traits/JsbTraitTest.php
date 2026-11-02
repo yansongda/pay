@@ -19,7 +19,7 @@ use JsbTrait;
 
 uses(JsbTraitTestHelpers::class);
 
-it('get jsb url', function () {
+it('获取江苏银行 URL', function () {
     expect(JsbTraitStub::getJsbUrl(new JsbConfig([
         'partner_id' => '6a13eab71c4f4b0aa4757eda6fc59710',
         'public_key_code' => '00',
@@ -42,7 +42,7 @@ it('get jsb url', function () {
     ]), new Collection()))->toEqual('https://epaytest.jsbchina.cn:9999/eis/merchant/merchantServices.htm');
 });
 
-it('verify jsb sign empty', function () {
+it('江苏银行验签为空', function () {
     $config = $this->getJsbConfig();
 
     $this->expectException(InvalidSignException::class);
@@ -51,7 +51,7 @@ it('verify jsb sign empty', function () {
     JsbTraitStub::verifyJsbSign($config, 'content', '');
 });
 
-it('verify jsb sign missing config', function () {
+it('江苏银行验签缺少配置', function () {
     $config = $this->getJsbConfig();
 
     $config->setJsbPublicCertPath('');

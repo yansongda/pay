@@ -8,14 +8,14 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Airwallex\V1\Pay\ConfirmPlugin;
 use Yansongda\Supports\Collection;
 
-it('missing id', function () {
+it('缺少 ID', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
     (new ConfirmPlugin())->assembly((new Rocket())->setPayload(new Collection([])), fn ($rocket) => $rocket);
 });
 
-it('normal', function () {
+it('正常', function () {
     $result = (new ConfirmPlugin())->assembly(
         (new Rocket())->setPayload(new Collection([
             'payment_intent_id' => 'int_test123',

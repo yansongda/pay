@@ -7,7 +7,7 @@ use Yansongda\Pay\Config\AppleConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
 
-it('construct valid config', function () {
+it('构造合法配置', function () {
     $validConfig = [
         'merchant_id' => 'merchant.com.example.app',
         'payment_processing_cert' => '/path/to/payment-processing-cert.pem',
@@ -38,7 +38,7 @@ it('construct valid config', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('default apple root ca and intermediate ca', function () {
+it('默认 Apple 根证书与中间证书', function () {
     $validConfig = [
         'merchant_id' => 'merchant.com.example.app',
         'payment_processing_cert' => '/path/to/payment-processing-cert.pem',
@@ -58,7 +58,7 @@ it('default apple root ca and intermediate ca', function () {
     expect(openssl_x509_parse((string) file_get_contents($intermediateCa)))->not->toBeFalse();
 });
 
-it('construct missing merchant id', function () {
+it('缺少商户号构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::CONFIG_APPLE_INVALID);
     $this->expectExceptionMessage('配置异常: 缺少 Apple 配置 -- [merchant_id]');
@@ -69,7 +69,7 @@ it('construct missing merchant id', function () {
     $config->validate();
 });
 
-it('construct missing payment processing cert', function () {
+it('缺少支付处理证书构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::CONFIG_APPLE_INVALID);
     $this->expectExceptionMessage('配置异常: 缺少 Apple 配置 -- [payment_processing_cert]');
@@ -80,7 +80,7 @@ it('construct missing payment processing cert', function () {
     $config->validate();
 });
 
-it('construct partial api config', function () {
+it('部分 API 配置构造', function () {
     $validConfig = [
         'merchant_id' => 'merchant.com.example.app',
         'payment_processing_cert' => '/path/to/payment-processing-cert.pem',
@@ -95,7 +95,7 @@ it('construct partial api config', function () {
     $config->validate();
 });
 
-it('construct without api config', function () {
+it('不传 API 配置构造', function () {
     $validConfig = [
         'merchant_id' => 'merchant.com.example.app',
         'payment_processing_cert' => '/path/to/payment-processing-cert.pem',
@@ -115,7 +115,7 @@ it('construct without api config', function () {
     $config->validate();
 });
 
-it('mode with pay mode enum', function () {
+it('使用 PayMode 枚举的模式', function () {
     $validConfig = [
         'merchant_id' => 'merchant.com.example.app',
         'payment_processing_cert' => '/path/to/payment-processing-cert.pem',
@@ -127,7 +127,7 @@ it('mode with pay mode enum', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('invalid mode throws exception', function () {
+it('非法模式抛出异常', function () {
     $validConfig = [
         'merchant_id' => 'merchant.com.example.app',
         'payment_processing_cert' => '/path/to/payment-processing-cert.pem',

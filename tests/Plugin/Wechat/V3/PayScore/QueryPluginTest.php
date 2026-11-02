@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\PayScore\QueryPlugin;
 use Yansongda\Supports\Collection;
 
-it('missing query id', function () {
+it('缺少查询 ID', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -22,7 +22,7 @@ it('missing query id', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('query by out order no', function () {
+it('按商户订单号查询', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -37,7 +37,7 @@ it('query by out order no', function () {
     ]);
 });
 
-it('query by query id', function () {
+it('按 query_id 查询', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -52,7 +52,7 @@ it('query by query id', function () {
     ]);
 });
 
-it('both params', function () {
+it('同时提供两种参数', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -67,7 +67,7 @@ it('both params', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('service id missing', function () {
+it('缺少服务商 ID', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([

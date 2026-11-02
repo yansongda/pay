@@ -11,7 +11,7 @@ use Yansongda\Pay\Plugin\Airwallex\V1\Pay\RefundPlugin;
 use Yansongda\Pay\Plugin\Airwallex\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Airwallex\RefundShortcut;
 
-it('normal', function () {
+it('正常', function () {
     expect((new RefundShortcut())->getPlugins([]))->toEqual([
         StartPlugin::class,
         ObtainAccessTokenPlugin::class,

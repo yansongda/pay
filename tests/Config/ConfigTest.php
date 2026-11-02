@@ -8,7 +8,7 @@ use Yansongda\Pay\Config\AlipayConfig;
 use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 
-it('construct with array', function () {
+it('数组构造', function () {
     $config = new Config([
         'wechat' => [
             'default' => [
@@ -27,7 +27,7 @@ it('construct with array', function () {
     expect($wechatConfig->getMchId())->toBe('test_mch_id');
 });
 
-it('get provider config', function () {
+it('获取 provider 配置', function () {
     $config = new Config([
         'alipay' => [
             'default' => [
@@ -46,7 +46,7 @@ it('get provider config', function () {
     expect($alipayConfig->getAppId())->toBe('test_app_id');
 });
 
-it('get provider config with tenant', function () {
+it('按租户获取 provider 配置', function () {
     $config = new Config([
         'alipay' => [
             'tenant1' => [
@@ -64,7 +64,7 @@ it('get provider config with tenant', function () {
     expect($alipayConfig->getAppId())->toBe('tenant1_app_id');
 });
 
-it('get provider config unknown provider', function () {
+it('获取未知 provider 配置', function () {
     $config = new Config([]);
 
     $this->expectException(InvalidConfigException::class);
@@ -74,7 +74,7 @@ it('get provider config unknown provider', function () {
     $config->getProviderConfig('unknown');
 });
 
-it('get provider config missing tenant', function () {
+it('provider 配置缺少租户', function () {
     $config = new Config([
         'alipay' => [
             'default' => [
@@ -94,7 +94,7 @@ it('get provider config missing tenant', function () {
     $config->getProviderConfig('alipay', 'missing_tenant');
 });
 
-it('config object not converted', function () {
+it('配置对象不被转换', function () {
     $existingConfig = new WechatConfig([
         'app_id' => 'existing_app_id',
         'mch_id' => 'existing_mch_id',
@@ -114,7 +114,7 @@ it('config object not converted', function () {
     expect($wechatConfig)->toBe($existingConfig);
 });
 
-it('provider config to array uses snake case external keys', function () {
+it('配置转数组使用蛇形外部键', function () {
     $config = new Config([
         'alipay' => [
             'default' => [
@@ -133,7 +133,7 @@ it('provider config to array uses snake case external keys', function () {
     expect($alipayConfig->toArray())->not->toHaveKey('alipayRootCertSn');
 });
 
-it('construct with incomplete unused provider config', function () {
+it('未使用 provider 配置不完整时构造', function () {
     $config = new Config([
         'wechat' => [
             'default' => [

@@ -8,7 +8,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Openapi\Oauth\RefreshTokenPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new RefreshTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams([
@@ -28,7 +28,7 @@ it('normal', function () {
     expect($payload->get('_body'))->toEqual('');
 });
 
-it('with config defaults', function () {
+it('使用配置默认值', function () {
     $plugin = new RefreshTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['refresh_token' => 'the_wechat_refresh_token']);
@@ -45,7 +45,7 @@ it('with config defaults', function () {
     expect($payload->get('_body'))->toEqual('');
 });
 
-it('missing refresh token throws', function () {
+it('缺少 refresh token 抛出异常', function () {
     $plugin = new RefreshTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);
@@ -57,7 +57,7 @@ it('missing refresh token throws', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing config app id throws', function () {
+it('缺少配置 app_id 抛出异常', function () {
     $plugin = new RefreshTokenPlugin();
     $rocket = new Rocket();
     $rocket->setParams([

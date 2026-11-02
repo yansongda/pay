@@ -14,7 +14,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CreatePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\TransferShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new TransferShortcut();
     expect($plugin->getPlugins(['_action' => 'transfer']))->toEqual([
         StartPlugin::class,

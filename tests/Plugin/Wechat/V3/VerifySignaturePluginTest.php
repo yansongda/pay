@@ -8,7 +8,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Tests\Stubs\Plugin\VerifySignaturePluginStub;
 
-it('should not do request', function () {
+it('不应发起请求', function () {
     $plugin = new VerifySignaturePluginStub();
     $rocket = new Rocket();
     $rocket->setDirection(NoHttpRequestDirection::class)->setDestinationOrigin(new Response());
@@ -21,7 +21,7 @@ it('should not do request', function () {
     expect($result)->toBe($rocket);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new VerifySignaturePluginStub();
     $response = new Response(
         200,

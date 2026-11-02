@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\Refund\QueryPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -26,7 +26,7 @@ it('normal', function () {
     expect(array_keys($payload->all()))->toBe(['refund_id', '_method', '_url']);
 });
 
-it('out refund no and order id', function () {
+it('退款单号与订单号', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -43,7 +43,7 @@ it('out refund no and order id', function () {
     expect($payload->all())->not->toHaveKey('notify_url');
 });
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
 
@@ -54,7 +54,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('only filtered params payload', function () {
+it('仅保留过滤后的参数', function () {
     $plugin = new QueryPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

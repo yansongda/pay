@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Qra\CallbackPlugin;
 
-it('return callback', function () {
+it('同步回调', function () {
     $plugin = new CallbackPlugin();
     $input = [
         'charset' => 'UTF-8',

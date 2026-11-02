@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Alipay\V3\Pay\CancelPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CancelPlugin();
     $params = ['_config' => 'alipay-v3', 'out_trade_no' => 'yansongda-2026'];
     $rocket = (new Rocket())->setParams($params)->setPayload(new Collection($params));

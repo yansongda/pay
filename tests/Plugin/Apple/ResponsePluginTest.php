@@ -15,7 +15,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Apple\ResponsePlugin;
 use Yansongda\Supports\Pipeline;
 
-it('success response passes through', function () {
+it('成功响应透传', function () {
     // 与 Artful::artful() 同构的 Pipeline 手动组装，走 Artful::ignite() 发 HTTP（真实弹栈）
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->once()->andReturn(
@@ -36,7 +36,7 @@ it('success response passes through', function () {
     Mockery::close();
 });
 
-it('http status code error throws code wrong', function () {
+it('HTTP 状态码错误抛出对应错误码', function () {
     // 异常抛出后后续代码不可达，与 Wechat Openapi ResponsePluginTest 一致不调用 Mockery::close()
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->once()->andReturn(
@@ -56,7 +56,7 @@ it('http status code error throws code wrong', function () {
         ->then(static fn (Rocket $rocket) => Artful::ignite($rocket));
 });
 
-it('no http request direction skips', function () {
+it('无 HTTP 请求方向时跳过', function () {
     $plugin = new ResponsePlugin();
     // 本地操作场景（NoHttpRequestDirection）：即使 destinationOrigin 为 500 也不校验
     $rocket = new Rocket();

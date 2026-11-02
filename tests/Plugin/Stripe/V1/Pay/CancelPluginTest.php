@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\CancelPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['payment_intent_id' => 'pi_test123'])->setPayload(new Collection([]));
@@ -21,7 +21,7 @@ it('normal', function () {
     expect($payload->get('_url'))->toContain('cancel');
 });
 
-it('url contains cancel', function () {
+it('URL 包含撤销', function () {
     $plugin = new CancelPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['payment_intent_id' => 'pi_abc'])->setPayload(new Collection([]));
@@ -31,7 +31,7 @@ it('url contains cancel', function () {
     expect($result->getPayload()->get('_url'))->toEqual('/v1/payment_intents/pi_abc/cancel');
 });
 
-it('missing payment intent id', function () {
+it('缺少 payment_intent_id', function () {
     $plugin = new CancelPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

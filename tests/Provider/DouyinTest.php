@@ -20,14 +20,14 @@ use Yansongda\Supports\Collection;
 
 uses(DouyinTestHelpers::class);
 
-it('shortcut not found', function () {
+it('快捷方式不存在', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::douyin()->foo();
 });
 
-it('call mini', function () {
+it('调用小程序', function () {
     $fields = [
         'outOrderNo' => '20260905123456',
         'totalAmount' => 100,
@@ -67,21 +67,21 @@ it('call mini', function () {
     ))->toBe(1);
 });
 
-it('cancel', function () {
+it('撤销', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(PayException::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::douyin()->cancel([]);
 });
 
-it('close', function () {
+it('关单', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(PayException::PARAMS_METHOD_NOT_SUPPORTED);
 
     Pay::douyin()->close([]);
 });
 
-it('query', function () {
+it('查询', function () {
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->twice()->andReturn(
         new Response(200, [], '{"data":{"access_token":"client_token_test","expires_in":7200,"error_code":0,"description":"success"}}'),
@@ -108,7 +108,7 @@ it('query', function () {
     Mockery::close();
 });
 
-it('refund', function () {
+it('退款', function () {
     $http = Mockery::mock(Client::class);
     $http->shouldReceive('sendRequest')->twice()->andReturn(
         new Response(200, [], '{"data":{"access_token":"client_token_test","expires_in":7200,"error_code":0,"description":"success"}}'),
@@ -137,7 +137,7 @@ it('refund', function () {
     Mockery::close();
 });
 
-it('callback', function () {
+it('回调', function () {
     $msg = '{"order_id":"7398108028895054107","out_trade_no":"yansongda","total_amount":1,"status":"SUCCESS","seller_uid":"73744242495132490630","paid_at":1722769986}';
     $body = '{"version":"3.0","type":"payment","msg":'.json_encode($msg).'}';
 
@@ -152,14 +152,14 @@ it('callback', function () {
     expect($result->get('status'))->toBe('SUCCESS');
 });
 
-it('callback with array contents', function () {
+it('数组内容回调', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(PayException::PARAMS_CALLBACK_REQUEST_INVALID);
 
     Pay::douyin()->callback(['type' => 'payment', 'msg' => '{}']);
 });
 
-it('callback tampered signature', function () {
+it('回调签名被篡改', function () {
     $msg = '{"order_id":"7398108028895054107","out_trade_no":"yansongda"}';
     $body = '{"version":"3.0","type":"payment","msg":'.json_encode($msg).'}';
 
@@ -171,7 +171,7 @@ it('callback tampered signature', function () {
     Pay::douyin()->callback($request);
 });
 
-it('callback refund type', function () {
+it('退款类型回调', function () {
     $msg = '{"refund_id":"7398108028895054107","out_refund_no":"yansongda-refund","refund_amount":1,"status":"SUCCESS"}';
     $body = '{"version":"3.0","type":"refund","msg":'.json_encode($msg).'}';
 
@@ -185,7 +185,7 @@ it('callback refund type', function () {
     expect($result->get('status'))->toBe('SUCCESS');
 });
 
-it('callback pre create refund type', function () {
+it('预创建退款类型回调', function () {
     $msg = '{"order_id":"7398108028895054107","out_refund_no":"yansongda-refund","refund_amount":1,"reason":"测试退款"}';
     $body = '{"version":"3.0","type":"pre_create_refund","msg":'.json_encode($msg).'}';
 
@@ -199,7 +199,7 @@ it('callback pre create refund type', function () {
     expect($result->get('reason'))->toBe('测试退款');
 });
 
-it('success', function () {
+it('成功', function () {
     $result = Pay::douyin()->success();
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);

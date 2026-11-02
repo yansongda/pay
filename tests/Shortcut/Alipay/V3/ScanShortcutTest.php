@@ -18,7 +18,7 @@ use Yansongda\Pay\Plugin\Alipay\V3\ResponsePlugin;
 use Yansongda\Pay\Plugin\Alipay\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\V3\ScanShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new ScanShortcut();
     $plugins = $plugin->getPlugins([]);
 
@@ -38,7 +38,7 @@ it('default', function () {
     expect(array_search(ResponsePlugin::class, $plugins, true))->toBeLessThan(array_search(VerifySignaturePlugin::class, $plugins, true));
 });
 
-it('end to end', function () {
+it('端到端', function () {
     $plugin = new ScanShortcut();
     $responseData = [
         'out_trade_no' => 'v3scan1704093802',
@@ -85,7 +85,7 @@ it('end to end', function () {
     expect($result->getDestination()->all())->toEqualCanonicalizing($responseData);
 });
 
-it('end to end cert mode', function () {
+it('证书模式端到端', function () {
     $plugin = new ScanShortcut();
     $responseData = [
         'out_trade_no' => 'v3scancert1704093802',

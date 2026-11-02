@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new AddRadarPlugin();
     $params = [];
     $payload = new Collection([
@@ -30,7 +30,7 @@ it('normal', function () {
     expect((string) $radar->getUri())->toEqual('https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi');
 });
 
-it('normal with authorization', function () {
+it('携带授权的正常场景', function () {
     $plugin = new AddRadarPlugin();
     $params = [];
     $payload = new Collection([
@@ -52,7 +52,7 @@ it('normal with authorization', function () {
     expect((string) $radar->getUri())->toEqual('https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi');
 });
 
-it('normal with wechat serial', function () {
+it('携带微信序列号的正常场景', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -70,7 +70,7 @@ it('normal with wechat serial', function () {
     expect($radar->getHeaderLine('Wechatpay-Serial'))->toEqual('yansongda');
 });
 
-it('normal with content type', function () {
+it('携带 content type 的正常场景', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -87,7 +87,7 @@ it('normal with content type', function () {
     expect($radar->getHeaderLine('Content-Type'))->toEqual('yansongda');
 });
 
-it('normal with accept', function () {
+it('携带 accept 的正常场景', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',

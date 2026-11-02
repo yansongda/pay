@@ -19,7 +19,7 @@ use Yansongda\Pay\Plugin\Wechat\V2\Pay\Mp\InvokePlugin as MpInvokePlugin;
 use Yansongda\Pay\Plugin\Wechat\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\PapayShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new PapayShortcut();
     expect($plugin->getPlugins(['_type' => 'mini']))->toEqual([
         StartPlugin::class,
@@ -85,7 +85,7 @@ it('default', function () {
     $plugin->getPlugins(['_type' => 'foo']);
 });
 
-it('order', function () {
+it('订单', function () {
     $plugin = new PapayShortcut();
     expect($plugin->getPlugins(['_action' => 'order', '_type' => 'mini']))->toEqual([
         StartPlugin::class,
@@ -134,7 +134,7 @@ it('order', function () {
     ]);
 });
 
-it('apply', function () {
+it('申请', function () {
     $plugin = new PapayShortcut();
     expect($plugin->getPlugins(['_action' => 'apply']))->toEqual([
         StartPlugin::class,
@@ -148,7 +148,7 @@ it('apply', function () {
     ]);
 });
 
-it('contract', function () {
+it('合约', function () {
     $plugin = new PapayShortcut();
     expect($plugin->getPlugins(['_action' => 'contract', '_type' => 'mini']))->toEqual([
         StartPlugin::class,

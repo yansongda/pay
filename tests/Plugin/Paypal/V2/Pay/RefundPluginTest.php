@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\RefundPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new RefundPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['capture_id' => 'CAP_123'])->setPayload(new Collection([]));
@@ -24,7 +24,7 @@ it('normal', function () {
     expect($payload->get('capture_id'))->toBeNull();
 });
 
-it('with amount', function () {
+it('携带金额', function () {
     $plugin = new RefundPlugin();
     $amount = ['currency_code' => 'USD', 'value' => '5.00'];
 
@@ -44,7 +44,7 @@ it('with amount', function () {
     ]);
 });
 
-it('missing capture id', function () {
+it('缺少 capture ID', function () {
     $plugin = new RefundPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);

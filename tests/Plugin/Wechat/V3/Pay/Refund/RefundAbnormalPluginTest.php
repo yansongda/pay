@@ -12,7 +12,7 @@ use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Refund\RefundAbnormalPlugin;
 use Yansongda\Supports\Collection;
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new RefundAbnormalPlugin();
     $rocket = new Rocket();
 
@@ -23,7 +23,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new RefundAbnormalPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -41,7 +41,7 @@ it('normal', function () {
     ]);
 });
 
-it('normal with name', function () {
+it('带名称的正常场景', function () {
     $plugin = new RefundAbnormalPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -66,7 +66,7 @@ it('normal with name', function () {
     expect($payload)->toHaveKey('_serial_no');
 });
 
-it('service params', function () {
+it('服务商参数', function () {
     $plugin = new RefundAbnormalPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
@@ -86,7 +86,7 @@ it('service params', function () {
     ]);
 });
 
-it('service', function () {
+it('服务商', function () {
     $plugin = new RefundAbnormalPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
@@ -105,7 +105,7 @@ it('service', function () {
     ]);
 });
 
-it('service with name', function () {
+it('指定名称的服务商', function () {
     $plugin = new RefundAbnormalPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
@@ -131,7 +131,7 @@ it('service with name', function () {
     expect($payload)->toHaveKey('_serial_no');
 });
 
-it('service with name empty wechat cert', function () {
+it('指定名称且微信证书为空', function () {
     $plugin = new RefundAbnormalPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([

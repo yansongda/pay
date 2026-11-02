@@ -12,7 +12,7 @@ use Yansongda\Pay\Exception\InvalidSignException;
 use Yansongda\Pay\Plugin\Jsb\CallbackPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new CallbackPlugin();
     $payload = [
         'partnerId' => '6a13eab71c4f4b0aa4757eda6fc59710',
@@ -37,7 +37,7 @@ it('normal', function () {
     expect($result->getPayload()->all())->not->toBeEmpty();
 });
 
-it('error sign', function () {
+it('签名错误', function () {
     $plugin = new CallbackPlugin();
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_ERROR);
@@ -64,7 +64,7 @@ it('error sign', function () {
     expect($result->getPayload()->all())->not->toBeEmpty();
 });
 
-it('empty sign', function () {
+it('空签名', function () {
     $plugin = new CallbackPlugin();
     $this->expectException(InvalidSignException::class);
     $this->expectExceptionCode(Exception::SIGN_EMPTY);
@@ -91,7 +91,7 @@ it('empty sign', function () {
     expect($result->getPayload()->all())->not->toBeEmpty();
 });
 
-it('error request type', function () {
+it('请求类型错误', function () {
     $plugin = new CallbackPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
@@ -107,7 +107,7 @@ it('error request type', function () {
     expect($result->getPayload()->all())->not->toBeEmpty();
 });
 
-it('missing epay public cert path', function () {
+it('缺少 epay 公钥证书路径', function () {
     $plugin = new CallbackPlugin();
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionCode(Exception::CONFIG_JSB_INVALID);

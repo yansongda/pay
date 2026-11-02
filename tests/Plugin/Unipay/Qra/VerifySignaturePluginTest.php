@@ -7,7 +7,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin;
 use Yansongda\Supports\Collection;
 
-it('should not do request', function () {
+it('不应发起请求', function () {
     $plugin = new VerifySignaturePlugin();
     $rocket = new Rocket();
     $rocket->setDirection(NoHttpRequestDirection::class);
@@ -17,7 +17,7 @@ it('should not do request', function () {
     expect($result)->toBe($rocket);
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new VerifySignaturePlugin();
     $response = [
         'charset' => 'UTF-8',

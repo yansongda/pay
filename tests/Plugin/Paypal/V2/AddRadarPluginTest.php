@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Paypal\V2\AddRadarPlugin;
 use Yansongda\Supports\Collection;
 
-it('bearer auth', function () {
+it('Bearer 认证', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -28,7 +28,7 @@ it('bearer auth', function () {
     expect((string) $radar->getUri())->toContain('v2/checkout/orders');
 });
 
-it('basic auth', function () {
+it('Basic 认证', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -46,7 +46,7 @@ it('basic auth', function () {
     expect((string) $radar->getBody())->toEqual('grant_type=client_credentials');
 });
 
-it('empty body omitted', function (string $body) {
+it('空 body 省略', function (string $body) {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',

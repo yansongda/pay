@@ -10,7 +10,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Jsb\AddPayloadSignPlugin;
 use Yansongda\Supports\Collection;
 
-it('sign normal', function () {
+it('签名正常', function () {
     $plugin = new AddPayloadSignPlugin();
     $payload = ['outTradeNo' => 'YC202406170003', 'totalFee' => 0.01, 'proInfo' => '充值', 'backUrl' => 'http:\/\/127.0.0.1:8000\/epay\/return', 'createData' => '20240618', 'createTime' => '022522', 'bizDate' => '20240618', 'msgId' => '16253083-49c4-4142-8c56-997accf3d667', 'svrCode' => '', 'partnerId' => '6a13eab71c4f4b0aa4757eda6fc59710', 'channelNo' => 'm', 'publicKeyCode' => '00', 'version' => 'v1.0.0', 'charset' => 'utf-8', 'service' => 'atPay'];
     $sign = 'Bho3LZvuv6wrQUAk6EP5lpGTCf5nDA1KDQwJy5Cog6m9S3UMVqpn0AC8+rrv5va63z5zAC6aQ7qrVH1OQ3hCeEUhhGix5HRUNgs2lzCkpywQnNsjeuapAAmfzVnDfBncPv9HuZSfdGxCOPqlkaSxonSXbB5ZpUfXbH3QjQo2F2w=';
@@ -21,7 +21,7 @@ it('sign normal', function () {
     expect($result->getPayload()->get('sign'))->toBe($sign);
 });
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new AddPayloadSignPlugin();
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
@@ -32,7 +32,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('miss mch secret cert path', function () {
+it('缺少商户私钥证书路径', function () {
     $plugin = new AddPayloadSignPlugin();
     $payload = ['outTradeNo' => 'YC202406170003', 'totalFee' => 0.01, 'proInfo' => '充值', 'backUrl' => 'http:\/\/127.0.0.1:8000\/epay\/return', 'createData' => '20240618', 'createTime' => '022522', 'bizDate' => '20240618', 'msgId' => '16253083-49c4-4142-8c56-997accf3d667', 'svrCode' => '', 'partnerId' => '6a13eab71c4f4b0aa4757eda6fc59710', 'channelNo' => 'm', 'publicKeyCode' => '00', 'version' => 'v1.0.0', 'charset' => 'utf-8', 'service' => 'atPay'];
     $sign = 'Bho3LZvuv6wrQUAk6EP5lpGTCf5nDA1KDQwJy5Cog6m9S3UMVqpn0AC8+rrv5va63z5zAC6aQ7qrVH1OQ3hCeEUhhGix5HRUNgs2lzCkpywQnNsjeuapAAmfzVnDfBncPv9HuZSfdGxCOPqlkaSxonSXbB5ZpUfXbH3QjQo2F2w=';

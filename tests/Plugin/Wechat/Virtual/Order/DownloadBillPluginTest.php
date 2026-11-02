@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\DownloadBillPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new DownloadBillPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -27,7 +27,7 @@ it('normal', function () {
     expect($payload->get('bill_type'))->toEqual('ALL');
 });
 
-it('sandbox env', function () {
+it('沙箱环境', function () {
     $plugin = new DownloadBillPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -43,7 +43,7 @@ it('sandbox env', function () {
     expect($payload->get('env'))->toEqual(1);
 });
 
-it('with access token', function () {
+it('携带 access token', function () {
     $plugin = new DownloadBillPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

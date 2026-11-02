@@ -14,7 +14,7 @@ use Yansongda\Pay\Plugin\Douyin\V1\CallbackPlugin;
 
 uses(CallbackPluginTestHelpers::class);
 
-it('payment callback', function () {
+it('支付回调', function () {
     $plugin = new CallbackPlugin();
     $msg = '{"order_id":"7398108028895054107","out_trade_no":"yansongda","total_amount":1,"status":"SUCCESS","seller_uid":"73744242495132490630","paid_at":1722769986}';
     $body = '{"version":"3.0","type":"payment","msg":'.json_encode($msg).'}';
@@ -29,7 +29,7 @@ it('payment callback', function () {
     expect($result->getDirection())->toBe(NoHttpRequestDirection::class);
 });
 
-it('refund callback', function () {
+it('退款回调', function () {
     $plugin = new CallbackPlugin();
     $msg = [
         'refund_id' => '7398108028895054107',
@@ -50,7 +50,7 @@ it('refund callback', function () {
     expect($result->getDirection())->toBe(NoHttpRequestDirection::class);
 });
 
-it('pre create refund callback', function () {
+it('预创建退款回调', function () {
     $plugin = new CallbackPlugin();
     $msg = [
         'refund_id' => '7398108028895054107',
@@ -72,7 +72,7 @@ it('pre create refund callback', function () {
     expect($result->getDirection())->toBe(NoHttpRequestDirection::class);
 });
 
-it('tampered signature', function () {
+it('签名被篡改', function () {
     $plugin = new CallbackPlugin();
     $msg = '{"order_id":"7398108028895054107","out_trade_no":"yansongda","total_amount":1,"status":"SUCCESS"}';
     $body = '{"version":"3.0","type":"payment","msg":'.json_encode($msg).'}';
@@ -86,7 +86,7 @@ it('tampered signature', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('missing type', function () {
+it('缺少 type', function () {
     $plugin = new CallbackPlugin();
     $msg = ['order_id' => '7398108028895054107'];
     $body = json_encode(['version' => '3.0', 'msg' => json_encode($msg)]);
@@ -100,7 +100,7 @@ it('missing type', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('empty type', function () {
+it('空类型', function () {
     $plugin = new CallbackPlugin();
     $msg = ['order_id' => '7398108028895054107'];
     $body = json_encode(['version' => '3.0', 'type' => '', 'msg' => json_encode($msg)]);
@@ -114,7 +114,7 @@ it('empty type', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('non string type', function () {
+it('非字符串类型', function () {
     $plugin = new CallbackPlugin();
     $body = json_encode(['version' => '3.0', 'type' => 123, 'msg' => '{}']);
 
@@ -127,7 +127,7 @@ it('non string type', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('invalid msg', function () {
+it('msg 非法', function () {
     $plugin = new CallbackPlugin();
     $body = '{"version":"3.0","type":"payment","msg":"not-a-json"}';
 
@@ -140,7 +140,7 @@ it('invalid msg', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('invalid body', function () {
+it('body 非法', function () {
     $plugin = new CallbackPlugin();
     $body = 'not-a-json';
 
@@ -153,7 +153,7 @@ it('invalid body', function () {
     $plugin->assembly($rocket, fn ($rocket) => $rocket);
 });
 
-it('missing request', function () {
+it('缺少请求对象', function () {
     $plugin = new CallbackPlugin();
     $rocket = new Rocket();
     $rocket->setParams([]);

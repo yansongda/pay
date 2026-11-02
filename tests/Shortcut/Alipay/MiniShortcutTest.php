@@ -12,7 +12,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Alipay\MiniShortcut;
 
-it('normal', function () {
+it('正常', function () {
     $shortcut = new MiniShortcut();
     $result = $shortcut->getPlugins([]);
 

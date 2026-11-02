@@ -12,7 +12,7 @@ use Yansongda\Pay\Plugin\Wechat\V3\Pay\H5\PayPlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\VerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Wechat\H5Shortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new H5Shortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,

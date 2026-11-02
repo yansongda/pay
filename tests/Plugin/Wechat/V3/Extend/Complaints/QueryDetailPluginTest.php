@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryDetailPlugin;
 use Yansongda\Supports\Collection;
 
-it('empty complaint id', function () {
+it('空投诉单号', function () {
     $plugin = new QueryDetailPlugin();
     $rocket = new Rocket();
 
@@ -20,7 +20,7 @@ it('empty complaint id', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new QueryDetailPlugin();
     $payload = [
         'complaint_id' => 'yansongda',
@@ -38,7 +38,7 @@ it('normal', function () {
     ]);
 });
 
-it('normal with encrypted contents', function () {
+it('携带加密内容的正常场景', function () {
     $plugin = new QueryDetailPlugin();
     $payload = [
         'complaint_id' => 'yansongda',
@@ -63,7 +63,7 @@ it('normal with encrypted contents', function () {
     expect($result->getDestination()->all()['payer_phone'])->toEqual('yansongda');
 });
 
-it('normal with encrypted contents wrong', function () {
+it('加密内容错误的正常场景', function () {
     $plugin = new QueryDetailPlugin();
     $payload = [
         'complaint_id' => 'yansongda',

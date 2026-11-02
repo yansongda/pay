@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Apple\AddRadarPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal get with sandbox url', function () {
+it('沙箱 URL 的普通 GET', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'GET',
@@ -24,7 +24,7 @@ it('normal get with sandbox url', function () {
     expect($radar->getHeaderLine('Content-Type'))->toEqual('application/json');
 });
 
-it('authorization with jwt', function () {
+it('携带 JWT 的授权', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'GET',
@@ -42,7 +42,7 @@ it('authorization with jwt', function () {
     expect(explode('.', substr($authorization, 7)))->toHaveCount(3);
 });
 
-it('no jwt when no jwt flag', function () {
+it('无 jwt 标记时不生成 jwt', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'GET',
@@ -58,7 +58,7 @@ it('no jwt when no jwt flag', function () {
     expect($radar->hasHeader('Authorization'))->toBeFalse();
 });
 
-it('custom headers override content type', function () {
+it('自定义请求头覆盖 content type', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'GET',
@@ -75,7 +75,7 @@ it('custom headers override content type', function () {
     expect($radar->getHeaderLine('Content-Type'))->toEqual('application/x-www-form-urlencoded');
 });
 
-it('method and body passthrough', function () {
+it('method 与 body 透传', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -93,7 +93,7 @@ it('method and body passthrough', function () {
     expect((string) $radar->getBody())->toEqual('{"foo":"bar"}');
 });
 
-it('http url passthrough', function () {
+it('HTTP URL 透传', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'POST',
@@ -110,7 +110,7 @@ it('http url passthrough', function () {
     expect((string) $radar->getUri())->toEqual('https://apple-pay-gateway.apple.com/paymentservices/startSession');
 });
 
-it('query appended with ampersand when url has query', function () {
+it('URL 已有查询串时用 & 追加', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'GET',
@@ -127,7 +127,7 @@ it('query appended with ampersand when url has query', function () {
     expect((string) $radar->getUri())->toEqual('https://api.storekit-sandbox.apple.com/inApps/v1/subscriptions/123?status=1&status=4&revision=abc');
 });
 
-it('query appended with question mark when url has no query', function () {
+it('URL 无查询串时用 ? 追加', function () {
     $plugin = new AddRadarPlugin();
     $payload = new Collection([
         '_method' => 'GET',
@@ -144,7 +144,7 @@ it('query appended with question mark when url has no query', function () {
     expect((string) $radar->getUri())->toEqual('https://api.storekit-sandbox.apple.com/inApps/v1/transactions/123?revision=abc');
 });
 
-it('query filters null values', function () {
+it('查询过滤空值', function () {
     $plugin = new AddRadarPlugin();
     // filter_params 对齐 Stripe：null 值不进入最终 query string
     $payload = new Collection([

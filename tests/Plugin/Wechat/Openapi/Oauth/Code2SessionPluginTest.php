@@ -7,7 +7,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Openapi\Oauth\Code2SessionPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new Code2SessionPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['appid' => 'wx1234567890', 'secret' => 'test_secret', 'js_code' => 'test_js_code']);
@@ -20,7 +20,7 @@ it('normal', function () {
     expect($payload->get('_body'))->toEqual('');
 });
 
-it('with config defaults', function () {
+it('使用配置默认值', function () {
     $plugin = new Code2SessionPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['js_code' => 'test_js_code']);
@@ -35,7 +35,7 @@ it('with config defaults', function () {
     expect($payload->get('_url'))->toContain('grant_type=authorization_code');
 });
 
-it('missing js code throws', function () {
+it('缺少 js code 抛出异常', function () {
     $plugin = new Code2SessionPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['appid' => 'wx1234567890', 'secret' => 'test_secret']);
@@ -46,7 +46,7 @@ it('missing js code throws', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('params secret overrides config', function () {
+it('参数密钥覆盖配置', function () {
     $plugin = new Code2SessionPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['appid' => 'wx1234567890', 'secret' => 'params_secret_override', 'js_code' => 'test_js_code']);

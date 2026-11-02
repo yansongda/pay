@@ -9,7 +9,7 @@ use Yansongda\Pay\Plugin\Stripe\V1\Pay\RefundPlugin;
 use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
 use Yansongda\Pay\Shortcut\Stripe\RefundShortcut;
 
-it('get plugins', function () {
+it('获取插件列表', function () {
     $shortcut = new RefundShortcut();
     expect($shortcut->getPlugins([]))->toEqual([
         StartPlugin::class,

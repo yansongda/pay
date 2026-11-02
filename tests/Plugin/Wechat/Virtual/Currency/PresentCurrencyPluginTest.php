@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\PresentCurrencyPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new PresentCurrencyPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -30,7 +30,7 @@ it('normal', function () {
     expect($payload->get('order_id'))->toEqual('GIFT_001');
 });
 
-it('sandbox env', function () {
+it('沙箱环境', function () {
     $plugin = new PresentCurrencyPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([
@@ -47,7 +47,7 @@ it('sandbox env', function () {
     expect($payload->get('env'))->toEqual(1);
 });
 
-it('default values', function () {
+it('默认值', function () {
     $plugin = new PresentCurrencyPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

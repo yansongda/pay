@@ -10,7 +10,7 @@ use Yansongda\Pay\Plugin\Alipay\V2\ResponseInvokeStringPlugin;
 use Yansongda\Pay\Plugin\Alipay\V2\StartPlugin;
 use Yansongda\Pay\Shortcut\Alipay\AppShortcut;
 
-it('normal', function () {
+it('正常', function () {
     $shortcut = new AppShortcut();
     $result = $shortcut->getPlugins([]);
 

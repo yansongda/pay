@@ -6,7 +6,7 @@ use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AirwallexConfig;
 use Yansongda\Pay\Enum\PayMode;
 
-it('construct valid config', function () {
+it('构造合法配置', function () {
     $validConfig = [
         'client_id' => 'airwallex_client_id',
         'api_key' => 'airwallex_api_key',
@@ -19,7 +19,7 @@ it('construct valid config', function () {
     expect($config->getMode())->toBe(PayMode::NORMAL);
 });
 
-it('construct with tenant', function () {
+it('指定租户构造', function () {
     $validConfig = [
         'client_id' => 'airwallex_client_id',
         'api_key' => 'airwallex_api_key',
@@ -29,7 +29,7 @@ it('construct with tenant', function () {
     expect($config->getTenant())->toBe('secondary');
 });
 
-it('construct missing client id', function () {
+it('缺少 client_id 构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 缺少 Airwallex 配置 -- [client_id]');
 
@@ -37,7 +37,7 @@ it('construct missing client id', function () {
     $config->validate();
 });
 
-it('construct missing api key', function () {
+it('缺少 api key 构造', function () {
     $this->expectException(InvalidConfigException::class);
     $this->expectExceptionMessage('配置异常: 缺少 Airwallex 配置 -- [api_key]');
 
@@ -45,7 +45,7 @@ it('construct missing api key', function () {
     $config->validate();
 });
 
-it('optional getters', function () {
+it('可选 getter', function () {
     $validConfig = [
         'client_id' => 'airwallex_client_id',
         'api_key' => 'airwallex_api_key',
@@ -65,7 +65,7 @@ it('optional getters', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('mode with pay mode enum', function () {
+it('使用 PayMode 枚举的模式', function () {
     $validConfig = [
         'client_id' => 'airwallex_client_id',
         'api_key' => 'airwallex_api_key',
@@ -77,7 +77,7 @@ it('mode with pay mode enum', function () {
     expect($config->getMode())->toBe(PayMode::SANDBOX);
 });
 
-it('access token cache fields', function () {
+it('access token 缓存字段', function () {
     $validConfig = [
         'client_id' => 'airwallex_client_id',
         'api_key' => 'airwallex_api_key',
@@ -91,7 +91,7 @@ it('access token cache fields', function () {
     expect($config->getAccessTokenExpiry())->toBe(1893456000);
 });
 
-it('nullable optional fields', function () {
+it('可空的可选字段', function () {
     $validConfig = [
         'client_id' => 'airwallex_client_id',
         'api_key' => 'airwallex_api_key',

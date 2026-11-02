@@ -18,7 +18,7 @@ use Yansongda\Pay\Plugin\Unipay\Qra\StartPlugin as QraStartPlugin;
 use Yansongda\Pay\Plugin\Unipay\Qra\VerifySignaturePlugin as QraVerifySignaturePlugin;
 use Yansongda\Pay\Shortcut\Unipay\PosShortcut;
 
-it('default', function () {
+it('默认', function () {
     $plugin = new PosShortcut();
     expect($plugin->getPlugins([]))->toEqual([
         StartPlugin::class,
@@ -31,7 +31,7 @@ it('default', function () {
     ]);
 });
 
-it('pre auth', function () {
+it('预授权', function () {
     $plugin = new PosShortcut();
     expect($plugin->getPlugins(['_action' => 'pre_auth']))->toEqual([
         StartPlugin::class,
@@ -44,7 +44,7 @@ it('pre auth', function () {
     ]);
 });
 
-it('qra', function () {
+it('QRA', function () {
     $plugin = new PosShortcut();
     expect($plugin->getPlugins(['_action' => 'qra']))->toEqual([
         QraStartPlugin::class,

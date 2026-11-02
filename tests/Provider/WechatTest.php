@@ -31,21 +31,21 @@ use Yansongda\Pay\Tests\Stubs\Plugin\VirtualCallbackPluginStub;
 use Yansongda\Pay\Tests\Stubs\Plugin\VirtualCheckResponsePluginStub;
 use Yansongda\Pay\Tests\Stubs\Plugin\VerifySignaturePluginStub;
 
-it('shortcut not found', function () {
+it('快捷方式不存在', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::wechat()->foo();
 });
 
-it('shortcut incompatible', function () {
+it('快捷方式不兼容', function () {
     $this->expectException(InvalidParamsException::class);
     $this->expectExceptionCode(Exception::PARAMS_SHORTCUT_INVALID);
 
     Pay::wechat()->foo();
 });
 
-it('cancel', function () {
+it('撤销', function () {
     $response = new Response(
         200,
         [
@@ -67,7 +67,7 @@ it('cancel', function () {
     expect(true)->toBeTrue();
 });
 
-it('cancel error response code', function () {
+it('撤销错误响应码', function () {
     $response = new Response(
         400,
         [],
@@ -84,7 +84,7 @@ it('cancel error response code', function () {
     Pay::wechat()->cancel(['out_bill_no' => '123']);
 });
 
-it('close', function () {
+it('关单', function () {
     $response = new Response(
         200,
         [
@@ -106,7 +106,7 @@ it('close', function () {
     expect(true)->toBeTrue();
 });
 
-it('close error response code', function () {
+it('关单错误响应码', function () {
     $response = new Response(
         400,
         [],
@@ -123,7 +123,7 @@ it('close error response code', function () {
     Pay::wechat()->close(['out_trade_no' => '123']);
 });
 
-it('callback', function () {
+it('回调', function () {
     $request = new ServerRequest(
         'POST',
         'https://pay.yansongda.cn/wechat/notify',
@@ -150,14 +150,14 @@ it('callback', function () {
     expect($result->get('resource.ciphertext'))->not->toBeEmpty();
 });
 
-it('success', function () {
+it('成功', function () {
     $result = Pay::wechat()->success();
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);
     expect((string) $result->getBody())->toContain('SUCCESS');
 });
 
-it('payscore', function () {
+it('支付分', function () {
     $response = new Response(
         200,
         [
@@ -181,7 +181,7 @@ it('payscore', function () {
     expect(true)->toBeTrue();
 });
 
-it('success payscore', function () {
+it('支付分成功', function () {
     $result = Pay::wechat()->success(['_action' => 'payscore']);
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);
@@ -190,7 +190,7 @@ it('success payscore', function () {
     expect($result->getHeaderLine('Content-Type'))->toContain('application/json');
 });
 
-it('success default unchanged', function () {
+it('成功默认不变', function () {
     $result = Pay::wechat()->success();
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);
@@ -198,7 +198,7 @@ it('success default unchanged', function () {
     expect(json_decode((string) $result->getBody(), true))->toEqual(['code' => 'SUCCESS', 'message' => '成功']);
 });
 
-it('callback virtual', function () {
+it('虚拟支付回调', function () {
     $body = '<xml><Encrypt><![CDATA[test-encrypt-data]]></Encrypt></xml>';
 
     $request = new ServerRequest(
@@ -221,7 +221,7 @@ it('callback virtual', function () {
     expect($result)->not->toBeEmpty();
 });
 
-it('callback default unchanged', function () {
+it('回调默认不变', function () {
     $request = new ServerRequest(
         'POST',
         'https://pay.yansongda.cn/wechat/notify',
@@ -248,7 +248,7 @@ it('callback default unchanged', function () {
     expect($result->get('resource.ciphertext'))->not->toBeEmpty();
 });
 
-it('callback with null params', function () {
+it('空参数回调', function () {
     $request = new ServerRequest(
         'POST',
         'https://pay.yansongda.cn/wechat/notify',
@@ -275,7 +275,7 @@ it('callback with null params', function () {
     expect($result->get('resource.ciphertext'))->not->toBeEmpty();
 });
 
-it('virtual success', function () {
+it('虚拟支付成功', function () {
     $result = Pay::wechat()->success(['_action' => 'virtual']);
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);
@@ -287,7 +287,7 @@ it('virtual success', function () {
     expect($body)->toContain('<ErrMsg>success</ErrMsg>');
 });
 
-it('virtual success json', function () {
+it('虚拟支付成功（JSON）', function () {
     $result = Pay::wechat()->success(['_action' => 'virtual', '_format' => 'json']);
 
     expect($result)->toBeInstanceOf(ResponseInterface::class);
@@ -299,7 +299,7 @@ it('virtual success json', function () {
     expect($body['ErrMsg'])->toEqual('success');
 });
 
-it('virtual query balance', function () {
+it('虚拟支付余额查询', function () {
     $response = new Response(
         200,
         ['Content-Type' => 'application/json'],
@@ -332,7 +332,7 @@ it('virtual query balance', function () {
     expect($result)->not->toBeEmpty();
 });
 
-it('virtual currency pay', function () {
+it('虚拟币支付', function () {
     $response = new Response(
         200,
         ['Content-Type' => 'application/json'],
@@ -369,7 +369,7 @@ it('virtual currency pay', function () {
     expect($result)->not->toBeEmpty();
 });
 
-it('virtual query order', function () {
+it('虚拟支付查单', function () {
     $response = new Response(
         200,
         ['Content-Type' => 'application/json'],
@@ -403,7 +403,7 @@ it('virtual query order', function () {
     expect($result)->not->toBeEmpty();
 });
 
-it('virtual refund order', function () {
+it('虚拟支付退款', function () {
     $response = new Response(
         200,
         ['Content-Type' => 'application/json'],
@@ -442,7 +442,7 @@ it('virtual refund order', function () {
     expect($result)->not->toBeEmpty();
 });
 
-it('virtual callback action routing', function () {
+it('虚拟支付回调动作路由', function () {
     $body = '<xml><Encrypt><![CDATA[test-encrypt-data]]></Encrypt></xml>';
 
     $request = new ServerRequest(

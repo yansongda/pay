@@ -23,7 +23,7 @@ it('foo', function () {
     $plugin->getPlugins(['_action' => 'foo']);
 });
 
-it('default', function () {
+it('默认', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins([]))->toBe([
         StartPlugin::class,
@@ -36,7 +36,7 @@ it('default', function () {
     ]);
 });
 
-it('order', function () {
+it('订单', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'order']))->toBe([
         StartPlugin::class,
@@ -49,7 +49,7 @@ it('order', function () {
     ]);
 });
 
-it('cps', function () {
+it('CPS', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'cps']))->toBe([
         StartPlugin::class,
@@ -62,7 +62,7 @@ it('cps', function () {
     ]);
 });
 
-it('refund', function () {
+it('退款', function () {
     $plugin = new QueryShortcut();
     expect($plugin->getPlugins(['_action' => 'refund']))->toBe([
         StartPlugin::class,

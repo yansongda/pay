@@ -9,7 +9,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\DownloadBillPlugin;
 use Yansongda\Supports\Collection;
 
-it('empty payload', function () {
+it('空 payload', function () {
     $plugin = new DownloadBillPlugin();
     $rocket = new Rocket();
 
@@ -20,7 +20,7 @@ it('empty payload', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new DownloadBillPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

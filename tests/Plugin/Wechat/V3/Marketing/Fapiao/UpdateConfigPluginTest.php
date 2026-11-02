@@ -6,7 +6,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Fapiao\UpdateConfigPlugin;
 use Yansongda\Supports\Collection;
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new UpdateConfigPlugin();
     $rocket = new Rocket();
     $rocket->setPayload(new Collection([

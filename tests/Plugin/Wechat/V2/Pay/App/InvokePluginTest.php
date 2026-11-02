@@ -8,7 +8,7 @@ use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V2\Pay\App\InvokePlugin;
 use Yansongda\Supports\Collection;
 
-it('missing prepay id', function () {
+it('缺少 prepay_id', function () {
     $plugin = new InvokePlugin();
     $rocket = new Rocket();
 
@@ -19,7 +19,7 @@ it('missing prepay id', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('normal params', function () {
+it('普通参数', function () {
     $plugin = new InvokePlugin();
     $rocket = (new Rocket())
         ->setDestination(new Collection(['prepay_id' => 'yansongda']))
@@ -38,7 +38,7 @@ it('normal params', function () {
     expect($contents->get('prepayid'))->toEqual('yansongda');
 });
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new InvokePlugin();
     $rocket = (new Rocket())->setDestination(new Collection(['prepay_id' => 'yansongda']));
 
@@ -55,7 +55,7 @@ it('normal', function () {
     expect($contents->get('prepayid'))->toEqual('yansongda');
 });
 
-it('service params', function () {
+it('服务商参数', function () {
     $plugin = new InvokePlugin();
     $rocket = (new Rocket())
         ->setParams(['_config' => 'service_provider4'])
@@ -75,7 +75,7 @@ it('service params', function () {
     expect($contents->get('prepayid'))->toEqual('yansongda');
 });
 
-it('service', function () {
+it('服务商', function () {
     $plugin = new InvokePlugin();
     $rocket = (new Rocket())
         ->setParams(['_config' => 'service_provider4'])

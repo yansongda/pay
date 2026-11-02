@@ -7,7 +7,7 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Openapi\Oauth\UserInfoPlugin;
 
-it('normal', function () {
+it('正常', function () {
     $plugin = new UserInfoPlugin();
     $rocket = new Rocket();
     $rocket->setParams([
@@ -28,7 +28,7 @@ it('normal', function () {
     expect($payload->get('_body'))->toEqual('');
 });
 
-it('default lang', function () {
+it('默认语言', function () {
     $plugin = new UserInfoPlugin();
     $rocket = new Rocket();
     $rocket->setParams([
@@ -49,7 +49,7 @@ it('default lang', function () {
     expect($payload->get('_body'))->toEqual('');
 });
 
-it('missing access token throws', function () {
+it('缺少 access token 抛出异常', function () {
     $plugin = new UserInfoPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['openid' => 'the_wechat_openid']);
@@ -61,7 +61,7 @@ it('missing access token throws', function () {
     $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 });
 
-it('missing openid throws', function () {
+it('缺少 openid 抛出异常', function () {
     $plugin = new UserInfoPlugin();
     $rocket = new Rocket();
     $rocket->setParams(['access_token' => 'the_wechat_access_token']);

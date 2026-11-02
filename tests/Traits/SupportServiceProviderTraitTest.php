@@ -8,7 +8,7 @@ use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Tests\Stubs\Traits\SupportServiceProviderPluginStub;
 
-it('normal', function () {
+it('正常', function () {
     $config = Pay::get(ConfigInterface::class)->get('alipay.default');
     $config->setMode(PayMode::SERVICE);
     $config->setServiceProviderId('yansongda');
