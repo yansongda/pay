@@ -2,61 +2,47 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Paypal\V2\Pay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\CapturePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class CapturePluginTest extends TestCase
-{
-    protected CapturePlugin $plugin;
+it('normal', function () {
+    $plugin = new CapturePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['order_id' => 'TEST_ORDER_123'])->setPayload(new Collection([]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new CapturePlugin();
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toContain('TEST_ORDER_123');
+    expect($payload->get('_url'))->toContain('capture');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['order_id' => 'TEST_ORDER_123'])->setPayload(new Collection([]));
+it('normal without residual params', function () {
+    $plugin = new CapturePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['order_id' => 'TEST_ORDER_123', 'extra' => 'should_not_stay'])->setPayload(new Collection([]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertStringContainsString('TEST_ORDER_123', $payload->get('_url'));
-        self::assertStringContainsString('capture', $payload->get('_url'));
-    }
+    // 业务参数不应残留在 payload 中，否则会被打进最终请求 body
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v2/checkout/orders/TEST_ORDER_123/capture',
+    ]);
+});
 
-    public function testNormalWithoutResidualParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['order_id' => 'TEST_ORDER_123', 'extra' => 'should_not_stay'])->setPayload(new Collection([]));
+it('missing order id', function () {
+    $plugin = new CapturePlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection([]));
 
-        // 业务参数不应残留在 payload 中，否则会被打进最终请求 body
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v2/checkout/orders/TEST_ORDER_123/capture',
-        ], $result->getPayload()->all());
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingOrderId()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection([]));
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}

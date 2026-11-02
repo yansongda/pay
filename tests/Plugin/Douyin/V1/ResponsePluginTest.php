@@ -2,71 +2,57 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Douyin\V1;
-
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\ResponsePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class ResponsePluginTest extends TestCase
-{
-    protected ResponsePlugin $plugin;
+it('success response', function () {
+    $plugin = new ResponsePlugin();
+    $destination = [
+        'err_no' => 0,
+        'err_msg' => 'success',
+        'log_id' => '20240101123456000000000000',
+        'data' => ['order_id' => '123456'],
+    ];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(200));
+    $rocket->setDestination(new Collection($destination));
 
-        $this->plugin = new ResponsePlugin();
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-    public function testSuccessResponse(): void
-    {
-        $destination = [
-            'err_no' => 0,
-            'err_msg' => 'success',
-            'log_id' => '20240101123456000000000000',
-            'data' => ['order_id' => '123456'],
-        ];
+    expect($result->getDestination())->toBeInstanceOf(Collection::class);
+    expect($result->getDestination()->all())->toEqual($destination);
+});
 
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(200));
-        $rocket->setDestination(new Collection($destination));
+it('business error response throws exception', function () {
+    $plugin = new ResponsePlugin();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(200));
+    $rocket->setDestination(new Collection([
+        'err_no' => 10000,
+        'err_msg' => '参数错误',
+        'log_id' => '20240101123456000000000000',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
+    $this->expectExceptionMessage('抖音返回业务异常: err_no=10000, err_msg=参数错误');
 
-        self::assertInstanceOf(Collection::class, $result->getDestination());
-        self::assertEquals($destination, $result->getDestination()->all());
-    }
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-    public function testBusinessErrorResponseThrowsException(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(200));
-        $rocket->setDestination(new Collection([
-            'err_no' => 10000,
-            'err_msg' => '参数错误',
-            'log_id' => '20240101123456000000000000',
-        ]));
+it('server error throws exception', function () {
+    $plugin = new ResponsePlugin();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(500));
 
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_BUSINESS_CODE_WRONG);
-        self::expectExceptionMessage('抖音返回业务异常: err_no=10000, err_msg=参数错误');
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-    public function testServerErrorThrowsException(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(500));
-
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
-}

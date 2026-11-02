@@ -2,40 +2,26 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Jsb;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Jsb\AddRadarPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddRadarPluginTest extends TestCase
-{
-    protected AddRadarPlugin $plugin;
+it('radar post normal', function () {
+    $plugin = new AddRadarPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection(['name' => 'yansongda']));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new AddRadarPlugin();
-    }
+    expect((string) $result->getRadar()->getUri())->toEqual('https://epaytest.jsbchina.cn:9999/eis/merchant/merchantServices.htm');
+    expect((string) $result->getRadar()->getBody())->toContain('name=yansongda');
+    expect($result->getRadar()->getMethod())->toEqual('POST');
 
-    public function testRadarPostNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection(['name' => 'yansongda']));
+    // 是否存在Content-Type和User-Agent
+    expect($result->getRadar()->getHeaders())->toHaveKey('Content-Type');
+    expect($result->getRadar()->getHeaders())->toHaveKey('User-Agent');
+    // 验证值
+    expect($result->getRadar()->getHeader('Content-Type')[0])->toEqual('text/html');
+    expect($result->getRadar()->getHeader('User-Agent')[0])->toEqual('yansongda/pay-v3');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('https://epaytest.jsbchina.cn:9999/eis/merchant/merchantServices.htm', (string) $result->getRadar()->getUri());
-        self::assertStringContainsString('name=yansongda', (string) $result->getRadar()->getBody());
-        self::assertEquals('POST', $result->getRadar()->getMethod());
-
-        // 是否存在Content-Type和User-Agent
-        self::assertArrayHasKey('Content-Type', $result->getRadar()->getHeaders());
-        self::assertArrayHasKey('User-Agent', $result->getRadar()->getHeaders());
-        // 验证值
-        self::assertEquals('text/html', $result->getRadar()->getHeader('Content-Type')[0]);
-        self::assertEquals('yansongda/pay-v3', $result->getRadar()->getHeader('User-Agent')[0]);
-    }
-}

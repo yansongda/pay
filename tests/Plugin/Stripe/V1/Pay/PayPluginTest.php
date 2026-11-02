@@ -2,73 +2,59 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Stripe\V1\Pay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\PayPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class PayPluginTest extends TestCase
-{
-    protected PayPlugin $plugin;
+it('normal', function () {
+    $plugin = new PayPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection([
+        'amount' => 1000,
+        'currency' => 'usd',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new PayPlugin();
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/v1/payment_intents');
+    expect($payload->get('amount'))->toEqual(1000);
+    expect($payload->get('currency'))->toEqual('usd');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection([
-            'amount' => 1000,
-            'currency' => 'usd',
-        ]));
+it('method and url are set', function () {
+    $plugin = new PayPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection(['amount' => 500, 'currency' => 'eur']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/v1/payment_intents', $payload->get('_url'));
-        self::assertEquals(1000, $payload->get('amount'));
-        self::assertEquals('usd', $payload->get('currency'));
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('POST');
+    expect($result->getPayload()->get('_url'))->toEqual('/v1/payment_intents');
+});
 
-    public function testMethodAndUrlAreSet()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection(['amount' => 500, 'currency' => 'eur']));
+it('missing amount throws exception', function () {
+    $plugin = new PayPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection(['currency' => 'usd']));
 
-        self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('/v1/payment_intents', $result->getPayload()->get('_url'));
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingAmountThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+it('missing currency throws exception', function () {
+    $plugin = new PayPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection(['currency' => 'usd']));
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection(['amount' => 1000]));
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingCurrencyThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection(['amount' => 1000]));
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}

@@ -2,70 +2,56 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Stripe\V1\Pay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\RefundPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class RefundPluginTest extends TestCase
-{
-    protected RefundPlugin $plugin;
+it('normal with payment intent', function () {
+    $plugin = new RefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['payment_intent' => 'pi_test123'])->setPayload(new Collection([]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new RefundPlugin();
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/v1/refunds');
+});
 
-    public function testNormalWithPaymentIntent()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['payment_intent' => 'pi_test123'])->setPayload(new Collection([]));
+it('normal with charge', function () {
+    $plugin = new RefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['charge' => 'ch_test789'])->setPayload(new Collection([]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/v1/refunds', $payload->get('_url'));
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/v1/refunds');
+});
 
-    public function testNormalWithCharge()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['charge' => 'ch_test789'])->setPayload(new Collection([]));
+it('normal with payment intent in payload', function () {
+    $plugin = new RefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection(['payment_intent' => 'pi_test123']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/v1/refunds', $payload->get('_url'));
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/v1/refunds');
+});
 
-    public function testNormalWithPaymentIntentInPayload()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection(['payment_intent' => 'pi_test123']));
+it('missing payment intent and charge', function () {
+    $plugin = new RefundPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection([]));
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/v1/refunds', $payload->get('_url'));
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingPaymentIntentAndCharge()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection([]));
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}

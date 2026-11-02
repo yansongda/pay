@@ -2,12 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Apple;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Mockery;
 use Yansongda\Artful\Artful;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
@@ -16,73 +13,59 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Apple\ResponsePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Pipeline;
 
-class ResponsePluginTest extends TestCase
-{
-    protected ResponsePlugin $plugin;
+it('success response passes through', function () {
+    // 与 Artful::artful() 同构的 Pipeline 手动组装，走 Artful::ignite() 发 HTTP（真实弹栈）
+    $http = Mockery::mock(Client::class);
+    $http->shouldReceive('sendRequest')->once()->andReturn(
+        new Response(200, [], '{"status":"ok"}')
+    );
+    Pay::set(HttpClientInterface::class, $http);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = (new Rocket())->setRadar(new Request('GET', 'https://api.storekit-sandbox.apple.com/inApps/v1/transactions/123'));
 
-        $this->plugin = new ResponsePlugin();
-    }
+    $result = Artful::make(Pipeline::class)
+        ->send($rocket)
+        ->through([ResponsePlugin::class])
+        ->via('assembly')
+        ->then(static fn (Rocket $rocket) => Artful::ignite($rocket));
 
-    public function testSuccessResponsePassesThrough(): void
-    {
-        // 与 Artful::artful() 同构的 Pipeline 手动组装，走 Artful::ignite() 发 HTTP（真实弹栈）
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->once()->andReturn(
-            new Response(200, [], '{"status":"ok"}')
-        );
-        Pay::set(HttpClientInterface::class, $http);
+    expect($result->getDestinationOrigin()->getStatusCode())->toBe(200);
 
-        $rocket = (new Rocket())->setRadar(new Request('GET', 'https://api.storekit-sandbox.apple.com/inApps/v1/transactions/123'));
+    Mockery::close();
+});
 
-        $result = Artful::make(Pipeline::class)
-            ->send($rocket)
-            ->through([ResponsePlugin::class])
-            ->via('assembly')
-            ->then(static fn (Rocket $rocket) => Artful::ignite($rocket));
+it('http status code error throws code wrong', function () {
+    // 异常抛出后后续代码不可达，与 Wechat Openapi ResponsePluginTest 一致不调用 Mockery::close()
+    $http = Mockery::mock(Client::class);
+    $http->shouldReceive('sendRequest')->once()->andReturn(
+        new Response(500, [], '{"errorMessage":"Internal Server Error"}')
+    );
+    Pay::set(HttpClientInterface::class, $http);
 
-        self::assertSame(200, $result->getDestinationOrigin()->getStatusCode());
+    $rocket = (new Rocket())->setRadar(new Request('GET', 'https://api.storekit-sandbox.apple.com/inApps/v1/transactions/123'));
 
-        Mockery::close();
-    }
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
-    public function testHttpStatusCodeErrorThrowsCodeWrong(): void
-    {
-        // 异常抛出后后续代码不可达，与 Wechat Openapi ResponsePluginTest 一致不调用 Mockery::close()
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->once()->andReturn(
-            new Response(500, [], '{"errorMessage":"Internal Server Error"}')
-        );
-        Pay::set(HttpClientInterface::class, $http);
+    Artful::make(Pipeline::class)
+        ->send($rocket)
+        ->through([ResponsePlugin::class])
+        ->via('assembly')
+        ->then(static fn (Rocket $rocket) => Artful::ignite($rocket));
+});
 
-        $rocket = (new Rocket())->setRadar(new Request('GET', 'https://api.storekit-sandbox.apple.com/inApps/v1/transactions/123'));
+it('no http request direction skips', function () {
+    $plugin = new ResponsePlugin();
+    // 本地操作场景（NoHttpRequestDirection）：即使 destinationOrigin 为 500 也不校验
+    $rocket = new Rocket();
+    $rocket->setDirection(NoHttpRequestDirection::class)
+        ->setDestinationOrigin(new Response(500, [], '{"errorMessage":"Internal Server Error"}'))
+        ->setDestination(new \Yansongda\Supports\Collection(['errorMessage' => 'Internal Server Error']));
 
-        $this->expectException(InvalidResponseException::class);
-        $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        Artful::make(Pipeline::class)
-            ->send($rocket)
-            ->through([ResponsePlugin::class])
-            ->via('assembly')
-            ->then(static fn (Rocket $rocket) => Artful::ignite($rocket));
-    }
+    expect($result)->toBe($rocket);
+});
 
-    public function testNoHttpRequestDirectionSkips(): void
-    {
-        // 本地操作场景（NoHttpRequestDirection）：即使 destinationOrigin 为 500 也不校验
-        $rocket = new Rocket();
-        $rocket->setDirection(NoHttpRequestDirection::class)
-            ->setDestinationOrigin(new Response(500, [], '{"errorMessage":"Internal Server Error"}'))
-            ->setDestination(new \Yansongda\Supports\Collection(['errorMessage' => 'Internal Server Error']));
-
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-
-        self::assertSame($rocket, $result);
-    }
-}

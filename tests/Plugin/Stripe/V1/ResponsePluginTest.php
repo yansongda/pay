@@ -2,84 +2,70 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Stripe\V1;
-
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\ResponsePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class ResponsePluginTest extends TestCase
-{
-    protected ResponsePlugin $plugin;
+it('success response', function () {
+    $plugin = new ResponsePlugin();
+    $destination = ['id' => 'pi_test123', 'status' => 'requires_payment_method'];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(200));
+    $rocket->setDestination(new Collection($destination));
 
-        $this->plugin = new ResponsePlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testSuccessResponse()
-    {
-        $destination = ['id' => 'pi_test123', 'status' => 'requires_payment_method'];
+    expect($result->getDestination())->toBeInstanceOf(Collection::class);
+    expect($result->getDestination()->all())->toEqual($destination);
+});
 
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(200));
-        $rocket->setDestination(new Collection($destination));
+it('created response', function () {
+    $plugin = new ResponsePlugin();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(201));
+    $rocket->setDestination(new Collection(['id' => 'pi_test456']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertInstanceOf(Collection::class, $result->getDestination());
-        self::assertEquals($destination, $result->getDestination()->all());
-    }
+    expect($result->getDestination())->toBeInstanceOf(Collection::class);
+});
 
-    public function testCreatedResponse()
-    {
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(201));
-        $rocket->setDestination(new Collection(['id' => 'pi_test456']));
+it('client error throws exception', function () {
+    $plugin = new ResponsePlugin();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(400));
+    $rocket->setDestination(new Collection(['error' => ['type' => 'invalid_request_error']]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
-        self::assertInstanceOf(Collection::class, $result->getDestination());
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testClientErrorThrowsException()
-    {
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(400));
-        $rocket->setDestination(new Collection(['error' => ['type' => 'invalid_request_error']]));
+it('server error throws exception', function () {
+    $plugin = new ResponsePlugin();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(500));
 
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testServerErrorThrowsException()
-    {
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(500));
+it('unauthorized throws exception', function () {
+    $plugin = new ResponsePlugin();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin(new Response(401));
+    $rocket->setDestination(new Collection(['error' => ['type' => 'authentication_error']]));
 
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testUnauthorizedThrowsException()
-    {
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin(new Response(401));
-        $rocket->setDestination(new Collection(['error' => ['type' => 'authentication_error']]));
-
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}

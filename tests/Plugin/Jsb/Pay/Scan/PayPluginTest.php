@@ -2,29 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Jsb\Pay\Scan;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Jsb\Pay\Scan\PayPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class PayPluginTest extends TestCase
-{
-    protected PayPlugin $plugin;
+it('normal', function () {
+    $plugin = new PayPlugin();
+    $rocket = (new Rocket())
+        ->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    expect($result->getPayload()->toJson())->toContain('atPay');
+});
 
-        $this->plugin = new PayPlugin();
-    }
-
-    public function testNormal()
-    {
-        $rocket = (new Rocket())
-            ->setParams([]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        self::assertStringContainsString('atPay', $result->getPayload()->toJson());
-    }
-}

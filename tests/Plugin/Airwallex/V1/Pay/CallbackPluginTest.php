@@ -2,85 +2,71 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Airwallex\V1\Pay;
-
 use GuzzleHttp\Psr7\ServerRequest;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Airwallex\V1\Pay\CallbackPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class CallbackPluginTest extends TestCase
-{
-    protected CallbackPlugin $plugin;
+it('missing request throws exception', function () {
+    $plugin = new CallbackPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
+});
 
-        $this->plugin = new CallbackPlugin();
-    }
+it('invalid json body throws exception', function () {
+    $plugin = new CallbackPlugin();
+    $body = 'not-valid-json';
+    $timestamp = (string) ((int) (microtime(true) * 1000));
+    $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
+    $request = new ServerRequest('POST', 'https://example.com', [
+        'x-timestamp' => $timestamp,
+        'x-signature' => $signature,
+    ], $body);
 
-    public function testMissingRequestThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_CALLBACK_REQUEST_INVALID);
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_AIRWALLEX_BODY_INVALID);
 
-        $this->plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
-    }
+    $plugin->assembly((new Rocket())->setParams(['_request' => $request, '_params' => []]), fn ($rocket) => $rocket);
+});
 
-    public function testInvalidJsonBodyThrowsException()
-    {
-        $body = 'not-valid-json';
-        $timestamp = (string) ((int) (microtime(true) * 1000));
-        $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
-        $request = new ServerRequest('POST', 'https://example.com', [
-            'x-timestamp' => $timestamp,
-            'x-signature' => $signature,
-        ], $body);
+it('normal callback', function () {
+    $plugin = new CallbackPlugin();
+    $body = json_encode([
+        'id' => 'evt_test123',
+        'name' => 'payment_intent.succeeded',
+    ]);
+    $timestamp = (string) ((int) (microtime(true) * 1000));
+    $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
+    $request = new ServerRequest('POST', 'https://example.com', [
+        'x-timestamp' => $timestamp,
+        'x-signature' => $signature,
+    ], $body);
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_AIRWALLEX_BODY_INVALID);
+    $result = $plugin->assembly((new Rocket())->setParams(['_request' => $request, '_params' => []]), fn ($rocket) => $rocket);
 
-        $this->plugin->assembly((new Rocket())->setParams(['_request' => $request, '_params' => []]), fn ($rocket) => $rocket);
-    }
+    expect($result->getPayload()->get('id'))->toEqual('evt_test123');
+    expect($result->getDestination()->get('name'))->toEqual('payment_intent.succeeded');
+});
 
-    public function testNormalCallback()
-    {
-        $body = json_encode([
-            'id' => 'evt_test123',
-            'name' => 'payment_intent.succeeded',
-        ]);
-        $timestamp = (string) ((int) (microtime(true) * 1000));
-        $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_webhook_secret');
-        $request = new ServerRequest('POST', 'https://example.com', [
-            'x-timestamp' => $timestamp,
-            'x-signature' => $signature,
-        ], $body);
+it('callback uses tenant config', function () {
+    $plugin = new CallbackPlugin();
+    $body = json_encode([
+        'id' => 'evt_secondary',
+        'name' => 'payment_intent.succeeded',
+    ]);
+    $timestamp = (string) ((int) (microtime(true) * 1000));
+    $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_secondary_webhook_secret');
+    $request = new ServerRequest('POST', 'https://example.com', [
+        'x-timestamp' => $timestamp,
+        'x-signature' => $signature,
+    ], $body);
 
-        $result = $this->plugin->assembly((new Rocket())->setParams(['_request' => $request, '_params' => []]), fn ($rocket) => $rocket);
+    $result = $plugin->assembly((new Rocket())->setParams(['_request' => $request, '_params' => ['_config' => 'secondary']]), fn ($rocket) => $rocket);
 
-        self::assertEquals('evt_test123', $result->getPayload()->get('id'));
-        self::assertEquals('payment_intent.succeeded', $result->getDestination()->get('name'));
-    }
+    expect($result->getPayload()->get('id'))->toEqual('evt_secondary');
+    expect($result->getDestination()->get('name'))->toEqual('payment_intent.succeeded');
+});
 
-    public function testCallbackUsesTenantConfig()
-    {
-        $body = json_encode([
-            'id' => 'evt_secondary',
-            'name' => 'payment_intent.succeeded',
-        ]);
-        $timestamp = (string) ((int) (microtime(true) * 1000));
-        $signature = hash_hmac('sha256', $timestamp.$body, 'airwallex_secondary_webhook_secret');
-        $request = new ServerRequest('POST', 'https://example.com', [
-            'x-timestamp' => $timestamp,
-            'x-signature' => $signature,
-        ], $body);
-
-        $result = $this->plugin->assembly((new Rocket())->setParams(['_request' => $request, '_params' => ['_config' => 'secondary']]), fn ($rocket) => $rocket);
-
-        self::assertEquals('evt_secondary', $result->getPayload()->get('id'));
-        self::assertEquals('payment_intent.succeeded', $result->getDestination()->get('name'));
-    }
-}

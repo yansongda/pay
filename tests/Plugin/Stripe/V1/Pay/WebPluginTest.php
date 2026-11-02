@@ -2,84 +2,70 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Stripe\V1\Pay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Stripe\V1\Pay\WebPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class WebPluginTest extends TestCase
-{
-    protected WebPlugin $plugin;
+it('normal', function () {
+    $plugin = new WebPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection([]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new WebPlugin();
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/v1/checkout/sessions');
+    expect($payload->get('mode'))->toEqual('payment');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection([]));
+it('default urls from config', function () {
+    $plugin = new WebPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection([]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/v1/checkout/sessions', $payload->get('_url'));
-        self::assertEquals('payment', $payload->get('mode'));
-    }
+    expect($payload->get('success_url'))->toEqual('https://pay.yansongda.cn/stripe/success');
+    expect($payload->get('cancel_url'))->toEqual('https://pay.yansongda.cn/stripe/cancel');
+});
 
-    public function testDefaultUrlsFromConfig()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection([]));
+it('custom urls', function () {
+    $plugin = new WebPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection([
+        'success_url' => 'https://example.com/success',
+        'cancel_url' => 'https://example.com/cancel',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertEquals('https://pay.yansongda.cn/stripe/success', $payload->get('success_url'));
-        self::assertEquals('https://pay.yansongda.cn/stripe/cancel', $payload->get('cancel_url'));
-    }
+    expect($payload->get('success_url'))->toEqual('https://example.com/success');
+    expect($payload->get('cancel_url'))->toEqual('https://example.com/cancel');
+});
 
-    public function testCustomUrls()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection([
-            'success_url' => 'https://example.com/success',
-            'cancel_url' => 'https://example.com/cancel',
-        ]));
+it('custom mode', function () {
+    $plugin = new WebPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection(['mode' => 'subscription']));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('https://example.com/success', $payload->get('success_url'));
-        self::assertEquals('https://example.com/cancel', $payload->get('cancel_url'));
-    }
+    expect($result->getPayload()->get('mode'))->toEqual('subscription');
+});
 
-    public function testCustomMode()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection(['mode' => 'subscription']));
+it('missing success url throws exception', function () {
+    $plugin = new WebPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'no_success_url'])->setPayload(new Collection([]));
 
-        self::assertEquals('subscription', $result->getPayload()->get('mode'));
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingSuccessUrlThrowsException()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'no_success_url'])->setPayload(new Collection([]));
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}

@@ -2,154 +2,138 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Douyin\V1;
-
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
-use Mockery;
-use ReflectionProperty;
 use Yansongda\Artful\Contract\HttpClientInterface;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Douyin\V1\ObtainClientTokenPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class ObtainClientTokenPluginTest extends TestCase
-{
-    protected ObtainClientTokenPlugin $plugin;
+beforeEach(function () {
+    // 重置进程内 client_token 静态缓存（trait 静态属性按使用类隔离，反射需指向使用类）
+    $property = new ReflectionProperty(ObtainClientTokenPlugin::class, 'clientTokens');
+    $property->setValue(null, []);
+});
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+it('external access token', function () {
+    $plugin = new ObtainClientTokenPlugin();
+    // params 注入 `_access_token` 优先，不应触发任何 HTTP 子调用
+    $http = Mockery::mock(Client::class);
+    $http->shouldReceive('sendRequest')->never();
+    Pay::set(HttpClientInterface::class, $http);
 
-        $this->plugin = new ObtainClientTokenPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_access_token' => 'external_token_123']);
 
-        // 重置进程内 client_token 静态缓存（trait 静态属性按使用类隔离，反射需指向使用类）
-        $property = new ReflectionProperty(ObtainClientTokenPlugin::class, 'clientTokens');
-        $property->setValue(null, []);
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-    public function testExternalAccessToken(): void
-    {
-        // params 注入 `_access_token` 优先，不应触发任何 HTTP 子调用
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->never();
-        Pay::set(HttpClientInterface::class, $http);
+    expect($result->getPayload()->get('_access_token'))->toEqual('external_token_123');
 
-        $rocket = new Rocket();
-        $rocket->setParams(['_access_token' => 'external_token_123']);
+    Mockery::close();
+});
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+it('sub call fetches token', function () {
+    $plugin = new ObtainClientTokenPlugin();
+    $capturedBody = '';
+    $response = new Response(200, [], json_encode([
+        'data' => [
+            'access_token' => 'clt.9f2c8a1e',
+            'expires_in' => 7200,
+            'error_code' => 0,
+            'description' => '',
+        ],
+        'message' => 'success',
+    ]));
 
-        self::assertEquals('external_token_123', $result->getPayload()->get('_access_token'));
+    $http = Mockery::mock(Client::class);
+    $http->shouldReceive('sendRequest')->once()->andReturnUsing(function ($request) use (&$capturedBody, $response) {
+        $capturedBody = (string) $request->getBody();
 
-        Mockery::close();
-    }
+        return $response;
+    });
 
-    public function testSubCallFetchesToken(): void
-    {
-        $capturedBody = '';
-        $response = new Response(200, [], json_encode([
-            'data' => [
-                'access_token' => 'clt.9f2c8a1e',
-                'expires_in' => 7200,
-                'error_code' => 0,
-                'description' => '',
-            ],
-            'message' => 'success',
-        ]));
+    Pay::set(HttpClientInterface::class, $http);
 
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->once()->andReturnUsing(function ($request) use (&$capturedBody, $response) {
-            $capturedBody = (string) $request->getBody();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
 
-            return $response;
-        });
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        Pay::set(HttpClientInterface::class, $http);
+    expect($result->getPayload()->get('_access_token'))->toEqual('clt.9f2c8a1e');
 
-        $rocket = new Rocket();
-        $rocket->setParams([]);
+    // 请求体只含三个鉴权字段
+    $body = json_decode($capturedBody, true);
+    expect(array_keys($body))->toBe(['grant_type', 'client_key', 'client_secret']);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    Mockery::close();
+});
 
-        self::assertEquals('clt.9f2c8a1e', $result->getPayload()->get('_access_token'));
+it('static cache prevents second sub call', function () {
+    // 进程内静态缓存：同 app_id 第二次调用直接命中缓存，不再触发 HTTP 子调用
+    $response = new Response(200, [], json_encode([
+        'data' => [
+            'access_token' => 'clt.9f2c8a1e',
+            'expires_in' => 7200,
+            'error_code' => 0,
+            'description' => '',
+        ],
+        'message' => 'success',
+    ]));
 
-        // 请求体只含三个鉴权字段
-        $body = json_decode($capturedBody, true);
-        self::assertSame(['grant_type', 'client_key', 'client_secret'], array_keys($body));
+    $http = Mockery::mock(Client::class);
+    $http->shouldReceive('sendRequest')->once()->andReturn($response);
+    Pay::set(HttpClientInterface::class, $http);
 
-        Mockery::close();
-    }
+    $plugin = new ObtainClientTokenPlugin();
 
-    public function testStaticCachePreventsSecondSubCall(): void
-    {
-        // 进程内静态缓存：同 app_id 第二次调用直接命中缓存，不再触发 HTTP 子调用
-        $response = new Response(200, [], json_encode([
-            'data' => [
-                'access_token' => 'clt.9f2c8a1e',
-                'expires_in' => 7200,
-                'error_code' => 0,
-                'description' => '',
-            ],
-            'message' => 'success',
-        ]));
+    $first = $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
+    $second = $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
 
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->once()->andReturn($response);
-        Pay::set(HttpClientInterface::class, $http);
+    expect($first->getPayload()->get('_access_token'))->toEqual('clt.9f2c8a1e');
+    expect($second->getPayload()->get('_access_token'))->toEqual('clt.9f2c8a1e');
 
-        $plugin = new ObtainClientTokenPlugin();
+    // once() 验证：第二次调用命中缓存未再发请求
+    Mockery::close();
+});
 
-        $first = $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
-        $second = $plugin->assembly((new Rocket())->setParams([]), fn ($rocket) => $rocket);
+it('return rocket and business params do not pollute sub call', function () {
+    $plugin = new ObtainClientTokenPlugin();
+    // 回归 #1196 模式问题：外层 `_return_rocket` + 业务字段不应影响 token 子调用
+    $capturedBody = '';
+    $response = new Response(200, [], json_encode([
+        'data' => [
+            'access_token' => 'clt.fresh_token',
+            'expires_in' => 7200,
+            'error_code' => 0,
+            'description' => '',
+        ],
+        'message' => 'success',
+    ]));
 
-        self::assertEquals('clt.9f2c8a1e', $first->getPayload()->get('_access_token'));
-        self::assertEquals('clt.9f2c8a1e', $second->getPayload()->get('_access_token'));
+    $http = Mockery::mock(Client::class);
+    $http->shouldReceive('sendRequest')->once()->andReturnUsing(function ($request) use (&$capturedBody, $response) {
+        $capturedBody = (string) $request->getBody();
 
-        // once() 验证：第二次调用命中缓存未再发请求
-        Mockery::close();
-    }
+        return $response;
+    });
 
-    public function testReturnRocketAndBusinessParamsDoNotPolluteSubCall(): void
-    {
-        // 回归 #1196 模式问题：外层 `_return_rocket` + 业务字段不应影响 token 子调用
-        $capturedBody = '';
-        $response = new Response(200, [], json_encode([
-            'data' => [
-                'access_token' => 'clt.fresh_token',
-                'expires_in' => 7200,
-                'error_code' => 0,
-                'description' => '',
-            ],
-            'message' => 'success',
-        ]));
+    Pay::set(HttpClientInterface::class, $http);
 
-        $http = Mockery::mock(Client::class);
-        $http->shouldReceive('sendRequest')->once()->andReturnUsing(function ($request) use (&$capturedBody, $response) {
-            $capturedBody = (string) $request->getBody();
+    $rocket = new Rocket();
+    $rocket->setParams([
+        '_return_rocket' => true,
+        'out_order_no' => '20240101123456',
+        'total_amount' => 1,
+        'subject' => '测试商品',
+    ]);
 
-            return $response;
-        });
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        Pay::set(HttpClientInterface::class, $http);
+    expect($result->getPayload()->get('_access_token'))->toEqual('clt.fresh_token');
 
-        $rocket = new Rocket();
-        $rocket->setParams([
-            '_return_rocket' => true,
-            'out_order_no' => '20240101123456',
-            'total_amount' => 1,
-            'subject' => '测试商品',
-        ]);
+    // 请求体只含三个鉴权字段，业务字段与 `_return_rocket` 均未混入
+    $body = json_decode($capturedBody, true);
+    expect(array_keys($body))->toBe(['grant_type', 'client_key', 'client_secret']);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-
-        self::assertEquals('clt.fresh_token', $result->getPayload()->get('_access_token'));
-
-        // 请求体只含三个鉴权字段，业务字段与 `_return_rocket` 均未混入
-        $body = json_decode($capturedBody, true);
-        self::assertSame(['grant_type', 'client_key', 'client_secret'], array_keys($body));
-
-        Mockery::close();
-    }
-}
+    Mockery::close();
+});

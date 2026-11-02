@@ -2,70 +2,56 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Paypal\V2\Pay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Paypal\V2\Pay\RefundPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class RefundPluginTest extends TestCase
-{
-    protected RefundPlugin $plugin;
+it('normal', function () {
+    $plugin = new RefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['capture_id' => 'CAP_123'])->setPayload(new Collection([]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new RefundPlugin();
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toContain('CAP_123');
+    expect($payload->get('_url'))->toContain('refund');
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['capture_id' => 'CAP_123'])->setPayload(new Collection([]));
+    // capture_id 不应残留在 payload 中，否则会被打进最终请求 body
+    expect($payload->get('capture_id'))->toBeNull();
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+it('with amount', function () {
+    $plugin = new RefundPlugin();
+    $amount = ['currency_code' => 'USD', 'value' => '5.00'];
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertStringContainsString('CAP_123', $payload->get('_url'));
-        self::assertStringContainsString('refund', $payload->get('_url'));
+    $rocket = new Rocket();
+    $rocket->setParams(['capture_id' => 'CAP_456'])->setPayload(new Collection(['amount' => $amount]));
 
-        // capture_id 不应残留在 payload 中，否则会被打进最终请求 body
-        self::assertNull($payload->get('capture_id'));
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-    public function testWithAmount()
-    {
-        $amount = ['currency_code' => 'USD', 'value' => '5.00'];
+    expect($payload->get('amount'))->toEqual($amount);
 
-        $rocket = new Rocket();
-        $rocket->setParams(['capture_id' => 'CAP_456'])->setPayload(new Collection(['amount' => $amount]));
+    // 仅保留白名单内的业务字段
+    expect($payload->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v2/payments/captures/CAP_456/refund',
+        'amount' => $amount,
+    ]);
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+it('missing capture id', function () {
+    $plugin = new RefundPlugin();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        self::assertEquals($amount, $payload->get('amount'));
+    $rocket = new Rocket();
+    $rocket->setParams([])->setPayload(new Collection([]));
 
-        // 仅保留白名单内的业务字段
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v2/payments/captures/CAP_456/refund',
-            'amount' => $amount,
-        ], $payload->all());
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingCaptureId()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-        $rocket = new Rocket();
-        $rocket->setParams([])->setPayload(new Collection([]));
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}

@@ -2,136 +2,122 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Douyin\V1\Pay;
-
 use Yansongda\Artful\Direction\NoHttpRequestDirection;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Douyin\V1\Pay\InvokePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class InvokePluginTest extends TestCase
-{
-    protected InvokePlugin $plugin;
+it('normal', function () {
+    $plugin = new InvokePlugin();
+    $fields = [
+        'outOrderNo' => '20260905123456',
+        'totalAmount' => 100,
+        'skuList' => [
+            ['skuId' => 'sku_001', 'count' => 1, 'price' => 100],
+        ],
+        'orderEntrySchema' => ['path' => 'pages/index/index'],
+    ];
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
+    $rocket->setPayload(new Collection($fields));
 
-        $this->plugin = new InvokePlugin();
-    }
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-    public function testNormal(): void
-    {
-        $fields = [
-            'outOrderNo' => '20260905123456',
-            'totalAmount' => 100,
-            'skuList' => [
-                ['skuId' => 'sku_001', 'count' => 1, 'price' => 100],
-            ],
-            'orderEntrySchema' => ['path' => 'pages/index/index'],
-        ];
+    // 不发送 HTTP 请求
+    expect($result->getDirection())->toBe(NoHttpRequestDirection::class);
 
-        $rocket = new Rocket();
-        $rocket->setParams([]);
-        $rocket->setPayload(new Collection($fields));
+    $destination = $result->getDestination();
+    expect($destination)->toBeInstanceOf(Collection::class);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    $data = $destination->get('data');
+    expect($data)->toBeString();
+    expect(json_encode($fields, JSON_UNESCAPED_UNICODE))->toBe($data);
+    expect(json_decode($data, true))->toBe($fields);
 
-        // 不发送 HTTP 请求
-        self::assertSame(NoHttpRequestDirection::class, $result->getDirection());
+    $byteAuthorization = $destination->get('byteAuthorization');
+    expect($byteAuthorization)->toBeString();
+    expect($byteAuthorization)->toStartWith('SHA256-RSA2048 ');
+    expect($byteAuthorization)->toContain('appid="tt226e54d3bd581bf801"');
+    expect($byteAuthorization)->toContain('key_version=1');
+});
 
-        $destination = $result->getDestination();
-        self::assertInstanceOf(Collection::class, $destination);
+it('verify signature from output', function () {
+    $plugin = new InvokePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
+    $rocket->setPayload(new Collection([
+        'outOrderNo' => '20260905123456',
+        'totalAmount' => 100,
+    ]));
 
-        $data = $destination->get('data');
-        self::assertIsString($data);
-        self::assertSame($data, json_encode($fields, JSON_UNESCAPED_UNICODE));
-        self::assertSame($fields, json_decode($data, true));
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        $byteAuthorization = $destination->get('byteAuthorization');
-        self::assertIsString($byteAuthorization);
-        self::assertStringStartsWith('SHA256-RSA2048 ', $byteAuthorization);
-        self::assertStringContainsString('appid="tt226e54d3bd581bf801"', $byteAuthorization);
-        self::assertStringContainsString('key_version=1', $byteAuthorization);
-    }
+    $destination = $result->getDestination();
+    expect($destination)->toBeInstanceOf(Collection::class);
 
-    public function testVerifySignatureFromOutput(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
-        $rocket->setPayload(new Collection([
-            'outOrderNo' => '20260905123456',
-            'totalAmount' => 100,
-        ]));
+    $data = $destination->get('data');
+    $byteAuthorization = $destination->get('byteAuthorization');
+    expect($data)->toBeString();
+    expect($byteAuthorization)->toBeString();
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    // 从输出 byteAuthorization 反解 nonce_str/timestamp/signature（插件无注入通道）
+    expect(preg_match(
+        '/nonce_str="([^"]+)",timestamp="([^"]+)",key_version=1,signature="([^"]+)"/',
+        $byteAuthorization,
+        $matches
+    ))->toBe(1);
 
-        $destination = $result->getDestination();
-        self::assertInstanceOf(Collection::class, $destination);
+    [, $nonce, $timestamp, $signature] = $matches;
 
-        $data = $destination->get('data');
-        $byteAuthorization = $destination->get('byteAuthorization');
-        self::assertIsString($data);
-        self::assertIsString($byteAuthorization);
+    $contents = "POST\n/requestOrder\n".$timestamp."\n".$nonce."\n".$data."\n";
+    $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../../Cert/douyinAppPublicKey.pem'));
 
-        // 从输出 byteAuthorization 反解 nonce_str/timestamp/signature（插件无注入通道）
-        self::assertSame(1, preg_match(
-            '/nonce_str="([^"]+)",timestamp="([^"]+)",key_version=1,signature="([^"]+)"/',
-            $byteAuthorization,
-            $matches
-        ));
+    expect($publicKey)->not->toBeFalse();
+    expect(openssl_verify($contents, base64_decode($signature), $publicKey, OPENSSL_ALGO_SHA256))->toBe(1);
+});
 
-        [, $nonce, $timestamp, $signature] = $matches;
+it('underscore keys excluded', function () {
+    $plugin = new InvokePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
+    $rocket->setPayload(new Collection([
+        '_foo' => 'bar',
+        'outOrderNo' => '20260905123456',
+    ]));
 
-        $contents = "POST\n/requestOrder\n".$timestamp."\n".$nonce."\n".$data."\n";
-        $publicKey = openssl_pkey_get_public(file_get_contents(__DIR__.'/../../../../Cert/douyinAppPublicKey.pem'));
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        self::assertNotFalse($publicKey);
-        self::assertSame(1, openssl_verify($contents, base64_decode($signature), $publicKey, OPENSSL_ALGO_SHA256));
-    }
+    $destination = $result->getDestination();
+    expect($destination)->toBeInstanceOf(Collection::class);
 
-    public function testUnderscoreKeysExcluded(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
-        $rocket->setPayload(new Collection([
-            '_foo' => 'bar',
-            'outOrderNo' => '20260905123456',
-        ]));
+    $data = $destination->get('data');
+    expect($data)->toBeString();
+    expect(json_decode($data, true))->toBe(['outOrderNo' => '20260905123456']);
+});
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+it('empty payload', function () {
+    $plugin = new InvokePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
 
-        $destination = $result->getDestination();
-        self::assertInstanceOf(Collection::class, $destination);
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $data = $destination->get('data');
-        self::assertIsString($data);
-        self::assertSame(['outOrderNo' => '20260905123456'], json_decode($data, true));
-    }
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-    public function testEmptyPayload(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
+it('only underscore payload', function () {
+    $plugin = new InvokePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
+    $rocket->setPayload(new Collection(['_method' => 'POST', '_url' => '/requestOrder']));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-    public function testOnlyUnderscorePayload(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
-        $rocket->setPayload(new Collection(['_method' => 'POST', '_url' => '/requestOrder']));
-
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
-}

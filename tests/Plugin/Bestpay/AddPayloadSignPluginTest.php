@@ -2,106 +2,97 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Bestpay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Bestpay\V1\AddPayloadSignPlugin;
 use Yansongda\Pay\Plugin\Bestpay\V1\StartPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class AddPayloadSignPluginTest extends TestCase
-{
-    public function testAssembly(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            'outTradeNo' => 'ORDER001',
-            'tradeAmt' => '99',
-            'subject' => '测试',
-        ]);
+it('assembly', function () {
+    $rocket = new Rocket();
+    $rocket->setParams([
+        'outTradeNo' => 'ORDER001',
+        'tradeAmt' => '99',
+        'subject' => '测试',
+    ]);
 
-        $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
-        $rocket->mergePayload(['_url' => '/pay/tradeCreate']);
+    $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
+    $rocket->mergePayload(['_url' => '/pay/tradeCreate']);
 
-        $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
+    $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
 
-        $payload = $rocket->getPayload();
+    $payload = $rocket->getPayload();
 
-        self::assertEquals('/pay/tradeCreate', $payload->get('path'));
-        self::assertNotEmpty($payload->get('sign'));
-        self::assertNotEmpty($payload->get('commonParams'));
-        self::assertNotEmpty($payload->get('bizContent'));
+    expect($payload->get('path'))->toEqual('/pay/tradeCreate');
+    expect($payload->get('sign'))->not->toBeEmpty();
+    expect($payload->get('commonParams'))->not->toBeEmpty();
+    expect($payload->get('bizContent'))->not->toBeEmpty();
 
-        $biz = json_decode((string) $payload->get('bizContent'), true);
-        self::assertEquals('ORDER001', $biz['outTradeNo']);
-        self::assertEquals('99', $biz['tradeAmt']);
-        self::assertEquals('3178033925245778', $biz['merchantNo']);
-        self::assertArrayNotHasKey('institutionType', $biz);
-        self::assertArrayNotHasKey('institutionCode', $biz);
-        self::assertArrayNotHasKey('_url', $biz);
+    $biz = json_decode((string) $payload->get('bizContent'), true);
+    expect($biz['outTradeNo'])->toEqual('ORDER001');
+    expect($biz['tradeAmt'])->toEqual('99');
+    expect($biz['merchantNo'])->toEqual('3178033925245778');
+    expect($biz)->not->toHaveKey('institutionType');
+    expect($biz)->not->toHaveKey('institutionCode');
+    expect($biz)->not->toHaveKey('_url');
 
-        $common = json_decode((string) $payload->get('commonParams'), true);
-        self::assertEquals('MERCHANT', $common['institutionType']);
-        self::assertEquals('3178033925245778', $common['institutionCode']);
-    }
+    $common = json_decode((string) $payload->get('commonParams'), true);
+    expect($common['institutionType'])->toEqual('MERCHANT');
+    expect($common['institutionCode'])->toEqual('3178033925245778');
+});
 
-    public function testAssemblyFiltersNullFieldsFromBizContent(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([
-            'outTradeNo' => 'ORDER001',
-            'storeCode' => null,
-            'remark' => '',
-        ]);
+it('assembly filters null fields from biz content', function () {
+    $rocket = new Rocket();
+    $rocket->setParams([
+        'outTradeNo' => 'ORDER001',
+        'storeCode' => null,
+        'remark' => '',
+    ]);
 
-        $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
-        $rocket->mergePayload(['_url' => '/pay/tradeCreate', 'notifyUrl' => null]);
+    $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
+    $rocket->mergePayload(['_url' => '/pay/tradeCreate', 'notifyUrl' => null]);
 
-        $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
+    $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
 
-        $biz = json_decode((string) $rocket->getPayload()->get('bizContent'), true);
+    $biz = json_decode((string) $rocket->getPayload()->get('bizContent'), true);
 
-        // null 字段不进入 bizContent（对齐官方 fastjson 默认不序列化 null）
-        self::assertArrayNotHasKey('storeCode', $biz);
-        self::assertArrayNotHasKey('notifyUrl', $biz);
-        // 空字符串保留（官方语义：签名拼为 k=，非 null）
-        self::assertSame('', $biz['remark']);
-    }
+    // null 字段不进入 bizContent（对齐官方 fastjson 默认不序列化 null）
+    expect($biz)->not->toHaveKey('storeCode');
+    expect($biz)->not->toHaveKey('notifyUrl');
+    // 空字符串保留（官方语义：签名拼为 k=，非 null）
+    expect($biz['remark'])->toBe('');
+});
 
-    public function testAssemblyBizContentDoesNotEscapeSlash(): void
-    {
-        // 对齐官方 fastjson 默认序列化：URL 中的 `/` 不转义为 `\/`（JSON_UNESCAPED_SLASHES）
-        $rocket = new Rocket();
-        $rocket->setParams([
-            'outTradeNo' => 'ORDER001',
-            'notifyUrl' => 'https://pay.yansongda.cn/bestpay/notify',
-            'subject' => '测试',
-        ]);
+it('assembly biz content does not escape slash', function () {
+    // 对齐官方 fastjson 默认序列化：URL 中的 `/` 不转义为 `\/`（JSON_UNESCAPED_SLASHES）
+    $rocket = new Rocket();
+    $rocket->setParams([
+        'outTradeNo' => 'ORDER001',
+        'notifyUrl' => 'https://pay.yansongda.cn/bestpay/notify',
+        'subject' => '测试',
+    ]);
 
-        $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
-        $rocket->mergePayload(['_url' => '/pay/tradeCreate']);
+    $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
+    $rocket->mergePayload(['_url' => '/pay/tradeCreate']);
 
-        $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
+    $rocket = (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
 
-        $bizContent = (string) $rocket->getPayload()->get('bizContent');
+    $bizContent = (string) $rocket->getPayload()->get('bizContent');
 
-        self::assertStringContainsString('"notifyUrl":"https://pay.yansongda.cn/bestpay/notify"', $bizContent);
-        self::assertStringNotContainsString('\\/', $bizContent);
-        self::assertStringContainsString('"subject":"测试"', $bizContent);
-    }
+    expect($bizContent)->toContain('"notifyUrl":"https://pay.yansongda.cn/bestpay/notify"');
+    expect($bizContent)->not->toContain('\\/');
+    expect($bizContent)->toContain('"subject":"测试"');
+});
 
-    public function testAssemblyThrowsWhenPathMissing(): void
-    {
-        $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionCode(Exception::PARAMS_BESTPAY_URL_MISSING);
+it('assembly throws when path missing', function () {
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_BESTPAY_URL_MISSING);
 
-        $rocket = new Rocket();
-        $rocket->setParams(['outTradeNo' => 'ORDER001']);
+    $rocket = new Rocket();
+    $rocket->setParams(['outTradeNo' => 'ORDER001']);
 
-        $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
+    $rocket = (new StartPlugin())->assembly($rocket, fn ($r) => $r);
 
-        (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
-    }
-}
+    (new AddPayloadSignPlugin())->assembly($rocket, fn ($r) => $r);
+});
+

@@ -2,30 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Paypal\V2;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Paypal\V2\ObtainAccessTokenPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class ObtainAccessTokenPluginTest extends TestCase
-{
-    protected ObtainAccessTokenPlugin $plugin;
+it('external access token', function () {
+    $plugin = new ObtainAccessTokenPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_access_token' => 'external_token_123']);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new ObtainAccessTokenPlugin();
-    }
+    expect($result->getPayload()->get('_access_token'))->toEqual('external_token_123');
+});
 
-    public function testExternalAccessToken()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_access_token' => 'external_token_123']);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('external_token_123', $result->getPayload()->get('_access_token'));
-    }
-}

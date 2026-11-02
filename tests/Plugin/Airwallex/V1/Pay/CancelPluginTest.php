@@ -2,51 +2,43 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Airwallex\V1\Pay;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Airwallex\V1\Pay\CancelPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class CancelPluginTest extends TestCase
-{
-    public function testMissingId()
-    {
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+it('missing id', function () {
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        (new CancelPlugin())->assembly((new Rocket())->setPayload(new Collection([])), fn ($rocket) => $rocket);
-    }
+    (new CancelPlugin())->assembly((new Rocket())->setPayload(new Collection([])), fn ($rocket) => $rocket);
+});
 
-    public function testNormal()
-    {
-        $result = (new CancelPlugin())->assembly(
-            (new Rocket())->setPayload(new Collection(['payment_intent_id' => 'int_test123'])),
-            fn ($rocket) => $rocket
-        );
+it('normal', function () {
+    $result = (new CancelPlugin())->assembly(
+        (new Rocket())->setPayload(new Collection(['payment_intent_id' => 'int_test123'])),
+        fn ($rocket) => $rocket
+    );
 
-        self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('/api/v1/pa/payment_intents/int_test123/cancel', $result->getPayload()->get('_url'));
-        self::assertNotEmpty($result->getPayload()->get('request_id'));
-        self::assertFalse($result->getPayload()->has('cancellation_reason'));
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('POST');
+    expect($result->getPayload()->get('_url'))->toEqual('/api/v1/pa/payment_intents/int_test123/cancel');
+    expect($result->getPayload()->get('request_id'))->not->toBeEmpty();
+    expect($result->getPayload()->has('cancellation_reason'))->toBeFalse();
+});
 
-    public function testUseIdAndCancellationReason()
-    {
-        $result = (new CancelPlugin())->assembly(
-            (new Rocket())->setPayload(new Collection([
-                'id' => 'int_test456',
-                'request_id' => 'req_test456',
-                'cancellation_reason' => 'requested_by_customer',
-            ])),
-            fn ($rocket) => $rocket
-        );
+it('use id and cancellation reason', function () {
+    $result = (new CancelPlugin())->assembly(
+        (new Rocket())->setPayload(new Collection([
+            'id' => 'int_test456',
+            'request_id' => 'req_test456',
+            'cancellation_reason' => 'requested_by_customer',
+        ])),
+        fn ($rocket) => $rocket
+    );
 
-        self::assertEquals('/api/v1/pa/payment_intents/int_test456/cancel', $result->getPayload()->get('_url'));
-        self::assertEquals('req_test456', $result->getPayload()->get('request_id'));
-        self::assertEquals('requested_by_customer', $result->getPayload()->get('cancellation_reason'));
-    }
-}
+    expect($result->getPayload()->get('_url'))->toEqual('/api/v1/pa/payment_intents/int_test456/cancel');
+    expect($result->getPayload()->get('request_id'))->toEqual('req_test456');
+    expect($result->getPayload()->get('cancellation_reason'))->toEqual('requested_by_customer');
+});
+
