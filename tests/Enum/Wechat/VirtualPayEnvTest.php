@@ -2,61 +2,45 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Enum\Wechat;
-
 use Yansongda\Pay\Enum\Wechat\VirtualPayEnv;
-use Yansongda\Pay\Tests\TestCase;
 
-class VirtualPayEnvTest extends TestCase
-{
-    public function testValues(): void
-    {
-        self::assertSame(0, VirtualPayEnv::PRODUCTION->value);
-        self::assertSame(1, VirtualPayEnv::SANDBOX->value);
-    }
+it('exposes environment values', function () {
+    expect(VirtualPayEnv::PRODUCTION->value)->toBe(0);
+    expect(VirtualPayEnv::SANDBOX->value)->toBe(1);
+});
 
-    public function testCases(): void
-    {
-        self::assertSame(
-            [
-                VirtualPayEnv::PRODUCTION,
-                VirtualPayEnv::SANDBOX,
-            ],
-            VirtualPayEnv::cases()
-        );
-    }
+it('keeps declaration order of cases', function () {
+    expect(VirtualPayEnv::cases())->toBe([
+        VirtualPayEnv::PRODUCTION,
+        VirtualPayEnv::SANDBOX,
+    ]);
+});
 
-    public function testTryFrom(): void
-    {
-        self::assertSame(VirtualPayEnv::PRODUCTION, VirtualPayEnv::tryFrom(0));
-        self::assertSame(VirtualPayEnv::SANDBOX, VirtualPayEnv::tryFrom(1));
-        self::assertNull(VirtualPayEnv::tryFrom(2));
-    }
+it('tries from int value', function () {
+    expect(VirtualPayEnv::tryFrom(0))->toBe(VirtualPayEnv::PRODUCTION);
+    expect(VirtualPayEnv::tryFrom(1))->toBe(VirtualPayEnv::SANDBOX);
+    expect(VirtualPayEnv::tryFrom(2))->toBeNull();
+});
 
-    public function testFromLoose(): void
-    {
-        self::assertSame(VirtualPayEnv::PRODUCTION, VirtualPayEnv::fromLoose(0));
-        self::assertSame(VirtualPayEnv::SANDBOX, VirtualPayEnv::fromLoose(1));
-        self::assertSame(VirtualPayEnv::PRODUCTION, VirtualPayEnv::fromLoose('0'));
-        self::assertSame(VirtualPayEnv::SANDBOX, VirtualPayEnv::fromLoose('1'));
-    }
+it('builds from loose input', function () {
+    expect(VirtualPayEnv::fromLoose(0))->toBe(VirtualPayEnv::PRODUCTION);
+    expect(VirtualPayEnv::fromLoose(1))->toBe(VirtualPayEnv::SANDBOX);
+    expect(VirtualPayEnv::fromLoose('0'))->toBe(VirtualPayEnv::PRODUCTION);
+    expect(VirtualPayEnv::fromLoose('1'))->toBe(VirtualPayEnv::SANDBOX);
+});
 
-    public function testFromLooseUnknownFallsBackToProduction(): void
-    {
-        self::assertSame(VirtualPayEnv::PRODUCTION, VirtualPayEnv::fromLoose(2));
-        self::assertSame(VirtualPayEnv::PRODUCTION, VirtualPayEnv::fromLoose('foo'));
-        self::assertSame(VirtualPayEnv::PRODUCTION, VirtualPayEnv::fromLoose(''));
-        self::assertSame(VirtualPayEnv::PRODUCTION, VirtualPayEnv::fromLoose(null));
-    }
+it('falls back to production for unknown loose input', function () {
+    expect(VirtualPayEnv::fromLoose(2))->toBe(VirtualPayEnv::PRODUCTION);
+    expect(VirtualPayEnv::fromLoose('foo'))->toBe(VirtualPayEnv::PRODUCTION);
+    expect(VirtualPayEnv::fromLoose(''))->toBe(VirtualPayEnv::PRODUCTION);
+    expect(VirtualPayEnv::fromLoose(null))->toBe(VirtualPayEnv::PRODUCTION);
+});
 
-    public function testFromLooseWithEnumInstance(): void
-    {
-        self::assertSame(VirtualPayEnv::SANDBOX, VirtualPayEnv::fromLoose(VirtualPayEnv::SANDBOX));
-    }
+it('builds from loose enum instance', function () {
+    expect(VirtualPayEnv::fromLoose(VirtualPayEnv::SANDBOX))->toBe(VirtualPayEnv::SANDBOX);
+});
 
-    public function testIsSandbox(): void
-    {
-        self::assertTrue(VirtualPayEnv::SANDBOX->isSandbox());
-        self::assertFalse(VirtualPayEnv::PRODUCTION->isSandbox());
-    }
-}
+it('detects sandbox environment', function () {
+    expect(VirtualPayEnv::SANDBOX->isSandbox())->toBeTrue();
+    expect(VirtualPayEnv::PRODUCTION->isSandbox())->toBeFalse();
+});
