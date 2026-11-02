@@ -2,92 +2,78 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Jsapi;
-
 use Yansongda\Artful\Direction\OriginResponseDirection;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Jsapi\ClosePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class ClosePluginTest extends TestCase
-{
-    protected ClosePlugin $plugin;
+it('empty payload', function () {
+    $plugin = new ClosePlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: Jsapi 关闭订单，参数缺少 `out_trade_no`');
 
-        $this->plugin = new ClosePlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
+it('normal', function () {
+    $plugin = new ClosePlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'out_trade_no' => '111',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: Jsapi 关闭订单，参数缺少 `out_trade_no`');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/pay/transactions/out-trade-no/111/close',
+        '_service_url' => '/v3/pay/partner/transactions/out-trade-no/111/close',
+        'mchid' => '1600314069',
+    ]);
+    expect($result->getDirection())->toEqual(OriginResponseDirection::class);
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'out_trade_no' => '111',
-        ]));
+it('service params', function () {
+    $plugin = new ClosePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'out_trade_no' => '111',
+        'sub_mchid' => '333',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/pay/transactions/out-trade-no/111/close',
-            '_service_url' => '/v3/pay/partner/transactions/out-trade-no/111/close',
-            'mchid' => '1600314069',
-        ], $result->getPayload()->all());
-        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/pay/transactions/out-trade-no/111/close',
+        '_service_url' => '/v3/pay/partner/transactions/out-trade-no/111/close',
+        'sp_mchid' => '1600314069',
+        'sub_mchid' => '333',
+    ]);
+    expect($result->getDirection())->toEqual(OriginResponseDirection::class);
+});
 
-    public function testServiceParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'out_trade_no' => '111',
-            'sub_mchid' => '333',
-        ]));
+it('service', function () {
+    $plugin = new ClosePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'out_trade_no' => '111',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/pay/transactions/out-trade-no/111/close',
-            '_service_url' => '/v3/pay/partner/transactions/out-trade-no/111/close',
-            'sp_mchid' => '1600314069',
-            'sub_mchid' => '333',
-        ], $result->getPayload()->all());
-        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/pay/transactions/out-trade-no/111/close',
+        '_service_url' => '/v3/pay/partner/transactions/out-trade-no/111/close',
+        'sp_mchid' => '1600314069',
+        'sub_mchid' => '1600314070',
+    ]);
+    expect($result->getDirection())->toEqual(OriginResponseDirection::class);
+});
 
-    public function testService()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'out_trade_no' => '111',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/pay/transactions/out-trade-no/111/close',
-            '_service_url' => '/v3/pay/partner/transactions/out-trade-no/111/close',
-            'sp_mchid' => '1600314069',
-            'sub_mchid' => '1600314070',
-        ], $result->getPayload()->all());
-        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
-    }
-}

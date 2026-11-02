@@ -2,75 +2,60 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual\Order;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\StartDownloadOrderPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class StartDownloadOrderPluginTest extends TestCase
-{
-    protected StartDownloadOrderPlugin $plugin;
+it('normal', function () {
+    $plugin = new StartDownloadOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'start_date' => '2024-01-01 00:00:00',
+        'end_date' => '2024-01-01 23:59:59',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new StartDownloadOrderPlugin();
-    }
+    $payload = $result->getPayload();
 
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/xpay/start_download_order');
+    expect($payload->get('env'))->toBeNull();
+    expect($payload->get('start_date'))->toEqual('2024-01-01 00:00:00');
+    expect($payload->get('end_date'))->toEqual('2024-01-01 23:59:59');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'start_date' => '2024-01-01 00:00:00',
-            'end_date' => '2024-01-01 23:59:59',
-        ]));
+it('sandbox env', function () {
+    $plugin = new StartDownloadOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'env' => 1,
+        'start_date' => '2024-01-01 00:00:00',
+        'end_date' => '2024-01-01 23:59:59',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/start_download_order', $payload->get('_url'));
-        self::assertNull($payload->get('env'));
-        self::assertEquals('2024-01-01 00:00:00', $payload->get('start_date'));
-        self::assertEquals('2024-01-01 23:59:59', $payload->get('end_date'));
-    }
+    expect($payload->get('env'))->toEqual(1);
+});
 
-    public function testSandboxEnv()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'env' => 1,
-            'start_date' => '2024-01-01 00:00:00',
-            'end_date' => '2024-01-01 23:59:59',
-        ]));
+it('with access token', function () {
+    $plugin = new StartDownloadOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'start_date' => '2024-01-01 00:00:00',
+        'end_date' => '2024-01-01 23:59:59',
+        'access_token' => 'test_access_token',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertEquals(1, $payload->get('env'));
-    }
+    expect($payload->get('access_token'))->toEqual('test_access_token');
+});
 
-    public function testWithAccessToken()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'start_date' => '2024-01-01 00:00:00',
-            'end_date' => '2024-01-01 23:59:59',
-            'access_token' => 'test_access_token',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertEquals('test_access_token', $payload->get('access_token'));
-    }
-}

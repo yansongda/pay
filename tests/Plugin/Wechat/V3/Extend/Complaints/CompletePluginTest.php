@@ -2,73 +2,59 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\CompletePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class CompletePluginTest extends TestCase
-{
-    protected CompletePlugin $plugin;
+it('empty complaint id', function () {
+    $plugin = new CompletePlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 反馈处理完成，参数缺少 `complaint_id`');
 
-        $this->plugin = new CompletePlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyComplaintId()
-    {
-        $rocket = new Rocket();
+it('payload mch id empty', function () {
+    $plugin = new CompletePlugin();
+    $payload = [
+        'complaint_id' => 'yansongda',
+    ];
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 反馈处理完成，参数缺少 `complaint_id`');
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection($payload));
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testPayloadMchIdEmpty()
-    {
-        $payload = [
-            'complaint_id' => 'yansongda',
-        ];
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/merchant-service/complaints-v2/yansongda/complete',
+        '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/complete',
+        'complainted_mchid' => '1600314069',
+    ]);
+});
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
+it('payload mch id not empty', function () {
+    $plugin = new CompletePlugin();
+    $payload = [
+        'complaint_id' => 'yansongda',
+        'complainted_mchid' => '123',
+    ];
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection($payload));
 
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/merchant-service/complaints-v2/yansongda/complete',
-            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/complete',
-            'complainted_mchid' => '1600314069',
-        ], $result->getPayload()->all());
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testPayloadMchIdNotEmpty()
-    {
-        $payload = [
-            'complaint_id' => 'yansongda',
-            'complainted_mchid' => '123',
-        ];
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/merchant-service/complaints-v2/yansongda/complete',
+        '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/complete',
+        'complainted_mchid' => '123',
+    ]);
+});
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/merchant-service/complaints-v2/yansongda/complete',
-            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/complete',
-            'complainted_mchid' => '123',
-        ], $result->getPayload()->all());
-    }
-}

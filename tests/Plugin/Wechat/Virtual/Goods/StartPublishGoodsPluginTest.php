@@ -2,60 +2,45 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual\Goods;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Goods\StartPublishGoodsPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class StartPublishGoodsPluginTest extends TestCase
-{
-    protected StartPublishGoodsPlugin $plugin;
+it('normal', function () {
+    $plugin = new StartPublishGoodsPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'group_id' => 'test_group_001',
+        'upload_task_id' => 'task_123456',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new StartPublishGoodsPlugin();
-    }
+    $payload = $result->getPayload();
 
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/xpay/start_publish_goods');
+    expect($payload->get('env'))->toBeNull();
+    expect($payload->get('group_id'))->toEqual('test_group_001');
+    expect($payload->get('upload_task_id'))->toEqual('task_123456');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'group_id' => 'test_group_001',
-            'upload_task_id' => 'task_123456',
-        ]));
+it('sandbox env', function () {
+    $plugin = new StartPublishGoodsPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'group_id' => 'test_group_001',
+        'upload_task_id' => 'task_123456',
+        'env' => 1,
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/start_publish_goods', $payload->get('_url'));
-        self::assertNull($payload->get('env'));
-        self::assertEquals('test_group_001', $payload->get('group_id'));
-        self::assertEquals('task_123456', $payload->get('upload_task_id'));
-    }
+    expect($payload->get('env'))->toEqual(1);
+    expect($payload->get('_url'))->toEqual('/xpay/start_publish_goods');
+});
 
-    public function testSandboxEnv()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'group_id' => 'test_group_001',
-            'upload_task_id' => 'task_123456',
-            'env' => 1,
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertEquals(1, $payload->get('env'));
-        self::assertEquals('/xpay/start_publish_goods', $payload->get('_url'));
-    }
-}

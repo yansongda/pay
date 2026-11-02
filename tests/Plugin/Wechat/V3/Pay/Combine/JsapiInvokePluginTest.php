@@ -2,105 +2,91 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Combine;
-
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\JsapiInvokePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class JsapiInvokePluginTest extends TestCase
-{
-    protected JsapiInvokePlugin $plugin;
+it('missing prepay id', function () {
+    $plugin = new JsapiInvokePlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
+    $this->expectExceptionMessage('预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求');
 
-        $this->plugin = new JsapiInvokePlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingPrepayId()
-    {
-        $rocket = new Rocket();
+it('normal params', function () {
+    $plugin = new JsapiInvokePlugin();
+    $rocket = (new Rocket())
+        ->setDestination(new Collection(['prepay_id' => 'yansongda']))
+        ->setPayload(['_invoke_appid' => '111']);
 
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
-        self::expectExceptionMessage('预下单失败：响应缺少 `prepay_id` 参数，请自行检查参数是否符合微信要求');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $contents = $result->getDestination();
 
-    public function testNormalParams()
-    {
-        $rocket = (new Rocket())
-            ->setDestination(new Collection(['prepay_id' => 'yansongda']))
-            ->setPayload(['_invoke_appid' => '111']);
+    expect($contents->all())->toHaveKey('paySign');
+    expect($contents->all())->toHaveKey('timeStamp');
+    expect($contents->all())->toHaveKey('nonceStr');
+    expect($contents->get('appId'))->toEqual('111');
+    expect($contents->get('package'))->toEqual('prepay_id=yansongda');
+    expect($contents->get('signType'))->toEqual('RSA');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+it('normal', function () {
+    $plugin = new JsapiInvokePlugin();
+    $rocket = (new Rocket())->setDestination(new Collection(['prepay_id' => 'yansongda']));
 
-        $contents = $result->getDestination();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertArrayHasKey('paySign', $contents->all());
-        self::assertArrayHasKey('timeStamp', $contents->all());
-        self::assertArrayHasKey('nonceStr', $contents->all());
-        self::assertEquals('111', $contents->get('appId'));
-        self::assertEquals('prepay_id=yansongda', $contents->get('package'));
-        self::assertEquals('RSA', $contents->get('signType'));
-    }
+    $contents = $result->getDestination();
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())->setDestination(new Collection(['prepay_id' => 'yansongda']));
+    expect($contents->all())->toHaveKey('paySign');
+    expect($contents->all())->toHaveKey('timeStamp');
+    expect($contents->all())->toHaveKey('nonceStr');
+    expect($contents->get('appId'))->toEqual('wx55955316af4ef13');
+    expect($contents->get('package'))->toEqual('prepay_id=yansongda');
+    expect($contents->get('signType'))->toEqual('RSA');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+it('service params', function () {
+    $plugin = new JsapiInvokePlugin();
+    $rocket = (new Rocket())
+        ->setParams(['_config' => 'service_provider4'])
+        ->setDestination(new Collection(['prepay_id' => 'yansongda']))
+        ->setPayload(['_invoke_appid' => '111']);
 
-        $contents = $result->getDestination();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertArrayHasKey('paySign', $contents->all());
-        self::assertArrayHasKey('timeStamp', $contents->all());
-        self::assertArrayHasKey('nonceStr', $contents->all());
-        self::assertEquals('wx55955316af4ef13', $contents->get('appId'));
-        self::assertEquals('prepay_id=yansongda', $contents->get('package'));
-        self::assertEquals('RSA', $contents->get('signType'));
-    }
+    $contents = $result->getDestination();
 
-    public function testServiceParams()
-    {
-        $rocket = (new Rocket())
-            ->setParams(['_config' => 'service_provider4'])
-            ->setDestination(new Collection(['prepay_id' => 'yansongda']))
-            ->setPayload(['_invoke_appid' => '111']);
+    expect($contents->all())->toHaveKey('paySign');
+    expect($contents->all())->toHaveKey('timeStamp');
+    expect($contents->all())->toHaveKey('nonceStr');
+    expect($contents->get('appId'))->toEqual('111');
+    expect($contents->get('package'))->toEqual('prepay_id=yansongda');
+    expect($contents->get('signType'))->toEqual('RSA');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+it('service', function () {
+    $plugin = new JsapiInvokePlugin();
+    $rocket = (new Rocket())
+        ->setParams(['_config' => 'service_provider'])
+        ->setDestination(new Collection(['prepay_id' => 'yansongda']));
 
-        $contents = $result->getDestination();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertArrayHasKey('paySign', $contents->all());
-        self::assertArrayHasKey('timeStamp', $contents->all());
-        self::assertArrayHasKey('nonceStr', $contents->all());
-        self::assertEquals('111', $contents->get('appId'));
-        self::assertEquals('prepay_id=yansongda', $contents->get('package'));
-        self::assertEquals('RSA', $contents->get('signType'));
-    }
+    $contents = $result->getDestination();
 
-    public function testService()
-    {
-        $rocket = (new Rocket())
-            ->setParams(['_config' => 'service_provider'])
-            ->setDestination(new Collection(['prepay_id' => 'yansongda']));
+    expect($contents->all())->toHaveKey('paySign');
+    expect($contents->all())->toHaveKey('timeStamp');
+    expect($contents->all())->toHaveKey('nonceStr');
+    expect($contents->get('appId'))->toEqual('wx55955316af4ef15');
+    expect($contents->get('package'))->toEqual('prepay_id=yansongda');
+    expect($contents->get('signType'))->toEqual('RSA');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $contents = $result->getDestination();
-
-        self::assertArrayHasKey('paySign', $contents->all());
-        self::assertArrayHasKey('timeStamp', $contents->all());
-        self::assertArrayHasKey('nonceStr', $contents->all());
-        self::assertEquals('wx55955316af4ef15', $contents->get('appId'));
-        self::assertEquals('prepay_id=yansongda', $contents->get('package'));
-        self::assertEquals('RSA', $contents->get('signType'));
-    }
-}

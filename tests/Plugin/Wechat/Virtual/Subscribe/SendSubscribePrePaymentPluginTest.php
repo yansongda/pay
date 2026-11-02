@@ -2,79 +2,64 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual\Subscribe;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\SendSubscribePrePaymentPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class SendSubscribePrePaymentPluginTest extends TestCase
-{
-    protected SendSubscribePrePaymentPlugin $plugin;
+it('normal', function () {
+    $plugin = new SendSubscribePrePaymentPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'contract_id' => 'test_contract_id',
+        'pre_payment_amount' => 100,
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new SendSubscribePrePaymentPlugin();
-    }
+    $payload = $result->getPayload();
 
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/xpay/send_subscribe_pre_payment');
+    expect($payload->get('openid'))->toEqual('test_openid');
+    expect($payload->get('env'))->toBeNull();
+    expect($payload->get('contract_id'))->toEqual('test_contract_id');
+    expect($payload->get('pre_payment_amount'))->toEqual(100);
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'contract_id' => 'test_contract_id',
-            'pre_payment_amount' => 100,
-        ]));
+it('sandbox env', function () {
+    $plugin = new SendSubscribePrePaymentPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'env' => 1,
+        'contract_id' => 'test_contract_id',
+        'pre_payment_amount' => 100,
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/send_subscribe_pre_payment', $payload->get('_url'));
-        self::assertEquals('test_openid', $payload->get('openid'));
-        self::assertNull($payload->get('env'));
-        self::assertEquals('test_contract_id', $payload->get('contract_id'));
-        self::assertEquals(100, $payload->get('pre_payment_amount'));
-    }
+    expect($payload->get('env'))->toEqual(1);
+});
 
-    public function testSandboxEnv()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'env' => 1,
-            'contract_id' => 'test_contract_id',
-            'pre_payment_amount' => 100,
-        ]));
+it('default values', function () {
+    $plugin = new SendSubscribePrePaymentPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'contract_id' => 'test_contract_id',
+        'pre_payment_amount' => 100,
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertEquals(1, $payload->get('env'));
-    }
+    expect($payload->get('env'))->toBeNull();
+    expect($payload->get('_url'))->toEqual('/xpay/send_subscribe_pre_payment');
+});
 
-    public function testDefaultValues()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'contract_id' => 'test_contract_id',
-            'pre_payment_amount' => 100,
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertNull($payload->get('env'));
-        self::assertEquals('/xpay/send_subscribe_pre_payment', $payload->get('_url'));
-    }
-}

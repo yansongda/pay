@@ -2,61 +2,47 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\CancelPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class CancelPluginTest extends TestCase
-{
-    protected CancelPlugin $plugin;
+it('mode wrong', function () {
+    $plugin = new CancelPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider']);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
+    $this->expectExceptionMessage('参数异常: 撤销转账，只支持普通商户模式，当前配置为服务商模式');
 
-        $this->plugin = new CancelPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testModeWrong()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider']);
+it('empty payload', function () {
+    $plugin = new CancelPlugin();
+    $rocket = new Rocket();
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
-        self::expectExceptionMessage('参数异常: 撤销转账，只支持普通商户模式，当前配置为服务商模式');
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 撤销转账，参数缺少 `out_bill_no`');
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
+it('normal params', function () {
+    $plugin = new CancelPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'out_bill_no' => '111',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 撤销转账，参数缺少 `out_bill_no`');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/111/cancel',
+    ]);
+});
 
-    public function testNormalParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'out_bill_no' => '111',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/111/cancel',
-        ], $result->getPayload()->all());
-    }
-}

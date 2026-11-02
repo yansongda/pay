@@ -2,79 +2,64 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual\Currency;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Currency\CancelCurrencyPayPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class CancelCurrencyPayPluginTest extends TestCase
-{
-    protected CancelCurrencyPayPlugin $plugin;
+it('normal', function () {
+    $plugin = new CancelCurrencyPayPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'env' => 0,
+        'order_id' => 'ORDER_001',
+        'refund_reason' => 'user requested',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new CancelCurrencyPayPlugin();
-    }
+    $payload = $result->getPayload();
 
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/xpay/cancel_currency_pay');
+    expect($payload->get('openid'))->toEqual('test_openid');
+    expect($payload->get('env'))->toEqual(0);
+    expect($payload->get('order_id'))->toEqual('ORDER_001');
+    expect($payload->get('refund_reason'))->toEqual('user requested');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'env' => 0,
-            'order_id' => 'ORDER_001',
-            'refund_reason' => 'user requested',
-        ]));
+it('sandbox env', function () {
+    $plugin = new CancelCurrencyPayPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'env' => 1,
+        'order_id' => 'ORDER_001',
+        'refund_reason' => 'refund',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/cancel_currency_pay', $payload->get('_url'));
-        self::assertEquals('test_openid', $payload->get('openid'));
-        self::assertEquals(0, $payload->get('env'));
-        self::assertEquals('ORDER_001', $payload->get('order_id'));
-        self::assertEquals('user requested', $payload->get('refund_reason'));
-    }
+    expect($payload->get('env'))->toEqual(1);
+});
 
-    public function testSandboxEnv()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'env' => 1,
-            'order_id' => 'ORDER_001',
-            'refund_reason' => 'refund',
-        ]));
+it('default values', function () {
+    $plugin = new CancelCurrencyPayPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'order_id' => 'ORDER_001',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertEquals(1, $payload->get('env'));
-    }
+    expect($payload->get('env'))->toBeNull();
+    expect($payload->get('refund_reason'))->toBeNull();
+});
 
-    public function testDefaultValues()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'order_id' => 'ORDER_001',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertNull($payload->get('env'));
-        self::assertNull($payload->get('refund_reason'));
-    }
-}

@@ -2,42 +2,28 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V2\Pay\Pos;
-
 use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V2\Pay\Pos\PayPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class PayPluginTest extends TestCase
-{
-    protected PayPlugin $plugin;
+it('normal', function () {
+    $plugin = new PayPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'out_trade_no' => '111',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new PayPlugin();
-    }
+    expect($result->getPacker())->toEqual(XmlPacker::class);
+    expect($payload->get('_url'))->toEqual('/pay/micropay');
+    expect($payload->get('_content_type'))->toEqual('application/xml');
+    expect($payload->get('out_trade_no'))->toEqual('111');
+    expect($payload->get('appid'))->toEqual('wx55955316af4ef13');
+    expect($payload->get('mch_id'))->toEqual('1600314069');
+    expect($payload->get('sign_type'))->toEqual('MD5');
+    expect($payload->get('nonce_str'))->not->toBeEmpty();
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'out_trade_no' => '111',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
-
-        self::assertEquals(XmlPacker::class, $result->getPacker());
-        self::assertEquals('/pay/micropay', $payload->get('_url'));
-        self::assertEquals('application/xml', $payload->get('_content_type'));
-        self::assertEquals('111', $payload->get('out_trade_no'));
-        self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
-        self::assertEquals('1600314069', $payload->get('mch_id'));
-        self::assertEquals('MD5', $payload->get('sign_type'));
-        self::assertNotEmpty($payload->get('nonce_str'));
-    }
-}

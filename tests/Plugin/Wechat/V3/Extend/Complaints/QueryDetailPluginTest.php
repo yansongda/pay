@@ -2,99 +2,85 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryDetailPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryDetailPluginTest extends TestCase
-{
-    protected QueryDetailPlugin $plugin;
+it('empty complaint id', function () {
+    $plugin = new QueryDetailPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 查询投诉单详情，参数缺少 `complaint_id`');
 
-        $this->plugin = new QueryDetailPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyComplaintId()
-    {
-        $rocket = new Rocket();
+it('normal', function () {
+    $plugin = new QueryDetailPlugin();
+    $payload = [
+        'complaint_id' => 'yansongda',
+    ];
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 查询投诉单详情，参数缺少 `complaint_id`');
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection($payload));
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testNormal()
-    {
-        $payload = [
-            'complaint_id' => 'yansongda',
-        ];
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_url' => '/v3/merchant-service/complaints-v2/yansongda',
+        '_service_url' => '/v3/merchant-service/complaints-v2/yansongda',
+    ]);
+});
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
+it('normal with encrypted contents', function () {
+    $plugin = new QueryDetailPlugin();
+    $payload = [
+        'complaint_id' => 'yansongda',
+    ];
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection($payload));
 
-        self::assertEquals([
-            '_method' => 'GET',
-            '_url' => '/v3/merchant-service/complaints-v2/yansongda',
-            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda',
-        ], $result->getPayload()->all());
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) {
+        $rocket->setDestination(new Collection([
+            'payer_phone' => 'WIesmK+dSJycwdhTTkNmv0Lk2wb9o7NGODovccjhyotNnRkEeh+sxRK1gNSRNMJJgkQ30m4HwcuweSO24mehFeXVNTVAKFVef/3FlHnYDZfE1c3mCLToEef7e8J/Z8TwFH1ecn3t+Jk9ZaBpQKNHdQ0Q8jcL7AnL48h0D9BcZxDekPqX6hNnKfISoKSv4TXFcgvBLFeAe4Q3KM0Snq0N5IvI86D9xZqVg6mY+Gfz0782ymQFxflau6Qxx3mJ+0etHMocNuCdgctVH390XYYMc0u+V2FCJ5cU5h/M/AxzP9ayrEO4l0ftaxL6lP0HjifNrkPcAAb+q9I67UepKO9iGw==',
+        ]));
 
-    public function testNormalWithEncryptedContents()
-    {
-        $payload = [
-            'complaint_id' => 'yansongda',
-        ];
+        return $rocket;
+    });
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_url' => '/v3/merchant-service/complaints-v2/yansongda',
+        '_service_url' => '/v3/merchant-service/complaints-v2/yansongda',
+    ]);
+    expect($result->getDestination()->all()['payer_phone'])->toEqual('yansongda');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) {
-            $rocket->setDestination(new Collection([
-                'payer_phone' => 'WIesmK+dSJycwdhTTkNmv0Lk2wb9o7NGODovccjhyotNnRkEeh+sxRK1gNSRNMJJgkQ30m4HwcuweSO24mehFeXVNTVAKFVef/3FlHnYDZfE1c3mCLToEef7e8J/Z8TwFH1ecn3t+Jk9ZaBpQKNHdQ0Q8jcL7AnL48h0D9BcZxDekPqX6hNnKfISoKSv4TXFcgvBLFeAe4Q3KM0Snq0N5IvI86D9xZqVg6mY+Gfz0782ymQFxflau6Qxx3mJ+0etHMocNuCdgctVH390XYYMc0u+V2FCJ5cU5h/M/AxzP9ayrEO4l0ftaxL6lP0HjifNrkPcAAb+q9I67UepKO9iGw==',
-            ]));
+it('normal with encrypted contents wrong', function () {
+    $plugin = new QueryDetailPlugin();
+    $payload = [
+        'complaint_id' => 'yansongda',
+    ];
 
-            return $rocket;
-        });
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection($payload));
 
-        self::assertEquals([
-            '_method' => 'GET',
-            '_url' => '/v3/merchant-service/complaints-v2/yansongda',
-            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda',
-        ], $result->getPayload()->all());
-        self::assertEquals('yansongda', $result->getDestination()->all()['payer_phone']);
-    }
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID);
 
-    public function testNormalWithEncryptedContentsWrong()
-    {
-        $payload = [
-            'complaint_id' => 'yansongda',
-        ];
+    $plugin->assembly($rocket, function ($rocket) {
+        $rocket->setDestination(new Collection([
+            'payer_phone' => 'invalid',
+        ]));
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
+        return $rocket;
+    });
+});
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::DECRYPT_WECHAT_ENCRYPTED_CONTENTS_INVALID);
-
-        $this->plugin->assembly($rocket, function ($rocket) {
-            $rocket->setDestination(new Collection([
-                'payer_phone' => 'invalid',
-            ]));
-
-            return $rocket;
-        });
-    }
-}

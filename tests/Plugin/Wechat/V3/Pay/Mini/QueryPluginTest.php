@@ -2,74 +2,60 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Mini;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Mini\QueryPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryPluginTest extends TestCase
-{
-    protected QueryPlugin $plugin;
+it('empty payload', function () {
+    $plugin = new QueryPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: Mini 通过商户订单号查询订单，参数缺少 `out_trade_no`');
 
-        $this->plugin = new QueryPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
+it('normal', function () {
+    $plugin = new QueryPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'out_trade_no' => '111',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: Mini 通过商户订单号查询订单，参数缺少 `out_trade_no`');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('GET');
+    expect($result->getPayload()->get('_url'))->toEqual('/v3/pay/transactions/out-trade-no/111?mchid=1600314069');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'out_trade_no' => '111',
-        ]));
+it('service params', function () {
+    $plugin = new QueryPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'out_trade_no' => '111',
+        'sub_mchid' => '333',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('/v3/pay/transactions/out-trade-no/111?mchid=1600314069', $result->getPayload()->get('_url'));
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('GET');
+    expect($result->getPayload()->get('_service_url'))->toEqual('/v3/pay/partner/transactions/out-trade-no/111?sp_mchid=1600314069&sub_mchid=333');
+});
 
-    public function testServiceParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'out_trade_no' => '111',
-            'sub_mchid' => '333',
-        ]));
+it('service', function () {
+    $plugin = new QueryPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'out_trade_no' => '111',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('/v3/pay/partner/transactions/out-trade-no/111?sp_mchid=1600314069&sub_mchid=333', $result->getPayload()->get('_service_url'));
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('GET');
+    expect($result->getPayload()->get('_service_url'))->toEqual('/v3/pay/partner/transactions/out-trade-no/111?sp_mchid=1600314069&sub_mchid=1600314070');
+});
 
-    public function testService()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'out_trade_no' => '111',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('/v3/pay/partner/transactions/out-trade-no/111?sp_mchid=1600314069&sub_mchid=1600314070', $result->getPayload()->get('_service_url'));
-    }
-}

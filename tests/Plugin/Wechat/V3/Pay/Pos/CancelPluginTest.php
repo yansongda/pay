@@ -2,91 +2,77 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Pos;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Pos\CancelPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class CancelPluginTest extends TestCase
-{
-    protected CancelPlugin $plugin;
+it('missing out', function () {
+    $plugin = new CancelPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'aaa' => 'aaa',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 付款码支付撤销订单，参数缺少 `out_trade_no`');
 
-        $this->plugin = new CancelPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingOut()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'aaa' => 'aaa',
-        ]));
+it('normal', function () {
+    $plugin = new CancelPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'out_trade_no' => '111',
+        'aaa' => 'aaa',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 付款码支付撤销订单，参数缺少 `out_trade_no`');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/v3/pay/transactions/out-trade-no/111/reverse');
+    expect($payload->get('appid'))->toEqual('wx55955316af4ef13');
+    expect($payload->get('mchid'))->toEqual('1600314069');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'out_trade_no' => '111',
-            'aaa' => 'aaa',
-        ]));
+it('service', function () {
+    $plugin = new CancelPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'out_trade_no' => '111',
+        'aaa' => 'aaa',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/v3/pay/transactions/out-trade-no/111/reverse', $payload->get('_url'));
-        self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
-        self::assertEquals('1600314069', $payload->get('mchid'));
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_service_url'))->toEqual('/v3/pay/partner/transactions/out-trade-no/111/reverse');
+    expect($payload->get('sp_appid'))->toEqual('wx55955316af4ef13');
+    expect($payload->get('sp_mchid'))->toEqual('1600314069');
+    expect($payload->get('sub_mchid'))->toEqual('1600314070');
+});
 
-    public function testService()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'out_trade_no' => '111',
-            'aaa' => 'aaa',
-        ]));
+it('service params', function () {
+    $plugin = new CancelPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'sub_mchid' => '1222',
+        'out_trade_no' => '111',
+        'aaa' => 'aaa',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/v3/pay/partner/transactions/out-trade-no/111/reverse', $payload->get('_service_url'));
-        self::assertEquals('wx55955316af4ef13', $payload->get('sp_appid'));
-        self::assertEquals('1600314069', $payload->get('sp_mchid'));
-        self::assertEquals('1600314070', $payload->get('sub_mchid'));
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_service_url'))->toEqual('/v3/pay/partner/transactions/out-trade-no/111/reverse');
+    expect($payload->get('sp_appid'))->toEqual('wx55955316af4ef13');
+    expect($payload->get('sp_mchid'))->toEqual('1600314069');
+    expect($payload->get('sub_mchid'))->toEqual('1222');
+});
 
-    public function testServiceParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'sub_mchid' => '1222',
-            'out_trade_no' => '111',
-            'aaa' => 'aaa',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
-
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/v3/pay/partner/transactions/out-trade-no/111/reverse', $payload->get('_service_url'));
-        self::assertEquals('wx55955316af4ef13', $payload->get('sp_appid'));
-        self::assertEquals('1600314069', $payload->get('sp_mchid'));
-        self::assertEquals('1222', $payload->get('sub_mchid'));
-    }
-}

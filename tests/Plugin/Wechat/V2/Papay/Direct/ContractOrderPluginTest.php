@@ -2,46 +2,32 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V2\Papay\Direct;
-
 use Yansongda\Artful\Packer\XmlPacker;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V2\Papay\Direct\ContractOrderPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class ContractOrderPluginTest extends TestCase
-{
-    protected ContractOrderPlugin $plugin;
+it('normal', function () {
+    $plugin = new ContractOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'out_trade_no' => '111',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new ContractOrderPlugin();
-    }
+    expect($result->getPacker())->toEqual(XmlPacker::class);
+    expect($payload->get('_url'))->toEqual('/pay/contractorder');
+    expect($payload->get('_content_type'))->toEqual('application/xml');
+    expect($payload->get('out_trade_no'))->toEqual('111');
+    expect($payload->get('appid'))->toEqual('wx55955316af4ef13');
+    expect($payload->get('mch_id'))->toEqual('1600314069');
+    expect($payload->get('contract_appid'))->toEqual('wx55955316af4ef13');
+    expect($payload->get('contract_mchid'))->toEqual('1600314069');
+    expect($payload->get('sign_type'))->toEqual('MD5');
+    expect($payload->get('nonce_str'))->not->toBeEmpty();
+    expect($payload->all())->toHaveKey('notify_url');
+    expect($payload->all())->toHaveKey('contract_notify_url');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'out_trade_no' => '111',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
-
-        self::assertEquals(XmlPacker::class, $result->getPacker());
-        self::assertEquals('/pay/contractorder', $payload->get('_url'));
-        self::assertEquals('application/xml', $payload->get('_content_type'));
-        self::assertEquals('111', $payload->get('out_trade_no'));
-        self::assertEquals('wx55955316af4ef13', $payload->get('appid'));
-        self::assertEquals('1600314069', $payload->get('mch_id'));
-        self::assertEquals('wx55955316af4ef13', $payload->get('contract_appid'));
-        self::assertEquals('1600314069', $payload->get('contract_mchid'));
-        self::assertEquals('MD5', $payload->get('sign_type'));
-        self::assertNotEmpty($payload->get('nonce_str'));
-        self::assertArrayHasKey('notify_url', $payload->all());
-        self::assertArrayHasKey('contract_notify_url', $payload->all());
-    }
-}

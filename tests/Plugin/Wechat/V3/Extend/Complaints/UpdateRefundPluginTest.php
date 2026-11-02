@@ -2,56 +2,42 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\UpdateRefundPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class UpdateRefundPluginTest extends TestCase
-{
-    protected UpdateRefundPlugin $plugin;
+it('empty complaint id', function () {
+    $plugin = new UpdateRefundPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 更新退款审批结果，参数缺少 `complaint_id`');
 
-        $this->plugin = new UpdateRefundPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyComplaintId()
-    {
-        $rocket = new Rocket();
+it('payload', function () {
+    $plugin = new UpdateRefundPlugin();
+    $payload = [
+        'complaint_id' => 'yansongda',
+        'action' => 'APPROVE',
+        'name' => 'yansongda',
+    ];
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 更新退款审批结果，参数缺少 `complaint_id`');
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection($payload));
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testPayload()
-    {
-        $payload = [
-            'complaint_id' => 'yansongda',
-            'action' => 'APPROVE',
-            'name' => 'yansongda',
-        ];
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/merchant-service/complaints-v2/yansongda/update-refund-progress',
+        '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/update-refund-progress',
+        'action' => 'APPROVE',
+        'name' => 'yansongda',
+    ]);
+});
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/merchant-service/complaints-v2/yansongda/update-refund-progress',
-            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/update-refund-progress',
-            'action' => 'APPROVE',
-            'name' => 'yansongda',
-        ], $result->getPayload()->all());
-    }
-}

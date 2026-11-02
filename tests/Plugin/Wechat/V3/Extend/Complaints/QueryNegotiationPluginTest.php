@@ -2,74 +2,60 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryNegotiationPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryNegotiationPluginTest extends TestCase
-{
-    protected QueryNegotiationPlugin $plugin;
+it('empty complaint id', function () {
+    $plugin = new QueryNegotiationPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 查询投诉单协商历史，参数缺少 `complaint_id`');
 
-        $this->plugin = new QueryNegotiationPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyComplaintId()
-    {
-        $rocket = new Rocket();
+it('query empty', function () {
+    $plugin = new QueryNegotiationPlugin();
+    $payload = [
+        'complaint_id' => 'yansongda',
+        '_t' => 'a',
+    ];
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 查询投诉单协商历史，参数缺少 `complaint_id`');
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection($payload));
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testQueryEmpty()
-    {
-        $payload = [
-            'complaint_id' => 'yansongda',
-            '_t' => 'a',
-        ];
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys',
+        '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys',
+    ]);
+});
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
+it('query not empty', function () {
+    $plugin = new QueryNegotiationPlugin();
+    $payload = [
+        'complaint_id' => 'yansongda',
+        'limit' => 2,
+        'offset' => 3,
+        '_t' => 'a',
+    ];
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection($payload));
 
-        self::assertEquals([
-            '_method' => 'GET',
-            '_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys',
-            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys',
-        ], $result->getPayload()->all());
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testQueryNotEmpty()
-    {
-        $payload = [
-            'complaint_id' => 'yansongda',
-            'limit' => 2,
-            'offset' => 3,
-            '_t' => 'a',
-        ];
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys?limit=2&offset=3',
+        '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys?limit=2&offset=3',
+    ]);
+});
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'GET',
-            '_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys?limit=2&offset=3',
-            '_service_url' => '/v3/merchant-service/complaints-v2/yansongda/negotiation-historys?limit=2&offset=3',
-        ], $result->getPayload()->all());
-    }
-}

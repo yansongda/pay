@@ -2,50 +2,36 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat;
-
 use GuzzleHttp\Psr7\Response;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class ResponsePluginTest extends TestCase
-{
-    protected ResponsePlugin $plugin;
+it('original response destination', function () {
+    $plugin = new ResponsePlugin();
+    $destination = new Response();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin($destination);
+    $rocket->setDestination(new Collection());
 
-        $this->plugin = new ResponsePlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testOriginalResponseDestination()
-    {
-        $destination = new Response();
+    expect($result->getDestination())->toBeInstanceOf(Collection::class);
+});
 
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin($destination);
-        $rocket->setDestination(new Collection());
+it('original response code error destination', function () {
+    $plugin = new ResponsePlugin();
+    $destination = new Response(500);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $rocket = new Rocket();
+    $rocket->setDestinationOrigin($destination);
 
-        self::assertInstanceOf(Collection::class, $result->getDestination());
-    }
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
 
-    public function testOriginalResponseCodeErrorDestination()
-    {
-        $destination = new Response(500);
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-        $rocket = new Rocket();
-        $rocket->setDestinationOrigin($destination);
-
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_CODE_WRONG);
-
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
-}

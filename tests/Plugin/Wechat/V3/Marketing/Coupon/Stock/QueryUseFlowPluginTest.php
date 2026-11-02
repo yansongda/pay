@@ -2,50 +2,36 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Coupon\Stock;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Coupon\Stock\QueryUseFlowPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryUseFlowPluginTest extends TestCase
-{
-    protected QueryUseFlowPlugin $plugin;
+it('empty payload', function () {
+    $plugin = new QueryUseFlowPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 下载批次核销明细，参数缺少 `stock_id`');
 
-        $this->plugin = new QueryUseFlowPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
+it('normal', function () {
+    $plugin = new QueryUseFlowPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'stock_id' => '111',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 下载批次核销明细，参数缺少 `stock_id`');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_url' => '/v3/marketing/favor/stocks/111/use-flow',
+        '_service_url' => '/v3/marketing/favor/stocks/111/use-flow',
+    ]);
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'stock_id' => '111',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'GET',
-            '_url' => '/v3/marketing/favor/stocks/111/use-flow',
-            '_service_url' => '/v3/marketing/favor/stocks/111/use-flow',
-        ], $result->getPayload()->all());
-    }
-}

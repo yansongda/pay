@@ -2,77 +2,63 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Combine;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\AppPayPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AppPayPluginTest extends TestCase
-{
-    protected AppPayPlugin $plugin;
+it('empty payload', function () {
+    $plugin = new AppPayPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: APP合单 下单，参数为空');
 
-        $this->plugin = new AppPayPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
+it('normal params', function () {
+    $plugin = new AppPayPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'combine_mchid' => '333',
+        'combine_appid' => 'yansongdaaa',
+        'notify_url' => '444',
+        'name' => 'yansongda',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: APP合单 下单，参数为空');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/combine-transactions/app',
+        '_service_url' => '/v3/combine-transactions/app',
+        'combine_appid' => 'yansongdaaa',
+        'combine_mchid' => '333',
+        'notify_url' => '444',
+        'name' => 'yansongda',
+    ]);
+});
 
-    public function testNormalParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'combine_mchid' => '333',
-            'combine_appid' => 'yansongdaaa',
-            'notify_url' => '444',
-            'name' => 'yansongda',
-        ]));
+it('normal', function () {
+    $plugin = new AppPayPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'name' => 'yansongda',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/combine-transactions/app',
-            '_service_url' => '/v3/combine-transactions/app',
-            'combine_appid' => 'yansongdaaa',
-            'combine_mchid' => '333',
-            'notify_url' => '444',
-            'name' => 'yansongda',
-        ], $result->getPayload()->all());
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/combine-transactions/app',
+        '_service_url' => '/v3/combine-transactions/app',
+        'combine_appid' => 'yansongda',
+        'combine_mchid' => '1600314069',
+        'notify_url' => 'https://pay.yansongda.cn',
+        'name' => 'yansongda',
+    ]);
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'name' => 'yansongda',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/combine-transactions/app',
-            '_service_url' => '/v3/combine-transactions/app',
-            'combine_appid' => 'yansongda',
-            'combine_mchid' => '1600314069',
-            'notify_url' => 'https://pay.yansongda.cn',
-            'name' => 'yansongda',
-        ], $result->getPayload()->all());
-    }
-}

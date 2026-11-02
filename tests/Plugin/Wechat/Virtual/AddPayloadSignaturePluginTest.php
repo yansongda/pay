@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
@@ -11,259 +9,247 @@ use Yansongda\Pay\Config\WechatConfig;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Plugin\Wechat\Virtual\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddPayloadSignaturePluginTest extends TestCase
-{
-    protected AddPayloadSignaturePlugin $plugin;
+it('assembly normal', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $body = '{"openid":"oUpF8muMJAaName"}';
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/xpay/query_user_balance',
+        '_body' => $body,
+        'access_token' => 'test_access_token',
+    ]);
+    $rocket = (new Rocket())->setPayload($payload);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        $this->plugin = new AddPayloadSignaturePlugin();
-    }
+    $resultPayload = $result->getPayload();
+    $url = $resultPayload->get('_url');
 
-    public function testAssemblyNormal()
-    {
-        $body = '{"openid":"oUpF8muMJAaName"}';
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
-            '_body' => $body,
-            'access_token' => 'test_access_token',
-        ]);
-        $rocket = (new Rocket())->setPayload($payload);
+    expect($url)->toContain('access_token=test_access_token');
+    expect($url)->toContain('pay_sig=');
+    expect($url)->not->toContain('signature=');
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    // verify pay_sig value
+    $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
+    $expectedPaySig = hash_hmac('sha256', '/xpay/query_user_balance&'.$body, $config->getVirtualPay()->getAppKey());
+    expect($url)->toContain('pay_sig='.$expectedPaySig);
 
-        $resultPayload = $result->getPayload();
-        $url = $resultPayload->get('_url');
+    // paySig 可作为 payload 独立字段访问
+    expect($resultPayload->get('paySig'))->toEqual($expectedPaySig);
+    expect($resultPayload->get('signature'))->toBeNull();
+});
 
-        self::assertStringContainsString('access_token=test_access_token', $url);
-        self::assertStringContainsString('pay_sig=', $url);
-        self::assertStringNotContainsString('signature=', $url);
+it('assembly with session key', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $body = '{"openid":"oUpF8muMJAaName"}';
+    $sessionKey = 'test_session_key_value';
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/xpay/query_user_balance',
+        '_body' => $body,
+        'access_token' => 'test_access_token',
+        '_session_key' => $sessionKey,
+    ]);
+    $rocket = (new Rocket())->setPayload($payload);
 
-        // verify pay_sig value
-        $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
-        $expectedPaySig = hash_hmac('sha256', '/xpay/query_user_balance&'.$body, $config->getVirtualPay()->getAppKey());
-        self::assertStringContainsString('pay_sig='.$expectedPaySig, $url);
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        // paySig 可作为 payload 独立字段访问
-        self::assertEquals($expectedPaySig, $resultPayload->get('paySig'));
-        self::assertNull($resultPayload->get('signature'));
-    }
+    $resultPayload = $result->getPayload();
+    $url = $resultPayload->get('_url');
 
-    public function testAssemblyWithSessionKey()
-    {
-        $body = '{"openid":"oUpF8muMJAaName"}';
-        $sessionKey = 'test_session_key_value';
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
-            '_body' => $body,
-            'access_token' => 'test_access_token',
-            '_session_key' => $sessionKey,
-        ]);
-        $rocket = (new Rocket())->setPayload($payload);
+    expect($url)->toContain('access_token=test_access_token');
+    expect($url)->toContain('pay_sig=');
+    expect($url)->toContain('signature=');
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    // verify signature value
+    $expectedSignature = hash_hmac('sha256', $body, $sessionKey);
+    expect($url)->toContain('signature='.$expectedSignature);
 
-        $resultPayload = $result->getPayload();
-        $url = $resultPayload->get('_url');
+    // paySig 和 signature 可作为 payload 独立字段访问
+    expect($resultPayload->get('paySig'))->not->toBeNull();
+    expect($resultPayload->get('signature'))->toEqual($expectedSignature);
+});
 
-        self::assertStringContainsString('access_token=test_access_token', $url);
-        self::assertStringContainsString('pay_sig=', $url);
-        self::assertStringContainsString('signature=', $url);
+it('assembly missing app key', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/xpay/query_user_balance',
+        '_body' => '{"openid":"oUpF8muMJAaName"}',
+        'access_token' => 'test_access_token',
+    ]);
 
-        // verify signature value
-        $expectedSignature = hash_hmac('sha256', $body, $sessionKey);
-        self::assertStringContainsString('signature='.$expectedSignature, $url);
+    $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
+    $config->getVirtualPay()->setAppKey(null);
 
-        // paySig 和 signature 可作为 payload 独立字段访问
-        self::assertNotNull($resultPayload->get('paySig'));
-        self::assertEquals($expectedSignature, $resultPayload->get('signature'));
-    }
+    $rocket = (new Rocket())->setPayload($payload);
 
-    public function testAssemblyMissingAppKey()
-    {
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
-            '_body' => '{"openid":"oUpF8muMJAaName"}',
-            'access_token' => 'test_access_token',
-        ]);
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
+    $this->expectExceptionMessage('配置异常: 缺少微信虚拟支付配置 -- [virtual_pay.app_key]');
 
-        $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
-        $config->getVirtualPay()->setAppKey(null);
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-        $rocket = (new Rocket())->setPayload($payload);
+it('assembly sandbox env', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $body = '{"openid":"oUpF8muMJAaName"}';
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/xpay/query_user_balance',
+        '_body' => $body,
+        'access_token' => 'test_access_token',
+        "env" => 1,
+    ]);
+    $rocket = (new Rocket())->setPayload($payload);
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
-        self::expectExceptionMessage('配置异常: 缺少微信虚拟支付配置 -- [virtual_pay.app_key]');
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
+    $resultPayload = $result->getPayload();
+    $url = $resultPayload->get('_url');
 
-    public function testAssemblySandboxEnv()
-    {
-        $body = '{"openid":"oUpF8muMJAaName"}';
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
-            '_body' => $body,
-            'access_token' => 'test_access_token',
-            "env" => 1,
-        ]);
-        $rocket = (new Rocket())->setPayload($payload);
+    $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
+    $sandboxAppKey = $config->getVirtualPay()->getAppKey(1);
+    $expectedPaySig = hash_hmac('sha256', '/xpay/query_user_balance&'.$body, $sandboxAppKey);
+    expect($url)->toContain('pay_sig='.$expectedPaySig);
+});
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+it('assembly url already has query params', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $body = '{"openid":"oUpF8muMJAaName"}';
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/xpay/query_user_balance?existing_param=value',
+        '_body' => $body,
+        'access_token' => 'test_access_token',
+    ]);
+    $rocket = (new Rocket())->setPayload($payload);
 
-        $resultPayload = $result->getPayload();
-        $url = $resultPayload->get('_url');
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
-        $sandboxAppKey = $config->getVirtualPay()->getAppKey(1);
-        $expectedPaySig = hash_hmac('sha256', '/xpay/query_user_balance&'.$body, $sandboxAppKey);
-        self::assertStringContainsString('pay_sig='.$expectedPaySig, $url);
-    }
+    $resultPayload = $result->getPayload();
+    $url = $resultPayload->get('_url');
 
-    public function testAssemblyUrlAlreadyHasQueryParams()
-    {
-        $body = '{"openid":"oUpF8muMJAaName"}';
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance?existing_param=value',
-            '_body' => $body,
-            'access_token' => 'test_access_token',
-        ]);
-        $rocket = (new Rocket())->setPayload($payload);
+    expect($url)->toContain('existing_param=value');
+    expect($url)->toContain('access_token=test_access_token');
+    expect($url)->toContain('pay_sig=');
+});
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+it('assembly client signing without access token', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $body = '{"buyQuantity":1,"productId":"test_product","goodsPrice":10,"offerId":"1234567890","currencyType":"CNY"}';
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => 'requestVirtualPayment',
+        '_body' => $body,
+    ]);
+    $rocket = (new Rocket())->setPayload($payload);
 
-        $resultPayload = $result->getPayload();
-        $url = $resultPayload->get('_url');
+    // 客户端签名场景不传 access_token 不应抛异常
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        self::assertStringContainsString('existing_param=value', $url);
-        self::assertStringContainsString('access_token=test_access_token', $url);
-        self::assertStringContainsString('pay_sig=', $url);
-    }
+    $resultPayload = $result->getPayload();
+    $url = $resultPayload->get('_url');
 
-    public function testAssemblyClientSigningWithoutAccessToken()
-    {
-        $body = '{"buyQuantity":1,"productId":"test_product","goodsPrice":10,"offerId":"1234567890","currencyType":"CNY"}';
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => 'requestVirtualPayment',
-            '_body' => $body,
-        ]);
-        $rocket = (new Rocket())->setPayload($payload);
+    expect($url)->toContain('pay_sig=');
+    expect($url)->not->toContain('access_token=');
 
-        // 客户端签名场景不传 access_token 不应抛异常
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    // paySig 可作为 payload 独立字段访问
+    expect($resultPayload->get('paySig'))->not->toBeNull();
+});
 
-        $resultPayload = $result->getPayload();
-        $url = $resultPayload->get('_url');
+it('assembly server side missing access token', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/xpay/query_user_balance',
+        '_body' => '{"openid":"oUpF8muMJAaName"}',
+    ]);
+    $rocket = (new Rocket())->setPayload($payload);
 
-        self::assertStringContainsString('pay_sig=', $url);
-        self::assertStringNotContainsString('access_token=', $url);
+    // 服务端 API 场景缺少 access_token 且未配置 app_secret 应抛异常
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 微信虚拟支付缺少 access_token，请配置 [virtual_pay.app_secret] 以自动获取，或在参数中手动传入 access_token');
 
-        // paySig 可作为 payload 独立字段访问
-        self::assertNotNull($resultPayload->get('paySig'));
-    }
+    $plugin->assembly($rocket, fn ($rocket) => $rocket);
+});
 
-    public function testAssemblyServerSideMissingAccessToken()
-    {
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
-            '_body' => '{"openid":"oUpF8muMJAaName"}',
-        ]);
-        $rocket = (new Rocket())->setPayload($payload);
+it('assembly server side auto fetch access token', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
+    expect($config)->toBeInstanceOf(WechatConfig::class);
+    $config->getVirtualPay()->setAppSecret('test_app_secret');
+    $config->getVirtualPay()->setAccessToken('cached_virtual_token_123');
+    $config->getVirtualPay()->setAccessTokenExpiry(time() + 3600);
 
-        // 服务端 API 场景缺少 access_token 且未配置 app_secret 应抛异常
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 微信虚拟支付缺少 access_token，请配置 [virtual_pay.app_secret] 以自动获取，或在参数中手动传入 access_token');
+    Pay::config([
+        'wechat' => [
+            'default' => $config->toArray(),
+        ],
+        '_force' => true,
+    ]);
 
-        $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-    }
+    $body = '{"openid":"oUpF8muMJAaName"}';
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/xpay/present_currency',
+        '_body' => $body,
+    ]);
+    $rocket = (new Rocket())->setPayload($payload);
 
-    public function testAssemblyServerSideAutoFetchAccessToken(): void
-    {
-        $config = AddPayloadSignaturePlugin::getProviderConfig('wechat', []);
-        self::assertInstanceOf(WechatConfig::class, $config);
-        $config->getVirtualPay()->setAppSecret('test_app_secret');
-        $config->getVirtualPay()->setAccessToken('cached_virtual_token_123');
-        $config->getVirtualPay()->setAccessTokenExpiry(time() + 3600);
+    // 服务端 API 场景缺少 access_token 但配置了 app_secret，应自动获取（缓存命中，不发起真实请求）
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        Pay::config([
-            'wechat' => [
-                'default' => $config->toArray(),
-            ],
-            '_force' => true,
-        ]);
+    $resultPayload = $result->getPayload();
+    $url = $resultPayload->get('_url');
 
-        $body = '{"openid":"oUpF8muMJAaName"}';
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/xpay/present_currency',
-            '_body' => $body,
-        ]);
-        $rocket = (new Rocket())->setPayload($payload);
+    expect($url)->toContain('access_token=cached_virtual_token_123');
+    expect($url)->toContain('pay_sig=');
 
-        // 服务端 API 场景缺少 access_token 但配置了 app_secret，应自动获取（缓存命中，不发起真实请求）
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    // paySig 可作为 payload 独立字段访问
+    expect($resultPayload->get('paySig'))->not->toBeNull();
+});
 
-        $resultPayload = $result->getPayload();
-        $url = $resultPayload->get('_url');
+it('assembly client signing returns sign data string', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $body = '{"buyQuantity":1,"productId":"test_product","goodsPrice":10,"offerId":"1234567890","currencyType":"CNY"}';
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => 'requestVirtualPayment',
+        '_body' => $body,
+    ]);
+    $rocket = (new Rocket())->setPayload($payload);
 
-        self::assertStringContainsString('access_token=cached_virtual_token_123', $url);
-        self::assertStringContainsString('pay_sig=', $url);
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        // paySig 可作为 payload 独立字段访问
-        self::assertNotNull($resultPayload->get('paySig'));
-    }
+    $resultPayload = $result->getPayload();
 
-    public function testAssemblyClientSigningReturnsSignDataString(): void
-    {
-        $body = '{"buyQuantity":1,"productId":"test_product","goodsPrice":10,"offerId":"1234567890","currencyType":"CNY"}';
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => 'requestVirtualPayment',
-            '_body' => $body,
-        ]);
-        $rocket = (new Rocket())->setPayload($payload);
+    // signData 应与参与签名计算的 body 逐字节一致
+    expect($resultPayload->get('signData'))->toBe($body);
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
+    // _body 不应被修改
+    expect($resultPayload->get('_body'))->toBe($body);
+});
 
-        $resultPayload = $result->getPayload();
+it('assembly server side no sign data field', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $body = '{"openid":"oUpF8muMJAaName"}';
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => '/xpay/query_user_balance',
+        '_body' => $body,
+        'access_token' => 'test_access_token',
+    ]);
+    $rocket = (new Rocket())->setPayload($payload);
 
-        // signData 应与参与签名计算的 body 逐字节一致
-        self::assertSame($body, $resultPayload->get('signData'));
+    $result = $plugin->assembly($rocket, fn ($rocket) => $rocket);
 
-        // _body 不应被修改
-        self::assertSame($body, $resultPayload->get('_body'));
-    }
+    $resultPayload = $result->getPayload();
 
-    public function testAssemblyServerSideNoSignDataField(): void
-    {
-        $body = '{"openid":"oUpF8muMJAaName"}';
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => '/xpay/query_user_balance',
-            '_body' => $body,
-            'access_token' => 'test_access_token',
-        ]);
-        $rocket = (new Rocket())->setPayload($payload);
+    // 服务端 API 场景不应有 signData 字段
+    expect($resultPayload->get('signData'))->toBeNull();
+});
 
-        $result = $this->plugin->assembly($rocket, fn ($rocket) => $rocket);
-
-        $resultPayload = $result->getPayload();
-
-        // 服务端 API 场景不应有 signData 字段
-        self::assertNull($resultPayload->get('signData'));
-    }
-}

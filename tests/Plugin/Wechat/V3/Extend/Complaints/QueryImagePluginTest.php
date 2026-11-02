@@ -2,52 +2,38 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryImagePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryImagePluginTest extends TestCase
-{
-    protected QueryImagePlugin $plugin;
+it('empty media id', function () {
+    $plugin = new QueryImagePlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 图片请求接口，参数缺少 `media_id`');
 
-        $this->plugin = new QueryImagePlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyMediaId()
-    {
-        $rocket = new Rocket();
+it('normal', function () {
+    $plugin = new QueryImagePlugin();
+    $payload = [
+        'media_id' => 'yansongda',
+    ];
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 图片请求接口，参数缺少 `media_id`');
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection($payload));
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-    public function testNormal()
-    {
-        $payload = [
-            'media_id' => 'yansongda',
-        ];
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_url' => '/v3/merchant-service/images/yansongda',
+        '_service_url' => '/v3/merchant-service/images/yansongda',
+    ]);
+});
 
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection($payload));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'GET',
-            '_url' => '/v3/merchant-service/images/yansongda',
-            '_service_url' => '/v3/merchant-service/images/yansongda',
-        ], $result->getPayload()->all());
-    }
-}
