@@ -2,125 +2,132 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Config;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\PaypalConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Tests\TestCase;
 
-class PaypalConfigTest extends TestCase
-{
-    private array $validConfig;
+it('construct valid config', function () {
+    $validConfig = [
+        'client_id' => 'test_client_id',
+        'app_secret' => 'test_app_secret',
+    ];
+    $config = new PaypalConfig($validConfig);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->validConfig = [
-            'client_id' => 'test_client_id',
-            'app_secret' => 'test_app_secret',
-        ];
-    }
+    expect($config->getTenant())->toBe('default');
+    expect($config->getClientId())->toBe('test_client_id');
+    expect($config->getAppSecret())->toBe('test_app_secret');
+    expect($config->getMode())->toBe(PayMode::NORMAL);
+});
 
-    public function testConstructValidConfig(): void
-    {
-        $config = new PaypalConfig($this->validConfig);
+it('construct with tenant', function () {
+    $validConfig = [
+        'client_id' => 'test_client_id',
+        'app_secret' => 'test_app_secret',
+    ];
+    $config = new PaypalConfig($validConfig, 'custom_tenant');
 
-        self::assertSame('default', $config->getTenant());
-        self::assertSame('test_client_id', $config->getClientId());
-        self::assertSame('test_app_secret', $config->getAppSecret());
-        self::assertSame(PayMode::NORMAL, $config->getMode());
-    }
+    expect($config->getTenant())->toBe('custom_tenant');
+});
 
-    public function testConstructWithTenant(): void
-    {
-        $config = new PaypalConfig($this->validConfig, 'custom_tenant');
+it('construct missing required', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少 PayPal 配置 -- [client_id]');
 
-        self::assertSame('custom_tenant', $config->getTenant());
-    }
+    $config = new PaypalConfig([
+        // missing client_id
+        'app_secret' => 'test_app_secret',
+    ]);
+    $config->validate();
+});
 
-    public function testConstructMissingRequired(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少 PayPal 配置 -- [client_id]');
+it('optional getters', function () {
+    $validConfig = [
+        'client_id' => 'test_client_id',
+        'app_secret' => 'test_app_secret',
+    ];
+    $config = new PaypalConfig(array_merge($validConfig, [
+        'webhook_id' => 'webhook_123',
+        'notify_url' => 'https://notify.com',
+        'return_url' => 'https://return.com',
+        'cancel_url' => 'https://cancel.com',
+        'brand_name' => 'Test Brand',
+    ]));
 
-        $config = new PaypalConfig([
-            // missing client_id
-            'app_secret' => 'test_app_secret',
-        ]);
-        $config->validate();
-    }
+    expect($config->getWebhookId())->toBe('webhook_123');
+    expect($config->getNotifyUrl())->toBe('https://notify.com');
+    expect($config->getReturnUrl())->toBe('https://return.com');
+    expect($config->getCancelUrl())->toBe('https://cancel.com');
+    expect($config->getBrandName())->toBe('Test Brand');
+});
 
-    public function testOptionalGetters(): void
-    {
-        $config = new PaypalConfig(array_merge($this->validConfig, [
-            'webhook_id' => 'webhook_123',
-            'notify_url' => 'https://notify.com',
-            'return_url' => 'https://return.com',
-            'cancel_url' => 'https://cancel.com',
-            'brand_name' => 'Test Brand',
-        ]));
+it('optional getters null', function () {
+    $validConfig = [
+        'client_id' => 'test_client_id',
+        'app_secret' => 'test_app_secret',
+    ];
+    $config = new PaypalConfig($validConfig);
 
-        self::assertSame('webhook_123', $config->getWebhookId());
-        self::assertSame('https://notify.com', $config->getNotifyUrl());
-        self::assertSame('https://return.com', $config->getReturnUrl());
-        self::assertSame('https://cancel.com', $config->getCancelUrl());
-        self::assertSame('Test Brand', $config->getBrandName());
-    }
+    expect($config->getWebhookId())->toBeNull();
+    expect($config->getNotifyUrl())->toBeNull();
+    expect($config->getReturnUrl())->toBeNull();
+    expect($config->getCancelUrl())->toBeNull();
+    expect($config->getBrandName())->toBeNull();
+    expect($config->getAccessToken())->toBeNull();
+    expect($config->getAccessTokenExpiry())->toBeNull();
+});
 
-    public function testOptionalGettersNull(): void
-    {
-        $config = new PaypalConfig($this->validConfig);
+it('access token', function () {
+    $validConfig = [
+        'client_id' => 'test_client_id',
+        'app_secret' => 'test_app_secret',
+    ];
+    $config = new PaypalConfig(array_merge($validConfig, [
+        '_access_token' => 'token_abc',
+        '_access_token_expiry' => 1234567890,
+    ]));
 
-        self::assertNull($config->getWebhookId());
-        self::assertNull($config->getNotifyUrl());
-        self::assertNull($config->getReturnUrl());
-        self::assertNull($config->getCancelUrl());
-        self::assertNull($config->getBrandName());
-        self::assertNull($config->getAccessToken());
-        self::assertNull($config->getAccessTokenExpiry());
-    }
+    expect($config->getAccessToken())->toBe('token_abc');
+    expect($config->getAccessTokenExpiry())->toBe(1234567890);
+});
 
-    public function testAccessToken(): void
-    {
-        $config = new PaypalConfig(array_merge($this->validConfig, [
-            '_access_token' => 'token_abc',
-            '_access_token_expiry' => 1234567890,
-        ]));
+it('mode sandbox', function () {
+    $validConfig = [
+        'client_id' => 'test_client_id',
+        'app_secret' => 'test_app_secret',
+    ];
+    $config = new PaypalConfig(array_merge($validConfig, [
+        // 兼容历史 int 写法：0/1/2
+        'mode' => 1,
+    ]));
 
-        self::assertSame('token_abc', $config->getAccessToken());
-        self::assertSame(1234567890, $config->getAccessTokenExpiry());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeSandbox(): void
-    {
-        $config = new PaypalConfig(array_merge($this->validConfig, [
-            // 兼容历史 int 写法：0/1/2
-            'mode' => 1,
-        ]));
+it('mode with pay mode enum', function () {
+    $validConfig = [
+        'client_id' => 'test_client_id',
+        'app_secret' => 'test_app_secret',
+    ];
+    $config = new PaypalConfig(array_merge($validConfig, [
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeWithPayModeEnum(): void
-    {
-        $config = new PaypalConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SANDBOX,
-        ]));
+it('invalid mode throws exception', function () {
+    $validConfig = [
+        'client_id' => 'test_client_id',
+        'app_secret' => 'test_app_secret',
+    ];
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+    $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    $config = new PaypalConfig(array_merge($validConfig, [
+        'mode' => 99999,
+    ]));
+    $config->validate();
+});
 
-    public function testInvalidModeThrowsException(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-        $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
-
-        $config = new PaypalConfig(array_merge($this->validConfig, [
-            'mode' => 99999,
-        ]));
-        $config->validate();
-    }
-}

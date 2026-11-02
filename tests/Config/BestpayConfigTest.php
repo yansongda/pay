@@ -2,113 +2,128 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Config;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\BestpayConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Tests\TestCase;
 
-class BestpayConfigTest extends TestCase
-{
-    private array $validConfig;
+it('construct valid config', function () {
+    $validConfig = [
+        'merchant_no' => '1234567890',
+        'institution_code' => 'INS001',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'mch_secret_cert_password' => 'secret-password',
+        'bestpay_public_cert_path' => '/path/to/bestpay.pem',
+    ];
+    $config = new BestpayConfig($validConfig);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->validConfig = [
-            'merchant_no' => '1234567890',
-            'institution_code' => 'INS001',
-            'mch_secret_cert_path' => '/path/to/secret.pem',
-            'mch_secret_cert_password' => 'secret-password',
-            'bestpay_public_cert_path' => '/path/to/bestpay.pem',
-        ];
-    }
+    expect($config->getTenant())->toBe('default');
+    expect($config->getMerchantNo())->toBe('1234567890');
+    expect($config->getInstitutionCode())->toBe('INS001');
+    expect($config->getInstitutionType())->toBe('MERCHANT');
+    expect($config->getMchSecretCertPath())->toBe('/path/to/secret.pem');
+    expect($config->getMchSecretCertPassword())->toBe('secret-password');
+    expect($config->getBestpayPublicCertPath())->toBe('/path/to/bestpay.pem');
+    expect($config->getApiVersion())->toBe('1.0.3');
+    expect($config->getNotifyUrl())->toBeNull();
+    expect($config->getReturnUrl())->toBeNull();
+    expect($config->getMode())->toBe(PayMode::NORMAL);
+});
 
-    public function testConstructValidConfig(): void
-    {
-        $config = new BestpayConfig($this->validConfig);
+it('construct with tenant', function () {
+    $validConfig = [
+        'merchant_no' => '1234567890',
+        'institution_code' => 'INS001',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'mch_secret_cert_password' => 'secret-password',
+        'bestpay_public_cert_path' => '/path/to/bestpay.pem',
+    ];
+    $config = new BestpayConfig($validConfig, 'custom_tenant');
 
-        self::assertSame('default', $config->getTenant());
-        self::assertSame('1234567890', $config->getMerchantNo());
-        self::assertSame('INS001', $config->getInstitutionCode());
-        self::assertSame('MERCHANT', $config->getInstitutionType());
-        self::assertSame('/path/to/secret.pem', $config->getMchSecretCertPath());
-        self::assertSame('secret-password', $config->getMchSecretCertPassword());
-        self::assertSame('/path/to/bestpay.pem', $config->getBestpayPublicCertPath());
-        self::assertSame('1.0.3', $config->getApiVersion());
-        self::assertNull($config->getNotifyUrl());
-        self::assertNull($config->getReturnUrl());
-        self::assertSame(PayMode::NORMAL, $config->getMode());
-    }
+    expect($config->getTenant())->toBe('custom_tenant');
+});
 
-    public function testConstructWithTenant(): void
-    {
-        $config = new BestpayConfig($this->validConfig, 'custom_tenant');
+it('construct missing required', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_BESTPAY_INVALID);
 
-        self::assertSame('custom_tenant', $config->getTenant());
-    }
+    $config = new BestpayConfig([
+        'merchant_no' => '1234567890',
+        'institution_code' => 'INS001',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'mch_secret_cert_password' => 'secret-password',
+        // missing bestpay_public_cert_path
+    ]);
+    $config->validate();
+});
 
-    public function testConstructMissingRequired(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_BESTPAY_INVALID);
+it('optional getters', function () {
+    $validConfig = [
+        'merchant_no' => '1234567890',
+        'institution_code' => 'INS001',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'mch_secret_cert_password' => 'secret-password',
+        'bestpay_public_cert_path' => '/path/to/bestpay.pem',
+    ];
+    $config = new BestpayConfig(array_merge($validConfig, [
+        'institution_type' => 'SUB_MERCHANT',
+        'api_version' => '1.0.4',
+        'notify_url' => 'https://notify.com',
+        'return_url' => 'https://return.com',
+    ]));
 
-        $config = new BestpayConfig([
-            'merchant_no' => '1234567890',
-            'institution_code' => 'INS001',
-            'mch_secret_cert_path' => '/path/to/secret.pem',
-            'mch_secret_cert_password' => 'secret-password',
-            // missing bestpay_public_cert_path
-        ]);
-        $config->validate();
-    }
+    expect($config->getInstitutionType())->toBe('SUB_MERCHANT');
+    expect($config->getApiVersion())->toBe('1.0.4');
+    expect($config->getNotifyUrl())->toBe('https://notify.com');
+    expect($config->getReturnUrl())->toBe('https://return.com');
+});
 
-    public function testOptionalGetters(): void
-    {
-        $config = new BestpayConfig(array_merge($this->validConfig, [
-            'institution_type' => 'SUB_MERCHANT',
-            'api_version' => '1.0.4',
-            'notify_url' => 'https://notify.com',
-            'return_url' => 'https://return.com',
-        ]));
+it('mode sandbox', function () {
+    $validConfig = [
+        'merchant_no' => '1234567890',
+        'institution_code' => 'INS001',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'mch_secret_cert_password' => 'secret-password',
+        'bestpay_public_cert_path' => '/path/to/bestpay.pem',
+    ];
+    $config = new BestpayConfig(array_merge($validConfig, [
+        // 兼容历史 int 写法：0/1/2
+        'mode' => 1,
+    ]));
 
-        self::assertSame('SUB_MERCHANT', $config->getInstitutionType());
-        self::assertSame('1.0.4', $config->getApiVersion());
-        self::assertSame('https://notify.com', $config->getNotifyUrl());
-        self::assertSame('https://return.com', $config->getReturnUrl());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeSandbox(): void
-    {
-        $config = new BestpayConfig(array_merge($this->validConfig, [
-            // 兼容历史 int 写法：0/1/2
-            'mode' => 1,
-        ]));
+it('mode with pay mode enum', function () {
+    $validConfig = [
+        'merchant_no' => '1234567890',
+        'institution_code' => 'INS001',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'mch_secret_cert_password' => 'secret-password',
+        'bestpay_public_cert_path' => '/path/to/bestpay.pem',
+    ];
+    $config = new BestpayConfig(array_merge($validConfig, [
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeWithPayModeEnum(): void
-    {
-        $config = new BestpayConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SANDBOX,
-        ]));
+it('service mode throws exception', function () {
+    $validConfig = [
+        'merchant_no' => '1234567890',
+        'institution_code' => 'INS001',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'mch_secret_cert_password' => 'secret-password',
+        'bestpay_public_cert_path' => '/path/to/bestpay.pem',
+    ];
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+    $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    $config = new BestpayConfig(array_merge($validConfig, [
+        'mode' => PayMode::SERVICE,
+    ]));
+    $config->validate();
+});
 
-    public function testServiceModeThrowsException(): void
-    {
-        // 翼支付一期无服务商模式，mode = SERVICE 应被校验拦截
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-        $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
-
-        $config = new BestpayConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SERVICE,
-        ]));
-        $config->validate();
-    }
-}

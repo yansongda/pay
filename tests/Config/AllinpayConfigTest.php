@@ -2,92 +2,98 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Config;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AllinpayConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Tests\TestCase;
 
-class AllinpayConfigTest extends TestCase
-{
-    private array $validConfig;
+it('construct valid config', function () {
+    $validConfig = [
+        'cusid' => '9900000',
+        'appid' => '000000',
+        'mch_secret_key' => '/path/to/secret.pem',
+        'allinpay_public_key' => '/path/to/allinpay.pem',
+    ];
+    $config = new AllinpayConfig($validConfig);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->validConfig = [
-            'cusid' => '9900000',
-            'appid' => '000000',
-            'mch_secret_key' => '/path/to/secret.pem',
-            'allinpay_public_key' => '/path/to/allinpay.pem',
-        ];
-    }
+    expect($config->getTenant())->toBe('default');
+    expect($config->getCusid())->toBe('9900000');
+    expect($config->getAppid())->toBe('000000');
+    expect($config->getOrgid())->toBeNull();
+    expect($config->getMchSecretKey())->toBe('/path/to/secret.pem');
+    expect($config->getAllinpayPublicKey())->toBe('/path/to/allinpay.pem');
+    expect($config->getMode())->toBe(PayMode::NORMAL);
+});
 
-    public function testConstructValidConfig(): void
-    {
-        $config = new AllinpayConfig($this->validConfig);
+it('construct with tenant', function () {
+    $validConfig = [
+        'cusid' => '9900000',
+        'appid' => '000000',
+        'mch_secret_key' => '/path/to/secret.pem',
+        'allinpay_public_key' => '/path/to/allinpay.pem',
+    ];
+    $config = new AllinpayConfig($validConfig, 'custom_tenant');
 
-        self::assertSame('default', $config->getTenant());
-        self::assertSame('9900000', $config->getCusid());
-        self::assertSame('000000', $config->getAppid());
-        self::assertNull($config->getOrgid());
-        self::assertSame('/path/to/secret.pem', $config->getMchSecretKey());
-        self::assertSame('/path/to/allinpay.pem', $config->getAllinpayPublicKey());
-        self::assertSame(PayMode::NORMAL, $config->getMode());
-    }
+    expect($config->getTenant())->toBe('custom_tenant');
+});
 
-    public function testConstructWithTenant(): void
-    {
-        $config = new AllinpayConfig($this->validConfig, 'custom_tenant');
+it('construct missing required', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_ALLINPAY_INVALID);
 
-        self::assertSame('custom_tenant', $config->getTenant());
-    }
+    $config = new AllinpayConfig([
+        'appid' => '000000',
+        'mch_secret_key' => '/path/to/secret.pem',
+        'allinpay_public_key' => '/path/to/allinpay.pem',
+    ]);
+    $config->validate();
+});
 
-    public function testConstructMissingRequired(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_ALLINPAY_INVALID);
+it('optional getters', function () {
+    $validConfig = [
+        'cusid' => '9900000',
+        'appid' => '000000',
+        'mch_secret_key' => '/path/to/secret.pem',
+        'allinpay_public_key' => '/path/to/allinpay.pem',
+    ];
+    $config = new AllinpayConfig(array_merge($validConfig, [
+        'orgid' => '999999',
+        'notify_url' => 'https://notify.com',
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-        $config = new AllinpayConfig([
-            'appid' => '000000',
-            'mch_secret_key' => '/path/to/secret.pem',
-            'allinpay_public_key' => '/path/to/allinpay.pem',
-        ]);
-        $config->validate();
-    }
+    expect($config->getOrgid())->toBe('999999');
+    expect($config->getNotifyUrl())->toBe('https://notify.com');
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testOptionalGetters(): void
-    {
-        $config = new AllinpayConfig(array_merge($this->validConfig, [
-            'orgid' => '999999',
-            'notify_url' => 'https://notify.com',
-            'mode' => PayMode::SANDBOX,
-        ]));
+it('mode with pay mode enum', function () {
+    $validConfig = [
+        'cusid' => '9900000',
+        'appid' => '000000',
+        'mch_secret_key' => '/path/to/secret.pem',
+        'allinpay_public_key' => '/path/to/allinpay.pem',
+    ];
+    $config = new AllinpayConfig(array_merge($validConfig, [
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-        self::assertSame('999999', $config->getOrgid());
-        self::assertSame('https://notify.com', $config->getNotifyUrl());
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeWithPayModeEnum(): void
-    {
-        $config = new AllinpayConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SANDBOX,
-        ]));
+it('service mode throws exception', function () {
+    $validConfig = [
+        'cusid' => '9900000',
+        'appid' => '000000',
+        'mch_secret_key' => '/path/to/secret.pem',
+        'allinpay_public_key' => '/path/to/allinpay.pem',
+    ];
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    $config = new AllinpayConfig(array_merge($validConfig, [
+        'mode' => PayMode::SERVICE,
+    ]));
+    $config->validate();
+});
 
-    public function testServiceModeThrowsException(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-
-        $config = new AllinpayConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SERVICE,
-        ]));
-        $config->validate();
-    }
-}

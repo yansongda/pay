@@ -2,115 +2,114 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Config;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\AirwallexConfig;
 use Yansongda\Pay\Enum\PayMode;
-use Yansongda\Pay\Tests\TestCase;
 
-class AirwallexConfigTest extends TestCase
-{
-    private array $validConfig;
+it('construct valid config', function () {
+    $validConfig = [
+        'client_id' => 'airwallex_client_id',
+        'api_key' => 'airwallex_api_key',
+    ];
+    $config = new AirwallexConfig($validConfig);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    expect($config->getTenant())->toBe('default');
+    expect($config->getClientId())->toBe('airwallex_client_id');
+    expect($config->getApiKey())->toBe('airwallex_api_key');
+    expect($config->getMode())->toBe(PayMode::NORMAL);
+});
 
-        $this->validConfig = [
-            'client_id' => 'airwallex_client_id',
-            'api_key' => 'airwallex_api_key',
-        ];
-    }
+it('construct with tenant', function () {
+    $validConfig = [
+        'client_id' => 'airwallex_client_id',
+        'api_key' => 'airwallex_api_key',
+    ];
+    $config = new AirwallexConfig($validConfig, 'secondary');
 
-    public function testConstructValidConfig(): void
-    {
-        $config = new AirwallexConfig($this->validConfig);
+    expect($config->getTenant())->toBe('secondary');
+});
 
-        self::assertSame('default', $config->getTenant());
-        self::assertSame('airwallex_client_id', $config->getClientId());
-        self::assertSame('airwallex_api_key', $config->getApiKey());
-        self::assertSame(PayMode::NORMAL, $config->getMode());
-    }
+it('construct missing client id', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少 Airwallex 配置 -- [client_id]');
 
-    public function testConstructWithTenant(): void
-    {
-        $config = new AirwallexConfig($this->validConfig, 'secondary');
+    $config = new AirwallexConfig(['api_key' => 'airwallex_api_key']);
+    $config->validate();
+});
 
-        self::assertSame('secondary', $config->getTenant());
-    }
+it('construct missing api key', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少 Airwallex 配置 -- [api_key]');
 
-    public function testConstructMissingClientId(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少 Airwallex 配置 -- [client_id]');
+    $config = new AirwallexConfig(['client_id' => 'airwallex_client_id']);
+    $config->validate();
+});
 
-        $config = new AirwallexConfig(['api_key' => 'airwallex_api_key']);
-        $config->validate();
-    }
+it('optional getters', function () {
+    $validConfig = [
+        'client_id' => 'airwallex_client_id',
+        'api_key' => 'airwallex_api_key',
+    ];
+    $config = new AirwallexConfig(array_merge($validConfig, [
+        'webhook_secret' => 'airwallex_webhook_secret',
+        'return_url' => 'https://pay.yansongda.cn/airwallex/return',
+        'api_version' => '2024-06-14',
+        'on_behalf_of' => 'acct_123',
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-    public function testConstructMissingApiKey(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少 Airwallex 配置 -- [api_key]');
+    expect($config->getWebhookSecret())->toBe('airwallex_webhook_secret');
+    expect($config->getReturnUrl())->toBe('https://pay.yansongda.cn/airwallex/return');
+    expect($config->getApiVersion())->toBe('2024-06-14');
+    expect($config->getOnBehalfOf())->toBe('acct_123');
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-        $config = new AirwallexConfig(['client_id' => 'airwallex_client_id']);
-        $config->validate();
-    }
+it('mode with pay mode enum', function () {
+    $validConfig = [
+        'client_id' => 'airwallex_client_id',
+        'api_key' => 'airwallex_api_key',
+    ];
+    $config = new AirwallexConfig(array_merge($validConfig, [
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-    public function testOptionalGetters(): void
-    {
-        $config = new AirwallexConfig(array_merge($this->validConfig, [
-            'webhook_secret' => 'airwallex_webhook_secret',
-            'return_url' => 'https://pay.yansongda.cn/airwallex/return',
-            'api_version' => '2024-06-14',
-            'on_behalf_of' => 'acct_123',
-            'mode' => PayMode::SANDBOX,
-        ]));
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-        self::assertSame('airwallex_webhook_secret', $config->getWebhookSecret());
-        self::assertSame('https://pay.yansongda.cn/airwallex/return', $config->getReturnUrl());
-        self::assertSame('2024-06-14', $config->getApiVersion());
-        self::assertSame('acct_123', $config->getOnBehalfOf());
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+it('access token cache fields', function () {
+    $validConfig = [
+        'client_id' => 'airwallex_client_id',
+        'api_key' => 'airwallex_api_key',
+    ];
+    $config = new AirwallexConfig($validConfig);
 
-    public function testModeWithPayModeEnum(): void
-    {
-        $config = new AirwallexConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SANDBOX,
-        ]));
+    $config->setAccessToken('airwallex_access_token');
+    $config->setAccessTokenExpiry('1893456000');
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    expect($config->getAccessToken())->toBe('airwallex_access_token');
+    expect($config->getAccessTokenExpiry())->toBe(1893456000);
+});
 
-    public function testAccessTokenCacheFields(): void
-    {
-        $config = new AirwallexConfig($this->validConfig);
+it('nullable optional fields', function () {
+    $validConfig = [
+        'client_id' => 'airwallex_client_id',
+        'api_key' => 'airwallex_api_key',
+    ];
+    $config = new AirwallexConfig(array_merge($validConfig, [
+        'webhook_secret' => null,
+        'return_url' => null,
+        'api_version' => null,
+        'on_behalf_of' => null,
+        'access_token' => null,
+        'access_token_expiry' => null,
+    ]));
 
-        $config->setAccessToken('airwallex_access_token');
-        $config->setAccessTokenExpiry('1893456000');
+    expect($config->getWebhookSecret())->toBeNull();
+    expect($config->getReturnUrl())->toBeNull();
+    expect($config->getApiVersion())->toBeNull();
+    expect($config->getOnBehalfOf())->toBeNull();
+    expect($config->getAccessToken())->toBeNull();
+    expect($config->getAccessTokenExpiry())->toBeNull();
+});
 
-        self::assertSame('airwallex_access_token', $config->getAccessToken());
-        self::assertSame(1893456000, $config->getAccessTokenExpiry());
-    }
-
-    public function testNullableOptionalFields(): void
-    {
-        $config = new AirwallexConfig(array_merge($this->validConfig, [
-            'webhook_secret' => null,
-            'return_url' => null,
-            'api_version' => null,
-            'on_behalf_of' => null,
-            'access_token' => null,
-            'access_token_expiry' => null,
-        ]));
-
-        self::assertNull($config->getWebhookSecret());
-        self::assertNull($config->getReturnUrl());
-        self::assertNull($config->getApiVersion());
-        self::assertNull($config->getOnBehalfOf());
-        self::assertNull($config->getAccessToken());
-        self::assertNull($config->getAccessTokenExpiry());
-    }
-}

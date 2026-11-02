@@ -2,118 +2,133 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Config;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\DouyinConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Tests\TestCase;
 
-class DouyinConfigTest extends TestCase
-{
-    private array $validConfig;
+it('construct valid config', function () {
+    $validConfig = [
+        'app_id' => 'tt123456',
+        'app_secret' => 'test_app_secret',
+        'app_private_key' => 'test_app_private_key',
+        'douyin_public_key' => 'test_douyin_public_key',
+    ];
+    $config = new DouyinConfig($validConfig);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->validConfig = [
-            'app_id' => 'tt123456',
-            'app_secret' => 'test_app_secret',
-            'app_private_key' => 'test_app_private_key',
-            'douyin_public_key' => 'test_douyin_public_key',
-        ];
-    }
+    expect($config->getTenant())->toBe('default');
+    expect($config->getAppId())->toBe('tt123456');
+    expect($config->getAppSecret())->toBe('test_app_secret');
+    expect($config->getAppPrivateKey())->toBe('test_app_private_key');
+    expect($config->getDouyinPublicKey())->toBe('test_douyin_public_key');
+    expect($config->getMode())->toBe(PayMode::NORMAL);
+});
 
-    public function testConstructValidConfig(): void
-    {
-        $config = new DouyinConfig($this->validConfig);
+it('construct with tenant', function () {
+    $validConfig = [
+        'app_id' => 'tt123456',
+        'app_secret' => 'test_app_secret',
+        'app_private_key' => 'test_app_private_key',
+        'douyin_public_key' => 'test_douyin_public_key',
+    ];
+    $config = new DouyinConfig($validConfig, 'custom_tenant');
 
-        self::assertSame('default', $config->getTenant());
-        self::assertSame('tt123456', $config->getAppId());
-        self::assertSame('test_app_secret', $config->getAppSecret());
-        self::assertSame('test_app_private_key', $config->getAppPrivateKey());
-        self::assertSame('test_douyin_public_key', $config->getDouyinPublicKey());
-        self::assertSame(PayMode::NORMAL, $config->getMode());
-    }
+    expect($config->getTenant())->toBe('custom_tenant');
+});
 
-    public function testConstructWithTenant(): void
-    {
-        $config = new DouyinConfig($this->validConfig, 'custom_tenant');
+it('construct missing app id', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
+    $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [app_id]');
 
-        self::assertSame('custom_tenant', $config->getTenant());
-    }
+    $config = new DouyinConfig([
+        // missing app_id
+        'app_secret' => 'test_app_secret',
+    ]);
+    $config->validate();
+});
 
-    public function testConstructMissingAppId(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
-        $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [app_id]');
+it('construct missing app secret', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
+    $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [app_secret]');
 
-        $config = new DouyinConfig([
-            // missing app_id
-            'app_secret' => 'test_app_secret',
-        ]);
-        $config->validate();
-    }
+    $config = new DouyinConfig([
+        'app_id' => 'tt123456',
+        // missing app_secret
+    ]);
+    $config->validate();
+});
 
-    public function testConstructMissingAppSecret(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_DOUYIN_INVALID);
-        $this->expectExceptionMessage('配置异常: 缺少抖音配置 -- [app_secret]');
+it('optional getters', function () {
+    $validConfig = [
+        'app_id' => 'tt123456',
+        'app_secret' => 'test_app_secret',
+        'app_private_key' => 'test_app_private_key',
+        'douyin_public_key' => 'test_douyin_public_key',
+    ];
+    $config = new DouyinConfig(array_merge($validConfig, [
+        'notify_url' => 'https://notify.com',
+    ]));
 
-        $config = new DouyinConfig([
-            'app_id' => 'tt123456',
-            // missing app_secret
-        ]);
-        $config->validate();
-    }
+    expect($config->getNotifyUrl())->toBe('https://notify.com');
+});
 
-    public function testOptionalGetters(): void
-    {
-        $config = new DouyinConfig(array_merge($this->validConfig, [
-            'notify_url' => 'https://notify.com',
-        ]));
+it('optional getters null', function () {
+    $validConfig = [
+        'app_id' => 'tt123456',
+        'app_secret' => 'test_app_secret',
+        'app_private_key' => 'test_app_private_key',
+        'douyin_public_key' => 'test_douyin_public_key',
+    ];
+    $config = new DouyinConfig($validConfig);
 
-        self::assertSame('https://notify.com', $config->getNotifyUrl());
-    }
+    expect($config->getNotifyUrl())->toBeNull();
+});
 
-    public function testOptionalGettersNull(): void
-    {
-        $config = new DouyinConfig($this->validConfig);
+it('mode sandbox', function () {
+    $validConfig = [
+        'app_id' => 'tt123456',
+        'app_secret' => 'test_app_secret',
+        'app_private_key' => 'test_app_private_key',
+        'douyin_public_key' => 'test_douyin_public_key',
+    ];
+    $config = new DouyinConfig(array_merge($validConfig, [
+        // 兼容历史 int 写法：0/1/2
+        'mode' => 1,
+    ]));
 
-        self::assertNull($config->getNotifyUrl());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeSandbox(): void
-    {
-        $config = new DouyinConfig(array_merge($this->validConfig, [
-            // 兼容历史 int 写法：0/1/2
-            'mode' => 1,
-        ]));
+it('mode with pay mode enum', function () {
+    $validConfig = [
+        'app_id' => 'tt123456',
+        'app_secret' => 'test_app_secret',
+        'app_private_key' => 'test_app_private_key',
+        'douyin_public_key' => 'test_douyin_public_key',
+    ];
+    $config = new DouyinConfig(array_merge($validConfig, [
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeWithPayModeEnum(): void
-    {
-        $config = new DouyinConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SANDBOX,
-        ]));
+it('invalid mode throws exception', function () {
+    $validConfig = [
+        'app_id' => 'tt123456',
+        'app_secret' => 'test_app_secret',
+        'app_private_key' => 'test_app_private_key',
+        'douyin_public_key' => 'test_douyin_public_key',
+    ];
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+    $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    $config = new DouyinConfig(array_merge($validConfig, [
+        'mode' => 99999,
+    ]));
+    $config->validate();
+});
 
-    public function testInvalidModeThrowsException(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-        $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
-
-        $config = new DouyinConfig(array_merge($this->validConfig, [
-            'mode' => 99999,
-        ]));
-        $config->validate();
-    }
-}

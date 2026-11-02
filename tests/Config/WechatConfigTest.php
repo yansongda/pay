@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Config;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\CertManager;
 use Yansongda\Pay\Config\WechatConfig;
@@ -12,422 +10,484 @@ use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Enum\Wechat\AppType;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Pay;
-use PHPUnit\Framework\Attributes\Group;
-use Yansongda\Pay\Tests\TestCase;
 
-class WechatConfigTest extends TestCase
-{
-    private array $validConfig;
+it('construct valid config', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig($validConfig);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->validConfig = [
-            'mch_id' => 'test_mch_id',
-            'mch_secret_key' => '12345678901234567890123456789012',
-            'mch_secret_cert' => 'test_cert',
-            'mch_public_cert_path' => 'test_path',
-            'notify_url' => 'https://test.com',
-        ];
-    }
+    expect($config->getTenant())->toBe('default');
+    expect($config->getMchId())->toBe('test_mch_id');
+    expect($config->getMchSecretKey())->toBe('12345678901234567890123456789012');
+    expect($config->getMchSecretCert())->toBe('test_cert');
+    expect($config->getMchPublicCertPath())->toBe('test_path');
+    expect($config->getNotifyUrl())->toBe('https://test.com');
+    expect($config->getMode())->toBe(PayMode::NORMAL);
+});
 
-    public function testConstructValidConfig(): void
-    {
-        $config = new WechatConfig($this->validConfig);
+it('construct with tenant', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig($validConfig, 'custom_tenant');
 
-        self::assertSame('default', $config->getTenant());
-        self::assertSame('test_mch_id', $config->getMchId());
-        self::assertSame('12345678901234567890123456789012', $config->getMchSecretKey());
-        self::assertSame('test_cert', $config->getMchSecretCert());
-        self::assertSame('test_path', $config->getMchPublicCertPath());
-        self::assertSame('https://test.com', $config->getNotifyUrl());
-        self::assertSame(PayMode::NORMAL, $config->getMode());
-    }
+    expect($config->getTenant())->toBe('custom_tenant');
+});
 
-    public function testConstructWithTenant(): void
-    {
-        $config = new WechatConfig($this->validConfig, 'custom_tenant');
+it('mode sandbox', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig(array_merge($validConfig, [
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-        self::assertSame('custom_tenant', $config->getTenant());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+    expect($config->getMode()->isSandbox())->toBeTrue();
 
-    public function testModeSandbox(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SANDBOX,
-        ]));
+    $config->validate();
+});
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-        self::assertTrue($config->getMode()->isSandbox());
+it('mode with int value', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig(array_merge($validConfig, [
+        'mode' => 1,
+    ]));
 
-        $config->validate();
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeWithIntValue(): void
-    {
-        // 兼容历史 int 写法：0/1/2
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'mode' => 1,
-        ]));
+it('get app id by type', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig(array_merge($validConfig, [
+        'mp_app_id' => 'mp_app_id',
+        'mini_app_id' => 'mini_app_id',
+        'app_id' => 'app_id',
+        'sub_mp_app_id' => 'sub_mp_app_id',
+        'sub_mini_app_id' => 'sub_mini_app_id',
+        'sub_app_id' => 'sub_app_id',
+    ]));
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    expect($config->getAppIdByType(AppType::MP))->toBe('mp_app_id');
+    expect($config->getAppIdByType(AppType::MINI))->toBe('mini_app_id');
+    expect($config->getAppIdByType(AppType::APP))->toBe('app_id');
+    // 未知值按 MP 处理（历史行为）
+    expect($config->getAppIdByType('foo'))->toBe('mp_app_id');
+});
 
-    public function testGetAppIdByType(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'mp_app_id' => 'mp_app_id',
-            'mini_app_id' => 'mini_app_id',
-            'app_id' => 'app_id',
-            'sub_mp_app_id' => 'sub_mp_app_id',
-            'sub_mini_app_id' => 'sub_mini_app_id',
-            'sub_app_id' => 'sub_app_id',
-        ]));
+it('get sub app id by type', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig(array_merge($validConfig, [
+        'mp_app_id' => 'mp_app_id',
+        'mini_app_id' => 'mini_app_id',
+        'app_id' => 'app_id',
+        'sub_mp_app_id' => 'sub_mp_app_id',
+        'sub_mini_app_id' => 'sub_mini_app_id',
+        'sub_app_id' => 'sub_app_id',
+    ]));
 
-        self::assertSame('mp_app_id', $config->getAppIdByType(AppType::MP));
-        self::assertSame('mini_app_id', $config->getAppIdByType(AppType::MINI));
-        self::assertSame('app_id', $config->getAppIdByType(AppType::APP));
-        // 未知值按 MP 处理（历史行为）
-        self::assertSame('mp_app_id', $config->getAppIdByType('foo'));
-    }
+    expect($config->getSubAppIdByType(AppType::MP))->toBe('sub_mp_app_id');
+    expect($config->getSubAppIdByType(AppType::MINI))->toBe('sub_mini_app_id');
+    expect($config->getSubAppIdByType(AppType::APP))->toBe('sub_app_id');
+    // 未知值按 MP 处理（历史行为）
+    expect($config->getSubAppIdByType('foo'))->toBe('sub_mp_app_id');
+});
 
-    public function testGetSubAppIdByType(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'mp_app_id' => 'mp_app_id',
-            'mini_app_id' => 'mini_app_id',
-            'app_id' => 'app_id',
-            'sub_mp_app_id' => 'sub_mp_app_id',
-            'sub_mini_app_id' => 'sub_mini_app_id',
-            'sub_app_id' => 'sub_app_id',
-        ]));
+it('construct without notify url', function () {
+    $config = new WechatConfig([
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+    ]);
 
-        self::assertSame('sub_mp_app_id', $config->getSubAppIdByType(AppType::MP));
-        self::assertSame('sub_mini_app_id', $config->getSubAppIdByType(AppType::MINI));
-        self::assertSame('sub_app_id', $config->getSubAppIdByType(AppType::APP));
-        // 未知值按 MP 处理（历史行为）
-        self::assertSame('sub_mp_app_id', $config->getSubAppIdByType('foo'));
-    }
+    expect($config->getNotifyUrl())->toBe('');
+});
 
-    public function testConstructWithoutNotifyUrl(): void
-    {
-        $config = new WechatConfig([
-            'mch_id' => 'test_mch_id',
-            'mch_secret_key' => '12345678901234567890123456789012',
-            'mch_secret_cert' => 'test_cert',
-            'mch_public_cert_path' => 'test_path',
-        ]);
+it('construct missing required', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
 
-        self::assertSame('', $config->getNotifyUrl());
-    }
+    $config = new WechatConfig([
+        // missing mch_id
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ]);
+    $config->validate();
+});
 
-    public function testConstructMissingRequired(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
+it('construct invalid secret key length', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: mch_secret_key 长度应为 32 字节');
 
-        $config = new WechatConfig([
-            // missing mch_id
-            'mch_secret_key' => '12345678901234567890123456789012',
-            'mch_secret_cert' => 'test_cert',
-            'mch_public_cert_path' => 'test_path',
-            'notify_url' => 'https://test.com',
-        ]);
-        $config->validate();
-    }
+    $config = new WechatConfig([
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => 'short_key', // 9 bytes, not 32
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ]);
+    $config->validate();
+});
 
-    public function testConstructInvalidSecretKeyLength(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: mch_secret_key 长度应为 32 字节');
+it('construct service mode missing sub mch id', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 服务商模式下缺少 [sub_mch_id]');
 
-        $config = new WechatConfig([
-            'mch_id' => 'test_mch_id',
-            'mch_secret_key' => 'short_key', // 9 bytes, not 32
-            'mch_secret_cert' => 'test_cert',
-            'mch_public_cert_path' => 'test_path',
-            'notify_url' => 'https://test.com',
-        ]);
-        $config->validate();
-    }
+    $config = new WechatConfig([
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+        'mode' => PayMode::SERVICE,
+        // missing sub_mch_id
+    ]);
+    $config->validate();
+});
 
-    public function testConstructServiceModeMissingSubMchId(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 服务商模式下缺少 [sub_mch_id]');
+it('construct service mode with sub mch id', function () {
+    $config = new WechatConfig([
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+        'mode' => PayMode::SERVICE,
+        'sub_mch_id' => 'sub_mch_id',
+    ]);
 
-        $config = new WechatConfig([
-            'mch_id' => 'test_mch_id',
-            'mch_secret_key' => '12345678901234567890123456789012',
-            'mch_secret_cert' => 'test_cert',
-            'mch_public_cert_path' => 'test_path',
-            'notify_url' => 'https://test.com',
-            'mode' => PayMode::SERVICE,
-            // missing sub_mch_id
-        ]);
-        $config->validate();
-    }
+    expect($config->getMode())->toBe(PayMode::SERVICE);
+    expect($config->getSubMchId())->toBe('sub_mch_id');
+});
 
-    public function testConstructServiceModeWithSubMchId(): void
-    {
-        $config = new WechatConfig([
-            'mch_id' => 'test_mch_id',
-            'mch_secret_key' => '12345678901234567890123456789012',
-            'mch_secret_cert' => 'test_cert',
-            'mch_public_cert_path' => 'test_path',
-            'notify_url' => 'https://test.com',
-            'mode' => PayMode::SERVICE,
-            'sub_mch_id' => 'sub_mch_id',
-        ]);
+it('optional getters', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig(array_merge($validConfig, [
+        'mp_app_id' => 'mp_app_id',
+        'mini_app_id' => 'mini_app_id',
+        'app_id' => 'app_id',
+        'mch_secret_key_v2' => 'v2_key',
+        'sub_mp_app_id' => 'sub_mp_app_id',
+        'sub_mini_app_id' => 'sub_mini_app_id',
+        'sub_app_id' => 'sub_app_id',
+    ]));
 
-        self::assertSame(PayMode::SERVICE, $config->getMode());
-        self::assertSame('sub_mch_id', $config->getSubMchId());
-    }
+    expect($config->getMpAppId())->toBe('mp_app_id');
+    expect($config->getMiniAppId())->toBe('mini_app_id');
+    expect($config->getAppId())->toBe('app_id');
+    expect($config->getMchSecretKeyV2())->toBe('v2_key');
+    expect($config->getSubMpAppId())->toBe('sub_mp_app_id');
+    expect($config->getSubMiniAppId())->toBe('sub_mini_app_id');
+    expect($config->getSubAppId())->toBe('sub_app_id');
+});
 
-    public function testOptionalGetters(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'mp_app_id' => 'mp_app_id',
-            'mini_app_id' => 'mini_app_id',
-            'app_id' => 'app_id',
-            'mch_secret_key_v2' => 'v2_key',
-            'sub_mp_app_id' => 'sub_mp_app_id',
-            'sub_mini_app_id' => 'sub_mini_app_id',
-            'sub_app_id' => 'sub_app_id',
-        ]));
+it('optional getters null', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig($validConfig);
 
-        self::assertSame('mp_app_id', $config->getMpAppId());
-        self::assertSame('mini_app_id', $config->getMiniAppId());
-        self::assertSame('app_id', $config->getAppId());
-        self::assertSame('v2_key', $config->getMchSecretKeyV2());
-        self::assertSame('sub_mp_app_id', $config->getSubMpAppId());
-        self::assertSame('sub_mini_app_id', $config->getSubMiniAppId());
-        self::assertSame('sub_app_id', $config->getSubAppId());
-    }
+    expect($config->getMpAppId())->toBeNull();
+    expect($config->getMiniAppId())->toBeNull();
+    expect($config->getAppId())->toBeNull();
+    expect($config->getMchSecretKeyV2())->toBeNull();
+    expect($config->getSubMpAppId())->toBeNull();
+    expect($config->getSubMiniAppId())->toBeNull();
+    expect($config->getSubAppId())->toBeNull();
+    expect($config->getSubMchId())->toBeNull();
+});
 
-    public function testOptionalGettersNull(): void
-    {
-        $config = new WechatConfig($this->validConfig);
+it('service id getter', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig(array_merge($validConfig, [
+        'service_id' => '12345678901234567890123456789012',
+    ]));
 
-        self::assertNull($config->getMpAppId());
-        self::assertNull($config->getMiniAppId());
-        self::assertNull($config->getAppId());
-        self::assertNull($config->getMchSecretKeyV2());
-        self::assertNull($config->getSubMpAppId());
-        self::assertNull($config->getSubMiniAppId());
-        self::assertNull($config->getSubAppId());
-        self::assertNull($config->getSubMchId());
-    }
+    expect($config->getServiceId())->toBe('12345678901234567890123456789012');
+});
 
-    public function testServiceIdGetter(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'service_id' => '12345678901234567890123456789012',
-        ]));
+it('service id getter null', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig($validConfig);
 
-        self::assertSame('12345678901234567890123456789012', $config->getServiceId());
-    }
+    expect($config->getServiceId())->toBeNull();
+});
 
-    public function testServiceIdGetterNull(): void
-    {
-        $config = new WechatConfig($this->validConfig);
+it('wechat config init imports to cert manager', function () {
+    CertManager::clearCache();
 
-        self::assertNull($config->getServiceId());
-    }
+    $tenant = 'test-import';
+    $config = new WechatConfig([
+        'mch_id' => 'test-mch',
+        'mch_secret_key' => str_repeat('a', 32),
+        'mch_secret_cert' => 'test-cert',
+        'mch_public_cert_path' => 'test-path',
+        'wechat_public_cert_path' => [
+            'SERIAL1' => 'cert-content-1',
+            'SERIAL2' => 'cert-content-2',
+        ],
+    ], $tenant);
 
-    public function testWechatConfigInitImportsToCertManager(): void
-    {
-        CertManager::clearCache();
+    expect(CertManager::wechatGetCertBySerial($tenant, 'SERIAL1'))->toEqual('cert-content-1');
+    expect(CertManager::wechatGetCertBySerial($tenant, 'SERIAL2'))->toEqual('cert-content-2');
+});
 
-        $tenant = 'test-import';
-        $config = new WechatConfig([
-            'mch_id' => 'test-mch',
-            'mch_secret_key' => str_repeat('a', 32),
-            'mch_secret_cert' => 'test-cert',
-            'mch_public_cert_path' => 'test-path',
-            'wechat_public_cert_path' => [
-                'SERIAL1' => 'cert-content-1',
-                'SERIAL2' => 'cert-content-2',
-            ],
-        ], $tenant);
+it('virtual pay default is empty object', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig($validConfig);
 
-        self::assertEquals('cert-content-1', CertManager::wechatGetCertBySerial($tenant, 'SERIAL1'));
-        self::assertEquals('cert-content-2', CertManager::wechatGetCertBySerial($tenant, 'SERIAL2'));
-    }
+    $vp = $config->getVirtualPay();
+    expect($vp)->toBeInstanceOf(WechatConfigVirtualPay::class);
+    expect($vp->getAppKey())->toBeNull();
+    expect($vp->getSandboxAppKey())->toBeNull();
+    expect($vp->getOfferId())->toBeNull();
+})->group('VirtualPay');
 
-    #[Group('VirtualPay')]
-    public function testVirtualPayDefaultIsEmptyObject(): void
-    {
-        $config = new WechatConfig($this->validConfig);
+it('virtual pay from array config', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig(array_merge($validConfig, [
+        'virtual_pay' => [
+            'app_key' => 'vp-app-key',
+            'sandbox_app_key' => 'vp-sandbox-key',
+            'offer_id' => 'vp-offer-123',
+        ],
+    ]));
 
-        $vp = $config->getVirtualPay();
-        self::assertInstanceOf(WechatConfigVirtualPay::class, $vp);
-        self::assertNull($vp->getAppKey());
-        self::assertNull($vp->getSandboxAppKey());
-        self::assertNull($vp->getOfferId());
-    }
+    $vp = $config->getVirtualPay();
+    expect($vp->getAppKey())->toBe('vp-app-key');
+    expect($vp->getSandboxAppKey())->toBe('vp-sandbox-key');
+    expect($vp->getOfferId())->toBe('vp-offer-123');
+})->group('VirtualPay');
 
-    #[Group('VirtualPay')]
-    public function testVirtualPayFromArrayConfig(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'virtual_pay' => [
-                'app_key' => 'vp-app-key',
-                'sandbox_app_key' => 'vp-sandbox-key',
-                'offer_id' => 'vp-offer-123',
-            ],
-        ]));
+it('virtual pay sandbox fallback', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig(array_merge($validConfig, [
+        'virtual_pay' => [
+            'app_key' => 'vp-app-key',
+            'sandbox_app_key' => 'vp-sandbox-key',
+        ],
+    ]));
 
-        $vp = $config->getVirtualPay();
-        self::assertSame('vp-app-key', $vp->getAppKey());
-        self::assertSame('vp-sandbox-key', $vp->getSandboxAppKey());
-        self::assertSame('vp-offer-123', $vp->getOfferId());
-    }
+    $vp = $config->getVirtualPay();
+    expect($vp->getAppKey(1))->toBe('vp-sandbox-key');
+})->group('VirtualPay');
 
-    #[Group('VirtualPay')]
-    public function testVirtualPaySandboxFallback(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'virtual_pay' => [
-                'app_key' => 'vp-app-key',
-                'sandbox_app_key' => 'vp-sandbox-key',
-            ],
-        ]));
+it('virtual pay set via setter', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig($validConfig);
 
-        $vp = $config->getVirtualPay();
-        self::assertSame('vp-sandbox-key', $vp->getAppKey(1));
-    }
+    $vp = new WechatConfigVirtualPay();
+    $vp->setAppKey('direct-key');
+    $vp->setOfferId('direct-offer');
 
-    #[Group('VirtualPay')]
-    public function testVirtualPaySetViaSetter(): void
-    {
-        $config = new WechatConfig($this->validConfig);
+    $config->setVirtualPay($vp);
 
-        $vp = new WechatConfigVirtualPay();
-        $vp->setAppKey('direct-key');
-        $vp->setOfferId('direct-offer');
+    $result = $config->getVirtualPay();
+    expect($result->getAppKey())->toBe('direct-key');
+    expect($result->getOfferId())->toBe('direct-offer');
+})->group('VirtualPay');
 
-        $config->setVirtualPay($vp);
+it('virtual pay set via array setter', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig($validConfig);
 
-        $result = $config->getVirtualPay();
-        self::assertSame('direct-key', $result->getAppKey());
-        self::assertSame('direct-offer', $result->getOfferId());
-    }
+    $config->setVirtualPay([
+        'app_key' => 'array-key',
+        'offer_id' => 'array-offer',
+    ]);
 
-    #[Group('VirtualPay')]
-    public function testVirtualPaySetViaArraySetter(): void
-    {
-        $config = new WechatConfig($this->validConfig);
+    $vp = $config->getVirtualPay();
+    expect($vp->getAppKey())->toBe('array-key');
+    expect($vp->getOfferId())->toBe('array-offer');
+})->group('VirtualPay');
 
-        $config->setVirtualPay([
-            'app_key' => 'array-key',
-            'offer_id' => 'array-offer',
-        ]);
+it('virtual pay is configured requires app key and app secret', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $config = new WechatConfig(array_merge($validConfig, [
+        'virtual_pay' => [
+            'app_key' => 'vp-app-key',
+            'offer_id' => 'vp-offer-123',
+        ],
+    ]));
 
-        $vp = $config->getVirtualPay();
-        self::assertSame('array-key', $vp->getAppKey());
-        self::assertSame('array-offer', $vp->getOfferId());
-    }
+    expect($config->getVirtualPay()->isConfigured())->toBeFalse();
 
-    #[Group('VirtualPay')]
-    public function testVirtualPayIsConfiguredRequiresAppKeyAndAppSecret(): void
-    {
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'virtual_pay' => [
-                'app_key' => 'vp-app-key',
-                'offer_id' => 'vp-offer-123',
-            ],
-        ]));
+    $config->setVirtualPay([
+        'app_key' => 'vp-app-key',
+        'app_secret' => 'vp-app-secret',
+    ]);
 
-        self::assertFalse($config->getVirtualPay()->isConfigured());
+    expect($config->getVirtualPay()->isConfigured())->toBeTrue();
+})->group('VirtualPay');
 
-        $config->setVirtualPay([
+it('virtual pay only config skips wechat pay validation', function () {
+    $config = new WechatConfig([
+        'mini_app_id' => 'wx1234567890abcdef',
+        'virtual_pay' => [
+            'offer_id' => 'vp-offer-123',
             'app_key' => 'vp-app-key',
             'app_secret' => 'vp-app-secret',
-        ]);
+            'callback_token' => 'vp-callback-token',
+            'encoding_aes_key' => 'vp-encoding-aes-key',
+        ],
+    ]);
 
-        self::assertTrue($config->getVirtualPay()->isConfigured());
-    }
+    $config->validate();
 
-    #[Group('VirtualPay')]
-    public function testVirtualPayOnlyConfigSkipsWechatPayValidation(): void
-    {
-        $config = new WechatConfig([
-            'mini_app_id' => 'wx1234567890abcdef',
-            'virtual_pay' => [
-                'offer_id' => 'vp-offer-123',
-                'app_key' => 'vp-app-key',
-                'app_secret' => 'vp-app-secret',
-                'callback_token' => 'vp-callback-token',
-                'encoding_aes_key' => 'vp-encoding-aes-key',
-            ],
-        ]);
+    expect($config->getMchId())->toBe('');
+    expect($config->getMchSecretKey())->toBe('');
+    expect($config->getMchSecretCert())->toBe('');
+    expect($config->getMchPublicCertPath())->toBe('');
+})->group('VirtualPay');
 
-        $config->validate();
+it('virtual pay only config skips sub mch id validation in service mode', function () {
+    $config = new WechatConfig([
+        'mode' => PayMode::SERVICE,
+        'virtual_pay' => [
+            'app_key' => 'vp-app-key',
+            'app_secret' => 'vp-app-secret',
+        ],
+    ]);
 
-        self::assertSame('', $config->getMchId());
-        self::assertSame('', $config->getMchSecretKey());
-        self::assertSame('', $config->getMchSecretCert());
-        self::assertSame('', $config->getMchPublicCertPath());
-    }
+    $config->validate();
 
-    #[Group('VirtualPay')]
-    public function testVirtualPayOnlyConfigSkipsSubMchIdValidationInServiceMode(): void
-    {
-        $config = new WechatConfig([
-            'mode' => PayMode::SERVICE,
-            'virtual_pay' => [
-                'app_key' => 'vp-app-key',
-                'app_secret' => 'vp-app-secret',
-            ],
-        ]);
+    expect($config->getMode())->toBe(PayMode::SERVICE);
+})->group('VirtualPay');
 
-        $config->validate();
+it('virtual pay without app secret still requires wechat pay credentials', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
 
-        self::assertSame(PayMode::SERVICE, $config->getMode());
-    }
+    $config = new WechatConfig([
+        'virtual_pay' => [
+            'offer_id' => 'vp-offer-123',
+            'app_key' => 'vp-app-key',
+        ],
+    ]);
+    $config->validate();
+})->group('VirtualPay');
 
-    #[Group('VirtualPay')]
-    public function testVirtualPayWithoutAppSecretStillRequiresWechatPayCredentials(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_id]');
+it('partial wechat pay credentials still validate with virtual pay', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_secret_key]');
 
-        $config = new WechatConfig([
-            'virtual_pay' => [
-                'offer_id' => 'vp-offer-123',
-                'app_key' => 'vp-app-key',
-            ],
-        ]);
-        $config->validate();
-    }
+    $config = new WechatConfig([
+        'mch_id' => 'test_mch_id',
+        'virtual_pay' => [
+            'app_key' => 'vp-app-key',
+            'app_secret' => 'vp-app-secret',
+        ],
+    ]);
+    $config->validate();
+})->group('VirtualPay');
 
-    #[Group('VirtualPay')]
-    public function testPartialWechatPayCredentialsStillValidateWithVirtualPay(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少微信配置 -- [mch_secret_key]');
+it('invalid mode throws exception', function () {
+    $validConfig = [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => '12345678901234567890123456789012',
+        'mch_secret_cert' => 'test_cert',
+        'mch_public_cert_path' => 'test_path',
+        'notify_url' => 'https://test.com',
+    ];
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+    $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
-        $config = new WechatConfig([
-            'mch_id' => 'test_mch_id',
-            'virtual_pay' => [
-                'app_key' => 'vp-app-key',
-                'app_secret' => 'vp-app-secret',
-            ],
-        ]);
-        $config->validate();
-    }
+    $config = new WechatConfig(array_merge($validConfig, [
+        'mode' => 99999,
+    ]));
+    $config->validate();
+});
 
-    public function testInvalidModeThrowsException(): void
-    {
-        // 未覆盖 supportedModes 的 Provider 默认支持三种 mode，其余取值应被校验拦截
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-        $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
-
-        $config = new WechatConfig(array_merge($this->validConfig, [
-            'mode' => 99999,
-        ]));
-        $config->validate();
-    }
-}

@@ -2,113 +2,128 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Config;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\JsbConfig;
 use Yansongda\Pay\Enum\PayMode;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Tests\TestCase;
 
-class JsbConfigTest extends TestCase
-{
-    private array $validConfig;
+it('construct valid config', function () {
+    $validConfig = [
+        'partner_id' => 'partner_123',
+        'public_key_code' => '00',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'jsb_public_cert_path' => '/path/to/jsb.pem',
+    ];
+    $config = new JsbConfig($validConfig);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->validConfig = [
-            'partner_id' => 'partner_123',
-            'public_key_code' => '00',
-            'mch_secret_cert_path' => '/path/to/secret.pem',
-            'jsb_public_cert_path' => '/path/to/jsb.pem',
-        ];
-    }
+    expect($config->getTenant())->toBe('default');
+    expect($config->getPartnerId())->toBe('partner_123');
+    expect($config->getPublicKeyCode())->toBe('00');
+    expect($config->getMchSecretCertPath())->toBe('/path/to/secret.pem');
+    expect($config->getJsbPublicCertPath())->toBe('/path/to/jsb.pem');
+    expect($config->getMode())->toBe(PayMode::NORMAL);
+});
 
-    public function testConstructValidConfig(): void
-    {
-        $config = new JsbConfig($this->validConfig);
+it('construct with tenant', function () {
+    $validConfig = [
+        'partner_id' => 'partner_123',
+        'public_key_code' => '00',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'jsb_public_cert_path' => '/path/to/jsb.pem',
+    ];
+    $config = new JsbConfig($validConfig, 'custom_tenant');
 
-        self::assertSame('default', $config->getTenant());
-        self::assertSame('partner_123', $config->getPartnerId());
-        self::assertSame('00', $config->getPublicKeyCode());
-        self::assertSame('/path/to/secret.pem', $config->getMchSecretCertPath());
-        self::assertSame('/path/to/jsb.pem', $config->getJsbPublicCertPath());
-        self::assertSame(PayMode::NORMAL, $config->getMode());
-    }
+    expect($config->getTenant())->toBe('custom_tenant');
+});
 
-    public function testConstructWithTenant(): void
-    {
-        $config = new JsbConfig($this->validConfig, 'custom_tenant');
+it('construct missing required', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少江苏银行配置 -- [partner_id]');
 
-        self::assertSame('custom_tenant', $config->getTenant());
-    }
+    $config = new JsbConfig([
+        // missing partner_id
+        'public_key_code' => '00',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'jsb_public_cert_path' => '/path/to/jsb.pem',
+    ]);
+    $config->validate();
+});
 
-    public function testConstructMissingRequired(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少江苏银行配置 -- [partner_id]');
+it('optional getters', function () {
+    $validConfig = [
+        'partner_id' => 'partner_123',
+        'public_key_code' => '00',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'jsb_public_cert_path' => '/path/to/jsb.pem',
+    ];
+    $config = new JsbConfig(array_merge($validConfig, [
+        'svr_code' => 'svr_123',
+        'mch_public_cert_path' => '/path/to/public.pem',
+        'notify_url' => 'https://notify.com',
+    ]));
 
-        $config = new JsbConfig([
-            // missing partner_id
-            'public_key_code' => '00',
-            'mch_secret_cert_path' => '/path/to/secret.pem',
-            'jsb_public_cert_path' => '/path/to/jsb.pem',
-        ]);
-        $config->validate();
-    }
+    expect($config->getSvrCode())->toBe('svr_123');
+    expect($config->getMchPublicCertPath())->toBe('/path/to/public.pem');
+    expect($config->getNotifyUrl())->toBe('https://notify.com');
+});
 
-    public function testOptionalGetters(): void
-    {
-        $config = new JsbConfig(array_merge($this->validConfig, [
-            'svr_code' => 'svr_123',
-            'mch_public_cert_path' => '/path/to/public.pem',
-            'notify_url' => 'https://notify.com',
-        ]));
+it('optional getters null', function () {
+    $validConfig = [
+        'partner_id' => 'partner_123',
+        'public_key_code' => '00',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'jsb_public_cert_path' => '/path/to/jsb.pem',
+    ];
+    $config = new JsbConfig($validConfig);
 
-        self::assertSame('svr_123', $config->getSvrCode());
-        self::assertSame('/path/to/public.pem', $config->getMchPublicCertPath());
-        self::assertSame('https://notify.com', $config->getNotifyUrl());
-    }
+    expect($config->getSvrCode())->toBe('');
+    expect($config->getMchPublicCertPath())->toBeNull();
+    expect($config->getNotifyUrl())->toBeNull();
+});
 
-    public function testOptionalGettersNull(): void
-    {
-        $config = new JsbConfig($this->validConfig);
+it('mode sandbox', function () {
+    $validConfig = [
+        'partner_id' => 'partner_123',
+        'public_key_code' => '00',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'jsb_public_cert_path' => '/path/to/jsb.pem',
+    ];
+    $config = new JsbConfig(array_merge($validConfig, [
+        // 兼容历史 int 写法：0/1/2
+        'mode' => 1,
+    ]));
 
-        self::assertSame('', $config->getSvrCode());
-        self::assertNull($config->getMchPublicCertPath());
-        self::assertNull($config->getNotifyUrl());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeSandbox(): void
-    {
-        $config = new JsbConfig(array_merge($this->validConfig, [
-            // 兼容历史 int 写法：0/1/2
-            'mode' => 1,
-        ]));
+it('mode with pay mode enum', function () {
+    $validConfig = [
+        'partner_id' => 'partner_123',
+        'public_key_code' => '00',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'jsb_public_cert_path' => '/path/to/jsb.pem',
+    ];
+    $config = new JsbConfig(array_merge($validConfig, [
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeWithPayModeEnum(): void
-    {
-        $config = new JsbConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SANDBOX,
-        ]));
+it('service mode throws exception', function () {
+    $validConfig = [
+        'partner_id' => 'partner_123',
+        'public_key_code' => '00',
+        'mch_secret_cert_path' => '/path/to/secret.pem',
+        'jsb_public_cert_path' => '/path/to/jsb.pem',
+    ];
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
+    $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    $config = new JsbConfig(array_merge($validConfig, [
+        'mode' => PayMode::SERVICE,
+    ]));
+    $config->validate();
+});
 
-    public function testServiceModeThrowsException(): void
-    {
-        // 江苏银行无服务商模式，mode = SERVICE 应被校验拦截
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionCode(Exception::CONFIG_PROVIDER_INVALID);
-        $this->expectExceptionMessage('配置异常: [mode] 配置不合法');
-
-        $config = new JsbConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SERVICE,
-        ]));
-        $config->validate();
-    }
-}

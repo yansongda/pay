@@ -2,97 +2,98 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Config;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\UnipayConfig;
 use Yansongda\Pay\Enum\PayMode;
-use Yansongda\Pay\Tests\TestCase;
 
-class UnipayConfigTest extends TestCase
-{
-    private array $validConfig;
+it('construct valid config', function () {
+    $validConfig = [
+        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_password' => 'test_password',
+    ];
+    $config = new UnipayConfig($validConfig);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->validConfig = [
-            'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
-            'mch_cert_password' => 'test_password',
-        ];
-    }
+    expect($config->getTenant())->toBe('default');
+    expect($config->getMode())->toBe(PayMode::NORMAL);
+});
 
-    public function testConstructValidConfig(): void
-    {
-        $config = new UnipayConfig($this->validConfig);
+it('construct with tenant', function () {
+    $validConfig = [
+        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_password' => 'test_password',
+    ];
+    $config = new UnipayConfig($validConfig, 'custom_tenant');
 
-        self::assertSame('default', $config->getTenant());
-        self::assertSame(PayMode::NORMAL, $config->getMode());
-    }
+    expect($config->getTenant())->toBe('custom_tenant');
+});
 
-    public function testConstructWithTenant(): void
-    {
-        $config = new UnipayConfig($this->validConfig, 'custom_tenant');
+it('construct missing required', function () {
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionMessage('配置异常: 缺少银联配置 -- [mch_cert_path]');
 
-        self::assertSame('custom_tenant', $config->getTenant());
-    }
+    $config = new UnipayConfig([
+        // missing mch_cert_path
+        'mch_cert_password' => 'test_password',
+    ]);
+    $config->validate();
+});
 
-    public function testConstructMissingRequired(): void
-    {
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('配置异常: 缺少银联配置 -- [mch_cert_path]');
+it('optional getters', function () {
+    $validConfig = [
+        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_password' => 'test_password',
+    ];
+    $config = new UnipayConfig(array_merge($validConfig, [
+        'mch_id' => 'test_mch_id',
+        'mch_secret_key' => 'secret_key',
+        'notify_url' => 'https://notify.com',
+        'return_url' => 'https://return.com',
+        'unipay_public_cert_path' => '/path/to/cert',
+    ]));
 
-        $config = new UnipayConfig([
-            // missing mch_cert_path
-            'mch_cert_password' => 'test_password',
-        ]);
-        $config->validate();
-    }
+    expect($config->getMchId())->toBe('test_mch_id');
+    expect($config->getMchSecretKey())->toBe('secret_key');
+    expect($config->getNotifyUrl())->toBe('https://notify.com');
+    expect($config->getReturnUrl())->toBe('https://return.com');
+    expect($config->getUnipayPublicCertPath())->toBe('/path/to/cert');
+});
 
-    public function testOptionalGetters(): void
-    {
-        $config = new UnipayConfig(array_merge($this->validConfig, [
-            'mch_id' => 'test_mch_id',
-            'mch_secret_key' => 'secret_key',
-            'notify_url' => 'https://notify.com',
-            'return_url' => 'https://return.com',
-            'unipay_public_cert_path' => '/path/to/cert',
-        ]));
+it('optional getters null', function () {
+    $validConfig = [
+        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_password' => 'test_password',
+    ];
+    $config = new UnipayConfig($validConfig);
 
-        self::assertSame('test_mch_id', $config->getMchId());
-        self::assertSame('secret_key', $config->getMchSecretKey());
-        self::assertSame('https://notify.com', $config->getNotifyUrl());
-        self::assertSame('https://return.com', $config->getReturnUrl());
-        self::assertSame('/path/to/cert', $config->getUnipayPublicCertPath());
-    }
+    expect($config->getMchId())->toBeNull();
+    expect($config->getMchSecretKey())->toBeNull();
+    expect($config->getNotifyUrl())->toBeNull();
+    expect($config->getReturnUrl())->toBeNull();
+    expect($config->getUnipayPublicCertPath())->toBeNull();
+});
 
-    public function testOptionalGettersNull(): void
-    {
-        $config = new UnipayConfig($this->validConfig);
+it('mode sandbox', function () {
+    $validConfig = [
+        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_password' => 'test_password',
+    ];
+    $config = new UnipayConfig(array_merge($validConfig, [
+        // 兼容历史 int 写法：0/1/2
+        'mode' => 1,
+    ]));
 
-        self::assertNull($config->getMchId());
-        self::assertNull($config->getMchSecretKey());
-        self::assertNull($config->getNotifyUrl());
-        self::assertNull($config->getReturnUrl());
-        self::assertNull($config->getUnipayPublicCertPath());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeSandbox(): void
-    {
-        $config = new UnipayConfig(array_merge($this->validConfig, [
-            // 兼容历史 int 写法：0/1/2
-            'mode' => 1,
-        ]));
+it('mode with pay mode enum', function () {
+    $validConfig = [
+        'mch_cert_path' => __DIR__.'/../Cert/unipayAppPublicCert.crt',
+        'mch_cert_password' => 'test_password',
+    ];
+    $config = new UnipayConfig(array_merge($validConfig, [
+        'mode' => PayMode::SANDBOX,
+    ]));
 
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
+    expect($config->getMode())->toBe(PayMode::SANDBOX);
+});
 
-    public function testModeWithPayModeEnum(): void
-    {
-        $config = new UnipayConfig(array_merge($this->validConfig, [
-            'mode' => PayMode::SANDBOX,
-        ]));
-
-        self::assertSame(PayMode::SANDBOX, $config->getMode());
-    }
-}

@@ -2,127 +2,110 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Config;
-
 use Yansongda\Artful\Exception\InvalidConfigException;
 use Yansongda\Pay\Config\WechatConfigVirtualPay;
 use Yansongda\Pay\Enum\Wechat\VirtualPayEnv;
 use Yansongda\Pay\Exception\Exception;
-use Yansongda\Pay\Tests\TestCase;
 
-class WechatConfigVirtualPayTest extends TestCase
-{
-    public function testDefaultValues(): void
-    {
-        $vp = new WechatConfigVirtualPay();
+it('default values', function () {
+    $vp = new WechatConfigVirtualPay();
 
-        self::assertNull($vp->getAppKey());
-        self::assertNull($vp->getSandboxAppKey());
-        self::assertNull($vp->getOfferId());
-    }
+    expect($vp->getAppKey())->toBeNull();
+    expect($vp->getSandboxAppKey())->toBeNull();
+    expect($vp->getOfferId())->toBeNull();
+});
 
-    public function testSetAndGetAppKey(): void
-    {
-        $vp = new WechatConfigVirtualPay();
-        $vp->setAppKey('prod-key');
+it('set and get app key', function () {
+    $vp = new WechatConfigVirtualPay();
+    $vp->setAppKey('prod-key');
 
-        self::assertSame('prod-key', $vp->getAppKey());
-    }
+    expect($vp->getAppKey())->toBe('prod-key');
+});
 
-    public function testSetAndGetAppSecret(): void
-    {
-        $vp = new WechatConfigVirtualPay();
+it('set and get app secret', function () {
+    $vp = new WechatConfigVirtualPay();
 
-        self::assertNull($vp->getAppSecret());
+    expect($vp->getAppSecret())->toBeNull();
 
-        $vp->setAppSecret('secret');
+    $vp->setAppSecret('secret');
 
-        self::assertSame('secret', $vp->getAppSecret());
-    }
+    expect($vp->getAppSecret())->toBe('secret');
+});
 
-    public function testAccessTokenCacheFields(): void
-    {
-        $vp = new WechatConfigVirtualPay();
+it('access token cache fields', function () {
+    $vp = new WechatConfigVirtualPay();
 
-        self::assertNull($vp->getAccessToken());
-        self::assertNull($vp->getAccessTokenExpiry());
+    expect($vp->getAccessToken())->toBeNull();
+    expect($vp->getAccessTokenExpiry())->toBeNull();
 
-        $vp->setAccessToken('token');
-        $vp->setAccessTokenExpiry(123);
+    $vp->setAccessToken('token');
+    $vp->setAccessTokenExpiry(123);
 
-        self::assertSame('token', $vp->getAccessToken());
-        self::assertSame(123, $vp->getAccessTokenExpiry());
-    }
+    expect($vp->getAccessToken())->toBe('token');
+    expect($vp->getAccessTokenExpiry())->toBe(123);
+});
 
-    public function testSetAndGetSandboxAppKey(): void
-    {
-        $vp = new WechatConfigVirtualPay();
-        $vp->setSandboxAppKey('sandbox-key');
+it('set and get sandbox app key', function () {
+    $vp = new WechatConfigVirtualPay();
+    $vp->setSandboxAppKey('sandbox-key');
 
-        self::assertSame('sandbox-key', $vp->getSandboxAppKey());
-    }
+    expect($vp->getSandboxAppKey())->toBe('sandbox-key');
+});
 
-    public function testSetAndGetOfferId(): void
-    {
-        $vp = new WechatConfigVirtualPay();
-        $vp->setOfferId('offer-123');
+it('set and get offer id', function () {
+    $vp = new WechatConfigVirtualPay();
+    $vp->setOfferId('offer-123');
 
-        self::assertSame('offer-123', $vp->getOfferId());
-    }
+    expect($vp->getOfferId())->toBe('offer-123');
+});
 
-    public function testGetAppKeyWithoutEnvReturnsAppKey(): void
-    {
-        $vp = new WechatConfigVirtualPay();
-        $vp->setAppKey('prod-key');
+it('get app key without env returns app key', function () {
+    $vp = new WechatConfigVirtualPay();
+    $vp->setAppKey('prod-key');
 
-        self::assertSame('prod-key', $vp->getAppKey(0));
-    }
+    expect($vp->getAppKey(0))->toBe('prod-key');
+});
 
-    public function testGetAppKeyWithVirtualPayEnvProductionReturnsAppKey(): void
-    {
-        $vp = new WechatConfigVirtualPay();
-        $vp->setAppKey('prod-key');
-        $vp->setSandboxAppKey('sandbox-key');
+it('get app key with virtual pay env production returns app key', function () {
+    $vp = new WechatConfigVirtualPay();
+    $vp->setAppKey('prod-key');
+    $vp->setSandboxAppKey('sandbox-key');
 
-        self::assertSame('prod-key', $vp->getAppKey(VirtualPayEnv::PRODUCTION));
-    }
+    expect($vp->getAppKey(VirtualPayEnv::PRODUCTION))->toBe('prod-key');
+});
 
-    public function testGetAppKeyWithVirtualPayEnvSandboxReturnsSandboxKey(): void
-    {
-        $vp = new WechatConfigVirtualPay();
-        $vp->setAppKey('prod-key');
-        $vp->setSandboxAppKey('sandbox-key');
+it('get app key with virtual pay env sandbox returns sandbox key', function () {
+    $vp = new WechatConfigVirtualPay();
+    $vp->setAppKey('prod-key');
+    $vp->setSandboxAppKey('sandbox-key');
 
-        self::assertSame('sandbox-key', $vp->getAppKey(VirtualPayEnv::SANDBOX));
-    }
+    expect($vp->getAppKey(VirtualPayEnv::SANDBOX))->toBe('sandbox-key');
+});
 
-    public function testGetAppKeyWithEnvOneReturnsSandboxWhenConfigured(): void
-    {
-        $vp = new WechatConfigVirtualPay();
-        $vp->setAppKey('prod-key');
-        $vp->setSandboxAppKey('sandbox-key');
+it('get app key with env one returns sandbox when configured', function () {
+    $vp = new WechatConfigVirtualPay();
+    $vp->setAppKey('prod-key');
+    $vp->setSandboxAppKey('sandbox-key');
 
-        self::assertSame('sandbox-key', $vp->getAppKey(1));
-    }
+    expect($vp->getAppKey(1))->toBe('sandbox-key');
+});
 
-    public function testGetAppKeyWithEnvOneThrowsWhenNoSandboxKey(): void
-    {
-        $vp = new WechatConfigVirtualPay();
-        $vp->setAppKey('prod-key');
+it('get app key with env one throws when no sandbox key', function () {
+    $vp = new WechatConfigVirtualPay();
+    $vp->setAppKey('prod-key');
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
 
-        $vp->getAppKey(1);
-    }
+    $vp->getAppKey(1);
+});
 
-    public function testGetAppKeyWithEnvOneThrowsWhenNeitherConfigured(): void
-    {
-        $vp = new WechatConfigVirtualPay();
+it('get app key with env one throws when neither configured', function () {
+    $vp = new WechatConfigVirtualPay();
 
-        self::expectException(InvalidConfigException::class);
-        self::expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
+    $this->expectException(InvalidConfigException::class);
+    $this->expectExceptionCode(Exception::CONFIG_WECHAT_INVALID);
 
-        $vp->getAppKey(1);
-    }
-}
+    $vp->getAppKey(1);
+});
+
