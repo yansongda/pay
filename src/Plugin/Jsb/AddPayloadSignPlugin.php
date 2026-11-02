@@ -61,7 +61,7 @@ class AddPayloadSignPlugin implements PluginInterface
 
     protected function getSignature(string $pkey, Collection $payload): string
     {
-        $content = $payload->sortKeys()->toString();
+        $content = $payload->sortKeys()->toQueryString();
 
         openssl_sign($content, $signature, $pkey);
 

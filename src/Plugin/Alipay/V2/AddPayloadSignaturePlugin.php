@@ -46,7 +46,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
         $config = self::getProviderConfig(Pay::PROVIDER_ALIPAY, $rocket->getParams());
         $privateKey = self::getAlipayPrivateKey($config);
 
-        $content = $rocket->getPayload()->sortKeys()->toString();
+        $content = $rocket->getPayload()->sortKeys()->toQueryString();
 
         openssl_sign($content, $sign, $privateKey, OPENSSL_ALGO_SHA256);
 

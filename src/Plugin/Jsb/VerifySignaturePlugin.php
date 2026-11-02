@@ -73,7 +73,7 @@ class VerifySignaturePlugin implements PluginInterface
             $signature = $result->get('sign');
             $result->forget('sign');
             $result->forget('signType');
-            $data = $result->sortKeys()->toString();
+            $data = $result->sortKeys()->toQueryString();
         }
 
         return [

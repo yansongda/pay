@@ -48,7 +48,7 @@ class CallbackPlugin implements PluginInterface
         $payload->forget('sign');
         $payload->forget('signType');
 
-        self::verifyJsbSign($config, $payload->sortKeys()->toString(), $signature);
+        self::verifyJsbSign($config, $payload->sortKeys()->toQueryString(), $signature);
 
         $rocket->setDirection(NoHttpRequestDirection::class)
             ->setDestination($rocket->getPayload());

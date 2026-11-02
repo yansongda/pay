@@ -70,6 +70,6 @@ class AddRadarPlugin implements PluginInterface
         $payload->set('sign', $sign);
         $payload->set('signType', $signType);
 
-        return $payload->toString();
+        return $payload->toQueryString();
     }
 }

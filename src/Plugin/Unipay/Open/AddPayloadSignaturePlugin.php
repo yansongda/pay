@@ -61,7 +61,7 @@ class AddPayloadSignaturePlugin implements PluginInterface
             throw new InvalidParamsException(Exception::PARAMS_NECESSARY_PARAMS_MISSING, '参数异常: 银联支付配置文件中 `mch_cert_path` 或 `mch_cert_password` 配置项无效，无法解析私钥');
         }
 
-        $content = $payload->sortKeys()->toString();
+        $content = $payload->sortKeys()->toQueryString();
 
         openssl_sign(hash('sha256', $content), $sign, $pkey, 'sha256');
 
