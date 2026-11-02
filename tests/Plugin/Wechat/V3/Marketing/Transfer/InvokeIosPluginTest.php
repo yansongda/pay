@@ -2,73 +2,59 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\Transfer;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Exception\InvalidResponseException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\Transfer\InvokeIosPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class InvokeIosPluginTest extends TestCase
-{
-    protected InvokeIosPlugin $plugin;
+it('mode wrong', function () {
+    $plugin = new InvokeIosPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider']);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
+    $this->expectExceptionMessage('参数异常: iOS调起用户确认收款，只支持普通商户模式，当前配置为服务商模式');
 
-        $this->plugin = new InvokeIosPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testModeWrong()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider']);
+it('missing package', function () {
+    $plugin = new InvokeIosPlugin();
+    $rocket = new Rocket();
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
-        self::expectExceptionMessage('参数异常: iOS调起用户确认收款，只支持普通商户模式，当前配置为服务商模式');
+    $this->expectException(InvalidResponseException::class);
+    $this->expectExceptionCode(Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
+    $this->expectExceptionMessage('iOS调起用户确认收款失败：响应缺少 `package_info` 参数，请自行检查参数是否符合微信要求');
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingPackage()
-    {
-        $rocket = new Rocket();
+it('normal params', function () {
+    $plugin = new InvokeIosPlugin();
+    $rocket = (new Rocket())
+        ->setDestination(new Collection(['package_info' => 'affffddafdfafddffda==']))
+        ->setPayload(['_invoke_appId' => '111']);
 
-        self::expectException(InvalidResponseException::class);
-        self::expectExceptionCode(Exception::RESPONSE_MISSING_NECESSARY_PARAMS);
-        self::expectExceptionMessage('iOS调起用户确认收款失败：响应缺少 `package_info` 参数，请自行检查参数是否符合微信要求');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $contents = $result->getDestination();
 
-    public function testNormalParams()
-    {
-        $rocket = (new Rocket())
-            ->setDestination(new Collection(['package_info' => 'affffddafdfafddffda==']))
-            ->setPayload(['_invoke_appId' => '111']);
+    expect($contents->get('businessType'))->toEqual('requestMerchantTransfer');
+    expect($contents->get('query'))->toEqual('appId=111&mchId=1600314069&package=affffddafdfafddffda%3D%3D');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+it('normal', function () {
+    $plugin = new InvokeIosPlugin();
+    $rocket = (new Rocket())->setDestination(new Collection(['package_info' => 'affffddafdfafddffda==']));
 
-        $contents = $result->getDestination();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('requestMerchantTransfer', $contents->get('businessType'));
-        self::assertEquals('appId=111&mchId=1600314069&package=affffddafdfafddffda%3D%3D', $contents->get('query'));
-    }
+    $contents = $result->getDestination();
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())->setDestination(new Collection(['package_info' => 'affffddafdfafddffda==']));
+    expect($contents->get('businessType'))->toEqual('requestMerchantTransfer');
+    expect($contents->get('query'))->toEqual('appId=wx55955316af4ef13&mchId=1600314069&package=affffddafdfafddffda%3D%3D');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $contents = $result->getDestination();
-
-        self::assertEquals('requestMerchantTransfer', $contents->get('businessType'));
-        self::assertEquals('appId=wx55955316af4ef13&mchId=1600314069&package=affffddafdfafddffda%3D%3D', $contents->get('query'));
-    }
-}

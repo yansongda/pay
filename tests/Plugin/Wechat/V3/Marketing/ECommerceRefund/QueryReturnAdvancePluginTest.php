@@ -2,79 +2,65 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Marketing\ECommerceRefund;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Marketing\ECommerceRefund\QueryReturnAdvancePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryReturnAdvancePluginTest extends TestCase
-{
-    protected QueryReturnAdvancePlugin $plugin;
+it('mode wrong', function () {
+    $plugin = new QueryReturnAdvancePlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
+    $this->expectExceptionMessage('参数异常: 平台收付通（退款）-查询垫付回补结果，只支持服务商模式，当前配置为普通商户模式');
 
-        $this->plugin = new QueryReturnAdvancePlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testModeWrong()
-    {
-        $rocket = new Rocket();
+it('empty payload', function () {
+    $plugin = new QueryReturnAdvancePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider']);
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
-        self::expectExceptionMessage('参数异常: 平台收付通（退款）-查询垫付回补结果，只支持服务商模式，当前配置为普通商户模式');
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 平台收付通（退款）-查询垫付回补结果，缺少必要参数 `refund_id`');
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider']);
+it('normal params', function () {
+    $plugin = new QueryReturnAdvancePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])
+        ->setPayload(new Collection([
+            'refund_id' => '111',
+            'sub_mchid' => '222',
+        ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 平台收付通（退款）-查询垫付回补结果，缺少必要参数 `refund_id`');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_service_url' => '/v3/ecommerce/refunds/111/return-advance?sub_mchid=222',
+    ]);
+});
 
-    public function testNormalParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])
-            ->setPayload(new Collection([
-                'refund_id' => '111',
-                'sub_mchid' => '222',
-            ]));
+it('normal', function () {
+    $plugin = new QueryReturnAdvancePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])
+        ->setPayload(new Collection([
+            'refund_id' => '111',
+        ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals([
-            '_method' => 'GET',
-            '_service_url' => '/v3/ecommerce/refunds/111/return-advance?sub_mchid=222',
-        ], $result->getPayload()->all());
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_service_url' => '/v3/ecommerce/refunds/111/return-advance?sub_mchid=1600314070',
+    ]);
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])
-            ->setPayload(new Collection([
-                'refund_id' => '111',
-            ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'GET',
-            '_service_url' => '/v3/ecommerce/refunds/111/return-advance?sub_mchid=1600314070',
-        ], $result->getPayload()->all());
-    }
-}

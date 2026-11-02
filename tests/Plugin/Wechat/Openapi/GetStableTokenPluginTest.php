@@ -2,32 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Openapi;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\Openapi\GetStableTokenPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class GetStableTokenPluginTest extends TestCase
-{
-    protected GetStableTokenPlugin $plugin;
+it('normal', function () {
+    $plugin = new GetStableTokenPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams([]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new GetStableTokenPlugin();
-    }
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/cgi-bin/stable_token');
+});
 
-    public function testNormal(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams([]);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
-
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/cgi-bin/stable_token', $payload->get('_url'));
-    }
-}

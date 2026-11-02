@@ -2,74 +2,60 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Combine;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\QueryRefundPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryRefundPluginTest extends TestCase
-{
-    protected QueryRefundPlugin $plugin;
+it('empty payload', function () {
+    $plugin = new QueryRefundPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 合单查询退款订单，参数缺少 `out_refund_no`');
 
-        $this->plugin = new QueryRefundPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
+it('normal', function () {
+    $plugin = new QueryRefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'out_refund_no' => '111',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 合单查询退款订单，参数缺少 `out_refund_no`');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('GET');
+    expect($result->getPayload()->get('_url'))->toEqual('/v3/refund/domestic/refunds/111');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'out_refund_no' => '111',
-        ]));
+it('service params', function () {
+    $plugin = new QueryRefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'out_refund_no' => '111',
+        'sub_mchid' => '333',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('/v3/refund/domestic/refunds/111', $result->getPayload()->get('_url'));
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('GET');
+    expect($result->getPayload()->get('_service_url'))->toEqual('/v3/refund/domestic/refunds/111?sub_mchid=333');
+});
 
-    public function testServiceParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'out_refund_no' => '111',
-            'sub_mchid' => '333',
-        ]));
+it('service', function () {
+    $plugin = new QueryRefundPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'out_refund_no' => '111',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('/v3/refund/domestic/refunds/111?sub_mchid=333', $result->getPayload()->get('_service_url'));
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('GET');
+    expect($result->getPayload()->get('_service_url'))->toEqual('/v3/refund/domestic/refunds/111?sub_mchid=1600314070');
+});
 
-    public function testService()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'out_refund_no' => '111',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('/v3/refund/domestic/refunds/111?sub_mchid=1600314070', $result->getPayload()->get('_service_url'));
-    }
-}

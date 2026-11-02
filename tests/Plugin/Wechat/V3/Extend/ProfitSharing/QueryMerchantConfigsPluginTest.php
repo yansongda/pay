@@ -2,63 +2,49 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\ProfitSharing;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\QueryMerchantConfigsPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryMerchantConfigsPluginTest extends TestCase
-{
-    protected QueryMerchantConfigsPlugin $plugin;
+it('mode wrong', function () {
+    $plugin = new QueryMerchantConfigsPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
+    $this->expectExceptionMessage('参数异常: 查询最大分账比例，只支持服务商模式，当前配置为普通商户模式');
 
-        $this->plugin = new QueryMerchantConfigsPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testModeWrong()
-    {
-        $rocket = new Rocket();
+it('normal', function () {
+    $plugin = new QueryMerchantConfigsPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider']);
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_SERVICE_MODE);
-        self::expectExceptionMessage('参数异常: 查询最大分账比例，只支持服务商模式，当前配置为普通商户模式');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_service_url' => '/v3/profitsharing/merchant-configs/1600314070',
+    ]);
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider']);
+it('normal params', function () {
+    $plugin = new QueryMerchantConfigsPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])
+        ->setPayload(new Collection([
+            'sub_mch_id' => 'yansongda',
+        ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals([
-            '_method' => 'GET',
-            '_service_url' => '/v3/profitsharing/merchant-configs/1600314070',
-        ], $result->getPayload()->all());
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_service_url' => '/v3/profitsharing/merchant-configs/yansongda',
+    ]);
+});
 
-    public function testNormalParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])
-            ->setPayload(new Collection([
-                'sub_mch_id' => 'yansongda',
-            ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'GET',
-            '_service_url' => '/v3/profitsharing/merchant-configs/yansongda',
-        ], $result->getPayload()->all());
-    }
-}

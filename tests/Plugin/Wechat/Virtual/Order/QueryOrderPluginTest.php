@@ -2,104 +2,90 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual\Order;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Order\QueryOrderPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryOrderPluginTest extends TestCase
-{
-    protected QueryOrderPlugin $plugin;
+it('with order id', function () {
+    $plugin = new QueryOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'env' => 0,
+        'order_id' => '123456',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new QueryOrderPlugin();
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('POST');
+    expect($result->getPayload()->get('_url'))->toEqual('/xpay/query_order');
+    expect($result->getPayload()->get('openid'))->toEqual('test_openid');
+    expect($result->getPayload()->get('order_id'))->toEqual('123456');
+    expect($result->getPayload()->get('wx_order_id'))->toBeNull();
+});
 
-    public function testWithOrderId()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'env' => 0,
-            'order_id' => '123456',
-        ]));
+it('with wx order id', function () {
+    $plugin = new QueryOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'env' => 0,
+        'wx_order_id' => 'wx_123456',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('/xpay/query_order', $result->getPayload()->get('_url'));
-        self::assertEquals('test_openid', $result->getPayload()->get('openid'));
-        self::assertEquals('123456', $result->getPayload()->get('order_id'));
-        self::assertNull($result->getPayload()->get('wx_order_id'));
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('POST');
+    expect($result->getPayload()->get('_url'))->toEqual('/xpay/query_order');
+    expect($result->getPayload()->get('openid'))->toEqual('test_openid');
+    expect($result->getPayload()->get('order_id'))->toBeNull();
+    expect($result->getPayload()->get('wx_order_id'))->toEqual('wx_123456');
+});
 
-    public function testWithWxOrderId()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'env' => 0,
-            'wx_order_id' => 'wx_123456',
-        ]));
+it('with both order ids', function () {
+    $plugin = new QueryOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'env' => 0,
+        'order_id' => '123456',
+        'wx_order_id' => 'wx_123456',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('/xpay/query_order', $result->getPayload()->get('_url'));
-        self::assertEquals('test_openid', $result->getPayload()->get('openid'));
-        self::assertNull($result->getPayload()->get('order_id'));
-        self::assertEquals('wx_123456', $result->getPayload()->get('wx_order_id'));
-    }
+    expect($result->getPayload()->get('order_id'))->toEqual('123456');
+    expect($result->getPayload()->get('wx_order_id'))->toEqual('wx_123456');
+});
 
-    public function testWithBothOrderIds()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'env' => 0,
-            'order_id' => '123456',
-            'wx_order_id' => 'wx_123456',
-        ]));
+it('env as string', function () {
+    $plugin = new QueryOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'env' => '0',
+        'order_id' => '123456',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('123456', $result->getPayload()->get('order_id'));
-        self::assertEquals('wx_123456', $result->getPayload()->get('wx_order_id'));
-    }
+    expect($result->getPayload()->get('order_id'))->toEqual('123456');
+});
 
-    public function testEnvAsString()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'env' => '0',
-            'order_id' => '123456',
-        ]));
+it('with access token', function () {
+    $plugin = new QueryOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'env' => 0,
+        'order_id' => '123456',
+        'access_token' => 'test_token',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('123456', $result->getPayload()->get('order_id'));
-    }
+    expect($result->getPayload()->get('access_token'))->toEqual('test_token');
+});
 
-    public function testWithAccessToken()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'env' => 0,
-            'order_id' => '123456',
-            'access_token' => 'test_token',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('test_token', $result->getPayload()->get('access_token'));
-    }
-}

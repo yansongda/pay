@@ -2,48 +2,34 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\Combine;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\Combine\QueryPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryPluginTest extends TestCase
-{
-    protected QueryPlugin $plugin;
+it('empty payload', function () {
+    $plugin = new QueryPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 合单查询，参数缺少 `combine_out_trade_no`');
 
-        $this->plugin = new QueryPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
+it('normal', function () {
+    $plugin = new QueryPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'combine_out_trade_no' => '111',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 合单查询，参数缺少 `combine_out_trade_no`');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->get('_method'))->toEqual('GET');
+    expect($result->getPayload()->get('_url'))->toEqual('/v3/combine-transactions/out-trade-no/111');
+    expect($result->getPayload()->get('_service_url'))->toEqual('/v3/combine-transactions/out-trade-no/111');
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'combine_out_trade_no' => '111',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals('GET', $result->getPayload()->get('_method'));
-        self::assertEquals('/v3/combine-transactions/out-trade-no/111', $result->getPayload()->get('_url'));
-        self::assertEquals('/v3/combine-transactions/out-trade-no/111', $result->getPayload()->get('_service_url'));
-    }
-}

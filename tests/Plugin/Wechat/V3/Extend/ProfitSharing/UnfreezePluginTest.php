@@ -2,91 +2,77 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\ProfitSharing;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\ProfitSharing\UnfreezePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class UnfreezePluginTest extends TestCase
-{
-    protected UnfreezePlugin $plugin;
+it('empty payload', function () {
+    $plugin = new UnfreezePlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 缺少分账解冻剩余资金参数');
 
-        $this->plugin = new UnfreezePlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
+it('normal', function () {
+    $plugin = new UnfreezePlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'test' => 'yansongda',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 缺少分账解冻剩余资金参数');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/profitsharing/orders/unfreeze',
+        '_service_url' => '/v3/profitsharing/orders/unfreeze',
+        'test' => 'yansongda',
+    ]);
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'test' => 'yansongda',
-        ]));
+it('service params', function () {
+    $plugin = new UnfreezePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'test' => 'yansongda',
+        'notify_url' => '1111',
+        'sub_mchid' => '2222',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/profitsharing/orders/unfreeze',
-            '_service_url' => '/v3/profitsharing/orders/unfreeze',
-            'test' => 'yansongda',
-        ], $result->getPayload()->all());
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/profitsharing/orders/unfreeze',
+        '_service_url' => '/v3/profitsharing/orders/unfreeze',
+        'test' => 'yansongda',
+        'notify_url' => '1111',
+        'sub_mchid' => '2222',
+    ]);
+});
 
-    public function testServiceParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'test' => 'yansongda',
-            'notify_url' => '1111',
-            'sub_mchid' => '2222',
-        ]));
+it('service', function () {
+    $plugin = new UnfreezePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'test' => 'yansongda',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/profitsharing/orders/unfreeze',
-            '_service_url' => '/v3/profitsharing/orders/unfreeze',
-            'test' => 'yansongda',
-            'notify_url' => '1111',
-            'sub_mchid' => '2222',
-        ], $result->getPayload()->all());
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/profitsharing/orders/unfreeze',
+        '_service_url' => '/v3/profitsharing/orders/unfreeze',
+        'test' => 'yansongda',
+        'notify_url' => 'https://pay.yansongda.cn',
+        'sub_mchid' => '1600314070',
+    ]);
+});
 
-    public function testService()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'test' => 'yansongda',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/profitsharing/orders/unfreeze',
-            '_service_url' => '/v3/profitsharing/orders/unfreeze',
-            'test' => 'yansongda',
-            'notify_url' => 'https://pay.yansongda.cn',
-            'sub_mchid' => '1600314070',
-        ], $result->getPayload()->all());
-    }
-}

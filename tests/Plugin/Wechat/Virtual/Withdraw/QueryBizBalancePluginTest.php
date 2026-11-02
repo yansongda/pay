@@ -2,66 +2,51 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual\Withdraw;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\QueryBizBalancePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QueryBizBalancePluginTest extends TestCase
-{
-    protected QueryBizBalancePlugin $plugin;
+it('normal', function () {
+    $plugin = new QueryBizBalancePlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'env' => 0,
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new QueryBizBalancePlugin();
-    }
+    $payload = $result->getPayload();
 
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/xpay/query_biz_balance');
+    expect($payload->get('env'))->toEqual(0);
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'env' => 0,
-        ]));
+it('default env', function () {
+    $plugin = new QueryBizBalancePlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/query_biz_balance', $payload->get('_url'));
-        self::assertEquals(0, $payload->get('env'));
-    }
+    expect($payload->get('env'))->toBeNull();
+});
 
-    public function testDefaultEnv()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([]));
+it('sandbox env', function () {
+    $plugin = new QueryBizBalancePlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'env' => 1,
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertNull($payload->get('env'));
-    }
+    expect($payload->get('env'))->toEqual(1);
+});
 
-    public function testSandboxEnv()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'env' => 1,
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertEquals(1, $payload->get('env'));
-    }
-}

@@ -2,73 +2,59 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual\Withdraw;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Withdraw\CreateWithdrawOrderPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class CreateWithdrawOrderPluginTest extends TestCase
-{
-    protected CreateWithdrawOrderPlugin $plugin;
+it('normal', function () {
+    $plugin = new CreateWithdrawOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'withdraw_no' => 'WITHDRAW_001',
+        'withdraw_amount' => '0.01',
+        'env' => 0,
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new CreateWithdrawOrderPlugin();
-    }
+    $payload = $result->getPayload();
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'withdraw_no' => 'WITHDRAW_001',
-            'withdraw_amount' => '0.01',
-            'env' => 0,
-        ]));
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/xpay/create_withdraw_order');
+    expect($payload->get('withdraw_no'))->toEqual('WITHDRAW_001');
+    expect($payload->get('withdraw_amount'))->toEqual('0.01');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+it('without withdraw amount', function () {
+    $plugin = new CreateWithdrawOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'withdraw_no' => 'WITHDRAW_001',
+    ]));
 
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/create_withdraw_order', $payload->get('_url'));
-        self::assertEquals('WITHDRAW_001', $payload->get('withdraw_no'));
-        self::assertEquals('0.01', $payload->get('withdraw_amount'));
-    }
+    $payload = $result->getPayload();
 
-    public function testWithoutWithdrawAmount()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'withdraw_no' => 'WITHDRAW_001',
-        ]));
+    expect($payload->get('withdraw_no'))->toEqual('WITHDRAW_001');
+    expect($payload->get('withdraw_amount'))->toBeNull();
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+it('sandbox env', function () {
+    $plugin = new CreateWithdrawOrderPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'withdraw_no' => 'WITHDRAW_001',
+        'withdraw_amount' => '0.01',
+        'env' => 1,
+    ]));
 
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('WITHDRAW_001', $payload->get('withdraw_no'));
-        self::assertNull($payload->get('withdraw_amount'));
-    }
+    $payload = $result->getPayload();
 
-    public function testSandboxEnv()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'withdraw_no' => 'WITHDRAW_001',
-            'withdraw_amount' => '0.01',
-            'env' => 1,
-        ]));
+    expect($payload->get('withdraw_no'))->toEqual('WITHDRAW_001');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertEquals('WITHDRAW_001', $payload->get('withdraw_no'));
-    }
-}

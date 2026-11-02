@@ -2,71 +2,56 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Virtual\Subscribe;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Virtual\Subscribe\QuerySubscribeContractPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class QuerySubscribeContractPluginTest extends TestCase
-{
-    protected QuerySubscribeContractPlugin $plugin;
+it('normal', function () {
+    $plugin = new QuerySubscribeContractPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+    ]));
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new QuerySubscribeContractPlugin();
-    }
+    $payload = $result->getPayload();
 
+    expect($payload->get('_method'))->toEqual('POST');
+    expect($payload->get('_url'))->toEqual('/xpay/query_subscribe_contract');
+    expect($payload->get('openid'))->toEqual('test_openid');
+    expect($payload->get('env'))->toBeNull();
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-        ]));
+it('sandbox env', function () {
+    $plugin = new QuerySubscribeContractPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+        'env' => 1,
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertEquals('POST', $payload->get('_method'));
-        self::assertEquals('/xpay/query_subscribe_contract', $payload->get('_url'));
-        self::assertEquals('test_openid', $payload->get('openid'));
-        self::assertNull($payload->get('env'));
-    }
+    expect($payload->get('env'))->toEqual(1);
+    expect($payload->get('_url'))->toEqual('/xpay/query_subscribe_contract');
+});
 
-    public function testSandboxEnv()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-            'env' => 1,
-        ]));
+it('default env', function () {
+    $plugin = new QuerySubscribeContractPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'test_openid',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $payload = $result->getPayload();
+    $payload = $result->getPayload();
 
-        self::assertEquals(1, $payload->get('env'));
-        self::assertEquals('/xpay/query_subscribe_contract', $payload->get('_url'));
-    }
+    expect($payload->get('env'))->toBeNull();
+});
 
-    public function testDefaultEnv()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'test_openid',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload();
-
-        self::assertNull($payload->get('env'));
-    }
-}

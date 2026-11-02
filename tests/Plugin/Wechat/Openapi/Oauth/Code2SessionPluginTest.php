@@ -2,73 +2,59 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\Openapi\Oauth;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\Openapi\Oauth\Code2SessionPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class Code2SessionPluginTest extends TestCase
-{
-    protected Code2SessionPlugin $plugin;
+it('normal', function () {
+    $plugin = new Code2SessionPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['appid' => 'wx1234567890', 'secret' => 'test_secret', 'js_code' => 'test_js_code']);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin = new Code2SessionPlugin();
-    }
+    expect($payload->get('_method'))->toEqual('GET');
+    expect($payload->get('_url'))->toEqual('/sns/jscode2session?appid=wx1234567890&secret=test_secret&js_code=test_js_code&grant_type=authorization_code');
+    expect($payload->get('_body'))->toEqual('');
+});
 
-    public function testNormal(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['appid' => 'wx1234567890', 'secret' => 'test_secret', 'js_code' => 'test_js_code']);
+it('with config defaults', function () {
+    $plugin = new Code2SessionPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['js_code' => 'test_js_code']);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        self::assertEquals('GET', $payload->get('_method'));
-        self::assertEquals('/sns/jscode2session?appid=wx1234567890&secret=test_secret&js_code=test_js_code&grant_type=authorization_code', $payload->get('_url'));
-        self::assertEquals('', $payload->get('_body'));
-    }
+    expect($payload->get('_method'))->toEqual('GET');
+    expect($payload->get('_url'))->toContain('appid=wx55955316af4ef14');
+    expect($payload->get('_url'))->toContain('secret=mini_app_secret_for_test');
+    expect($payload->get('_url'))->toContain('js_code=test_js_code');
+    expect($payload->get('_url'))->toContain('grant_type=authorization_code');
+});
 
-    public function testWithConfigDefaults(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['js_code' => 'test_js_code']);
+it('missing js code throws', function () {
+    $plugin = new Code2SessionPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['appid' => 'wx1234567890', 'secret' => 'test_secret']);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
 
-        self::assertEquals('GET', $payload->get('_method'));
-        self::assertStringContainsString('appid=wx55955316af4ef14', $payload->get('_url'));
-        self::assertStringContainsString('secret=mini_app_secret_for_test', $payload->get('_url'));
-        self::assertStringContainsString('js_code=test_js_code', $payload->get('_url'));
-        self::assertStringContainsString('grant_type=authorization_code', $payload->get('_url'));
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingJsCodeThrows(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['appid' => 'wx1234567890', 'secret' => 'test_secret']);
+it('params secret overrides config', function () {
+    $plugin = new Code2SessionPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['appid' => 'wx1234567890', 'secret' => 'params_secret_override', 'js_code' => 'test_js_code']);
 
-        $this->expectException(InvalidParamsException::class);
-        $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $payload = $result->getPayload();
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($payload->get('_url'))->toContain('secret=params_secret_override');
+    expect($payload->get('_url'))->not->toContain('mini_app_secret_for_test');
+});
 
-    public function testParamsSecretOverridesConfig(): void
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['appid' => 'wx1234567890', 'secret' => 'params_secret_override', 'js_code' => 'test_js_code']);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $payload = $result->getPayload();
-
-        self::assertStringContainsString('secret=params_secret_override', $payload->get('_url'));
-        self::assertStringNotContainsString('mini_app_secret_for_test', $payload->get('_url'));
-    }
-}

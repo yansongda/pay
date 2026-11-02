@@ -2,34 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\WechatPublicCertsPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class WechatPublicCertsPluginTest extends TestCase
-{
-    protected WechatPublicCertsPlugin $plugin;
+it('normal', function () {
+    $plugin = new WechatPublicCertsPlugin();
+    $rocket = (new Rocket())->setParams(['aaa' => 'bbb'])->setPayload(['name' => 'yansongda']);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new WechatPublicCertsPlugin();
-    }
+    $payload = $result->getPayload()->all();
 
-    public function testNormal()
-    {
-        $rocket = (new Rocket())->setParams(['aaa' => 'bbb'])->setPayload(['name' => 'yansongda']);
+    expect($payload['_method'])->toEqual('GET');
+    expect($payload['_url'])->toEqual('/v3/certificates');
+    expect($payload)->not->toHaveKey('aaa');
+    expect($payload)->not->toHaveKey('name');
+});
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        $payload = $result->getPayload()->all();
-
-        self::assertEquals('GET', $payload['_method']);
-        self::assertEquals('/v3/certificates', $payload['_url']);
-        self::assertArrayNotHasKey('aaa', $payload);
-        self::assertArrayNotHasKey('name', $payload);
-    }
-}

@@ -2,98 +2,84 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Pay\H5;
-
 use Yansongda\Artful\Exception\InvalidParamsException;
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\V3\Pay\H5\PayPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class PayPluginTest extends TestCase
-{
-    protected PayPlugin $plugin;
+it('empty payload', function () {
+    $plugin = new PayPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: H5 下单，参数为空');
 
-        $this->plugin = new PayPlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
+it('normal', function () {
+    $plugin = new PayPlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'name' => 'yansongda',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: H5 下单，参数为空');
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/pay/transactions/h5',
+        '_service_url' => '/v3/pay/partner/transactions/h5',
+        'appid' => 'wx55955316af4ef13',
+        'mchid' => '1600314069',
+        'notify_url' => 'https://pay.yansongda.cn',
+        'name' => 'yansongda',
+    ]);
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'name' => 'yansongda',
-        ]));
+it('service params', function () {
+    $plugin = new PayPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'sub_mchid' => '333',
+        'notify_url' => '444',
+        'name' => 'yansongda',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/pay/transactions/h5',
-            '_service_url' => '/v3/pay/partner/transactions/h5',
-            'appid' => 'wx55955316af4ef13',
-            'mchid' => '1600314069',
-            'notify_url' => 'https://pay.yansongda.cn',
-            'name' => 'yansongda',
-        ], $result->getPayload()->all());
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/pay/transactions/h5',
+        '_service_url' => '/v3/pay/partner/transactions/h5',
+        'sp_appid' => 'wx55955316af4ef13',
+        'sp_mchid' => '1600314069',
+        'sub_mchid' => '333',
+        'notify_url' => '444',
+        'name' => 'yansongda',
+    ]);
+});
 
-    public function testServiceParams()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'sub_mchid' => '333',
-            'notify_url' => '444',
-            'name' => 'yansongda',
-        ]));
+it('service', function () {
+    $plugin = new PayPlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'name' => 'yansongda',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/pay/transactions/h5',
-            '_service_url' => '/v3/pay/partner/transactions/h5',
-            'sp_appid' => 'wx55955316af4ef13',
-            'sp_mchid' => '1600314069',
-            'sub_mchid' => '333',
-            'notify_url' => '444',
-            'name' => 'yansongda',
-        ], $result->getPayload()->all());
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'POST',
+        '_url' => '/v3/pay/transactions/h5',
+        '_service_url' => '/v3/pay/partner/transactions/h5',
+        'sp_appid' => 'wx55955316af4ef13',
+        'sp_mchid' => '1600314069',
+        'sub_mchid' => '1600314070',
+        'notify_url' => 'https://pay.yansongda.cn',
+        'name' => 'yansongda',
+    ]);
+});
 
-    public function testService()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'name' => 'yansongda',
-        ]));
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'POST',
-            '_url' => '/v3/pay/transactions/h5',
-            '_service_url' => '/v3/pay/partner/transactions/h5',
-            'sp_appid' => 'wx55955316af4ef13',
-            'sp_mchid' => '1600314069',
-            'sub_mchid' => '1600314070',
-            'notify_url' => 'https://pay.yansongda.cn',
-            'name' => 'yansongda',
-        ], $result->getPayload()->all());
-    }
-}

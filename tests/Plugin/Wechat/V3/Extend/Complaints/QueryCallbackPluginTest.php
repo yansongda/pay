@@ -2,33 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\Extend\Complaints;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V3\Extend\Complaints\QueryCallbackPlugin;
-use Yansongda\Pay\Tests\TestCase;
 
-class QueryCallbackPluginTest extends TestCase
-{
-    protected QueryCallbackPlugin $plugin;
+it('normal', function () {
+    $plugin = new QueryCallbackPlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin = new QueryCallbackPlugin();
-    }
+    expect($result->getPayload()->all())->toEqual([
+        '_method' => 'GET',
+        '_url' => '/v3/merchant-service/complaint-notifications',
+        '_service_url' => '/v3/merchant-service/complaint-notifications',
+    ]);
+});
 
-    public function testNormal()
-    {
-        $rocket = new Rocket();
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-
-        self::assertEquals([
-            '_method' => 'GET',
-            '_url' => '/v3/merchant-service/complaint-notifications',
-            '_service_url' => '/v3/merchant-service/complaint-notifications',
-        ], $result->getPayload()->all());
-    }
-}

@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V3\PayScore\Permissions;
-
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Yansongda\Artful\Direction\OriginResponseDirection;
@@ -13,160 +11,143 @@ use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Exception\Exception;
 use Yansongda\Pay\Plugin\Wechat\ResponsePlugin;
 use Yansongda\Pay\Plugin\Wechat\V3\PayScore\Permissions\TerminatePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class TerminatePluginTest extends TestCase
-{
-    protected TerminatePlugin $plugin;
+it('empty payload', function () {
+    $plugin = new TerminatePlugin();
+    $rocket = new Rocket();
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 解除支付分预授权（签约），参数为空');
 
-        $this->plugin = new TerminatePlugin();
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testEmptyPayload()
-    {
-        $rocket = new Rocket();
+it('service id missing', function () {
+    $plugin = new TerminatePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([
+        'openid' => 'oXopenid123',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 解除支付分预授权（签约），参数为空');
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
+    $this->expectExceptionMessage('参数异常: 缺少支付分服务ID -- [service_id]');
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testServiceIdMissing()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'empty_wechat_public_cert'])->setPayload(new Collection([
-            'openid' => 'oXopenid123',
-        ]));
+it('missing openid and authorization code', function () {
+    $plugin = new TerminatePlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'reason' => 'test',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_WECHAT_SERVICE_ID_MISSING);
-        self::expectExceptionMessage('参数异常: 缺少支付分服务ID -- [service_id]');
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 解除支付分预授权（签约），参数缺少 `openid` 或 `authorization_code`');
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testMissingOpenidAndAuthorizationCode()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'reason' => 'test',
-        ]));
+it('openid and authorization code both filled', function () {
+    $plugin = new TerminatePlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'oXopenid123',
+        'authorization_code' => 'AUTH_CODE',
+        'reason' => 'test',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 解除支付分预授权（签约），参数缺少 `openid` 或 `authorization_code`');
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
+    $this->expectExceptionMessage('参数异常: 解除支付分预授权（签约），`openid` 与 `authorization_code` 不允许同时填写');
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testOpenidAndAuthorizationCodeBothFilled()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'oXopenid123',
-            'authorization_code' => 'AUTH_CODE',
-            'reason' => 'test',
-        ]));
+it('service mode rejected', function () {
+    $plugin = new TerminatePlugin();
+    $rocket = new Rocket();
+    $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
+        'openid' => 'oXopenid123',
+        'reason' => 'test',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_NECESSARY_PARAMS_MISSING);
-        self::expectExceptionMessage('参数异常: 解除支付分预授权（签约），`openid` 与 `authorization_code` 不允许同时填写');
+    $this->expectException(InvalidParamsException::class);
+    $this->expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+});
 
-    public function testServiceModeRejected()
-    {
-        $rocket = new Rocket();
-        $rocket->setParams(['_config' => 'service_provider'])->setPayload(new Collection([
-            'openid' => 'oXopenid123',
-            'reason' => 'test',
-        ]));
+it('openid branch', function () {
+    $plugin = new TerminatePlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'oXopenid123',
+        'appid' => 'wx_payload_override',
+        'reason' => 'test',
+    ]));
 
-        self::expectException(InvalidParamsException::class);
-        self::expectExceptionCode(Exception::PARAMS_PLUGIN_ONLY_SUPPORT_NORMAL_MODE);
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-    }
+    expect($result->getDirection())->toEqual(OriginResponseDirection::class);
+    expect($result->getPayload()->get('_method'))->toEqual('POST');
+    expect($result->getPayload()->get('_url'))->toEqual('/v3/payscore/permissions/openid/oXopenid123/terminate');
+    expect($result->getPayload()->has('openid'))->toBeFalse();
+    expect($result->getPayload()->get('appid'))->toEqual('wx_payload_override');
+    expect($result->getPayload()->get('service_id'))->toEqual('12345678901234567890123456789012');
+    expect($result->getPayload()->get('reason'))->toEqual('test');
+});
 
-    public function testOpenidBranch()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'oXopenid123',
-            'appid' => 'wx_payload_override',
-            'reason' => 'test',
-        ]));
+it('openid branch app id from config', function () {
+    $plugin = new TerminatePlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'openid' => 'oXopenid123',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
-        self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('/v3/payscore/permissions/openid/oXopenid123/terminate', $result->getPayload()->get('_url'));
-        self::assertFalse($result->getPayload()->has('openid'));
-        self::assertEquals('wx_payload_override', $result->getPayload()->get('appid'));
-        self::assertEquals('12345678901234567890123456789012', $result->getPayload()->get('service_id'));
-        self::assertEquals('test', $result->getPayload()->get('reason'));
-    }
+    expect($result->getPayload()->get('_url'))->toEqual('/v3/payscore/permissions/openid/oXopenid123/terminate');
+    expect($result->getPayload()->get('appid'))->toEqual('wx55955316af4ef13');
+    expect($result->getPayload()->get('service_id'))->toEqual('12345678901234567890123456789012');
+    expect($result->getPayload()->has('openid'))->toBeFalse();
+});
 
-    public function testOpenidBranchAppIdFromConfig()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'openid' => 'oXopenid123',
-        ]));
+it('authorization code branch', function () {
+    $plugin = new TerminatePlugin();
+    $rocket = new Rocket();
+    $rocket->setPayload(new Collection([
+        'authorization_code' => 'AUTH_CODE',
+        'reason' => 'test',
+    ]));
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
 
-        self::assertEquals('/v3/payscore/permissions/openid/oXopenid123/terminate', $result->getPayload()->get('_url'));
-        self::assertEquals('wx55955316af4ef13', $result->getPayload()->get('appid'));
-        self::assertEquals('12345678901234567890123456789012', $result->getPayload()->get('service_id'));
-        self::assertFalse($result->getPayload()->has('openid'));
-    }
+    expect($result->getDirection())->toEqual(OriginResponseDirection::class);
+    expect($result->getPayload()->get('_method'))->toEqual('POST');
+    expect($result->getPayload()->get('_url'))->toEqual('/v3/payscore/permissions/authorization-code/AUTH_CODE/terminate');
+    expect($result->getPayload()->has('authorization_code'))->toBeFalse();
+    expect($result->getPayload()->has('appid'))->toBeFalse();
+    expect($result->getPayload()->get('service_id'))->toEqual('12345678901234567890123456789012');
+    expect($result->getPayload()->get('reason'))->toEqual('test');
+});
 
-    public function testAuthorizationCodeBranch()
-    {
-        $rocket = new Rocket();
-        $rocket->setPayload(new Collection([
-            'authorization_code' => 'AUTH_CODE',
-            'reason' => 'test',
-        ]));
+it('response204 with origin response direction', function () {
+    $response = new Response(204);
+    $rocket = new Rocket();
+    $rocket->setDirection(OriginResponseDirection::class)
+        ->setDestinationOrigin($response)
+        ->setDestination($response);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $result = (new ResponsePlugin())->assembly($rocket, fn ($r) => (new ParserPlugin())->assembly($r, fn ($r2) => $r2));
 
-        self::assertEquals(OriginResponseDirection::class, $result->getDirection());
-        self::assertEquals('POST', $result->getPayload()->get('_method'));
-        self::assertEquals('/v3/payscore/permissions/authorization-code/AUTH_CODE/terminate', $result->getPayload()->get('_url'));
-        self::assertFalse($result->getPayload()->has('authorization_code'));
-        self::assertFalse($result->getPayload()->has('appid'));
-        self::assertEquals('12345678901234567890123456789012', $result->getPayload()->get('service_id'));
-        self::assertEquals('test', $result->getPayload()->get('reason'));
-    }
+    $destination = $result->getDestination();
+    expect($destination)->toBeInstanceOf(ResponseInterface::class);
+    expect($destination->getStatusCode())->toEqual(204);
+    expect((string) $destination->getBody())->toBe('');
+});
 
-    /**
-     * 204 无包体回归断言：TerminatePlugin 两分支均设置 OriginResponseDirection，
-     * 响应链（ResponsePlugin -> ParserPlugin）遇到 204 空 body 不应抛异常，destination 原样为 ResponseInterface.
-     */
-    public function testResponse204WithOriginResponseDirection()
-    {
-        $response = new Response(204);
-        $rocket = new Rocket();
-        $rocket->setDirection(OriginResponseDirection::class)
-            ->setDestinationOrigin($response)
-            ->setDestination($response);
-
-        $result = (new ResponsePlugin())->assembly($rocket, fn ($r) => (new ParserPlugin())->assembly($r, fn ($r2) => $r2));
-
-        $destination = $result->getDestination();
-        self::assertInstanceOf(ResponseInterface::class, $destination);
-        self::assertEquals(204, $destination->getStatusCode());
-        self::assertSame('', (string) $destination->getBody());
-    }
-}

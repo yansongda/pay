@@ -2,119 +2,105 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\AddRadarPlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddRadarPluginTest extends TestCase
-{
-    protected AddRadarPlugin $plugin;
+it('normal', function () {
+    $plugin = new AddRadarPlugin();
+    $params = [];
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
+        '_body' => '123',
+    ]);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $rocket = (new Rocket())->setParams($params)->setPayload($payload);
 
-        $this->plugin = new AddRadarPlugin();
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $radar = $result->getRadar();
 
-    public function testNormal()
-    {
-        $params = [];
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
-            '_body' => '123',
-        ]);
+    expect($radar->hasHeader('Authorization'))->toBeFalse();
+    expect($radar->hasHeader('Wechatpay-Serial'))->toBeFalse();
+    expect($radar->getHeaderLine('Accept'))->toEqual('application/json, text/plain, application/x-gzip');
+    expect($radar->getHeaderLine('User-Agent'))->toEqual('yansongda/pay-v3');
+    expect($radar->getHeaderLine('Content-Type'))->toEqual('application/json; charset=utf-8');
+    expect((string) $radar->getBody())->toEqual('123');
+    expect($radar->getMethod())->toEqual('POST');
+    expect((string) $radar->getUri())->toEqual('https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi');
+});
 
-        $rocket = (new Rocket())->setParams($params)->setPayload($payload);
+it('normal with authorization', function () {
+    $plugin = new AddRadarPlugin();
+    $params = [];
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
+        '_body' => '123',
+        '_authorization' => '456',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams($params)->setPayload($payload);
 
-        self::assertFalse($radar->hasHeader('Authorization'));
-        self::assertFalse($radar->hasHeader('Wechatpay-Serial'));
-        self::assertEquals('application/json, text/plain, application/x-gzip', $radar->getHeaderLine('Accept'));
-        self::assertEquals('yansongda/pay-v3', $radar->getHeaderLine('User-Agent'));
-        self::assertEquals('application/json; charset=utf-8', $radar->getHeaderLine('Content-Type'));
-        self::assertEquals('123', (string) $radar->getBody());
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals('https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi', (string) $radar->getUri());
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $radar = $result->getRadar();
 
-    public function testNormalWithAuthorization()
-    {
-        $params = [];
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
-            '_body' => '123',
-            '_authorization' => '456',
-        ]);
+    expect($radar->hasHeader('Authorization'))->toBeTrue();
+    expect($radar->hasHeader('Wechatpay-Serial'))->toBeFalse();
+    expect((string) $radar->getBody())->toEqual('123');
+    expect($radar->getMethod())->toEqual('POST');
+    expect((string) $radar->getUri())->toEqual('https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi');
+});
 
-        $rocket = (new Rocket())->setParams($params)->setPayload($payload);
+it('normal with wechat serial', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
+        '_body' => '123',
+        '_authorization' => '456',
+        '_serial_no' => 'yansongda',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertTrue($radar->hasHeader('Authorization'));
-        self::assertFalse($radar->hasHeader('Wechatpay-Serial'));
-        self::assertEquals('123', (string) $radar->getBody());
-        self::assertEquals('POST', $radar->getMethod());
-        self::assertEquals('https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi', (string) $radar->getUri());
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $radar = $result->getRadar();
 
-    public function testNormalWithWechatSerial()
-    {
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
-            '_body' => '123',
-            '_authorization' => '456',
-            '_serial_no' => 'yansongda',
-        ]);
+    expect($radar->getHeaderLine('Wechatpay-Serial'))->toEqual('yansongda');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('normal with content type', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
+        '_body' => '123',
+        '_content_type' => 'yansongda',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertEquals('yansongda', $radar->getHeaderLine('Wechatpay-Serial'));
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $radar = $result->getRadar();
 
-    public function testNormalWithContentType()
-    {
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
-            '_body' => '123',
-            '_content_type' => 'yansongda',
-        ]);
+    expect($radar->getHeaderLine('Content-Type'))->toEqual('yansongda');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
+it('normal with accept', function () {
+    $plugin = new AddRadarPlugin();
+    $payload = new Collection([
+        '_method' => 'POST',
+        '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
+        '_body' => '123',
+        '_accept' => 'yansongda',
+    ]);
 
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
+    $rocket = (new Rocket())->setParams([])->setPayload($payload);
 
-        self::assertEquals('yansongda', $radar->getHeaderLine('Content-Type'));
-    }
+    $result = $plugin->assembly($rocket, function ($rocket) { return $rocket; });
+    $radar = $result->getRadar();
 
-    public function testNormalWithAccept()
-    {
-        $payload = new Collection([
-            '_method' => 'POST',
-            '_url' => 'https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi',
-            '_body' => '123',
-            '_accept' => 'yansongda',
-        ]);
+    expect($radar->getHeaderLine('Accept'))->toEqual('yansongda');
+});
 
-        $rocket = (new Rocket())->setParams([])->setPayload($payload);
-
-        $result = $this->plugin->assembly($rocket, function ($rocket) { return $rocket; });
-        $radar = $result->getRadar();
-
-        self::assertEquals('yansongda', $radar->getHeaderLine('Accept'));
-    }
-}

@@ -2,43 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Yansongda\Pay\Tests\Plugin\Wechat\V2;
-
 use Yansongda\Artful\Rocket;
 use Yansongda\Pay\Plugin\Wechat\V2\AddPayloadSignaturePlugin;
-use Yansongda\Pay\Tests\TestCase;
 use Yansongda\Supports\Collection;
 
-class AddPayloadSignaturePluginTest extends TestCase
-{
-    protected AddPayloadSignaturePlugin $plugin;
+it('get signature content', function () {
+    $plugin = new AddPayloadSignaturePlugin();
+    $payload1 = new Collection([
+        '_method' => 'POST',
+        '_url' => 'yansongda',
+        'a' => null,
+        'out_trade_no' => 1626493236,
+        'description' => 'yansongda 测试 - 1626493236',
+    ]);
+    $rocket1 = (new Rocket())->setPayload($payload1);
+    $result1 = $plugin->assembly($rocket1, fn ($rocket) => $rocket);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+    $payload2 = new Collection([
+        'out_trade_no' => 1626493236,
+        'description' => 'yansongda 测试 - 1626493236',
+    ]);
+    $rocket2 = (new Rocket())->setPayload($payload2);
+    $result2 = $plugin->assembly($rocket2, fn ($rocket) => $rocket);
 
-        $this->plugin = new AddPayloadSignaturePlugin();
-    }
+    expect($result1->getPayload()->get('sign'))->toEqual($result2->getPayload()->get('sign'));
+});
 
-    public function testGetSignatureContent()
-    {
-        $payload1 = new Collection([
-            '_method' => 'POST',
-            '_url' => 'yansongda',
-            'a' => null,
-            'out_trade_no' => 1626493236,
-            'description' => 'yansongda 测试 - 1626493236',
-        ]);
-        $rocket1 = (new Rocket())->setPayload($payload1);
-        $result1 = $this->plugin->assembly($rocket1, fn ($rocket) => $rocket);
-
-        $payload2 = new Collection([
-            'out_trade_no' => 1626493236,
-            'description' => 'yansongda 测试 - 1626493236',
-        ]);
-        $rocket2 = (new Rocket())->setPayload($payload2);
-        $result2 = $this->plugin->assembly($rocket2, fn ($rocket) => $rocket);
-
-        self::assertEquals($result2->getPayload()->get('sign'), $result1->getPayload()->get('sign'));
-    }
-}
