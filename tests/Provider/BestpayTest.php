@@ -17,191 +17,205 @@ use Yansongda\Pay\Tests\Support\Traits\BestpayProviderHelpers;
 uses(BestpayTrait::class);
 uses(BestpayProviderHelpers::class);
 
-it('快捷方式不存在', function () {
+describe('shortcut', function () {
+    it('不存在', function () {
 
-    Pay::bestpay()->foo();
-})->throws(InvalidParamsException::class);
+        Pay::bestpay()->foo();
+    })->throws(InvalidParamsException::class);
 
-it('不支持撤销', function () {
+    it('不支持撤销', function () {
 
-    Pay::bestpay()->cancel(['outTradeNo' => 'test']);
-})->throws(InvalidParamsException::class);
-
-it('成功响应 body', function () {
-    $response = Pay::bestpay()->success();
-
-    expect($response)->toBeInstanceOf(ResponseInterface::class);
-    expect((string) $response->getBody())->toEqual('{"resultCode":"SUCCESS","resultMsg":"OK"}');
-    expect($response->getHeaderLine('Content-Type'))->toEqual('application/json');
+        Pay::bestpay()->cancel(['outTradeNo' => 'test']);
+    })->throws(InvalidParamsException::class);
 });
 
-it('待签名内容排序', function () {
-    $content = self::getBestpaySignContent([
-        'path' => '/pay/tradeCreate',
-        'sign' => 'should-be-removed',
-        'bizContent' => '{"a":1}',
-        'commonParams' => '{"institutionType":"MERCHANT"}',
-    ]);
+describe('success', function () {
+    it('解析响应', function () {
+        $response = Pay::bestpay()->success();
 
-    expect($content)->toEqual('bizContent={"a":1}&commonParams={"institutionType":"MERCHANT"}&path=/pay/tradeCreate');
+        expect($response)->toBeInstanceOf(ResponseInterface::class);
+        expect((string) $response->getBody())->toEqual('{"resultCode":"SUCCESS","resultMsg":"OK"}');
+        expect($response->getHeaderLine('Content-Type'))->toEqual('application/json');
+    });
 });
 
-it('签名与验签往返', function () {
-    $bestpayConfig = $this->defaultConfig();
+describe('sign', function () {
+    it('待签名内容排序', function () {
+        $content = self::getBestpaySignContent([
+            'path' => '/pay/tradeCreate',
+            'sign' => 'should-be-removed',
+            'bizContent' => '{"a":1}',
+            'commonParams' => '{"institutionType":"MERCHANT"}',
+        ]);
 
-    $content = self::getBestpaySignContent([
-        'path' => '/pay/tradeCreate',
-        'commonParams' => '{"institutionType":"MERCHANT","institutionCode":"3178033925245778"}',
-        'bizContent' => '{"merchantNo":"3178033925245778"}',
-    ]);
+        expect($content)->toEqual('bizContent={"a":1}&commonParams={"institutionType":"MERCHANT"}&path=/pay/tradeCreate');
+    });
 
-    $sign = self::signBestpayContent($bestpayConfig, $content);
+    it('签名与验签往返', function () {
+        $bestpayConfig = $this->defaultConfig();
 
-    expect($sign)->not->toBeEmpty();
-    expect(base64_decode($sign, true))->not->toBeFalse();
+        $content = self::getBestpaySignContent([
+            'path' => '/pay/tradeCreate',
+            'commonParams' => '{"institutionType":"MERCHANT","institutionCode":"3178033925245778"}',
+            'bizContent' => '{"merchantNo":"3178033925245778"}',
+        ]);
 
-    self::verifyBestpaySign($bestpayConfig, [
-        'path' => '/pay/tradeCreate',
-        'commonParams' => '{"institutionType":"MERCHANT","institutionCode":"3178033925245778"}',
-        'bizContent' => '{"merchantNo":"3178033925245778"}',
-        'sign' => $sign,
-    ]);
+        $sign = self::signBestpayContent($bestpayConfig, $content);
 
-    expect(true)->toBeTrue();
+        expect($sign)->not->toBeEmpty();
+        expect(base64_decode($sign, true))->not->toBeFalse();
+
+        self::verifyBestpaySign($bestpayConfig, [
+            'path' => '/pay/tradeCreate',
+            'commonParams' => '{"institutionType":"MERCHANT","institutionCode":"3178033925245778"}',
+            'bizContent' => '{"merchantNo":"3178033925245778"}',
+            'sign' => $sign,
+        ]);
+
+        expect(true)->toBeTrue();
+    });
 });
 
-it('网页支付', function () {
-    $this->mockResponse([
-        'success' => true,
-        'errorCode' => null,
-        'errorMsg' => null,
-        'result' => [
-            'merchantNo' => '3178033925245778',
-            'outTradeNo' => 'ORDER001',
-            'tradeNo' => 'TRADE001',
-            'tradeStatus' => 'WAITFORPAY',
-        ],
-    ]);
-
-    // 不传 merchantNo，验证 StartPlugin 从配置注入
-    $result = Pay::bestpay()->web([
-        'outTradeNo' => 'ORDER001',
-        'tradeAmt' => '99',
-        'subject' => '测试订单',
-        'goodsInfo' => '测试商品',
-        'requestDate' => date('Y-m-d H:i:s'),
-    ]);
-
-    expect((bool) $result->get('success'))->toBeTrue();
-    expect($result->get('result.outTradeNo'))->toEqual('ORDER001');
-    expect($result->get('result.tradeStatus'))->toEqual('WAITFORPAY');
-});
-
-it('H5 支付', function () {
-    $this->mockResponse([
-        'success' => true,
-        'result' => ['outTradeNo' => 'ORDER002', 'tradeStatus' => 'WAITFORPAY'],
-    ]);
-
-    $result = Pay::bestpay()->h5([
-        'outTradeNo' => 'ORDER002',
-        'tradeAmt' => '99',
-        'subject' => '测试订单',
-    ]);
-
-    expect((bool) $result->get('success'))->toBeTrue();
-    expect($result->get('result.outTradeNo'))->toEqual('ORDER002');
-});
-
-it('扫码支付', function () {
-    $this->mockResponse([
-        'success' => true,
-        'result' => ['outTradeNo' => 'ORDER003', 'codeUrl' => 'https://qr.bestpay.com.cn/xxx'],
-    ]);
-
-    $result = Pay::bestpay()->scan([
-        'outTradeNo' => 'ORDER003',
-        'tradeAmt' => '99',
-        'subject' => '测试订单',
-    ]);
-
-    expect((bool) $result->get('success'))->toBeTrue();
-    expect($result->get('result.outTradeNo'))->toEqual('ORDER003');
-});
-
-it('退款', function () {
-    $this->mockResponse([
-        'success' => true,
-        'result' => ['outRefundNo' => 'REFUND001', 'refundStatus' => 'SUCCESS'],
-    ]);
-
-    $result = Pay::bestpay()->refund([
-        'outTradeNo' => 'ORDER001',
-        'outRequestNo' => 'REFUND001',
-        'refundAmt' => '1',
-        'requestDate' => date('Y-m-d H:i:s'),
-    ]);
-
-    expect((bool) $result->get('success'))->toBeTrue();
-    expect($result->get('result.outRefundNo'))->toEqual('REFUND001');
-});
-
-it('关单', function () {
-    $this->mockResponse([
-        'success' => true,
-        'result' => ['outTradeNo' => 'ORDER001'],
-    ]);
-
-    $result = Pay::bestpay()->close([
-        'outTradeNo' => 'ORDER001',
-    ]);
-
-    expect((bool) $result->get('success'))->toBeTrue();
-});
-
-it('查询业务错误', function () {
-
-    $http = Mockery::mock(Client::class);
-    $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode([
-        'success' => false,
-        'errorCode' => 'API100001',
-        'errorMsg' => '签名认证失败',
-        'result' => null,
-    ])));
-    Pay::set(HttpClientInterface::class, $http);
-
-    Pay::bestpay()->query([
-        'outTradeNo' => 'ORDER001',
-    ]);
-})->throws(InvalidResponseException::class);
-
-it('查询聚合动作', function () {
-    $this->mockResponseWithUriCheck(
-        'path=%2Faggregate%2Faggregatepay%2FtradeQuery',
-        [
+describe('pay', function () {
+    it('网页', function () {
+        $this->mockResponse([
             'success' => true,
-            'result' => ['outTradeNo' => 'ORDER001', 'tradeStatus' => 'SUCCESS'],
-        ]
-    );
+            'errorCode' => null,
+            'errorMsg' => null,
+            'result' => [
+                'merchantNo' => '3178033925245778',
+                'outTradeNo' => 'ORDER001',
+                'tradeNo' => 'TRADE001',
+                'tradeStatus' => 'WAITFORPAY',
+            ],
+        ]);
 
-    $result = Pay::bestpay()->query([
-        'outTradeNo' => 'ORDER001',
-        '_action' => 'aggregate',
-    ]);
+        // 不传 merchantNo，验证 StartPlugin 从配置注入
+        $result = Pay::bestpay()->web([
+            'outTradeNo' => 'ORDER001',
+            'tradeAmt' => '99',
+            'subject' => '测试订单',
+            'goodsInfo' => '测试商品',
+            'requestDate' => date('Y-m-d H:i:s'),
+        ]);
 
-    expect((bool) $result->get('success'))->toBeTrue();
-    expect($result->get('result.tradeStatus'))->toEqual('SUCCESS');
+        expect((bool) $result->get('success'))->toBeTrue();
+        expect($result->get('result.outTradeNo'))->toEqual('ORDER001');
+        expect($result->get('result.tradeStatus'))->toEqual('WAITFORPAY');
+    });
+
+    it('H5', function () {
+        $this->mockResponse([
+            'success' => true,
+            'result' => ['outTradeNo' => 'ORDER002', 'tradeStatus' => 'WAITFORPAY'],
+        ]);
+
+        $result = Pay::bestpay()->h5([
+            'outTradeNo' => 'ORDER002',
+            'tradeAmt' => '99',
+            'subject' => '测试订单',
+        ]);
+
+        expect((bool) $result->get('success'))->toBeTrue();
+        expect($result->get('result.outTradeNo'))->toEqual('ORDER002');
+    });
+
+    it('扫码', function () {
+        $this->mockResponse([
+            'success' => true,
+            'result' => ['outTradeNo' => 'ORDER003', 'codeUrl' => 'https://qr.bestpay.com.cn/xxx'],
+        ]);
+
+        $result = Pay::bestpay()->scan([
+            'outTradeNo' => 'ORDER003',
+            'tradeAmt' => '99',
+            'subject' => '测试订单',
+        ]);
+
+        expect((bool) $result->get('success'))->toBeTrue();
+        expect($result->get('result.outTradeNo'))->toEqual('ORDER003');
+    });
 });
 
-it('查询动作非法', function () {
+describe('order', function () {
+    it('退款', function () {
+        $this->mockResponse([
+            'success' => true,
+            'result' => ['outRefundNo' => 'REFUND001', 'refundStatus' => 'SUCCESS'],
+        ]);
 
-    Pay::bestpay()->query([
-        'outTradeNo' => 'ORDER001',
-        '_action' => 'not-exists',
-    ]);
-})->throws(InvalidParamsException::class);
+        $result = Pay::bestpay()->refund([
+            'outTradeNo' => 'ORDER001',
+            'outRequestNo' => 'REFUND001',
+            'refundAmt' => '1',
+            'requestDate' => date('Y-m-d H:i:s'),
+        ]);
 
-it('Provider 类', function () {
-    expect(Pay::bestpay())->toBeInstanceOf(Bestpay::class);
-    expect('https://mapi.bestpay.com.cn/mapi')->toEqual(Bestpay::URL[PayMode::NORMAL->value]);
+        expect((bool) $result->get('success'))->toBeTrue();
+        expect($result->get('result.outRefundNo'))->toEqual('REFUND001');
+    });
+
+    it('关单', function () {
+        $this->mockResponse([
+            'success' => true,
+            'result' => ['outTradeNo' => 'ORDER001'],
+        ]);
+
+        $result = Pay::bestpay()->close([
+            'outTradeNo' => 'ORDER001',
+        ]);
+
+        expect((bool) $result->get('success'))->toBeTrue();
+    });
+});
+
+describe('query', function () {
+    it('业务错误', function () {
+
+        $http = Mockery::mock(Client::class);
+        $http->shouldReceive('sendRequest')->andReturn(new Response(200, [], json_encode([
+            'success' => false,
+            'errorCode' => 'API100001',
+            'errorMsg' => '签名认证失败',
+            'result' => null,
+        ])));
+        Pay::set(HttpClientInterface::class, $http);
+
+        Pay::bestpay()->query([
+            'outTradeNo' => 'ORDER001',
+        ]);
+    })->throws(InvalidResponseException::class);
+
+    it('聚合动作', function () {
+        $this->mockResponseWithUriCheck(
+            'path=%2Faggregate%2Faggregatepay%2FtradeQuery',
+            [
+                'success' => true,
+                'result' => ['outTradeNo' => 'ORDER001', 'tradeStatus' => 'SUCCESS'],
+            ]
+        );
+
+        $result = Pay::bestpay()->query([
+            'outTradeNo' => 'ORDER001',
+            '_action' => 'aggregate',
+        ]);
+
+        expect((bool) $result->get('success'))->toBeTrue();
+        expect($result->get('result.tradeStatus'))->toEqual('SUCCESS');
+    });
+
+    it('动作非法', function () {
+
+        Pay::bestpay()->query([
+            'outTradeNo' => 'ORDER001',
+            '_action' => 'not-exists',
+        ]);
+    })->throws(InvalidParamsException::class);
+});
+
+describe('provider', function () {
+    it('Provider 类', function () {
+        expect(Pay::bestpay())->toBeInstanceOf(Bestpay::class);
+        expect('https://mapi.bestpay.com.cn/mapi')->toEqual(Bestpay::URL[PayMode::NORMAL->value]);
+    });
 });
